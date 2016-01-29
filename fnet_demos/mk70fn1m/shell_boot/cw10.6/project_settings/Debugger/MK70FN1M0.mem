@@ -1,0 +1,46 @@
+// Memory Configuration File
+//
+// Description:
+//  A memory configuration file contains commands that define the legally accessible
+//  areas of memory for your specific board. Useful for example when the debugger
+//  tries to display the content of a "char *" variable, that has not yet been initialized.
+//  In this case the debugger may try to read from a bogus address, which could cause a
+//  bus error.
+//
+// Board:
+//  Kinetis K70FN1M0
+//
+// Reference:
+//  -
+
+
+// All reserved ranges read back 0xBABA...
+reservedchar 0xBA
+
+usederivative "MK70F15"
+
+//         Memory Map:
+//         ----------------------------------------------------------------------
+
+range      0x00000000 0x000FFFFF 4 ReadWrite    // 1024KB Code Flash
+reserved   0x00100000 0x07FFFFFF
+range	   0x08000000 0x0FFFFFFF 4 ReadWrite	// DDR aliased area for core access
+reserved   0x10000000 0x13FFFFFF
+range      0x14000000 0x14003FFF 4 ReadWrite    // 16KB Programming accelleration RAM
+reserved   0x14004000 0x1FFEFFFF
+range      0x1FFF0000 0x1FFFFFFF 4 ReadWrite    // 64KB On chip SRAM (TCML)
+range      0x20000000 0x2000FFFF 4 ReadWrite    // 64KB On chip SRAM (TCMU)
+reserved   0x20010000 0x21FFFFFF
+range      0x22000000 0x221FFFFF 4 ReadWrite    // Aliased to TCMU SRAM bitband
+reserved   0x22200000 0x3FFFFFFF
+//range	   0x40000000 0x400FFFFF 4 ReadWrite	// Bitnad regions
+reserved   0x40100000 0x41FFFFFF
+range	   0x42000000 0x43FFFFFF 4 ReadWrite	// AIPS and GPIO bitband
+reserved   0x44000000 0x5FFFFFFF		
+range      0x60000000 0x6FFFFFFF 4 ReadWrite	// Flexbus for external memory
+range      0x70000000 0x7FFFFFFF 4 ReadWrite	// DDR Write-back region
+range      0x80000000 0x8FFFFFFF 4 ReadWrite	// DDR Write-through region
+range      0x90000000 0x9FFFFFFF 4 ReadWrite	// FlexBus write-through region
+range      0xA0000000 0xDFFFFFFF 4 ReadWrite	// FlexBus peripheral (not executable)
+//range      0xE0000000 0xE00FFFFF 4 ReadWrite	// Private peripherals
+reserved   0xE0100000 0xFFFFFFFF

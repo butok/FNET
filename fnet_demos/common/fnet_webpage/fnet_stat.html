@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+	<link rel="Stylesheet" href="fnet.css" type="text/css" media="screen"/>
+	<title>FNET Statistics</title>
+	<script type="text/javascript" src="fnet.js"> </script>
+	<link rel="shortcut icon" href="favicon.ico"/>    
+	<script type="text/javascript">
+		var fnetDataReceived = 0;
+		function fnetRequest(){
+			if (!fnetDataReceived){
+		        var xmlHTTP = fnetXMLHttpRequest();
+				fnetDataReceived = 1;
+				if( xmlHTTP != null){
+					xmlHTTP.onreadystatechange = function(){
+				  		if (xmlHTTP.readyState == 4){
+							if (xmlHTTP.status == 200)
+									fnetHandler(xmlHTTP.responseText);
+				  			fnetDataReceived = 0;
+			  			}
+					};
+					xmlHTTP.open("GET", "stdata.cgi", true);
+					xmlHTTP.setRequestHeader("If-Modified-Since", document.lastModified);
+					xmlHTTP.send(null);
+				}
+			}
+		}
+		function fnetHandler(data){
+			var statistics = eval(data);
+			document.getElementById("rtc").innerHTML = statistics.time;
+			document.getElementById("tx").innerHTML = statistics.tx;
+			document.getElementById("rx").innerHTML = statistics.rx;
+		}
+	    window.setInterval("fnetRequest()", 1000);
+	</script>
+</head>
+<body>
+	<script type="text/javascript">
+		fnetPrintHeader("FNET Statistics");
+	</script>
+	<table width = "200">
+	<tr>
+		<th>Parameter</th>
+		<th>Value</th>
+	</tr>
+	<tr>
+		<td class="fnet_td_grey">Work time</td>
+		<td align="right"><h1><div id="rtc">0</div></h1></td>
+	</tr>
+	<tr>
+		<td class="fnet_td_grey">Tx packet count</td>
+		<td align="right"><h1><div id="tx">0</div></h1></td>
+	</tr>
+	<tr>
+		<td class="fnet_td_grey">Rx packet count</td>
+		<td align="right"><h1><div id="rx">0</div></h1></td>
+	</tr>
+	</table>
+	<br/>
+	<br/>
+	<i>NOTE: This page gets the data from the server periodically with help of AJAX. It’s used JavaScript, CGI and JSON data format.</i>
+	<script type="text/javascript">
+        fnetPrintFooter();
+	</script>
+</body>
+</html>		

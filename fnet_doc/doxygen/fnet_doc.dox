@@ -1,0 +1,2548 @@
+/**********************************************************************//*!
+*
+* @file fnet_doc.dox
+* @author Andrey Butok
+* @brief FNET documentation framework, for Doxygen.
+*
+***************************************************************************/
+
+
+//**************************OVERVIEW********************************
+/*! 
+@mainpage FNET Overview
+
+The FNET is a free, open-source, dual TCP/IPv4 and IPv6 Stack (under @ref fnet_license "Apache v2.0 license"), for building embedded communication software on 32bit MCUs.
+@n
+@n
+Useful links:
+- The FNET Project Home Page: http://fnet.sourceforge.net
+- The FNET Open Forum: http://sourceforge.net/projects/fnet/forums/forum/920346
+- The FNET Bug Reports: https://sourceforge.net/tracker/?group_id=253892&atid=1126920
+- The FNET Feature Requests: https://sourceforge.net/tracker/?group_id=253892&atid=1126921
+- The FNET related articles: http://fnet.sourceforge.net/fnet_articles.html
+
+@n
+@n
+The FNET Overview is divided into the following sections:
+- @subpage key_features
+- @subpage structure 
+- @subpage fnet_license 
+- @subpage fnet_history  
+@n
+@n
+NOTE: This document was generated from the project source code by "Doxygen tool".  
+*/
+
+
+//**************************KEY_FEATURES**************************
+/*! 
+@page key_features FNET Key Features
+
+The core element of the FNET Project is the TCP/IP stack. @n
+@n
+The FNET TCP/IP stack enables to connect an embedded system to a TCP/IP network. This stack is implemented as a stand-alone software library for 32-bit MCUs. @n 
+It is modular, portable, and written in the C programming language with some platform-specific optimization in assembler. It is 
+distributed in the form of source code, so the compile-time optimizations and configuration are possible (actually, it is the 
+preferred way to configure stack features). @n
+@n
+@image html fnet_topview.png "FNET Top View"
+@n
+@par The stack provides following protocols and services:
+@n 
+- Supported Platforms:
+	- @b ARM Cortex-M4, Kinetis:
+		- @b MK64FN1M (FRDM-K64F board)
+		- @b MK60N512 (TWR-K60N512 board)
+		- @b MK70FN1M (TWR-K70F120M board)
+		- @b MK60FN1M (TWR-K60F120M board)
+	- @b ColdFire: 
+		- Modelo - MCF54418 (TWR-MCF5441x board).
+		- @b Kirin3 - MCF52259 (M52259EVB, M52259DEMO and TWR-MCF52259 boards).
+	- @b Qorivva Power Architecture: 
+		- Fado - MPC5668G (MPC5668GKIT board).
+	- Obsolete Platforms, available in older FNET releases:
+		- Lasko - MCF51CN128 (TWR-MCF51CN board).
+		- Reindeer - MCF5282 (M5282EVB board). 
+		- Kirin2 - MCF52235 (M52235EVB board). 
+
+- Supported Compilers:
+	- @b IAR:
+		- Embedded Workbench for ARM, version 7.2 (Kinetis).
+	- @b ARM:
+		- Keil uVision, version 4.7 (MK60N512).
+	- @b Freescale:
+		- Kinetis Design Studio, version 2.0 (MK64F)
+		- CodeWarrior Development Studio for Microcontrollers, version 10.6 (MK60N512, MK70FN1M, MCF52259, MCF54418).
+		- CodeWarrior for ColdFire, version 7.2.2 (MCF5282, MCF52235, MCF52259).
+		- CodeWarrior Development Studio for MPC55xx/MPC56xx, version 2.10  (MPC5668G).
+ 
+	
+- Bare-metal TCP/IP stack. No underlying RTOS is required, although it can be used with it.
+- Non-blocking Socket API (DGRAM, STREAM, RAW).
+- Core Protocols:
+	- @b TCP (Transmission Control Protocol).
+	- @b UDP (User Datagram Protocol).
+	- @b IPv4.
+		- @b ICMPv4 (Internet Control Message Protocol).
+		- @b IGMP (Internet Group Management Protocol).
+		- @b ARP (Address Resolution Protocol).
+	- @b IPv6. 
+		- Passed the "IPv6 Ready Logo" Phase-2 IPv6 Core Protocols Conformance Tests, for host.
+		- @b ICMPv6 (Internet Control Message Protocol).
+		- @b MLDv1 (Multicast Listener Discovery).
+		- Neighbor Discovery for IPv6.
+		- IPv6 Stateless Address Autoconfiguration.
+		- Path MTU Discovery for IPv6
+- Network Interfaces:
+	- Ethernet.
+	- Loopback.
+- Services:
+	- @b HTTP server:
+		- HTTP/1.0 or HTTP/0.9 protocols.
+		- GET and POST requests.
+		- CGI and SSI.
+		- Basic access authentication.
+	- @b TELNET server. 
+	- @b DHCP/BOOTP client.
+	- @b DNS client/resolver.
+	- @b LLMNR Server/Responder.
+	- @b PING service.
+	- @b TFTP server and client. Both Read and Write requests are supported.
+	- ROM File System.
+	- On-chip Flash Memory driver.
+	- Command line shell.
+ 	- Serial driver.
+- Tools:
+	- @ref how_to_generate_rom_fs "GUI File System Generation Tool.
+	- @ref quick_start_boot "GUI Throughput Benchmark Tool".
+- Applications:
+	- @ref quick_start_boot "TFTP Bootloader".
+	- @ref quick_start_shell "Shell Application".
+	- @ref quick_start_boot "TCP/UDP Throughput Benchmark Application".
+- Source-code based User documentation, by Doxygen.
+
+*/
+
+//*************************STRUCTURE************************************
+/*! 
+@page structure FNET Directory Structure
+
+The current version of the FNET project has the following directory structure:
+@n
+@n
+@image html fnet_dir_structure.jpg "FNET Directory Structure"
+
+@verbatim
+fnet                      - FNET root directory.
+|-- fnet_stack              - FNET TCP/IP stack.
+|    |-- stack                - FNET TCP/IP stack platform-independent source code.
+|    |-- services             - FNET Services.
+|    |    |-- dns               - DNS client/resolver service.
+|    |    |-- dhcp              - DHCP/BOOTP client service.
+|    |    |-- flash             - Flash  Memory driver.
+|    |    |-- fs                - File System driver.
+|    |    |-- http              - HTTP Server service.
+|    |    |-- poll              - Polling Mechanism library.
+|    |    |-- ping              - PING service.
+|    |    |-- llmnr             - LLMNR Server/Responder.
+|    |    |-- serial            - Serial Input/Output driver.
+|    |    |-- shell             - Command Shell service.
+|    |    |-- telnet            - TELNET server service.
+|    |    |-- tftp              - TFTP server and client services.
+|    |-- cpu                  - FNET platform-specific source code.
+|    |    |-- common            - Common platform-specific source code.
+|    |    |-- mcf               - Freescale ColdFire-specific source code.
+|    |    |-- mk                - Freescale Kinetis-specific source code.
+|    |-- compiler             - Compiler-specific source code.
+|    |-- os                   - OS-specific source code.
+|-- fnet_doc                  - FNET documentation.
+|-- fnet_demos                - FNET demo projects.
+|    |-- common                 - Common source code used by demos.
+|    |    |-- fnet_application    - Demo application source code.
+|    |    |-- fnet_webpage        - Demo web page source code.
+|    |    |-- startup             - Platform-specific startup source code.
+|    |-- <cpu_name>           - Demos for a <cpu_name> platform.
+|         |-- boot              - FNET TFTP Bootloader.
+|         |-- benchmark         - TCP/UDP Throughput Benchmark application. 
+|         |-- shell             - "Shell" demo is a fully featured shell. It allows
+|         |                       view/change various parameters (e.g. IP address,
+|         |                       subnet mask), explore mounted file systems, run 
+|         |                       DHCP client, HTTP and Telnet servers.
+|         |-- shell_boot        - Example application used for the FNET TFTP Bootloader
+|                                 demonstration. This demo has the same features as 
+|                                 the "Shell" demo, but it`s modified to be able to
+|                                 work with the FNET Bootloader.
+|-- fnet_tools                - FNET tools.
+              
+@endverbatim
+*/
+
+//*************************DEMOS************************************
+/*! 
+@page demos FNET Demo Applications
+*- @subpage quick_start_shell  
+*- @subpage quick_start_boot 
+*- @subpage quick_start_benchmark 
+
+The FNET project supplied with several demo applications. They can be used for demonstration of FNET features or as an example of FNET User-API usage. @n
+It is recommended to use them as starting point for your new applications.@n 
+Project files are placed in @verbatim fnet\fnet_demos\<cpu_name>\<demo_name>\<compiler><version>\ @endverbatim
+There are four types of demo projects:
+- @c shell - This is the main demo application. @n 
+The "Shell" demo allows to view/change various system parameters (e.g. IP address, subnet mask), to explore mounted file systems, to run DHCP and DNS clients, HTTP and Telnet servers, via a serial-terminal application. @n
+ More information can be found in @ref quick_start_shell.
+- @c boot - This is the TFTP Client and Server Firmware Bootloader. @n 
+It allows to update or backup a firmware application, placed in on-chip Flash memory, using the TFTP protocol. @n 
+More information can be found in @ref quick_start_boot.
+- @c shell_boot - This is the example application used with the FNET TFTP Bootloader. @n
+This demo has the same features as the "Shell" demo, but it was modified to be able to work with the FNET Bootloader. @n
+ More information can be found in @ref quick_start_boot.
+- @c benchmark - This is the TCP/UDP Throughput Benchmark application. @n
+More information can be found in @ref quick_start_benchmark.
+
+The following table summarizes the supported demo applications, platforms and compilers:
+ <table>
+ <caption>Demo applications</caption>
+ <tr class="fnet_td_grey">
+ <th ALIGN=CENTER>Platform</th>
+ <th ALIGN=CENTER>Shell</th>
+ <th ALIGN=CENTER>Bootloader</th>
+ <th ALIGN=CENTER>Benchmark</th>
+ </tr>
+<tr>
+ <td class="fnet_td_grey">MCF52259 (Kirin3)</td>
+ <td ALIGN=CENTER>CW10.6<br/>CW7.2</td>
+ <td ALIGN=CENTER>CW10.6<br/>CW7.2</td>
+ <td ALIGN=CENTER>CW10.6<br/>CW7.2</td>
+ </tr>
+<tr>
+ <td class="fnet_td_grey">MCF54418 (Modelo)</td>
+ <td ALIGN=CENTER>CW10.6</td>
+ <td ALIGN=CENTER>x</td>
+ <td ALIGN=CENTER>x</td>
+</tr>
+<tr>
+ <td class="fnet_td_grey">MK64FN1M (Kinetis)</td>
+ <td ALIGN=CENTER>IAR7.5<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.5<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.5</td>
+ </tr>
+<tr>
+ <td class="fnet_td_grey">MK60N512 (Kinetis)</td>
+ <td ALIGN=CENTER>CW10.6<br/>IAR7.5<br/>uV4.7</td>
+ <td ALIGN=CENTER>CW10.6<br/>IAR7.5<br/>uV4.7</td>
+ <td ALIGN=CENTER>CW10.6<br/>IAR7.5<br/>uV4.7</td>
+ </tr>
+<tr>
+ <td class="fnet_td_grey">MK70FN1M (Kinetis)</td>
+ <td ALIGN=CENTER>CW10.6<br/>IAR7.5</td>
+ <td ALIGN=CENTER>CW10.6<br/>IAR7.5</td>
+ <td ALIGN=CENTER>x</td>
+ </tr>
+<tr>
+ <td class="fnet_td_grey">MK60FN1M (Kinetis)</td>
+ <td ALIGN=CENTER>CW10.6<br/>IAR7.5</td>
+ <td ALIGN=CENTER>CW10.6<br/>IAR7.5</td>
+ <td ALIGN=CENTER>x</td>
+ </tr>
+<tr>
+ <td class="fnet_td_grey">MPC5668G (Qorriva)</td>
+ <td ALIGN=CENTER>CW2.10</td>
+ <td ALIGN=CENTER>x</td>
+ <td ALIGN=CENTER>CW2.10</td>
+ </tr>
+</table>
+
+@note All demo applications support IPv4 (by default) or IPv6. Both IPv4 and IPv6 are enabled, where it is possible (cause of memory constrains), for Shell and Benchmark applications. It can be changed via @ref FNET_CFG_IP4 and @ref FNET_CFG_IP6 parameter, in the fnet_user_config.h application file.
+*/
+
+//***********************************************************************
+//************************** QUICK_START ********************************
+//***********************************************************************
+
+
+//********************************************************************
+//************************* Shell Demo Quick Start *******************
+//********************************************************************
+
+/*!
+* @page quick_start_shell FNET Shell Demo Quick Start
+
+@section fnet_requirements_shell Requirements
+
+Tools used during this quick start:
+- Supported IDE.
+- Terminal program (Tera Term Pro v4.63 http://ttssh2.sourceforge.jp).
+- WEB browser.
+- Telnet client (PuTTYtel v0.62 http://www.chiark.greenend.org.uk/~sgtatham/putty/).
+- FNET project source code, coming with this document.
+	
+
+@section fnet_stepbystep_shell Step by step
+
+Follow these steps to run the FNET Shell demo application: 
+- Prepare your evaluation board according to your board User Manual.
+- Use the RS-232 male/female DB-9 serial cable to connect your PC (through COM port) to the evaluation board.
+- Connect the evaluation board to an Ethernet network.
+- Power the board up. 
+- Invoke the terminal program on the PC to which the evaluation board is connected and configure it to:
+      - Bits per second: 115200.
+      - Data bits: 8.
+      - Parity: none.
+      - Stop bits: 1.
+      - Flow control: None. 	
+	@n @n
+      @image html fnet_serial_setup.jpg "Serial port setup"
+
+- Launch the Freescale CodeWarrior IDE.
+- Open the project:
+@verbatim CWCF7.2:fnet\fnet_demos\<cpu_name>\shell\cwcf7.2\<evb_name>_shell.mcp
+CWMPC2.10:fnet\fnet_demos\<cpu_name>\shell\cwmpcf2.10\<evb_name>_shell.mcp 
+CW10.x:fnet\fnet_demos\<cpu_name>\shell\cw10.x\<evb_name>_shell\.project
+IAR: fnet\fnet_demos\<cpu_name>\shell\iar<x>\<evb_name>_shell.ewp
+UV: fnet\fnet_demos\<cpu_name>\shell\uv<x>\<evb_name>_shell.uvproj
+@endverbatim 
+
+- In the IDE, choose a project target you want to compile.
+      - RAM-based targets are easy to load and debug but do not enable standalone operation after board is powered down.
+      - Flash-based targets need to be loaded using the Flash Programmer tool before debugging. Application should be ready for standalone operation.
+- Compile, load (or flash) the application to the board and run the project.
+      - Be aware that you may need to use Flash Programmer tool if you use Flash-based build targets.
+- In your terminal program window you should see the FNET application Shell welcome message:
+@verbatim
+Parameters loaded from Flash.
+
+************************************************
+ FNET Shell Application
+************************************************
+ FNET TCP/IP Stack for MK64FN1
+ Version 2.7.0
+ Built Nov 19 2014 at 14:04:02 by IAR
+************************************************
+ Interface        : eth0
+ IPv4 Address     : 192.168.0.22 <manual>
+ IPv6 Address     : fe80::204:9fff:fe14:428 <autoconfigurable> ScopeID:1
+ IPv4 Subnet mask : 255.255.255.0
+ IPv4 Gateway     : 0.0.0.0
+ IPv4 DNS         : 0.0.0.0
+ MAC Address      : 00:04:9f:14:04:28
+ MTU              : 1500
+ Link Status      : connected
+ Free Heap        : 30288
+ HTTP Server      : disabled
+ DHCP Client      : disabled
+ TELNET Server    : disabled
+ LLMNR Server     : disabled
+
+ Enter 'help' for command list.
+************************************************ 
+
+SHELL> 
+@endverbatim
+- There is possibility to start any service automatically by setting the @c FAPP_CFG_STARTUP_SCRIPT_ENABLED parameter to @c 1 and setting the FAPP_CFG_STARTUP_SCRIPT parameter to command line string. For example the demo application start automatically LLMNR server, which allows name resolution for hosts on the same local link. 
+@verbatim
+Startup script: llmnr
+************************************************
+ LLMNR server started.
+ Host Name        : fnet
+************************************************
+@endverbatim
+So you can use "fnet" instead of IP address to find this node on local network. 
+
+- The Main Shell is now ready to accept user commands. Try @c help command to display a list of all the commands available within the shell:
+@verbatim
+SHELL> help
+>   help                                 - Display this help message
+>    set [<parameter> <value>]           - Set parameter
+>    get [<parameter>]                   - Get parameters
+>   info                                 - Show interface info
+>   stat                                 - Show interface statistics
+>   dhcp [release]                       - Start DHCP client
+>   http [release]                       - Start HTTP Server
+>    exp                                 - File Explorer submenu...
+> telnet [release]                       - Start Telnet Server
+>    dns <host name> 4|6 [<server ip>]   - Resolve IPv4|6 address of <host name>
+>  llmnr [release]                       - Start LLMNR Server
+>   save                                 - Save parameters to the FLASH
+>  reset                                 - Reset the board
+>   ping [-c <count>][-i <seconds>]
+        [-p <pattern>][-s <size>][-h <hoplimit/ttl>] <ip>- Send ECHO requests
+SHELL>
+@endverbatim
+- All computers, connected to an Ethernet network running the IPv4 protocol, need several network-specific parameters:
+	- IPv4 address for the system;
+	- IPv4 address of the Gateway for non-local traffic;
+	- IPv4 network mask (netmask) for the system to distinguish between local or non-local traffic;
+- You are able to change the default network parameters manually:
+	- By using Shell commands: 
+@verbatim
+set address <board IP address>
+set gateway <gateway IP address>
+set netmask <netmask IP address>
+set mac <ethernet MAC address>
+@endverbatim
+	- By changing the default values in the @a fnet_user_config.h source file. @n
+	  Your local system administrator is able to assign a unique IPv4 address for the board, and also provide you with the IPv4 addresses 
+	  of the gateway and the netmask.
+- You can also start the DHCP IPv4 client to obtain the address parameters automatically from your network DHCP server:
+@verbatim
+SHELL> dhcp
+Press [Ctr+C] to cancel.
+Sending DHCP discover...
+
+************************************************
+ DHCP has updated/renewed parameters:
+************************************************
+ Interface        : eth0
+ IP address       : 10.171.88.141
+ Subnet mask      : 255.255.254.0
+ Gateway          : 10.171.88.254
+ DNS              : 10.171.88.254
+SHELL>
+@endverbatim
+- You may enter the @c save command to save the all run-time parameters to non-volatile memory (it is located in the last erase page of the on-chip flash memory).
+@verbatim
+SHELL> save
+Parameters saved
+SHELL>
+@endverbatim
+NOTE: The @c save command does not save the @c ip parameter in case it was allocated by a DHCP server to avoid IPv4 address conflict during the system startup.
+- You should now be able to "ping" the board from one of your workstations. The ping program is a very useful diagnostic tool used to check that the board`s IP information is properly configured. 
+- The ping tool can be used from the command-line environment on the host PC: 
+@verbatim ping <your_board_IP_adress> @endverbatim 
+	By default the ping routine will send a test ICMP frame to the board four times and will write a summary message on the screen. If everything works as expected, you should see an output similar to this:
+@verbatim
+C:\Temp>ping 192.168.0.22
+
+Pinging 192.168.0.22 with 32 bytes of data:
+Reply from 192.168.0.22: bytes=32 time=10ms TTL=64
+Reply from 192.168.0.22: bytes=32 time<1ms TTL=64
+Reply from 192.168.0.22: bytes=32 time<1ms TTL=64
+Reply from 192.168.0.22: bytes=32 time<1ms TTL=64
+
+Ping statistics for 192.168.0.22:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 10ms, Average = 2ms
+@endverbatim
+@verbatim
+C:\Temp>ping fe80::204:9fff:fe12:4938%19
+
+Pinging fe80::204:9fff:fe12:4938%19 with 32 bytes of data:
+Reply from fe80::204:9fff:fe12:4938%19: time<1ms
+Reply from fe80::204:9fff:fe12:4938%19: time<1ms
+Reply from fe80::204:9fff:fe12:4938%19: time<1ms
+Reply from fe80::204:9fff:fe12:4938%19: time<1ms
+
+Ping statistics for fe80::204:9fff:fe12:4938%19:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+@endverbatim
+- The PING application can be started from the board, by typing the command @c ping into your terminal program window. @n
+In your terminal program window you should see: 
+@verbatim
+SHELL> ping 192.168.0.5
+************************************************
+ PING
+************************************************
+ Remote IP addr   : 192.168.0.5
+ Message Size     : 63
+ Num. of messages : 4
+ Pattern          : 0
+ Hoplimit (TTL)   : 64
+Press [Ctr+C] to cancel.
+************************************************
+Reply from 192.168.0.5
+Reply from 192.168.0.5
+Reply from 192.168.0.5
+Reply from 192.168.0.5
+SHELL>@endverbatim
+
+- In the next step, you can run the HTTP Server on the board, by typing the command @c http into your terminal program window. @n
+In your terminal program window you should see: 
+@verbatim
+SHELL> http
+************************************************
+ HTTP server started.
+ IPv4 Address     : 192.168.0.22
+ IPv6 Address     : fe80::204:9fff:fe12:4938
+************************************************
+SHELL>
+@endverbatim
+- Then run your Web browser and navigate to the server address (the address you have assigned to the system or obtained from the DHCP server): 
+@verbatim
+http:// 192.168.0.22
+@endverbatim
+or
+@verbatim
+http:// [fe80::204:9fff:fe12:4938]
+@endverbatim
+
+- You should see a Web page served by the FNET HTTP server: @n 
+@n
+@n
+@image html fnet_quick_start_web.jpg "Demo Web Page"
+
+- Also you can run the Telnet Server on the board, by typing the command @c telnet into your terminal program window. @n
+In your terminal program window you should see: 
+@verbatim
+SHELL> telnet
+************************************************
+ Telnet Server started.
+ IPv4 Address     : 192.168.0.22
+ IPv6 Address     : fe80::204:9fff:fe12:4938
+************************************************
+SHELL>
+@endverbatim
+- Then run your Telnet client. Start PuTTYtel application and enter the Telnet server IP address (the address you have assigned to the system or obtained from the DHCP server): 
+@n
+@n
+@image html fnet_telnet_config.jpg "PuTTYtel Configuration"
+- Press [Open] to open a telnet session. In your telnet program window you should see the FNET application Shell welcome message:
+@n
+@n
+@image html fnet_telnet_session.jpg "Telnet session"
+- If you need to get know an IP address of the domain/host name (like www.google.com, www.freescale.com or others), you can use DNS client/resolver, by typing the command @c dns @c \<host_name\> into your command shell window. @n
+For example, if you want to get know the IPv4 address of www.google.com, enter @c dns @c www.google.com in your terminal program window:
+@verbatim
+SHELL> dns www.google.com
+************************************************
+ Resolving        : www.google.com
+ DNS Server       : 10.171.88.254
+Press [Ctr+C] to cancel.
+************************************************
+ Resolved address : 209.85.148.106
+SHELL>
+@endverbatim
+@note
+Be sure that the @c dns parameter is set to correct IPv4 address of the DNS server on your network. It can be set manually by the @c set command or can be obtained automatically by the DHCP IPv4 client service. 
+
+*/
+
+
+
+
+
+
+
+
+
+
+//********************************************************************
+//************************* Bootloader Quick Start *******************
+//********************************************************************
+/*!
+* @page quick_start_boot FNET Bootloader Quick Start
+
+@section fnet_requirements_boot Requirements
+
+Tools used during this quick start:
+- Supported IDE.
+- Terminal program (Tera Term Pro version 4.63 http://ttssh2.sourceforge.jp/).
+- TFTP Server and Client (Tftpd version 4.0 http://tftpd32.jounin.net/).
+- FNET project source code, coming with this document.
+	
+
+@section fnet_stepbystep_boot Step by step
+
+Follow these steps to run the FNET Bootloader: 
+- Prepare your evaluation board according to your board User Manual.
+- Use the RS-232 male/female DB-9 serial cable to connect your PC (through COM port) to the evaluation board.
+- Connect the evaluation board to an Ethernet network. 
+- Power the board up. 
+- Invoke the terminal program on the PC to which the evaluation board is connected and configure it to:
+      - Bits per second: 115200.
+      - Data bits: 8.
+      - Parity: none.
+      - Stop bits: 1.
+      - Flow control: None.
+	@n @n
+      @image html fnet_serial_setup.jpg "Serial port setup"
+- Start TFTP Server: 
+      - Start TFTP Server application. Go to @c [Start]->[Programs]->[Tftpd32]->[Tftpd32]
+      - Press the [Settings] button and set the TFTP server base directory (for example @c C:@\TFTP-Root):  
+	@n @n
+      @image html fnet_tftp_setup.jpg "Tftpd32 Settings"
+      - Press [OK]:
+       @n @n
+      @image html fnet_tftp_start.jpg "Tftpd32"
+@n 
+
+@par Prepare the example-application image file that is to be downloaded by the TFTP Bootloader:
+
+- Open the project:
+@verbatim CW7.2:fnet\fnet_demos\<cpu_name>\shell_boot\cw7.2\<evb_name>shell_boot.mcp
+CW10.x:fnet\fnet_demos\<cpu_name>\shell_boot\cw10.<x>\<evb_name>shell_boot\.project
+IAR: fnet\fnet_demos\<cpu_name>\shell_boot\iar<x>\<evb_name>shell_boot.ewp
+UV: fnet\fnet_demos\<cpu_name>\shell_boot\uv<x>\<evb_name>shell_boot.uvproj
+@endverbatim 
+- In the IDE choose the @a Int. @a Flash @a Release target.
+- Compile the project.
+- The @a shell_boot_intflash.elf.S19 file should appear in directory with binaries. @n Copy this S-record file to the TFTP Server Base Directory (by default, it is @c C:@\TFTP-Root).
+- Close the project.
+       
+@par Prepare the FNET TFTP Bootloader:
+
+- Open the project:
+@verbatim CW7.2:fnet\fnet_demos\<cpu_name>\boot\cw7.2\<evb_name>_boot.mcp
+CW10.2:fnet\fnet_demos\<cpu_name>\boot\cw10.2\<evb_name>_boot\.project
+IAR: fnet\fnet_demos\<cpu_name>\boot\iar<x>\<evb_name>_boot.ewp
+UV: fnet\fnet_demos\<cpu_name>\boot\uv<x>\<evb_name>_boot.uvproj
+@endverbatim 
+- In the IDE choose @a Int. @a Flash @a Release target.
+- Compile the project.
+- Flash the program to the board. 
+- In case you are using CW7.2:
+	- Start the Flash Programmer. 
+	- In the CW main menu select [Tools]->[Flash Programmer].
+	- Load the Flash Programmer settings for your board. Press the [Load Settings...] button and open the @verbatim fnet\fnet_demos\<cpu_name>\shell_boot\cw<x>\cfg\<cpu_name>_INTFLASH.xml @endverbatim file.
+@n @n
+@image html fnet_flashing.jpg "Flash Programmer"
+       - Erase internal Flash memory. Go to the [Erase/Blank Check] page and press the @c [Erase] button.
+       - Flash the program to the board. Go to the [Program/Verify] page and press the @c [Program] button.
+- Now the TFTP Bootloader is ready to be used. @n You may update or backup the firmware with help of @ref fnet_stepbystep_tftp_client or @ref fnet_stepbystep_tftp_server.
+
+@subsection fnet_stepbystep_tftp_client TFTP firmware client
+
+
+- Reset the board, press the RESET button on the board.
+- In your terminal program window you should see the FNET Bootloader welcome message:
+@verbatim
+Parameters loaded from Flash.
+
+*******************************************
+ FNET Bootloader
+************************************************
+ FNET TCP/IP Stack for MCF52259
+ Version 2.0.0
+ Built Oct 12 2012 at 15:00:04 by CW
+************************************************
+ Interface        : eth0
+ IPv4 Address     : 192.168.0.22 <manual>
+ IPv4 Subnet mask : 255.255.255.0
+ IPv4 Gateway     : 0.0.0.0
+ MAC Address      : 00:04:9f:14:59:56
+ Link Status      : connected
+ TX Packets       : 2
+ RX Packets       : 0
+ Free Heap        : 14128
+ DHCP Client      : disabled
+ TFTP Server      : disabled
+
+ Enter 'help' for command list.
+************************************************
+
+Startup script: tftps
+************************************************
+ TFTP Server started.
+ IPv4 Address     : 192.168.0.22
+************************************************
+BOOT>
+@endverbatim
+
+- The Bootloader is now ready to accept user commands. Enter the @c help command to display a list of all commands available within the shell of the Bootloader:
+@verbatim
+BOOT> help
+>   help                                 - Display this help message
+>    set [<parameter> <value>]           - Set parameter
+>    get [<parameter>]                   - Get parameters
+>   info                                 - Show detailed status
+>   dhcp [release]                       - Start DHCP client
+>   tftp [<image name>[<server ip>[<type>]]]- TFTP firmware loader
+> tftpup [<image name>[<server ip>[<type>]]]- TFTP firmware uploader
+>  tftps [release]                       - TFTP firmware server
+>    mem                                 - Show memory map
+>  erase all|[0x<erase address> <bytes>] - Erase flash memory
+>   save                                 - Save parameters to the FLASH
+>     go [0x<address>]                   - Start application at address
+>  reset                                 - Reset the board
+BOOT>
+@endverbatim
+
+- Check Bootloader parameters. Enter the @c get command to see the parameter values:
+@verbatim
+get
+ ip      : 192.168.0.22
+ netmask : 255.255.255.0
+ gateway : 0.0.0.0
+ mac     : 00:04:9f:14:59:56
+ boot    : stop
+ delay   : 5
+ script  : dhcp; erase all; tftp; set boot go; save; go
+ raw     : 0x0
+ tftp    : 192.168.0.5
+ image   : shell_boot_intflash.elf.S19
+ type    : srec
+ go      : 0x0
+BOOT>
+@endverbatim
+
+- To change the default parameters the @c set command should be used. To understand its syntax, enter the @c set command without parameters:
+@verbatim
+BOOT> set
+Valid 'set' options:
+ ip      : <board IP address>
+ netmask : <netmask IP address>
+ gateway : <gateway IP address>
+ mac     : <ethernet address>
+ boot    : <stop|go|script>
+ delay   : <seconds>
+ script  : <command script>
+ raw     : 0x<address>
+ tftp    : <TFTP server IP address>
+ image   : <Image-file name to load with TFTP>
+ type    : <srec|bin|raw>
+ go      : 0x<entry point address>
+BOOT> 
+@endverbatim
+
+- Brief description of the Bootloader parameters:
+	- @c ip : Default IPv4 address of the board.
+	- @c netmask : Default IPv4 Network netmask. 
+	- @c gateway : Default IPv4 address of the gateway.
+	- @c mac :  Ethernet MAC address.
+	- @c boot :  Bootloader booting modes:
+		- @c stop = the bootloader stops at the shell prompt.
+		- @c go = the bootloader jumps to the entry point address defined by the @c go parameter.
+		- @c script = the bootloder executes a command script located in the @c script parameter.
+	- @c delay : After the bootup, the bootloader will wait specified number of seconds before it executes the boot-mode defined by the @c boot parameter. During this time a countdown is printed, which can be interrupted by pressing any key. It is ignored for the @c stop booting mode.
+	- @c script : The command script is automatically executed when the @c boot parameter is set to the @c script value and the initial countdown is not interrupted. This script may contain any command supported by the application shell. The commands must be split by semicolon operator.
+	- @c go : Default entry point address to start execution at.  It is used by the bootloader in the @c go booting mode as the default entry point. Also it is used as the default address for the @c go shell command if no address is provided as an argument. @n
+NOTE: This parameter is updated by the TFTP loader automatically if the type parameter is set to the @c srec value. The S-record file format contains the entry point information.
+	- @c tftp : This is the default TFTP server IP address to be used for network download if no address is provided for the @c tftp shell command.
+	- @c image : This is the default file name to download if no file name is provided for the @c tftp shell command.
+	- @c type : Type of the file to download by the TFTP loader:
+		- @c srec = S-record file (default type). This file format contains both the address data as well as the entry point information.
+		- @c hex = Intel HEX file. This file format does not contain the entry point, so @c go parameter must be set additionally.
+		- @c bin = CodeWarrior binary file. This file format does not contain the entry point, so @c go parameter must be set additionally
+		- @c raw = Raw binary file. For this type of file, the @c raw parameter (load address) must be set before the TFTP loader start.
+	- @c raw : Load address for a raw-binary file used by the TFTP loader. It's used only if the type parameter is set to the @c raw value.
+- Check if the parameter values are set correctly to suit your needs. Most probably, you will have a different TFTP server IP address. For example, to change it to the 10.171.89.219 address, enter:
+@verbatim
+BOOT> set tftp 10.171.88.219
+ tftp    : 10.171.88.219
+BOOT>
+@endverbatim
+
+- For example, to change the @c script parameter (use the backslash-escape symbol before each semicolon):
+@verbatim
+BOOT> set script 'erase all\; tftp\; set boot go\; save\; reset'
+ script  : erase all; tftp; set boot go; save; reset
+BOOT>
+@endverbatim
+
+- When all parameters are set correctly for your system, set the @c boot parameter to the @c script value. 
+@verbatim
+BOOT> set boot script
+ boot    : script
+BOOT>
+@endverbatim
+
+- Enter the @c save command to save all run-time parameters to a non-volatile memory (it is located in the last erase page of the on-chip flash memory).
+@verbatim
+BOOT> save
+Parameters saved
+BOOT>
+@endverbatim
+NOTE: The @c save command does not save the @c ip parameter in case it was allocated by a DHCP IPv4 server to avoid IPv4 address conflict during the system startup.
+
+- Reset the board, press the RESET button on the board. On reset, the Bootloader will start in @c script booting mode.@n
+Let`s analyze the script parameter value of the example provided above:
+@verbatim
+dhcp; erase all; tftp; set boot go; save; go
+@endverbatim
+This script has the following steps:
+    -# @c dhcp = starts DHCP client service and tries to update the IPv4 parameters (@c ip, @c gateway and @c netmask) from DHCP server. If the DHCP service will fail to retrieve the IP parameter from a DHCP server, the bootloder will continue with the old IP settings.
+    -# @c erase @c all = erases all Flash memory blocks. It skips the reserved memory sections, which are the first 48 Kbytes (reserved for the Bootloader) and the last page (reserved for the bootloder parameters). To see the memory map enter the @c mem command: @verbatim
+BOOT> mem
+
+   Memory type       Start         End
+  ----------------------------------------
+  FLASH            0x00000000   0x0007FFFF
+  SRAM             0x20000000   0x2000FFFF
+
+      Reserved       Start         End
+  ----------------------------------------
+  FNET ROM         0x00000000   0x0000BFFF
+  FNET Params      0x0007F000   0x0007FFFF
+
+BOOT>
+@endverbatim
+    -# tftp = downloads the image-file (the file name defined by the @c image parameter) from the TFTP server (the server ip address defined by the @c tftp parameter), loads it to the Flash memory, checks if the written data are correct. Also, it checks a checksum and updates the @c go parameter if the type is set to the @c srec value. @n If the TFTP loading is failed, the bootloader will print an error message, stop script execution, and stay in the bootloader shell waiting for user actions (reset or parameters change).
+    -# @c set @c boot @c go = Changes the bootloder booting mode to the @c go mode.
+    -# @c save = Saves all run-time parameters to persistent memory to be available during the next startup. @n
+        NOTE: The @c save command does not save the @c ip parameter in case it was allocated by a DHCP server to avoid IP address conflict during the system startup.
+    -# go = Jumps to the application entry-point. As we use S-record image file the entry-point @c go parameter is updated automatically.
+
+- On reset, in the terminal window you should see:
+@verbatim
+Parameters loaded from Flash.
+
+************************************************
+ FNET Bootloader
+************************************************
+ FNET TCP/IP Stack for MCF52259
+ Version 2.0.0
+ Built Oct 12 2012 at 15:00:04 by CW
+************************************************
+ Interface        : eth0
+ IPv4 Address     : 192.168.0.22 <manual>
+ IPv4 Subnet mask : 255.255.255.0
+ IPv4 Gateway     : 0.0.0.0
+ MAC Address      : 00:04:9f:14:59:56
+ Link Status      : connected
+ TX Packets       : 3
+ RX Packets       : 0
+ Free Heap        : 14128
+ DHCP Client      : disabled
+ TFTP Server      : disabled
+
+ Enter 'help' for command list.
+************************************************
+Press any key to stop (script):   0
+
+dhcp; erase all; tftp; set boot go; save; go
+Press [Ctr+C] to cancel.
+Sending DHCP discover...
+
+************************************************
+ DHCP has updated/renewed parameters:
+************************************************
+ Interface    : eth0
+ IP address   : 10.171.88.220
+ Subnet mask  : 255.255.254.0
+ Gateway      : 10.171.88.254
+
+Cancelled
+Erasing...
+ 0x00000000 to 0x0000bfff skipped
+ 0x0000c000 to 0x0007efff erased
+ 0x0007f000 to 0x0007ffff skipped
+Press [Ctr+C] to cancel.
+TFTP downloading 'shell_boot_intflash.elf.S19'c) from 192.168.0.5 : -
+Entry point set to 0x00019d14
+
+TFTP completed (270204 bytes)
+ boot    : go
+Parameters saved
+go 0x00019d14
+
+
+Parameters loaded from Flash.
+
+************************************************
+ FNET Shell Demo (bootloader aware)
+************************************************
+ FNET TCP/IP Stack for MCF52259
+ Version 2.0.0
+ Built Oct  5 2012 at 13:52:57 by CW
+************************************************
+ Interface        : eth0
+ IPv4 Address     : 192.168.0.22 <manual>
+ IPv6 Address     : fe80::204:9fff:fe13:5250 <autoconfigurable>
+ IPv4 Subnet mask : 255.255.255.0
+ IPv4 Gateway     : 0.0.0.0
+ IPv4 DNS         : 0.0.0.0
+ MAC Address      : 00:04:9f:14:59:56
+ Link Status      : connected
+ TX Packets       : 5
+ RX Packets       : 0
+ Free Heap        : 30320
+ HTTP Server      : disabled
+ DHCP Client      : disabled
+ TELNET Server    : disabled
+
+ Enter 'help' for command list.
+************************************************
+
+SHELLB> 
+@endverbatim
+- Now the Bootloader is in the @c go mode and every time on the system reset it will start the loaded application automatically.
+
+@note
+- The @c tftpup command is useful for the firmware backup before it gets overwritten in the Flash memory. This feature enables to restore the system in case the new firmware has issues. @n
+This command uploads content of the on-chip Flash memory, except FNET Bootloader reserved blocks, to the TFTP server. The TFTP server IP address is defined by the @c tftp parameter.  The image-file name on the remote TFTP server is defined by the @c image parameter. Format of the created file (S-record, CodeWarrior binary or raw binary) is defined by @c type parameter. 
+- The Bootloder is able to run in IPv6 mode, by disabling IPv4 and enabling IPv6 in @c fnet_user_config.h.
+
+@subsection fnet_stepbystep_tftp_server TFTP firmware server
+The TFTP server is started automatically during the bootloader start-up in normal @c boot mode. It allows to update or backup the firmware from a remote TFTP client running on host PC without the serial-console command line interface. Format of the image file (S-record, CodeWarrior binary or raw binary) is defined by @c type parameter. 
+
+- You may check TFTP server status, enter @c info command:
+@verbatim
+BOOT> info
+ Interface        : eth0
+ IPv4 Address     : 192.168.0.22 <manual>
+ IPv4 Subnet mask : 255.255.255.0
+ IPv4 Gateway     : 0.0.0.0
+ MAC Address      : 00:04:9F:14:38:50
+ Link status      : connected
+ TX Packets       : 5
+ RX Packets       : 144
+ DHCP client      : disabled
+ TFTP server      : enabled
+BOOT> 
+@endverbatim
+ 
+- If the TFTP server is stopped, you may enter the @c tftps command to start it:
+@verbatim
+BOOT> tftps
+************************************************
+ TFTP Server started.
+ IPv4 Address     : 192.168.0.22
+************************************************
+@endverbatim
+
+
+- Start TFTP client on your PC: 
+      - Start TFTP Client application. Go to @c [Start]->[Programs]->[Tftpd32]->[Tftpd32]
+      - Press the [Settings] button and set the "TFTP client" check-box  
+	@n @n
+      @image html fnet_tftp_cln_setup.jpg "Tftpd32 Settings"
+      - Press [OK]:
+
+- You may now update firmware:
+	- Be sure that the Bootloader TFTP server is started.
+	- Set parameters of the TFTP Client:
+		- @b Host: the IP address of your evaluation board.
+		- @b Port: it should be set to the standard TFTP server port number @c 69.
+		- @b Local @b File: the full path of the image file that will be uploaded to the board.
+		- @b Remote @b File: set to the value of the bootloader-parameter @c image. By default it is set to the @a shell_boot_intflash.elf.S19 value.
+		- @b Block size: set to @c Default or @c 512.
+	- Start firmware update by pressing the [Put] button.
+       @n @n
+      @image html fnet_tftp_cln_put.jpg "Tftpd32 TFTP client"
+	- The TFTP server receives the write request, checks if the requested file name corresponds to the value of the @c image parameter, starts the erasing of the flash memory, downloads and writes image file to the flash memory, updates the @c go parameter to the new entry point, sets the @c boot parameter to the @c go value, saves changed parameters to the flash, and finally starts application. In the terminal window you should see:
+@verbatim
+BOOT> TFTP downloading 'shell_boot_intflash.elf.S19' (srec) from 192.168.0.5:
+Erasing...
+ 0x00000000 to 0x0000BFFF skipped
+ 0x0000C000 to 0x0007EFFF erased
+ 0x0007F000 to 0x0007FFFF skipped
+BOOT>
+Entry point set to 0x00019638
+
+TFTP completed (234244 bytes)
+ boot    : go
+Parameters saved
+go 0x00019638
+
+
+Parameters loaded from Flash.
+
+************************************************
+ FNET Shell Demo (bootloader aware)
+************************************************
+ FNET TCP/IP Stack for MCF52259
+ Version 2.0.0
+ Built Oct  5 2012 at 13:52:57 by CW
+************************************************
+ Interface        : eth0
+ IPv4 Address     : 192.168.0.22 <manual>
+ IPv6 Address     : fe80::204:9fff:fe13:5250 <autoconfigurable>
+ IPv4 Subnet mask : 255.255.255.0
+ IPv4 Gateway     : 0.0.0.0
+ IPv4 DNS         : 0.0.0.0
+ MAC Address      : 00:04:9f:14:59:56
+ Link Status      : connected
+ TX Packets       : 5
+ RX Packets       : 0
+ Free Heap        : 30320
+ HTTP Server      : disabled
+ DHCP Client      : disabled
+ TELNET Server    : disabled
+
+ Enter 'help' for command list.
+************************************************
+
+SHELLB> 
+@endverbatim
+	- Finally you should receive message about successfully transmitted image file:
+	       @n @n
+      @image html fnet_tftp_cln_put_end.jpg "File was uploaded"
+- Also you may backup the firmware. The TFTP firmware server can upload content of the on-chip Flash memory, except FNET Bootloader reserved blocks, to a TFTP client:
+	- Be sure that the TFTP server is enabled:
+	@verbatim
+BOOT> info
+ Interface        : eth0
+ IP address       : 10.171.88.22 (set manually)
+ Subnet mask      : 255.255.255.0
+ Gateway          : 10.171.88.254
+ MAC address      : 00:04:9F:11:20:42
+ Link status      : connected
+ TX Packets       : 4
+ RX Packets       : 128
+ DHCP client      : disabled
+ TFTP server      : enabled
+BOOT>
+	@endverbatim
+	- Set parameters of the TFTP Client:
+		- @b Host : the IP address of your evaluation board.
+		- @b Port : should be set to the standard TFTP server port number @c 69.
+		- @b Local File : the file that is used for firmware backup (for example backup.S19).
+		- @b Remote File : set to the value of the bootloader-parameter @c image. By default it is set to the @a shell_boot_intflash.elf.S19 value.
+		- @b Block @b size : set to @c Default or @c 512.
+	- Start firmware download by pressing the [Get] button.
+	@n @n
+      @image html fnet_tftp_cln_get.jpg "Tftpd32 TFTP client"
+
+	- The TFTP server receives the read request, checks if the requested file name corresponds to the value of the @c image parameter, generates image file and uploads it to the remote TFTP client. In the terminal window you should see:
+@verbatim
+BOOT> TFTP uploading 'shell_boot_intflash.elf.S19' (srec) to 10.198.0.5:
+
+TFTP completed (1211274 bytes)
+@endverbatim
+	- Finally you should receive message about successfully transmitted image file :
+	       @n @n
+      @image html fnet_tftp_cln_get_end.jpg "File was downloaded"
+@note
+The Bootloder is able to run in IPv6 mode, by disabling IPv4 and enabling IPv6 in fnet_user_config.h.
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//********************************************************************
+//************************* Benchmark Quick Start *******************
+//********************************************************************
+/*!
+* @page quick_start_benchmark FNET Throughput Benchmark Quick Start
+
+FNET project comes with the throughput benchmark tool for measuring TCP and UDP performance between two systems. It`s also possible to use it for stress tests.@n
+The throughput benchmark uses the transmitter and receiver application. The responsibility of the transmitter is to push packets to the network as soon as possible while the responsibility of the receiver is to receive packets as soon as possible. Receiver is acting as a server and transmitter is acting as a client.
+
+A user is able to specify a used protocol (TCP or UDP), message size, number of messages to be sent, local/remote IP address, listening/remote port, message interval (in microseconds), thread priority and other parameters. @n
+
+@section fnet_requirements_benchmark Requirements
+
+Tools used during this quick start:
+- Supported IDE.
+- Terminal program (Tera Term Pro version 4.63 http://ttssh2.sourceforge.jp/).
+- FNET project source code, coming with this document.
+- FBENCH Throughput Benchmark tool, coming with this FNET or from http://fbench.sf.net
+	
+
+@section fnet_stepbystep_benchmark Step by step
+
+Follow these steps to run the FNET Throughput benchmark: 
+- Prepare your evaluation board according to your board User Manual.
+- Use the RS-232 male/female DB-9 serial cable to connect your PC (through COM port) to the evaluation board.
+- Connect the evaluation board to an Ethernet network. 
+- Power the board up. 
+- Invoke the terminal program on the PC to which the evaluation board is connected and configure it to:
+      - Bits per second: 115200.
+      - Data bits: 8.
+      - Parity: none.
+      - Stop bits: 1.
+      - Flow control: None.
+	@n @n
+      @image html fnet_serial_setup.jpg "Serial port setup"
+- Start FBENCH Throughput Benchmark tool. You can find it in the:
+@verbatim 
+fnet\fnet_tools\fbench.exe 
+@endverbatim 
+or on http://fbench.sf.net 
+@n @n
+      @image html fnet_bench.jpg "FBENCH Throughput Benchmark tool"
+
+      
+
+@par Prepare the FNET Throughput Benchmark application:
+
+- Open the project:
+@verbatim CW7.2:fnet\fnet_demos\<cpu_name>\benchmark\cw7.2\<evb_name>_bench.mcp
+CW10.x:fnet\fnet_demos\<cpu_name>\benchmark\cw10.<x>\<evb_name>_bench\.project
+IAR: fnet\fnet_demos\<cpu_name>\benchmark\iar<x>\<evb_name>_bench.ewp
+UV: fnet\fnet_demos\<cpu_name>\benchmark\uv<x>\<evb_name>_bench.uvproj
+@endverbatim 
+- In the IDE choose the @a Int. @a Flash @a Release target.
+- Compile the project.
+- Flash the program to the board. 
+- Now the Benchmark application is ready to be used. 
+- Reset the board, press the RESET button on the board.
+- In your terminal program window you should see the FNET Benchmark welcome message:
+@verbatim
+Parameters loaded from Flash.
+
+************************************************
+ FNET Throughput Benchmark
+************************************************
+ FNET TCP/IP Stack for MCF52259
+ Version 2.0.0
+ Built Oct 12 2012 at 15:49:35 by CW
+************************************************
+ Interface        : eth0
+ IPv4 Address     : 192.168.0.22 <manual>
+ IPv6 Address     : fe80::204:9fff:fe15:4931 <autoconfigurable>
+ IPv4 Subnet mask : 255.255.255.0
+ IPv4 Gateway     : 0.0.0.0
+ MAC Address      : 00:04:9f:15:49:31
+ Link Status      : connected
+ TX Packets       : 4
+ RX Packets       : 0
+ Free Heap        : 36464
+ DHCP Client      : disabled
+
+ Enter 'help' for command list.
+************************************************
+
+BENCH> 
+@endverbatim
+
+- The Benchmark application is now ready to accept user commands. Enter the @c help command to display a list of all commands available within the shell of the Benchmark application:
+@verbatim
+BENCH> help
+>   help                                 - Display this help message
+>    set [<parameter> <value>]           - Set parameter
+>    get [<parameter>]                   - Get parameters
+>   info                                 - Show detailed status
+>   dhcp [release]                       - Start DHCP client
+>   save                                 - Save parameters to the FLASH
+>  reset                                 - Reset the board
+>benchrx [tcp|udp]                       - Receiver Benchmark
+>benchtx <receiver IP>[tcp|udp[<message size>
+        [<number of messages>[<number of iterations>]]]- Transmitter Benchmark
+BENCH>
+@endverbatim
+
+
+
+@subsection fnet_stepbystep_bench_rx Receiver Benchmark
+The Receiver Benchmark command has the following syntax:
+@verbatim
+benchrx [tcp|udp]
+@endverbatim
+- TCP Receiver test:
+	- In the terminal window enter the @c benchrx command:@verbatim
+BENCH> benchrx
+************************************************
+ TCP RX Test
+************************************************
+ IPv4 Address     : 192.168.0.22
+ IPv6 Address     : fe80::204:9fff:fe15:4931
+ Local Port       : 7007
+Press [Ctr+C] to cancel.
+************************************************
+Waiting. 
+@endverbatim
+	- In the Benchmark tool choose the TCP protocol and set the remote IP address that is assigned to your board. Changing of other parameters is optional. After parameters are set, press the [Connect/Send] button. @n @n
+      @image html fnet_bench_rx_tcp.jpg "TCP RX Test"
+
+	- In your terminal program window you should see:  
+@verbatim
+Receiving from 192.168.0.5:56243
+Results:
+        12720000 bytes in 2.1 seconds = 48457 Kbits/sec
+
+Waiting.
+@endverbatim
+	- The test application continues waiting for new tests till you press @c [Ctr+C].
+
+- UDP Receiver test:
+	- In the terminal window enter the @c benchrx @c udp command:
+@verbatim
+BENCH> benchrx udp
+************************************************
+ UDP RX Test
+************************************************
+ IPv4 Address     : 192.168.0.22
+ IPv6 Address     : fe80::204:9fff:fe15:4931
+ Local Port       : 7007
+Press [Ctr+C] to cancel.
+************************************************
+Waiting.
+@endverbatim
+	- In the Benchmark tool choose the UDP protocol and set the remote IP address that is assigned to your board. Changing of other parameters is optional. After parameters are set, press the [Connect/Send] button. @n @n
+      @image html fnet_bench_rx_udp.jpg "UDP RX Test"
+      @note 
+The amount of data, received by the remote side, is putted to square brackets. It helps to determine the amount of data was lost during UDP transfer.
+
+	- In your terminal program window you should see:  
+@verbatim
+Receiving from 192.168.0.5:63961
+Results:
+        11936448 bytes in 3.4 seconds = 28085 Kbits/sec
+
+Waiting.
+@endverbatim
+	- The test application continues waiting for new tests till you press @c [Ctr+C].
+
+
+@note 
+- The benchmark application supports IPv6 too.
+- Your embedded platform can be not enough fast to process all the received packets causing buffer overflow and eventually packet drops for UDP protocol. Increasing the @a message @a delay (in microseconds) parameter helps to throttle the server transmission rate which helps to avoid significant packet loss.
+
+
+
+@subsection fnet_stepbystep_bench_tx Transmitter Benchmark 
+Transmitter Benchmark command has following syntax:
+@verbatim
+benchtx <receiver IP> [tcp|udp [<message size> [<number of messages> [<number of iterations>]]]
+@endverbatim
+- TCP Transmitter test:
+	- In the Benchmark tool choose the TCP protocol and the local IP address (if you have several installed networking interface on your PC). Changing of other parameters is optional. After parameters are set, press the [Listen/Receive] button. @n @n
+      @image html fnet_bench_tx_tcp.jpg "TCP TX Test"
+
+	- In the terminal window enter the @c benchtx @c <receiver @c IP> command:
+@verbatim
+BENCH> benchtx 192.168.0.5
+************************************************
+ TCP TX Test
+************************************************
+ Remote IP Addr   : 192.168.0.5
+ Remote Port      : 7007
+ Message Size     : 1472
+ Num. of messages : 10000
+ Num. of iterations : 1
+Press [Ctr+C] to cancel.
+************************************************
+Connecting.
+Sending.
+Results:
+        14720000 bytes in 3.7 seconds = 31827 Kbits/sec
+
+Test completed.
+BENCH>
+@endverbatim
+	- The test application continues waiting for new tests till you press the @c [Stop] button:
+@n @n
+      @image html fnet_bench_tx_tcp_close.jpg "Stop the TCP TX Test"
+
+
+- UDP Transmitter test:
+	- In the Benchmark tool choose the UDP protocol and the local IP address (if you have several installed networking interface on your PC). Changing of other parameters is optional. After parameters are set, press the [Listen/Receive] button. @n @n
+      @image html fnet_bench_tx_udp.jpg "UDP TX Test"
+	- In the terminal window enter the @c benchtx @c <receiver @c IP> @c udp command:
+@verbatim
+BENCH> benchtx 192.168.0.5 udp
+************************************************
+ UDP TX Test
+************************************************
+ Remote IP addr   : 192.168.0.5
+ Remote port      : 7007
+ Message size     : 1472
+ Number of messages : 10000
+ Number of iterations : 1
+Press [Ctr+C] to cancel.
+************************************************
+Connecting.
+Sending.
+REMOTE BYTES = 14321088
+Results:
+        14720000 [14321088] bytes in 1.4 seconds = 84114 [81834] Kbits/sec
+
+Test completed.
+BENCH>
+@endverbatim
+@note 
+The amount of data, received by the remote side, is putted to square brackets. It helps to determine the amount of data was lost during UDP transfer.	
+	- The test application continues waiting for new tests till you press the @c [Stop] button:
+@n @n
+      @image html fnet_bench_tx_udp_close.jpg "Stop the UDP TX Test"
+
+@n
+@note The benchmark application supports IPv6 too.
+
+*/
+
+
+/*!
+* @page how_to FNET How-To 
+*- @subpage how_to_add_fnet  
+*- @subpage how_to_add_boot 
+*- @subpage how_to_generate_rom_fs 
+
+*/
+
+
+//********************************************************************
+//************************* How-To: Add FNET *************************
+//********************************************************************
+/*! 
+@page how_to_add_fnet Add FNET Stack to an existing project
+
+The FNET Stack is self-sufficient. It does not use any external software library or any third-party code. That is why adding the FNET TCP/IP stack 
+to an existing project is a trivial task. @n
+@n
+If you are using classical CodeWarrior, to add the FNET TCP/IP stack code to your project, follow the steps below:
+-# Start Freescale CodeWarrior IDE.
+-# Open your existing project [File]=>[Open] or create a new one [File]=>[New project].
+-# Add the whole @a fnet\\fnet_stack directory to the project. The easiest way is to drag and drop the @a \\fnet\\fnet_stack directory from the file explorer into the CodeWarrior project explorer:
+@n
+@n
+@image html fnet_adding_1.jpg
+@n
+-# Anywhere in your project-directory structure, create the FNET user-configuration file @a fnet_user_config.h and add it to the project. As an example you can use the @ref fnet_user_config.template.h file ("fnet\fnet_demos\common\fnet_user_config.template.h").
+@n
+@n
+@image html fnet_adding_2.jpg
+@n
+-# Edit your @a fnet_user_config.h file to change default FNET parameters. See @ref fnet_config chapter for different configuration options available.
+-# Add initialization sequence of FNET TCP/IP stack into your application code (see the @ref fnet_stack_init chapter). For example in your main function:
+@code
+#include "fnet.h" /* FNET API */ 
+#include "fnet_cpu.h"
+
+/* main entry point*/
+int main(void)
+{
+    
+    /* Init UART */
+    fnet_cpu_serial_init(FNET_CFG_CPU_SERIAL_PORT_DEFAULT, 115200);
+
+    /* Enable interrupts */
+    fnet_cpu_irq_enable(0);
+    
+    /* FNET Initialization */
+    if (fnet_init_static() != FNET_ERR) 
+    {
+        fnet_printf(__TIME__);
+        fnet_printf("\nTCP/IP stack initialization is done.\n");
+    }
+    else 
+    {
+        fnet_printf("\nError:TCP/IP stack initialization is failed.\n");
+    }
+		
+    for(;;) 
+    {	   
+    }
+}
+@endcode
+-# Now you should be able to start using the FNET TCP/IP stack and services. See @ref stack_api and @ref services_api chapters for a detailed description of the programmer's interface. @n
+Also it's highly recommended to look at the included @c fnet_demos examples, especially the @c shell demo.
+
+@note 
+- It is important to enable hardware interrupts in your project, because the FNET TCP/IP stack uses Ethernet module and Timer module interrupts for its own activity. @n
+@n
+- Usually a vector table is placed in RAM. The FNET software has its own interrupt dispatcher which registers own interrupt service routine into the vector table automatically during the stack initialization (the vector table must be pointed by @ref FNET_CFG_CPU_VECTOR_TABLE parameter). @n
+@n 
+If an application uses a vector table that is placed only in ROM, the FNET interrupt service routine @c fnet_cpu_isr() must be pre-installed, for the Timer Event and for the FEC Receive Frame interrupts, into the ROM vector table (pointed by @ref FNET_CFG_CPU_VECTOR_TABLE parameter). For example, you may correct your standard @c exception.c file (part of CodeWarrior project stationary):
+@code
+...
+extern void fnet_cpu_isr(); /**** FNET interrupt service routine ****/
+
+/* CF have 255 vector + SP_INIT in the vector table (256 entries)
+*/  
+__declspec(vectortable) vectorTableEntryType _vect[256] = {   /* Interrupt vector table */
+   (vectorTableEntryType)__SP_AFTER_RESET,  /*   0 (0x000) Initial supervisor SP      */
+   _startup,                        /*   1 (0x004) Initial PC                 */
+   asm_exception_handler,           /*   2 (0x008) Access Error               */
+   asm_exception_handler,           /*   3 (0x00C) Address Error              */
+   asm_exception_handler,           /*   4 (0x010) Illegal Instruction        */
+   asm_exception_handler,           /*   5 (0x014) Reserved                   */
+   asm_exception_handler,           /*   6 (0x018) Reserved                   */
+   asm_exception_handler,           /*   7 (0x01C) Reserved                   */
+   asm_exception_handler,           /*   8 (0x020) Privilege Violation        */
+
+...
+   asm_exception_handler,           /*  81 (0x144) Device-specific interrupts */
+   asm_exception_handler,           /*  82 (0x148) Device-specific interrupts */
+   asm_exception_handler,           /*  83 (0x14C) Device-specific interrupts */
+   asm_exception_handler,           /*  84 (0x150) Device-specific interrupts */
+   asm_exception_handler,           /*  85 (0x154) Device-specific interrupts */
+fnet_cpu_isr,                        /****  86 (0x158) Timer 3 capture/reference event ****/
+   asm_exception_handler,           /*  87 (0x15C) Device-specific interrupts */
+   asm_exception_handler,           /*  88 (0x160) Device-specific interrupts */
+   asm_exception_handler,           /*  89 (0x164) Device-specific interrupts */
+   asm_exception_handler,           /*  90 (0x168) Device-specific interrupts */
+fnet_cpu_isr,                        /****  91 (0x16C) FEC Receive frame interrupt ****/
+   asm_exception_handler,           /*  92 (0x170) Device-specific interrupts */
+   asm_exception_handler,           /*  93 (0x174) Device-specific interrupts */
+   asm_exception_handler,           /*  94 (0x178) Device-specific interrupts */
+   asm_exception_handler,           /*  95 (0x17C) Device-specific interrupts */
+...
+
+@endcode
+- If you are using CodeWarrior compiler for ColdFire platforms be sure that "Code Model" and "Data Model", in Processor settings, are set to "Far(32-bit)".
+- Be sure that @ref FNET_CFG_CPU_VECTOR_TABLE is set to correct value.
+- Add the "fnet_stack" directory path to Search Paths of C and Assembler compiler.
+
+
+*/
+
+//********************************************************************
+//************************* How-To: Add FNET Bootloader **************
+//********************************************************************
+/*! 
+@page how_to_add_boot Add FNET Bootloader support to an existing project
+
+The Bootloader reserves the first 48 Kbytes of the on-chip Flash memory for its own needs (actually it can occupy less space). @n The last page of the on-chip Flash memory is used by the Bootloader for parameter storage and may be modified by a user application to change the Bootloader behaviour.
+
+To use an existing application with the FNET Bootloader, the following changes should be applied in the application project:
+-# Add additional sections to the application linker command file and update the already defined memory sections to avoid section overlapping. 
+The example of MCF52259 lcf file modification:
+@verbatim
+...
+MEMORY
+{
+                                                                     # 512KB FLASH
+	
+    fnet_bootloader (RX)  : ORIGIN = 0x00000000, LENGTH = 0x0000C000 # 48KB (Reserved for FNET Bootloader)
+    
+    vectorrom       (RX)  : ORIGIN = 0x0000C000, LENGTH = 0x00000400 
+    code            (RX)  : ORIGIN = 0x0000C400, LENGTH = 0x0007EC00
+
+    fnet_params     (RW)  : ORIGIN = 0x0007F000, LENGTH = 0x00001000 # 4Kbytes (Last logical-block reserved for parameters)
+   
+    vectorram       (RWX) : ORIGIN = 0x20000000, LENGTH = 0x00000400 # 64KB SRAM
+    userram         (RWX) : ORIGIN = 0x20000400, LENGTH = 0x0000FC00 
+}
+...  
+@endverbatim
+-# An application may change the Bootloader parameters. They are placed at the beginning of the last logical-block of the on-chip flash memory. @n
+The Bootloader parameters organization is defined by the @c fapp_params_flash structure placed in the @verbatim fnet\fnet_demos\common\fnet_application\fapp_params.h @endverbatim
+-# Make sure that your application uses the interrupt vector table copied into RAM area, because the ROM-based table is owned by the Bootloader.
+*/
+
+
+//********************************************************************
+//********* How-To: Generate FNET ROM-file-system image **************
+//********************************************************************
+/*! 
+@page how_to_generate_rom_fs Generate FNET ROM file system image
+
+The FNET project provides the GUI File System Generation tool that is used to create ROM File System image files. @n 
+The ROM File System provides read-only access to files and directories. @n
+@n
+To generate the file system image file, follow the steps below:
+ 
+- Start the FNET File System Generation tool that is located in @a "fnet\fnet_tools\fnet_fs_generation.exe":
+@n
+@n
+@image html fnet_fsgen_tool.jpg "FNET File System Generation Tool"
+- Specify the FS image content and the output file name: 
+	- You can specify it by the [Edit] menu commands:
+		- "Add Directory Content..."
+		- "Add File..."
+		- "Delete"
+		- "New Directory"
+		- "Rename" 
+		- "Specify Output file... "
+	- Or you can load it from project file:
+		- Use [File]->[Open Project...] command.
+		- Or you can drag and drop the project file from the file explorer to the tree view of the tool.
+		@note Project file of the demo web pages, which are used by the FNET examples, is located in the @a "fnet\fnet_demos\common\fapp_fs_image_project.fnetfs" file.
+- Generate the image file by the @c [Tools]->[Generate...] menu command or press the [F5] button.@n
+The result image is converted into the C-initialized data structures that are compiled as source code and can be linked with an application. The result is that the files, formerly on the PC, become available to the embedded application for access through the @ref fnet_fs and @ref fnet_fs_rom.
+@n
+@n
+@image html fnet_fsgen_tool_generate.jpg "Image Generation"
+ 
+- The FS Image settings can be saved to the project file by the [File]->[Save Project] command.
+
+@note 
+- File paths, which are saved in the project file, are relative to the project file location.
+- The tool supports command line interface that makes it possible to use it in scripts. To get know its command line syntax, run the tool with the @c /? parameter:
+@verbatim
+C:\fnet\fnet_tools>cmd /c .\fnet_fs_generation.exe /?
+
+USAGE:
+        fnet_fs_generation [/?|/project=<Project-file name>[/output=<Output-file name>][/force]]
+
+Where
+        /?         Displays this help message.
+        /project   Specifies the project file.
+        /output    Specifies the output file.
+        /force     Force overwriting of read-only output file.
+@endverbatim
+- Project file of the demo web pages, which are used by the FNET examples, is located in the @a "fnet\fnet_demos\common\fapp_fs_image_project.fnetfs" file.
+- The command line .bat file that generates the FNET example image is located in the @a "fapp_fs_image_generate.bat" file.
+@verbatim
+C:\fnet\fnet_demos\common\fapp_fs_image_generate.bat
+
+FNET File System Generation Tool V1.0.2.5 initialized.
+Reading project file C:\fnet\fnet_demos\common\fapp_fs_image_project.fnetfs
+Project loaded.
+Output image file: C:\fnet\fnet_demos\common\fnet_application\fapp_fs_image.c
+Image generation started.
+Generating: <FILE SYSTEM IMAGE>
+Generating: <FILE SYSTEM IMAGE>/favicon.ico
+Generating: <FILE SYSTEM IMAGE>/fnet.css
+Generating: <FILE SYSTEM IMAGE>/fnet.js
+Generating: <FILE SYSTEM IMAGE>/fnet_graph.html
+Generating: <FILE SYSTEM IMAGE>/fnet_set.shtml
+Generating: <FILE SYSTEM IMAGE>/fnet_stat.html
+Generating: <FILE SYSTEM IMAGE>/fnet_sup.html
+Generating: <FILE SYSTEM IMAGE>/fsl_logo.jpg
+Generating: <FILE SYSTEM IMAGE>/index.html
+Image successfully created.
+Press any key to continue . . .
+@endverbatim
+*/
+
+//***********************************************************************
+//************************** Version History ****************************
+//***********************************************************************
+
+/*!
+* @page fnet_history FNET Change Log
+
+FNET public releases:
+
+- Version 3.0.0:
+	- Released under the Apache License Version 2.0 (https://en.wikipedia.org/wiki/Apache_License). This is more permissible license than previous one and compatible with GPL 3.0.
+	- Added possibility to run several instances of DHCP client for multi-interface systems, controlled by the FNET_CFG_DHCP_MAX parameter. 
+	- Added support of the Intel HEX file format by the TFTP Boot-loader (enabled by FAPP_CFG_TFTP_RX_HEX/FAPP_CFG_TFTP_TX_HEX). Thanks to Michal Hanak.
+	- Added support of IPv4 link-local (169.254/16 prefix) unicast and broadcast as destination address, according to RFC3927.
+	- Added scope_id to IPv4 socket address structure (same as for IPv6), to eliminate IPv4 address ambiguity in multi-home systems.
+	- Changed IPv4 multicast group ip_mreq.imr_interface from Interface IPv4 address to Interface Index (same as for IPv6).
+	- Added fnet_scope_id_t type.
+	- Added the default-interface parameter to the FNET application parameter get/set list.
+	- Added FNET_CFG_<interface>_NAME configuration parameter.
+	- Added fnet_rand() pseudo-random generator. Thanks to Catalin Petrescu.
+	- Moved port-clock enabling from Kinetis start-up to the driver initialization code.
+	- Added FNET_CFG_CPU_VECTOR_PRIORITY_MAX configuration parameter.
+	- Renamed FNET_FS_DIR, FNET_FS_FILE types to fnet_fs_dir_t, fnet_fs_file_t.
+	- Fixed potential spurious retransmission issue in TCP. Thanks to Vinay.
+	- Fixed loop-back interface.
+	- Fixed fnet_isr_vector_init().
+	- Fixed FBENCH tool stuck during UDP sending.
+	- Other minor changes.
+
+- Version 2.9.0:
+	- Added fnet_size_t, fnet_index_t, fnet_bool_t, fnet_time_t fnet_uint32_t, fnet_uint16_t and fnet_uint8_t and other types.
+	- Fixed "MISRA-C:2004 6.3 Typedefs that indicate size and signedness should be used in place of the basic types."
+	- Fixed "MISRA-C:2004 10.1 The value of an expression of integer type shall not be implicitly converted to a different underlying type ..."
+	- Fixed "MISRA-C:2004 11.1 Conversions shall not be performed between a pointer to a function and any type other than an integer type."
+	- Fixed "MISRA-C:2004 12.5 The operands of a logical && or || shall be primary-expressions."
+	- Fixed "MISRA-C:2004 12.7 Bitwise operators shall not be applied to operands whose underlying type is signed."
+	- Fixed "MISRA-C:2004 14.6 For any iteration statement there shall be at most one break statement used for loop termination."
+	- Fixed "MISRA-C:2004 14.9 An if (expression) construct shall be followed by a compound statement. The else keyword shall be followed by either a compound statement or another if statement."
+	- Fixed "MISRA-C:2004 19.6 #undef shall not be used"
+	- Added "extern C" to header files.
+    - Replaced SOCKET_ERROR and SOCKET_INVALID by FNET_ERR.
+	- Replaced SOCKET type by fnet_socket_t.
+	- New configuration parameter:
+		- @ref FNET_CFG_SOCKET_BSD_NAMES enables/disables BSD Socket API names.
+    - Reworked shell service:
+		- Added fnet_shell_switch().
+		- Removed fnet_shell_cmd_type_t.
+	- Removed support of obsolete MCF52235.
+	- Other changes.
+
+- Version 2.8.1:
+	- Added KDS 3.0 support.
+	- Fixed "MISRA-C:2004 15.2 An unconditional break statement shall terminate every non-empty switch clause."
+	- Redraw the FNET Top View diagram.
+	- Other minor changes.
+
+- Version 2.8.0:
+	- Added possibility to get a DNS resolved host-name TTL. Improved fnet_dns_handler_resolved_t.
+	- Fixed "MISRA-C:2004 10.5 if the bitwise operators ~ and << are applied to an operand of underlying type unsigned char or unsigned short, the result shall be immediately cast to the underlying type of the operand."
+	- Fixed "MISRA-C:2004 10.6 A U suffix shall be applied to all constants of unsigned type."
+	- Fixed "MISRA-C:2004 12.6 The operands of logical operators should be effectively Boolean."
+	- Fixed "MISRA-C:2004 12.9 The unary minus operator shall not be applied to an expression whose underlying type is unsigned."
+	- Fixed "MISRA-C:2004 12.10 The comma operator shall not be used."
+	- Fixed "MISRA-C:2004 13.1 Assignment operators shall not be used in expressions that yield a Boolean value."
+	- Fixed "MISRA-C:2004 13.5 The three expressions of a for statement shall be concerned only with loop control."
+	- Fixed "MISRA-C:2004 14.3 Before preprocessing, a null statement shall only occur on a line by itself."
+	- Fixed "MISRA-C:2004 14.8 The statement forming the body of a switch, while, do… while or for statement shall be a compound statement."
+	- Fixed "MISRA-C:2004 14.10 All if ... else if constructs shall be terminated with an else clause."
+	- Fixed "MISRA-C:2004 15.3 The final clause of a switch statement shall be the default clause."
+	- Fixed "MISRA-C:2004 16.3 Identifiers shall be given for all of the parameters in a function prototype declaration."
+	- Fixed "MISRA-C:2004 16.4 The identifiers used in the declaration and definition of a function shall be identical."
+	- Fixed "MISRA-C:2004 16.5 Functions with no parameters shall be declared and defined with the parameter list void."
+	- Fixed "MISRA-C:2004 19.11 All macro identifiers in preprocessor directives shall be defined before use."
+	- Fixed "MISRA-C:2004 19.15 Precautions shall be taken in order to prevent the contents of a header file being included twice."
+	- Fixed "MISRA-C:2004 20.2 The Names of Standard Library macros, objects and functions shall not be reused."
+	- Fixed MPC Green Hills compiler warning, thanks to Patrice Cavin.
+
+- Version 2.7.5:
+	- Fixed compilation error for Classical CW.
+	- Fixed compilation warnings for KDS 2.0.
+	- Fixed "MISRA-C:2004 2.2 Source code shall inly use ISO9899:1990 'C' style comments."
+	- Fixed "MISRA-C:2004 2.4 Sections of code should not be 'commented out'".
+	- Fixed "MISRA-C:2004 4.1 Only those escape sequences that are defined in the ISO C standard shall be used".
+	- Fixed "MISRA-C:2004 5.2 Identifiers in an inner scope shall not use the same name as an identifier in an outer scope, and therefore hide that identifier".
+	- Fixed "MISRA-C:2004 8.1 Functions shall have prototype declaration and the prototype shall be visible at both the function definition and call ".
+	- Fixed "MISRA-C:2004 8.3 For each function parameter the type given in the declaration and definition shall be identical, and the return types shall also be identical".
+
+- Version 2.7.4:
+	- Fixed potential crash in checksum calculation, thanks to Patrice Cavin.
+	- Fixed compilation error of boot example in KDS 2.0, K64.
+	- Fixed issue of the erased memory check.
+	- Added FAPP_CFG_CHECK_FLASH_BEFORE_WRITE enable/disables checking of the flash memory if is erased before write.
+	- Added MPC5744P configuration, thanks to Patrice Cavin.
+
+- Version 2.7.3:
+	- Added handling of ICMPv6 errors by transport protocols.
+	- Fixed fnet_inet_ptos(), reported by Kiyoshi
+	- Fixed checksum calculation, reported by Abhilash.
+	- Fixed SRAM start address for K64, reported by Kiyoshi.
+	- Fixed possible flash write error for K60N.
+	- Fixed KDS 2.0 compilation issue of assembler code.
+
+- Version 2.7.2:
+	- New configuration parameter:
+		- @ref FNET_CFG_ARP_EXPIRE_TIMEOUT sets period of time after which ARP cache entries are automatically expired.
+	- Fixed potential issue in fnet_netbuf_trim(), thanks to Johan Brouwer.
+	- Added additional check to the bootloader example if flash memory is erased before writing.
+	- Other minor changes and optimizations.
+
+- Version 2.7.1:
+	- Added support of Kinetis Design Studio (GCC compiler) for FRDM-K64F board.
+	- New configuration parameter:
+		- @ref FNET_CFG_ARP_TABLE_SIZE sets maximum number of entries in the ARP table, per interface.
+
+- Version 2.7.0:
+	- Added Link-Local Multicast Name Resolution (LLMNR) Server/Responder.
+	- Added new "host" parameter to example applications, used as a host name for LLMNR. Its value is controlled by @c FAPP_CFG_PARAMS_HOST_NAME.
+	- Fixed "ICMP Destination unreachable" handling issue for listening TCP sockets, reported by Yasla.
+	- Fixed FRDM-K64F startup code, which caused wrong link status.
+	- Make public fnet_tolower().
+	- Other minor changes.
+
+- Version 2.6.5:
+	- Fixed DNS query that caused resolution issue with FritzBox DNS server, reported by Lenz.
+	- Fixed checksum calculation to follow RFC1624(3).
+	- Added fnet_netif_get_ip6_prefix() and fnet_netif_get_ip6_neighbor_cache().
+	- Added "stat" command, to the Shell Demo, showing interface statistics, IPv6 prefix list and neighbor cache.
+	- Cleaned header includes. Now it is enough to add only the fnet_stack folder to Project Search Path without its subfolders.
+	- Other minor changes.
+
+- Version 2.6.4:
+	- Added support of Kinetis K64FN1M (FRDM-K64F board).
+	- Added fnet_netif_get_mtu()
+	- Fixed ARP response, which could cause issue with iOS nodes. Thanks to Markus Muller.
+	- The assembler *.asm files renamed to *.s.
+	- Removed support of obsolete MCF51CN128 and MCF5282 platforms.
+
+- Version 2.6.3:
+	- Added support of Kinetis K60FN1M0 (TWR-K60F120M board).
+	- Fixed defect in IPv4 TCP segment send function, reported by Dian Nugraha.
+	- Fixed MCF assembler code to be valid for GCC compiler, thanks to Thomas Buergel.
+
+- Version 2.6.2:
+	- Added IPv6 address support to DNS resolver.
+	- Added Recursive DNS Server Option (RFC6106) support via router advertisement. 
+	- Added basic MCF5235 support, contributed by Thomas Buergel.
+	- Fixed MLD-query receive-function that could send a wrong MLD report.
+	- New configuration parameters:
+       - @ref FNET_CFG_ND6_RDNSS enabled/disabled RDNSS support.
+       - @ref FNET_CFG_ND6_RDNSS_LIST_SIZE sets maximum number of entries in the RDNSS address list.
+	- Other minor changes.
+
+- Version 2.6.1:
+	- Fixed timeout issue in the DHCP client, reported by Colin Bathe.
+	- Fixed race condition in UDP-send function that can cause data corruption, reported by Tomas.
+	- Fixed MLD multicast group leave function.
+	- Many other minor changes and fixes.
+
+- Version 2.6.0:
+	- Added Multicast Listener Discovery Version 1 (MLDv1), enabled by @ref FNET_CFG_MLD.
+	- New IPv6 socket options:
+		- @ref IPV6_MULTICAST_HOPS changes the hop limit to use for outgoing multicast IPv6 packets.
+       	- @ref IPV6_JOIN_GROUP joins a multicast group on a specified local interface.
+		- @ref IPV6_LEAVE_GROUP leaves a multicast group on a specified interface.
+	- Other minor changes. 
+
+- Version 2.5.0:
+	- Added support of Kinetis K70FN1M0 (TWR-K70F120M board).
+	- Added support of Modelo MCF54418 (TWR-MCF5441x board).
+	- Added support of two Ethernet modules by FEC driver (for MCF54418).
+	- Added support of uCOS-III, thanks to Jon Elliott.
+	- Added "bind/unbind" IPv6 address commands to the Shell Demo.
+	- Added "cookie" parameter to interrupt handlers.
+	- New/renamed configuration parameters:
+		- @ref FNET_CFG_CPU_ETH_RMII enables/disables RMII mode. 
+		- @ref FNET_CFG_CPU_ETH_RMII_10T sets 10Mbps or 100Mbps in RMII mode.
+		- FNET_CFG_CPU_ETHx enables/disables Externet-x module.
+		- FNET_CFG_CPU_ETHx_MAC_ADDR defines default MAC address of Externet-x module. 
+		- FNET_CFG_CPU_ETHx_MTU defines default MTU of Externet-x module.
+		- FNET_CFG_CPU_ETHx_PHY_ADDR defines default PHY address used by Ethernet-x module.
+		- @ref FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER enables/disables PHY addresses discover.
+		- @ref FNET_CFG_DEFAULT_IF defines default interface.
+		- @ref FNET_CFG_OS_TIMER enables/disables OS-specific timer initialization/release.
+		- Others.
+	- Other internal changes. 
+
+- Version 2.4.0:
+	- Added multiple-session support to the HTTP server.	
+	- Added HW Checksum Calculation support by ENET module (for K60).
+	- New configuration parameters:
+		- @ref FNET_CFG_HTTP_SESSION_MAX defines maximum number of simultaneous user-session that can be handled by the HTTP server.
+		- @ref FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM enables/disables insertion of protocol checksum by Ethernet-module.
+		- @ref FNET_CFG_CPU_ETH_HW_TX_IP_CHECKSUM enables/disables insertion of IPv4 header checksum by Ethernet-module.
+		- @ref FNET_CFG_CPU_ETH_HW_RX_PROTOCOL_CHECKSUM enables/disables discard of frames with wrong protocol checksum by Ethernet-module.
+		- @ref FNET_CFG_CPU_ETH_HW_RX_IP_CHECKSUM enables/disables discard of frames with wrong IPv4 header checksum by Ethernet-module.
+		- @ref FNET_CFG_CPU_ETH_HW_RX_MAC_ERR enables/disables discard of frames with MAC layer errors by Ethernet-module.
+	- Other minor changes.
+
+- Version 2.3.0:
+	- Passed the "IPv6 Ready Logo" Phase-2 IPv6 Core Protocols Conformance Tests, for host.
+	- Added the Path MTU Discovery for IPv6, which is disabled /enabled by FNET_CFG_IP6_PMTU_DISCOVERY.
+	- Other minor changes.
+
+- Version 2.2.1:
+	- Fixed data corruption bug, that can occur using UDP services (e.g. DHCP) with enabled both IP4 and IPv6.
+	- Updated FreeRTOS specific code. Thanks to Christophe Graulle.
+	- Added basic BOOTP protocol support, as special mode of DHCP client service. Thanks to Peter Baertschi.
+ 	- New configuration parameters:
+		- @ref FNET_CFG_DHCP_BOOTP defines DHCP or BOOTP protocol to be used.
+		- @ref FNET_CFG_DHCP_PORT_CLIENT defines DHCP client port number.
+		- @ref FNET_CFG_DHCP_PORT_SERVER defines DHCP server port number.
+
+- Version 2.2.0:
+	- Added support of the Qorivva Power Architecture:
+		- Added support of MPC5668G.
+		- Added support of CodeWarrior Development Studio for MPC55xx/MPC56xx Ver. 2.10.
+		- Added Shell and Benchmark demo-applications for MPC5668GKIT. Without on-chip flash driver.
+	- Other minor changes.
+
+- Version 2.1.1:
+	- Improved IPv6 support. Passed 80% of the "IPv6 Ready Logo" Phase-2 (Golden) Tests. 
+	- Fixed wrong IPv4 group address mapping to Ethernet multicast address, for little-endian platform (Kinetis).
+
+- Version 2.1.0:
+	- Improved IPv6 support. Passed 65% of the "IPv6 Ready Logo" Phase-2 (Golden) Tests. 
+	- Added RAW socket support.
+	- Added PING service, using RAW sockets and supporting both IPv4 and IPv6.
+	- Added ping command to the FNET demo applications.
+	- Added basic FreeRTOS support, contributed by Christophe Graulle.
+	- Added the @ref IPV6_UNICAST_HOPS socket option.
+	- Added multiple-session support to the TELNET server.
+	- Added possibility to set the socket-listen backlog to zero value.
+	- Fixed some bugs.
+	- Added new configuration parameters:
+		- @ref FNET_CFG_RAW enables/disables RAW socket support.
+		- @ref FNET_CFG_PING enables/disables PING service.
+		- @ref FNET_CFG_TELNET_SESSION_MAX defines maximum number of simultaneous user-session that can be handled by the Telnet server.
+
+- Version 2.0.0:
+	- Added IPv6 support:
+		- Passed the legacy "IPv6 Ready" Phase I (Silver) Tests.
+		- Added IPv6, ICMPv6, Stateless address autoconfiguration, Neighbor Discovery. 
+		- Added IPv6 address support to TCP, UDP, Sockets, TFTP, HTTP and Telnet.
+		- All Demo application is able to work with IPv6. Where it was possible, both IPv4 and IPv6 are enabled.
+	- Added support of uVision 4.5 Keil compiler for K60N512.
+	- Added events (rebranded SW interrupts).
+	- New configuration parameters:
+		- @ref FNET_CFG_CPU_ETH_ATONEGOTIATION_TIMEOUT defines Ethernet Autonegotiation Timeout.
+		- @ref FNET_CFG_OS_ISR allows usage of an OS-specific ISR handler.
+		- @ref FNET_CFG_OS_EVENT enables generation OS-specific event.
+		- @ref FNET_CFG_IP6 enables/disables IPv6. 
+		- @ref FNET_CFG_IP4 enables/disables IPv4. 
+		- @ref FNET_CFG_ND6_NEIGHBOR_CACHE_SIZE defines the maximum number of entries in neighbor cache.
+		- @ref FNET_CFG_ND6_PREFIX_LIST_SIZE defines the aximum number of entries in the Prefix list.
+		- @ref FNET_CFG_ND6_ROUTER_LIST_SIZE defines the maximum number of entries in the Default Router list.
+		- @ref FNET_CFG_ND6_DAD_TRANSMITS defines the number of consecutive Neighbor Solicitation messages sent while performing Duplicate Address Detection.
+		- @ref FNET_CFG_NETIF_IP6_ADDR_MAX defines the maximum number of IPv6 addresses per interface.
+		- @ref FNET_CFG_IP6_FRAGMENTATION enables/disables IPv6 fragmentation.
+		- others.
+	- New user API functions:
+		- fnet_inet_ntop().
+		- fnet_inet_pton().
+		- fnet_netif_get_by_number().
+		- fnet_timer_seconds().
+		- fnet_timer_ms().
+		- fnet_netif_get_ip6_addr().
+		- Many IPv6 specific functions and types.
+	- A lot of existing API functions and definitions renamed to differentiate IPv4 and IPv6 functionality.
+	- Added BRTOS support (http://code.google.com/p/brtos/).
+	- Removed support of IAR Compiler for ColdFire.
+	- Many other internal changes.
+
+- Version 1.2.2:
+	- Fixed wrong behavior, using CodeWarrior 10.2 Final Release for Kinetis platform.
+	- Fixed value of MII speed register, which may be cause of wrong PHY-address detection and wrong connection status.
+	- Removed the remaining platform-independent Ethernet logic from the FEC driver.
+	- Deleted "useless" length and pad fields from the socket-address structure.
+	- The connect() function now returns @c FNET_OK instead of the @c FNET_ERR_AGAIN error. 
+	- Added "cookie" parameter to the timer-event handler.
+	- Other internal changes.
+
+- Version 1.2.1:
+	- Added new configuration parameters:
+		- FNET_CFG_IP4_OPTIONS enables/disables processing of IP options.
+		- @ref FNET_CFG_TCP_URGENT enables/disables TCP urgent data processing.  
+	- Done different code-size optimizations.
+	- Enabled the multicast functionality for the Kinetis FEC driver.
+	- Moved the loopback logic from FEC driver to the Networking layer.
+	- Renamed @c fnet_ip_addr_t to @c fnet_ip4_addr_t.
+	- Added @c FNET_IP4_ADDR_STR_SIZE and @c FNET_MAC_ADDR_STR_SIZE that define maximum size of null-terminated ASCII string representing IPv4 and MAC address.
+	- Deleted not thread-safe fnet_strok() function. It is recommended to use fnet_strtok_r() instead of it.
+	- Added "FNET Demo Applications" and "Standard library API" chapters to the User Documentation.
+
+- Version 1.2.0:
+	- Added support of the CodeWarrior Development Studio v10.2 for TWR-K60N512 (Kinetis) and M52259EVB (Kirin3) projects.
+	- Added support of multicast-group joining & leaving to the socket interface.
+	- Added Internet Group Management Protocol (IGMP) version 1 and 2.
+	- Added new socket options:
+		- @ref IP_MULTICAST_TTL changes IP "time to live" (TTL) value for outgoing multicast datagrams.
+		- @ref IP_ADD_MEMBERSHIP joins the socket to the supplied multicast group on the specified interface.
+		- @ref IP_DROP_MEMBERSHIP drops membership to the given multicast group and interface.
+	- Added new configuration parameters:
+		- @ref FNET_CFG_CPU_ETH_PROMISCUOUS enables/disables the Ethernet interface promiscuous mode.
+		- @ref FNET_CFG_CPU_ETH_FULL_DUPLEX enables/disables the Ethernet interface full duplex mode.
+		- @ref FNET_CFG_MULTICAST enables/disables the multicast group support.
+		- @ref FNET_CFG_MULTICAST_MAX defines the maximum number of unique multicast memberships may exist at the same time in the whole system.
+		- @ref FNET_CFG_MULTICAST_SOCKET_MAX defines the maximum number of multicast memberships may exist at the same time per one socket.
+		- @ref FNET_CFG_IGMP enables/disables the Internet Group Management Protocol (IGMP) support:
+		- @ref FNET_CFG_IGMP_VERSION defines version of the Internet Group Management Protocol (IGMP).
+		- @ref FNET_CFG_LOOPBACK_MULTICAST enables/disables the local loopback of multicast datagrams.
+		- @ref FNET_CFG_LOOPBACK_BROADCAST enables/disables the local loopback of broadcast datagrams.
+		- Old @c FNET_CFG_LOOP_xxx parameters renamed to @c FNET_CFG_LOOPBACK_xxx.
+	- Added possibility to choose default multicast interface for outgoing multicast packets, for hosts with several network interfaces, in FNET Throughput Benchmark tool.
+	- Fixed issues in Kinetis Flash and UART drivers.
+	- Many other minor changes/fixes.
+
+- Version 1.1.2:
+	- FNET Throughput Benchmark tool:
+		- Added "IP Don`t Fragment" option.
+		- Added "IP Time to Live" option.
+		- Added "Timeout" option (in seconds) for sending. Now user is able to choose to stop the sending after the number of sent messages or after the timeout.
+		- Added possibility of joining of a UDP Multicast group by the receiver.
+		- Added "refresh" button that updates "Local IP address" combo-box, in case a network interface enabled/disabled during work of application.
+		- It was added acknowledge packet, at the end of UDP data transfer session, which contains amount of received data. It helps to determine the amount of data was received and lost during UDP transfer.
+        - Throughout value in Bytes/sec was replaced by Kbits/sec.
+		- Other minor improvements in user interface.
+	- Added the FNET_CPU_INSTRUCTION_ADDR()  macro that sets Thumb bit of an address for Kinetis entry point (and does nothing for ColdFire). It is used by the FNET boot-loader and fixes issue caused by SREC files generated by CodeWarrior for Kinetis.
+	- Fixed issue in MCF52235 initialization for UART number 2.
+	- Fixed potential issue in initialization of the DNS client application.
+	- Fixed potential issue in the fnet_str_to_mac() function.
+	- Fixed the "strict ANSI C" CW compiler errors.
+	- Fixed some GCC compiler errors and warnings (even if GCC is not supported).
+	- Other minor changes/fixes.
+
+- Version 1.1.0:
+	- Added the DNS client/resolver service.
+	- Added the DNS-server address support to the DHCP client service and to the network interface.
+	- Added the @c dns resolver command to the FNET Shell application.
+	- Other minor changes/fixes.
+
+
+- Version 1.0.0:
+	- Added Kinetis (ARM Cortex-M4) - MK60N512 support.
+	- Added support of the IAR Embedded Workbench for ARM compiler, version 6.1.
+	- Added standard FNET demo applications for the TWR-K60N512 board, including the FNET on-chip Bootloader.
+	- Added support of little-endian platforms, defined by @ref FNET_CFG_CPU_LITTLE_ENDIAN.
+	- Added set of functions and macroses that convert values between host and network byte order
+ (like @ref fnet_ntohs(), @ref fnet_htonl() and etc. ).
+	- Added common on-chip Flash memory driver for Kinetis (FTFL) and ColdFire (CFM) modules.
+	- Added support of 16 bits and 24 bits addressing in the S-record file format for the FNET Bootloader.
+	- Added common FEC driver for Kinetis and ColdFire platform.
+	- Improved response of the Telnet server.
+	- Added the @ref fnet_telnet_close_session() function, which closes the currently active session of the Telnet Server.
+	- Added the fnet_println() function that prints formatted text to the stream and terminates it by line separator string.
+	- Added the @ref fnet_serial_flush() function that sends/flushes data from the internal stream buffer to the stream client, it has meaning only for buffered streams.
+	- Applied optimized version of the IP checksum calculation and the fnet_memcpy() function.
+	- A lot of the @c FNET_CFG_MCF_xxxx parameters, which are common to all platforms, were renamed to @c FNET_CFG_CPU_xxxx.
+	- Many other changes and fixes.
+
+- Version 0.9.3:
+	- Fixed stuck issue that may occur during receiving of broadcast UDP datagrams.
+	- Fixed buffer corruption issue that may occur when the internal static heap buffer has relatively small size.
+	- Improved stability of nebuf. management.
+	- FEC Frame buffers and descriptors are allocated statically (before in internal heap). Existing applications should reduce value of the @ref FNET_CFG_HEAP_SIZE in user-configuration file by the value that equals summary size of buffers statically allocated in Ethernet driver. Roughly [NEW_VALUE]=[OLD_VALUE]-(FNET_CFG_MCF_ETH_TX_BUFS_MAX+FNET_CFG_MCF_ETH_RX_BUFS_MAX)* FNET_CFG_ETH_MTU.
+	- Renamed FNET_CFG_MCF_SERIAL_PORT_DEFAULT to @ref FNET_CFG_CPU_SERIAL_PORT_DEFAULT.
+	- Added the @ref FNET_CFG_TELNET_SOCKET_BUF_SIZE user-configuration option that defines size of the socket RX & TX buffer used by the Telnet server.
+	- Added OS folder where it will be placed all OS-specific code.
+	- Added uCOS-II specific ISR handler.
+	- Added @ref FNET_CFG_OS and @ref FNET_CFG_OS_operation_system_type set of user-configuration options that define a currently used OS. For this moment there is FNET_CFG_OS_UCOSII only.
+	- Added "Free heap" information to the Shell-example "info" command.
+	- Other minor changes/fixes.
+
+- Version 0.9.1:
+	- Added the @ref FNET_CFG_TCP_DISCARD_OUT_OF_ORDER user-configuration option that enables or disables the discarding of TCP segments that are received out of order.
+
+- Version 0.9.0:
+	- Added support of the IAR Embedded Workbench for ColdFire Version 1.22.
+	- Added support of the IAR compiler to the demo applications for the M52259EVB board.
+	- Added the @ref FNET_CFG_COMP_compiler_type set of user-configuration options that define a currently used compiler.
+	- Added GPL linking exception to the FNET license (based on http://en.wikipedia.org/wiki/GPL_linking_exception), to allow static linking to proprietary applications.
+	- Fixed several issues in the Telnet server, which caused stuck situations.
+	- Fixed assembler version of the checksum calculation.
+	- Added the @c compiler directory where are placed compiler-specific files.
+	- All inline assembler functions were rewritten to separate ASM files, to make it more portable.
+	-  All @c standard_abi assembler functions were rewritten to follow @c register_abi.
+	- Increased general throughput performance, based on benchmark results.
+	- Fixed CFM driver initialization.
+	- Fixed MSS issue, it was set to the lowest value for all cases.
+	- Added the @ref FNET_CFG_SOCKET_TCP_MSS user-configuration option that defines the default value of the @ref TCP_MSS socket option. By default the selection of the MSS is automatic and is based on the MTU of the outgoing interface. It is done to assist in avoiding of IP fragmentation at the endpoints of the TCP connection.
+	- Added the @ref FNET_CFG_SHELL_HELP_FORMAT user-configuration option that defines the format of the command-shell @c help message, that is used by the @ref fnet_shell_help() function.
+	- Added the @ref FNET_CFG_TELNET_SHELL_ECHO user-configuration option that defines the Echo in the Telnet shell.
+	- Updated structure of the application parameters, used by the FNET demo applications.
+	- Updated the FNET ROM file-system image structure and the "FNET File System Generation Tool", to make the file-system image file more portable between different compilers.
+	-  The "fnet.h" header file gives full access to the whole FNET user-API, including the services API.
+	- Other minor changes/fixes.
+
+- Version 0.8.1:
+	- Fixed bug in the parsing of the HTTP URI.
+
+- Version 0.8.0:
+	- HTTP Server:
+		- Added support of the HTTP/1.0 response.
+		- Added support of the Basic Access Authentication according to RFC2617 (@ref FNET_CFG_HTTP_AUTHENTICATION_BASIC).
+		- Added support of the HTTP POST method (@ref FNET_CFG_HTTP_POST).
+		- Added the "cookie" parameter to the POST, SSI and CGI callback functions, which can be used to associate custom information with a connection instance.
+	- Added the HTTP POST and Access Authentication demos to the Shell demo application.
+	- Added @ref fnet_snprintf() function. The save version of @ref fnet_sprintf() that does not suffer from buffer overrun.
+	- Updated GUI File System generation tool:
+		- Added additional generation parameters (image name and \#if condition). 
+		- Fixed issue occurred during saving/loading of project files for images that have directories.
+	- Eliminated using of the CodeWarrior @c \#pragma @c overload.
+	- Used http://www.installjammer.com tool for creation of the FNET Installer and Uninstaller.
+	- Other minor changes/fixes.
+
+- Version 0.7.6:
+	- Improved the @ref how_to_generate_rom_fs "FNET File System Generation tool":
+		- Added project file support.
+		- Added command line support.
+		- Other minor changes.
+	- Fixed PHY initialization issue during power switch on/off of the M52259EVB.
+	
+- Version 0.7.5:
+	- Added GUI Throughput Benchmark tool.
+	- Added Throughput Benchmark application for MCF52259.
+	- Increased general performance of the stack.
+	- Fixed bug in the TCP receive function. In very rare cases, data that came within the latest FIN packet was lost.
+	- Eliminated support of the blocked sockets (actually not used). Now FNET supports only non-blocked sockets. 
+	- Updated send() function. Now it returns 0 instead of FNET_ERR (FNET_ERR_AGAIN and FNET_ERR_NOMEM), when the TX-socket buffer is full.
+	- Added fnet_fs_finfo() function.
+	- Increased default number of the RX-Ethernet buffers.
+	- Fixed AJAX demo web pages, to make it work even when IE cache is enabled. 
+	- Many other minor changes and fixes.
+
+- Version 0.7.1:
+	- Added TWR-MCF52259 board support to the demo applications.
+	- Fixed PHY initialization for MCF52259 and MCF52235.
+	- Added serial-port initialization function.
+	- Minor changes and fixes.
+
+- Version 0.7.0:
+	- Added TFTP-server service. Both read and write requests are supported.
+	- Added TFTP Firmware server to the FNET Bootloader. It allows to update or backup the firmware from a remote TFTP client running on host PC without the serial-console command line interface.
+	- Updated to the latest CodeWarrior compiler:
+		- Freescale CodeWarrior for ColdFire version 7.2.
+		- Freescale CodeWarrior for Microcontrollers Version 6.3.
+	- Minor changes and fixes.
+
+- Version 0.6.4:
+	- Fixed compilation error in the @c shell_boot application.
+
+- Version 0.6.3:
+	- Added TFTP write request support to the TFTP client service.
+	- Added firmware-upload (through TFTP) command to the FNET Bootloader. It can be used for the firmware backup, for later system restore.
+	- Minor fixes.
+
+- Version 0.6.0:
+	- Added GNU Lesser GPL v3 license.
+	- Added Telnet server service.	
+	- Added M52259DEMO board support.
+	- Added Shell service.
+	- Added Serial I/O library.
+	- Added TCP options to control TCP keep-alive parameters: TCP_KEEPCNT, TCP_KEEPINTVL, TCP_KEEPIDLE. 
+	- Added new socket error code FNET_ERR_CONNCLOSED (connection closed by peer) used by the TCP receive function. 
+	- Deleted obsolete Lite HTTP server.
+	- Fixed some issues in the TCP module.
+	- Fixed memory management.
+	- A lot of other changes and fixes.
+
+- Version 0.5.0:
+	- Added TFTP client service.	
+	- Added Coldfire Flash Module (CFM) driver.
+	- Added FNET TFTP Bootloader.
+	- Fixed critical bug in the DHCP client.
+	- Eliminated the MQX support to avoid license issues.
+	- Deleted the obsolete Events API.
+	- Updated Shell Demo application. Application parameters are saved in the flash.
+	- Improved Shell library. Added blocking-command and multi-word parameter features.   
+	- A lot of other changes and fixes.
+
+- Version 0.4.1:
+	- Improved memory management. Memory pools added.	
+	- MQX demos updated for MQX v3.1.
+	- MQX demo added for Kirin2.
+	- Fixed bug in the netbuf adjust function.
+	- Fixed bug for TCP socket linger option.
+	- Minor internal changes and fixes. 
+
+- Version 0.4.0:
+	- The FNET project is published on the www.sourceforge.net.	
+	- Updated the FNET user documentation.
+	- Fixed the FEC module initialization for MCF51CN128 MTD Rev.A.
+	- Fixed the IP Reassembly bug (crashed during IP reassembling of the fragmented broadcast IP packets with the MTU less than 200).
+	- Added the FNET Shell library.
+	- A lot of other fixes.
+
+- Version 0.3.6:
+	- Added MCF51CN128 support (beta version).
+	- Added HTTP Server. CGI and SSI support.
+	- Added File System Interface.
+	- Added FNET ROM File System.
+	- Added GUI File System Generation tool.
+	- Added File Explorer to the Shell demo.
+	- Added Demo Web pages. 
+	- A lot of internal changes and bug fixes.
+
+- Version 0.3.2:
+	- Fixed the FNET documentation.
+	- Minor internal changes and fixes.
+
+- Version 0.3.1:
+	- Added the FNET documentation in Doxygen.
+	- Fixed all current compiler warnings.
+	- Added the PHY address discovery.
+	- Fixed access to the MII registers.
+	- A lot of other fixes.
+
+- Version 0.3.0:
+	- Improved memory-drain function for the TCP layer.
+	- During the TCP send a really available/free memory in the network heap is checked, so less data is put to the socket buffer. In the previous version the TCP returned just the NOMEM error code.
+	- Default TCP timeouts were decreased. So the stack is able to restore itself in seconds (not minutes as it was before).
+	- Added the statistics information (TX/RX packets) into the network interface.
+	- A lot of other fixes.
+*/
+
+//----------------------COPYRIGHT-------------------------------------
+/*!
+* @page fnet_license FNET License 
+* @n
+* @image html fnet_apache2.png 
+* @n
+* This project is free software: you can redistribute it and/or modify
+* it under the terms of the Apache Version 2.@n
+* @n
+*  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+*  @n Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+*  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
+
+//***********************************************************************
+//**************************CONFIG***************************************
+//***********************************************************************
+
+/*! 
+* @defgroup fnet_config FNET Configuration Parameters
+* The FNET has a number of configuration parameters that specify settings 
+* and features of the stack and the services. @n
+* @n
+* Every application that uses the FNET stack must contain a configuration file 
+* named @c fnet_user_config.h. It is used to specify application-specific 
+* parameters for building the FNET code. The file does not need to 
+* contain all parameters, specify only those you want to explicitly 
+* set or change. All 
+* configuration parameters have a default value provided in the FNET stack 
+* code. @n
+* @n
+* To simplify the creation of the application-specific configuration
+* file, you can 
+* copy the @ref fnet_user_config.template.h
+* into the project area and rename it to @c fnet_user_config.h.
+* Typical use of application-specific configuration is disabling the features that 
+* are not needed in application and reducing target system-memory 
+* requirements. @n
+* @n
+* The FNET configuration parameters are defined in the following files:
+* - @b fnet_user_config.h = The user configuration file used to set 
+* or change any of the FNET configuration parameters. Use the template file
+*         @ref fnet_user_config.template.h as a starting point.
+* - @ref fnet_config.h = The main FNET configuration file that is included by all
+*   C files in the stack, and which in turn includes all other configuration files.
+*   The user's configuration file @c fnet_user_config.h has the highest priority.
+* 	- @ref fnet_stack_config.h = TCP/IP stack-specific configuration.
+* 	- @ref fnet_comp_config.h = Compiler-specific configuration.
+* 	- @ref fnet_cpu_config.h = The main platform configuration file, 
+which includes all platform-specific configuration files.
+* 		- @ref fnet_mcf_config.h = Coldfire-specific default
+*        configuration parameters.
+*			- @ref fnet_mcf5282_config.h = MCF5282-specific configuration.
+* 			- @ref fnet_mcf52235_config.h = MCF52235-specific configuration.
+* 			- @ref fnet_mcf52259_config.h = MCF52259-specific configuration.
+* 			- @ref fnet_mcf51cn128_config.h = MCF51CN128-specific configuration.
+* 		- @ref fnet_mk_config.h = Kinetis-specific default
+*        configuration parameters.
+*			- @ref fnet_mk60n512_config.h = MK60N512-specific configuration parameters.
+* 	- @ref fnet_os_config.h = The OS-specific default configuration parameters.
+*		- @ref fnet_brtos_config.h = BRTOS configuration (not supported just for reference)
+* 		- @ref fnet_ucosIII_config.h = uC/OS-III configuration (not supported just for reference).
+* 		- @ref fnet_freertos_config.h = FreeRTOS configuration (not supported just for reference).
+* 	- @ref fnet_services_config.h = Service-specific configuration file 
+which includes all service-specific configuration files. 
+*		- @ref fnet_http_config.h = HTTP-Server-specific configuration.
+*		- @ref fnet_dhcp_config.h = DHCP-Client-specific configuration.
+*		- @ref fnet_tftp_config.h = TFTP-Client-specific configuration.
+*		- @ref fnet_fs_config.h = File-System-Interface-specific configuration.
+*		- @ref fnet_ping_config.h = PING-service-specific configuration.
+*		- @ref fnet_serial_config.h = Serial library configuration.
+*		- @ref fnet_shell_config.h = Shell-specific configuration.
+*		- @ref fnet_telnet_config.h = Telnet-Server-specific configuration.
+*
+* @note
+* The @a fnet_user_config.h is the ONLY file the user should modify. @n 
+* Example of @a fnet_user_config.h:
+* @code
+#ifndef _FNET_USER_CONFIG_H_
+#define _FNET_USER_CONFIG_H_
+
+/*****************************************************************************
+* Enable proper compiler support.
+******************************************************************************/
+#define FNET_CFG_COMP_CW            (1)  
+
+/*****************************************************************************
+* Processor type.
+* Selected processor definition should be only one and must be defined as 1. 
+* All others may be defined but must have 0 value.
+******************************************************************************/
+#define FNET_CFG_CPU_MCF52259       (1)
+
+/*****************************************************************************
+* IPv4 and/or IPv6 protocol support.
+******************************************************************************/
+#define FNET_CFG_IP4                (1)
+#define FNET_CFG_IP6                (0)
+
+/*****************************************************************************
+* IP address for the Ethernet interface. 
+* At runtime it can be changed by the fnet_netif_set_address() or 
+* by the DHCP client service.
+******************************************************************************/
+#define FNET_CFG_ETH_IP4_ADDR        (FNET_IP4_ADDR_INIT(10, 171, 88, 22))
+
+/*****************************************************************************
+* IP Subnet mask for the Ethernet interface. 
+* At runtime it can be changed by the fnet_netif_set_netmask() or 
+* by the DHCP client service.
+******************************************************************************/
+#define FNET_CFG_ETH_IP4_MASK        (FNET_IP4_ADDR_INIT(255, 255, 255, 0))
+
+/*****************************************************************************
+* Gateway IP address for the Ethernet interface.
+* At runtime it can be changed by the fnet_netif_set_gateway() or 
+* by the DHCP client service.
+******************************************************************************/
+#define FNET_CFG_ETH_IP4_GW          (FNET_IP4_ADDR_INIT(10, 171, 88, 254))
+
+/*****************************************************************************
+* DNS server IP address for the Ethernet interface.
+* At runtime it can be changed by the fnet_netif_set_dns() or 
+* by the DHCP client service. 
+* It is used only if FNET_CFG_DNS is set to 1.
+******************************************************************************/
+#define FNET_CFG_ETH_IP4_DNS         (FNET_IP4_ADDR_INIT(192, 168, 1, 5)) 
+
+/*****************************************************************************
+* Size of the internal static heap buffer. 
+* This definition is used only if the fnet_init_static() was 
+* used for the FNET initialization.
+******************************************************************************/
+#define FNET_CFG_HEAP_SIZE          (30 * 1024)
+
+/*****************************************************************************
+* TCP protocol support.
+* You can disable it to save a substantial amount of code if 
+* your application only needs UDP. By default it is enabled.
+******************************************************************************/
+#define FNET_CFG_TCP                (1)
+
+/*****************************************************************************
+* UDP protocol support.
+* You can disable it to save a some amount of code if your 
+* application only needs TCP. By default it is enabled.
+******************************************************************************/
+#define FNET_CFG_UDP                (1)
+
+/*****************************************************************************
+* UDP checksum.
+* If enabled, the UDP checksum will be generated for transmitted 
+* datagrams and be verified on received UDP datagrams.
+* You can disable it to speedup UDP applications. 
+* By default it is enabled.
+******************************************************************************/
+#define FNET_CFG_UDP_CHECKSUM       (1)
+
+/*****************************************************************************
+* IP fragmentation.
+* If the IP fragmentation is enabled, the IP will attempt to reassemble IP 
+* packet fragments and will able to generate fragmented IP packets.
+* If disabled, the IP will  silently discard fragmented IP packets..
+******************************************************************************/
+#define FNET_CFG_IP4_FRAGMENTATION  (1)
+
+/*****************************************************************************
+* MTU.
+* Defines the Maximum Transmission Unit for the Ethernet interface.
+* The largest value is 1500. Recommended range is 600 - 1500
+******************************************************************************/
+#define FNET_CFG_ETH_MTU            (1500)
+
+/*****************************************************************************
+* DHCP Client service support.
+******************************************************************************/
+#define FNET_CFG_DHCP               (1)
+
+/*****************************************************************************
+* PING service support.
+******************************************************************************/
+#define FNET_CFG_PING               (1)
+
+/*****************************************************************************
+* HTTP Server service support.
+******************************************************************************/
+#define FNET_CFG_HTTP                       (1)
+#define FNET_CFG_HTTP_AUTHENTICATION_BASIC  (1) /* Enable HTTP authentication.*/
+#define FNET_CFG_HTTP_POST                  (1) /* Enable HTTP POST-method support.*/
+
+/*****************************************************************************
+* Telnet Server service support.
+******************************************************************************/
+#define FNET_CFG_TELNET                     (1)
+
+/*****************************************************************************
+* DNS support by network interface.
+******************************************************************************/
+#define FNET_CFG_DNS                        (1)
+
+/*****************************************************************************
+* DNS address client/resolver service support.
+******************************************************************************/
+#define FNET_CFG_DNS_RESOLVER               (1)
+
+/*****************************************************************************
+* Flash Module driver support.
+******************************************************************************/
+#define FNET_CFG_FLASH                      (1)
+
+/*****************************************************************************
+* PING service support.
+******************************************************************************/
+#define FNET_CFG_PING                       (1)
+
+#endif* @endcode
+*/
+
+/*! 
+*	@defgroup fnet_stack_config Stack Configuration Parameters
+*	@ingroup fnet_config 
+*	This section describes the main configuration parameters 
+*     of the FNET TCP/IP
+*	stack. @n
+*   The user may override and change the default values in the 
+*   application-specific configuration file @c fnet_user_config.h.
+*/
+
+/*! 
+*	@defgroup fnet_platform_stack_ip6_config IPv6-Specific Configuration Parameters
+*	@ingroup fnet_stack_config 
+*	This section describes parameters that are specific only 
+*     for IPv6. @n
+*     The user may override and change the default values in the 
+*     application-specific configuration file @c fnet_user_config.h.
+*/
+
+/*! 
+*	@defgroup fnet_platform_stack_ip4_config IPv4-Specific Configuration Parameters
+*	@ingroup fnet_stack_config 
+*	This section describes parameters that are specific only 
+*     for IPv4. @n
+*     The user may override and change the default values in the 
+*     application-specific configuration file @c fnet_user_config.h.
+*/
+
+
+
+/*! 
+*	@defgroup fnet_platform_config Platform-Specific Configuration Parameters
+*	@ingroup fnet_config 
+*	This section describes the platform-specific parameters of the FNET TCP/IP
+*	stack. @n
+*     The user may override and change the default values in the 
+*     application-specific configuration file @c fnet_user_config.h.
+*/
+
+/*! 
+*	@defgroup fnet_platform_eth_config Ethernet Module Configuration Parameters
+*	@ingroup fnet_platform_config 
+*	This section describes parameters that are specific 
+*     for the Ethernet module. @n
+*     The user may override and change the default values in the 
+*     application-specific configuration file @c fnet_user_config.h.
+*/
+
+
+/*! 
+*	@defgroup fnet_platform_mcf_config ColdFire Platform Configuration Parameters
+*	@ingroup fnet_platform_config 
+*	This section describes parameters that are specific only 
+*     for the ColdFire platform. @n
+*     The user may override and change the default values in the 
+*     application-specific configuration file @c fnet_user_config.h.
+*/
+
+/*! 
+*	@defgroup fnet_os_config OS Configuration Parameters
+*	@ingroup fnet_platform_config 
+*	This section describes parameters that are specific for used
+*     Operation System.
+*/
+
+
+
+
+/*! 
+*	@defgroup fnet_services_config Service-Specific Configuration Parameters
+*	@ingroup fnet_config
+*	This section describes the parameters specific to the FNET TCP/IP services.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+
+/*! 
+*	@defgroup fnet_dhcp_config DHCP Client Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the DHCP client.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+/*! 
+*	@defgroup fnet_dns_config DNS Client Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the DNS client.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+/*! 
+*	@defgroup fnet_llmnr_config LLMNR Server Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the LLMNR server.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+/*! 
+*	@defgroup fnet_fs_config File System Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the File System library.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+
+/*! 
+*	@defgroup fnet_http_config HTTP Server Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the HTTP Server.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+
+/*! 
+*	@defgroup fnet_ping_config PING Service Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the PING Service.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+
+/*! 
+*	@defgroup fnet_serial_config Serial Library Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the Serial Library.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+
+/*! 
+*	@defgroup fnet_shell_config Shell Service Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the Shell Service.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+
+/*! 
+*	@defgroup fnet_telnet_config Telnet Server Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the Telnet Server.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+
+/*! 
+*	@defgroup fnet_tftp_config TFTP Server and Client Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the TFTP Server and Client.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+
+
+
+
+//***********************************************************************
+//**************************STACK API************************************
+//***********************************************************************
+
+/*! 
+* @defgroup stack_api FNET Stack API 
+* This section describes the User API of the FNET 
+* TCP/IP stack. @n
+* To gain access to the FNET TCP/IP stack API, the application only 
+* needs to include the main header file @c fnet.h:
+* @code 
+* #include "fnet.h";
+*
+* /* Now you can use FNET API */
+* @endcode
+* 
+*/
+
+/*! 
+*	@defgroup fnet_stack_init Stack Initialization API
+*	@ingroup stack_api
+*/
+
+/*! 
+*	@defgroup fnet_socket Sockets API
+*	@ingroup stack_api
+*/
+
+/*! 
+*	@defgroup fnet_error Error Codes API
+*	@ingroup stack_api
+*/
+
+
+/*! 
+*	@defgroup fnet_netif Network Interfaces API
+*	@ingroup stack_api
+*/
+
+/*! 
+*	@defgroup fnet_timer Timer API
+*	@ingroup stack_api
+*/
+
+/*! 
+*	@defgroup fnet_define Version Definitions
+*	@ingroup stack_api
+*/
+
+/*! 
+*	@defgroup fnet_cpu CPU-specific library API
+*	@ingroup stack_api 
+*/
+
+/*! 
+*	@defgroup fnet_stdlib Standard library API
+*	@ingroup stack_api 
+*/
+
+
+//----------------------SERVICES API----------------------------------
+/*! 
+* @defgroup services_api FNET Services API
+* Services are built on top of the core FNET TCP/IP stack. @n
+* Their use is purely optional, user may completely recreate the same functionality 
+* with an application-level code. @n
+* To gain access to the FNET TCP/IP services API, the application only 
+* needs to include the main header file @c fnet.h:
+* @code 
+* #include "fnet.h";
+*
+* /* Now you can use FNET Services API */
+* @endcode
+ 
+*/
+/*! 
+*	@defgroup fnet_polling Polling Mechanism API
+*	@ingroup services_api 
+*/
+/*! 
+*	@defgroup fnet_http HTTP server API
+*	@ingroup services_api 
+*/
+/*! 
+*	@defgroup fnet_telnet TELNET server API
+*	@ingroup services_api 
+*/
+
+/*! 
+*	@defgroup fnet_dhcp DHCP/BOOTP client API
+*	@ingroup services_api 
+*/
+/*! 
+*	@defgroup fnet_dns DNS client/resolver API
+*	@ingroup services_api 
+*/
+/*! 
+*	@defgroup fnet_llmnr LLMNR server/responder API
+*	@ingroup services_api 
+*/
+/*! 
+*	@defgroup fnet_ping PING service API
+*	@ingroup services_api 
+*/
+
+/*! 
+*	@defgroup fnet_tftp TFTP API
+*	@ingroup services_api 
+*/
+/*! 
+*	@defgroup fnet_tftp_cln TFTP client API
+*	@ingroup fnet_tftp 
+*/
+/*! 
+*	@defgroup fnet_tftp_srv TFTP server API
+*	@ingroup fnet_tftp 
+*/
+
+/*! 
+*	@defgroup fnet_cfm On-chip Flash driver API
+*	@ingroup services_api 
+*/
+/*! 
+*	@defgroup fnet_fs File System API
+*	@ingroup services_api 
+*/
+/*! 
+*	@defgroup fnet_fs_rom ROM File System API
+*	@ingroup fnet_fs 
+*/
+/*! 
+*	@defgroup fnet_shell Shell service API
+*	@ingroup services_api 
+*/
+/*! 
+*	@defgroup fnet_serial Serial Input/Output library API
+*	@ingroup services_api 
+*/
+
+
+
+
+

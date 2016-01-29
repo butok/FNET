@@ -1,0 +1,85 @@
+# Default linker command file.
+MEMORY {
+m_interrupts  (RX) : ORIGIN = 0x00000000, LENGTH = 0x00000410
+m_text        (RX) : ORIGIN = 0x00000410, LENGTH = 0x0007F3F0 #0x00080000-0x410 /*Ints*/-0x800/*Params*/
+fapp_paramsrom   (RW)  : ORIGIN = 0x0007F800,	LENGTH = 0x00000800 # 2KBytes = Last logical-block resevrd for params.
+
+vectorram     (RWX) : ORIGIN = 0x1FFF0000, LENGTH = 0x00000410 #
+m_data        (RWX) : ORIGIN = 0x1FFF0410, LENGTH = 0x0001EBF0 #0x00020000-0x00000410-0x00001000/*Stack*/
+}
+
+KEEP_SECTION { .vectortable }
+KEEP_SECTION { .fapp_params }
+
+
+SECTIONS {
+
+.vectorram	: {} > vectorram
+
+.interrupts :
+{
+    __vector_table = .;
+    * (.vectortable)
+    . = ALIGN (0x4);
+} > m_interrupts
+
+.app_text: 
+{
+	ALIGNALL(4);
+   	* (.init)	
+   	* (.text)
+		.= ALIGN(0x8) ;
+	* (.rodata)
+		.= ALIGN(0x4) ;
+    ___ROM_AT = .;
+} > m_text
+.app_data: AT(___ROM_AT)
+{
+	*(.FNET_RAM) #Flash driver "in ram" function.
+   	* (.sdata)
+   	* (.data)
+		.= ALIGN(0x4) ;
+   	*(.ARM.extab)
+		.= ALIGN(0x4) ;
+       __exception_table_start__ = .;
+   	EXCEPTION
+       __exception_table_end__ = .;
+		.= ALIGN(0x4) ;
+       __sinit__ = .;
+   	STATICINIT
+	.= ALIGN(0x8) ;
+} > m_data
+.bss :
+{
+	.= ALIGN(0x4) ;
+	__START_BSS = .;
+	* (.bss)
+	__END_BSS = .;
+	.= ALIGN(0x8) ;
+} >> m_data
+
+_romp_at = ___ROM_AT + SIZEOF(.app_data);
+.romp : AT(_romp_at)
+{
+    __S_romp = _romp_at;
+    WRITEW(___ROM_AT);
+    WRITEW(ADDR(.app_data));
+    WRITEW(SIZEOF(.app_data));
+    WRITEW(0);
+    WRITEW(0);
+    WRITEW(0);
+}
+
+__SP_INIT = . + 0x00001000;
+__heap_addr = __SP_INIT;
+__heap_size = 0x00000000;
+
+# ====== Definitions used by FNET Application. =======
+	.params :
+	{
+		*(.fapp_params)
+	} > fapp_paramsrom
+
+__VECTOR_RAM		= ADDR(.vectorram);
+
+}

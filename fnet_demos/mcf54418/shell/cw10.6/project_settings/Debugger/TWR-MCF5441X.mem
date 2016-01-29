@@ -1,0 +1,41 @@
+// Memory Configuration File
+//
+// Description:
+//  A memory configuration file contains commands that define the legally accessible
+//  areas of memory for your specific board. Useful for example when the debugger
+//  tries to display the content of a "char *" variable, that has not yet been initialized.
+//  In this case the debugger may try to read from a bogus address, which could cause a
+//  bus error.
+//
+// Board:
+//  TWR-MCF5441X
+//
+// Reference:
+//  ?
+
+
+// All reserved ranges read back 0xBABA...
+reservedchar 0xBA
+
+address         MMUBAR_BASE     0x11000000
+
+usederivative "MCF54418"
+
+//         Memory Map:
+//         ----------------------------------------------------------------------
+range      0x00000000 0x00000F8F 4 ReadWrite    // 0xF90 bytes for nand boot image
+reserved   0x00000F90 0x10FFFFFF
+
+//         $MMUBAR_BASE $MMUBAR_BASE + 0xFFFF   // Memory Mapped MMU Registers
+reserved   $MMUBAR_BASE + 0x0000001C 0x3FFFFFFF
+
+//         insert MMU range here
+range      0x40000000 0x47FFFFFF 4 ReadWrite    // 128 MBytes DDR2 SDRAM
+reserved   0x48000000 0x7FFFFFFF
+range      0x80000000 0x8000FFFF 4 ReadWrite    // 64K SRAM (RAMBAR)
+reserved   0x80010000 0x8BFFFFFF
+//         0x8C000000 0x8C00000F                // GPIO registers
+reserved   0x8C000010 0xEC007FFF
+//         0xEC008000 0xEFFFFFFF                // Peripheral bus controller 1
+//         0xFC004000 0xFFFFFFFF                // Peripheral bus controller 0
+reserved   0xFC0FFF3C 0xFFFFFFFF

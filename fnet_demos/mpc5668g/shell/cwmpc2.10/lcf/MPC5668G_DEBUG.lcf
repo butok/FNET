@@ -1,0 +1,160 @@
+/* lcf file for MPC5668G processors                                          */
+/*                                                                          */
+
+
+/*               2 MB Flash, 592KB SRAM                                     */
+
+
+MEMORY
+{
+    pseudo_rom:             org = 0x40000000,   len = 0x00075800
+    init:                   org = 0x40075800,   len = 0x00000800
+    exception_handlers_p0:  org = 0x40076000,   len = 0x00001000
+    exception_handlers_p1:  org = 0x40077000,   len = 0x00001000
+   
+    internal_ram:      	    org = 0x40078000,   len = 0x00020000
+    heap  :                 org = 0x40090000,   len = 0x00001000 /* Heap start location */
+    stack :                 org = 0x40091000,   len = 0x00001000 /* Start location for Stack */
+    heap_p1  :              org = 0x40092000,   len = 0x00001000 /* z0 Heap  */
+    stack_p1 :              org = 0x40093000,   len = 0x00001000 /* z0 Stack */
+}
+
+SECTIONS
+
+{
+
+    GROUP : {
+
+      .init  : {}
+
+      .init_vle (VLECODE) : {
+
+        *(.init)
+
+        *(.init_vle)
+
+      }
+
+    } > init
+
+
+
+    GROUP : {
+
+      .ivor_branch_table_p0 (VLECODE) ALIGN (2048) : {}
+
+      .intc_hw_branch_table_p0 ALIGN (2048) : {}           
+
+      .__exception_handlers_p0 (VLECODE) : {}
+
+    } > exception_handlers_p0
+
+
+
+    GROUP : {
+
+      .ivor_branch_table_p1 (VLECODE) ALIGN (2048)  : {}
+
+      .intc_hw_branch_table_p1 ALIGN (2048) : {}   
+
+      .__exception_handlers_p1 (VLECODE) : {}
+
+    } > exception_handlers_p1
+
+
+
+    GROUP : {
+
+      .intc_sw_isr_vector_table_p0 ALIGN (2048) : {}
+
+      .intc_sw_isr_vector_table_p1 ALIGN (2048) : {}
+
+
+
+        .text (TEXT) ALIGN(0x1000) : {}
+
+        .text_vle (VLECODE) ALIGN(0x1000): {
+
+             *(.text)
+
+             *(.text_vle)
+
+         }
+
+        .rodata (CONST) : {
+
+            *(.rdata)
+
+            *(.rodata)
+
+        }
+
+        .ctors : {}
+
+        .dtors : {}
+
+        extab : {}
+
+        extabindex : {}
+
+    } > pseudo_rom
+
+
+
+    GROUP : {    
+
+       .__uninitialized_intc_handlertable ALIGN(0x10) : {}
+
+       .data   : {}
+
+       .sdata  : {}
+
+       .sbss   : {}
+
+       .sdata2 : {}
+
+       .sbss2  : {}
+
+       .bss    : {}
+
+    } > internal_ram
+
+}
+
+
+
+/* Freescale CodeWarrior compiler address designations */
+
+
+
+_stack_addr = ADDR(stack)+SIZEOF(stack);
+
+_stack_end  = ADDR(stack);
+
+_heap_addr  = ADDR(heap);
+
+_heap_end   = ADDR(heap)+SIZEOF(heap);
+
+
+
+_stack_addr_p1 = ADDR(stack_p1)+SIZEOF(stack_p1);
+
+_stack_end_p1  = ADDR(stack_p1);
+
+_heap_addr_p1  = ADDR(heap_p1);
+
+_heap_end_p1   = ADDR(heap_p1)+SIZEOF(heap_p1);
+
+
+/* Added Vector Table RAM */
+__VECTOR_RAM  = ADDR(.__uninitialized_intc_handlertable);
+
+
+/* Exceptions Handlers Location (used in Exceptions.c for IVPR initialization) */
+
+
+
+EXCEPTION_HANDLERS = ADDR(exception_handlers_p0);
+
+EXCEPTION_HANDLERS_P1 = ADDR(exception_handlers_p1);
+

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<FnetFS version="1">
+  <ProjectSettings>
+    <OutputFullPath>.\fnet_application\fapp_fs_image.c</OutputFullPath>
+    <ImageName>fnet_fs_image</ImageName>
+    <ConditionIf>FNET_CFG_FS &amp;&amp; FNET_CFG_FS_ROM &amp;&amp; FNET_CFG_HTTP_VERSION_MAJOR</ConditionIf>
+  </ProjectSettings>
+  <FileTree>
+    <Node Type="Directory" Name="auth">
+      <Node Type="File" Name="fnet_auth.html">.\fnet_webpage\auth\fnet_auth.html</Node>
+    </Node>
+    <Node Type="File" Name="favicon.ico">.\fnet_webpage\favicon.ico</Node>
+    <Node Type="File" Name="fnet.css">.\fnet_webpage\fnet.css</Node>
+    <Node Type="File" Name="fnet.js">.\fnet_webpage\fnet.js</Node>
+    <Node Type="File" Name="fnet_graph.html">.\fnet_webpage\fnet_graph.html</Node>
+    <Node Type="File" Name="fnet_post.html">.\fnet_webpage\fnet_post.html</Node>
+    <Node Type="File" Name="fnet_set.shtml">.\fnet_webpage\fnet_set.shtml</Node>
+    <Node Type="File" Name="fnet_stat.html">.\fnet_webpage\fnet_stat.html</Node>
+    <Node Type="File" Name="fnet_sup.html">.\fnet_webpage\fnet_sup.html</Node>
+    <Node Type="File" Name="fnet_logo.gif">.\fnet_webpage\fnet_logo.gif</Node>
+    <Node Type="File" Name="index.html">.\fnet_webpage\index.html</Node>
+  </FileTree>
+</FnetFS>

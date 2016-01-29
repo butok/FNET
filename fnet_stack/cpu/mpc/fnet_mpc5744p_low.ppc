@@ -1,0 +1,64 @@
+	.file	"fnet_mpc5744p_low.ppc"
+
+    .globl        fnet_mpc5744p_cacr_wr
+
+	.section ".vletext", "vax"
+	.vle
+   
+fnet_mpc5744p_cacr_wr :
+
+    //*********************** Invalidate caches *********************
+    // Instruction cache (I-CACHE)
+__icache_cfg:
+    e_li        r28, 0x2
+    mtspr       1011, r28                        # Set L1CSR1.ICINV bit. Start instruction cache invalidation
+    e_li        r7, 0x4
+    e_li        r8, 0x2
+    e_lis       r11, 0xFFFFFFFB@h
+    e_or2i      r11, 0xFFFFFFFB@l
+
+__icache_inv:
+    mfspr       r9, 1011                        # Read L1CSR1
+    and.        r10, r7, r9                     # Check if L1CSR1.ICABT is set indicating cache invalidation was aborted.
+    e_beq       __icache_no_abort               # If 0, no abortion, jump to proceed.
+    and.        r10, r11, r9
+    mtspr       1011, r10                       # Clear the L1CSR1.ICABT bit.
+    e_b         __icache_cfg                    # Branch back to retry invalidation of instruction cache.
+
+__icache_no_abort:
+    and.        r10, r8, r9                     # Check if L1CSR1.ICINV is clear indication cache invalidation completed.
+    e_bne       __icache_inv                    # If ICINV bit still set jump back to wait and re-check ICABT bit.
+
+    mfspr       r28, 1011                        # Read L1CSR0
+    e_ori       r28, r28, 0x0001
+    se_isync                                    # wait for all previous instructions to complete
+    msync                                       # wait for preceding data memory accesses to reach the point of coherency
+
+    // Data cache (D-CACHE)
+__dcache_cfg:
+    e_li        r28, 0x2
+    mtspr       1010, r28                        # Set L1CSR0.DCINV bit. Start data cache invalidation
+
+    e_li        r7, 0x4
+    e_li        r8, 0x2
+    e_lis       r11, 0xFFFFFFFB@h
+    e_or2i      r11, 0xFFFFFFFB@l
+
+__dcache_inv:
+    mfspr       r9, 1010                        # Read L1CSRO
+    and.        r10, r7, r9                     # Check if L1CSR0.DCABT is set indicating cache invalidation was aborted.
+    e_beq       __dcache_no_abort               # If 0, no abortion, jump to proceed.
+    and.        r10, r11, r9
+    mtspr       1010, r10                       # Clear the L1CSR0.DCABT bit.
+    e_b         __dcache_cfg                    # Branch back to retry invalidation of data cache.
+
+__dcache_no_abort:
+    and.        r10, r8, r9                     # Check if L1CSR0.DCINV is clear indication cache invalidation completed.
+    e_bne       __dcache_inv                    # If DCINV bit still set jump back to wait and re-check DCABT bit.
+    mfspr       r28, 1010                        # Read L1CSR0
+
+    e_ori       r28, r28, 0x0001
+    se_isync                                    # wait for all previous instructions to complete
+    msync                                       # wait for preceding data memory accesses to reach the point of coherency
+
+se_blr

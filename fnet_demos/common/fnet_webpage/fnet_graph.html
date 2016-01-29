@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+	<link rel="Stylesheet" href="fnet.css" type="text/css" media="screen"/>
+	<title>FNET Graph/AJAX Demo</title>
+	<script type="text/javascript" src="fnet.js"> </script>
+	<link rel="shortcut icon" href="favicon.ico"/>    
+	<style type="text/css">
+		#graph {
+			width: 380px; height: 340px; position: relative; background: #E0E6E6;
+			line-height: 23px; border: 1px solid #C3CFD1; margin-right:10px;
+			margin-left:10px;
+		}
+		#graph ul {
+			margin: 0; padding: 0; list-style: none;
+		}
+		#graph ul li {
+			position: absolute; width: 28px; bottom: 15px; padding: 0;
+			margin: 0; text-align: center; font-weight: bold;
+			color: white; line-height: 2.5em;
+		}
+		#graph li#q1 {left: 24px; background-position: 0px bottom; background:#00608B;}
+		#graph li#q2 {left: 101px; background-position: -28px bottom; background:#73BFD7;}
+		#graph li#q3 {left: 176px; background-position: -56px bottom; background:#998875;}
+		#graph li#q4 {left: 251px; background-position: -84px bottom; background:#C3CC51;}
+		#graph li#q5 {left: 327px; background-position: -112px bottom; background:#4D4D4D;}
+	</style>
+	<script type="text/javascript">
+		var fnetDataReceived = 0;
+		function fnetRequest(){
+			if (!fnetDataReceived){
+		        var xmlHTTP = fnetXMLHttpRequest();
+ 				fnetDataReceived = 1;
+				if( xmlHTTP != null){
+					xmlHTTP.onreadystatechange = function(){
+				  		if (xmlHTTP.readyState == 4){
+							if (xmlHTTP.status == 200)
+									fnetHandler(xmlHTTP.responseText);
+				  			fnetDataReceived = 0;
+			  			}
+					};
+					xmlHTTP.open("GET", "graph.cgi", true);
+					xmlHTTP.setRequestHeader("If-Modified-Since", document.lastModified);
+					xmlHTTP.send(null);
+				}
+			}
+		}
+		function fnetHandler(data){
+			var res = eval(data);
+			document.getElementById("q1").style.height = res.q1+"px";
+			document.getElementById("q1").innerHTML = res.q1;
+			document.getElementById("q2").style.height = res.q2+"px";
+			document.getElementById("q2").innerHTML = res.q2;
+			document.getElementById("q3").style.height = res.q3+"px";
+			document.getElementById("q3").innerHTML = res.q3;
+			document.getElementById("q4").style.height = res.q4+"px";
+			document.getElementById("q4").innerHTML = res.q4;
+			document.getElementById("q5").style.height = res.q5+"px";
+			document.getElementById("q5").innerHTML = res.q5;								
+		}
+		window.setInterval("fnetRequest()", 1000);
+	</script>
+</head>
+<body>
+	<script type="text/javascript">
+		fnetPrintHeader("Graph/AJAX Demo");
+	</script>
+ 	<div id="graph">
+		<ul>
+			<li id="q1"></li>
+			<li id="q2"></li>
+			<li id="q3"></li>
+			<li id="q4"></li>
+			<li id="q5"></li>
+		</ul>
+	</div>
+	<br/>
+	<br/>
+	<i>NOTE: This page gets the data from the server periodically with help 
+	of AJAX. It’s used JavaScript, CGI and JSON data format.</i>	
+ 	<script type="text/javascript">
+			fnetPrintFooter();
+	</script>
+</body>
+</html>		

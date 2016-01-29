@@ -1,0 +1,107 @@
+/* lcf file for MPC5668G processors                                         */
+/*                                                                          */
+
+
+
+
+/*               2 MB Flash, 592KB SRAM                                     */
+
+MEMORY
+{
+    resetvector:           org = 0x00000000,   len = 0x00000008
+    exception_handlers_p0: org = 0x00001000,   len = 0x00001000
+    exception_handlers_p1: org = 0x00002000,   len = 0x00001000 
+    internal_flash:        org = 0x00003000,   len = 0x001FE000
+    
+    internal_ram:          org = 0x40000000,   len = 0x00018000
+    heap  :                org = 0x40078000,   len = 0x00002000 /* z6 Heap start location */
+    stack :                org = 0x4007A000,   len = 0x00002000 /* z6 Start location for Stack */
+    heap_p1  :             org = 0x4007C000,   len = 0x00002000 /* z0 Heap  */
+    stack_p1 :             org = 0x4007E000,   len = 0x00002000 /* z0 Stack */
+}
+
+/* This will ensure the rchw and reset vector are not stripped by the linker */
+FORCEACTIVE { "bam_rchw" "bam_resetvector" }
+
+SECTIONS
+{
+    .__bam_bootarea LOAD (0x00000000): {} > resetvector
+
+    /* Note the intc_hw_branch_table, if used, MUST be loaded at the */
+    /* IVPR + 2KB (0x800)  That means if the code loaded into the    */
+    /* .__exception_handlers_p* section is larger than 0x700 bytes,  */
+    /* the following group(s) must be reconfigured.                  */
+    
+    GROUP : {
+      .ivor_branch_table_p0 (VLECODE) LOAD (0x00001000)   : {}
+      .intc_hw_branch_table_p0 LOAD (0x00001800): {}           
+      .__exception_handlers_p0  (VLECODE) LOAD (0x00001100) : {}
+    } > exception_handlers_p0
+
+    GROUP : {
+      .ivor_branch_table_p1 (VLECODE) LOAD (0x00002000)   : {}
+      .intc_hw_branch_table_p1 LOAD (0x00002800): {}   
+      .__exception_handlers_p1 (VLECODE) LOAD (0x00002100) : {}
+    } > exception_handlers_p1
+
+
+    GROUP  : {
+      .intc_sw_isr_vector_table_p0 ALIGN (2048) : {}
+      .intc_sw_isr_vector_table_p1 ALIGN (2048) : {}
+
+      .init : {}
+      .init_vle (VLECODE) : {
+        *(.init)
+        *(.init_vle)
+      }
+      .text : {} 
+      .text_vle (VLECODE) : {
+         *(.text)
+         *(.text_vle)
+       }
+       .rodata (CONST) : {
+         *(.rdata)
+         *(.rodata)
+       }
+       .ctors : {}
+       .dtors : {}
+       extab : {}
+       extabindex : {}
+    } > internal_flash
+
+    GROUP : {
+       .__uninitialized_intc_handlertable ALIGN(2048) : {}
+       .data   : {}
+       .sdata  : {}
+       .sbss   : {}
+       .sdata2 : {}
+       .sbss2  : {}
+       .bss    : {}
+    } > internal_ram
+}
+
+/* Freescale CodeWarrior compiler address designations */
+
+_stack_addr = ADDR(stack)+SIZEOF(stack);
+_stack_end  = ADDR(stack);
+_heap_addr  = ADDR(heap);
+_heap_end   = ADDR(heap)+SIZEOF(heap);
+
+_stack_addr_p1 = ADDR(stack_p1)+SIZEOF(stack_p1);
+_stack_end_p1  = ADDR(stack_p1);
+_heap_addr_p1  = ADDR(heap_p1);
+_heap_end_p1   = ADDR(heap_p1)+SIZEOF(heap_p1);
+
+/* Added Vector Table RAM */
+__VECTOR_RAM  = ADDR(.__uninitialized_intc_handlertable);
+
+/* Exceptions Handlers Location (used in Exceptions.c for e200z1 IVPR initialization)*/
+
+EXCEPTION_HANDLERS    = ADDR(exception_handlers_p0);
+
+EXCEPTION_HANDLERS_P1 = ADDR(exception_handlers_p1);
+
+
+/* L2 SRAM Location (used for L2 SRAM initialization) */
+
+L2SRAM_LOCATION = 0x40000000;

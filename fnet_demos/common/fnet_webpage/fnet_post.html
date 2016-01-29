@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+	<link rel="Stylesheet" href="fnet.css" type="text/css" media="screen"/>
+	<title>FNET POST Demo</title>
+	<script type="text/javascript" src="fnet.js"> </script>
+	<link rel="shortcut icon" href="favicon.ico"/>    
+	<script type="text/javascript">
+		function fnetPostRequest(){
+		 		var xmlHTTP = fnetXMLHttpRequest();
+                var data;
+				data=document.getElementById("post_data").value;
+				if(xmlHTTP != null){
+				   	xmlHTTP.onreadystatechange = function(){
+							if (xmlHTTP.readyState == 4)
+								if (xmlHTTP.status != 200)
+			            			alert("Submitting is failed.");
+					};
+					xmlHTTP.open("POST", "post.cgi", true);
+					xmlHTTP.setRequestHeader("Content-length", data.length);
+					xmlHTTP.send(data);
+				}
+		}
+		function fnetGetRequest(){
+			var xmlHTTP = fnetXMLHttpRequest();
+			if(xmlHTTP != null)
+			{
+				xmlHTTP.onreadystatechange = function(){
+					if (xmlHTTP.readyState == 4){
+						if (xmlHTTP.status == 200)
+				   			document.getElementById("view_data").value = xmlHTTP.responseText;
+						else
+		 					alert("Viewing is failed.");
+					}
+				};
+ 			   	xmlHTTP.open("GET", "post.cgi", true);
+			   	xmlHTTP.setRequestHeader("If-Modified-Since", document.lastModified);
+				xmlHTTP.send(null);
+			}
+		}
+        function limitText(){
+        	var limitField = document.getElementById("post_data");
+            var limitNum = 50;
+			if (limitField.value.length > limitNum) {
+				limitField.value = limitField.value.substring(0, limitNum);
+			} else {
+				document.getElementById("counter").innerHTML = limitNum - limitField.value.length;
+			}
+		}
+	</script>
+</head>
+<body>
+	<script type="text/javascript">
+		fnetPrintHeader("FNET POST Demo");
+	</script>
+
+    <table cellspacing="2">
+	<th width="200">Submitting your input data:</th>
+	<th width="200">Checking your submitted data:</th>
+	<tr>
+		<td>
+ 			<textarea id="post_data" rows="3" cols="25" wrap="soft" onpaste="limitText();" onkeydown="limitText();" onkeyup="limitText();"></textarea><br/>
+			<input type="button" value="Submit" onclick="fnetPostRequest();"/>
+			<font size="1"> You have <span id="counter">50</span> characters left.</font>
+		</td>
+		<td>
+        	<textarea id="view_data" rows="3" cols="25" readonly="readonly" wrap="soft"></textarea><br/>
+            <input type="button" value="View" onclick="fnetGetRequest();"/>
+		</td>
+	</tr>
+	</table>
+    <br/>
+	<i>NOTE: This page submits the input data to the server using the POST method of HTTP protocol.</i>
+   	<script type="text/javascript">
+        fnetPrintFooter();
+	</script>
+</body>
+</html>

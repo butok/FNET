@@ -1,0 +1,51 @@
+# Default linker command file.
+MEMORY {
+fapp_paramsrom   (RW)  : ORIGIN = 0x000FF000,	LENGTH = 0x00001000 # 4KBytes = Last logical-block resevrd for params.
+
+m_interrupts  (RX) : ORIGIN = 0x1FFF0000, LENGTH = 0x00000410 #0x000001E0
+m_ram        (RX) : ORIGIN = 0x1FFF0410, LENGTH = 0x0001EBF0 #0x00020000-0x00000410-0x00001000/*Stack*/
+}
+
+KEEP_SECTION { .vectortable }
+
+SECTIONS {
+
+.interrupts :
+{
+    __vector_table = .;
+    * (.vectortable)
+    . = ALIGN (0x10);
+} > m_interrupts
+
+.app_ram: {
+	ALIGNALL(0x10);
+   	* (.init)	
+   	* (.text)
+		.= ALIGN(0x10) ;
+   	* (.rodata)
+   	* (.sdata)
+   	* (.data)
+		.= ALIGN(0x10) ;
+   	*(.ARM.extab)
+		.= ALIGN(0x10) ;
+       __exception_table_start__ = .;
+   	EXCEPTION
+       __exception_table_end__ = .;
+		.= ALIGN(0x10) ;
+       __sinit__ = .;
+   	STATICINIT
+		.= ALIGN(0x10) ;
+		__START_BSS = .;
+		* (.bss)
+		__END_BSS = .;
+		.= ALIGN(0x10) ;
+} > m_ram
+
+__S_romp = 0;
+__SP_INIT = . + 0x00001000;
+__heap_addr = __SP_INIT;
+__heap_size = 0x00000000;
+
+    # ====== Definitions used by FNET Application. =======
+	__VECTOR_RAM		= ADDR(.interrupts);
+}

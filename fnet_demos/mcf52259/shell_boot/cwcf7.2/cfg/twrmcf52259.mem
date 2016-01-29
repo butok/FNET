@@ -1,0 +1,16 @@
+// All reserved ranges read back 0xBABA...
+reservedchar 0xBA
+
+//       Memory Map:
+//       ----------------------------------------------------------------------
+
+range    0x00000000 0x0007FFFF 4 Read       // Internal Flash Memory
+reserved 0x00080000 0x0FFFFFFF
+
+range    0x10000000 0x1007FFFF 1 ReadWrite  // External MRAM
+reserved 0x10080000 0x1FFFFFFF
+
+range    0x20000000 0x2000FFFF 1 ReadWrite  // Internal SRAM
+reserved 0x20010000 0x3FFFFFFF
+
+reserved 0x50000000 0xffffffff
