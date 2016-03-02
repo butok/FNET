@@ -32,7 +32,7 @@
 
 #define _FNET_ETH_H_
 
-#include "fnet_config.h"
+#include "fnet.h"
 
 /**************************************************************************
 *     Definitions
@@ -70,9 +70,9 @@ extern "C" {
  * @brief    Converts a 6 byte MAC address into a null terminated string.
  *
  *
- * @param addr       MAC address.
+ * @param[in] addr       MAC address.
  *
- * @param str_mac    Pointer to a character buffer will contain the resulting 
+ * @param[out] str_mac    Pointer to a character buffer will contain the resulting 
  *                   text address in standard ":" notation. @n 
  *                   The @c str_mac buffer must be at least 18 bytes long 
  *                   (@ref FNET_MAC_ADDR_STR_SIZE). 
@@ -87,17 +87,17 @@ extern "C" {
  * in transmission order (e.g. 01:23:45:67:89:ab ), into buffer pointed to by the
  * @c str_mac.
  ******************************************************************************/
-fnet_char_t *fnet_mac_to_str( fnet_mac_addr_t addr, fnet_char_t *str_mac );
+fnet_char_t *fnet_mac_to_str( const fnet_mac_addr_t addr, fnet_char_t *str_mac );
 
 /***************************************************************************/ /*!
  *
  * @brief    Converts a null terminated string to a 6 byte MAC address 
  *
- * @param str_mac    Null-terminated MAC address string as pairs of 
- *                   hexadecimal numbers separated by colons.
+ * @param[in] str_mac    Null-terminated MAC address string as pairs of 
+ *                      hexadecimal numbers separated by colons.
  *
- * @param addr       Buffer will contain a suitable 
- *                   binary representation of the @c str_mac MAC address .
+ * @param[out] addr      Buffer will contain a suitable 
+ *                      binary representation of the @c str_mac MAC address .
  *
  * @return This function returns:
  *   - @ref FNET_OK if no error occurs.
@@ -112,7 +112,7 @@ fnet_char_t *fnet_mac_to_str( fnet_mac_addr_t addr, fnet_char_t *str_mac );
  * in transmission order. The value returned, pointed to by the @c addr,
  * is a number suitable for use as an MAC address.
  ******************************************************************************/
-fnet_return_t fnet_str_to_mac( fnet_char_t *str_mac, fnet_mac_addr_t addr );
+fnet_return_t fnet_str_to_mac( const fnet_char_t *str_mac, fnet_mac_addr_t addr );
 
 #if defined(__cplusplus)
 }

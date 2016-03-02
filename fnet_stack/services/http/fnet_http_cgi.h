@@ -32,13 +32,11 @@
 
 #define _FNET_HTTP_CGI_H_
 
-#include "fnet_config.h"
-
+#include "fnet.h"
 
 #if (FNET_CFG_HTTP && FNET_CFG_HTTP_CGI) || defined(__DOXYGEN__)
 
-
-#include "fnet.h"
+#include "fnet_http.h"
 
 /*! @addtogroup fnet_http
  @{ */
@@ -51,11 +49,10 @@
  ******************************************************************************/ 
 #define FNET_HTTP_CGI_EXTENSION    "cgi" 
 
-
-
 /**************************************************************************/ /*!
  * @brief Callback function prototype of the CGI query handler.
  *
+ * @param session   HTTP session handle.
  * @param query     CGI query string (null-terminated). @n
  *                  The query string is set to whatever appears 
  *                  after the question mark in the URL itself.
@@ -69,11 +66,6 @@
  * @return This function must return:
  *   - @ref FNET_OK if no error occurs.
  *   - @ref FNET_ERR if an error occurs. 
- *   - If the HTTP server works according to HTTP/1.x 
- *     (@ref FNET_CFG_HTTP_VERSION_MAJOR is @c 1), 
- *     this function may return a HTTP response status-code defined by 
- *     @ref fnet_http_status_code_t.
- *
  * @see fnet_http_cgi, fnet_http_cgi_send_t
  *
  * The CGI handler invokes this callback function when the server gets
@@ -81,10 +73,12 @@
  * registered in the CGI table.@n
  * The @c query points to the CGI query string.
  * If the CGI request does not have any data, the @c query will point to the 
- * blank string.
+ * blank string.@n
+ * If the HTTP server works according to HTTP/1.x  (@ref FNET_CFG_HTTP_VERSION_MAJOR is @c 1), 
+ * this function may use fnet_http_set_response_status_code() to change the default HTTP response status-code.
  * 
  ******************************************************************************/ 
-typedef fnet_return_t(*fnet_http_cgi_handle_t)(fnet_char_t *query, fnet_uint32_t *cookie);
+typedef fnet_return_t(*fnet_http_cgi_handle_t)(fnet_http_session_t session, fnet_char_t *query, fnet_uint32_t *cookie);
  
 
 /**************************************************************************/ /*!
@@ -138,12 +132,13 @@ typedef fnet_size_t (*fnet_http_cgi_send_t)(fnet_uint8_t * buffer, fnet_size_t b
  ******************************************************************************/
 struct fnet_http_cgi
 {
-	fnet_char_t                   *name;      /**< @brief CGI file name. */
+	fnet_char_t             *name;      /**< @brief CGI file name. */
 	fnet_http_cgi_handle_t  handle;     /**< @brief Pointer to the CGI query handler. It's optional. */
     fnet_http_cgi_send_t    send;       /**< @brief Pointer to the CGI response function. 
                                          * This function actually creates dynamic content of
                                          * the CGI response. It's optional. */
 };
+
 
 /*! @} */
 

@@ -31,7 +31,7 @@
 
 #define _FNET_FS_ROM_H_
 
-#include "fnet_config.h"
+#include "fnet.h"
 
 #if (FNET_CFG_FS && FNET_CFG_FS_ROM) || defined(__DOXYGEN__)
 

@@ -110,7 +110,7 @@ void fapp_telnet_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** 
         {
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             fnet_shell_println(desc, " Telnet Server started.");
-            fapp_netif_addr_print(desc, AF_SUPPORTED, fnet_netif_get_default(), FNET_FALSE);
+            fapp_print_netif_addr(desc, AF_SUPPORTED, fnet_netif_get_default(), FNET_FALSE);
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             
             fapp_telnet_desc = telnet_desc;
@@ -154,10 +154,8 @@ static void fapp_telnet_exit_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fn
 *************************************************************************/
 void fapp_telnet_info(fnet_shell_desc_t desc)
 {
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "TELNET Server", 
-                        fnet_telnet_enabled(fapp_telnet_desc) ? FAPP_SHELL_INFO_ENABLED : FAPP_SHELL_INFO_DISABLED);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "TELNET Server", fapp_enabled_str[fnet_telnet_enabled(fapp_telnet_desc)]);
 }
-
 
 #if FAPP_CFG_TELNET_TEST_CMD
 /************************************************************************

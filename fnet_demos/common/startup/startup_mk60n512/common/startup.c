@@ -10,11 +10,6 @@
 
 #include "common.h"
 
-#if !FNET_CFG_COMP_UV
-/* Vector table address. Defined in linker file.*/
-extern fnet_uint32_t FNET_CFG_CPU_VECTOR_TABLE [1];
-#endif
-
 #if FNET_CFG_COMP_IAR
 #pragma section = ".data"
 #pragma section = ".data_init"
@@ -95,15 +90,34 @@ common_startup(void)
     /* Declare a counter we'll use in all of the copy loops */
     uint32 n;
     
-    /* Addresses for VECTOR_TABLE and VECTOR_RAM come from the linker file */  
+    /* Addresses for VECTOR_TABLE and VECTOR_RAM come from the linker file */
+#if defined(__CC_ARM)
+    extern uint32_t Image$$VECTOR_ROM$$Base[];
+    extern uint32_t Image$$VECTOR_RAM$$Base[];
+    extern uint32_t Image$$RW_m_data$$Base[];
+
+    #define __VECTOR_TABLE Image$$VECTOR_ROM$$Base  
+    #define __VECTOR_RAM Image$$VECTOR_RAM$$Base  
+    #define __RAM_VECTOR_TABLE_SIZE (((uint32_t)Image$$RW_m_data$$Base - (uint32_t)Image$$VECTOR_RAM$$Base))
+#elif defined(__ICCARM__)
+    extern uint32_t __RAM_VECTOR_TABLE_SIZE[];
+    extern uint32_t __VECTOR_TABLE[];  
+    extern uint32_t __VECTOR_RAM[];  
+#elif defined(__GNUC__)
+    extern uint32_t __VECTOR_TABLE[];
+    extern uint32_t __VECTOR_RAM[];
+    extern uint32_t __RAM_VECTOR_TABLE_SIZE_BYTES[];
+    uint32_t __RAM_VECTOR_TABLE_SIZE = (uint32_t)(__RAM_VECTOR_TABLE_SIZE_BYTES);
+#endif
+  
     extern uint32 __vector_table[];
 
     /* Copy the vector table to RAM */
-    if ((uint32 *)FNET_CFG_CPU_VECTOR_TABLE != __vector_table)
+    if ((uint32 *)__VECTOR_RAM != __vector_table)
     {
-        uint32 *vector_ram = (uint32 *)FNET_CFG_CPU_VECTOR_TABLE;
+        uint32 *vector_ram = (uint32 *)__VECTOR_RAM;
 			
-        for (n = 0; n < 0x410; n++)
+        for (n = 0; n < (0x410u/sizeof(uint32_t)); n++)
         {
             *vector_ram++= __vector_table[n];					
         }				

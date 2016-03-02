@@ -37,6 +37,7 @@
 /*! @{ */
 
 #include <stdarg.h> /* For va_list etc.*/
+#include <string.h> /* In case of alternative functions */
 #include "fnet.h"
 
 /**************************************************************************/ /*!
@@ -99,13 +100,17 @@ extern "C" {
  *
  * @param number_of_bytes         Number of bytes to copy.
  *
+ * @see FNET_CFG_OVERLOAD_MEMCPY
  ******************************************************************************
  *
  * This function copies @c number_of_bytes bytes from 
- * memory area pointed by @c from_ptr to memory area pointed by @c to_ptr.
+ * memory area pointed by @c from_ptr to memory area pointed by @c to_ptr.@n
+ * You may overload it by own implementation, using @ref FNET_CFG_OVERLOAD_MEMCPY.
  *
  ******************************************************************************/
+#if !FNET_CFG_OVERLOAD_MEMCPY
 void fnet_memcpy(FNET_COMP_PACKED_VAR void *to_ptr, FNET_COMP_PACKED_VAR const void *from_ptr, fnet_size_t number_of_bytes);
+#endif
 
 /***************************************************************************/ /*!
  *

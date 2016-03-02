@@ -1544,9 +1544,8 @@ static fnet_bool_t fnet_tcp_inputsk( fnet_socket_if_t *sk, fnet_netbuf_t *insegm
             {  
                 /* Close the socket (connecting is failed).*/
                 sk->options.local_error = FNET_ERR_CONNRESET;
+                fnet_tcp_closesk(sk);
             }
-
-            fnet_tcp_closesk(sk);
 
             return FNET_TRUE;
         }

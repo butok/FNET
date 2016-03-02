@@ -35,7 +35,7 @@
 #include "fnet_http_prv.h"
 
 /* Prototypes */
-static fnet_int32_t fnet_http_get_handle(struct fnet_http_if * http, struct fnet_http_uri * uri);
+static fnet_return_t fnet_http_get_handle(struct fnet_http_if * http, struct fnet_http_uri * uri);
 static fnet_return_t fnet_http_get_send(struct fnet_http_if * http);
 static void fnet_http_get_close(struct fnet_http_if * http);
 
@@ -54,10 +54,10 @@ const struct fnet_http_method fnet_http_method_get =
 *
 * DESCRIPTION: 
 ************************************************************************/
-static fnet_int32_t fnet_http_get_handle(struct fnet_http_if * http, struct fnet_http_uri * uri)
+static fnet_return_t fnet_http_get_handle(struct fnet_http_if * http, struct fnet_http_uri * uri)
 {
     struct fnet_http_session_if *session =  http->session_active;
-    fnet_int32_t               result = FNET_ERR;
+    fnet_return_t               result = FNET_ERR;
     
     /* Request is found */
     if(uri)

@@ -14,6 +14,7 @@ define symbol __ICFEDIT_size_cstack__ = 0xA00; //2.5KB
 define symbol __ICFEDIT_size_heap__   = 0x000;  //512B
 /**** End of ICF editor section. ###ICF###*/
 
+define exported symbol __VECTOR_TABLE = 0x1fff0000;
 define exported symbol __VECTOR_RAM = 0x1fff0000;
 
 define exported symbol __BOOT_STACK_ADDRESS = __ICFEDIT_region_RAM_end__ - 8;	//0x2000FFF8;

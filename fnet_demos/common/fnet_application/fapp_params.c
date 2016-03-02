@@ -136,13 +136,13 @@ fnet_return_t fapp_params_to_flash(void)
 
 #if FNET_CFG_IP4    
     /* Save IP address only if it was allocated manually/statically. */
-    if(fnet_netif_get_ip4_addr_automatic(netif) != FNET_FALSE)
+    if(fnet_netif_get_ip4_addr_type(netif) == FNET_NETIF_IP_ADDR_TYPE_MANUAL)
     {
-        fnet_params.address = fapp_params->fnet_params.address; /* Preserve the old value.*/
+        fnet_params.address = fnet_netif_get_ip4_addr(netif);    /* Take the current value. */
     }
     else
     {
-        fnet_params.address = fnet_netif_get_ip4_addr(netif);    /* Take the current value. */
+        fnet_params.address = fapp_params->fnet_params.address; /* Preserve the old value.*/
     }
 
     fnet_params.netmask = fnet_netif_get_ip4_subnet_mask(netif);

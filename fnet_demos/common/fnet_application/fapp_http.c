@@ -87,10 +87,10 @@ static const struct fnet_http_ssi fapp_ssi_table[] =
 
 #define CGI_MAX        sizeof("({ \"time\":\"00:00:00\",\"tx\":0000000000,\"rx\":0000000000})")
 
-static fnet_return_t fapp_http_cgi_stdata_handle(fnet_char_t * query, fnet_uint32_t *cookie);
-static fnet_return_t fapp_http_cgi_graph_handle(fnet_char_t * query, fnet_uint32_t *cookie);
+static fnet_return_t fapp_http_cgi_stdata_handle(fnet_http_session_t session, fnet_char_t * query, fnet_uint32_t *cookie);
+static fnet_return_t fapp_http_cgi_graph_handle(fnet_http_session_t session, fnet_char_t * query, fnet_uint32_t *cookie);
 #if FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR
-static fnet_return_t fapp_http_cgi_post_handle(fnet_char_t * query, fnet_uint32_t *cookie);
+static fnet_return_t fapp_http_cgi_post_handle(fnet_http_session_t session, fnet_char_t * query, fnet_uint32_t *cookie);
 #endif
 
 static fnet_uint32_t fapp_http_cgi_rand(void);
@@ -125,7 +125,7 @@ static const struct fnet_http_auth fapp_auth_table[]=
 *************************************************************************/
 #if FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR
 
-static fnet_int32_t fapp_http_post_receive (fnet_uint8_t * buffer, fnet_size_t buffer_size, fnet_uint32_t *cookie);
+static fnet_return_t fapp_http_post_receive (fnet_http_session_t session, fnet_uint8_t * buffer, fnet_size_t buffer_size, fnet_uint32_t *cookie);
 
 static const struct fnet_http_post fapp_post_table[]=
 {   
@@ -263,7 +263,7 @@ static fnet_return_t fapp_http_ssi_echo_handle(fnet_char_t *query, fnet_uint32_t
 *
 * DESCRIPTION:
 *************************************************************************/
-static fnet_return_t fapp_http_cgi_stdata_handle(fnet_char_t *query, fnet_uint32_t *cookie)
+static fnet_return_t fapp_http_cgi_stdata_handle(fnet_http_session_t session, fnet_char_t *query, fnet_uint32_t *cookie)
 {
     fnet_time_t                     cur_time;
     fnet_time_t                     t_hour;
@@ -272,6 +272,7 @@ static fnet_return_t fapp_http_cgi_stdata_handle(fnet_char_t *query, fnet_uint32
 	struct fnet_netif_statistics    statistics;
 
     FNET_COMP_UNUSED_ARG(query);
+    FNET_COMP_UNUSED_ARG(session);
     
 	/* Get Time. */    
 	cur_time = fnet_timer_ticks();
@@ -293,7 +294,6 @@ static fnet_return_t fapp_http_cgi_stdata_handle(fnet_char_t *query, fnet_uint32
 }
 
 #define FAPP_HTTP_CGI_GRAPH_MIN     (30u)
-static fnet_uint32_t fapp_http_cgi_rand_next;
 /************************************************************************
 * NAME: fapp_http_cgi_rand
 *
@@ -301,8 +301,7 @@ static fnet_uint32_t fapp_http_cgi_rand_next;
 *************************************************************************/
 static fnet_uint32_t fapp_http_cgi_rand(void)
 {
-  fapp_http_cgi_rand_next = fapp_http_cgi_rand_next * 11u + 12u;
-  return (((fapp_http_cgi_rand_next>>4) & 0xFFlu) + FAPP_HTTP_CGI_GRAPH_MIN);
+    return fnet_rand()%280u + FAPP_HTTP_CGI_GRAPH_MIN;
 }
 
 /************************************************************************
@@ -310,7 +309,7 @@ static fnet_uint32_t fapp_http_cgi_rand(void)
 *
 * DESCRIPTION:
 *************************************************************************/
-static fnet_return_t fapp_http_cgi_graph_handle(fnet_char_t *query, fnet_uint32_t *cookie)
+static fnet_return_t fapp_http_cgi_graph_handle(fnet_http_session_t session, fnet_char_t *query, fnet_uint32_t *cookie)
 {
     fnet_uint32_t q1= fapp_http_cgi_rand();
     fnet_uint32_t q2= fapp_http_cgi_rand();
@@ -319,13 +318,14 @@ static fnet_return_t fapp_http_cgi_graph_handle(fnet_char_t *query, fnet_uint32_
     fnet_uint32_t q5= fapp_http_cgi_rand();
 
     FNET_COMP_UNUSED_ARG(query);
+    FNET_COMP_UNUSED_ARG(session);
 
 	/* Wrie to the temprorary buffer. */
     fnet_snprintf((fnet_char_t*)fapp_http_cgi_buffer, sizeof(fapp_http_cgi_buffer), 
                         "({\"q1\":%d,\"q2\":%d,\"q3\":%d,\"q4\":%d,\"q5\":%d})", 
                         q1, q2, q3, q4, q5);
 
-    *cookie = (fnet_uint32_t)fapp_http_cgi_buffer; /* Save fapp_http_cgi_buffer as cookie.*/                        
+    *cookie = (fnet_uint32_t)fapp_http_cgi_buffer; /* Save fapp_http_cgi_buffer as cookie.*/       
     
     return FNET_OK;
 }
@@ -336,9 +336,10 @@ static fnet_return_t fapp_http_cgi_graph_handle(fnet_char_t *query, fnet_uint32_
 *
 * DESCRIPTION:
 *************************************************************************/
-static fnet_return_t fapp_http_cgi_post_handle(fnet_char_t *query, fnet_uint32_t *cookie)
+static fnet_return_t fapp_http_cgi_post_handle(fnet_http_session_t session, fnet_char_t *query, fnet_uint32_t *cookie)
 {
     FNET_COMP_UNUSED_ARG(query);
+    FNET_COMP_UNUSED_ARG(session);
 
     *cookie = (fnet_uint32_t)fapp_http_post_buffer; /* Save fapp_http_post_buffer as cookie.*/                        
     
@@ -355,11 +356,13 @@ static fnet_return_t fapp_http_cgi_post_handle(fnet_char_t *query, fnet_uint32_t
 *
 * DESCRIPTION:
 *************************************************************************/
-static fnet_int32_t fapp_http_post_receive (fnet_uint8_t *buffer, fnet_size_t buffer_size, fnet_uint32_t *cookie)
+static fnet_return_t fapp_http_post_receive (fnet_http_session_t session, fnet_uint8_t *buffer, fnet_size_t buffer_size, fnet_uint32_t *cookie)
 {
     fnet_size_t post_buffer_index = (fnet_size_t)*cookie;
     fnet_size_t post_buffer_free_size = FAPP_HTTP_POST_BUFFER_SIZE - post_buffer_index;
     fnet_size_t receive_size = buffer_size;
+
+    FNET_COMP_UNUSED_ARG(session);
     
     if(post_buffer_free_size)
     {
@@ -426,7 +429,7 @@ void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** ar
         {
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             fnet_shell_println(desc, " HTTP server started.");
-            fapp_netif_addr_print(desc, AF_SUPPORTED, fnet_netif_get_default(), FNET_FALSE);
+            fapp_print_netif_addr(desc, AF_SUPPORTED, fnet_netif_get_default(), FNET_FALSE);
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             
             fapp_http_desc = http_desc;
@@ -453,8 +456,7 @@ void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** ar
 *************************************************************************/
 void fapp_http_info(fnet_shell_desc_t desc)
 {
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "HTTP Server", 
-                        fnet_http_enabled(fapp_http_desc) ? FAPP_SHELL_INFO_ENABLED : FAPP_SHELL_INFO_DISABLED);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "HTTP Server", fapp_enabled_str[fnet_http_enabled(fapp_http_desc)]);
 }
 
 

@@ -10,8 +10,6 @@
 
 #include "common.h"
 
-/* Vector table address. Defined in linker file.*/
-extern fnet_uint32_t FNET_CFG_CPU_VECTOR_TABLE [1];
 
 #if FNET_CFG_COMP_IAR
 #pragma section = ".data"
@@ -90,6 +88,11 @@ void copy_rom_section(unsigned long dst, unsigned long src, unsigned long size)
 void
 common_startup(void)
 {
+	
+#if 0 /* old */	
+   /* Vector table address. Defined in linker file.*/
+   extern fnet_uint32_t FNET_CFG_CPU_VECTOR_TABLE [1];
+
     /* Declare a counter we'll use in all of the copy loops */
     uint32 n;
     
@@ -109,6 +112,47 @@ common_startup(void)
 	
     /* Point the VTOR to the new copy of the vector table */
     write_vtor((uint32)FNET_CFG_CPU_VECTOR_TABLE);
+#endif
+
+    uint32_t n; 
+    
+    /* Addresses for VECTOR_TABLE and VECTOR_RAM come from the linker file */
+#if defined(__CC_ARM)
+    extern uint32_t Image$$VECTOR_ROM$$Base[];
+    extern uint32_t Image$$VECTOR_RAM$$Base[];
+    extern uint32_t Image$$RW_m_data$$Base[];
+
+    #define __VECTOR_TABLE Image$$VECTOR_ROM$$Base  
+    #define __VECTOR_RAM Image$$VECTOR_RAM$$Base  
+    #define __RAM_VECTOR_TABLE_SIZE (((uint32_t)Image$$RW_m_data$$Base - (uint32_t)Image$$VECTOR_RAM$$Base))
+#elif defined(__ICCARM__)
+    extern uint32_t __RAM_VECTOR_TABLE_SIZE[];
+    extern uint32_t __VECTOR_TABLE[];  
+    extern uint32_t __VECTOR_RAM[];  
+#elif defined(__GNUC__)
+    extern uint32_t __VECTOR_TABLE[];
+    extern uint32_t __VECTOR_RAM[];
+    extern uint32_t __RAM_VECTOR_TABLE_SIZE_BYTES[];
+    uint32_t __RAM_VECTOR_TABLE_SIZE = (uint32_t)(__RAM_VECTOR_TABLE_SIZE_BYTES);
+#endif
+
+    if (__VECTOR_RAM != __VECTOR_TABLE)
+    {   
+        /* Copy the vector table from ROM to RAM */
+        for (n = 0u; n < 0x410; n++)
+        {
+            __VECTOR_RAM[n] = __VECTOR_TABLE[n];
+        }
+        /* Point the VTOR to the position of vector table */
+        SCB_VTOR = (uint32_t)__VECTOR_RAM;
+    }
+    else
+    {
+        /* Point the VTOR to the position of vector table */
+        SCB_VTOR = (uint32_t)__VECTOR_TABLE;
+    }
+    
+    
 
 #if FNET_CFG_COMP_CW
     {

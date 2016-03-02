@@ -1804,7 +1804,7 @@ void fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_ad
                         for(j = 0u; j < FNET_NETIF_IP6_ADDR_MAX; j++)
                         {
                             if((netif->ip6_addr[j].state != FNET_NETIF_IP6_ADDR_STATE_NOT_USED)
-                                && (netif->ip6_addr[j].type == FNET_NETIF_IP6_ADDR_TYPE_AUTOCONFIGURABLE)
+                                && (netif->ip6_addr[j].type == FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE)
                                 && (fnet_ip6_addr_pefix_cmp(&nd_option_prefix[i]->prefix, &netif->ip6_addr[j].address, (fnet_size_t)nd_option_prefix[i]->prefix_length) == FNET_TRUE) )
                             {
                                 addr_info = &netif->ip6_addr[j];
@@ -1854,7 +1854,7 @@ void fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_ad
                              * bits of the prefixes are identical), and if the Valid
                              * Lifetime is not 0, form an address (and add it to the list) by
                              * combining the advertised prefix with an interface identifier. */
-                        	fnet_netif_bind_ip6_addr_prv (netif, &nd_option_prefix[i]->prefix, FNET_NETIF_IP6_ADDR_TYPE_AUTOCONFIGURABLE, 
+                        	fnet_netif_bind_ip6_addr_prv (netif, &nd_option_prefix[i]->prefix, FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE, 
                         	                                fnet_ntohl(nd_option_prefix[i]->valid_lifetime), (fnet_size_t)nd_option_prefix[i]->prefix_length);
                         }
                     }

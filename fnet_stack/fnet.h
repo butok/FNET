@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -34,11 +34,11 @@
 #define _FNET_H_
 
 #include "fnet_config.h"
-#include "compiler/fnet_comp.h"
-#include "cpu/fnet_cpu.h"
+#include "port/compiler/fnet_comp.h"
+#include "port/cpu/fnet_cpu.h"
 #include "stack/fnet_stack.h"
 #include "services/fnet_services.h"
-#include "os/fnet_os.h"
+#include "port/os/fnet_os.h"
 
 /*! @addtogroup fnet_define
 * These definitions are used for reference purposes only.
@@ -81,7 +81,7 @@
  *        string.
  * @showinitializer 
  ******************************************************************************/
-#define FNET_VERSION            "3.0.0"
+#define FNET_VERSION            "3.1.0"
 
 /*! @} */
 

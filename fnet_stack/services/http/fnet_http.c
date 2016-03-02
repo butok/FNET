@@ -96,6 +96,7 @@ static const struct fnet_http_content_type fnet_http_content_gif = {"gif", "imag
 static const struct fnet_http_content_type fnet_http_content_js = {"js", "application/javascript"};
 static const struct fnet_http_content_type fnet_http_content_gzip = {"gz", "application/x-gzip"};
 static const struct fnet_http_content_type fnet_http_content_zip = {"zip", "application/zip"};
+static const struct fnet_http_content_type fnet_http_content_json = {"json", "application/json"};
 
 /************************************************************************
 *    File content-type list.
@@ -108,6 +109,7 @@ static const struct fnet_http_content_type *fnet_http_content_type_list[] =
     &fnet_http_content_js,
     &fnet_http_content_gzip,
     &fnet_http_content_zip,
+    &fnet_http_content_json,
     /* Add your content-type here. */
     0
 };
@@ -142,10 +144,8 @@ static void fnet_http_state_machine( void *http_if_p );
         {FNET_HTTP_STATUS_CODE_NONE,                ""} /* End of the list.*/
     };
 
-
     static void fnet_http_version_parse(fnet_char_t *in_str, struct fnet_http_version *version);
     static fnet_return_t fnet_http_tx_status_line (struct fnet_http_if * http);
-    static fnet_return_t fnet_http_status_ok(fnet_int32_t status);
 #endif /* FNET_CFG_HTTP_VERSION_MAJOR */
 
 /************************************************************************
@@ -168,8 +168,6 @@ static void fnet_http_state_machine( void *http_if_p )
     { 
         session = &http->session[i];
         http->session_active = session;
-
-
 
     for(iteration = 0u; iteration < FNET_HTTP_ITERATION_NUMBER; iteration++)
     {
@@ -287,13 +285,16 @@ static void fnet_http_state_machine( void *http_if_p )
                                              
                                             /* Call method initial handler.*/
                                             res = session->request.method->handle(http, &session->request.uri);
-                                            
-                                        #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/                                       
-                                            if(fnet_http_status_ok(res) == FNET_OK)
-                                        #else                                            
+    
+                                        #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
+                                            if(session->response.no_header == FNET_TRUE)
+                                            {
+                                                /*  Skip sending of status code and header.*/
+                                                session->response.tx_data = session->request.method->send;
+                                            }
+                                        #endif
+                                           
                                             if((res == FNET_OK))                     
-                                        #endif                                    
-                                               
                                             {
                                         #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
                                                 session->buffer_actual_size = 0u;
@@ -310,12 +311,6 @@ static void fnet_http_state_machine( void *http_if_p )
                                             else /* Error.*/
                                             {
                                             #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
-                                                /* Default code = FNET_HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR. */
-                                                if(res != FNET_ERR)
-                                                {
-                                                    session->response.status.code = (fnet_http_status_code_t)res;
-                                                }
-                                                
                                                 /* Send status line.*/
                                                 session->buffer_actual_size = 0u;
                                                 session->state = FNET_HTTP_STATE_TX; /* Send error.*/
@@ -357,7 +352,10 @@ static void fnet_http_state_machine( void *http_if_p )
                                             else /* Send Data.*/
                                             {
                                         #endif                                            
-                                                session->response.status.code = FNET_HTTP_STATUS_CODE_OK;
+                                                if(session->response.status.code == FNET_HTTP_STATUS_CODE_NONE) /* If status code is not set.*/
+                                                {
+                                                    session->response.status.code = FNET_HTTP_STATUS_CODE_OK;
+                                                }
                                             }
                                         #if FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR
                                             if(session->request.content_length > 0)
@@ -476,13 +474,9 @@ static void fnet_http_state_machine( void *http_if_p )
                     {
                         session->state_time = fnet_timer_ticks();  /* Reset timeout.*/
                         res = session->request.method->receive(http); 
-                        if(fnet_http_status_ok(res) != FNET_OK)
+                        if(res == FNET_ERR)
                         {
-                            if(res != FNET_ERR)
-                            {
-                                session->response.status.code = (fnet_http_status_code_t)res;
-                            }
-                            else
+                            if(session->response.status.code == FNET_HTTP_STATUS_CODE_NONE )
                             {
                                 session->response.status.code = FNET_HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR;    
                             }
@@ -872,11 +866,6 @@ static fnet_return_t fnet_http_tx_status_line (struct fnet_http_if * http)
                 /*Final CRLF.*/
                 result_state = (fnet_size_t)fnet_snprintf((fnet_char_t*)&session->buffer[result], (FNET_HTTP_BUF_SIZE - result),"%s","\r\n");
             
-                if(session->response.status.code != FNET_HTTP_STATUS_CODE_OK)
-                {
-                    session->response.send_eof = FNET_TRUE; /* Only sataus (without data).*/
-                }
-                
                 session->response.tx_data = session->request.method->send;
                 break;
             default:
@@ -1242,27 +1231,46 @@ EXIT:
 }
 
 /************************************************************************
-* NAME: fnet_http_status_ok
+* NAME: fnet_http_set_response_status_code
 *
-* DESCRIPTION: 
+* DESCRIPTION: Set response status code.
 ************************************************************************/
-static fnet_return_t fnet_http_status_ok(fnet_int32_t status)
+void fnet_http_set_response_status_code (fnet_http_session_t session, fnet_http_status_code_t status_code)
 {
-    fnet_return_t result;
-    
-    if((status == 0) || ((status/100) == 2) /* Successful 2xx. */)
+    if(session)
     {
-        result = FNET_OK;
+        ((struct fnet_http_session_if *)session)->response.status.code = status_code;
     }
-    else
-    {
-        result = FNET_ERR;
-    }
-    
-    return result;
 }
+
+/************************************************************************
+* NAME: fnet_http_set_response_content_length
+*
+* DESCRIPTION: Set response content length.
+************************************************************************/
+void fnet_http_set_response_content_length (fnet_http_session_t session, fnet_size_t content_length)
+{
+    if(session)
+    {
+        ((struct fnet_http_session_if *)session)->response.content_length = (fnet_int32_t)content_length;
+    }
+}
+
+/************************************************************************
+* NAME: fnet_http_set_response_no_header
+*
+* DESCRIPTION: Disable response Status-Line and Header
+************************************************************************/
+void fnet_http_set_response_no_header (fnet_http_session_t session)
+{
+    if(session)
+    {
+        ((struct fnet_http_session_if *)session)->response.no_header = FNET_TRUE;
+    }
+}
+
+
+
 #endif /* FNET_CFG_HTTP_VERSION_MAJOR */
 
-
-
-#endif
+#endif /* FNET_CFG_HTTP */

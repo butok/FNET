@@ -561,10 +561,11 @@ static void fnet_ip_input_low(fnet_uint32_t cookie )
         
         fnet_ip_trace("RX", hdr); /* Print IP header. */
         
-        if((nb->total_length >= total_length)                           /* Check the amount of data*/
+        if((nb->total_length >= total_length)                            /* Check the amount of data*/
             && (nb->total_length >= sizeof(fnet_ip_header_t)) 
             && (FNET_IP_HEADER_GET_VERSION(hdr) == 4u)                   /* Check the IP Version*/
-            && (header_length >= sizeof(fnet_ip_header_t))              /* Check the IP header length*/
+            && (header_length >= sizeof(fnet_ip_header_t))               /* Check the IP header length*/
+            && (total_length >= header_length)               
     #if FNET_CFG_CPU_ETH_HW_TX_IP_CHECKSUM || FNET_CFG_CPU_ETH_HW_RX_IP_CHECKSUM
             && ((netif->features | FNET_NETIF_FEATURE_HW_RX_IP_CHECKSUM) 
                 || (nb->flags | FNET_NETBUF_FLAG_HW_IP_CHECKSUM)
@@ -925,10 +926,10 @@ static void fnet_ip_frag_list_free( fnet_ip_frag_list_t *list )
 {
     fnet_netbuf_t *nb;
 
-    fnet_isr_lock();
-
     if(list)
     {
+        fnet_isr_lock();
+
         while((volatile fnet_ip_frag_header_t *)(list->frag_ptr) != 0)
         {
             nb = list->frag_ptr->nb;
@@ -938,9 +939,11 @@ static void fnet_ip_frag_list_free( fnet_ip_frag_list_t *list )
 
         fnet_ip_frag_list_del(&ip_frag_list_head, list);
         fnet_free(list);
+
+        fnet_isr_unlock();
     }
 
-    fnet_isr_unlock();
+
 }
 #endif /* FNET_CFG_IP4_FRAGMENTATION */
 

@@ -202,7 +202,7 @@ static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
     fnet_shell_println(desc, FAPP_DELIMITER_STR);
     fnet_shell_println(desc, " TCP RX Test");
     fnet_shell_println(desc, FAPP_DELIMITER_STR);
-    fapp_netif_addr_print(desc, family, fnet_netif_get_default(), FNET_FALSE);
+    fapp_print_netif_addr(desc, family, fnet_netif_get_default(), FNET_FALSE);
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "Local Port", FNET_NTOHS(FAPP_BENCH_PORT));
     fnet_shell_println(desc, FAPP_TOCANCEL_STR);
     fnet_shell_println(desc, FAPP_DELIMITER_STR);
@@ -359,7 +359,7 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
     fnet_shell_println(desc, FAPP_DELIMITER_STR);
     fnet_shell_println(desc, " UDP RX Test" );
     fnet_shell_println(desc, FAPP_DELIMITER_STR);
-    fapp_netif_addr_print(desc, family, fnet_netif_get_default(), FNET_FALSE);
+    fapp_print_netif_addr(desc, family, fnet_netif_get_default(), FNET_FALSE);
     if(multicast_address)
     {
         fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Multicast Group", fnet_inet_ntop(multicast_address->sa_family, (fnet_uint8_t*)(multicast_address->sa_data), ip_str, sizeof(ip_str)) );

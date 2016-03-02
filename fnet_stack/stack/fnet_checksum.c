@@ -27,7 +27,6 @@
 ***************************************************************************/
 
 #include "fnet.h"
-#include "fnet_config.h"
 #include "fnet_checksum.h"
 #include "fnet_ip.h"
 

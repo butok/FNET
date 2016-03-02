@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -43,9 +43,9 @@
 #include "fnet_doxygen_user_config.h"       /* Configuration used during generation of documentation.*/
 #endif
 
-#include "compiler/fnet_comp_config.h"      /* Default compiler specific configuration. */  
-#include "cpu/fnet_cpu_config.h"            /* Default platform configuration. */
-#include "os/fnet_os_config.h"              /* Default OS-specific configuration. */
+#include "port/compiler/fnet_comp_config.h"      /* Default compiler specific configuration. */  
+#include "port/cpu/fnet_cpu_config.h"            /* Default platform configuration. */
+#include "port/os/fnet_os_config.h"              /* Default OS-specific configuration. */
 #include "stack/fnet_stack_config.h"        /* Default TCP/IP stack configuration. */
 #include "services/fnet_services_config.h"  /* Default services configuration. */
 

@@ -32,7 +32,7 @@
 #ifndef _FNET_CHECKSUM_H_
 #define	_FNET_CHECKSUM_H_
 
-#include "fnet_config.h"
+#include "fnet.h"
 #include "fnet_netbuf.h"
 
 #if defined(__cplusplus)

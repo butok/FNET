@@ -32,13 +32,10 @@
 
 #define _FNET_HTTP_AUTH_PRV_H_
 
-#include "fnet_config.h"
-
+#include "fnet.h"
 
 #if FNET_CFG_HTTP && FNET_CFG_HTTP_AUTHENTICATION_BASIC && FNET_CFG_HTTP_VERSION_MAJOR
 
-
-#include "fnet.h"
 #include "fnet_http_auth.h"
 
 typedef fnet_return_t(*fnet_http_auth_scheme_validate_t)(const struct fnet_http_auth *auth_entry, fnet_char_t *auth_param);

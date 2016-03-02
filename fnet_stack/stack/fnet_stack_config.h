@@ -712,6 +712,18 @@
     #define FNET_CFG_OVERLOAD_CHECKSUM_LOW      (0)
 #endif
 
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_OVERLOAD_MEMCPY
+ * @brief    Your own alternate implementation for fnet_memcpy().
+ *               - @c 1 = is enabled.
+ *               - @b @c 0 = is disabled (Default value).@n
+ *           For example, to use standard memcpy() instead of FNET own implementation, add  to fnet_user_config.h:
+            @verbatim
+               #define FNET_CFG_OVERLOAD_MEMCPY    1
+               #define fnet_memcpy    memcpy
+            @endverbatim
+ * @showinitializer
+ ******************************************************************************/
 #ifndef FNET_CFG_OVERLOAD_MEMCPY
     #define FNET_CFG_OVERLOAD_MEMCPY            (0)
 #endif

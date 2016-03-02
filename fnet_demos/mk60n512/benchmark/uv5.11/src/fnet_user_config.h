@@ -120,10 +120,5 @@
 #define FNET_CFG_IGMP               (1)
 #define FNET_CFG_MLD                (1)
 
-/*****************************************************************************
-* Vector Table address.
-******************************************************************************/
-#define FNET_CFG_CPU_VECTOR_TABLE   (0x1FFF0000) 
-
 #endif /* _FNET_USER_CONFIG_H_ */
 

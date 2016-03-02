@@ -28,7 +28,7 @@
 *
 ***************************************************************************/
 
-#include "fnet_config.h"
+#include "fnet.h"
 #include "fnet_error.h"
 
 static fnet_error_t FNET_ERR_NUMBER = FNET_ERR_OK;

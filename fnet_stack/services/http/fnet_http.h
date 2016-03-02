@@ -32,17 +32,9 @@
 
 #define _FNET_HTTP_H_
 
-#include "fnet_config.h"
-
+#include "fnet.h"
 
 #if FNET_CFG_HTTP || defined(__DOXYGEN__)
-
-#include "fnet.h"
-#include "fnet_http_ssi.h"
-#include "fnet_http_cgi.h"
-#include "fnet_http_auth.h"
-#include "fnet_http_post.h"
-
 
 /*! @addtogroup fnet_http
 * The current version of the FNET HTTP Server supports:
@@ -104,7 +96,7 @@
 /********************************************************************/ /*!
 * @brief HTTP/1.0 Status-Code definitions according to RFC1945.
 *
-* Can be used as return value for @ref fnet_http_cgi_handle_t(), 
+* Can be used by inside CGI and POST handlers: @ref fnet_http_cgi_handle_t(), 
 * @ref fnet_http_post_handle_t() and @ref fnet_http_post_receive_t() 
 * call-back functions.
 * @see fnet_http_cgi_handle_t(), fnet_http_post_handle_t(), fnet_http_post_receive_t() 
@@ -229,6 +221,19 @@ struct fnet_http_params
  ******************************************************************************/
 typedef fnet_int32_t fnet_http_desc_t;
 
+/**************************************************************************/ /*!
+ * @brief HTTP session handle.
+ * @see fnet_http_cgi_handle_t
+ ******************************************************************************/
+typedef fnet_int32_t fnet_http_session_t;
+
+
+#include "fnet_http_ssi.h"
+#include "fnet_http_cgi.h"
+#include "fnet_http_auth.h"
+#include "fnet_http_post.h"
+
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -301,7 +306,7 @@ fnet_bool_t fnet_http_enabled(fnet_http_desc_t desc);
  ******************************************************************************
  *
  * This function converts encoded string to the original format.
- * The '+' symbol is replaced by the space symbol, and the  % symbol followed 
+ * The '+' symbol is replaced by the space symbol, and the % symbol followed 
  * by two hexadecimal digits is replaced by proper ASCII value 
  * (for example the exclamation mark encoded as \%21). @n
  * This function should be used by CGI functions to eliminate escape symbols 
@@ -315,6 +320,46 @@ fnet_bool_t fnet_http_enabled(fnet_http_desc_t desc);
  *
  ******************************************************************************/
 void fnet_http_query_unencode(fnet_uint8_t * dest, fnet_uint8_t * src);
+
+#if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/ || defined(__DOXYGEN__)
+
+/**************************************************************************/ /*!
+ * @brief Sets status code in HTTP response status-line.
+ *
+ * @param session       HTTP session handle.
+ * @param status_code   HTTP Response Status-Code.
+ *
+ * If the HTTP server works according to HTTP/1.x (@ref FNET_CFG_HTTP_VERSION_MAJOR is @c 1), 
+ * this function may be used to change the default HTTP response status-code.
+ * 
+ ******************************************************************************/ 
+void fnet_http_set_response_status_code (fnet_http_session_t session, fnet_http_status_code_t status_code); 
+
+/**************************************************************************/ /*!
+ * @brief Sets content length in HTTP response header.
+ *
+ * @param session       HTTP session handle.
+ * @param content_length   HTTP Response Content length.
+ *
+ * If the HTTP server works according to HTTP/1.x  (@ref FNET_CFG_HTTP_VERSION_MAJOR is @c 1), 
+ * this function may be used to change the default HTTP response content-length.
+ * 
+ ******************************************************************************/ 
+void fnet_http_set_response_content_length (fnet_http_session_t session, fnet_size_t content_length); 
+
+/**************************************************************************/ /*!
+ * @brief Disables sending of HTTP response status-code and header.
+ *
+ * @param session       HTTP session handle.
+ *
+ * If the HTTP server works according to HTTP/1.x (@ref FNET_CFG_HTTP_VERSION_MAJOR is @c 1), 
+ * this function may be used to disables automatic sending of HTTP response status-code and header.
+ * It can be sent by a user handler.
+ * 
+ ******************************************************************************/ 
+void fnet_http_set_response_no_header (fnet_http_session_t session);
+
+#endif
 
 #if defined(__cplusplus)
 }

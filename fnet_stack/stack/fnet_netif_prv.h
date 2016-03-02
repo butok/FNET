@@ -32,7 +32,7 @@
 
 #define _FNET_NETIF_PRV_H_
 
-#include "fnet_config.h"
+#include "fnet.h"
 #include "fnet_netbuf.h"
 #include "fnet_netif.h"
 #include "fnet_eth.h"
@@ -70,9 +70,8 @@ typedef struct
     fnet_ip4_addr_t gateway;            /**< Gateway.*/
 #if FNET_CFG_DNS    
     fnet_ip4_addr_t dns;                /**< DNS address.*/    
-#endif    
-    fnet_bool_t    is_automatic;        /**< 0 if it's set statically/manually.*/
-                                        /**< 1 if it's obtained automatically (by DHCP).*/
+#endif
+    fnet_netif_ip_addr_type_t address_type; 
 } fnet_netif_ip4_addr_t;
 
 /* Maxinmum number of IPv6 addresses per interface.*/
@@ -87,7 +86,7 @@ typedef struct fnet_netif_ip6_addr
 {
     fnet_ip6_addr_t             address;                    /* IPv6 address.*/
     fnet_netif_ip6_addr_state_t state;                      /* Address current state.*/
-    fnet_netif_ip6_addr_type_t  type;                       /* How the address was acquired.*/
+    fnet_netif_ip_addr_type_t   type;                       /* How the address was acquired.*/
     fnet_ip6_addr_t             solicited_multicast_addr;   /* Solicited-node multicast */ 
                                                     
     fnet_time_t                 creation_time;          /* Time of entry creation (in seconds).*/    
@@ -98,7 +97,7 @@ typedef struct fnet_netif_ip6_addr
                                                          * in the Prefix that are valid. */                                        
     fnet_index_t                dad_transmit_counter;   /* Counter used by DAD. Equals to the number 
                                                          * of NS transmits till DAD is finished.*/                                                    
-    fnet_time_t               state_time;             /* Time of last state event.*/  
+    fnet_time_t                 state_time;             /* Time of last state event.*/  
 } fnet_netif_ip6_addr_t;
 
 struct fnet_netif; /* Forward declaration.*/
@@ -138,6 +137,7 @@ typedef struct fnet_netif_api
 
 /* Forward declaration.*/
 struct fnet_nd6_if;
+struct fnet_arp_if;
 
 /**************************************************************************/ /*!
  * @internal
@@ -154,7 +154,8 @@ typedef struct fnet_netif
     fnet_scope_id_t         scope_id;                           /* Scope zone index, defining network interface. Used by IPv6 sockets.*/
     fnet_uint32_t           features;                           /* Supported features. Bitwise of fnet_netif_feature_t.*/
 #if FNET_CFG_IP4    
-    fnet_netif_ip4_addr_t   ip4_addr;                           /* The interface IPv4 address structure. */    
+    fnet_netif_ip4_addr_t   ip4_addr;                           /* The interface IPv4 address structure. */  
+    struct fnet_arp_if      *arp_if_ptr;                        /* Pointer to the ARP structure, if the interface supports ARP. */
 #endif
 #if FNET_CFG_IP6
     fnet_netif_ip6_addr_t   ip6_addr[FNET_NETIF_IP6_ADDR_MAX];  /* The interface IPv6 address structure. */
@@ -195,7 +196,7 @@ void fnet_netif_dupip_handler_signal( fnet_netif_desc_t netif );
 
 #if FNET_CFG_IP6
     fnet_netif_ip6_addr_t *fnet_netif_get_ip6_addr_info(fnet_netif_t *netif, const fnet_ip6_addr_t *ip_addr);
-    fnet_return_t fnet_netif_bind_ip6_addr_prv(fnet_netif_t *netif, const fnet_ip6_addr_t *addr, fnet_netif_ip6_addr_type_t addr_type, 
+    fnet_return_t fnet_netif_bind_ip6_addr_prv(fnet_netif_t *netif, const fnet_ip6_addr_t *addr, fnet_netif_ip_addr_type_t addr_type, 
                                      fnet_time_t lifetime /*in seconds*/, fnet_size_t prefix_length /* bits */ );
     fnet_return_t fnet_netif_unbind_ip6_addr_prv ( fnet_netif_t *netif, fnet_netif_ip6_addr_t *if_addr );                                        
     fnet_bool_t fnet_netif_is_my_ip6_addr(fnet_netif_t *netif, const fnet_ip6_addr_t *ip_addr);

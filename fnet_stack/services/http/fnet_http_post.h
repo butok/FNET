@@ -32,14 +32,9 @@
 
 #define _FNET_HTTP_POST_H_
 
-#include "fnet_config.h"
-
-
-#if (FNET_CFG_HTTP && FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR)|| defined(__DOXYGEN__)
-
-
 #include "fnet.h"
 
+#if (FNET_CFG_HTTP && FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR)|| defined(__DOXYGEN__)
 
 /*! @addtogroup fnet_http
  @{ */
@@ -60,18 +55,18 @@
  * @return This function must return:
  *   - @ref FNET_OK if no error occurs.
  *   - @ref FNET_ERR if an error occurs. 
- *   - Also this function may return a HTTP response status-code defined by 
- *     @ref fnet_http_status_code_t.
  * @see fnet_http_post, fnet_http_post_receive_t, fnet_http_post_send_t
  *
  * The HTTP server invokes this callback function when gets
  * POST-method request and the requested file name corresponds to the name 
  * registered in the POST table defined @ref fnet_http_post.@n
  * If the query string does not have any data, the @c query will point to the 
- * blank string.
+ * blank string.@n
+ * If the HTTP server works according to HTTP/1.x  (@ref FNET_CFG_HTTP_VERSION_MAJOR is @c 1), 
+ * this function may use fnet_http_set_response_status_code() to change the default HTTP response status-code.
  * 
  ******************************************************************************/ 
-typedef fnet_int32_t(*fnet_http_post_handle_t)(fnet_char_t * query, fnet_uint32_t *cookie);
+typedef fnet_return_t(*fnet_http_post_handle_t)(fnet_http_session_t session, fnet_char_t * query, fnet_uint32_t *cookie);
 
 /**************************************************************************/ /*!
  * @brief Callback function prototype of the POST-method receive function.
@@ -91,8 +86,6 @@ typedef fnet_int32_t(*fnet_http_post_handle_t)(fnet_char_t * query, fnet_uint32_
  * @return This function must return:
  *   - @ref FNET_OK if no error occurs.
  *   - @ref FNET_ERR if an error occurs. 
- *   - Also this function may return a HTTP response status-code defined by 
- *     @ref fnet_http_status_code_t.
  * @see fnet_http_post, fnet_http_post_handle_t, fnet_http_post_send_t
  *
  * This function is invoked by the HTTP server when there is any data 
@@ -100,10 +93,12 @@ typedef fnet_int32_t(*fnet_http_post_handle_t)(fnet_char_t * query, fnet_uint32_
  * This function can be invoked multiple times to process all received data.
  * At each invocation a new chunk of data must be processed.
  * The HTTP server invokes this callback function after call of the 
- * @ref fnet_http_post_handle_t function.
+ * @ref fnet_http_post_handle_t function.@n
+ * If the HTTP server works according to HTTP/1.x  (@ref FNET_CFG_HTTP_VERSION_MAJOR is @c 1), 
+ * this function may use fnet_http_set_response_status_code() to change the default HTTP response status-code.
  * 
  ******************************************************************************/ 
-typedef fnet_int32_t(*fnet_http_post_receive_t)(fnet_uint8_t * buffer, fnet_size_t buffer_size, fnet_uint32_t *cookie);
+typedef fnet_return_t(*fnet_http_post_receive_t)(fnet_http_session_t session, fnet_uint8_t * buffer, fnet_size_t buffer_size, fnet_uint32_t *cookie);
 
 /**************************************************************************/ /*!
  * @brief Callback function prototype of the POST-method response function.

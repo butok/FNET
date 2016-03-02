@@ -32,7 +32,7 @@
 
 #define _FNET_ISR_H_
 
-#include "fnet_config.h"
+#include "fnet.h"
 
 #if FNET_CFG_OS_ISR
     #define FNET_ISR_HANDLER    fnet_os_isr

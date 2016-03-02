@@ -216,16 +216,6 @@
 			<locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_tftp.h</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/compiler</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
 			<name>fnet_stack/fnet.h</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/fnet.h</locationURI>
@@ -236,7 +226,7 @@
 			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/fnet_config.h</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/os</name>
+			<name>fnet_stack/port</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -266,77 +256,17 @@
 			<locationURI>PARENT-4-PROJECT_LOC/common/startup/startup_mk64fn1/startup/startup.h</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/compiler/fnet_comp.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/compiler/fnet_comp.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/compiler/fnet_comp_asm.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/compiler/fnet_comp_asm.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/compiler/fnet_comp_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/compiler/fnet_comp_config.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/common</name>
+			<name>fnet_stack/port/compiler</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/fnet_cpu.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/fnet_cpu.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/fnet_cpu.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/fnet_cpu.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/fnet_cpu_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/fnet_cpu_config.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mcf</name>
+			<name>fnet_stack/port/cpu</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/mk</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mpc</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/os/brtos</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/os/fnet_os.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/os/fnet_os.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/os/fnet_os_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/os/fnet_os_config.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/os/freertos</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/os/ucosIII</name>
+			<name>fnet_stack/port/os</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -419,6 +349,11 @@
 			<name>fnet_stack/stack/fnet_arp.h</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_arp.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/stack/fnet_arp_prv.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_arp_prv.h</locationURI>
 		</link>
 		<link>
 			<name>fnet_stack/stack/fnet_checksum.c</name>
@@ -731,284 +666,74 @@
 			<locationURI>PARENT-4-PROJECT_LOC/common/startup/startup_mk64fn1/startup/MK64F12/system_MK64F12.h</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/common/fnet_fec.c</name>
+			<name>fnet_stack/port/compiler/fnet_comp.h</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/common/fnet_fec.c</locationURI>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/compiler/fnet_comp.h</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/common/fnet_fec.h</name>
+			<name>fnet_stack/port/compiler/fnet_comp_asm.h</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/common/fnet_fec.h</locationURI>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/compiler/fnet_comp_asm.h</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf.c</name>
+			<name>fnet_stack/port/compiler/fnet_comp_config.h</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf.c</locationURI>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/compiler/fnet_comp_config.h</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf.h</locationURI>
+			<name>fnet_stack/port/cpu/common</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf51cn128_config.h</name>
+			<name>fnet_stack/port/cpu/fnet_cpu.c</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf51cn128_config.h</locationURI>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/fnet_cpu.c</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf52235_config.h</name>
+			<name>fnet_stack/port/cpu/fnet_cpu.h</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf52235_config.h</locationURI>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/fnet_cpu.h</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf52259_config.h</name>
+			<name>fnet_stack/port/cpu/fnet_cpu_config.h</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf52259_config.h</locationURI>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/fnet_cpu_config.h</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf5235_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf5235_config.h</locationURI>
+			<name>fnet_stack/port/cpu/mcf</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf5282_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf5282_config.h</locationURI>
+			<name>fnet_stack/port/cpu/mk</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf54418_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf54418_config.h</locationURI>
+			<name>fnet_stack/port/cpu/mpc</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf_cache.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf_cache.c</locationURI>
+			<name>fnet_stack/port/os/brtos</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf_checksum.s</name>
+			<name>fnet_stack/port/os/fnet_os.h</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf_checksum.s</locationURI>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/os/fnet_os.h</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf_config.h</name>
+			<name>fnet_stack/port/os/fnet_os_config.h</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf_config.h</locationURI>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/os/fnet_os_config.h</locationURI>
 		</link>
 		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf_eth.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf_eth.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf_flash.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf_flash.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf_isr.s</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf_isr.s</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf_isr_inst.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf_isr_inst.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf_low.s</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf_low.s</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf_serial.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf_serial.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf_stdlib.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf_stdlib.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mcf/fnet_mcf_timer.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mcf/fnet_mcf_timer.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk60fn1_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk60fn1_config.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk60n512_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk60n512_config.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk64fn1_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk64fn1_config.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk70fn1_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk70fn1_config.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk_cache.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk_cache.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk_config.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk_eth.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk_eth.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk_flash.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk_flash.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk_isr.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk_isr.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk_isr_inst.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk_isr_inst.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk_low.S</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk_low.S</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk_serial.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk_serial.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk_stdlib.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk_stdlib.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mk/fnet_mk_timer.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mk/fnet_mk_timer.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mpc/fnet_mpc.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mpc/fnet_mpc.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mpc/fnet_mpc.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mpc/fnet_mpc.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mpc/fnet_mpc564xbc_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mpc/fnet_mpc564xbc_config.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mpc/fnet_mpc5668g_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mpc/fnet_mpc5668g_config.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mpc/fnet_mpc_cache.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mpc/fnet_mpc_cache.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mpc/fnet_mpc_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mpc/fnet_mpc_config.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mpc/fnet_mpc_eth.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mpc/fnet_mpc_eth.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mpc/fnet_mpc_isr.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mpc/fnet_mpc_isr.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mpc/fnet_mpc_isr_inst.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mpc/fnet_mpc_isr_inst.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mpc/fnet_mpc_serial.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mpc/fnet_mpc_serial.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mpc/fnet_mpc_stdlib.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mpc/fnet_mpc_stdlib.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/cpu/mpc/fnet_mpc_timer.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/cpu/mpc/fnet_mpc_timer.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/os/brtos/fnet_brtos.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/os/brtos/fnet_brtos.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/os/brtos/fnet_brtos_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/os/brtos/fnet_brtos_config.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/os/freertos/fnet_freertos.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/os/freertos/fnet_freertos.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/os/freertos/fnet_freertos_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/os/freertos/fnet_freertos_config.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/os/ucosIII/fnet_ucosIII.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/os/ucosIII/fnet_ucosIII.c</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/os/ucosIII/fnet_ucosIII_config.h</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/os/ucosIII/fnet_ucosIII_config.h</locationURI>
-		</link>
-		<link>
-			<name>fnet_stack/os/ucosIII/fnet_ucosIII_isr.s</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/os/ucosIII/fnet_ucosIII_isr.s</locationURI>
+			<name>fnet_stack/port/os/freertos</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
 			<name>fnet_stack/services/dhcp/fnet_dhcp.c</name>
@@ -1304,6 +1029,266 @@
 			<name>startup/MK64F12/iar/startup_MK64F12.s</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/common/startup/startup_mk64fn1/startup/MK64F12/iar/startup_MK64F12.s</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/common/fnet_fec.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/common/fnet_fec.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/common/fnet_fec.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/common/fnet_fec.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf51cn128_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf51cn128_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf52235_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf52235_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf52259_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf52259_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf5235_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf5235_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf5282_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf5282_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf54418_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf54418_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf_cache.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf_cache.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf_checksum.s</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf_checksum.s</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf_eth.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf_eth.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf_flash.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf_flash.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf_isr.s</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf_isr.s</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf_isr_inst.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf_isr_inst.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf_low.s</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf_low.s</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf_serial.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf_serial.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mcf/fnet_mcf_timer.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mcf/fnet_mcf_timer.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mk/fnet_mk.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mk/fnet_mk.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mk/fnet_mk60fn1_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk60fn1_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mk/fnet_mk60n512_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk60n512_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mk/fnet_mk64fn1_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk64fn1_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mk/fnet_mk70fn1_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk70fn1_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mk/fnet_mk_cache.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk_cache.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mk/fnet_mk_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mk/fnet_mk_eth.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk_eth.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mk/fnet_mk_flash.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk_flash.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mk/fnet_mk_isr.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk_isr.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mk/fnet_mk_isr_inst.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk_isr_inst.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mk/fnet_mk_low.S</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk_low.S</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mk/fnet_mk_serial.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk_serial.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mk/fnet_mk_timer.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk_timer.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mpc/fnet_mpc.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mpc/fnet_mpc.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mpc/fnet_mpc.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mpc/fnet_mpc.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mpc/fnet_mpc564xbc_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mpc/fnet_mpc564xbc_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mpc/fnet_mpc5668g_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mpc/fnet_mpc5668g_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mpc/fnet_mpc5744p_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mpc/fnet_mpc5744p_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mpc/fnet_mpc5744p_low.ppc</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mpc/fnet_mpc5744p_low.ppc</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mpc/fnet_mpc_cache.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mpc/fnet_mpc_cache.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mpc/fnet_mpc_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mpc/fnet_mpc_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mpc/fnet_mpc_eth.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mpc/fnet_mpc_eth.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mpc/fnet_mpc_isr.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mpc/fnet_mpc_isr.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mpc/fnet_mpc_isr_inst.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mpc/fnet_mpc_isr_inst.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mpc/fnet_mpc_serial.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mpc/fnet_mpc_serial.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/cpu/mpc/fnet_mpc_timer.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mpc/fnet_mpc_timer.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/os/brtos/fnet_brtos.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/os/brtos/fnet_brtos.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/os/brtos/fnet_brtos_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/os/brtos/fnet_brtos_config.h</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/os/freertos/fnet_freertos.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/os/freertos/fnet_freertos.c</locationURI>
+		</link>
+		<link>
+			<name>fnet_stack/port/os/freertos/fnet_freertos_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/os/freertos/fnet_freertos_config.h</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

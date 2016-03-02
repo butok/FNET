@@ -99,14 +99,8 @@ const fnet_char_t FAPP_TOCANCEL_STR[] = "Press [Ctr+C] to cancel.";
 const fnet_char_t FAPP_PARAM_ERR[] = "Error: Invalid paremeter \'%s\'";
 static const fnet_char_t FAPP_NET_ERR[]   = "Error: Network Interface is not configurated!\n";
 const fnet_char_t FAPP_INIT_ERR[]  = "Error: %s initialization is failed!";
-
-
-
 const fnet_char_t FAPP_SHELL_INFO_FORMAT_S[]  = " %-16s : %s";
 const fnet_char_t FAPP_SHELL_INFO_FORMAT_D[]  = " %-16s : %u";
-
-const fnet_char_t FAPP_SHELL_INFO_ENABLED[]  = "enabled";
-const fnet_char_t FAPP_SHELL_INFO_DISABLED[]  = "disabled";
 const fnet_char_t FAPP_SHELL_CANCELED_CTRL_C[]  = "Canceled by [Ctrl+C]!";
 
 /* Service release command */
@@ -165,7 +159,7 @@ static void fapp_unbind_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_cha
 #if FAPP_CFG_EXP_CMD && FNET_CFG_FS
 static void fapp_exp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** argv );
 #endif
-static void fapp_info_print( fnet_shell_desc_t desc );
+static void fapp_print_info( fnet_shell_desc_t desc );
 
 /************************************************************************
 *     The table of the main shell commands.
@@ -187,7 +181,7 @@ const struct fnet_shell_command fapp_cmd_table [] =
     { "info",       0u, 0u, fapp_info_cmd,    "Show interface info", ""},
 #endif
 #if FAPP_CFG_STAT_CMD
-    { "stat",       0u, 0u, fapp_stat_cmd,    "Show interface statistics", ""},
+    { "stat",       0u, 0u, fapp_stat_cmd,    "Show network statistics", ""},
 #endif
 #if FAPP_CFG_DHCP_CMD && FNET_CFG_DHCP && FNET_CFG_IP4
     { "dhcp",       0u, 1u, fapp_dhcp_cmd,    "Start DHCP client", "[release]"},
@@ -256,6 +250,19 @@ const struct fnet_shell_command fapp_cmd_table [] =
 
 /* Shell command-line buffer.*/
 static fnet_char_t fapp_cmd_line_buffer[FAPP_CFG_SHELL_MAX_LINE_LENGTH];
+
+/* String equivalent to fnet_netif_ip_addr_type_t */
+static const fnet_char_t * const fapp_netif_ip_addr_type_str[] = {"manual",             /* FNET_NETIF_IP_ADDR_TYPE_MANUAL */
+                                                                  "autoconfigurable",   /* FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE */
+                                                                  "dhcp"};              /* FNET_NETIF_IP_ADDR_TYPE_DHCP */
+
+/* Connection state string */
+static const fnet_char_t * const fapp_netif_connection_state_str[] = {"unconnected",    /* false */
+                                                                      "connected"};     /* true */
+
+/* Connection state string */
+const fnet_char_t * const fapp_enabled_str[] = {"disabled",    /* false */
+                                                "enabled"};     /* true */
 
 /************************************************************************
 *     The main shell control data structure.
@@ -609,19 +616,19 @@ void fapp_main(void)
 }
 
 /************************************************************************
-* NAME: fapp_netif_info_print
+* NAME: fapp_print_netif_info
 *
 * DESCRIPTION: Print detailed address information about default
 *              network interface.
 ************************************************************************/
-void fapp_netif_info_print( fnet_shell_desc_t desc, fnet_netif_desc_t netif)
+void fapp_print_netif_info( fnet_shell_desc_t desc, fnet_netif_desc_t netif)
 {
     fnet_char_t name[FNET_NETIF_NAMELEN];
 
     fnet_netif_get_name(netif, name, sizeof(name));
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Interface", name);
     
-    fapp_netif_addr_print(desc, AF_SUPPORTED, netif, FNET_TRUE);
+    fapp_print_netif_addr(desc, AF_SUPPORTED, netif, FNET_TRUE);
 #if FNET_CFG_IP4
     {    
         fnet_ip4_addr_t ip_addr;
@@ -645,11 +652,11 @@ void fapp_netif_info_print( fnet_shell_desc_t desc, fnet_netif_desc_t netif)
 }
 
 /************************************************************************
-* NAME: fapp_netif_addr_print
+* NAME: fapp_print_netif_addr
 *
 * DESCRIPTION: Print Interface IP addresses. 
 ************************************************************************/
-void fapp_netif_addr_print(fnet_shell_desc_t desc, fnet_address_family_t family, fnet_netif_desc_t netif, fnet_bool_t print_type)
+void fapp_print_netif_addr(fnet_shell_desc_t desc, fnet_address_family_t family, fnet_netif_desc_t netif, fnet_bool_t print_type)
 {
 	fnet_char_t    ip_str[FNET_IP_ADDR_STR_SIZE]={0};
     
@@ -662,7 +669,7 @@ void fapp_netif_addr_print(fnet_shell_desc_t desc, fnet_address_family_t family,
         fnet_shell_printf(desc, FAPP_SHELL_INFO_FORMAT_S, "IPv4 Address", fnet_inet_ntoa(*(struct in_addr *)(&local_ip), ip_str) ); 
         if(print_type)
         {
-            fnet_shell_println(desc," <%s>", fnet_netif_get_ip4_addr_automatic(netif) ? "automatic" : "manual");
+            fnet_shell_println(desc," <%s>", fapp_netif_ip_addr_type_str[fnet_netif_get_ip4_addr_type(netif)]);
         }
         else
         {
@@ -690,7 +697,7 @@ void fapp_netif_addr_print(fnet_shell_desc_t desc, fnet_address_family_t family,
                 fnet_shell_printf(desc, FAPP_SHELL_INFO_FORMAT_S, "IPv6 Address", ip_str);
                 if(print_type)
                 {
-                    fnet_shell_println(desc," <%s> ScopeID:%d", (addr_info.type == FNET_NETIF_IP6_ADDR_TYPE_AUTOCONFIGURABLE)  ? "autoconfigurable" : "manual", fnet_netif_get_scope_id(netif)); 
+                    fnet_shell_println(desc," <%s> ScopeID:%d", fapp_netif_ip_addr_type_str[addr_info.type] , fnet_netif_get_scope_id(netif)); 
                 }
                 else
                 {
@@ -709,17 +716,17 @@ void fapp_netif_addr_print(fnet_shell_desc_t desc, fnet_address_family_t family,
 }
 
 /************************************************************************
-* NAME: fapp_info_print
+* NAME: fapp_print_info
 *
 * DESCRIPTION: Display detailed information about the stack.
 ************************************************************************/
-static void fapp_info_print( fnet_shell_desc_t desc )
+static void fapp_print_info( fnet_shell_desc_t desc )
 {
-    fnet_char_t                mac_str[FNET_MAC_ADDR_STR_SIZE];
+    fnet_char_t         mac_str[FNET_MAC_ADDR_STR_SIZE];
     fnet_mac_addr_t     macaddr;
     fnet_netif_desc_t   netif = fnet_netif_get_default();         
 
-    fapp_netif_info_print(desc, netif);
+    fapp_print_netif_info(desc, netif);
 
     /* HW address, if any */
     if(fnet_netif_get_hw_addr(netif, macaddr, sizeof(fnet_mac_addr_t)) == FNET_OK)
@@ -727,7 +734,7 @@ static void fapp_info_print( fnet_shell_desc_t desc )
         fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "MAC Address", fnet_mac_to_str(macaddr, mac_str));
     }    
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "MTU", fnet_netif_get_mtu(netif));    
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Link Status", fnet_netif_connected(netif) ? "connected" : "unconnected");
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Link Status", fapp_netif_connection_state_str[fnet_netif_is_connected(netif)]);
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "Free Heap", fnet_free_mem_status());
 
 #if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
@@ -762,7 +769,7 @@ static void fapp_info_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_
     FNET_COMP_UNUSED_ARG(argc);
     FNET_COMP_UNUSED_ARG(argv);
 
-    fapp_info_print(desc);
+    fapp_print_info(desc);
 }
 #endif
 
@@ -787,35 +794,63 @@ static void fapp_stat_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_
         fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "TX Packets", statistics.tx_packet);
         fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "RX Packets", statistics.rx_packet);
     }
-
+#if FNET_CFG_IP4
+    {
+        fnet_arp_entry_info_t   entry_info;
+        fnet_char_t             addr_str[FNET_IP4_ADDR_STR_SIZE];
+        fnet_char_t             mac_str[FNET_MAC_ADDR_STR_SIZE];
+        fnet_index_t                        i;
+ 
+        fnet_shell_println(desc, "\nARP Cache:");
+        for(i=0U; fnet_arp_get_entry (netif, i, &entry_info ) == FNET_TRUE; i++)
+        {
+            fnet_shell_println(desc,"\t[%d] %s = %s", i, 
+                                fnet_inet_ntop(AF_INET, &entry_info.ip_addr, addr_str, sizeof(addr_str)), 
+                                fnet_mac_to_str(entry_info.mac_addr, mac_str));
+        } 
+        if(i == 0U)
+        {
+            fnet_shell_println(desc, "\t<empty>");
+        }   
+    }
+#endif
 #if FNET_CFG_IP6
     {
         fnet_index_t                        i;
         fnet_netif_ip6_prefix_t             ip6_prefix;
         fnet_netif_ip6_neighbor_cache_t     ip6_neighbor_cache;
-        fnet_char_t                                numaddr[FNET_IP6_ADDR_STR_SIZE];
-        fnet_char_t                                mac_str[FNET_MAC_ADDR_STR_SIZE];
+        fnet_char_t                         numaddr[FNET_IP6_ADDR_STR_SIZE];
+        fnet_char_t                         mac_str[FNET_MAC_ADDR_STR_SIZE];
 
         /* Print content of IPv6 Prefix List. */
         fnet_shell_println(desc, "\nIPv6 Prefix List:");
         for(i=0U; fnet_netif_get_ip6_prefix(netif, i, &ip6_prefix) == FNET_TRUE; i++)
         {
-            fnet_shell_println(desc,"   [%d] %s/%d\n", i, 
+            fnet_shell_println(desc,"\t[%d] %s/%d", i, 
                                 fnet_inet_ntop(AF_INET6, &ip6_prefix.prefix, numaddr, sizeof(numaddr)), ip6_prefix.prefix_length);
-        }     
+        } 
+        if(i == 0U)
+        {
+            fnet_shell_println(desc, "\t<empty>");
+        }    
 
         /* Print content of IPv6 Neighbor Cache. */
+        fnet_shell_println(desc, "\nIPv6 Neighbor Cache:");
         for(i=0U; fnet_netif_get_ip6_neighbor_cache(netif, i, &ip6_neighbor_cache) == FNET_TRUE; i++)
         {
             if(i == 0U)
             {
                 fnet_shell_println(desc, "\nIPv6 Neighbor Cache:");
             }
-            fnet_shell_println(desc,"   [%d] %s = %s (%s)\n", i, 
+            fnet_shell_println(desc,"\t[%d] %s = %s (%s)", i, 
                                 fnet_inet_ntop(AF_INET6, &ip6_neighbor_cache.ip_addr, numaddr, sizeof(numaddr)), 
                                 fnet_mac_to_str(ip6_neighbor_cache.ll_addr, mac_str),
                                 (ip6_neighbor_cache.is_router == FNET_TRUE) ? "router" : "host");
-        }    
+        } 
+        if(i == 0U)
+        {
+            fnet_shell_println(desc, "\t<empty>");
+        }
     }
 #endif
 
@@ -843,7 +878,7 @@ void fapp_shell_init( fnet_shell_desc_t desc )
     fnet_shell_println(desc, " %s", FNET_LICENSE);
 #endif
     fnet_shell_println(desc, FAPP_DELIMITER_STR);
-    fapp_info_print(desc);
+    fapp_print_info(desc);
     fnet_shell_println(desc, "\n Enter 'help' for command list.");
     fnet_shell_println(desc, "%s\n", FAPP_DELIMITER_STR);
 }
@@ -970,7 +1005,7 @@ static void fapp_bind_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_
     
     if(fnet_inet_pton(AF_INET6, argv[1], &addr, sizeof(addr)) == FNET_OK)
     {
-        fnet_netif_bind_ip6_addr(netif, &addr, FNET_NETIF_IP6_ADDR_TYPE_MANUAL);
+        fnet_netif_bind_ip6_addr(netif, &addr, FNET_NETIF_IP_ADDR_TYPE_MANUAL);
     }
     else
     {

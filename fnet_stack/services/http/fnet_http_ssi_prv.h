@@ -32,13 +32,9 @@
 
 #define _FNET_HTTP_SSI_PRV_H_
 
-#include "fnet_config.h"
-
+#include "fnet.h"
 
 #if FNET_CFG_HTTP && FNET_CFG_HTTP_SSI
-
-
-#include "fnet.h"
 
 /* SSI statemachine state. */
 typedef enum

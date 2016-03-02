@@ -245,7 +245,7 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>11111110</state>
+          <state>00000000</state>
         </option>
         <option>
           <name>CCDebugInfo</name>
@@ -339,7 +339,7 @@
         </option>
         <option>
           <name>CCOptLevel</name>
-          <state>3</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCOptStrategy</name>
@@ -348,7 +348,7 @@
         </option>
         <option>
           <name>CCOptLevelSlave</name>
-          <state>3</state>
+          <state>1</state>
         </option>
         <option>
           <name>CompilerMisraRules98</name>
@@ -2039,97 +2039,97 @@
   <group>
     <name>fnet_stack</name>
     <group>
-      <name>compiler</name>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\compiler\fnet_comp.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\compiler\fnet_comp_asm.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\compiler\fnet_comp_config.h</name>
-      </file>
-    </group>
-    <group>
-      <name>cpu</name>
+      <name>port</name>
       <group>
-        <name>common</name>
+        <name>compiler</name>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\common\fnet_fec.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\compiler\fnet_comp.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\common\fnet_fec.h</name>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\compiler\fnet_comp_asm.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\compiler\fnet_comp_config.h</name>
         </file>
       </group>
       <group>
-        <name>mk</name>
+        <name>cpu</name>
+        <group>
+          <name>common</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\common\fnet_fec.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\common\fnet_fec.h</name>
+          </file>
+        </group>
+        <group>
+          <name>mk</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk60fn1_config.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk60n512_config.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk64fn1_config.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk70fn1_config.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_cache.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_config.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_eth.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_flash.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_isr.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_isr_inst.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_low.S</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_serial.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_timer.c</name>
+          </file>
+        </group>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\fnet_cpu.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk.h</name>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\fnet_cpu.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk60fn1_config.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk60n512_config.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk64fn1_config.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk70fn1_config.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_cache.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_config.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_eth.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_flash.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_isr.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_isr_inst.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_low.S</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_serial.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_stdlib.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_timer.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\fnet_cpu_config.h</name>
         </file>
       </group>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\fnet_cpu.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\fnet_cpu.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\fnet_cpu_config.h</name>
-      </file>
-    </group>
-    <group>
-      <name>os</name>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\os\fnet_os.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\os\fnet_os_config.h</name>
-      </file>
+      <group>
+        <name>os</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\os\fnet_os.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\os\fnet_os_config.h</name>
+        </file>
+      </group>
     </group>
     <group>
       <name>services</name>
@@ -2348,6 +2348,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\fnet_stack\stack\fnet_arp.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\stack\fnet_arp_prv.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\fnet_stack\stack\fnet_checksum.c</name>

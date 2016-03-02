@@ -28,11 +28,10 @@
 ***************************************************************************/
 
 
-#include "fnet_config.h"
+#include "fnet.h"
 
 #if FNET_CFG_DNS_RESOLVER
 
-#include "fnet_dns.h"
 #include "fnet_dns_prv.h"
 
 #if FNET_CFG_DEBUG_DNS && FNET_CFG_DEBUG    

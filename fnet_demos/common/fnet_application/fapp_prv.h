@@ -44,15 +44,12 @@ extern const fnet_char_t FAPP_DELIMITER_STR[];
 extern const fnet_char_t FAPP_CANCELLED_STR[];
 extern const fnet_char_t FAPP_TOCANCEL_STR[];
 extern const fnet_char_t FAPP_COMMAND_RELEASE[]; /* Service release command */
-
 extern const fnet_char_t FAPP_PARAM_ERR[];
 extern const fnet_char_t FAPP_INIT_ERR[];
-
 extern const fnet_char_t FAPP_SHELL_INFO_FORMAT_S[];
 extern const fnet_char_t FAPP_SHELL_INFO_FORMAT_D[];
-extern const fnet_char_t FAPP_SHELL_INFO_ENABLED[];
-extern const fnet_char_t FAPP_SHELL_INFO_DISABLED[];
 extern const fnet_char_t FAPP_SHELL_CANCELED_CTRL_C[];
+extern const fnet_char_t * const fapp_enabled_str[];
 
 /* Boot mode structure. */
 struct boot_mode
@@ -74,9 +71,9 @@ extern "C" {
 
 void fapp_help_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** argv );
 void fapp_shell_init( fnet_shell_desc_t desc );
-void fapp_netif_info_print( fnet_shell_desc_t desc, fnet_netif_desc_t netif );
+void fapp_print_netif_info( fnet_shell_desc_t desc, fnet_netif_desc_t netif );
+void fapp_print_netif_addr(fnet_shell_desc_t desc, fnet_address_family_t family, fnet_netif_desc_t netif, fnet_bool_t print_type);
 void fapp_go_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** argv );
-void fapp_netif_addr_print(fnet_shell_desc_t desc, fnet_address_family_t family, fnet_netif_desc_t netif, fnet_bool_t print_type);
 const struct boot_mode *fapp_boot_mode_by_name (fnet_char_t *name);
 const struct boot_mode *fapp_boot_mode_by_index (fapp_params_boot_mode_t index);
 

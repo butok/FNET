@@ -32,14 +32,9 @@
 
 #define _FNET_TFTP_H_
 
-#include "fnet_config.h"
-
-
-#if FNET_CFG_TFTP_CLN || FNET_CFG_TFTP_SRV || defined(__DOXYGEN__)
-
 #include "fnet.h"
 
-
+#if FNET_CFG_TFTP_CLN || FNET_CFG_TFTP_SRV || defined(__DOXYGEN__)
 
 /*! @addtogroup fnet_tftp 
 * The user application can use the Trivial File Transfer Protocol (TFTP) client and server to transfer files 

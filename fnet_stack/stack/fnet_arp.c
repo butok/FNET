@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
 *
@@ -33,7 +33,7 @@
 
 #if (FNET_CFG_CPU_ETH0 || FNET_CFG_CPU_ETH1) && FNET_CFG_IP4
 
-#include "fnet_arp.h"
+#include "fnet_arp_prv.h"
 #include "fnet_eth_prv.h"
 #include "fnet_netif_prv.h"
 
@@ -71,28 +71,32 @@ static void fnet_arp_trace(fnet_uint8_t *str, fnet_arp_header_t *arp_hdr);
 *
 * DESCRIPTION: ARP module initialization.
 *************************************************************************/
-fnet_return_t fnet_arp_init(fnet_netif_t *netif)
+fnet_return_t fnet_arp_init(fnet_netif_t *netif, fnet_arp_if_t *arpif)
 {
-    fnet_arp_if_t *arpif = &(((fnet_eth_if_t *)(netif->if_ptr))->arp_if);
-    fnet_index_t i;
-    fnet_return_t result = FNET_ERR;
+    fnet_index_t    i;
+    fnet_return_t   result = FNET_ERR;
 
-    for (i = 0U; i < FNET_CFG_ARP_TABLE_SIZE; i++)
+    if(netif && arpif)
     {
-        fnet_memset_zero(&(arpif->arp_table[i]), sizeof(fnet_arp_entry_t));
-    }
+        netif->arp_if_ptr = arpif;
 
-#if FNET_CFG_ARP_EXPIRE_TIMEOUT
-    arpif->arp_tmr = fnet_timer_new((FNET_ARP_TIMER_PERIOD / FNET_TIMER_PERIOD_MS), fnet_arp_timer, (fnet_uint32_t)arpif);
-#endif
-
-    if (arpif->arp_tmr)
-    {
-        /* Install event Handler. */
-        arpif->arp_event = fnet_event_init(fnet_arp_ip_duplicated, (fnet_uint32_t)netif);
-        if (arpif->arp_event != FNET_ERR)
+        for (i = 0U; i < FNET_CFG_ARP_TABLE_SIZE; i++)
         {
-            result = FNET_OK;
+            fnet_memset_zero(&(arpif->arp_table[i]), sizeof(fnet_arp_entry_t));
+        }
+
+    #if FNET_CFG_ARP_EXPIRE_TIMEOUT
+        arpif->arp_tmr = fnet_timer_new((FNET_ARP_TIMER_PERIOD / FNET_TIMER_PERIOD_MS), fnet_arp_timer, (fnet_uint32_t)arpif);
+    #endif
+
+        if (arpif->arp_tmr)
+        {
+            /* Install event Handler. */
+            arpif->arp_event = fnet_event_init(fnet_arp_ip_duplicated, (fnet_uint32_t)netif);
+            if (arpif->arp_event != FNET_ERR)
+            {
+                result = FNET_OK;
+            }
         }
     }
 
@@ -106,7 +110,7 @@ fnet_return_t fnet_arp_init(fnet_netif_t *netif)
 *************************************************************************/
 void fnet_arp_release(fnet_netif_t *netif)
 {
-    fnet_arp_if_t *arpif = &(((fnet_eth_if_t *)(netif->if_ptr))->arp_if);
+    fnet_arp_if_t *arpif = netif->arp_if_ptr;
 
     fnet_timer_free(arpif->arp_tmr);
 
@@ -146,7 +150,7 @@ static void fnet_arp_timer(fnet_uint32_t cookie)
 *************************************************************************/
 static fnet_arp_entry_t *fnet_arp_add_entry(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, const fnet_mac_addr_t ethaddr)
 {
-    fnet_arp_if_t *arpif = &(((fnet_eth_if_t *)(netif->if_ptr))->arp_if);
+    fnet_arp_if_t *arpif = netif->arp_if_ptr;
     fnet_index_t i;
     fnet_index_t j;
     fnet_time_t max_time;
@@ -188,7 +192,7 @@ static fnet_arp_entry_t *fnet_arp_add_entry(fnet_netif_t *netif, fnet_ip4_addr_t
             if ((fnet_timer_ticks() - arpif->arp_table[i].cr_time) > max_time)
             {
                 max_time = fnet_timer_ticks() - arpif->arp_table[i].cr_time;
-                j        = i;
+                j = i;
             }
         }
 
@@ -219,8 +223,8 @@ ADDED:
 *************************************************************************/
 static fnet_arp_entry_t *fnet_arp_update_entry(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_mac_addr_t ethaddr)
 {
-    fnet_arp_if_t *arpif = &(((fnet_eth_if_t *)(netif->if_ptr))->arp_if);
-    fnet_index_t i;
+    fnet_arp_if_t   *arpif = netif->arp_if_ptr;
+    fnet_index_t    i;
 
     /* Find an entry to update. */
     for (i = 0U; i < FNET_CFG_ARP_TABLE_SIZE; ++i)
@@ -240,6 +244,42 @@ static fnet_arp_entry_t *fnet_arp_update_entry(fnet_netif_t *netif, fnet_ip4_add
 }
 
 /************************************************************************
+* NAME: fnet_arp_get_mac
+*
+* DESCRIPTION: Gets MAC address of valid ARP cache entry.
+*************************************************************************/
+fnet_bool_t fnet_arp_get_mac( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ip_addr, fnet_mac_addr_t mac_addr)
+{
+    fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
+    fnet_arp_if_t   *arpif;
+    fnet_mac_addr_t *macaddr_p;
+    fnet_bool_t     result = FNET_FALSE;
+
+    if(netif)
+    {
+        arpif = netif->arp_if_ptr;
+        if(arpif)
+        {
+            fnet_isr_lock();
+
+            macaddr_p = fnet_arp_lookup(netif, ip_addr);
+            
+            if(macaddr_p)
+            {   
+                if(mac_addr)
+                {
+                    fnet_memcpy (mac_addr, *macaddr_p, sizeof(fnet_mac_addr_t));
+                }
+                result = FNET_TRUE;
+            }
+
+            fnet_isr_unlock();
+        }
+    }
+    return result;
+}
+
+/************************************************************************
 * NAME: fnet_arp_lookup
 *
 * DESCRIPTION: This function looks up an entry corresponding to
@@ -247,8 +287,8 @@ static fnet_arp_entry_t *fnet_arp_update_entry(fnet_netif_t *netif, fnet_ip4_add
 *************************************************************************/
 fnet_mac_addr_t *fnet_arp_lookup(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr)
 {
-    fnet_arp_if_t *arpif = &(((fnet_eth_if_t *)(netif->if_ptr))->arp_if); /* PFI */
-    fnet_index_t i;
+    fnet_arp_if_t   *arpif = netif->arp_if_ptr; /* PFI */
+    fnet_index_t    i;
     fnet_mac_addr_t *result = FNET_NULL;
 
     /* Find an entry. */
@@ -277,9 +317,9 @@ fnet_mac_addr_t *fnet_arp_lookup(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr)
 *************************************************************************/
 void fnet_arp_resolve(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_netbuf_t *nb)
 {
-    fnet_arp_if_t *arpif = &(((fnet_eth_if_t *)(netif->if_ptr))->arp_if); /* PFI */
-    fnet_index_t i;
-    fnet_arp_entry_t *entry;
+    fnet_arp_if_t       *arpif = netif->arp_if_ptr; 
+    fnet_index_t        i;
+    fnet_arp_entry_t    *entry;
 
     for (i = 0U; i < FNET_CFG_ARP_TABLE_SIZE; i++)
     {
@@ -323,14 +363,17 @@ void fnet_arp_resolve(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_netbuf_t
 *************************************************************************/
 void fnet_arp_input(fnet_netif_t *netif, fnet_netbuf_t *nb)
 {
-    fnet_arp_if_t *arpif       = &(((fnet_eth_if_t *)(netif->if_ptr))->arp_if);
-    fnet_arp_header_t *arp_hdr = (fnet_arp_header_t *)nb->data_ptr;
-    fnet_mac_addr_t local_addr;
-    fnet_arp_entry_t *entry;
+    fnet_arp_if_t       *arpif = netif->arp_if_ptr;
+    fnet_arp_header_t   *arp_hdr = (fnet_arp_header_t *)nb->data_ptr;
+    fnet_mac_addr_t     local_addr;
+    fnet_arp_entry_t    *entry;
 
     if (!((nb == 0) /* The packet is wrong. */
-          || (nb->total_length < sizeof(fnet_arp_header_t)) || (arp_hdr->hard_type != FNET_HTONS(FNET_ARP_HARD_TYPE)) || (arp_hdr->hard_size != FNET_ARP_HARD_SIZE) ||
-          (arp_hdr->prot_type != FNET_HTONS(FNET_ETH_TYPE_IP4)) || (arp_hdr->prot_size != FNET_ARP_PROT_SIZE)))
+            || (nb->total_length < sizeof(fnet_arp_header_t)) 
+            || (arp_hdr->hard_type != FNET_HTONS(FNET_ARP_HARD_TYPE)) 
+            || (arp_hdr->hard_size != FNET_ARP_HARD_SIZE) 
+            || (arp_hdr->prot_type != FNET_HTONS(FNET_ETH_TYPE_IP4)) 
+            || (arp_hdr->prot_size != FNET_ARP_PROT_SIZE)))
     {
         if (nb->total_length > sizeof(fnet_arp_header_t))
         {
@@ -363,7 +406,7 @@ void fnet_arp_input(fnet_netif_t *netif, fnet_netbuf_t *nb)
                 if (entry && (entry->hold))
                 {
                     /* Send waiting data.*/
-                    ((fnet_eth_if_t *)(netif->if_ptr))->output(netif, FNET_ETH_TYPE_IP4, entry->hard_addr, entry->hold);
+                    fnet_eth_output(netif, FNET_ETH_TYPE_IP4, entry->hard_addr, entry->hold);
 
                     entry->hold      = 0;
                     entry->hold_time = 0U;
@@ -388,7 +431,7 @@ void fnet_arp_input(fnet_netif_t *netif, fnet_netbuf_t *nb)
 
                 fnet_arp_trace("TX Reply", arp_hdr); /* Print ARP header. */
 
-                ((fnet_eth_if_t *)(netif->if_ptr))->output(netif, FNET_ETH_TYPE_ARP, arp_hdr->target_hard_addr, nb);
+                fnet_eth_output(netif, FNET_ETH_TYPE_ARP, arp_hdr->target_hard_addr, nb);
                 return;
             }
         }
@@ -398,16 +441,39 @@ void fnet_arp_input(fnet_netif_t *netif, fnet_netbuf_t *nb)
 }
 
 /************************************************************************
+* NAME: fnet_arp_send_request
+*
+* DESCRIPTION: Public function. Sends ARP request.
+*************************************************************************/
+void fnet_arp_send_request( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ip_addr )
+{
+    fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
+    fnet_arp_if_t   *arpif;
+
+    if(netif)
+    {
+        arpif = netif->arp_if_ptr;
+        if(arpif)
+        {
+            fnet_isr_lock();
+            
+            fnet_arp_request(netif, ip_addr);
+
+            fnet_isr_unlock();
+        }
+    }
+}
+
+/************************************************************************
 * NAME: fnet_arp_request
 *
 * DESCRIPTION: Sends ARP request.
 *************************************************************************/
 void fnet_arp_request(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr)
 {
-    fnet_arp_header_t *arp_hdr;
-    fnet_mac_addr_t sender_addr;
-
-    fnet_netbuf_t *nb;
+    fnet_arp_header_t   *arp_hdr;
+    fnet_mac_addr_t     sender_addr;
+    fnet_netbuf_t       *nb;
 
     if ((nb = fnet_netbuf_new(sizeof(fnet_arp_header_t), FNET_TRUE)) != 0)
     {
@@ -431,7 +497,7 @@ void fnet_arp_request(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr)
 
         fnet_arp_trace("TX", arp_hdr); /* Print ARP header. */
 
-        ((fnet_eth_if_t *)(netif->if_ptr))->output(netif, FNET_ETH_TYPE_ARP, fnet_eth_broadcast, nb);
+        fnet_eth_output(netif, FNET_ETH_TYPE_ARP, fnet_eth_broadcast, nb);
     }
 }
 
@@ -456,8 +522,8 @@ static void fnet_arp_ip_duplicated(fnet_uint32_t cookie)
 *************************************************************************/
 void fnet_arp_drain(fnet_netif_t *netif)
 {
-    fnet_index_t i;
-    fnet_arp_if_t *arpif = &(((fnet_eth_if_t *)(netif->if_ptr))->arp_if); /* PFI */
+    fnet_index_t    i;
+    fnet_arp_if_t   *arpif = netif->arp_if_ptr;
 
     fnet_isr_lock();
 
@@ -473,6 +539,49 @@ void fnet_arp_drain(fnet_netif_t *netif)
     }
 
     fnet_isr_unlock();
+}
+
+/************************************************************************
+* NAME: fnet_arp_get_entry
+*
+* DESCRIPTION: This function Retrieves ARP cache entry of 
+*             the specified network interface.
+*************************************************************************/
+fnet_bool_t fnet_arp_get_entry ( fnet_netif_desc_t netif_desc, fnet_index_t n, fnet_arp_entry_info_t *entry_info )
+{
+    fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
+    fnet_bool_t     result = FNET_FALSE;
+    fnet_arp_if_t   *arpif;
+    fnet_index_t    i;
+
+    if(netif && entry_info)
+    {
+        arpif = netif->arp_if_ptr;
+
+        if(arpif)
+        {
+            for(i = 0u; i < FNET_CFG_ARP_TABLE_SIZE; i++)
+            {
+                /* Skip NOT_USED prefixes. */
+                if(arpif->arp_table[i].prot_addr != 0U)
+                {
+                    if(n == 0u)
+                    {
+                        fnet_isr_lock();
+                        /* Fill entry.*/
+                        entry_info->ip_addr = arpif->arp_table[i].prot_addr;
+                        fnet_memcpy(entry_info->mac_addr, arpif->arp_table[i].hard_addr, sizeof(fnet_mac_addr_t));
+                        fnet_isr_unlock();
+
+                        result = FNET_TRUE;
+                        break;     
+                    }
+                    n--;
+                }
+            }
+        }
+    }
+    return result;
 }
 
 /************************************************************************

@@ -27,7 +27,7 @@
 *
 ***************************************************************************/
 
-#include "fnet_config.h"
+#include "fnet.h"
 
 #if FNET_CFG_MLD & FNET_CFG_IP6
 

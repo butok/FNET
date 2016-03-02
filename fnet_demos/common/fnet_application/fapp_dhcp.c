@@ -88,7 +88,7 @@ static void fapp_dhcp_handler_updated(fnet_dhcp_desc_t dhcp_desc, fnet_netif_des
     fnet_shell_println( desc, FAPP_DHCP_NEWIP_STR);
     fnet_shell_println( desc, FAPP_DELIMITER_STR);
 
-    fapp_netif_info_print( desc, netif );   
+    fapp_print_netif_info( desc, netif );   
 }
 
 /************************************************************************
@@ -153,6 +153,7 @@ void fapp_dhcp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** ar
             dhcp_params.requested_ip_address.s_addr = fnet_netif_get_ip4_addr(netif);
 #endif            
 
+        dhcp_params.probe_addr = FNET_TRUE; /* Enable probing of the newly received address.*/
         fapp_dhcp_ip_old = fnet_netif_get_ip4_addr(netif); /* Save ip to restore if cancelled. */
         
         /* Enable DHCP client */
@@ -192,11 +193,10 @@ void fapp_dhcp_info(fnet_shell_desc_t desc)
 {
     fnet_char_t     ip_str[FNET_IP4_ADDR_STR_SIZE];
     fnet_bool_t     dhcp_enabled = fnet_dhcp_enabled(fapp_dhcp_desc);
-    fnet_bool_t     address_automatic = fnet_netif_get_ip4_addr_automatic(fnet_netif_get_default());
     
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "DHCP Client", dhcp_enabled ? FAPP_SHELL_INFO_ENABLED : FAPP_SHELL_INFO_DISABLED);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "DHCP Client", fapp_enabled_str[dhcp_enabled]);
 
-    if(dhcp_enabled && address_automatic)
+    if(dhcp_enabled && (fnet_netif_get_ip4_addr_type(fnet_netif_get_default()) == FNET_NETIF_IP_ADDR_TYPE_DHCP))
     {
         struct fnet_dhcp_options options;
 
@@ -209,17 +209,4 @@ void fapp_dhcp_info(fnet_shell_desc_t desc)
 }
 
 #endif /* FAPP_CFG_DHCP_CMD && FNET_CFG_DHCP && FNET_CFG_IP4 */
-
-
-
-
-
-
-
-
-
-
-
-
-
 

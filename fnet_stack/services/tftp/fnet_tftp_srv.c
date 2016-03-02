@@ -123,8 +123,8 @@ const static fnet_char_t *fnet_tftp_srv_error[] =
 struct fnet_tftp_srv_if
 {
     fnet_tftp_srv_state_t   state;                  /* Current state.*/
-    fnet_socket_t                  socket_listen;          /* Listening socket.*/
-    fnet_socket_t                  socket_transaction;     /* Socket servicing transaction.*/
+    fnet_socket_t           socket_listen;          /* Listening socket.*/
+    fnet_socket_t           socket_transaction;     /* Socket servicing transaction.*/
     struct sockaddr         addr_transaction;
     
     fnet_poll_desc_t        service_descriptor;
@@ -681,26 +681,29 @@ void fnet_tftp_srv_release(fnet_tftp_srv_desc_t desc)
     }
 }
 
+
 /************************************************************************
-* NAME: fnet_tftp_srv_state
+* NAME: fnet_tftp_srv_enabled
 *
-* DESCRIPTION: This function returns a current state of the TFTP server.
+* DESCRIPTION: This function returns FNET_TRUE if the TFTP server 
+*              is enabled/initialised.
 ************************************************************************/
-fnet_tftp_srv_state_t fnet_tftp_srv_state(fnet_tftp_srv_desc_t desc)
+fnet_bool_t fnet_tftp_srv_enabled(fnet_tftp_srv_desc_t desc)
 {
     struct fnet_tftp_srv_if *tftp_srv_if = (struct fnet_tftp_srv_if *) desc;
-    fnet_tftp_srv_state_t result;
+    fnet_bool_t             result;
     
     if(tftp_srv_if)
     {
-        result = tftp_srv_if->state;
+        result = (tftp_srv_if->state != FNET_TFTP_SRV_STATE_DISABLED) ? FNET_TRUE : FNET_FALSE;
     }
     else
     {
-        result = FNET_TFTP_SRV_STATE_DISABLED;
+        result = FNET_FALSE;    
     }
     
     return result;
 }
+
 
 #endif

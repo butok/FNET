@@ -19,12 +19,14 @@ FNET project directory structure:
 	|    |    |-- shell             - Command Shell service.
 	|    |    |-- telnet            - TELNET server service.
 	|    |    |-- tftp              - TFTP server and client services.
-	|    |-- cpu                  - FNET platform-specific source code.
-	|    |    |-- common            - Common platform-specific source code.
-	|    |    |-- mcf               - Freescale ColdFire-specific source code.
-	|    |    |-- mk                - Freescale Kinetis-specific source code.
-	|    |-- compiler             - Compiler-specific source code.
-	|    |-- os                   - OS-specific source code.
+	|    |-- port                  - FNET port-specific source code.
+	|         |-- cpu                  - FNET platform-specific source code.
+	|         |    |-- common            - Common platform-specific source code.
+	|         |    |-- mcf               - Freescale ColdFire-specific source code.
+	|         |    |-- mk                - Freescale Kinetis-specific source code.
+	|         |    |-- mpc               - Freescale Power Architecture-specific source code.
+	|         |-- compiler             - Compiler-specific source code.
+	|         |-- os                   - OS-specific source code.
 	|-- fnet_doc                  - FNET documentation.
 	|-- fnet_demos                - FNET demo projects.
 	|    |-- common                 - Common source code used by demos.

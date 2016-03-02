@@ -179,7 +179,7 @@ static const fapp_setget_cmd_t fapp_setget_cmd_table [] =
     { "image", fapp_set_cmd_image, fapp_get_cmd_image,"<Image-file name to load with TFTP>" },  
 #endif
 #if FAPP_CFG_SETGET_CMD_TYPE    
-    { "type", fapp_set_cmd_image_type, fapp_get_cmd_image_type,"<srec|bin|raw>" },     
+    { "type", fapp_set_cmd_image_type, fapp_get_cmd_image_type,"<srec|hex|bin|raw>" },     
 #endif
 #if FAPP_CFG_SETGET_CMD_GO    
     { "go", fapp_set_cmd_go, fapp_get_cmd_go,"0x<entry point address>" }, 

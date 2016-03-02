@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -24,7 +23,7 @@
 *
 * @author Andrey Butok
 *
-* @brief Private. ARP protocol function definitions, data structures, etc
+* @brief ARP protocol Public API
 *
 ***************************************************************************/
 
@@ -32,66 +31,26 @@
 
 #define _FNET_ARP_H_
 
-#include "fnet_config.h"
-
-#if (FNET_CFG_CPU_ETH0 ||FNET_CFG_CPU_ETH1) && FNET_CFG_IP4
-
 #include "fnet.h"
-#include "fnet_netif_prv.h"
-#include "fnet_eth.h"
-#include "fnet_timer_prv.h"
 
-/************************************************************************
-*    ARP definitions
-*************************************************************************/
-#define FNET_ARP_HARD_TYPE      (1U)         /* for Ethernet.*/
+#if FNET_CFG_IP4 || defined(__DOXYGEN__)
 
-#define FNET_ARP_HARD_SIZE      (6U)         /* for Ethernet.*/
-#define FNET_ARP_PROT_SIZE      (4U)         /* for IP.*/
 
-#define FNET_ARP_OP_REQUEST     (1U)         /* ARP request.*/
-#define FNET_ARP_OP_REPLY       (2U)         /* ARP reply.*/
-
-#define FNET_ARP_TIMER_PERIOD   ((FNET_CFG_ARP_EXPIRE_TIMEOUT*1000U)/4U)     /* in ms (20/4=5min).*/
+/*! @addtogroup fnet_arp
+* Address Resolution Protocol (ARP) 
+*/
+/*! @{ */
 
 /**************************************************************************/ /*!
- * @internal
- * @brief    ARP header structure.
+ * @brief ARP cache entry information structure.
+ * @see fnet_arp_get_entry()
  ******************************************************************************/
-FNET_COMP_PACKED_BEGIN
-typedef struct
+typedef struct fnet_arp_entry_info
 {
-    fnet_uint16_t   hard_type FNET_COMP_PACKED;         /**< The type of hardware address (=1 for Ethernet).*/
-    fnet_uint16_t   prot_type FNET_COMP_PACKED;         /**< The type of protocol address (=0x0800 for IP).*/
-    fnet_uint8_t    hard_size FNET_COMP_PACKED;         /**< The size in bytes of the hardware address (=6).*/
-    fnet_uint8_t    prot_size FNET_COMP_PACKED;         /**< The size in bytes of the protocol address (=4).*/
-    fnet_uint16_t   op FNET_COMP_PACKED;                /**< Opcode.*/
-    fnet_mac_addr_t sender_hard_addr FNET_COMP_PACKED;  /**< Hardware address of sender of this packet.*/
-    fnet_ip4_addr_t sender_prot_addr FNET_COMP_PACKED;  /**< Protocol address of sender of this packet.*/
-    fnet_mac_addr_t target_hard_addr FNET_COMP_PACKED;  /**< Hardware address of target of this packet.*/
-    fnet_ip4_addr_t targer_prot_addr FNET_COMP_PACKED;  /**< Protocol address of target of this packet.*/
-} fnet_arp_header_t;
-FNET_COMP_PACKED_END
+    fnet_mac_addr_t mac_addr;      /**< @brief ARP cache entry Physical (MAC) address.*/
+    fnet_ip4_addr_t ip_addr;       /**< @brief ARP cache entry IPv4 address.*/
+} fnet_arp_entry_info_t;
 
-/**************************************************************************/ /*!
- * @internal
- * @brief    ARP table entry structure.
- ******************************************************************************/
-typedef struct
-{
-    fnet_mac_addr_t hard_addr;  /**< Hardware address.*/
-    fnet_ip4_addr_t prot_addr;   /**< Protocol address.*/
-    fnet_time_t     cr_time;      /**< Time of entry creation.*/
-    fnet_netbuf_t   *hold;        /**< Last packet until resolved/timeout.*/
-    fnet_time_t     hold_time;    /**< Time of the last request.*/
-} fnet_arp_entry_t;
-
-typedef struct
-{
-    fnet_arp_entry_t arp_table[FNET_CFG_ARP_TABLE_SIZE]; /* ARP cach.*/
-    fnet_timer_desc_t arp_tmr;                       /* ARP timer.*/
-    fnet_event_desc_t arp_event;                     /* ARP event - duplicate address event.*/
-} fnet_arp_if_t;
 
 /************************************************************************
 *     Function Prototypes
@@ -100,18 +59,76 @@ typedef struct
 extern "C" {
 #endif
 
-fnet_return_t fnet_arp_init( fnet_netif_t *netif );
-void fnet_arp_release( fnet_netif_t *netif );
-void fnet_arp_request( fnet_netif_t *netif, fnet_ip4_addr_t ipaddr );
-fnet_mac_addr_t *fnet_arp_lookup( fnet_netif_t *netif, fnet_ip4_addr_t ipaddr );
-void fnet_arp_resolve( fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_netbuf_t *nb );
-void fnet_arp_input( fnet_netif_t *netif, fnet_netbuf_t *nb );
-void fnet_arp_drain( fnet_netif_t *netif );
+/***************************************************************************/ /*!
+ *
+ * @brief    Retrieves ARP cache entry of the specified network interface.
+ *
+ * @param[in] netif_desc  Network interface descriptor.
+ *
+ * @param[in] n           Sequence number of ARP cache entry to retrieve (from @c 0).
+ *
+ * @param[out] entry_info   Pointer to the ARP cache entry information structure will contain the result.
+ *
+ * @return This function returns:
+ *   - @ref FNET_TRUE if no error occurs and data structure is filled.
+ *   - @ref FNET_FALSE in case of error or @c n-th entry is not available.
+ *
+ ******************************************************************************
+ *
+ * This function is used to retrieve ARP cache entries assigned 
+ * the given interface.
+ *
+ ******************************************************************************/
+fnet_bool_t fnet_arp_get_entry ( fnet_netif_desc_t netif_desc, fnet_index_t n, fnet_arp_entry_info_t *entry_info );
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Gets MAC address of valid ARP cache entry.
+ *
+ * @param[in] netif_desc   Network interface descriptor.
+ *
+ * @param[in] ip_addr      IPv4 address to search for.
+ *
+ * @param[out] mac_addr    Buffer will contain a MAC address corresponding @c ipaddr.@n
+ *                         This parameter is optional.
+ *
+ * @return This function returns:
+ *   - @ref FNET_TRUE if no error occurs and entry corresponding to @c ip_addr exists.
+ *   - @ref FNET_FALSE in case of error or entry corresponding to @c ip_addr does not exist.
+ *
+ ******************************************************************************
+ *
+ * This function searches for an entry corresponding to the provided IPv4 address.@n
+ * If @c mac_addr parameter is present, it will contain a 
+ * valid MAC address corresponding to @c ip_addr. 
+ *
+ ******************************************************************************/
+fnet_bool_t fnet_arp_get_mac( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ip_addr, fnet_mac_addr_t mac_addr);
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Sends ARP request.
+ *
+ * @param[in] netif_desc  Network interface descriptor.
+ *
+ * @param[in] ip_addr      Target protocol address.
+ *
+ ******************************************************************************
+ *
+ * This function sends a broadcast ARP message, requesting an answer for @c ipaddr.@n
+ * It can be used for ARP probing of IPv4 address before beginning to use. @n
+ * Also, it can be used for a gratuitous ARP message when sender's IP address 
+ * or MAC address has changed.
+ *
+ ******************************************************************************/
+void fnet_arp_send_request( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ip_addr );
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif
+/*! @} */
 
-#endif
+#endif  /* FNET_CFG_IP4 */
+
+#endif /* _FNET_ARP_H_ */

@@ -13,7 +13,7 @@ LR_IROM1 0x00000000 0x0007F800
     }
 
  
-    VECTOR_TABLE_RAM 0x1FFF0000 EMPTY 0x410  ; RAM Vector Table
+    VECTOR_RAM 0x1FFF0000 EMPTY 0x410  ; RAM Vector Table
     {
     }
   

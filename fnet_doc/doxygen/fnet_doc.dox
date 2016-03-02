@@ -72,10 +72,8 @@ preferred way to configure stack features). @n
 		- Keil uVision, version 4.7 (MK60N512).
 	- @b Freescale:
 		- Kinetis Design Studio, version 2.0 (MK64F)
-		- CodeWarrior Development Studio for Microcontrollers, version 10.6 (MK60N512, MK70FN1M, MCF52259, MCF54418).
-		- CodeWarrior for ColdFire, version 7.2.2 (MCF5282, MCF52235, MCF52259).
+		- CodeWarrior Development Studio for Microcontrollers, version 10.6 (MCF52259, MCF54418).
 		- CodeWarrior Development Studio for MPC55xx/MPC56xx, version 2.10  (MPC5668G).
- 
 	
 - Bare-metal TCP/IP stack. No underlying RTOS is required, although it can be used with it.
 - Non-blocking Socket API (DGRAM, STREAM, RAW).
@@ -149,12 +147,14 @@ fnet                      - FNET root directory.
 |    |    |-- shell             - Command Shell service.
 |    |    |-- telnet            - TELNET server service.
 |    |    |-- tftp              - TFTP server and client services.
-|    |-- cpu                  - FNET platform-specific source code.
-|    |    |-- common            - Common platform-specific source code.
-|    |    |-- mcf               - Freescale ColdFire-specific source code.
-|    |    |-- mk                - Freescale Kinetis-specific source code.
-|    |-- compiler             - Compiler-specific source code.
-|    |-- os                   - OS-specific source code.
+|    |-- port                  - FNET port-specific source code.
+|         |-- cpu                  - FNET platform-specific source code.
+|         |    |-- common            - Common platform-specific source code.
+|         |    |-- mcf               - Freescale ColdFire-specific source code.
+|         |    |-- mk                - Freescale Kinetis-specific source code.
+|         |    |-- mpc               - Freescale Power Architecture-specific source code.
+|         |-- compiler             - Compiler-specific source code.
+|         |-- os                   - OS-specific source code.
 |-- fnet_doc                  - FNET documentation.
 |-- fnet_demos                - FNET demo projects.
 |    |-- common                 - Common source code used by demos.
@@ -211,9 +211,9 @@ The following table summarizes the supported demo applications, platforms and co
  </tr>
 <tr>
  <td class="fnet_td_grey">MCF52259 (Kirin3)</td>
- <td ALIGN=CENTER>CW10.6<br/>CW7.2</td>
- <td ALIGN=CENTER>CW10.6<br/>CW7.2</td>
- <td ALIGN=CENTER>CW10.6<br/>CW7.2</td>
+ <td ALIGN=CENTER>CW10.6</td>
+ <td ALIGN=CENTER>CW10.6</td>
+ <td ALIGN=CENTER>CW10.6</td>
  </tr>
 <tr>
  <td class="fnet_td_grey">MCF54418 (Modelo)</td>
@@ -229,20 +229,20 @@ The following table summarizes the supported demo applications, platforms and co
  </tr>
 <tr>
  <td class="fnet_td_grey">MK60N512 (Kinetis)</td>
- <td ALIGN=CENTER>CW10.6<br/>IAR7.5<br/>uV4.7</td>
- <td ALIGN=CENTER>CW10.6<br/>IAR7.5<br/>uV4.7</td>
- <td ALIGN=CENTER>CW10.6<br/>IAR7.5<br/>uV4.7</td>
+ <td ALIGN=CENTER>IAR7.5<br/>uV4.7</td>
+ <td ALIGN=CENTER>x<br/>uV4.7</td>
+ <td ALIGN=CENTER>IAR7.5<br/>uV4.7</td>
  </tr>
 <tr>
  <td class="fnet_td_grey">MK70FN1M (Kinetis)</td>
- <td ALIGN=CENTER>CW10.6<br/>IAR7.5</td>
- <td ALIGN=CENTER>CW10.6<br/>IAR7.5</td>
+ <td ALIGN=CENTER>IAR7.5</td>
+ <td ALIGN=CENTER>x</td>
  <td ALIGN=CENTER>x</td>
  </tr>
 <tr>
  <td class="fnet_td_grey">MK60FN1M (Kinetis)</td>
- <td ALIGN=CENTER>CW10.6<br/>IAR7.5</td>
- <td ALIGN=CENTER>CW10.6<br/>IAR7.5</td>
+ <td ALIGN=CENTER>IAR7.5</td>
+ <td ALIGN=CENTER>x</td>
  <td ALIGN=CENTER>x</td>
  </tr>
 <tr>
@@ -356,7 +356,7 @@ SHELL> help
 >    set [<parameter> <value>]           - Set parameter
 >    get [<parameter>]                   - Get parameters
 >   info                                 - Show interface info
->   stat                                 - Show interface statistics
+>   stat                                 - Show network statistics
 >   dhcp [release]                       - Start DHCP client
 >   http [release]                       - Start HTTP Server
 >    exp                                 - File Explorer submenu...
@@ -1498,6 +1498,26 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.1.0:
+	- HTTP server improvements:
+		- Added fnet_http_set_response_status_code(), sets status code in HTTP-response status-line. Can be used by CGI and POST handlers.
+		- Added fnet_http_set_response_content_length(), sets content length in HTTP-response header. Can be used by CGI and POST handlers.
+		- Added fnet_http_set_response_no_header(), disables sending of HTTP-response status-code and header. Can be used by CGI and POST handlers.
+		- Fixed HTTP POST send-handler.
+    - Moved "cpu", "compiler" and "os" folders to "port" sub-folder, to combine all port-specific source code in one place.
+	- Added ARP User API, that can be used for address probation and conflict detection:
+		- Added fnet_arp_send_request(), that sends ARP request.
+		- Added fnet_arp_get_mac(), that gets MAC address of valid ARP cache entry.
+		- Added fnet_arp_get_entry(), that retrieves a ARP cache entry.
+	- Added ARP Cache display information to the "stat" shell command in the demo application.
+	- Added optional probing of the newly received address by the DHCPv4 client. Controlled by the fnet_dhcp_params->probe_addr flag.
+	- Renamed fnet_netif_ip6_addr_type_t to general fnet_netif_ip_addr_type_t, to be used for both IPv4 and IPv6.
+	- Added fnet_netif_[get|set]_ip4_addr_type(), replacing fnet_netif_[get|set]_ip4_addr_automatic().
+	- Changed the default value of the FNET_CFG_CPU_VECTOR_TABLE parameter, for Kinetis platform, to NVIC vector table register (VTOR). Before it was set to a symbol defined in a linker file. 
+	- Removed obsolete MCF uCOS port.
+    - Removed obsolete MCF CodeWarrior 7.2 support.
+    - Removed obsolete fnet_<cpu>_stdlib.c.
+	- Other minor changes.
 
 - Version 3.0.0:
 	- Released under the Apache License Version 2.0 (https://en.wikipedia.org/wiki/Apache_License). This is more permissible license than previous one and compatible with GPL 3.0.
@@ -2057,7 +2077,7 @@ FNET public releases:
 * are not needed in application and reducing target system-memory 
 * requirements. @n
 * @n
-* The FNET configuration parameters are defined in the following files:
+* The FNET configuration parameters are prefixed @c FNET_CFG_ for coherence and are defined in the following files:
 * - @b fnet_user_config.h = The user configuration file used to set 
 * or change any of the FNET configuration parameters. Use the template file
 *         @ref fnet_user_config.template.h as a starting point.
@@ -2079,7 +2099,6 @@ which includes all platform-specific configuration files.
 *			- @ref fnet_mk60n512_config.h = MK60N512-specific configuration parameters.
 * 	- @ref fnet_os_config.h = The OS-specific default configuration parameters.
 *		- @ref fnet_brtos_config.h = BRTOS configuration (not supported just for reference)
-* 		- @ref fnet_ucosIII_config.h = uC/OS-III configuration (not supported just for reference).
 * 		- @ref fnet_freertos_config.h = FreeRTOS configuration (not supported just for reference).
 * 	- @ref fnet_services_config.h = Service-specific configuration file 
 which includes all service-specific configuration files. 
@@ -2264,8 +2283,6 @@ which includes all service-specific configuration files.
 *     application-specific configuration file @c fnet_user_config.h.
 */
 
-
-
 /*! 
 *	@defgroup fnet_platform_config Platform-Specific Configuration Parameters
 *	@ingroup fnet_config 
@@ -2284,7 +2301,6 @@ which includes all service-specific configuration files.
 *     application-specific configuration file @c fnet_user_config.h.
 */
 
-
 /*! 
 *	@defgroup fnet_platform_mcf_config ColdFire Platform Configuration Parameters
 *	@ingroup fnet_platform_config 
@@ -2300,9 +2316,6 @@ which includes all service-specific configuration files.
 *	This section describes parameters that are specific for used
 *     Operation System.
 */
-
-
-
 
 /*! 
 *	@defgroup fnet_services_config Service-Specific Configuration Parameters
@@ -2329,6 +2342,7 @@ which includes all service-specific configuration files.
 *   The user may override and change the default values in the application-specific 
 *   configuration file @c fnet_user_config.h.
 */
+
 /*! 
 *	@defgroup fnet_llmnr_config LLMNR Server Configuration Parameters
 *	@ingroup fnet_services_config 
@@ -2337,6 +2351,7 @@ which includes all service-specific configuration files.
 *   The user may override and change the default values in the application-specific 
 *   configuration file @c fnet_user_config.h.
 */
+
 /*! 
 *	@defgroup fnet_fs_config File System Configuration Parameters
 *	@ingroup fnet_services_config 
@@ -2401,8 +2416,6 @@ which includes all service-specific configuration files.
 */
 
 
-
-
 //***********************************************************************
 //**************************STACK API************************************
 //***********************************************************************
@@ -2411,6 +2424,7 @@ which includes all service-specific configuration files.
 * @defgroup stack_api FNET Stack API 
 * This section describes the User API of the FNET 
 * TCP/IP stack. @n
+* All functions and definitions are prefixed @c fnet_ for coherence.
 * To gain access to the FNET TCP/IP stack API, the application only 
 * needs to include the main header file @c fnet.h:
 * @code 
@@ -2436,9 +2450,13 @@ which includes all service-specific configuration files.
 *	@ingroup stack_api
 */
 
-
 /*! 
 *	@defgroup fnet_netif Network Interfaces API
+*	@ingroup stack_api
+*/
+
+/*! 
+*	@defgroup fnet_arp ARP cache API
 *	@ingroup stack_api
 */
 
@@ -2478,10 +2496,12 @@ which includes all service-specific configuration files.
 * @endcode
  
 */
+
 /*! 
 *	@defgroup fnet_polling Polling Mechanism API
 *	@ingroup services_api 
 */
+
 /*! 
 *	@defgroup fnet_http HTTP server API
 *	@ingroup services_api 
@@ -2495,14 +2515,17 @@ which includes all service-specific configuration files.
 *	@defgroup fnet_dhcp DHCP/BOOTP client API
 *	@ingroup services_api 
 */
+
 /*! 
 *	@defgroup fnet_dns DNS client/resolver API
 *	@ingroup services_api 
 */
+
 /*! 
 *	@defgroup fnet_llmnr LLMNR server/responder API
 *	@ingroup services_api 
 */
+
 /*! 
 *	@defgroup fnet_ping PING service API
 *	@ingroup services_api 
@@ -2512,10 +2535,12 @@ which includes all service-specific configuration files.
 *	@defgroup fnet_tftp TFTP API
 *	@ingroup services_api 
 */
+
 /*! 
 *	@defgroup fnet_tftp_cln TFTP client API
 *	@ingroup fnet_tftp 
 */
+
 /*! 
 *	@defgroup fnet_tftp_srv TFTP server API
 *	@ingroup fnet_tftp 
@@ -2525,18 +2550,22 @@ which includes all service-specific configuration files.
 *	@defgroup fnet_cfm On-chip Flash driver API
 *	@ingroup services_api 
 */
+
 /*! 
 *	@defgroup fnet_fs File System API
 *	@ingroup services_api 
 */
+
 /*! 
 *	@defgroup fnet_fs_rom ROM File System API
 *	@ingroup fnet_fs 
 */
+
 /*! 
 *	@defgroup fnet_shell Shell service API
 *	@ingroup services_api 
 */
+
 /*! 
 *	@defgroup fnet_serial Serial Input/Output library API
 *	@ingroup services_api 

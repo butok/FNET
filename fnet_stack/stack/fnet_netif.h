@@ -33,7 +33,7 @@
 
 #define _FNET_NETIF_H_
 
-#include "fnet_config.h"
+#include "fnet.h"
 #include "fnet_ip.h"
 #include "fnet_ip6.h"
 #include "fnet_eth.h"
@@ -128,9 +128,10 @@ typedef enum
  ******************************************************************************/    
 typedef enum
 {
-    FNET_NETIF_IP6_ADDR_TYPE_MANUAL = 0,           /**< @brief The address is set manually.*/
-    FNET_NETIF_IP6_ADDR_TYPE_AUTOCONFIGURABLE = 1  /**< @brief The address is set using autoconfiguration. */
-} fnet_netif_ip6_addr_type_t;
+    FNET_NETIF_IP_ADDR_TYPE_MANUAL = 0,            /**< @brief The address is set manually.*/
+    FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE = 1,  /**< @brief The address is set using link-local autoconfiguration. */
+    FNET_NETIF_IP_ADDR_TYPE_DHCP = 2               /**< @brief The address is set using DHCP. */
+} fnet_netif_ip_addr_type_t;
 
 /**************************************************************************/ /*!
  * @brief Interface IPv6 address information structure.
@@ -140,7 +141,7 @@ typedef struct fnet_netif_ip6_addr_info
 {
     fnet_ip6_addr_t             address;            /**< @brief IPv6 address.*/
     fnet_netif_ip6_addr_state_t state;              /**< @brief Address current state.*/
-    fnet_netif_ip6_addr_type_t  type;               /**< @brief How the address was acquired.*/
+    fnet_netif_ip_addr_type_t   type;               /**< @brief How the address was acquired.*/
 } fnet_netif_ip6_addr_info_t;
 
 /**************************************************************************/ /*!
@@ -525,29 +526,49 @@ fnet_return_t fnet_netif_get_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
  * by the @ref fnet_netif_type_t.
  *
  ******************************************************************************/
-fnet_netif_type_t fnet_netif_type( fnet_netif_desc_t netif_desc );
+fnet_netif_type_t fnet_netif_get_type( fnet_netif_desc_t netif_desc );
 
 /***************************************************************************/ /*!
  *
- * @brief    Determines, if the IP address parameters were obtained 
- *           automatically.
+ * @brief    Determines the way IPv4 address parameters were obtained.
  *
  * @param netif_desc  Network interface descriptor.
  *
- * @return       This function returns:
- *   - @c FNET_FALSE if the address IP parameters were set manually .
- *   - @c FNET_TRUE if the address IP parameters were obtained automatically.
+ * @return        This function returns type of IPv4 address parameters
+ *                bound to the interface.
  *
- * @see fnet_netif_set_ip4_addr(), fnet_netif_set_ip4_gateway()
+ * @see fnet_netif_set_ip4_addr_type
  *
  ******************************************************************************
  *
- * This function determines if the IP parameters of the @c netif interface 
- * were obtained automatically by the DHCP client or were set manually by the
- * @ref fnet_netif_set_ip4_addr() and @ref fnet_netif_set_ip4_gateway().
+ * This function determines if the IPv4 parameters of the @c netif interface 
+ * were set manually, or obtained by the DHCP client or 
+ * set during link-local autoconfiguartion (AutoIP - TBD)
  *
  ******************************************************************************/
-fnet_bool_t fnet_netif_get_ip4_addr_automatic( fnet_netif_desc_t netif_desc );
+fnet_netif_ip_addr_type_t fnet_netif_get_ip4_addr_type( fnet_netif_desc_t netif_desc );
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Sets the way IPv4 address parameters were obtained.
+ *
+ * @param netif_desc  Network interface descriptor.
+ *
+ * @param ipaddr_type  Type of IPv4 address parameters.
+ *
+ * @see fnet_netif_get_ip4_addr_type()
+ *
+ ******************************************************************************
+ *
+ * This function sets type of the interface IPv4 address parameters, if they 
+ * were set manually, or obtained by the DHCP client or 
+ * set during link-local autoconfiguartion (AutoIP - TBD). @n
+ * fnet_netif_set_ip4_addr(), fnet_netif_set_ip4_subnet_mask(), 
+ * fnet_netif_set_ip4_gateway() and fnet_netif_set_ip4_dns() sets 
+ * the type to FNET_NETIF_IP_ADDR_TYPE_MANUAL automatically.
+ *
+ ******************************************************************************/
+void fnet_netif_set_ip4_addr_type( fnet_netif_desc_t netif_desc, fnet_netif_ip_addr_type_t ipaddr_type );
 
 /***************************************************************************/ /*!
  *
@@ -566,7 +587,7 @@ fnet_bool_t fnet_netif_get_ip4_addr_automatic( fnet_netif_desc_t netif_desc );
  * The Ethernet network interface gets this status from the PHY. 
  *
  ******************************************************************************/
-fnet_bool_t fnet_netif_connected( fnet_netif_desc_t netif_desc );
+fnet_bool_t fnet_netif_is_connected( fnet_netif_desc_t netif_desc );
 
 /***************************************************************************/ /*!
  *
@@ -787,17 +808,17 @@ fnet_bool_t fnet_netif_get_ip6_dns( fnet_netif_desc_t netif_desc, fnet_index_t n
  * This function binds the IPv6 address to the @c netif interface.@n
  * The @c addr_type parameter defines the way the IPv6 address is assigned 
  * to the interface:
- *   - @c FNET_NETIF_IP6_ADDR_TYPE_MANUAL:  value of the @c addr parameter 
- *             defines the whole IPv6 address to be bind to the interface.
- *   - @c FNET_NETIF_IP6_ADDR_TYPE_AUTOCONFIGURABLE: value of the @c addr 
+ *   - @c FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE: value of the @c addr 
  *             parameter defines the first 64bits of the bind IPv6 address. 
  *            The last 64bits of the IPv6 address are overwritten with the 
  *            Interface Identifier. In case of Ethernet interface, 
  *            the Interface Identifier is formed from 48-bit MAC address, 
  *            according to [RFC2464]. 
+ *   - @c !FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE:  value of the @c addr parameter 
+ *             defines the whole IPv6 address to be bind to the interface.
  *
  ******************************************************************************/
-fnet_return_t fnet_netif_bind_ip6_addr(fnet_netif_desc_t netif_desc, const fnet_ip6_addr_t *addr, fnet_netif_ip6_addr_type_t addr_type);
+fnet_return_t fnet_netif_bind_ip6_addr(fnet_netif_desc_t netif_desc, const fnet_ip6_addr_t *addr, fnet_netif_ip_addr_type_t addr_type);
 
 /***************************************************************************/ /*!
  *
@@ -943,8 +964,6 @@ fnet_netif_desc_t fnet_netif_get_by_scope_id(fnet_scope_id_t scope_id);
  *
  ******************************************************************************/
 fnet_netif_desc_t fnet_netif_get_by_sockaddr( const struct sockaddr *addr );
-
-void fnet_netif_set_ip4_addr_automatic( fnet_netif_desc_t netif_desc );
 
 #if defined(__cplusplus)
 }

@@ -31,11 +31,10 @@
 
 #define _FNET_MLD_H_
 
-#include "fnet_config.h"
+#include "fnet.h"
 
 #if FNET_CFG_MLD
 
-#include "fnet.h"
 #include "fnet_netif_prv.h"
 #include "fnet_icmp6.h"
 #include "fnet_ip6_prv.h"

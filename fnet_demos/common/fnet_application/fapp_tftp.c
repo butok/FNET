@@ -33,7 +33,6 @@
 #include "fapp_tftp.h"
 #include "fapp_mem.h"
 
-
 /************************************************************************
 *     Definitions.
 *************************************************************************/
@@ -1401,7 +1400,7 @@ void fapp_tftps_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** a
         {
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             fnet_shell_println(desc, " TFTP Server started.");
-            fapp_netif_addr_print(desc, AF_SUPPORTED, fnet_netif_get_default(), FNET_FALSE);
+            fapp_print_netif_addr(desc, AF_SUPPORTED, fnet_netif_get_default(), FNET_FALSE);
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             fapp_tftp_srv_desc = tftp_srv_desc;
         }
@@ -1421,7 +1420,6 @@ void fapp_tftps_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** a
     }
 }
 
-
 /************************************************************************
 * NAME: fapp_tftps_info
 *
@@ -1429,15 +1427,7 @@ void fapp_tftps_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** a
 *************************************************************************/
 void fapp_tftps_info(fnet_shell_desc_t desc)
 {
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "TFTP Server",
-                fnet_tftp_srv_state(fapp_tftp_srv_desc) != FNET_TFTP_SRV_STATE_DISABLED ? FAPP_SHELL_INFO_ENABLED : FAPP_SHELL_INFO_DISABLED);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "TFTP Server", fapp_enabled_str[fnet_tftp_srv_enabled(fapp_tftp_srv_desc)]);
 }
 
 #endif /* FAPP_CFG_TFTPS_CMD */
-
-
-
-
-
-
-

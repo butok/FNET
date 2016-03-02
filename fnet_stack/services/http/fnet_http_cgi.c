@@ -81,7 +81,7 @@ static fnet_return_t fnet_http_cgi_handle (struct fnet_http_if * http, struct fn
     		    session->send_param.data_ptr = cgi_ptr;
     		    if(cgi_ptr->handle)
                 {
-    		        result = cgi_ptr->handle(uri->query, &session->response.cookie);
+    		        result = cgi_ptr->handle((fnet_http_session_t)session, uri->query, &session->response.cookie);
                 }
     		    else
                 {
@@ -118,5 +118,7 @@ static fnet_size_t fnet_http_cgi_send (struct fnet_http_if * http)
         
     return result;
 }
+
+
 
 #endif /* FNET_CFG_HTTP && FNET_CFG_HTTP_CGI */

@@ -289,21 +289,20 @@ void fnet_tftp_srv_release(fnet_tftp_srv_desc_t desc);
 
 /***************************************************************************/ /*!
  *
- * @brief    Retrieves the current state of the TFTP-server service.
+ * @brief    Detects if the TFTP Server service is enabled or disabled.
  *
- * @param desc     TFTP-server descriptor.
+ * @param desc     TFTP server descriptor
  *
- * @return This function returns the current state of the TFTP-server service.
- * The state is defined by the @ref fnet_tftp_srv_state_t.
+ * @return This function returns:
+ *          - @ref FNET_TRUE if the TFTP Server is successfully initialized.
+ *          - @ref FNET_FALSE if the TFTP Server is not initialized or is released.
  *
  ******************************************************************************
  *
- * This function returns the current state of the TFTP-server service.
- * If the state is @ref FNET_TFTP_SRV_STATE_DISABLED, the TFTP server is not initialized
- * or released.
+ * This function detects if the TFTP Server service is initialized or is released.
  *
  ******************************************************************************/
-fnet_tftp_srv_state_t fnet_tftp_srv_state(fnet_tftp_srv_desc_t desc);
+fnet_bool_t fnet_tftp_srv_enabled(fnet_tftp_srv_desc_t desc);
 
 #if defined(__cplusplus)
 }

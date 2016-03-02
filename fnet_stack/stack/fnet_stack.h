@@ -31,6 +31,7 @@
 #ifndef _FNET_STACK_H_
 
 #define _FNET_STACK_H_
+
 #include "fnet_error.h"
 #include "fnet_stdlib.h"
 #include "fnet_socket.h"
@@ -43,6 +44,7 @@
 #include "fnet_eth.h"
 #include "fnet_isr.h"
 #include "fnet_netbuf.h"
+#include "fnet_arp.h"
 
 /*! @addtogroup fnet_stack_init
 * - The @ref fnet.h file includes all the other header files needed to use the FNET TCP/IP stack

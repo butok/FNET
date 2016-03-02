@@ -29,7 +29,6 @@
 *
 ***************************************************************************/
 
-#include "fnet_config.h"
 #include "fnet.h"
 #include "fnet_isr.h"
 #include "fnet_timer.h"

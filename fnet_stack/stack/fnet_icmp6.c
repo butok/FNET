@@ -27,7 +27,7 @@
 * @brief ICMP protocol implementation.
 *
 ***************************************************************************/
-#include "fnet_config.h"
+#include "fnet.h"
 
 #if FNET_CFG_IP6  
 

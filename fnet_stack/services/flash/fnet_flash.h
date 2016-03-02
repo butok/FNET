@@ -31,7 +31,7 @@
 
 #define _FNET_FLASH_H_
 
-#include "fnet_config.h" 
+#include "fnet.h" 
 
 #if FNET_CFG_FLASH || defined(__DOXYGEN__)
 

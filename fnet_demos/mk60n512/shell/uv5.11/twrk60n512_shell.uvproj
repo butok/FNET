@@ -407,111 +407,6 @@
           <GroupName>fnet_stack</GroupName>
           <Files>
             <File>
-              <FileName>fnet_comp.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\compiler\fnet_comp.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_comp_asm.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\compiler\fnet_comp_asm.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_comp_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\compiler\fnet_comp_config.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_fec.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\common\fnet_fec.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_fec.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\common\fnet_fec.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_cache.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_cache.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_config.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_eth.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_eth.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_isr.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_isr.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_isr_inst.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_isr_inst.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_serial.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_serial.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_stdlib.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_stdlib.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_timer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_timer.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk60n512_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk60n512_config.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_cpu.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\fnet_cpu.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_cpu_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\fnet_cpu_config.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_os.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\os\fnet_os.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_os_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\os\fnet_os_config.h</FilePath>
-            </File>
-            <File>
               <FileName>fnet_dhcp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\fnet_stack\services\dhcp\fnet_dhcp.c</FilePath>
@@ -1022,11 +917,6 @@
               <FilePath>..\..\..\..\fnet_stack\stack\fnet_nd6.h</FilePath>
             </File>
             <File>
-              <FileName>fnet_cpu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\fnet_cpu.c</FilePath>
-            </File>
-            <File>
               <FileName>fnet_inet.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\fnet_stack\stack\fnet_inet.c</FilePath>
@@ -1082,11 +972,6 @@
               <FilePath>..\..\..\..\fnet_stack\stack\fnet_mld.h</FilePath>
             </File>
             <File>
-              <FileName>fnet_mk_low.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_low.s</FilePath>
-            </File>
-            <File>
               <FileName>fnet_llmnr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\fnet_stack\services\llmnr\fnet_llmnr.c</FilePath>
@@ -1100,6 +985,131 @@
               <FileName>fnet_llmnr_config.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\..\fnet_stack\services\llmnr\fnet_llmnr_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_comp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\compiler\fnet_comp.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_comp_asm.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\compiler\fnet_comp_asm.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_comp_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\compiler\fnet_comp_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_cpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\fnet_cpu.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_cpu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\fnet_cpu.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_cpu_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\fnet_cpu_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_cache.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_cache.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_eth.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_eth.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_isr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_isr.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_isr_inst.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_isr_inst.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_low.S</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_low.S</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_serial.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_serial.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk60fn1_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk60fn1_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk60n512_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk60n512_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk64fn1_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk64fn1_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk70fn1_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk70fn1_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_fec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\common\fnet_fec.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_fec.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\common\fnet_fec.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_os.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\os\fnet_os.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_os_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\os\fnet_os_config.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1885,111 +1895,6 @@
           <GroupName>fnet_stack</GroupName>
           <Files>
             <File>
-              <FileName>fnet_comp.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\compiler\fnet_comp.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_comp_asm.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\compiler\fnet_comp_asm.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_comp_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\compiler\fnet_comp_config.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_fec.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\common\fnet_fec.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_fec.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\common\fnet_fec.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_cache.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_cache.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_config.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_eth.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_eth.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_isr.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_isr.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_isr_inst.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_isr_inst.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_serial.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_serial.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_stdlib.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_stdlib.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk_timer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_timer.c</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_mk60n512_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk60n512_config.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_cpu.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\fnet_cpu.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_cpu_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\fnet_cpu_config.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_os.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\os\fnet_os.h</FilePath>
-            </File>
-            <File>
-              <FileName>fnet_os_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\fnet_stack\os\fnet_os_config.h</FilePath>
-            </File>
-            <File>
               <FileName>fnet_dhcp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\fnet_stack\services\dhcp\fnet_dhcp.c</FilePath>
@@ -2500,11 +2405,6 @@
               <FilePath>..\..\..\..\fnet_stack\stack\fnet_nd6.h</FilePath>
             </File>
             <File>
-              <FileName>fnet_cpu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\fnet_cpu.c</FilePath>
-            </File>
-            <File>
               <FileName>fnet_inet.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\fnet_stack\stack\fnet_inet.c</FilePath>
@@ -2560,11 +2460,6 @@
               <FilePath>..\..\..\..\fnet_stack\stack\fnet_mld.h</FilePath>
             </File>
             <File>
-              <FileName>fnet_mk_low.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\..\..\..\fnet_stack\cpu\mk\fnet_mk_low.s</FilePath>
-            </File>
-            <File>
               <FileName>fnet_llmnr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\fnet_stack\services\llmnr\fnet_llmnr.c</FilePath>
@@ -2578,6 +2473,131 @@
               <FileName>fnet_llmnr_config.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\..\fnet_stack\services\llmnr\fnet_llmnr_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_comp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\compiler\fnet_comp.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_comp_asm.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\compiler\fnet_comp_asm.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_comp_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\compiler\fnet_comp_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_cpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\fnet_cpu.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_cpu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\fnet_cpu.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_cpu_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\fnet_cpu_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_cache.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_cache.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_eth.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_eth.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_isr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_isr.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_isr_inst.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_isr_inst.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_low.S</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_low.S</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_serial.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_serial.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk_timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk60fn1_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk60fn1_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk60n512_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk60n512_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk64fn1_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk64fn1_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_mk70fn1_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk70fn1_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_fec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\common\fnet_fec.c</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_fec.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\cpu\common\fnet_fec.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_os.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\os\fnet_os.h</FilePath>
+            </File>
+            <File>
+              <FileName>fnet_os_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\fnet_stack\port\os\fnet_os_config.h</FilePath>
             </File>
           </Files>
         </Group>

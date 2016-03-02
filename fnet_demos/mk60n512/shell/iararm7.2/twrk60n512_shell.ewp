@@ -12,7 +12,7 @@
       <name>General</name>
       <archiveVersion>3</archiveVersion>
       <data>
-        <version>22</version>
+        <version>24</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -26,11 +26,6 @@
         <option>
           <name>ListPath</name>
           <state>RAM_128KB\List</state>
-        </option>
-        <option>
-          <name>Variant</name>
-          <version>20</version>
-          <state>39</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -59,11 +54,6 @@
           <state>0</state>
         </option>
         <option>
-          <name>FPU</name>
-          <version>2</version>
-          <state>0</state>
-        </option>
-        <option>
           <name>OGCoreOrChip</name>
           <state>1</state>
         </option>
@@ -87,7 +77,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.20.1.7306</state>
+          <state>7.50.1.10270</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -136,13 +126,8 @@
           <state>$TOOLKIT_DIR$\INC\c\DLib_Config_Normal.h</state>
         </option>
         <option>
-          <name>GFPUCoreSlave</name>
-          <version>20</version>
-          <state>39</state>
-        </option>
-        <option>
           <name>GBECoreSlave</name>
-          <version>20</version>
+          <version>22</version>
           <state>39</state>
         </option>
         <option>
@@ -156,6 +141,34 @@
         <option>
           <name>GRuntimeLibThreads</name>
           <state>0</state>
+        </option>
+        <option>
+          <name>CoreVariant</name>
+          <version>22</version>
+          <state>39</state>
+        </option>
+        <option>
+          <name>GFPUDeviceSlave</name>
+          <state>MK60DN512Zxxx10	Freescale MK60DN512Zxxx10</state>
+        </option>
+        <option>
+          <name>FPU2</name>
+          <version>0</version>
+          <state>0</state>
+        </option>
+        <option>
+          <name>NrRegs</name>
+          <version>0</version>
+          <state>0</state>
+        </option>
+        <option>
+          <name>NEON</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GFPUCoreSlave2</name>
+          <version>22</version>
+          <state>39</state>
         </option>
       </data>
     </settings>
@@ -619,7 +632,7 @@
         <debug>1</debug>
         <option>
           <name>OOCOutputFormat</name>
-          <version>2</version>
+          <version>3</version>
           <state>0</state>
         </option>
         <option>
@@ -646,6 +659,7 @@
       <data>
         <extensions></extensions>
         <cmdline></cmdline>
+        <hasPrio>0</hasPrio>
       </data>
     </settings>
     <settings>
@@ -988,7 +1002,7 @@
       <name>General</name>
       <archiveVersion>3</archiveVersion>
       <data>
-        <version>22</version>
+        <version>24</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -1002,11 +1016,6 @@
         <option>
           <name>ListPath</name>
           <state>FLASH_512KB_PFLASH\List</state>
-        </option>
-        <option>
-          <name>Variant</name>
-          <version>20</version>
-          <state>39</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -1035,11 +1044,6 @@
           <state>0</state>
         </option>
         <option>
-          <name>FPU</name>
-          <version>2</version>
-          <state>0</state>
-        </option>
-        <option>
           <name>OGCoreOrChip</name>
           <state>1</state>
         </option>
@@ -1063,7 +1067,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.20.1.7306</state>
+          <state>7.50.1.10270</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -1112,13 +1116,8 @@
           <state>$TOOLKIT_DIR$\INC\c\DLib_Config_Normal.h</state>
         </option>
         <option>
-          <name>GFPUCoreSlave</name>
-          <version>20</version>
-          <state>39</state>
-        </option>
-        <option>
           <name>GBECoreSlave</name>
-          <version>20</version>
+          <version>22</version>
           <state>39</state>
         </option>
         <option>
@@ -1132,6 +1131,34 @@
         <option>
           <name>GRuntimeLibThreads</name>
           <state>0</state>
+        </option>
+        <option>
+          <name>CoreVariant</name>
+          <version>22</version>
+          <state>39</state>
+        </option>
+        <option>
+          <name>GFPUDeviceSlave</name>
+          <state>MK60DN512Zxxx10	Freescale MK60DN512Zxxx10</state>
+        </option>
+        <option>
+          <name>FPU2</name>
+          <version>0</version>
+          <state>0</state>
+        </option>
+        <option>
+          <name>NrRegs</name>
+          <version>0</version>
+          <state>0</state>
+        </option>
+        <option>
+          <name>NEON</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GFPUCoreSlave2</name>
+          <version>22</version>
+          <state>39</state>
         </option>
       </data>
     </settings>
@@ -1574,7 +1601,7 @@
         <debug>1</debug>
         <option>
           <name>OOCOutputFormat</name>
-          <version>2</version>
+          <version>3</version>
           <state>0</state>
         </option>
         <option>
@@ -1601,6 +1628,7 @@
       <data>
         <extensions></extensions>
         <cmdline></cmdline>
+        <hasPrio>0</hasPrio>
       </data>
     </settings>
     <settings>
@@ -2032,88 +2060,97 @@
   <group>
     <name>fnet_stack</name>
     <group>
-      <name>compiler</name>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\compiler\fnet_comp.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\compiler\fnet_comp_asm.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\compiler\fnet_comp_config.h</name>
-      </file>
-    </group>
-    <group>
-      <name>cpu</name>
+      <name>port</name>
       <group>
-        <name>common</name>
+        <name>compiler</name>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\common\fnet_fec.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\compiler\fnet_comp.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\common\fnet_fec.h</name>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\compiler\fnet_comp_asm.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\compiler\fnet_comp_config.h</name>
         </file>
       </group>
       <group>
-        <name>mk</name>
+        <name>cpu</name>
+        <group>
+          <name>common</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\common\fnet_fec.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\common\fnet_fec.h</name>
+          </file>
+        </group>
+        <group>
+          <name>mk</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk60fn1_config.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk60n512_config.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk64fn1_config.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk70fn1_config.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_cache.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_config.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_eth.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_flash.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_isr.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_isr_inst.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_low.S</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_serial.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\mk\fnet_mk_timer.c</name>
+          </file>
+        </group>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\fnet_cpu.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk.h</name>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\fnet_cpu.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk60n512_config.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_cache.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_config.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_eth.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_flash.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_isr.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_isr_inst.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_low.s</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_serial.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_stdlib.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\mk\fnet_mk_timer.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\cpu\fnet_cpu_config.h</name>
         </file>
       </group>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\fnet_cpu.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\fnet_cpu.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\cpu\fnet_cpu_config.h</name>
-      </file>
-    </group>
-    <group>
-      <name>os</name>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\os\fnet_os.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\fnet_stack\os\fnet_os_config.h</name>
-      </file>
+      <group>
+        <name>os</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\os\fnet_os.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\os\fnet_os_config.h</name>
+        </file>
+      </group>
     </group>
     <group>
       <name>services</name>

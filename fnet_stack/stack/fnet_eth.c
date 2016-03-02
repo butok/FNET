@@ -53,7 +53,7 @@ const fnet_mac_addr_t fnet_eth_broadcast =
 *
 * DESCRIPTION: Converts MAC address to an null-terminated string.
 *************************************************************************/
-fnet_char_t *fnet_mac_to_str( fnet_mac_addr_t addr, fnet_char_t *str_mac )
+fnet_char_t *fnet_mac_to_str( const fnet_mac_addr_t addr, fnet_char_t *str_mac )
 {
     fnet_uint8_t *p;
     if(str_mac)
@@ -69,7 +69,7 @@ fnet_char_t *fnet_mac_to_str( fnet_mac_addr_t addr, fnet_char_t *str_mac )
 *
 * DESCRIPTION: This function interprets the character string into MAC addr.
 *************************************************************************/
-fnet_return_t fnet_str_to_mac( fnet_char_t *str_mac, fnet_mac_addr_t addr )
+fnet_return_t fnet_str_to_mac( const fnet_char_t *str_mac, fnet_mac_addr_t addr )
 {
     fnet_uint32_t   val;
     fnet_uint8_t    c;
@@ -242,76 +242,89 @@ void fnet_eth_prot_input( fnet_netif_t *netif, fnet_netbuf_t *nb, fnet_uint16_t 
 }
 
 /************************************************************************
+* NAME: fnet_eth_output
+*
+* DESCRIPTION: Ethernet low-level output function.
+*************************************************************************/
+void fnet_eth_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb )
+{
+    ((fnet_eth_if_t *)(netif->if_ptr))->output(netif, type, dest_addr, nb);
+}
+
+/************************************************************************
 * NAME: fnet_eth_init
 *
 * DESCRIPTION: Do initialization for an Ethernet-type interface.
 *************************************************************************/
 fnet_return_t fnet_eth_init( fnet_netif_t *netif)
 {
-    fnet_return_t result;
+    fnet_return_t result  = FNET_ERR;
+    fnet_eth_if_t *eth_if = (fnet_eth_if_t *)(netif->if_ptr);
 
-#if !FNET_CFG_CPU_ETH_MIB 
-    /* Clear Ethernet statistics. */
-    fnet_memset_zero(&((fnet_eth_if_t *)(netif->if_ptr))->statistics, sizeof(struct fnet_netif_statistics));
-#endif 
-
-#if FNET_CFG_IP4   
-    result = fnet_arp_init(netif); /* Init ARP for this interface.*/
-#else
-    result = FNET_OK;    
-#endif /* FNET_CFG_IP4 */
-
-    if(result == FNET_OK)
+    if(eth_if)
     {
+    #if !FNET_CFG_CPU_ETH_MIB 
+        /* Clear Ethernet statistics. */
+        fnet_memset_zero(&eth_if->statistics, sizeof(struct fnet_netif_statistics));
+    #endif 
 
-    #if FNET_CFG_IP6  
-        #if FNET_CFG_IP6_PMTU_DISCOVERY  
-            fnet_netif_pmtu_init(netif);
-        #endif
-        
-        /* Init Neighbor Discovery.*/
-        if( ( result = fnet_nd6_init (netif, &((fnet_eth_if_t *)(netif->if_ptr))->nd6_if) ) == FNET_OK)
+    #if FNET_CFG_IP4   
+        result = fnet_arp_init(netif, &eth_if->arp_if); /* Init ARP for this interface.*/
+    #else
+        result = FNET_OK;    
+    #endif /* FNET_CFG_IP4 */
+
+        if(result == FNET_OK)
         {
-            /* RFC4861 6.3.3: The host joins the all-nodes multicast address on all 
-             * multicastcapable interfaces.
-             */
-            fnet_ip6_multicast_join(netif, &fnet_ip6_addr_linklocal_allnodes);
 
-            /* To speed the autoconfiguration process, a host may generate its linklocal
-             * address (and verify its uniqueness) in parallel with waiting
-             * for a Router Advertisement. Because a router may delay responding to
-             * a Router Solicitation for a few seconds, the total time needed to
-             * complete autoconfiguration can be significantly longer if the two
-             * steps are done serially.
-             */
+        #if FNET_CFG_IP6  
+            #if FNET_CFG_IP6_PMTU_DISCOVERY  
+                fnet_netif_pmtu_init(netif);
+            #endif
+            
+            /* Init Neighbor Discovery.*/
+            if( ( result = fnet_nd6_init (netif, &eth_if->nd6_if) ) == FNET_OK)
+            {
+                /* RFC4861 6.3.3: The host joins the all-nodes multicast address on all 
+                 * multicastcapable interfaces.
+                 */
+                fnet_ip6_multicast_join(netif, &fnet_ip6_addr_linklocal_allnodes);
+
+                /* To speed the autoconfiguration process, a host may generate its linklocal
+                 * address (and verify its uniqueness) in parallel with waiting
+                 * for a Router Advertisement. Because a router may delay responding to
+                 * a Router Solicitation for a few seconds, the total time needed to
+                 * complete autoconfiguration can be significantly longer if the two
+                 * steps are done serially.
+                 */
 
 
-            /* Link-Local Address Generation/Auto configuration.
-             * It comprises of '1111111010' as the first ten bits followed by 54 zeroes 
-             * and a 64 bit interface identifier.
-             * For all autoconfiguration types, a link-local address is always configured. 
-             */
-            fnet_netif_bind_ip6_addr_prv( netif, &fnet_ip6_addr_any, FNET_NETIF_IP6_ADDR_TYPE_AUTOCONFIGURABLE, 
-                                                  FNET_NETIF_IP6_ADDR_LIFETIME_INFINITE /*in seconds*/, FNET_ND6_PREFIX_LENGTH_DEFAULT /* bits */ );
+                /* Link-Local Address Generation/Auto configuration.
+                 * It comprises of '1111111010' as the first ten bits followed by 54 zeroes 
+                 * and a 64 bit interface identifier.
+                 * For all autoconfiguration types, a link-local address is always configured. 
+                 */
+                fnet_netif_bind_ip6_addr_prv( netif, &fnet_ip6_addr_any, FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE, 
+                                                      FNET_NETIF_IP6_ADDR_LIFETIME_INFINITE /*in seconds*/, FNET_ND6_PREFIX_LENGTH_DEFAULT /* bits */ );
 
-            /* RFC4862: The next phase of autoconfiguration involves obtaining a Router
-             * Advertisement or determining that no routers are present.  If routers
-             * are present, they will send Router Advertisements that specify what
-             * sort of autoconfiguration a host can do.
-             * To obtain an advertisement quickly, a host sends one or more Router
-             * Solicitations to the all-routers multicast group.
-             */
-            fnet_nd6_rd_start(netif); 
-        }    
-    #endif /* FNET_CFG_IP6 */
-        
-        /* Set connection flag. */
-        ((fnet_eth_if_t *)(netif->if_ptr))->connection_flag = fnet_netif_connected(netif);
-        
-        ((fnet_eth_if_t *)(netif->if_ptr))->eth_timer = 
-                            fnet_timer_new((FNET_ETH_TIMER_PERIOD / FNET_TIMER_PERIOD_MS), fnet_eth_timer, (fnet_uint32_t)netif);
-        
-        fnet_eth_number++;
+                /* RFC4862: The next phase of autoconfiguration involves obtaining a Router
+                 * Advertisement or determining that no routers are present.  If routers
+                 * are present, they will send Router Advertisements that specify what
+                 * sort of autoconfiguration a host can do.
+                 * To obtain an advertisement quickly, a host sends one or more Router
+                 * Solicitations to the all-routers multicast group.
+                 */
+                fnet_nd6_rd_start(netif); 
+            }    
+        #endif /* FNET_CFG_IP6 */
+            
+            /* Set connection flag. */
+            eth_if->connection_flag = fnet_netif_is_connected(netif);
+            
+            eth_if->eth_timer = fnet_timer_new((FNET_ETH_TIMER_PERIOD / FNET_TIMER_PERIOD_MS), fnet_eth_timer, (fnet_uint32_t)netif);
+            
+            fnet_eth_number++;
+        }
     }
     
     return result;
@@ -373,6 +386,8 @@ void fnet_eth_change_addr_notify(fnet_netif_t *netif)
     if(netif->ip4_addr.address)
     {
     	fnet_arp_request(netif, netif->ip4_addr.address); /* Gratuitous ARP request.*/
+        /* When talking about gratuitous ARP, the packets are actually special ARP request packets, 
+           not ARP reply packets as one would perhaps expect. Some reasons for this are explained in RFC 5227.*/
     }
 #else
     FNET_COMP_UNUSED_ARG(netif);
@@ -387,18 +402,19 @@ void fnet_eth_change_addr_notify(fnet_netif_t *netif)
 static void fnet_eth_timer(fnet_uint32_t cookie )
 {
     fnet_netif_t    *netif = (fnet_netif_t *) cookie;
-    fnet_bool_t     connection_flag = ((fnet_eth_if_t *)(netif->if_ptr))->connection_flag;
+    fnet_eth_if_t   *eth_if = (fnet_eth_if_t *)(netif->if_ptr);
+    fnet_bool_t     connection_flag = eth_if->connection_flag;
 
-    if(fnet_netif_connected(netif) != connection_flag) /* Is any change in connection. */
+    if(fnet_netif_is_connected(netif) != connection_flag) /* Is any change in connection. */
     {
         if(connection_flag == FNET_FALSE)  /* Connected. */
         {
             fnet_eth_change_addr_notify(netif);
-            ((fnet_eth_if_t *)(netif->if_ptr))->connection_flag = FNET_TRUE;
+            eth_if->connection_flag = FNET_TRUE;
         }
         else
         {
-            ((fnet_eth_if_t *)(netif->if_ptr))->connection_flag = FNET_FALSE;
+            eth_if->connection_flag = FNET_FALSE;
         }
     }
 }
@@ -412,7 +428,6 @@ static void fnet_eth_timer(fnet_uint32_t cookie )
 void fnet_eth_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t* nb)
 {
     fnet_mac_addr_t destination_addr; /* 48-bit destination address */
-    fnet_mac_addr_t * dest_ptr;
   
     /* Construct Ethernet header. Start with looking up deciding which
     * MAC address to use as a destination address. Broadcasts and
@@ -436,19 +451,16 @@ void fnet_eth_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet
     else
     /* Unicast address. */
     {
-        if((dest_ptr = fnet_arp_lookup(netif, dest_ip_addr))!=0)
-        {
-            fnet_memcpy (destination_addr, *dest_ptr, sizeof(fnet_mac_addr_t));
-        }
-        else
+        if(fnet_arp_get_mac( (fnet_netif_desc_t) netif, dest_ip_addr, destination_addr) == FNET_FALSE)
         {
             fnet_arp_resolve(netif, dest_ip_addr, nb);
             goto EXIT;
         }
+
     }
 
     /* Send Ethernet frame. */
-    ((fnet_eth_if_t *)(netif->if_ptr))->output(netif, FNET_ETH_TYPE_IP4, destination_addr, nb);
+    fnet_eth_output(netif, FNET_ETH_TYPE_IP4, destination_addr, nb);
 EXIT:
     return;    
 }
@@ -544,7 +556,6 @@ void fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr
             fnet_nd6_neighbor_solicitation_send(netif, src_ip_addr, FNET_NULL /* NULL for AR */, dest_ip_addr);            
         }   
         
-        
         if(neighbor->state == FNET_ND6_NEIGHBOR_STATE_INCOMPLETE)
         /* Queue packet for later transmit.
          */
@@ -568,7 +579,7 @@ void fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr
     }
         
     /* Send Ethernet frame. */
-    ((fnet_eth_if_t *)(netif->if_ptr))->output(netif, FNET_ETH_TYPE_IP6, dest_mac_addr_ptr, nb);    
+    fnet_eth_output(netif, FNET_ETH_TYPE_IP6, dest_mac_addr_ptr, nb);    
     
 EXIT:
     return;    

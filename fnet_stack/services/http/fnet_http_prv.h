@@ -143,6 +143,7 @@ struct fnet_http_response
     fnet_index_t                            status_line_state;
     fnet_uint32_t                           cookie;
 #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/    
+    fnet_bool_t                             no_header;                  /* Flag do not send HTTP respnse status line and header*/
     const struct fnet_http_content_type     *send_file_content_type;    /* MIME Content-Type.*/
     struct fnet_http_status                 status;                     /* Status of the response.*/
     struct fnet_http_version                version;                    /* Protocol version used for current request.*/
@@ -235,8 +236,8 @@ struct fnet_http_method
 	fnet_char_t     *token;	            /* Method token, which will identify protocol.
 	                                    * It indicates the method to be performed on the resource identified 
 	                                    * by the Request-URI.*/
-	fnet_int32_t    (* handle)(struct fnet_http_if * http, struct fnet_http_uri * uri);
-    fnet_int32_t    (* receive)(struct fnet_http_if * http);
+	fnet_return_t   (* handle)(struct fnet_http_if * http, struct fnet_http_uri * uri);
+    fnet_return_t   (* receive)(struct fnet_http_if * http);
 	fnet_return_t   (* send)(struct fnet_http_if * http);
 	void            (* close)(struct fnet_http_if * http);
 };

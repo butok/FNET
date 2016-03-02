@@ -1,6 +1,6 @@
 /**************************************************************************
 * 
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -32,11 +32,9 @@
 
 #define _FNET_DHCP_H_
 
-#include "fnet_config.h"
+#include "fnet.h"
 
 #if FNET_CFG_DHCP || defined(__DOXYGEN__)
-
-#include "fnet.h"
 
 /*! @addtogroup fnet_dhcp 
 * The user application can use the DHCP-client service to retrieve various network 
@@ -84,6 +82,7 @@
 * @n
 * Configuration parameters:
 * - @ref FNET_CFG_DHCP
+* - @ref FNET_CFG_DHCP_MAX
 * - @ref FNET_CFG_DHCP_BOOTP
 * - @ref FNET_CFG_DHCP_PORT_CLIENT
 * - @ref FNET_CFG_DHCP_PORT_SERVER
@@ -94,8 +93,6 @@
 *
 */
 /*! @{ */
-
-
 
 /**************************************************************************/ /*!
  * @def FNET_DHCP_LEASE_INFINITY
@@ -113,8 +110,6 @@
  ******************************************************************************/
 #define FNET_DHCP_LEASE_MIN         (180U)
 
-
-
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_dhcp_init() function.
  *
@@ -123,18 +118,21 @@
  ******************************************************************************/
 struct fnet_dhcp_params
 {
-    struct in_addr requested_ip_address;    /**< @brief Suggested IP address.@n
+    struct in_addr  requested_ip_address;    /**< @brief Suggested IP address.@n
                                              * The client can suggest to the DHCP server
                                              * that a particular IP address value should be 
                                              * assigned to the client.@n
                                              * This parameter is optional and can be set to @c 0.
                                              */
-    fnet_uint32_t requested_lease_time;     /**< @brief Suggested Lease time in seconds.@n
+    fnet_uint32_t   requested_lease_time;   /**< @brief Suggested Lease time in seconds.@n
                                              * The client can suggest to the DHCP server
                                              * that a particular lease time should be 
                                              * assigned to the client IP address.@n
                                              * This parameter is optional and can be set to @c 0.
                                              */
+    fnet_bool_t     probe_addr;             /**< @brief  Probing of the newly received address with ARP:
+                                             *   - @c FNET_FALSE = is disabled.
+                                             *   - @c FNET_TRUE = is enabled.*/
 };
 
 /**************************************************************************/ /*!
@@ -146,52 +144,38 @@ struct fnet_dhcp_params
  ******************************************************************************/
 struct fnet_dhcp_options
 {
-    struct in_addr ip_address;  /**< @brief Client IP address assigned by the DHCP server (in network byte order).
-                                */
-    struct in_addr netmask;     /**< @brief Subnet Mask (in network byte order).
-                                */
-    struct in_addr gateway;     /**< @brief The IP address of a router on the client's subnet (in network byte order).
-                                */
-    struct in_addr dhcp_server; /**< @brief The DHCP server IP address (in network byte order).
-                                */
-                                 
+    struct in_addr ip_address;  /**< @brief Client IP address assigned by the DHCP server (in network byte order). */
+    struct in_addr netmask;     /**< @brief Subnet Mask (in network byte order).*/
+    struct in_addr gateway;     /**< @brief The IP address of a router on the client's subnet (in network byte order).*/
+    struct in_addr dhcp_server; /**< @brief The DHCP server IP address (in network byte order).*/
 #if FNET_CFG_DHCP_BROADCAST                                     
     struct in_addr broadcast;   /**< @brief Broadcast address in use on the client's subnet (in network byte order).@n
-                                * This option is present only if @ref FNET_CFG_DHCP_BROADCAST is set.
-                                */
+                                * This option is present only if @ref FNET_CFG_DHCP_BROADCAST is set.*/
 #endif
-                                  
 #if FNET_CFG_DNS                                     
     struct in_addr dns;         /**< @brief DNS (Domain Name System) server address (in network byte order).@n
                                 * The DHCP client stores only the first DNS address, even if the DHCP server has 
                                 * provided several DNS addresses.@n
-                                * This option is present only if @ref FNET_CFG_DNS is set.
-                                */
+                                * This option is present only if @ref FNET_CFG_DNS is set.*/
 #endif
-
     /* For debug needs: */
-
     fnet_uint32_t t1;           /**< @brief Renewal (T1) Time Value in seconds (in network byte order).@n
                                 * This option specifies the time interval from 
                                 * address assignment, until the client transitions 
                                 * to the RENEWING state.@n
                                 * A user application may ignore this option value. 
-                                * It is used for internal and debug purposes only.
-                                */
+                                * It is used for internal and debug purposes only.*/
     fnet_uint32_t t2;           /**< @brief Rebinding (T2) Time Value in seconds (in network byte order).@n
                                 * This option specifies the time interval from 
                                 * address assignment until the client transitions 
                                 * to the REBINDING state.@n
                                 * A user application may ignore this option value. 
-                                * It is used for internal and debug purposes only.
-                                */
+                                * It is used for internal and debug purposes only.*/
     fnet_uint32_t lease_time;   /**< @brief The IP Address Lease Time in seconds (in network byte order).@n
                                 * @c t1 < @c t2 < @c lease_time.@n
                                 * By default, @c t1=0.5*lease_time; @c t2=0.875*lease_time.@n
                                 * A user application may ignore this option value. 
-                                * It is used for internal and debug purposes only.
-                                */
-
+                                * It is used for internal and debug purposes only.*/
 };
 
 #if defined(__cplusplus)

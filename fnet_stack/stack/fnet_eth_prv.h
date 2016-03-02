@@ -32,12 +32,12 @@
 
 #define _FNET_ETHERNET_PRV_H_
 
-#include "fnet_config.h"
+#include "fnet.h"
 
 #if (FNET_CFG_CPU_ETH0 ||FNET_CFG_CPU_ETH1)
 
 #include "fnet_eth.h"
-#include "fnet_arp.h"
+#include "fnet_arp_prv.h"
 #include "fnet_netif_prv.h"
 
 /************************************************************************
@@ -130,8 +130,7 @@ void fnet_eth_change_addr_notify(fnet_netif_t *netif);
     void fnet_eth_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t* nb);
 #endif 
 
-void fnet_eth_output_low( fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr,
-                          fnet_netbuf_t *nb );
+void fnet_eth_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb );
 void fnet_eth_prot_input( fnet_netif_t *netif, fnet_netbuf_t *nb, fnet_uint16_t protocol ); 
 
 #if FNET_CFG_MULTICAST

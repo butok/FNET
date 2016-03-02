@@ -32,7 +32,7 @@
 
 #define _FNET_FS_ROOT_H_
 
-#include "fnet_config.h"
+#include "fnet.h"
 
 #if FNET_CFG_FS
 
