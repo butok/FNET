@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community. 
+* Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_fs_root.c
@@ -40,7 +40,7 @@
 /* Root FS */
 
 static fnet_return_t fnet_fs_root_opendir( struct fnet_fs_desc *dir, const fnet_char_t *name);
-static fnet_return_t fnet_fs_root_readdir(struct fnet_fs_desc *dir, struct fnet_fs_dirent* dirent);
+static fnet_return_t fnet_fs_root_readdir(struct fnet_fs_desc *dir, struct fnet_fs_dirent *dirent);
 
 static const struct fnet_fs_dir_operations fnet_fs_root_dir_operations =
 {
@@ -78,7 +78,7 @@ void fnet_fs_root_register( void )
 /************************************************************************
 * NAME: fnet_fs_root_unregister
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 void fnet_fs_root_unregister( void )
 {
@@ -99,17 +99,17 @@ static fnet_return_t fnet_fs_root_opendir( struct fnet_fs_desc *dir, const fnet_
     fnet_return_t result = FNET_ERR;
 
     FNET_COMP_UNUSED_ARG(name);
-    
+
     if(dir)
     {
         dir->id = FNET_FS_ROOTDIR_ID;
         result = FNET_OK;
     }
     else
-    {        
-        result = FNET_ERR;    
+    {
+        result = FNET_ERR;
     }
-        
+
     return result;
 }
 
@@ -118,20 +118,20 @@ static fnet_return_t fnet_fs_root_opendir( struct fnet_fs_desc *dir, const fnet_
 *
 * DESCRIPTION: Read DIR stream for the ROOT FS.
 *************************************************************************/
-static fnet_return_t fnet_fs_root_readdir(struct fnet_fs_desc *dir, struct fnet_fs_dirent* dirent)
+static fnet_return_t fnet_fs_root_readdir(struct fnet_fs_desc *dir, struct fnet_fs_dirent *dirent)
 {
     fnet_return_t               result = FNET_ERR;
     fnet_index_t                i;
     struct fnet_fs_mount_point  *tmp;
-    
+
     if(dir && (dir->id == FNET_FS_ROOTDIR_ID) && (dir->pos != (fnet_uint32_t)FNET_FS_EOF) && dirent)
     {
-        for(i=dir->pos; i<FNET_CFG_FS_MOUNT_MAX; i++)
+        for(i = dir->pos; i < FNET_CFG_FS_MOUNT_MAX; i++)
         {
             tmp = &fnet_fs_mount_list[i];
             if(tmp->fs) /* Found next mount - dir */
             {
-                dir->pos = i+1u; /* incriment next dir index */
+                dir->pos = i + 1u; /* incriment next dir index */
                 if(fnet_strcmp(tmp->fs->name, FNET_FS_ROOT_NAME ) )/* It's not ROOT FS mount. */
                 {
                     /*fill ident */
@@ -146,10 +146,10 @@ static fnet_return_t fnet_fs_root_readdir(struct fnet_fs_desc *dir, struct fnet_
         }
         if (result == FNET_ERR)
         {
-             dir->pos = (fnet_uint32_t)FNET_FS_EOF; /* End of the directory is encountered */
+            dir->pos = (fnet_uint32_t)FNET_FS_EOF; /* End of the directory is encountered */
         }
     }
-    
+
     return result;
 }
 

@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2013 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -37,7 +37,7 @@
 
 /* Size of the internal static heap buffer. */
 #ifndef FNET_CFG_HEAP_SIZE
-	#define FNET_CFG_HEAP_SIZE              (30 * 1024)
+    #define FNET_CFG_HEAP_SIZE              (30 * 1024)
 #endif
 
 /* The platform does not have on-chip Flash Module.*/
@@ -45,24 +45,24 @@
 
 /* Default system bus frequency in Hz */
 #ifndef FNET_CFG_CPU_CLOCK_HZ
-	#define FNET_CFG_CPU_CLOCK_HZ           (75000000)
+    #define FNET_CFG_CPU_CLOCK_HZ           (75000000)
 #endif
 
 /* The platform does not have second Ethernet Module.*/
 #define FNET_CFG_CPU_ETH1        			(0)
 
-/* Defines the maximum number of incoming frames that may 
+/* Defines the maximum number of incoming frames that may
  *           be buffered by the Ethernet module.*/
 #ifndef FNET_CFG_CPU_ETH_RX_BUFS_MAX
-	#define FNET_CFG_CPU_ETH_RX_BUFS_MAX    (4)
+    #define FNET_CFG_CPU_ETH_RX_BUFS_MAX    (4)
 #endif
 
 /* There is cache. */
-#ifndef FNET_CFG_CPU_CACHE  
+#ifndef FNET_CFG_CPU_CACHE
     #define FNET_CFG_CPU_CACHE            	(1)
 #endif
 
 /* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE          	(1024 * 64)     /* 64 KB */  
+#define FNET_CFG_CPU_SRAM_SIZE          	(1024 * 64)     /* 64 KB */
 
 #endif /* _FNET_MCF5235_CONFIG_H_ */

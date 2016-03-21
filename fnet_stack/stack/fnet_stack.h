@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_stack.h
@@ -48,7 +48,7 @@
 
 /*! @addtogroup fnet_stack_init
 * - The @ref fnet.h file includes all the other header files needed to use the FNET TCP/IP stack
-*   user interface. This means that it is the only file the application developer needs to include 
+*   user interface. This means that it is the only file the application developer needs to include
 *   in the source code using the FNET stack API.
 * - The function @ref fnet_init() or @ref fnet_init_static() must be called
 *   in order to initialize the FNET TCP/IP stack.
@@ -84,8 +84,8 @@
  ******************************************************************************/
 struct fnet_init_params
 {
-    void        *netheap_ptr;   /**< @brief Pointer to the FNET heap buffer. @n 
-                                * @n 
+    void        *netheap_ptr;   /**< @brief Pointer to the FNET heap buffer. @n
+                                * @n
                                 * The FNET uses this heap buffer for the internal
                                 * dynamic data allocation as:
                                 *  - Ethernet Tx/Rx frame buffers.
@@ -94,7 +94,7 @@ struct fnet_init_params
                                 *  - Various control structures.
                                 *  - Temporary data.@n
                                 * @n
-                                * An application can allocate this buffer statically, 
+                                * An application can allocate this buffer statically,
                                 * dynamically, or use a special memory region (for example SRAM).*/
     fnet_size_t netheap_size;   /**< @brief Size of the FNET heap buffer. */
 };
@@ -102,7 +102,7 @@ struct fnet_init_params
 #if defined(__cplusplus)
 extern "C" {
 #endif
- 
+
 /***************************************************************************/ /*!
  *
  * @brief    Initializes the FNET TCP/IP stack.
@@ -119,15 +119,15 @@ extern "C" {
  ******************************************************************************
  *
  * This function executes the initialization of the FNET TCP/IP stack.@n
- * Only after a succesful initialization, the application may use other FNET API 
+ * Only after a succesful initialization, the application may use other FNET API
  * functions and services.
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 fnet_return_t fnet_init( struct fnet_init_params *init_params );
 
 /***************************************************************************/ /*!
  *
- * @brief    Initializes the FNET TCP/IP stack with an internally pre-allocated 
+ * @brief    Initializes the FNET TCP/IP stack with an internally pre-allocated
  * static heap buffer.
  *
  * @return   This function returns:
@@ -140,12 +140,12 @@ fnet_return_t fnet_init( struct fnet_init_params *init_params );
  *
  * This function executes the initialization of the FNET TCP/IP stack.
  * It's has the same functionality as @ref fnet_init().
- * The only difference is that the FNET heap buffer is allocated internally 
+ * The only difference is that the FNET heap buffer is allocated internally
  * as a static buffer and its size is defined by the @ref FNET_CFG_HEAP_SIZE.@n
- * Only after a successful initialization, the application may use other FNET API 
+ * Only after a successful initialization, the application may use other FNET API
  * functions and services.
  *
- ******************************************************************************/  
+ ******************************************************************************/
 fnet_return_t fnet_init_static(void);
 
 /***************************************************************************/ /*!
@@ -159,7 +159,7 @@ fnet_return_t fnet_init_static(void);
  * This function releases all resources occupied by the FNET TCP/IP stack.
  * But it does not release resources occupied by FNET services.
  *
- ******************************************************************************/  
+ ******************************************************************************/
 void fnet_release(void);
 
 #if defined(__cplusplus)

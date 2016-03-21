@@ -2,10 +2,10 @@
 /*      FILENAME  RegisterFile.h   												*/
 /* The current release of the documentation and header files does not include
  * the system register file or the VBAT register file. This header file
- * adds support for accessing both register files. 
- * 
+ * adds support for accessing both register files.
+ *
  * Once the manual is updated to include the register files, this file
- * will become obsolete. 
+ * will become obsolete.
  */
 /********************************************************************************/
 
@@ -15,10 +15,11 @@
 /* Peripheral VBAT Register File  base pointer */
 #define RFVBAT_DATA_BASE_PTR                       ((RFDATA_MemMapPtr)0x4003E000u)
 
-  typedef struct RFDATA_MemMap {
-  uint32_t RFDATA [32];            /*!< Register file  n, array offset: 0x0, array step: 0x4 */
- 
-  
+typedef struct RFDATA_MemMap
+{
+    uint32_t RFDATA [32];            /*!< Register file  n, array offset: 0x0, array step: 0x4 */
+
+
 } volatile *RFDATA_MemMapPtr;
 
 /* ----------------------------------------------------------------------------
@@ -46,13 +47,13 @@
 #define RFVBAT_DATA5                            RFVBAT_DATA_REG(RFVBAT_DATA_BASE_PTR,5 )
 #define RFVBAT_DATA6                            RFVBAT_DATA_REG(RFVBAT_DATA_BASE_PTR,6 )
 #define RFVBAT_DATA7                            RFVBAT_DATA_REG(RFVBAT_DATA_BASE_PTR,7 )
-                                                                                     
+
 
 /* LL Bit Fields */
 #define RF_DATA_LL_MASK                           0x000000FFu
 #define RF_DATA_LL_SHIFT                          0
 #define RF_DATA_LL(x)                            (((x)<<RF_DATA_LL_SHIFT)&RF_DATA_LL_MASK)
-/* LH Bit Fields */                        
+/* LH Bit Fields */
 #define RF_DATA_LH_MASK                           0x0000FF00u
 #define RF_DATA_LH_SHIFT                          8
 #define RF_DATA_LH(x)                             (((x)<<RF_DATA_LH_SHIFT)&RF_DATA_LH_MASK)

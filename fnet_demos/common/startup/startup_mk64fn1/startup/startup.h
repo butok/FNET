@@ -43,7 +43,7 @@ extern "C" {
  *
  * - Copy initialized data from ROM to RAM.
  * - Clear the zero-initialized data section.
- * - Copy the vector table from ROM to RAM. This could be an option.  
+ * - Copy the vector table from ROM to RAM. This could be an option.
  */
 void init_data_bss(void);
 

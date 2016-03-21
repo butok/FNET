@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2005-2011 by Andrey Butok and Gordon Jahn.
+* Copyright 2016 by Andrey Butok and Gordon Jahn.
 *                        Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -20,60 +20,58 @@
 **********************************************************************/
 /*!
 *
-* @file fnet_mpc564xbc_config.h
-
+* @file fnet_mpc5566_config.h
 *
-* @brief MPC564xBC specific configuration file.
+* @brief MPC5566 specific configuration file.
 *
 ***************************************************************************/
+
+/* NOTE: Contributed by NanoZera */
 
 /************************************************************************
  * !!!DO NOT MODIFY THIS FILE!!!
  ************************************************************************/
 
-#ifndef _FNET_MPC564XBC_CONFIG_H_
+#ifndef _FNET_MPC5566_CONFIG_H_
 
-#define _FNET_MPC564XBC_CONFIG_H_
+#define _FNET_MPC5566_CONFIG_H_
 
-#define FNET_MPC                        (1)
+#define FNET_MPC                                 (1)
 
 /******************************************************************************
  * Maximum Timer number that is avaiable on the used platform.
  ******************************************************************************/
-#define  FNET_CFG_CPU_TIMER_NUMBER_MAX  (7)
-
-#ifndef FNET_CFG_CPU_TIMER_NUMBER
-    #define FNET_CFG_CPU_TIMER_NUMBER           (FNET_CFG_CPU_TIMER_NUMBER_MAX)
-#endif
+#define  FNET_CFG_CPU_TIMER_NUMBER_MAX           (23)
 
 /* Size of the internal static heap buffer. */
 #ifndef FNET_CFG_HEAP_SIZE
-    #define FNET_CFG_HEAP_SIZE              (30 * 1024)
+    #define FNET_CFG_HEAP_SIZE                   (30 * 1024)
+#endif
+
+
+/* Default system bus frequency in Hz*/
+#ifndef FNET_CFG_CPU_CLOCK_HZ
+    #define FNET_CFG_CPU_CLOCK_HZ                (128000000)
 #endif
 
 /* MPC Flash Module is not supported.*/
-#define FNET_CFG_CPU_FLASH              (0)
-#define FNET_CFG_CPU_FLASH_PAGE_SIZE    (2*1024)
+#define FNET_CFG_CPU_FLASH                       (0)
+
+#define FNET_CFG_CPU_FLASH_PAGE_SIZE             (0)
 
 /* The platform does not have second Ethernet Module.*/
-#define FNET_CFG_CPU_ETH1               (0)
-
-/* Default system bus frequency in Hz */
-#ifndef FNET_CFG_CPU_CLOCK_HZ
-    #define FNET_CFG_CPU_CLOCK_HZ           (120000000)
-#endif
+#define FNET_CFG_CPU_ETH1                        (0)
 
 /* Defines the maximum number of incoming frames that may
  *           be buffered by the Ethernet module.*/
 #ifndef FNET_CFG_CPU_ETH_RX_BUFS_MAX
-    #define FNET_CFG_CPU_ETH_RX_BUFS_MAX    (4)
+    #define FNET_CFG_CPU_ETH_RX_BUFS_MAX             (4)
 #endif
 
-/* Flash size.*/
-#define FNET_CFG_CPU_FLASH_SIZE         (1024 * 512)    /* 512 KB */
+/* On-chip Flash size.*/
+#define FNET_CFG_CPU_FLASH_SIZE                  (1024 * 1024 * 3)   /* 3 MB*/
 
 /* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE          (1024 * 64)     /* 64 KB */
+#define FNET_CFG_CPU_SRAM_SIZE                   (1024 * 256)        /* 256 KB */
 
-
-#endif /* _FNET_MPC564XBC_CONFIG_H_ */
+#endif /* _FNET_MPC5566_CONFIG_H_ */

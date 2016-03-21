@@ -25,12 +25,12 @@ void sysinit (void)
     * pin muxing options, so most code will need all of these on anyway.
     */
     SIM_SCGC5 |= (SIM_SCGC5_PORTA_MASK
-                | SIM_SCGC5_PORTB_MASK
-                | SIM_SCGC5_PORTC_MASK
-                | SIM_SCGC5_PORTD_MASK
-                | SIM_SCGC5_PORTE_MASK );
+                  | SIM_SCGC5_PORTB_MASK
+                  | SIM_SCGC5_PORTC_MASK
+                  | SIM_SCGC5_PORTD_MASK
+                  | SIM_SCGC5_PORTE_MASK );
 
- 	/* Ramp up the system clock */
+    /* Ramp up the system clock */
     /* !!!! Be sure that FNET_CFG_CPU_CLOCK_HZ has proper value.!!!!!*/
     pll_init(CORE_CLK_MHZ, REF_CLK);
 }

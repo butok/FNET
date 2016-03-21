@@ -1,6 +1,6 @@
 /**************************************************************************
-* 
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+*
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Freescale Semiconductor, Inc.
 * Copyright 2003 by Motorola SPS.
 *
@@ -18,7 +18,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_stdlib.c
@@ -35,9 +35,9 @@ static fnet_uint32_t fnet_rand_value;  /* Used by fnet_rand()*/
 /************************************************************************
 * NAME: fnet_memcpy
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
-#if 0 
+#if 0
 /* Slowest && Smallest */
 void fnet_memcpy( FNET_COMP_PACKED_VAR void *dest, FNET_COMP_PACKED_VAR const void *src, fnet_size_t n )
 {
@@ -56,7 +56,7 @@ void fnet_memcpy (FNET_COMP_PACKED_VAR void *dest, FNET_COMP_PACKED_VAR const vo
     fnet_size_t                         bytes;
     FNET_COMP_PACKED_VAR fnet_uint32_t  *dpl = (fnet_uint32_t *)dest;
     FNET_COMP_PACKED_VAR fnet_uint32_t  *spl = (fnet_uint32_t *)src;
-	fnet_uint8_t                        *dpb, *spb;
+    fnet_uint8_t                        *dpb, *spb;
 
     bytes = (n & 0x3);
     longs = ((n - bytes) >> 2);
@@ -65,7 +65,7 @@ void fnet_memcpy (FNET_COMP_PACKED_VAR void *dest, FNET_COMP_PACKED_VAR const vo
     {
         *dpl++ = *spl++;
     }
-		
+
     dpb = (fnet_uint8_t *)dpl;
     spb = (fnet_uint8_t *)spl;
 
@@ -92,7 +92,7 @@ void fnet_memcpy(FNET_COMP_PACKED_VAR void *to_ptr, FNET_COMP_PACKED_VAR const v
     if (number_of_bytes > 3u)
     {
         /* Try to align source on word */
-        if (((fnet_uint32_t)from_ptr & 1u) != 0u) 
+        if (((fnet_uint32_t)from_ptr & 1u) != 0u)
         {
             from8_ptr = (const fnet_uint8_t *) from_ptr;
             to8_ptr = (fnet_uint8_t *) to_ptr;
@@ -120,7 +120,7 @@ void fnet_memcpy(FNET_COMP_PACKED_VAR void *to_ptr, FNET_COMP_PACKED_VAR const v
         from32_ptr = (const fnet_uint32_t *) from_ptr;
         to32_ptr = (fnet_uint32_t *) to_ptr;
 
-        /* 
+        /*
         ** To increase performance a bit, we will copy 64 bytes (16 * longwords) sequentially
         ** This gets less instruction cycles.
         */
@@ -153,7 +153,7 @@ void fnet_memcpy(FNET_COMP_PACKED_VAR void *to_ptr, FNET_COMP_PACKED_VAR const v
 
         from_ptr = from32_ptr;
         to_ptr = to32_ptr;
-    } 
+    }
 
     /* Copy all remaining bytes */
     if ((number_of_bytes & 2u) != 0u)
@@ -165,9 +165,9 @@ void fnet_memcpy(FNET_COMP_PACKED_VAR void *to_ptr, FNET_COMP_PACKED_VAR const v
 
         from_ptr = from16_ptr;
         to_ptr = to16_ptr;
-    } 
+    }
 
-    if ((number_of_bytes & 1u) != 0u) 
+    if ((number_of_bytes & 1u) != 0u)
     {
         * (fnet_uint8_t *) to_ptr = * (const fnet_uint8_t *) from_ptr;
     }
@@ -186,22 +186,22 @@ void fnet_memcpy(FNET_COMP_PACKED_VAR void *to_ptr, FNET_COMP_PACKED_VAR const v
 void *fnet_memcpy_func(void *to_buf_ptr, const void *from_func_ptr, fnet_size_t to_buf_size)
 {
 
-    fnet_memcpy(to_buf_ptr, (void*)FNET_CPU_INSTRUCTION_TO_ADDR(from_func_ptr), to_buf_size);
-    
-    return (void*)FNET_CPU_ADDR_TO_INSTRUCTION(to_buf_ptr);
+    fnet_memcpy(to_buf_ptr, (void *)FNET_CPU_INSTRUCTION_TO_ADDR(from_func_ptr), to_buf_size);
+
+    return (void *)FNET_CPU_ADDR_TO_INSTRUCTION(to_buf_ptr);
 }
 
 /************************************************************************
 * NAME: fnet_memset
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *
 *************************************************************************/
 void fnet_memset( void *dest, fnet_uint8_t value, fnet_size_t n )
 {
     /* Not optimized */
     fnet_uint8_t *sp = (fnet_uint8_t *)dest;
-    
+
     while(n)
     {
         *sp++ = (fnet_uint8_t)value;
@@ -219,7 +219,7 @@ void fnet_memset_zero( void *dest, fnet_size_t n )
 {
     /* Not optimized */
     fnet_uint8_t *sp = (fnet_uint8_t *)dest;
-    
+
     while(n)
     {
         *sp++ = 0u;
@@ -254,7 +254,7 @@ fnet_int32_t fnet_memcmp(const void *src1, const void *src2, fnet_size_t count )
 /************************************************************************
 * NAME: fnet_strcmp
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *
 *************************************************************************/
 fnet_int32_t fnet_strcmp( const fnet_char_t *str1, const fnet_char_t *str2 )
@@ -280,99 +280,99 @@ fnet_int32_t fnet_strcmp( const fnet_char_t *str1, const fnet_char_t *str2 )
 /************************************************************************
 * NAME: fnet_strlen
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *
 *************************************************************************/
 fnet_size_t fnet_strlen (const fnet_char_t *str)
 {
-	const fnet_char_t  *s = str;
-	fnet_size_t         len = 0U;
+    const fnet_char_t  *s = str;
+    fnet_size_t         len = 0U;
 
-	if (s == 0)
+    if (s == 0)
     {
-		return 0U;
+        return 0U;
     }
 
-	while (*s++ != '\0')
+    while (*s++ != '\0')
     {
-		++len;
+        ++len;
     }
 
-	return len;
+    return len;
 }
 
 /************************************************************************
 * NAME: fnet_strcat
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *
 *************************************************************************/
 void fnet_strcat (fnet_char_t *dest, const fnet_char_t *src)
 {
-	fnet_char_t        *dp;
-	const fnet_char_t  *sp = src;
+    fnet_char_t        *dp;
+    const fnet_char_t  *sp = src;
 
-	if ((dest != 0) && (src != 0))
-	{
-		dp = &dest[fnet_strlen(dest)];
+    if ((dest != 0) && (src != 0))
+    {
+        dp = &dest[fnet_strlen(dest)];
 
-		while (*sp != '\0')
-		{
-			*dp++ = *sp++;
-		}
-		*dp = '\0';
-	}
+        while (*sp != '\0')
+        {
+            *dp++ = *sp++;
+        }
+        *dp = '\0';
+    }
 }
 
 /************************************************************************
 * NAME: fnet_strncat
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *
 *************************************************************************/
 void fnet_strncat (fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n)
 {
-	fnet_char_t        *dp;
-	const fnet_char_t  *sp = src;
+    fnet_char_t        *dp;
+    const fnet_char_t  *sp = src;
 
-	if ((dest != 0) && (src != 0) && (n > 0U))
-	{
-		dp = &dest[fnet_strlen(dest)];
+    if ((dest != 0) && (src != 0) && (n > 0U))
+    {
+        dp = &dest[fnet_strlen(dest)];
 
-		while((*sp != '\0') && (n > 0u))
-		{
-			*dp++ = *sp++;
+        while((*sp != '\0') && (n > 0u))
+        {
+            *dp++ = *sp++;
             n--;
-		}
-		*dp = '\0';
-	}
+        }
+        *dp = '\0';
+    }
 }
 
 /************************************************************************
 * NAME: fnet_strcpy
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *
 *************************************************************************/
 void fnet_strcpy (fnet_char_t *dest, const fnet_char_t *src)
 {
-	fnet_char_t        *dp = dest;
-	const fnet_char_t  *sp = src;
+    fnet_char_t        *dp = dest;
+    const fnet_char_t  *sp = src;
 
-	if ((dest != 0) && (src != 0))
-	{
-		while (*sp != '\0')
-		{
-			*dp++ = *sp++;
-		}
-		*dp = '\0';
-	}
+    if ((dest != 0) && (src != 0))
+    {
+        while (*sp != '\0')
+        {
+            *dp++ = *sp++;
+        }
+        *dp = '\0';
+    }
 }
 
 /************************************************************************
 * NAME: fnet_strncpy
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *
 *************************************************************************/
 void fnet_strncpy( fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n )
@@ -394,7 +394,7 @@ void fnet_strncpy( fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n )
 /************************************************************************
 * NAME: fnet_strrchr
 *
-* DESCRIPTION: The function fnet_strrchr() returns a pointer to the last 
+* DESCRIPTION: The function fnet_strrchr() returns a pointer to the last
 * occurrence of chr in str, or NULL if no match is found.
 *
 *************************************************************************/
@@ -425,7 +425,7 @@ fnet_char_t *fnet_strrchr(const fnet_char_t *str, fnet_char_t chr )
 /************************************************************************
 * NAME: fnet_strchr
 *
-* DESCRIPTION: The function fnet_strchr() returns a pointer to the first 
+* DESCRIPTION: The function fnet_strchr() returns a pointer to the first
 * occurence of chr in str, or 0 if chr is not found.
 *
 *************************************************************************/
@@ -439,21 +439,21 @@ fnet_char_t *fnet_strchr( const fnet_char_t *str, fnet_char_t chr )
     {
         if(ch == c)
         {
-            return (fnet_char_t*)(p - 1);
+            return (fnet_char_t *)(p - 1);
         }
 
         ch = *p++;
     }
 
-    return (fnet_char_t*)(c ? FNET_NULL : (p - 1));
+    return (fnet_char_t *)(c ? FNET_NULL : (p - 1));
 }
 
 /************************************************************************
 * NAME: fnet_strstr
 *
-* DESCRIPTION: The function fnet_strstr() returns a pointer to the first 
-* occurrence of substr in str, or 0 if no match is found. 
-* If the length of pat is zero, then fnet_strstr() will 
+* DESCRIPTION: The function fnet_strstr() returns a pointer to the first
+* occurrence of substr in str, or 0 if no match is found.
+* If the length of pat is zero, then fnet_strstr() will
 * simply return str.
 *
 *************************************************************************/
@@ -463,9 +463,9 @@ fnet_char_t *fnet_strstr( const fnet_char_t *str, const fnet_char_t *substr )
     const fnet_char_t  *p1 = substr;
     fnet_uint8_t        firstc, c1, c2;
 
-    if((substr == 0) || (!((firstc = *p1++)!= 0u)) )
+    if((substr == 0) || (!((firstc = *p1++) != 0u)) )
     {
-        return (fnet_char_t*)(str);
+        return (fnet_char_t *)(str);
     }
 
     c1 = *s1++;
@@ -527,72 +527,72 @@ fnet_int32_t fnet_strncmp( const fnet_char_t *str1, const fnet_char_t *str2, fne
 /************************************************************************
 * NAME: fnet_strtoul
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *
 *************************************************************************/
 fnet_uint32_t fnet_strtoul (const fnet_char_t *str, fnet_char_t **ptr, fnet_size_t base)
 {
-	fnet_uint32_t   rvalue;
+    fnet_uint32_t   rvalue;
     fnet_bool_t     err;
     fnet_bool_t     neg;
-	fnet_char_t     c;
-	fnet_char_t     *endp;
-	fnet_char_t     *startp;
+    fnet_char_t     c;
+    fnet_char_t     *endp;
+    fnet_char_t     *startp;
 
-	rvalue = 0u;  
+    rvalue = 0u;
     err = FNET_FALSE;
     neg = FNET_FALSE;
 
-	/* Check for invalid arguments */
-	if ((str == 0) || (base == 1u) || (base > 36u))
-	{
-		if (ptr != 0)
-		{
-			*ptr = (fnet_char_t *)str;
-		}
-		return 0u;
-	}
-
-	/* Skip leading white spaces */
-    for (startp = (fnet_char_t*)str; ((*startp == ' ') || (*startp == '\t')) ; ++startp)
-    {}
-
-	/* Check for notations */
-	switch (startp[0])
-	{
-		case '0':
-			if ((startp[1] == 'x') || (startp[1] == 'X'))
-			{
-				if ((base == 0u) || (base == 16u))
-				{
-					base = 16u;
-					startp = &startp[2];
-				}
-			}
-			break;
-		case '-':
-			neg = FNET_TRUE;
-			startp = &startp[1];
-			break;
-		default:
-			break;
-	}
-
-	if (base == 0u)
+    /* Check for invalid arguments */
+    if ((str == 0) || (base == 1u) || (base > 36u))
     {
-		base = 10u;
+        if (ptr != 0)
+        {
+            *ptr = (fnet_char_t *)str;
+        }
+        return 0u;
     }
 
-	/* Check for invalid chars in str */
-	for ( endp = startp; (err == FNET_FALSE) && ((c = (*endp)) != '\0') && (!((*endp == ' ') || (*endp == '\t'))); ++endp)
-	{
-		/* Check for 0..9,Aa-Zz */
-		if (!(((c >= '0') && (c <= '9')) ||
-		    ((c >= 'A') && (c <= 'Z')) ||
-		    ((c >= 'a') && (c <= 'z'))))
-		{
-			err = FNET_TRUE;
-		}
+    /* Skip leading white spaces */
+    for (startp = (fnet_char_t *)str; ((*startp == ' ') || (*startp == '\t')) ; ++startp)
+    {}
+
+    /* Check for notations */
+    switch (startp[0])
+    {
+        case '0':
+            if ((startp[1] == 'x') || (startp[1] == 'X'))
+            {
+                if ((base == 0u) || (base == 16u))
+                {
+                    base = 16u;
+                    startp = &startp[2];
+                }
+            }
+            break;
+        case '-':
+            neg = FNET_TRUE;
+            startp = &startp[1];
+            break;
+        default:
+            break;
+    }
+
+    if (base == 0u)
+    {
+        base = 10u;
+    }
+
+    /* Check for invalid chars in str */
+    for ( endp = startp; (err == FNET_FALSE) && ((c = (*endp)) != '\0') && (!((*endp == ' ') || (*endp == '\t'))); ++endp)
+    {
+        /* Check for 0..9,Aa-Zz */
+        if (!(((c >= '0') && (c <= '9')) ||
+              ((c >= 'A') && (c <= 'Z')) ||
+              ((c >= 'a') && (c <= 'z'))))
+        {
+            err = FNET_TRUE;
+        }
         else
         {
             /* Convert fnet_char_t to num in 0..36 */
@@ -629,34 +629,34 @@ fnet_uint32_t fnet_strtoul (const fnet_char_t *str, fnet_char_t **ptr, fnet_size
                 }
             }
         }
-	}
-
-	/* Upon exit, endp points to the character at which valid info */
-	/* STOPS.  No chars including and beyond endp are used.        */
-
-	if (ptr != 0)
-    {
-		*ptr = endp;
     }
 
-	if (err)
-	{
-		if (ptr != 0)
+    /* Upon exit, endp points to the character at which valid info */
+    /* STOPS.  No chars including and beyond endp are used.        */
+
+    if (ptr != 0)
+    {
+        *ptr = endp;
+    }
+
+    if (err)
+    {
+        if (ptr != 0)
         {
-			*ptr = (fnet_char_t*)str;
+            *ptr = (fnet_char_t *)str;
         }
-		return 0u;
-	}
-	else
-	{
-		return rvalue;
-	}
+        return 0u;
+    }
+    else
+    {
+        return rvalue;
+    }
 }
 
 /************************************************************************
 * NAME: fnet_tolower
 *
-* DESCRIPTION: This function converts an uppercase letter to the corresponding 
+* DESCRIPTION: This function converts an uppercase letter to the corresponding
 * lowercase letter.
 *
 *************************************************************************/
@@ -673,9 +673,9 @@ fnet_char_t fnet_tolower( fnet_char_t to_lower )
 /************************************************************************
 * NAME: fnet_strcasecmp
 *
-* DESCRIPTION: The fnet_strcasecmp() function compares the two strings s1 
-* and s2, ignoring the case of the characters. It returns an 
-* integer less than, equal to, or greater than zero if s1 is found, 
+* DESCRIPTION: The fnet_strcasecmp() function compares the two strings s1
+* and s2, ignoring the case of the characters. It returns an
+* integer less than, equal to, or greater than zero if s1 is found,
 * respectively, to be less than, to match, or be greater than s2.
 *
 *************************************************************************/
@@ -708,22 +708,22 @@ fnet_int32_t fnet_strcasecmp( const fnet_char_t *str1, const fnet_char_t *str2 )
 /************************************************************************
 * NAME: fnet_strcmp_splitter
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *
 *************************************************************************/
 fnet_int32_t fnet_strcmp_splitter( const fnet_char_t *in_str, const fnet_char_t *name, fnet_char_t splitter)
 {
     fnet_int32_t result;
-    
+
     /* No checks for 0 */
     const fnet_char_t *s1p = in_str;
     const fnet_char_t *s2p = name;
 
-    while (*s1p == ' ') 
+    while (*s1p == ' ')
     {
         s1p++;	    /* Strip leading spaces */
     }
-	while (*s1p == splitter)
+    while (*s1p == splitter)
     {
         s1p++;	/* Strip heading slash */
     }
@@ -732,13 +732,13 @@ fnet_int32_t fnet_strcmp_splitter( const fnet_char_t *in_str, const fnet_char_t 
     {
         ++s1p;
         ++s2p;
-        
+
         if (*s1p == splitter)
         {
             break; /* next element */
         }
     }
-    
+
     if(*s1p == splitter)
     {
         result = 0;
@@ -754,67 +754,68 @@ fnet_int32_t fnet_strcmp_splitter( const fnet_char_t *in_str, const fnet_char_t 
 /************************************************************************
 * NAME: fnet_strtok_r
 *
-* DESCRIPTION: Breaks a string into a sequence of tokens. 
+* DESCRIPTION: Breaks a string into a sequence of tokens.
 *
 *************************************************************************/
-fnet_char_t * fnet_strtok_r(fnet_char_t *str, const fnet_char_t *delimiter, fnet_char_t **last)
+fnet_char_t *fnet_strtok_r(fnet_char_t *str, const fnet_char_t *delimiter, fnet_char_t **last)
 {
-	const fnet_char_t  *spanp;
-	fnet_char_t        c;
+    const fnet_char_t  *spanp;
+    fnet_char_t        c;
     fnet_char_t        sc;
-	fnet_char_t        *tok;
+    fnet_char_t        *tok;
 
-	if ((str == FNET_NULL) && ((str = *last) == FNET_NULL))
+    if ((str == FNET_NULL) && ((str = *last) == FNET_NULL))
     {
-		return (FNET_NULL);
+        return (FNET_NULL);
     }
 
-	/*
-	 * Skip leading delimiters.
-	 */
+    /*
+     * Skip leading delimiters.
+     */
 CONT:
-	c = (*str++);
+    c = (*str++);
     spanp = delimiter;
-	while( (sc = (*spanp++)) != 0u)
-	{
-		if (c == sc)
+    while( (sc = (*spanp++)) != 0u)
+    {
+        if (c == sc)
         {
-			goto CONT;
+            goto CONT;
         }
-	}
+    }
 
-	if (c == 0u) /* No non-delimiter characters */
-	{		
-		*last = FNET_NULL;
-		return (FNET_NULL);
-	}
-	tok = str - 1;
+    if (c == 0u) /* No non-delimiter characters */
+    {
+        *last = FNET_NULL;
+        return (FNET_NULL);
+    }
+    tok = str - 1;
 
-	/*
-	 * Scan token.
-	 */
-	for (;;) 
-	{
-		c = (*str++);
-		spanp = delimiter;
-		do 
-		{
-			if ((sc = (*spanp++)) == c)
-			{
-				if (c == 0u)
+    /*
+     * Scan token.
+     */
+    for (;;)
+    {
+        c = (*str++);
+        spanp = delimiter;
+        do
+        {
+            if ((sc = (*spanp++)) == c)
+            {
+                if (c == 0u)
                 {
-					str = FNET_NULL;    
+                    str = FNET_NULL;
                 }
-				else
+                else
                 {
-					str[-1] = 0u;
+                    str[-1] = 0u;
                 }
-				*last = str;
-				return (tok);
-			}
-		} while (sc != 0u);
-	}
-	/* Not reached.*/
+                *last = str;
+                return (tok);
+            }
+        }
+        while (sc != 0u);
+    }
+    /* Not reached.*/
 }
 
 /************************************************************************
@@ -826,7 +827,7 @@ CONT:
 fnet_uint32_t fnet_rand(void)
 {
     fnet_rand_value = fnet_rand_value * 1103515245u + 12345u;
-	return((fnet_uint32_t)(fnet_rand_value/65536u) % (FNET_RAND_MAX + 1u));
+    return((fnet_uint32_t)(fnet_rand_value >> 16u) % (FNET_RAND_MAX + 1u));
 }
 
 /************************************************************************
@@ -837,5 +838,5 @@ fnet_uint32_t fnet_rand(void)
 *************************************************************************/
 void fnet_srand(fnet_uint32_t seed)
 {
-	fnet_rand_value += seed;
+    fnet_rand_value += seed;
 }

@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_udp.h

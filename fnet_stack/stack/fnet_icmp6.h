@@ -1,7 +1,7 @@
 #ifndef _FNET_ICMP6_H_
 #define _FNET_ICMP6_H_
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -19,7 +19,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_icmp6.h
@@ -73,7 +73,7 @@
 #define FNET_ICMP6_CODE_DU_REJECT_ROUTE             (6u)     /* Reject route to destination.*/
 
 /* Packet Too Big codes */
-#define FNET_ICMP6_CODE_PTB                         (0u)  
+#define FNET_ICMP6_CODE_PTB                         (0u)
 
 /* Time Exceeded codes */
 #define FNET_ICMP6_CODE_TE_HOP_LIMIT                (0u)     /* Hop limit exceeded in transit.*/
@@ -85,7 +85,7 @@
 #define FNET_ICMP6_CODE_PP_OPTION                   (2u)     /* Unrecognized IPv6 option encountered.*/
 
 /* The Hop Limit of ICMPv6 messages.*/
-#define FNET_ICMP6_HOP_LIMIT                        (FNET_IP6_HOP_LIMIT_DEFAULT)   
+#define FNET_ICMP6_HOP_LIMIT                        (FNET_IP6_HOP_LIMIT_DEFAULT)
 
 /*
 * Error messages are identified as such by a
@@ -107,7 +107,7 @@
  * +                         Message Body                          +
  * |                                                               |
  *
- ***********************************************************************/ 
+ ***********************************************************************/
 FNET_COMP_PACKED_BEGIN
 typedef struct
 {
@@ -127,14 +127,14 @@ FNET_COMP_PACKED_END
  * |             Identifier        |       Sequence Number         |
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * | Data ...
- * +-+-+-+-+- 
+ * +-+-+-+-+-
  ***********************************************************************/
-FNET_COMP_PACKED_BEGIN 
+FNET_COMP_PACKED_BEGIN
 typedef struct fnet_icmp6_echo_header
 {
-   fnet_icmp6_header_t  icmp6_header    FNET_COMP_PACKED; 
-   fnet_uint16_t        id              FNET_COMP_PACKED;
-   fnet_uint16_t        seq_number      FNET_COMP_PACKED;
+    fnet_icmp6_header_t  icmp6_header    FNET_COMP_PACKED;
+    fnet_uint16_t        id              FNET_COMP_PACKED;
+    fnet_uint16_t        seq_number      FNET_COMP_PACKED;
 } fnet_icmp6_echo_header_t;
 FNET_COMP_PACKED_END
 
@@ -143,8 +143,8 @@ FNET_COMP_PACKED_END
  ***********************************************************************/
 typedef struct fnet_icmp6_err_header
 {
-   fnet_icmp6_header_t  icmp6_header    FNET_COMP_PACKED; 
-   fnet_uint32_t        data            FNET_COMP_PACKED;
+    fnet_icmp6_header_t  icmp6_header    FNET_COMP_PACKED;
+    fnet_uint32_t        data            FNET_COMP_PACKED;
 } fnet_icmp6_err_header_t;
 
 extern struct fnet_prot_if fnet_icmp6_prot_if;

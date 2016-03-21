@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
@@ -18,7 +18,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_timer.c
@@ -48,7 +48,7 @@ static struct fnet_net_timer *fnet_tl_head = 0;
 
 volatile static fnet_time_t fnet_current_time;
 
-#if FNET_CFG_DEBUG_TIMER && FNET_CFG_DEBUG   
+#if FNET_CFG_DEBUG_TIMER && FNET_CFG_DEBUG
     #define FNET_DEBUG_TIMER   FNET_DEBUG
 #else
     #define FNET_DEBUG_TIMER(...)
@@ -61,12 +61,12 @@ volatile static fnet_time_t fnet_current_time;
 *************************************************************************/
 fnet_return_t fnet_timer_init( fnet_time_t period_ms )
 {
-   fnet_return_t result;
-   
-   fnet_current_time = 0u;           /* Reset RTC counter. */
-   result = FNET_HW_TIMER_INIT(period_ms);  /* Start HW timer. */
-   
-   return result;
+    fnet_return_t result;
+
+    fnet_current_time = 0u;           /* Reset RTC counter. */
+    result = FNET_HW_TIMER_INIT(period_ms);  /* Start HW timer. */
+
+    return result;
 }
 
 /************************************************************************
@@ -80,7 +80,7 @@ void fnet_timer_release( void )
     struct fnet_net_timer *tmp_tl;
 
     FNET_HW_TIMER_RELEASE();
-    
+
     while(fnet_tl_head != 0)
     {
         tmp_tl = fnet_tl_head->next;
@@ -94,7 +94,7 @@ void fnet_timer_release( void )
 /************************************************************************
 * NAME: fnet_timer_ticks
 *
-* DESCRIPTION: This function returns current value of the timer in ticks. 
+* DESCRIPTION: This function returns current value of the timer in ticks.
 *************************************************************************/
 fnet_time_t fnet_timer_ticks( void )
 {
@@ -104,51 +104,51 @@ fnet_time_t fnet_timer_ticks( void )
 /************************************************************************
 * NAME: fnet_timer_seconds
 *
-* DESCRIPTION: This function returns current value of the timer in seconds. 
+* DESCRIPTION: This function returns current value of the timer in seconds.
 *************************************************************************/
 fnet_time_t fnet_timer_seconds( void )
 {
-    return (fnet_current_time/FNET_TIMER_TICK_IN_SEC);
+    return (fnet_current_time / FNET_TIMER_TICK_IN_SEC);
 }
 
 /************************************************************************
 * NAME: fnet_timer_ms
 *
-* DESCRIPTION: This function returns current value of the timer 
-* in milliseconds. 
+* DESCRIPTION: This function returns current value of the timer
+* in milliseconds.
 *************************************************************************/
 fnet_time_t fnet_timer_ms( void )
 {
-    return (fnet_current_time*FNET_TIMER_PERIOD_MS);
+    return (fnet_current_time * FNET_TIMER_PERIOD_MS);
 }
 
 /************************************************************************
 * NAME: fnet_timer_ticks_inc
 *
-* DESCRIPTION: This function increments current value of the RTC counter. 
+* DESCRIPTION: This function increments current value of the RTC counter.
 *************************************************************************/
 void fnet_timer_ticks_inc( void )
 {
-    fnet_current_time++; 
-    
+    fnet_current_time++;
+
 #if FNET_CFG_DEBUG_TIMER && FNET_CFG_DEBUG
-   if((fnet_current_time%10) == 0)    
-	    FNET_DEBUG_TIMER("!");
-#endif	    
+    if((fnet_current_time % 10) == 0)
+        FNET_DEBUG_TIMER("!");
+#endif
 }
 
 /************************************************************************
 * NAME: fnet_timer_handler_bottom
 *
-* DESCRIPTION: Handles timer interrupts 
-*              
+* DESCRIPTION: Handles timer interrupts
+*
 *************************************************************************/
 void fnet_timer_handler_bottom(fnet_uint32_t cookie)
 {
     struct fnet_net_timer *timer = fnet_tl_head;
-    
+
     FNET_COMP_UNUSED_ARG(cookie);
-    
+
     while(timer)
     {
         if(fnet_timer_get_interval(timer->timer_cnt, fnet_current_time) >= timer->timer_rv)
@@ -168,8 +168,8 @@ void fnet_timer_handler_bottom(fnet_uint32_t cookie)
 /************************************************************************
 * NAME: fnet_timer_new
 *
-* DESCRIPTION: Creates new software timer with the period 
-*              
+* DESCRIPTION: Creates new software timer with the period
+*
 *************************************************************************/
 fnet_timer_desc_t fnet_timer_new( fnet_time_t period_ticks, void (*handler)(fnet_uint32_t cookie), fnet_uint32_t cookie )
 {
@@ -197,8 +197,8 @@ fnet_timer_desc_t fnet_timer_new( fnet_time_t period_ticks, void (*handler)(fnet
 /************************************************************************
 * NAME: fnet_timer_free
 *
-* DESCRIPTION: Frees software timer, which is pointed by tl_ptr 
-*              
+* DESCRIPTION: Frees software timer, which is pointed by tl_ptr
+*
 *************************************************************************/
 void fnet_timer_free( fnet_timer_desc_t timer )
 {
@@ -231,7 +231,7 @@ void fnet_timer_free( fnet_timer_desc_t timer )
 * NAME: fnet_timer_reset_all
 *
 * DESCRIPTION: Resets all timers' counters
-*              
+*
 *************************************************************************/
 void fnet_timer_reset_all( void )
 {
@@ -250,7 +250,7 @@ void fnet_timer_reset_all( void )
 * NAME: fnet_timer_get_interval
 *
 * DESCRIPTION: Calaculates an interval between two moments of time
-*              
+*
 *************************************************************************/
 fnet_time_t fnet_timer_get_interval( fnet_time_t start, fnet_time_t end )
 {
@@ -268,7 +268,7 @@ fnet_time_t fnet_timer_get_interval( fnet_time_t start, fnet_time_t end )
 * NAME: fnet_timer_delay
 *
 * DESCRIPTION: Do delay for a given number of timer ticks.
-*              
+*
 *************************************************************************/
 void fnet_timer_delay( fnet_time_t delay_ticks )
 {
@@ -282,7 +282,7 @@ void fnet_timer_delay( fnet_time_t delay_ticks )
 * NAME: fnet_timer_ms2ticks
 *
 * DESCRIPTION: Convert milliseconds to timer ticks.
-*              
+*
 *************************************************************************/
 fnet_time_t fnet_timer_ms2ticks( fnet_time_t time_ms )
 {

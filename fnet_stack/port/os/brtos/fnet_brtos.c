@@ -38,12 +38,12 @@
 #include "BRTOS.h"
 
 /************************************************************************
-*     Global Data Structures 
+*     Global Data Structures
 *************************************************************************/
 #define	FNET_BRTOS_MUTEX_PRIORITY	    (11)    /* Must be set to a priority 
                                                  * higher than the highest priority 
                                                  * task that will use fnet. */
-#define FNET_BRTOS_SEMAPHORE_TIMEOUT    (3)                                             
+#define FNET_BRTOS_SEMAPHORE_TIMEOUT    (3)
 
 /************************************************************************
 *     Global Data Structures
@@ -54,102 +54,102 @@ BRTOS_Mutex     *FnetMutex;
 /************************************************************************
 * NAME: fnet_os_isr;
 *
-* DESCRIPTION: This handler is executed on every FNET interrupt 
+* DESCRIPTION: This handler is executed on every FNET interrupt
 *              (from ethernet and timer module).
 *              Extructs vector number and calls fnet_isr_handler().
 *************************************************************************/
 void fnet_os_isr(void)
 {
-	  /*******************************
-	   * OS-specific Interrupt Enter.
-	   *******************************/
-	  OS_SAVE_ISR();
-	  OS_INT_ENTER();
+    /*******************************
+     * OS-specific Interrupt Enter.
+     *******************************/
+    OS_SAVE_ISR();
+    OS_INT_ENTER();
 
-	  /* Call original CPU handler*/
-	  fnet_cpu_isr();
-	  
-	  /*******************************
-	   * Interrupt Exit.
-	   *******************************/
-	  OS_INT_EXIT();  
-	  OS_RESTORE_ISR();
+    /* Call original CPU handler*/
+    fnet_cpu_isr();
+
+    /*******************************
+     * Interrupt Exit.
+     *******************************/
+    OS_INT_EXIT();
+    OS_RESTORE_ISR();
 }
 
 /************************************************************************
 * NAME: fnet_os_event_init
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
-int fnet_os_event_init(void)
+fnet_return_t fnet_os_event_init(void)
 {
-	 if (OSSemCreate(0,&FnetSemaphore) == ALLOC_EVENT_OK)
-		 return FNET_OK;
-	 else
-		 return FNET_ERR;
+    if (OSSemCreate(0, &FnetSemaphore) == ALLOC_EVENT_OK)
+        return FNET_OK;
+    else
+        return FNET_ERR;
 }
 
 /************************************************************************
 * NAME: fnet_os_event_wait
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 void fnet_os_event_wait(void)
 {
-	(void)OSSemPend(FnetSemaphore,FNET_CFG_OS_SEMAPHORE_TIMEOUT);
+    (void)OSSemPend(FnetSemaphore, FNET_CFG_OS_SEMAPHORE_TIMEOUT);
 }
 
 /************************************************************************
 * NAME: fnet_os_event_raise
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 void fnet_os_event_raise(void)
 {
-	(void)OSSemPost(FnetSemaphore);
+    (void)OSSemPost(FnetSemaphore);
 }
 
 /************************************************************************
 * NAME: fnet_os_mutex_init
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
-int fnet_os_mutex_init(void)
+fnet_return_t fnet_os_mutex_init(void)
 {
-	 if (OSMutexCreate(&FnetMutex, FNET_BRTOS_MUTEX_PRIORITY) == ALLOC_EVENT_OK)
-		 return FNET_OK;
-	 else
-		 return FNET_ERR;
+    if (OSMutexCreate(&FnetMutex, FNET_BRTOS_MUTEX_PRIORITY) == ALLOC_EVENT_OK)
+        return FNET_OK;
+    else
+        return FNET_ERR;
 }
 
 /************************************************************************
 * NAME: fnet_os_mutex_lock;
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 void fnet_os_mutex_lock(void)
 {
-	OSMutexAcquire(FnetMutex);
+    OSMutexAcquire(FnetMutex);
 }
 
 /************************************************************************
 * NAME: fnet_os_mutex_unlock;
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 void fnet_os_mutex_unlock(void)
 {
-	OSMutexRelease(FnetMutex);
+    OSMutexRelease(FnetMutex);
 }
 
 /************************************************************************
 * NAME: fnet_os_mutex_release;
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 void fnet_os_mutex_release(void)
 {
-	
+
 }
 
 

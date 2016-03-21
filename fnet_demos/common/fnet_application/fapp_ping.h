@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fapp_ping.h
@@ -40,14 +40,14 @@
 #define FAPP_PING_DEFAULT_SIZE      (63U)
 #define FAPP_PING_DEFAULT_NUMBER    (4U)
 #define FAPP_PING_DEFAULT_TIMEOUT   (1000U) /* ms */
-#define FAPP_PING_DEFAULT_PATTERN   (0x00U) 
-#define FAPP_PING_DEFAULT_HOP_LIMIT (64U) 
+#define FAPP_PING_DEFAULT_PATTERN   (0x00U)
+#define FAPP_PING_DEFAULT_HOP_LIMIT (64U)
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-void fapp_ping_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** argv );
+void fapp_ping_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 
 #if defined(__cplusplus)
 }

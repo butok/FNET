@@ -1,6 +1,6 @@
 /**************************************************************************
-* 
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+*
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2011 by Andrey Butok,Gordon Jahn. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -33,31 +33,35 @@
 #include "fnet.h"
 
 #if FNET_MPC
-#include "fnet_timer_prv.h"
-#include "fnet_isr.h"
+#include "stack\fnet_timer_prv.h"
+#include "stack\fnet_isr.h"
 #include "fnet_mpc.h"
 
-#define FNET_TIMER_VECTOR_NUMBER FNET_CFG_CPU_TIMER_VECTOR_NUMBER   /* Number of timer interrupt vector.*/
-#define FNET_TIMER_INT_LEVEL   (FNET_CFG_CPU_TIMER_VECTOR_PRIORITY) /* Timer interrupt level. */
-#define FNET_TIMER_NUMBER      (FNET_CFG_CPU_TIMER_NUMBER)    /* Timer number (according to UM) */
-#define FNET_TIMER_CLKIN_PER_MS (FNET_CPU_CLOCK_KHZ)
+#define FNET_TIMER_VECTOR_NUMBER (FNET_CFG_CPU_TIMER_VECTOR_NUMBER)     /* Number of timer interrupt vector.*/
+#define FNET_TIMER_INT_LEVEL     (FNET_CFG_CPU_TIMER_VECTOR_PRIORITY)   /* Timer interrupt level. */
+#define FNET_TIMER_NUMBER        (FNET_CFG_CPU_TIMER_NUMBER)            /* Timer number (according to UM) */
+#define FNET_TIMER_CLKIN_PER_MS  (FNET_CPU_CLOCK_KHZ)
 
 
 /************************************************************************
 * NAME: fnet_cpu_timer_handler_top
 *
-* DESCRIPTION: Top interrupt handler. Increment fnet_current_time 
-*              and interrupt flag. 
+* DESCRIPTION: Top interrupt handler. Increment fnet_current_time
+*              and interrupt flag.
 *************************************************************************/
 static void fnet_cpu_timer_handler_top(fnet_uint32_t cookie )
 {
     FNET_COMP_UNUSED_ARG(cookie);
-    
+
     /* Clear timer event condition.*/
-   	FNET_MPC_PITRTI_TFLG(FNET_TIMER_NUMBER) = 0x1;
-    
+#if FNET_CFG_CPU_MPC5566
+    FNET_MPC_EMIOS_CSR(FNET_TIMER_NUMBER)   = 0x1;
+#else
+    FNET_MPC_PITRTI_TFLG(FNET_TIMER_NUMBER) = 0x1;
+#endif
+
     /* Update RTC counter.*/
-    fnet_timer_ticks_inc(); 
+    fnet_timer_ticks_inc();
 }
 
 /************************************************************************
@@ -69,31 +73,34 @@ static void fnet_cpu_timer_handler_top(fnet_uint32_t cookie )
 fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms )
 {
     fnet_return_t result;
-    
+
     /* Install interrupt handler.
      */
     result = fnet_isr_vector_init(FNET_TIMER_VECTOR_NUMBER, fnet_cpu_timer_handler_top,
-                                              fnet_timer_handler_bottom, FNET_TIMER_INT_LEVEL, 0);
-    
+                                  fnet_timer_handler_bottom, FNET_TIMER_INT_LEVEL, 0);
+
     if(result == FNET_OK)
     {
-
+#if FNET_CFG_CPU_MPC5566
+        FNET_MPC_EMIOS_CADR(FNET_TIMER_NUMBER)  = 0;
+        FNET_MPC_EMIOS_CBDR(FNET_TIMER_NUMBER)  = period_ms * FNET_TIMER_CLKIN_PER_MS;
+        FNET_MPC_EMIOS_CCR(FNET_TIMER_NUMBER)   = 0x82020658;
+#else
 #if FNET_CFG_CPU_MPC5744P
         /* FRZ = 1 (stopped in Debug mode), MDIS = 0 */
         FNET_MPC_PITRTI_MCR = 0x01;
 #else
         FNET_MPC_PITRTI_MCR = 0x04;
 #endif
-        
-		FNET_MPC_PITRTI_TCTRL(FNET_TIMER_NUMBER) = 0x0;
-
+        FNET_MPC_PITRTI_TCTRL(FNET_TIMER_NUMBER) = 0x0;
 #if FNET_CFG_CPU_MPC5744P
-      /* assumes SYS_CLK = 200MHz and MC_CGM_SC_DC0 = 4, then PBRIDGE_CLK is /4 */
-      FNET_MPC_PITRTI_LDVAL(FNET_TIMER_NUMBER) = period_ms * (FNET_TIMER_CLKIN_PER_MS/4); 
+        /* assumes SYS_CLK = 200MHz and MC_CGM_SC_DC0 = 4, then PBRIDGE_CLK is /4 */
+        FNET_MPC_PITRTI_LDVAL(FNET_TIMER_NUMBER) = period_ms * (FNET_TIMER_CLKIN_PER_MS / 4);
 #else
-      FNET_MPC_PITRTI_LDVAL(FNET_TIMER_NUMBER) = period_ms * FNET_TIMER_CLKIN_PER_MS;
+        FNET_MPC_PITRTI_LDVAL(FNET_TIMER_NUMBER) = (period_ms * FNET_TIMER_CLKIN_PER_MS) - 1;
 #endif
-		FNET_MPC_PITRTI_TCTRL(FNET_TIMER_NUMBER) = 0x3;
+        FNET_MPC_PITRTI_TCTRL(FNET_TIMER_NUMBER) = 0x3;
+#endif
     }
 
     return result;
@@ -103,16 +110,21 @@ fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms )
 * NAME: fnet_cpu_timer_release
 *
 * DESCRIPTION: Relaeses TCP/IP hardware timer.
-*              
+*
 *************************************************************************/
 void fnet_cpu_timer_release( void )
 {
-	FNET_MPC_PITRTI_TCTRL(FNET_TIMER_NUMBER) = 0x0;
-   	FNET_MPC_PITRTI_TFLG(FNET_TIMER_NUMBER) = 0x1;
-    
+#if FNET_CFG_CPU_MPC5566
+    FNET_MPC_EMIOS_CCR(FNET_TIMER_NUMBER)   = 0;
+    FNET_MPC_EMIOS_CSR(FNET_TIMER_NUMBER)   = 0x1;
+#else
+    FNET_MPC_PITRTI_TCTRL(FNET_TIMER_NUMBER) = 0x0;
+    FNET_MPC_PITRTI_TFLG(FNET_TIMER_NUMBER) = 0x1;
+#endif
+
     /* Free interrupt handler res.
      */
     fnet_isr_vector_release(FNET_TIMER_VECTOR_NUMBER);
 }
 
-#endif /*FNET_MPC*/ 
+#endif /*FNET_MPC*/

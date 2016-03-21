@@ -1,10 +1,10 @@
 /******************************************************************************
 * File:    vectors.h
 *
-* Purpose: Provide custom interrupt service routines for Kinetis. 
+* Purpose: Provide custom interrupt service routines for Kinetis.
 *
-* NOTE: This vector table is a superset table, so interrupt sources might be 
-*       listed that are not available on the specific Kinetis device you are 
+* NOTE: This vector table is a superset table, so interrupt sources might be
+*       listed that are not available on the specific Kinetis device you are
 *       using.
 ******************************************************************************/
 
@@ -19,7 +19,7 @@
 void default_isr(void);
 void abort_isr(void);
 
-void hard_fault_handler_c(unsigned int * hardfault_args);
+void hard_fault_handler_c(unsigned int *hardfault_args);
 
 /* Interrupt Vector Table Function Pointers */
 typedef void pointer(void);
@@ -27,7 +27,7 @@ typedef void pointer(void);
 
 
 extern void __iar_program_start(void);
-                                        // Address     Vector IRQ   Source module   Source description
+// Address     Vector IRQ   Source module   Source description
 #if FNET_CFG_COMP_IAR
     extern unsigned long __BOOT_STACK_ADDRESS[];
     #define VECTOR_000      (pointer*)__BOOT_STACK_ADDRESS	//          ARM core        Initial Supervisor SP
@@ -135,7 +135,7 @@ extern void __startup(void);
     #define VECTOR_087      fnet_cpu_isr       /****  87 (0x15C) Timer 3 capture/reference event ****/
 #else
     #define VECTOR_087      default_isr     // 0x0000_015C 87    71     PIT Channel 3
-#endif   
+#endif
 
 #define VECTOR_088      default_isr     // 0x0000_0160 88    72     PDB
 #define VECTOR_089      default_isr     // 0x0000_0164 89    73     USB OTG
@@ -147,7 +147,7 @@ extern void __startup(void);
     #define VECTOR_093      fnet_cpu_isr         /****  93 (0x174) FEC Receive frame interrupt ****/
 #else
     #define VECTOR_093      default_isr     // 0x0000_0174 93    77		ENET			 Receive interrupt
-#endif   
+#endif
 
 #define VECTOR_094      default_isr     // 0x0000_0178 94    78		ENET			 Error and miscellaneous interrupt
 #define VECTOR_095      default_isr     // 0x0000_017C 95    79     I2S
@@ -311,8 +311,8 @@ extern void __startup(void);
 #define VECTOR_253      default_isr     // 
 #define VECTOR_254      default_isr     // 
 #define VECTOR_255      default_isr     // 
-#define CONFIG_1		(pointer*)0xffffffff 
-#define CONFIG_2		(pointer*)0xffffffff 
+#define CONFIG_1		(pointer*)0xffffffff
+#define CONFIG_2		(pointer*)0xffffffff
 #define CONFIG_3		(pointer*)0xffffffff
 #define CONFIG_4		(pointer*)0xfffffffe
 

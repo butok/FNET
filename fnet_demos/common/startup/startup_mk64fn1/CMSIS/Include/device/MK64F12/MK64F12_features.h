@@ -567,9 +567,9 @@
 #define FSL_FEATURE_FTM_CHANNEL_COUNT (8)
 #define FSL_FEATURE_FTM_CHANNEL_COUNTn(x) \
     ((x) == 0 ? (8) : \
-    ((x) == 1 ? (2) : \
-    ((x) == 2 ? (2) : \
-    ((x) == 3 ? (8) : (-1)))))
+     ((x) == 1 ? (2) : \
+      ((x) == 2 ? (2) : \
+       ((x) == 3 ? (8) : (-1)))))
 /* @brief Has counter reset by the selected input capture event (register bits C0SC[ICRST], C1SC[ICRST], ...). */
 #define FSL_FEATURE_FTM_HAS_COUNTER_RESET_BY_CAPTURE_EVENT (0)
 
@@ -1184,8 +1184,8 @@
 #define FSL_FEATURE_DSPI_FIFO_SIZE (4)
 #define FSL_FEATURE_DSPI_FIFO_SIZEn(x) \
     ((x) == 0 ? (4) : \
-    ((x) == 1 ? (1) : \
-    ((x) == 2 ? (1) : (-1))))
+     ((x) == 1 ? (1) : \
+      ((x) == 2 ? (1) : (-1))))
 /* @brief Maximum transfer data width in bits. */
 #define FSL_FEATURE_DSPI_MAX_DATA_WIDTH (16)
 /* @brief Maximum number of chip select pins. (Reflects the width of register bit field PUSHR[PCS].) */
@@ -1199,8 +1199,8 @@
 /* @brief Has separate DMA RX and TX requests. */
 #define FSL_FEATURE_DSPI_HAS_SEPARATE_DMA_RX_TX_REQn(x) \
     ((x) == 0 ? (1) : \
-    ((x) == 1 ? (0) : \
-    ((x) == 2 ? (0) : (-1))))
+     ((x) == 1 ? (0) : \
+      ((x) == 2 ? (0) : (-1))))
 
 /* UART module features */
 

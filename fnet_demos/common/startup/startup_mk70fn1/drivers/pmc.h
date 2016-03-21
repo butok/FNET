@@ -9,7 +9,7 @@
 #define __PMC_H__
 
 /********************************************************************/
-/* 
+/*
 LVWV if LVD high range selected
 2.62
 2.72
@@ -45,11 +45,11 @@ LVDW if LVD low range selected
 /* LVD initialization code */
 void LVD_Initalize(unsigned char lvd_select,
                    unsigned char lvd_reset_enable,
-                   unsigned char lvd_int_enable, 
+                   unsigned char lvd_int_enable,
                    unsigned char lvw_select,
                    unsigned char lvw_int_enable);
 void LVD_Init(void);
-/* LVD interrupt service routine - If entering into this interrupt from stop you are in pbe mode.*/  
+/* LVD interrupt service routine - If entering into this interrupt from stop you are in pbe mode.*/
 void pmc_lvd_isr(void);
 
 /********************************************************************/

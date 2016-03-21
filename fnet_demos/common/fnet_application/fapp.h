@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fapp.h
@@ -42,7 +42,7 @@ extern "C" {
 /**************************************************************************/ /*!
  * @def FAPP_VERSION
  * @brief Current version number of the FNET Demoi Application.
- *        The resulting value format is xx.xx.xx = major.minor.revision, as a 
+ *        The resulting value format is xx.xx.xx = major.minor.revision, as a
  *        string.
  ******************************************************************************/
 void fapp_main( void ); /* Main entry point of the shell demo. */

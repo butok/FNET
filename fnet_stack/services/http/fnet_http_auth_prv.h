@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_http_auth_prv.h
@@ -39,7 +39,7 @@
 #include "fnet_http_auth.h"
 
 typedef fnet_return_t(*fnet_http_auth_scheme_validate_t)(const struct fnet_http_auth *auth_entry, fnet_char_t *auth_param);
-typedef fnet_size_t(*fnet_http_auth_scheme_generate_t)(struct fnet_http_if * http, fnet_uint8_t *buffer, fnet_size_t buffer_size);
+typedef fnet_size_t(*fnet_http_auth_scheme_generate_t)(struct fnet_http_if *http, fnet_uint8_t *buffer, fnet_size_t buffer_size);
 
 struct fnet_http_auth_scheme
 {
@@ -53,9 +53,9 @@ struct fnet_http_auth_scheme
 extern "C" {
 #endif
 
-void fnet_http_auth_validate_uri(struct fnet_http_if * http);
-fnet_return_t fnet_http_auth_validate_credentials(struct fnet_http_if * http, fnet_char_t *credentials);
-fnet_size_t fnet_http_auth_generate_challenge(struct fnet_http_if * http, fnet_uint8_t *buffer, fnet_size_t buffer_size);
+void fnet_http_auth_validate_uri(struct fnet_http_if *http);
+fnet_return_t fnet_http_auth_validate_credentials(struct fnet_http_if *http, fnet_char_t *credentials);
+fnet_size_t fnet_http_auth_generate_challenge(struct fnet_http_if *http, fnet_uint8_t *buffer, fnet_size_t buffer_size);
 
 #if defined(__cplusplus)
 }

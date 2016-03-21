@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2005-2011 by Andrey Butok and Gordon Jahn.
 *                        Freescale Semiconductor, Inc.
 *
@@ -22,11 +22,7 @@
 *
 * @file fnet_mpc5668g_config.h
 *
-* @date Mar-25-2013
-*
-* @version 0.1.3.0
-*
-* @brief MPC560xE specific configuration file.
+* @brief MPC5668g specific configuration file.
 *
 ***************************************************************************/
 
@@ -65,17 +61,17 @@
 /* The platform does not have second Ethernet Module.*/
 #define FNET_CFG_CPU_ETH1        		(0)
 
-/* Defines the maximum number of incoming frames that may 
+/* Defines the maximum number of incoming frames that may
  *           be buffered by the Ethernet module.*/
 #ifndef FNET_CFG_CPU_ETH_RX_BUFS_MAX
-#define FNET_CFG_CPU_ETH_RX_BUFS_MAX    (4)
+    #define FNET_CFG_CPU_ETH_RX_BUFS_MAX    (4)
 #endif
 
 /* On-chop Flash size.*/
 #define FNET_CFG_CPU_FLASH_SIZE         (1024 * 1024 * 2)   /* 2 MB*/
 
 /* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE          (1024 * 512)        /* 512 KB */  
+#define FNET_CFG_CPU_SRAM_SIZE          (1024 * 512)        /* 512 KB */
 
 
 

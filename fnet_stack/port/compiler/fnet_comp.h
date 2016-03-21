@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_comp.h
@@ -36,23 +36,23 @@
 #include "fnet_comp_config.h"
 
 #if FNET_CFG_COMP_CW
-	/* To use _Pragma(), enable C99 Extensions. */
+    /* To use _Pragma(), enable C99 Extensions. */
     #pragma c99 on
 
-	/* For CW10.1 ARM compiler. After CW10.2 Release is obsolete. */
-	#if FNET_MK
-	    #pragma load_store_elimination off   /*  Disable Load Store Optimization, workaround of CW10.x bug. */
-		#define FNET_COMP_PACKED __attribute__ ((aligned (1)))
-	#endif
+    /* For CW10.1 ARM compiler. After CW10.2 Release is obsolete. */
+    #if FNET_MK
+        #pragma load_store_elimination off   /*  Disable Load Store Optimization, workaround of CW10.x bug. */
+        #define FNET_COMP_PACKED __attribute__ ((aligned (1)))
+    #endif
 
-	#if 1 /* Newest CWs pragma */
-		#define FNET_COMP_PACKED_BEGIN  _Pragma("pack(1)")
-		#define FNET_COMP_PACKED_END    _Pragma("pack()")
-	#else /* Old CWs pragma */
-		#define FNET_COMP_PACKED_BEGIN  _Pragma("options align = packed")
-		#define FNET_COMP_PACKED_END    _Pragma("options align = reset")
-	#endif
-	
+    #if 1 /* Newest CWs pragma */
+        #define FNET_COMP_PACKED_BEGIN  _Pragma("pack(1)")
+        #define FNET_COMP_PACKED_END    _Pragma("pack()")
+    #else /* Old CWs pragma */
+        #define FNET_COMP_PACKED_BEGIN  _Pragma("options align = packed")
+        #define FNET_COMP_PACKED_END    _Pragma("options align = reset")
+    #endif
+
 #endif
 
 #if FNET_CFG_COMP_IAR
@@ -68,18 +68,18 @@
 
     /* To use anonimous unions.*/
     #pragma anon_unions
-		
+
     /* To use _Pragma(), enable C99 Extensions. */
     #define FNET_COMP_PACKED_BEGIN  _Pragma("pack(1)")
     #define FNET_COMP_PACKED_END    _Pragma("pack(8)")
-    
+
     #define FNET_COMP_PACKED_VAR    __packed
 #endif
 
 #if FNET_CFG_COMP_GNUC
-   #define FNET_COMP_PACKED_BEGIN  _Pragma("pack(1)")
-   #define FNET_COMP_PACKED_END    _Pragma("pack(8)")
-   //#define FNET_COMP_PACKED __attribute__((aligned(1),packed))
+    #define FNET_COMP_PACKED_BEGIN  _Pragma("pack(1)")
+    #define FNET_COMP_PACKED_END    _Pragma("pack(8)")
+    //#define FNET_COMP_PACKED __attribute__((aligned(1),packed))
 #endif
 
 #if FNET_CFG_COMP_GHS
@@ -89,10 +89,16 @@
     #define FNET_COMP_PACKED_VAR    __packed
 #endif
 
+#if FNET_CFG_COMP_DCC
+    #pragma option -Xalign-min=1
+    #define FNET_COMP_PACKED_BEGIN  #pragma pack(2,2)
+    #define FNET_COMP_PACKED_END    #pragma pack(4,2)
+#endif
+
 /* Changes the current alignment mode for one member in a structure
  *  so that member will be packed on a 1-byte boundary */
 #ifndef FNET_COMP_PACKED
-	#define FNET_COMP_PACKED
+    #define FNET_COMP_PACKED
 #endif
 
 /* Modifies the current alignment mode in the structure,
@@ -116,7 +122,7 @@ which causes that member to be packed on a 1-byte boundary
 /* Mark unused function argument. To avoid compiler warnings.*/
 #ifndef FNET_COMP_UNUSED_ARG
     #define FNET_COMP_UNUSED_ARG(x) (void)(x)
-#endif 
+#endif
 
 
 #endif /* _FNET_COMP_H_ */

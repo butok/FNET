@@ -25,7 +25,7 @@
 * @brief Default FreeRTOS-specific functions. @n
 *        Experimental. Not supported.
 *
-***************************************************************************/ 
+***************************************************************************/
 
 #include	"fnet.h"
 
@@ -39,7 +39,7 @@
 xSemaphoreHandle FNetSemaphore = NULL;
 portBASE_TYPE l = pdFALSE;
 
-int fnet_os_event_init(void)
+fnet_return_t fnet_os_event_init(void)
 {
     if (FNetSemaphore == NULL)
     {
@@ -64,12 +64,12 @@ void fnet_os_event_wait(void)
 void fnet_os_event_raise(void)
 {
     portBASE_TYPE    ret;
-    
+
     ret = xSemaphoreGiveFromISR( FNetSemaphore, &l);
-    
-    
+
+
     portEND_SWITCHING_ISR( l );
-    
+
     if ( ret != pdTRUE )
     {
         ret = 1;
@@ -88,45 +88,45 @@ xSemaphoreHandle FNetMutex;
 /************************************************************************
 * NAME: fnet_os_mutex_init
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
-int fnet_os_mutex_init(void)
+fnet_return_t fnet_os_mutex_init(void)
 {
-	FNetMutex = xSemaphoreCreateRecursiveMutex();
-	if ( FNetMutex == NULL )
-		return FNET_ERR;
-	else
-		return FNET_OK;
+    FNetMutex = xSemaphoreCreateRecursiveMutex();
+    if ( FNetMutex == NULL )
+        return FNET_ERR;
+    else
+        return FNET_OK;
 }
 
 /************************************************************************
 * NAME: fnet_os_mutex_lock;
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 void fnet_os_mutex_lock(void)
 {
-	xSemaphoreTakeRecursive( FNetMutex, portMAX_DELAY );
+    xSemaphoreTakeRecursive( FNetMutex, portMAX_DELAY );
 }
 
 /************************************************************************
 * NAME: fnet_os_mutex_unlock;
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 void fnet_os_mutex_unlock(void)
 {
-	xSemaphoreGiveRecursive( FNetMutex );
+    xSemaphoreGiveRecursive( FNetMutex );
 }
 
 /************************************************************************
 * NAME: fnet_os_mutex_release;
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 void fnet_os_mutex_release(void)
 {
-	vSemaphoreDelete( FNetMutex );
+    vSemaphoreDelete( FNetMutex );
 }
 #endif /* FNET_CFG_OS_MUTEX */
 

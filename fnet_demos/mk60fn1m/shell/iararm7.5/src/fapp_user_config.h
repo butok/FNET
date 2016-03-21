@@ -11,8 +11,8 @@
 
 #define _FAPP_USER_CONFIG_H_
 
-#define FAPP_CFG_NAME                   "FNET Shell Application" 
-#define FAPP_CFG_SHELL_PROMPT           "SHELL> " 
+#define FAPP_CFG_NAME                   "FNET Shell Application"
+#define FAPP_CFG_SHELL_PROMPT           "SHELL> "
 
 /*  "dhcp" command.*/
 #define FAPP_CFG_DHCP_CMD               (1)
@@ -47,16 +47,16 @@
 #define FAPP_CFG_DNS_CMD                (1)
 
 /*  "ping" command.*/
-#define FAPP_CFG_PING_CMD               (1) 
+#define FAPP_CFG_PING_CMD               (1)
 
 /*  "llmnr" command.*/
 #define FAPP_CFG_LLMNR_CMD              (1)
 
-/* Reading of the configuration parameters from the Flash 
+/* Reading of the configuration parameters from the Flash
  * memory during the application bootup.*/
 #define FAPP_CFG_PARAMS_READ_FLASH      (1)
 
-/* Rewriting of the configuration parameters in the Flash 
+/* Rewriting of the configuration parameters in the Flash
  * memory duiring flashing of the application. */
 #define FAPP_CFG_PARAMS_REWRITE_FLASH   (1)
 

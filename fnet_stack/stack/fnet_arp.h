@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_arp.h
@@ -37,7 +37,7 @@
 
 
 /*! @addtogroup fnet_arp
-* Address Resolution Protocol (ARP) 
+* Address Resolution Protocol (ARP)
 */
 /*! @{ */
 
@@ -45,11 +45,13 @@
  * @brief ARP cache entry information structure.
  * @see fnet_arp_get_entry()
  ******************************************************************************/
+FNET_COMP_PACKED_BEGIN
 typedef struct fnet_arp_entry_info
 {
     fnet_mac_addr_t mac_addr;      /**< @brief ARP cache entry Physical (MAC) address.*/
     fnet_ip4_addr_t ip_addr;       /**< @brief ARP cache entry IPv4 address.*/
 } fnet_arp_entry_info_t;
+FNET_COMP_PACKED_END
 
 
 /************************************************************************
@@ -75,7 +77,7 @@ extern "C" {
  *
  ******************************************************************************
  *
- * This function is used to retrieve ARP cache entries assigned 
+ * This function is used to retrieve ARP cache entries assigned
  * the given interface.
  *
  ******************************************************************************/
@@ -99,8 +101,8 @@ fnet_bool_t fnet_arp_get_entry ( fnet_netif_desc_t netif_desc, fnet_index_t n, f
  ******************************************************************************
  *
  * This function searches for an entry corresponding to the provided IPv4 address.@n
- * If @c mac_addr parameter is present, it will contain a 
- * valid MAC address corresponding to @c ip_addr. 
+ * If @c mac_addr parameter is present, it will contain a
+ * valid MAC address corresponding to @c ip_addr.
  *
  ******************************************************************************/
 fnet_bool_t fnet_arp_get_mac( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ip_addr, fnet_mac_addr_t mac_addr);
@@ -117,7 +119,7 @@ fnet_bool_t fnet_arp_get_mac( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ip_a
  *
  * This function sends a broadcast ARP message, requesting an answer for @c ipaddr.@n
  * It can be used for ARP probing of IPv4 address before beginning to use. @n
- * Also, it can be used for a gratuitous ARP message when sender's IP address 
+ * Also, it can be used for a gratuitous ARP message when sender's IP address
  * or MAC address has changed.
  *
  ******************************************************************************/

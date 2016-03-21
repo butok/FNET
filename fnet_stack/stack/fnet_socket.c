@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
@@ -66,7 +66,7 @@ void fnet_socket_init( void )
 /************************************************************************
 * NAME: fnet_socket_set_error
 *
-* DESCRIPTION: This function sets socket error. 
+* DESCRIPTION: This function sets socket error.
 *************************************************************************/
 void fnet_socket_set_error( fnet_socket_if_t *sock, fnet_error_t error )
 {
@@ -77,7 +77,7 @@ void fnet_socket_set_error( fnet_socket_if_t *sock, fnet_error_t error )
     }
 
     sock->options.error = error;
-    
+
     fnet_error_set(error);
 }
 
@@ -86,7 +86,7 @@ void fnet_socket_set_error( fnet_socket_if_t *sock, fnet_error_t error )
 *
 * DESCRIPTION: This function adds socket into the queue.
 *************************************************************************/
-void fnet_socket_list_add( fnet_socket_if_t ** head, fnet_socket_if_t *s )
+void fnet_socket_list_add( fnet_socket_if_t **head, fnet_socket_if_t *s )
 {
     fnet_isr_lock();
     s->next = *head;
@@ -104,15 +104,15 @@ void fnet_socket_list_add( fnet_socket_if_t ** head, fnet_socket_if_t *s )
 /************************************************************************
 * NAME: fnet_socket_list_del
 *
-* DESCRIPTION: This function removes socket from the queue 
+* DESCRIPTION: This function removes socket from the queue
 *************************************************************************/
-void fnet_socket_list_del( fnet_socket_if_t ** head, fnet_socket_if_t *s )
+void fnet_socket_list_del( fnet_socket_if_t **head, fnet_socket_if_t *s )
 {
     fnet_isr_lock();
 
     if(s->prev == 0)
     {
-        *head=s->next;
+        *head = s->next;
     }
     else
     {
@@ -178,14 +178,14 @@ static void fnet_socket_desc_free( fnet_socket_t desc )
 /************************************************************************
 * NAME: fnet_socket_desc_find
 *
-* DESCRIPTION: This function looking for socket structure 
+* DESCRIPTION: This function looking for socket structure
 *              associated with the socket descriptor.
 *************************************************************************/
 static fnet_socket_if_t *fnet_socket_desc_find( fnet_socket_t desc )
 {
     fnet_socket_if_t *s = 0;
 
-    if(_fnet_enabled && (desc >= 0) && (desc!=FNET_ERR))
+    if(_fnet_enabled && (desc >= 0) && (desc != FNET_ERR))
     {
         if((desc < (fnet_socket_t)FNET_CFG_SOCKET_MAX))
         {
@@ -199,9 +199,9 @@ static fnet_socket_if_t *fnet_socket_desc_find( fnet_socket_t desc )
 /************************************************************************
 * NAME: fnet_socket_release
 *
-* DESCRIPTION: This function release all resources allocated for the socket. 
+* DESCRIPTION: This function release all resources allocated for the socket.
 *************************************************************************/
-void fnet_socket_release( fnet_socket_if_t ** head, fnet_socket_if_t *sock )
+void fnet_socket_release( fnet_socket_if_t **head, fnet_socket_if_t *sock )
 {
     fnet_isr_lock();
     fnet_socket_list_del(head, sock);
@@ -214,20 +214,20 @@ void fnet_socket_release( fnet_socket_if_t ** head, fnet_socket_if_t *sock )
 /************************************************************************
 * NAME: fnet_socket_conflict
 *
-* DESCRIPTION: Return FNET_TRUE if there's a socket whose addresses 'confict' 
+* DESCRIPTION: Return FNET_TRUE if there's a socket whose addresses 'confict'
 *              with the supplied addresses.
 *************************************************************************/
-fnet_bool_t fnet_socket_conflict( fnet_socket_if_t *head,  const struct sockaddr *local_addr, 
-                          const struct sockaddr *foreign_addr /*optional*/, fnet_bool_t wildcard )
+fnet_bool_t fnet_socket_conflict( fnet_socket_if_t *head,  const struct sockaddr *local_addr,
+                                  const struct sockaddr *foreign_addr /*optional*/, fnet_bool_t wildcard )
 {
     fnet_socket_if_t *sock = head;
 
     while(sock != 0)
     {
         if((sock->local_addr.sa_port == local_addr->sa_port)
-               && (((fnet_socket_addr_is_unspecified(local_addr)) && (wildcard)) || (fnet_socket_addr_are_equal(&sock->local_addr, local_addr)) )
-               && (((foreign_addr == 0) && (wildcard)) || (fnet_socket_addr_are_equal(&sock->foreign_addr, foreign_addr)))
-               && (((foreign_addr == 0) && (wildcard)) || (foreign_addr && (sock->foreign_addr.sa_port == foreign_addr->sa_port))) )
+           && (((fnet_socket_addr_is_unspecified(local_addr)) && (wildcard)) || (fnet_socket_addr_are_equal(&sock->local_addr, local_addr)) )
+           && (((foreign_addr == 0) && (wildcard)) || (fnet_socket_addr_are_equal(&sock->foreign_addr, foreign_addr)))
+           && (((foreign_addr == 0) && (wildcard)) || (foreign_addr && (sock->foreign_addr.sa_port == foreign_addr->sa_port))) )
         {
             return (FNET_TRUE);
         }
@@ -241,7 +241,7 @@ fnet_bool_t fnet_socket_conflict( fnet_socket_if_t *head,  const struct sockaddr
 /************************************************************************
 * NAME: fnet_socket_lookup
 *
-* DESCRIPTION: This function looks for a socket with the best match 
+* DESCRIPTION: This function looks for a socket with the best match
 *              to the local and foreign address parameters.
 *************************************************************************/
 fnet_socket_if_t *fnet_socket_lookup( fnet_socket_if_t *head,  struct sockaddr *local_addr, struct sockaddr *foreign_addr, fnet_uint32_t protocol_number)
@@ -258,7 +258,7 @@ fnet_socket_if_t *fnet_socket_lookup( fnet_socket_if_t *head,  struct sockaddr *
         {
             continue; /* Ignore. */
         }
-    
+
         /* Compare local port number.*/
         if(sock->local_addr.sa_port != local_addr->sa_port)
         {
@@ -344,7 +344,7 @@ fnet_socket_if_t *fnet_socket_lookup( fnet_socket_if_t *head,  struct sockaddr *
 *************************************************************************/
 fnet_uint16_t fnet_socket_get_uniqueport( fnet_socket_if_t *head, struct sockaddr *local_addr )
 {
-    fnet_uint16_t   local_port = fnet_port_last; 
+    fnet_uint16_t   local_port = fnet_port_last;
     struct sockaddr local_addr_tmp;
 
     fnet_memcpy(&local_addr_tmp, local_addr, sizeof(local_addr_tmp));
@@ -357,23 +357,23 @@ fnet_uint16_t fnet_socket_get_uniqueport( fnet_socket_if_t *head, struct sockadd
         {
             local_port = (fnet_uint16_t)FNET_SOCKET_PORT_RESERVED + 1u;
         }
-        
-        local_addr_tmp.sa_port = fnet_htons(local_port);    
-    } 
+
+        local_addr_tmp.sa_port = fnet_htons(local_port);
+    }
     while (fnet_socket_conflict(head, &local_addr_tmp, FNET_NULL, FNET_TRUE));
-    
+
     fnet_port_last = local_port;
-    
+
     fnet_isr_unlock();
-    
+
     return local_addr_tmp.sa_port;
 }
 
 /************************************************************************
 * NAME: fnet_socket_copy
 *
-* DESCRIPTION: This function creates new socket structure and fills 
-*              its proper fields by values from existing socket 
+* DESCRIPTION: This function creates new socket structure and fills
+*              its proper fields by values from existing socket
 *************************************************************************/
 fnet_socket_if_t *fnet_socket_copy( fnet_socket_if_t *sock )
 {
@@ -407,7 +407,7 @@ fnet_socket_if_t *fnet_socket_copy( fnet_socket_if_t *sock )
 /************************************************************************
 * NAME: socket
 *
-* DESCRIPTION: This function creates a socket and returns 
+* DESCRIPTION: This function creates a socket and returns
 *              the descriptor to the application.
 *************************************************************************/
 fnet_socket_t fnet_socket( fnet_address_family_t family, fnet_socket_type_t type, fnet_uint32_t protocol )
@@ -449,16 +449,16 @@ fnet_socket_t fnet_socket( fnet_address_family_t family, fnet_socket_type_t type
     sock->protocol_interface = prot;
     sock->local_addr.sa_family = family;
     sock->state = SS_UNCONNECTED;
-    
+
     /* Save protocol number.*/
     sock->protocol_number = protocol;
     if(!sock->protocol_number)
     {
         sock->protocol_number = prot->protocol;
     }
-    
+
     sock->foreign_addr.sa_family = family;
-    
+
     fnet_socket_list_add(&prot->head, sock);
 
     if((prot->socket_api->prot_attach) && (prot->socket_api->prot_attach(sock) == FNET_ERR))
@@ -484,7 +484,7 @@ ERROR_1:
 /************************************************************************
 * NAME: connect
 *
-* DESCRIPTION: This function establishes a connection to 
+* DESCRIPTION: This function establishes a connection to
 *              a specified socket.
 *************************************************************************/
 fnet_return_t fnet_socket_connect( fnet_socket_t s, struct sockaddr *name, fnet_size_t namelen )
@@ -504,9 +504,9 @@ fnet_return_t fnet_socket_connect( fnet_socket_t s, struct sockaddr *name, fnet_
             error = FNET_ERR_OPNOTSUPP; /*  Operation not supported.*/
             goto ERROR_SOCK;
         }
-        
+
         /* The protocol is connection oriented.*/
-        if(sock->protocol_interface->socket_api->con_req) 
+        if(sock->protocol_interface->socket_api->con_req)
         {
             /* A connection has already been initiated.*/
             if(sock->state == SS_CONNECTED)
@@ -527,7 +527,7 @@ fnet_return_t fnet_socket_connect( fnet_socket_t s, struct sockaddr *name, fnet_
         {
             goto ERROR_SOCK;
         }
-        
+
         foreign_addr = *name;
 
         if (fnet_socket_addr_is_unspecified(&foreign_addr))
@@ -548,50 +548,50 @@ fnet_return_t fnet_socket_connect( fnet_socket_t s, struct sockaddr *name, fnet_
         {
             switch(local_addr_tmp.sa_family)
             {
-    #if FNET_CFG_IP4
+#if FNET_CFG_IP4
                 case AF_INET:
+                {
+                    fnet_netif_t *netif;
+
+                    if((netif = fnet_ip_route(((struct sockaddr_in *)(&foreign_addr))->sin_addr.s_addr)) == 0)
                     {
-                        fnet_netif_t *netif;
-
-                        if((netif = fnet_ip_route(((struct sockaddr_in *)(&foreign_addr))->sin_addr.s_addr)) == 0)
-                        {
-                            error = FNET_ERR_NETUNREACH; /* No route. */
-                            goto ERROR_SOCK;
-                        }
-
-                        ((struct sockaddr_in *)(&local_addr_tmp))->sin_addr.s_addr = netif->ip4_addr.address;
+                        error = FNET_ERR_NETUNREACH; /* No route. */
+                        goto ERROR_SOCK;
                     }
-                    break;
-    #endif /* FNET_CFG_IP4 */
-    #if FNET_CFG_IP6                
+
+                    ((struct sockaddr_in *)(&local_addr_tmp))->sin_addr.s_addr = netif->ip4_addr.address;
+                }
+                break;
+#endif /* FNET_CFG_IP4 */
+#if FNET_CFG_IP6
                 case AF_INET6:
+                {
+                    const fnet_ip6_addr_t *local_ip6_addr;
+                    /* Check if can find a route to the destination.*/
+                    if((local_ip6_addr = fnet_ip6_select_src_addr((fnet_netif_t *)fnet_netif_get_by_scope_id(((struct sockaddr_in6 *)(&foreign_addr))->sin6_scope_id),
+                                         &((struct sockaddr_in6 *)(&foreign_addr))->sin6_addr.s6_addr)) == FNET_NULL)
                     {
-                        const fnet_ip6_addr_t *local_ip6_addr;
-                        /* Check if can find a route to the destination.*/
-                        if((local_ip6_addr = fnet_ip6_select_src_addr((fnet_netif_t *)fnet_netif_get_by_scope_id(((struct sockaddr_in6 *)(&foreign_addr))->sin6_scope_id), 
-                                                                    &((struct sockaddr_in6 *)(&foreign_addr))->sin6_addr.s6_addr))== FNET_NULL)
-                        {
-                            error = FNET_ERR_NETUNREACH; /* No route. */
-                            goto ERROR_SOCK;
-                        }
-                        
-                        /* Init local address.*/
-                        FNET_IP6_ADDR_COPY(local_ip6_addr, &((struct sockaddr_in6 *)(&local_addr_tmp))->sin6_addr.s6_addr);
-                        ((struct sockaddr_in6 *)(&local_addr_tmp))->sin6_scope_id = ((struct sockaddr_in6 *)(&foreign_addr))->sin6_scope_id;
+                        error = FNET_ERR_NETUNREACH; /* No route. */
+                        goto ERROR_SOCK;
                     }
-                    break;
-    #endif /* FNET_CFG_IP6 */
+
+                    /* Init local address.*/
+                    FNET_IP6_ADDR_COPY(local_ip6_addr, &((struct sockaddr_in6 *)(&local_addr_tmp))->sin6_addr.s6_addr);
+                    ((struct sockaddr_in6 *)(&local_addr_tmp))->sin6_scope_id = ((struct sockaddr_in6 *)(&foreign_addr))->sin6_scope_id;
+                }
+                break;
+#endif /* FNET_CFG_IP6 */
                 default:
                     break;
-            }            
+            }
         }
 
         if(local_addr_tmp.sa_port == 0u)
         {
             local_addr_tmp.sa_port = fnet_socket_get_uniqueport(sock->protocol_interface->head,
-                                                &local_addr_tmp); /* Get ephemeral port.*/
+                                     &local_addr_tmp); /* Get ephemeral port.*/
         }
-            
+
         if(fnet_socket_conflict(sock->protocol_interface->head, &local_addr_tmp, &foreign_addr, FNET_TRUE))
         {
             error = FNET_ERR_ADDRINUSE; /* Address already in use. */
@@ -599,7 +599,7 @@ fnet_return_t fnet_socket_connect( fnet_socket_t s, struct sockaddr *name, fnet_
         }
 
         fnet_memcpy(&sock->local_addr, &local_addr_tmp, sizeof(sock->local_addr));
-        
+
         /* Start the appropriate protocol connection.*/
         if(sock->protocol_interface->socket_api->prot_connect)
         {
@@ -656,12 +656,12 @@ fnet_return_t fnet_socket_bind( fnet_socket_t s, const struct sockaddr *name, fn
                 if((!fnet_socket_addr_is_unspecified(name)) && (!fnet_socket_addr_is_broadcast(&sock->local_addr, FNET_NULL)) && (fnet_netif_get_by_sockaddr(name) == FNET_NULL))
                 {
                     /* The specified address is not a valid address for this system.*/
-                    error = FNET_ERR_ADDRNOTAVAIL; 
+                    error = FNET_ERR_ADDRNOTAVAIL;
                     goto ERROR_SOCK;
                 }
-                
+
                 if((name->sa_port != 0u)
-                     && (fnet_socket_conflict(sock->protocol_interface->head, name, FNET_NULL, FNET_FALSE)))
+                   && (fnet_socket_conflict(sock->protocol_interface->head, name, FNET_NULL, FNET_FALSE)))
                 {
                     error = FNET_ERR_ADDRINUSE; /* Address already in use. */
                     goto ERROR_SOCK;
@@ -728,13 +728,13 @@ fnet_return_t fnet_socket_close( fnet_socket_t s )
             fnet_index_t i;
             for(i = 0u; i < FNET_CFG_MULTICAST_SOCKET_MAX; i++)
             {
-                if (sock->ip4_multicast_entry[i]!= FNET_NULL) 
+                if (sock->ip4_multicast_entry[i] != FNET_NULL)
                 {
                     fnet_ip_multicast_leave_entry(sock->ip4_multicast_entry[i]);
                 }
             }
-        }                        
-#endif 
+        }
+#endif
 
 #if FNET_CFG_MULTICAST && FNET_CFG_IP6
         /* Leave all IPv6 multicast groups.*/
@@ -742,12 +742,12 @@ fnet_return_t fnet_socket_close( fnet_socket_t s )
             fnet_index_t i;
             for(i = 0u; i < FNET_CFG_MULTICAST_SOCKET_MAX; i++)
             {
-                if (sock->ip6_multicast_entry[i]!= FNET_NULL) 
+                if (sock->ip6_multicast_entry[i] != FNET_NULL)
                 {
                     fnet_ip6_multicast_leave_entry(sock->ip6_multicast_entry[i]);
                 }
             }
-        }                        
+        }
 #endif
 
         if(sock->protocol_interface->socket_api->prot_detach)
@@ -813,7 +813,7 @@ ERROR:
 /************************************************************************
 * NAME: listen
 *
-* DESCRIPTION: This function places the socket into the state where 
+* DESCRIPTION: This function places the socket into the state where
 *              it is listening for an incoming connection.
 *************************************************************************/
 fnet_return_t fnet_socket_listen( fnet_socket_t s, fnet_size_t backlog )
@@ -911,9 +911,9 @@ fnet_socket_t fnet_socket_accept( fnet_socket_t s, struct sockaddr *addr, fnet_s
 
                 fnet_socket_desc_set(desc, sock_new);
                 fnet_socket_list_add(&sock->protocol_interface->head, sock_new);
-                
+
                 fnet_isr_unlock();
-                
+
                 if(addr && addrlen)
                 {
                     fnet_socket_addr_copy(&sock_new->foreign_addr, addr);
@@ -951,7 +951,7 @@ ERROR:
 /************************************************************************
 * NAME: sendto
 *
-* DESCRIPTION: This function sends data to a specific destination. 
+* DESCRIPTION: This function sends data to a specific destination.
 *************************************************************************/
 fnet_int32_t fnet_socket_sendto( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct sockaddr *to, fnet_size_t tolen )
 {
@@ -970,7 +970,7 @@ fnet_int32_t fnet_socket_sendto( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t
                 error = FNET_ERR_NOTCONN; /* Socket is not connected.*/
                 goto ERROR_SOCK;
             }
-            
+
             to = FNET_NULL;
         }
         else
@@ -978,15 +978,15 @@ fnet_int32_t fnet_socket_sendto( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t
             if((error = fnet_socket_addr_check_len(to, tolen)) != FNET_ERR_OK)
             {
                 goto ERROR_SOCK;
-            }     
+            }
 
             if(fnet_socket_addr_is_unspecified(to))
             {
                 error = FNET_ERR_DESTADDRREQ; /* Destination address required.*/
                 goto ERROR_SOCK;
             }
-        }    
-        
+        }
+
         if(buf)
         {
 
@@ -1033,7 +1033,7 @@ ERROR:
 /************************************************************************
 * NAME: send
 *
-* DESCRIPTION: This function sends data on a connected socket. 
+* DESCRIPTION: This function sends data on a connected socket.
 *************************************************************************/
 fnet_int32_t fnet_socket_send( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags )
 {
@@ -1043,8 +1043,8 @@ fnet_int32_t fnet_socket_send( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t l
 /************************************************************************
 * NAME: recvfrom
 *
-* DESCRIPTION: This function reads incoming data of socket and captures 
-*              the address from which the data was sent.  
+* DESCRIPTION: This function reads incoming data of socket and captures
+*              the address from which the data was sent.
 *************************************************************************/
 fnet_int32_t fnet_socket_recvfrom( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct sockaddr *from, fnet_size_t *fromlen )
 {
@@ -1073,7 +1073,7 @@ fnet_int32_t fnet_socket_recvfrom( fnet_socket_t s, fnet_uint8_t *buf, fnet_size
                     goto ERROR_SOCK;
                 }
             }
-            
+
             /* If the socket is shutdowned, return.*/
             if(sock->receive_buffer.is_shutdown)
             {
@@ -1117,7 +1117,7 @@ ERROR:
 /************************************************************************
 * NAME: recv
 *
-* DESCRIPTION: This function receives data from a connected socket. 
+* DESCRIPTION: This function receives data from a connected socket.
 *************************************************************************/
 fnet_int32_t fnet_socket_recv( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags )
 {
@@ -1127,8 +1127,8 @@ fnet_int32_t fnet_socket_recv( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t l
 /************************************************************************
 * NAME: getsockname
 *
-* DESCRIPTION: This function retrieves the current name 
-*              for the specified socket. 
+* DESCRIPTION: This function retrieves the current name
+*              for the specified socket.
 *************************************************************************/
 fnet_return_t fnet_socket_getname( fnet_socket_t s, struct sockaddr *name, fnet_size_t *namelen )
 {
@@ -1144,7 +1144,7 @@ fnet_return_t fnet_socket_getname( fnet_socket_t s, struct sockaddr *name, fnet_
             error = FNET_ERR_INVAL;
             goto ERROR_SOCK;
         }
-        
+
         if((error = fnet_socket_addr_check_len(&sock->local_addr, (*namelen) )) != FNET_ERR_OK )
         {
             goto ERROR_SOCK;
@@ -1155,7 +1155,7 @@ fnet_return_t fnet_socket_getname( fnet_socket_t s, struct sockaddr *name, fnet_
             error = FNET_ERR_BOUNDREQ; /* The socket has not been bound with fnet_socket_bind().*/
             goto ERROR_SOCK;
         }
-        
+
         fnet_socket_addr_copy(&sock->local_addr, name);
     }
     else
@@ -1178,7 +1178,7 @@ ERROR:
 /************************************************************************
 * NAME: getpeername
 *
-* DESCRIPTION: This function retrieves the name of the peer 
+* DESCRIPTION: This function retrieves the name of the peer
 *              connected to the socket
 *************************************************************************/
 fnet_return_t fnet_socket_getpeername( fnet_socket_t s, struct sockaddr *name, fnet_size_t *namelen )
@@ -1190,7 +1190,7 @@ fnet_return_t fnet_socket_getpeername( fnet_socket_t s, struct sockaddr *name, f
 
     if((sock = fnet_socket_desc_find(s)) != 0)
     {
-        if((name == 0) || (namelen == 0) ) 
+        if((name == 0) || (namelen == 0) )
         {
             error = FNET_ERR_INVAL;
             goto ERROR_SOCK;
@@ -1199,14 +1199,14 @@ fnet_return_t fnet_socket_getpeername( fnet_socket_t s, struct sockaddr *name, f
         if((error = fnet_socket_addr_check_len(&sock->local_addr, (*namelen) )) != FNET_ERR_OK )
         {
             goto ERROR_SOCK;
-        }        
+        }
 
         if(fnet_socket_addr_is_unspecified(&sock->foreign_addr))
         {
             error = FNET_ERR_NOTCONN; /* Socket is not connected.*/
             goto ERROR_SOCK;
         }
-        
+
         fnet_socket_addr_copy(&sock->foreign_addr, name);
     }
     else
@@ -1229,7 +1229,7 @@ ERROR:
 /************************************************************************
 * NAME: setsockopt
 *
-* DESCRIPTION: This function sets the current value for a socket option 
+* DESCRIPTION: This function sets the current value for a socket option
 *              associated with a socket
 *************************************************************************/
 fnet_return_t fnet_socket_setopt( fnet_socket_t s, fnet_protocol_t level, fnet_socket_options_t optname, const void *optval, fnet_size_t optvallen )
@@ -1268,15 +1268,15 @@ fnet_return_t fnet_socket_setopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
                         }
 
                         sock->options.linger_ticks = (fnet_time_t)(((const struct linger *)optval)->l_linger * (1000u / FNET_TIMER_PERIOD_MS));
-                        sock->options.so_linger = (((const struct linger *)optval)->l_onoff)?FNET_TRUE: FNET_FALSE;
-                      break;
+                        sock->options.so_linger = (((const struct linger *)optval)->l_onoff) ? FNET_TRUE : FNET_FALSE;
+                        break;
                     case SO_KEEPALIVE: /* Keep connections alive.*/
                         if(optvallen < sizeof(fnet_uint32_t))
                         {
                             error = FNET_ERR_INVAL;
                             goto ERROR_SOCK;
                         }
-                        sock->options.so_keepalive = (*((const fnet_uint32_t *)optval))?FNET_TRUE: FNET_FALSE;
+                        sock->options.so_keepalive = (*((const fnet_uint32_t *)optval)) ? FNET_TRUE : FNET_FALSE;
                         break;
                     case SO_DONTROUTE: /* Just use interface addresses.*/
                         if(optvallen < sizeof(fnet_uint32_t))
@@ -1284,18 +1284,18 @@ fnet_return_t fnet_socket_setopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
                             error = FNET_ERR_INVAL;
                             goto ERROR_SOCK;
                         }
-                        sock->options.so_dontroute = (*((const fnet_uint32_t *)optval))?FNET_TRUE: FNET_FALSE;
+                        sock->options.so_dontroute = (*((const fnet_uint32_t *)optval)) ? FNET_TRUE : FNET_FALSE;
                         break;
-                #if FNET_CFG_TCP_URGENT                    
+#if FNET_CFG_TCP_URGENT
                     case SO_OOBINLINE: /* Leave received OOB data in line.*/
                         if(optvallen < sizeof(fnet_uint32_t))
                         {
                             error = FNET_ERR_INVAL;
                             goto ERROR_SOCK;
                         }
-                        sock->options.so_oobinline = (*((const fnet_uint32_t *)optval))?FNET_TERUE: FNET_FALSE;
+                        sock->options.so_oobinline = (*((const fnet_uint32_t *)optval)) ? FNET_TERUE : FNET_FALSE;
                         break;
-                #endif 
+#endif
                     case SO_SNDBUF: /* Send buffer size.*/
                     case SO_RCVBUF: /* Receive buffer size.*/
                         if((optvallen < sizeof(fnet_uint32_t)))
@@ -1346,8 +1346,8 @@ ERROR:
 /************************************************************************
 * NAME: fnet_socket_getopt
 *
-* DESCRIPTION: This function retrieves the current value for 
-*              a socket option associated with a socket 
+* DESCRIPTION: This function retrieves the current value for
+*              a socket option associated with a socket
 *************************************************************************/
 fnet_return_t fnet_socket_getopt( fnet_socket_t s, fnet_protocol_t level, fnet_socket_options_t optname, void *optval, fnet_size_t *optvallen )
 {
@@ -1386,7 +1386,7 @@ fnet_return_t fnet_socket_getopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
 
                         *optvallen = sizeof(struct linger);
                         ((struct linger *)optval)->l_onoff = sock->options.so_linger;
-                        ((struct linger *)optval)->l_linger= (fnet_uint16_t)(((fnet_uint32_t)sock->options.linger_ticks * FNET_TIMER_PERIOD_MS) / 1000u);
+                        ((struct linger *)optval)->l_linger = (fnet_uint16_t)(((fnet_uint32_t)sock->options.linger_ticks * FNET_TIMER_PERIOD_MS) / 1000u);
                         sock->options.linger_ticks = (fnet_time_t)(((struct linger *)optval)->l_linger);
                         break;
 
@@ -1397,7 +1397,7 @@ fnet_return_t fnet_socket_getopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
                             goto ERROR_SOCK;
                         }
                         *optvallen = sizeof(fnet_uint32_t);
-                        *((fnet_uint32_t*)optval) = (fnet_uint32_t)(sock->options.so_keepalive);
+                        *((fnet_uint32_t *)optval) = (fnet_uint32_t)(sock->options.so_keepalive);
                         break;
                     case SO_DONTROUTE: /* Just use interface addresses.*/
                         if(*optvallen < sizeof(fnet_uint32_t))
@@ -1406,9 +1406,9 @@ fnet_return_t fnet_socket_getopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
                             goto ERROR_SOCK;
                         }
                         *optvallen = sizeof(fnet_uint32_t);
-                        *((fnet_uint32_t*)optval) = (fnet_uint32_t)(sock->options.so_dontroute);
+                        *((fnet_uint32_t *)optval) = (fnet_uint32_t)(sock->options.so_dontroute);
                         break;
-                #if FNET_CFG_TCP_URGENT                    
+#if FNET_CFG_TCP_URGENT
                     case SO_OOBINLINE: /* Leave received OOB data in line.*/
                         if(*optvallen < sizeof(fnet_uint32_t))
                         {
@@ -1417,9 +1417,9 @@ fnet_return_t fnet_socket_getopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
                         }
 
                         *optvallen = sizeof(fnet_uint32_t);
-                        *((fnet_uint32_t*)optval) = (fnet_uint32_t)(sock->options.so_oobinline);
+                        *((fnet_uint32_t *)optval) = (fnet_uint32_t)(sock->options.so_oobinline);
                         break;
-                #endif 
+#endif
                     case SO_ACCEPTCONN: /* Socket is listening. */
                         if(*optvallen < sizeof(fnet_uint32_t))
                         {
@@ -1428,7 +1428,7 @@ fnet_return_t fnet_socket_getopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
                         }
 
                         *optvallen = sizeof(fnet_uint32_t);
-                        *((fnet_uint32_t*)optval) = (fnet_uint32_t)(sock->state == SS_LISTENING);
+                        *((fnet_uint32_t *)optval) = (fnet_uint32_t)(sock->state == SS_LISTENING);
                         break;
                     case SO_SNDBUF: /* Send buffer size.*/
                     case SO_RCVBUF: /* Receive buffer size.*/
@@ -1442,7 +1442,7 @@ fnet_return_t fnet_socket_getopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
 
                         if(optname == SO_SNDBUF)
                         {
-                            *((fnet_uint32_t*)optval) = sock->send_buffer.count_max;
+                            *((fnet_uint32_t *)optval) = sock->send_buffer.count_max;
                         }
                         else
                         {
@@ -1457,7 +1457,7 @@ fnet_return_t fnet_socket_getopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
                         }
 
                         *optvallen = sizeof(fnet_socket_state_t);
-                        *((fnet_socket_state_t*)optval) = sock->state;
+                        *((fnet_socket_state_t *)optval) = sock->state;
                         break;
 
                     case SO_RCVNUM:  /* Use to determine the amount of data pending in the network's input buffer that can be read from socket.*/
@@ -1472,7 +1472,7 @@ fnet_return_t fnet_socket_getopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
 
                         if(optname == SO_RCVNUM)
                         {
-                            *((fnet_uint32_t*)optval) = sock->receive_buffer.count;
+                            *((fnet_uint32_t *)optval) = sock->receive_buffer.count;
                         }
                         else
                         {
@@ -1585,8 +1585,8 @@ fnet_return_t fnet_socket_buffer_append_record( fnet_socket_buffer_t *sb, fnet_n
 /************************************************************************
 * NAME: fnet_socket_buffer_append_address
 *
-* DESCRIPTION: Constract net_buf chain  and add it to the queue. 
-*              The chain contains the address of the message 
+* DESCRIPTION: Constract net_buf chain  and add it to the queue.
+*              The chain contains the address of the message
 *              and the message data.
 *************************************************************************/
 fnet_return_t fnet_socket_buffer_append_address( fnet_socket_buffer_t *sb, fnet_netbuf_t *nb, struct sockaddr *addr)
@@ -1615,22 +1615,22 @@ fnet_return_t fnet_socket_buffer_append_address( fnet_socket_buffer_t *sb, fnet_
     nb = fnet_netbuf_concat(nb_addr, nb);
     fnet_netbuf_add_chain(&sb->net_buf_chain, nb);
     fnet_isr_unlock();
-    
-	/* Wake-up user application.*/
- 	fnet_os_event_raise(); 
+
+    /* Wake-up user application.*/
+    fnet_os_event_raise();
 
     return FNET_OK;
-    
-ERROR:  
+
+ERROR:
     fnet_isr_unlock();
-    return FNET_ERR;  
+    return FNET_ERR;
 }
 
 /************************************************************************
 * NAME: fnet_socket_buffer_read_record
 *
-* DESCRIPTION: This function reads data from socket buffer and 
-*              put this data into application buffer. 
+* DESCRIPTION: This function reads data from socket buffer and
+*              put this data into application buffer.
 *************************************************************************/
 fnet_size_t fnet_socket_buffer_read_record( fnet_socket_buffer_t *sb, fnet_uint8_t *buf, fnet_size_t len, fnet_bool_t remove )
 {
@@ -1662,16 +1662,16 @@ fnet_size_t fnet_socket_buffer_read_record( fnet_socket_buffer_t *sb, fnet_uint8
 /************************************************************************
 * NAME: fnet_socket_buffer_read_address
 *
-* DESCRIPTION:This function reads data from socket buffer and 
-*             put this data into application buffer. 
-*             And captures the address information from which the data was sent. 
+* DESCRIPTION:This function reads data from socket buffer and
+*             put this data into application buffer.
+*             And captures the address information from which the data was sent.
 *************************************************************************/
 fnet_int32_t fnet_socket_buffer_read_address( fnet_socket_buffer_t *sb, fnet_uint8_t *buf, fnet_size_t len, struct sockaddr *foreign_addr, fnet_bool_t remove )
 {
     fnet_netbuf_t   *nb;
     fnet_netbuf_t   *nb_addr;
 
-    if(((nb_addr = sb->net_buf_chain) != 0) ) 
+    if(((nb_addr = sb->net_buf_chain) != 0) )
     {
         if((nb = nb_addr->next) != 0)
         {
@@ -1686,9 +1686,9 @@ fnet_int32_t fnet_socket_buffer_read_address( fnet_socket_buffer_t *sb, fnet_uin
         {
             len = 0u;
         }
-        
+
         fnet_memcpy(foreign_addr, &((fnet_socket_buffer_addr_t *)(nb_addr->data_ptr))->addr_s, sizeof(*foreign_addr));
-        
+
         if(len < (nb_addr->total_length - sizeof(fnet_socket_buffer_addr_t)))
         {
             len = (fnet_size_t)FNET_ERR;
@@ -1703,7 +1703,7 @@ fnet_int32_t fnet_socket_buffer_read_address( fnet_socket_buffer_t *sb, fnet_uin
                 sb->count -= nb->total_length;
             }
             fnet_netbuf_del_chain(&sb->net_buf_chain, nb_addr);
-            
+
             fnet_isr_unlock();
         }
     }
@@ -1711,7 +1711,7 @@ fnet_int32_t fnet_socket_buffer_read_address( fnet_socket_buffer_t *sb, fnet_uin
     {
         len = 0u;
     }
- 
+
     return (fnet_int32_t)len;
 }
 
@@ -1723,7 +1723,7 @@ fnet_int32_t fnet_socket_buffer_read_address( fnet_socket_buffer_t *sb, fnet_uin
 static fnet_error_t fnet_socket_addr_check_len(const struct sockaddr *addr, fnet_size_t addr_len )
 {
     fnet_error_t result = FNET_ERR_OK;
-    
+
     if(addr && addr_len)
     {
 #if FNET_CFG_IP6
@@ -1738,18 +1738,18 @@ static fnet_error_t fnet_socket_addr_check_len(const struct sockaddr *addr, fnet
 #endif /* FNET_CFG_IP4 */
 
 #if FNET_CFG_IP4
-        if((addr->sa_family & AF_INET) !=0u )
-        {
-            if(addr_len < sizeof(struct sockaddr_in))
+            if((addr->sa_family & AF_INET) != 0u )
             {
-                result = FNET_ERR_INVAL;    /* Invalid argument.*/
+                if(addr_len < sizeof(struct sockaddr_in))
+                {
+                    result = FNET_ERR_INVAL;    /* Invalid argument.*/
+                }
             }
-        }
-        else
+            else
 #endif /* FNET_CFG_IP4 */
-        {
-            result = FNET_ERR_AFNOSUPPORT; 
-        }
+            {
+                result = FNET_ERR_AFNOSUPPORT;
+            }
     }
     else
     {
@@ -1767,7 +1767,7 @@ static fnet_error_t fnet_socket_addr_check_len(const struct sockaddr *addr, fnet
 fnet_bool_t fnet_socket_addr_is_multicast(const struct sockaddr *addr)
 {
     fnet_bool_t     result = FNET_FALSE;
-    
+
     if(addr)
     {
 #if FNET_CFG_IP6
@@ -1779,13 +1779,13 @@ fnet_bool_t fnet_socket_addr_is_multicast(const struct sockaddr *addr)
 #endif /* FNET_CFG_IP4 */
 
 #if FNET_CFG_IP4
-        if((addr->sa_family & AF_INET) != 0u)
-        {
-            result = FNET_IP4_ADDR_IS_MULTICAST( ((const struct sockaddr_in *)addr)->sin_addr.s_addr);
-        }
-        else
+            if((addr->sa_family & AF_INET) != 0u)
+            {
+                result = FNET_IP4_ADDR_IS_MULTICAST( ((const struct sockaddr_in *)addr)->sin_addr.s_addr);
+            }
+            else
 #endif /* FNET_CFG_IP4 */
-        {}
+            {}
     }
 
     return result;
@@ -1799,7 +1799,7 @@ fnet_bool_t fnet_socket_addr_is_multicast(const struct sockaddr *addr)
 fnet_bool_t fnet_socket_addr_is_broadcast(const struct sockaddr *addr, fnet_netif_t *netif)
 {
     fnet_bool_t result = FNET_FALSE;
-    
+
 #if FNET_CFG_IP4
     if(addr)
     {
@@ -1807,7 +1807,7 @@ fnet_bool_t fnet_socket_addr_is_broadcast(const struct sockaddr *addr, fnet_neti
         {
             result = fnet_ip_addr_is_broadcast( ((const struct sockaddr_in *)addr)->sin_addr.s_addr, netif );
         }
-    }        
+    }
 #else
     FNET_COMP_UNUSED_ARG(netif);
     FNET_COMP_UNUSED_ARG(addr);
@@ -1824,7 +1824,7 @@ fnet_bool_t fnet_socket_addr_is_broadcast(const struct sockaddr *addr, fnet_neti
 fnet_bool_t fnet_socket_addr_is_unspecified(const struct sockaddr *addr)
 {
     fnet_bool_t result = FNET_TRUE;
-    
+
     if(addr)
     {
 #if FNET_CFG_IP6
@@ -1833,15 +1833,15 @@ fnet_bool_t fnet_socket_addr_is_unspecified(const struct sockaddr *addr)
             result = FNET_IP6_ADDR_IS_UNSPECIFIED( &((const struct sockaddr_in6 *)addr)->sin6_addr.s6_addr);
         }
         else
-#endif 
+#endif
 #if FNET_CFG_IP4
-        if((addr->sa_family & AF_INET) != 0u)
-        {
-            result = FNET_IP4_ADDR_IS_UNSPECIFIED( ((const struct sockaddr_in *)addr)->sin_addr.s_addr);
-        }
-        else
-#endif 
-        {}
+            if((addr->sa_family & AF_INET) != 0u)
+            {
+                result = FNET_IP4_ADDR_IS_UNSPECIFIED( ((const struct sockaddr_in *)addr)->sin_addr.s_addr);
+            }
+            else
+#endif
+            {}
     }
 
     return result;
@@ -1855,7 +1855,7 @@ fnet_bool_t fnet_socket_addr_is_unspecified(const struct sockaddr *addr)
 fnet_bool_t fnet_socket_addr_are_equal(const struct sockaddr *addr1, const struct sockaddr *addr2 )
 {
     fnet_bool_t result = FNET_FALSE;
-    
+
     if(addr1 && addr2 && (addr1->sa_family == addr2->sa_family))
     {
 #if FNET_CFG_IP6
@@ -1866,13 +1866,13 @@ fnet_bool_t fnet_socket_addr_are_equal(const struct sockaddr *addr1, const struc
         else
 #endif
 #if FNET_CFG_IP4
-        if((addr1->sa_family & AF_INET) != 0u)
-        {
-            result = (((const struct sockaddr_in *)addr1)->sin_addr.s_addr == (((const struct sockaddr_in *)addr2)->sin_addr.s_addr))?FNET_TRUE:FNET_FALSE;
-        }
-        else
+            if((addr1->sa_family & AF_INET) != 0u)
+            {
+                result = (((const struct sockaddr_in *)addr1)->sin_addr.s_addr == (((const struct sockaddr_in *)addr2)->sin_addr.s_addr)) ? FNET_TRUE : FNET_FALSE;
+            }
+            else
 #endif
-        {}
+            {}
     }
 
     return result;
@@ -1881,11 +1881,11 @@ fnet_bool_t fnet_socket_addr_are_equal(const struct sockaddr *addr1, const struc
 /************************************************************************
 * NAME: fnet_socket_ip_addr_copy
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 void fnet_socket_ip_addr_copy(const struct sockaddr *from_addr, struct sockaddr *to_addr)
 {
-   
+
     if(from_addr && to_addr && (to_addr->sa_family == from_addr->sa_family))
     {
 #if FNET_CFG_IP6
@@ -1894,22 +1894,22 @@ void fnet_socket_ip_addr_copy(const struct sockaddr *from_addr, struct sockaddr 
             FNET_IP6_ADDR_COPY(&((const struct sockaddr_in6 *)from_addr)->sin6_addr.s6_addr, &((struct sockaddr_in6 *)to_addr)->sin6_addr.s6_addr);
         }
         else
-#endif 
+#endif
 #if FNET_CFG_IP4
-        if((from_addr->sa_family & AF_INET) != 0u)
-        {
-            ((struct sockaddr_in *)to_addr)->sin_addr.s_addr = ((const struct sockaddr_in *)from_addr)->sin_addr.s_addr;
-        }
-        else
-#endif 
-        {}
+            if((from_addr->sa_family & AF_INET) != 0u)
+            {
+                ((struct sockaddr_in *)to_addr)->sin_addr.s_addr = ((const struct sockaddr_in *)from_addr)->sin_addr.s_addr;
+            }
+            else
+#endif
+            {}
     }
 }
 
 /************************************************************************
 * NAME: fnet_socket_addr_copy
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 void fnet_socket_addr_copy(const struct sockaddr *from_addr, struct sockaddr *to_addr)
 {
@@ -1923,35 +1923,35 @@ void fnet_socket_addr_copy(const struct sockaddr *from_addr, struct sockaddr *to
         else
 #endif
 #if FNET_CFG_IP4
-        if((from_addr->sa_family & AF_INET) != 0u)
-        {
-            fnet_memcpy(to_addr, from_addr, sizeof(struct sockaddr_in));
-        }
-        else
+            if((from_addr->sa_family & AF_INET) != 0u)
+            {
+                fnet_memcpy(to_addr, from_addr, sizeof(struct sockaddr_in));
+            }
+            else
 #endif
-        {}
+            {}
     }
 }
 
 /************************************************************************
 * NAME: fnet_socket_addr_route
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 fnet_netif_t *fnet_socket_addr_route(const struct sockaddr *dest_addr)
 {
     fnet_netif_t *result = FNET_NULL;
-   
-    if(dest_addr) 
+
+    if(dest_addr)
     {
         switch(dest_addr->sa_family)
         {
-        #if FNET_CFG_IP4
+#if FNET_CFG_IP4
             case AF_INET:
                 result = fnet_ip_route(((const struct sockaddr_in *)dest_addr)->sin_addr.s_addr);
                 break;
-        #endif 
-        #if FNET_CFG_IP6                
+#endif
+#if FNET_CFG_IP6
             case AF_INET6:
 
                 /* Check Scope ID.*/
@@ -1960,19 +1960,19 @@ fnet_netif_t *fnet_socket_addr_route(const struct sockaddr *dest_addr)
                     const fnet_ip6_addr_t   *src_ip;
 
                     src_ip = fnet_ip6_select_src_addr(FNET_NULL, &((const struct sockaddr_in6 *)dest_addr)->sin6_addr.s6_addr);
-                
+
                     if(src_ip)
                     {
                         result = (fnet_netif_t *)fnet_netif_get_by_ip6_addr(src_ip);
-                    } 
+                    }
                 }
                 break;
-        #endif
+#endif
             default:
                 break;
         }
     }
-    
+
     return result;
 }
 

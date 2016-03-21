@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fapp_setget.h
@@ -39,8 +39,8 @@
 extern "C" {
 #endif
 
-void fapp_set_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** argv );
-void fapp_get_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** argv );
+void fapp_set_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
+void fapp_get_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 
 #if defined(__cplusplus)
 }

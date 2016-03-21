@@ -1,6 +1,6 @@
 /**************************************************************************
-* 
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+*
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_stdlib.h
@@ -43,7 +43,7 @@
 /**************************************************************************/ /*!
  * @def FNET_NULL
  * @brief NULL pointer.
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
 #define FNET_NULL       (0)
 
@@ -56,28 +56,28 @@
 
 /**************************************************************************/ /*!
  * @brief Unsigned integer type representing the size in bytes.
- ******************************************************************************/ 
+ ******************************************************************************/
 typedef unsigned long fnet_size_t;
 
 /**************************************************************************/ /*!
  * @brief Unsigned integer type representing the bit flag.
- ******************************************************************************/ 
+ ******************************************************************************/
 typedef unsigned int fnet_flag_t;
 
 /**************************************************************************/ /*!
  * @brief Unsigned integer type representing the index.
- ******************************************************************************/ 
+ ******************************************************************************/
 typedef unsigned int fnet_index_t;
 
 /**************************************************************************/ /*!
  * @brief Type representing the charecter.
- ******************************************************************************/ 
+ ******************************************************************************/
 typedef char fnet_char_t;
 
 
 /**************************************************************************/ /*!
  * @brief Boolean type.
- ******************************************************************************/ 
+ ******************************************************************************/
 typedef enum
 {
     FNET_FALSE = 0, /**< @brief FALSE Boolean value.*/
@@ -96,14 +96,14 @@ extern "C" {
  *
  * @param to_ptr      Pointer to the memory location to copy to.
  *
- * @param from_ptr       Pointer to the memory location to copy from. 
+ * @param from_ptr       Pointer to the memory location to copy from.
  *
  * @param number_of_bytes         Number of bytes to copy.
  *
  * @see FNET_CFG_OVERLOAD_MEMCPY
  ******************************************************************************
  *
- * This function copies @c number_of_bytes bytes from 
+ * This function copies @c number_of_bytes bytes from
  * memory area pointed by @c from_ptr to memory area pointed by @c to_ptr.@n
  * You may overload it by own implementation, using @ref FNET_CFG_OVERLOAD_MEMCPY.
  *
@@ -116,16 +116,16 @@ void fnet_memcpy(FNET_COMP_PACKED_VAR void *to_ptr, FNET_COMP_PACKED_VAR const v
  *
  * @brief    Relocates function in memory.
  *
- * @param to_buf_ptr      Pointer to the memory location to copy to. 
+ * @param to_buf_ptr      Pointer to the memory location to copy to.
  *
- * @param from_func_ptr       Pointer to the function to be relocated 
+ * @param from_func_ptr       Pointer to the function to be relocated
  *
- * @param to_buf_size         Number of bytes to copy.  
+ * @param to_buf_size         Number of bytes to copy.
  *
  * @return          This function returns new pointer to the relocated function.
  ******************************************************************************
  *
- * This function copies @c to_buf_size bytes from 
+ * This function copies @c to_buf_size bytes from
  * memory area pointed by @c from_func_ptr to memory area pointed by @c to_buf_ptr.@n
  * It is used for a function relocation from Flash to RAM.
  *
@@ -139,7 +139,7 @@ void *fnet_memcpy_func(void *to_buf_ptr, const void *from_func_ptr, fnet_size_t 
  * @param dest      Pointer to the buffer to be set.
  *
  * @param value     Value to be set. @n
- *                  The value is passed as an @c int, but the function converts 
+ *                  The value is passed as an @c int, but the function converts
  *                  it to @c fnet_uint8_t.
  *
  * @param n         Number of bytes to be set.
@@ -187,8 +187,8 @@ void fnet_memset_zero(void *dest, fnet_size_t n );
  *
  ******************************************************************************
  *
- * This function compares the first @c n bytes of the memory buffer pointed 
- * by @c src1 to the first @c count bytes pointed by @c src2, returning zero if 
+ * This function compares the first @c n bytes of the memory buffer pointed
+ * by @c src1 to the first @c count bytes pointed by @c src2, returning zero if
  * they all match, otherwise returns @c 1.
  *
  ******************************************************************************/
@@ -198,13 +198,13 @@ fnet_int32_t fnet_memcmp(const void *src1, const void *src2, fnet_size_t count )
  *
  * @brief           Calculates the length of a string.
  *
- * @param str       Pointer to the null-terminated string to be examined.  
+ * @param str       Pointer to the null-terminated string to be examined.
  *
  * @return          This function returns the number of characters in @c str.
  *
  ******************************************************************************
  *
- * This function computes the number of bytes in the string to which @c str 
+ * This function computes the number of bytes in the string to which @c str
  * points, not including the terminating null byte.
  *
  ******************************************************************************/
@@ -214,16 +214,16 @@ fnet_size_t fnet_strlen (const fnet_char_t *str);
  *
  * @brief           Concatenates two strings.
  *
- * @param dest      Pointer to the null-terminated string to append to.  
+ * @param dest      Pointer to the null-terminated string to append to.
  *
- * @param src       Pointer to the null-terminated string to copy to 
- *                  the end of @c dest. 
+ * @param src       Pointer to the null-terminated string to copy to
+ *                  the end of @c dest.
  *
  ******************************************************************************
  *
- * This function appends a copy of the string pointed to by @c src to the end 
+ * This function appends a copy of the string pointed to by @c src to the end
  * of the string pointed to by  @c dest. @n
- * The resulting string is null-terminated. 
+ * The resulting string is null-terminated.
  *
  ******************************************************************************/
 void fnet_strcat (fnet_char_t *dest, const fnet_char_t *src);
@@ -232,20 +232,20 @@ void fnet_strcat (fnet_char_t *dest, const fnet_char_t *src);
  *
  * @brief           Concatenates a string with part of another.
  *
- * @param dest      Pointer to the null-terminated string to append to.  
+ * @param dest      Pointer to the null-terminated string to append to.
  *
- * @param src       Pointer to the null-terminated string to copy to 
- *                  the end of @c dest. 
+ * @param src       Pointer to the null-terminated string to copy to
+ *                  the end of @c dest.
  *
  * @param n         Maximum number of characters to be appended.
  *
  ******************************************************************************
  *
- * This function appends a copy of the string pointed to by @c src to the end 
- * of the string pointed to by  @c dest. If the length of the @c src string 
- * is less than @c n, only the content up to the terminating null-character 
+ * This function appends a copy of the string pointed to by @c src to the end
+ * of the string pointed to by  @c dest. If the length of the @c src string
+ * is less than @c n, only the content up to the terminating null-character
  * is copied. @n
- * The resulting string is null-terminated. 
+ * The resulting string is null-terminated.
  *
  ******************************************************************************/
 void fnet_strncat (fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n);
@@ -254,14 +254,14 @@ void fnet_strncat (fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n);
  *
  * @brief           Copies a string.
  *
- * @param dest      Pointer to the destination buffer where the content is 
- *                  to be copied.  
+ * @param dest      Pointer to the destination buffer where the content is
+ *                  to be copied.
  *
  * @param src       Pointer to the null-terminated string to be copied.
  *
  ******************************************************************************
  *
- * This function copies the string pointed by @c src into the buffer pointed 
+ * This function copies the string pointed by @c src into the buffer pointed
  * by @c dest, including the terminating null character.
  *
  ******************************************************************************/
@@ -271,16 +271,16 @@ void fnet_strcpy (fnet_char_t *dest, const fnet_char_t *src);
  *
  * @brief           Copies part of a string.
  *
- * @param dest      Pointer to the destination buffer where the content is 
- *                  to be copied.  
+ * @param dest      Pointer to the destination buffer where the content is
+ *                  to be copied.
  *
  * @param src       Pointer to the null-terminated string to be copied.
  *
- * @param n         Maximum number of characters to be copied. 
+ * @param n         Maximum number of characters to be copied.
  *
  ******************************************************************************
  *
- * This function copies the first @c n characters of the string pointed 
+ * This function copies the first @c n characters of the string pointed
  * by @c src into the buffer pointed by @c dest.@n
  * The result string is null-terminated.
  *
@@ -292,10 +292,10 @@ void fnet_strncpy( fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n );
  * @brief           Locates last occurrence of a character in a string.
  *
  * @param str       Pointer to the null-terminated string to be analyzed.
- * 
- * @param chr       Character to search for.  
  *
- * @return          This function returns the pointer to the found character 
+ * @param chr       Character to search for.
+ *
+ * @return          This function returns the pointer to the found character
  *                  in @c str, or @ref FNET_NULL if no such character is found.
  *
  ******************************************************************************
@@ -311,8 +311,8 @@ fnet_char_t *fnet_strrchr( const fnet_char_t *str, fnet_char_t chr );
  * @brief           Locates first occurrence of a character in a string.
  *
  * @param str       Pointer to the null-terminated string to be analyzed.
- * 
- * @param chr       Character to search for.  
+ *
+ * @param chr       Character to search for.
  *
  * @return          This function returns the pointer to the found character
  *                  in @c str, or @ref FNET_NULL if no such character is found.
@@ -330,17 +330,17 @@ fnet_char_t *fnet_strchr(const fnet_char_t *str, fnet_char_t chr );
  * @brief           Locates a substring.
  *
  * @param str       Pointer to the null-terminated string to be analyzed.
- * 
- * @param substr    Pointer to the null-terminated string to search for.  
  *
- * @return          This function returns pointer to the first occurrence 
- *                  in @c str of the entire sequence of characters 
+ * @param substr    Pointer to the null-terminated string to search for.
+ *
+ * @return          This function returns pointer to the first occurrence
+ *                  in @c str of the entire sequence of characters
  *                  specified in @c substr.
  *
  ******************************************************************************
  *
- * This function finds the first occurrence of the substring @c substr 
- * (excluding the terminating null byte) in the string @c str. 
+ * This function finds the first occurrence of the substring @c substr
+ * (excluding the terminating null byte) in the string @c str.
  *
  ******************************************************************************/
 fnet_char_t *fnet_strstr( const fnet_char_t *str, const fnet_char_t *substr );
@@ -354,12 +354,12 @@ fnet_char_t *fnet_strstr( const fnet_char_t *str, const fnet_char_t *substr );
  * @param str2      Pointer to the null-terminated string to be compared.
  *
  * @return          This function returns zero if two strings are identical,
- *                  otherwise returns the difference between the first 
+ *                  otherwise returns the difference between the first
  *                  two differing characters.
  *
  ******************************************************************************
  *
- * This function compares the two strings @c str1 and @c str2, returning zero if 
+ * This function compares the two strings @c str1 and @c str2, returning zero if
  * they all match or the difference between the first two differing characters.
  *
  ******************************************************************************/
@@ -373,18 +373,18 @@ fnet_int32_t fnet_strcmp( const fnet_char_t *str1, const fnet_char_t *str2 );
  *
  * @param str2      Pointer to the null-terminated string to be compared.
  *
- * @param n         Maximum number of characters to compare.  
+ * @param n         Maximum number of characters to compare.
  *
- * @return          This function returns zero if @c n characters of 
+ * @return          This function returns zero if @c n characters of
  *                  two strings are identical,
- *                  otherwise returns the difference between the first 
+ *                  otherwise returns the difference between the first
  *                  two differing characters.
  *
  ******************************************************************************
  *
- * This function compares not more than @c n characters (characters that 
- * follow a null byte are not compared) from the two strings @c str1 and 
- * @c str2, returning zero if they all match or the difference between 
+ * This function compares not more than @c n characters (characters that
+ * follow a null byte are not compared) from the two strings @c str1 and
+ * @c str2, returning zero if they all match or the difference between
  * the first two differing characters.
  *
  ******************************************************************************/
@@ -398,16 +398,16 @@ fnet_int32_t fnet_strncmp( const fnet_char_t *str1, const fnet_char_t *str2, fne
  *
  * @param str2      Pointer to the null-terminated string to be compared.
  *
- * @return          This function returns an integer less than, equal to, 
- *                  or greater than zero if @c str1 is found, 
- *                  respectively, to be less than, to match, or be greater 
+ * @return          This function returns an integer less than, equal to,
+ *                  or greater than zero if @c str1 is found,
+ *                  respectively, to be less than, to match, or be greater
  *                  than @c str2.
  *
  ******************************************************************************
  *
- * This function compares the two strings @c str1 
- * and @c str2, ignoring the case of the characters. It returns an 
- * integer less than, equal to, or greater than zero if @c str1 is found, 
+ * This function compares the two strings @c str1
+ * and @c str2, ignoring the case of the characters. It returns an
+ * integer less than, equal to, or greater than zero if @c str1 is found,
  * respectively, to be less than, to match, or be greater than @c str2.
  *
  ******************************************************************************/
@@ -421,15 +421,15 @@ fnet_int32_t fnet_strcasecmp( const fnet_char_t *str1, const fnet_char_t *str2 )
  *
  * @param name      Pointer to the null-terminated string to be compared.
  *
- * @param splitter  Additional terminator that can be used in @c str. 
+ * @param splitter  Additional terminator that can be used in @c str.
  *
  * @return          This function returns zero if two strings are identical,
- *                  otherwise returns the difference between the first 
+ *                  otherwise returns the difference between the first
  *                  two differing characters.
  *
  ******************************************************************************
  *
- * This function compares the two strings @c in_str and @c name, returning zero if 
+ * This function compares the two strings @c in_str and @c name, returning zero if
  * they all match or the difference between the first two differing characters.@n
  * The @c name string can be terminated by null or @c splitter character.
  *
@@ -442,43 +442,43 @@ fnet_int32_t fnet_strcmp_splitter( const fnet_char_t *in_str, const fnet_char_t 
  *
  * @param str       Pointer to the null-terminated string to be interpreted .
  *
- * @param ptr       Pointer to a pointer to character that will be set to 
- *                  the character immediately following the unsigned long 
- *                  integer in the string.  If no integer can be formed, 
+ * @param ptr       Pointer to a pointer to character that will be set to
+ *                  the character immediately following the unsigned long
+ *                  integer in the string.  If no integer can be formed,
  *                  it points to the first wrong character.
  *
  * @param base      Base of the interpreted integer value. If it equals to 0,
  *                  it will be set to the default value 10.
  *
- * @return          This function returns integer value corresponding to the 
- *                  contents of @c str on success. If no conversion can be 
+ * @return          This function returns integer value corresponding to the
+ *                  contents of @c str on success. If no conversion can be
  *                  performed, @c 0 is returned.
  *
  ******************************************************************************
  *
  * This function converts a string to an unsigned long integer.@n
- * The string to be converted can contain the digits '0' to '9'. 
- * Depending on the base, the string can also contain letters representing 
- * digits greater than 9. 
+ * The string to be converted can contain the digits '0' to '9'.
+ * Depending on the base, the string can also contain letters representing
+ * digits greater than 9.
  *
  ******************************************************************************/
 fnet_uint32_t fnet_strtoul (const fnet_char_t *str, fnet_char_t **ptr, fnet_size_t base);
 
 /***************************************************************************/ /*!
  *
- * @brief    Breaks a string into a sequence of tokens. 
+ * @brief    Breaks a string into a sequence of tokens.
  *
  * @param str           The string from which to extract tokens (null-terminated).
  *
- * @param delimiter     The string that contains a set of delimiter 
+ * @param delimiter     The string that contains a set of delimiter
  *                      characters (null-terminated).
  *
- * @param last          Return parameter used by @ref fnet_strtok_r() to record 
+ * @param last          Return parameter used by @ref fnet_strtok_r() to record
  *                      its progress through @c str. @n
- *                      This pointer, must be the same while parsing the 
+ *                      This pointer, must be the same while parsing the
  *                      same string.
  *
- * @return       This function returns a pointer to the next token in @c str. 
+ * @return       This function returns a pointer to the next token in @c str.
  *               If there are no remaining tokens, it returns a @ref FNET_NULL
  *               pointer.
  *
@@ -489,7 +489,7 @@ fnet_uint32_t fnet_strtoul (const fnet_char_t *str, fnet_char_t **ptr, fnet_size
  * quent calls should have the first  argument  set  to  @ref FNET_NULL.  Each  call
  * returns  a  pointer  to the next token, or @ref FNET_NULL when no more tokens are
  * found. @n
- * The function also updates the @c last parameter with the starting address 
+ * The function also updates the @c last parameter with the starting address
  * of the token following the first occurrence of the @c delimiter parameter. @n
  * The @c delimiter string may be different for each call.
  *
@@ -506,8 +506,8 @@ fnet_char_t *fnet_strtok_r(fnet_char_t *str, const fnet_char_t *delimiter, fnet_
  *
  ******************************************************************************
  *
- *  This function converts an uppercase letter to the corresponding 
- * lowercase letter. 
+ *  This function converts an uppercase letter to the corresponding
+ * lowercase letter.
  *
  ******************************************************************************/
 fnet_char_t fnet_tolower( fnet_char_t to_lower );

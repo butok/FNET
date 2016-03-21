@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2014 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fapp_llmnr.h
@@ -41,7 +41,7 @@
 extern "C" {
 #endif
 
-void fapp_llmnr_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** argv );
+void fapp_llmnr_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 void fapp_llmnr_info(fnet_shell_desc_t desc);
 void fapp_llmnr_release(void);
 

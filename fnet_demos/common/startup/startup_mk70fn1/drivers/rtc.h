@@ -10,7 +10,7 @@
 #include "common.h"
 /********************************************************************/
 
-void rtc_init(uint32 seconds, uint32 alarm, uint8 c_interval, uint8 c_value, uint8 interrupt);      
+void rtc_init(uint32 seconds, uint32 alarm, uint8 c_interval, uint8 c_value, uint8 interrupt);
 void rtc_isr(void);
 
 /********************************************************************/

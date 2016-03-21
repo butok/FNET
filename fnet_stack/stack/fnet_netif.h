@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok, Alexey Shervashidze. Motorola SPS
@@ -18,7 +18,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_netif.h
@@ -40,8 +40,8 @@
 #include "fnet_socket.h"
 
 /*! @addtogroup fnet_netif
-* The Network Interface API allows an application to control 
-* various interface parameters, such as the IP address, the gateway address, 
+* The Network Interface API allows an application to control
+* various interface parameters, such as the IP address, the gateway address,
 * the subnet mask, and others.
 */
 /*! @{ */
@@ -51,7 +51,7 @@
  ******************************************************************************/
 typedef enum
 {
-    FNET_NETIF_TYPE_OTHER,      /**< @brief Unspecified interface. 
+    FNET_NETIF_TYPE_OTHER,      /**< @brief Unspecified interface.
                                  */
     FNET_NETIF_TYPE_ETHERNET,   /**< @brief Ethernet interface
                                  */
@@ -87,19 +87,19 @@ typedef void *fnet_netif_desc_t;
  * @brief Link-layer address.
  * For example, Ethernet interafce uses the address with size set to 6.
  ******************************************************************************/
-typedef fnet_uint8_t fnet_netif_ll_addr_t[FNET_NETIF_LL_ADDR_MAX]; 
+typedef fnet_uint8_t fnet_netif_ll_addr_t[FNET_NETIF_LL_ADDR_MAX];
 
 /**************************************************************************/ /*!
  * @brief Copying Link-layer address.
  ******************************************************************************/
 #define FNET_NETIF_LL_ADDR_COPY(from_addr, to_addr, ll_size)   \
-                                    (fnet_memcpy(&(to_addr)[0], &(from_addr)[0], (ll_size)))
+    (fnet_memcpy(&(to_addr)[0], &(from_addr)[0], (ll_size)))
 
 /**************************************************************************/ /*!
  * @brief Check Link-layer address Equality.
  ******************************************************************************/
 #define FNET_NETIF_LL_ADDR_ARE_EQUAL(a, b, size)               \
-        (fnet_memcmp(&(a)[0], &(b)[0], (size)) == 0)
+    (fnet_memcmp(&(a)[0], &(b)[0], (size)) == 0)
 
 /**************************************************************************/ /*!
  * @brief Possible IPv6 address states.
@@ -124,8 +124,8 @@ typedef enum
 
 /**************************************************************************/ /*!
  * @brief Possible IPv6 address types.
- * @see fnet_netif_get_ip6_addr(), fnet_netif_ip6_addr_info 
- ******************************************************************************/    
+ * @see fnet_netif_get_ip6_addr(), fnet_netif_ip6_addr_info
+ ******************************************************************************/
 typedef enum
 {
     FNET_NETIF_IP_ADDR_TYPE_MANUAL = 0,            /**< @brief The address is set manually.*/
@@ -187,7 +187,7 @@ extern "C" {
  *
  ******************************************************************************
  *
- * This function scans the global network interface list looking for a network 
+ * This function scans the global network interface list looking for a network
  * interface matching the @c name parameter (for example "eth0", "loop").
  *
  ******************************************************************************/
@@ -208,7 +208,7 @@ fnet_netif_desc_t fnet_netif_get_by_name( fnet_char_t *name );
  *
  ******************************************************************************
  *
- * This function scans the global network interface list looking for a network 
+ * This function scans the global network interface list looking for a network
  * interface matching the @c n parameter.
  *
  ******************************************************************************/
@@ -230,7 +230,7 @@ fnet_netif_desc_t fnet_netif_get_by_number( fnet_index_t n );
  *
  ******************************************************************************
  *
- * This function scans the global network interface list looking for a network 
+ * This function scans the global network interface list looking for a network
  * interface matching the @c addr parameter.
  *
  ******************************************************************************/
@@ -243,7 +243,7 @@ fnet_netif_desc_t fnet_netif_get_by_ip4_addr( fnet_ip4_addr_t addr );
  *
  * @param netif_desc          Network interface descriptor.
  *
- * @param name           String buffer that receives a name of the 
+ * @param name           String buffer that receives a name of the
  *                       interface @c netif_desc.
  *
  * @param name_size      Size of the @c name buffer. @n Maximum length of
@@ -253,7 +253,7 @@ fnet_netif_desc_t fnet_netif_get_by_ip4_addr( fnet_ip4_addr_t addr );
  *
  ******************************************************************************
  *
- * This function retrieves the name of the specified network interface 
+ * This function retrieves the name of the specified network interface
  * @c netif_desc and stores it in the @c name (for example "eth0", "loop").
  *
  ******************************************************************************/
@@ -311,8 +311,8 @@ fnet_netif_desc_t fnet_netif_get_default( void );
  ******************************************************************************
  *
  * This function sets the IPv4 address of the @c netif interface to the @c ipaddr value.@n
- * Also, it makes a recalculation of the subnet mask of the interface according 
- * to the @c ipaddr. 
+ * Also, it makes a recalculation of the subnet mask of the interface according
+ * to the @c ipaddr.
  *
  ******************************************************************************/
 void fnet_netif_set_ip4_addr( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipaddr );
@@ -346,8 +346,8 @@ fnet_ip4_addr_t fnet_netif_get_ip4_addr( fnet_netif_desc_t netif_desc );
  *
  ******************************************************************************
  *
- * This function sets the subnet mask of the @c netif interface 
- * to the @c netmask value. 
+ * This function sets the subnet mask of the @c netif interface
+ * to the @c netmask value.
  *
  ******************************************************************************/
 void fnet_netif_set_ip4_subnet_mask( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t subnet_mask );
@@ -358,7 +358,7 @@ void fnet_netif_set_ip4_subnet_mask( fnet_netif_desc_t netif_desc, fnet_ip4_addr
  *
  * @param netif_desc  Network interface descriptor.
  *
- * @return       This function returns the subnet mask of the @c netif 
+ * @return       This function returns the subnet mask of the @c netif
  *               interface.
  *
  * @see fnet_netif_set_ip4_subnet_mask()
@@ -382,8 +382,8 @@ fnet_ip4_addr_t fnet_netif_get_ip4_subnet_mask( fnet_netif_desc_t netif_desc );
  *
  ******************************************************************************
  *
- * This function sets the gateway IP address of the @c netif interface 
- * to the @c gw value. 
+ * This function sets the gateway IP address of the @c netif interface
+ * to the @c gw value.
  *
  ******************************************************************************/
 void fnet_netif_set_ip4_gateway( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t gw );
@@ -394,7 +394,7 @@ void fnet_netif_set_ip4_gateway( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t g
  *
  * @param netif_desc  Network interface descriptor.
  *
- * @return       This function returns the gateway IP address of the @c netif 
+ * @return       This function returns the gateway IP address of the @c netif
  *               interface.
  *
  * @see fnet_netif_set_ip4_gateway()
@@ -420,7 +420,7 @@ fnet_ip4_addr_t fnet_netif_get_ip4_gateway( fnet_netif_desc_t netif_desc );
  *
  ******************************************************************************
  *
- * This function sets the DNS server IP address of the @c netif interface 
+ * This function sets the DNS server IP address of the @c netif interface
  * to the @c dns value. @n
  * It is present only if @ref FNET_CFG_DNS is set to 1.
  *
@@ -433,14 +433,14 @@ void fnet_netif_set_ip4_dns( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t dns )
  *
  * @param netif_desc  Network interface descriptor.
  *
- * @return       This function returns the DNS server IP address of the @c netif 
+ * @return       This function returns the DNS server IP address of the @c netif
  *               interface.
  *
  * @see fnet_netif_set_ip4_dns(), FNET_CFG_DNS
  *
  ******************************************************************************
  *
- * This function is used to retrieve all DNS IPv4 addresses registered with 
+ * This function is used to retrieve all DNS IPv4 addresses registered with
  * the given interface. @n
  * It is present only if @ref FNET_CFG_DNS is set to 1.
  *
@@ -456,12 +456,12 @@ fnet_ip4_addr_t fnet_netif_get_ip4_dns( fnet_netif_desc_t netif_desc );
  *
  * @param netif_desc     Network interface descriptor.
  *
- * @param hw_addr        Buffer containing the hardware address 
+ * @param hw_addr        Buffer containing the hardware address
  *                      (for the @ref FNET_NETIF_TYPE_ETHERNET interface type,
  *                       it contains the MAC address).
  *
- * @param hw_addr_size   Size of the hardware address in the @c hw_addr (for the @ref 
- *                       FNET_NETIF_TYPE_ETHERNET interface type, it 
+ * @param hw_addr_size   Size of the hardware address in the @c hw_addr (for the @ref
+ *                       FNET_NETIF_TYPE_ETHERNET interface type, it
  *                       equals @c 6).
  *
  * @return This function returns:
@@ -472,9 +472,9 @@ fnet_ip4_addr_t fnet_netif_get_ip4_dns( fnet_netif_desc_t netif_desc );
  *
  ******************************************************************************
  *
- * This function sets the hardware address of the @c netif interface 
+ * This function sets the hardware address of the @c netif interface
  * to the @c hw_addr value.@n
- * For the @ref FNET_NETIF_TYPE_ETHERNET interface type, this hardware address is 
+ * For the @ref FNET_NETIF_TYPE_ETHERNET interface type, this hardware address is
  * the MAC address.
  *
  ******************************************************************************/
@@ -486,12 +486,12 @@ fnet_return_t fnet_netif_set_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
  *
  * @param netif_desc     Network interface descriptor.
  *
- * @param hw_addr        Buffer that receives a hardware address  
+ * @param hw_addr        Buffer that receives a hardware address
  *                      (for @ref FNET_NETIF_TYPE_ETHERNET interface type,
  *                       it will contain the MAC address).
  *
- * @param hw_addr_size   Size of the hardware address in the @c hw_addr (for the @ref 
- *                       FNET_NETIF_TYPE_ETHERNET interface type, it 
+ * @param hw_addr_size   Size of the hardware address in the @c hw_addr (for the @ref
+ *                       FNET_NETIF_TYPE_ETHERNET interface type, it
  *                       equals @c 6).
  *
  * @return This function returns:
@@ -502,9 +502,9 @@ fnet_return_t fnet_netif_set_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
  *
  ******************************************************************************
  *
- * This function reads the hardware address of the @c netif interface 
+ * This function reads the hardware address of the @c netif interface
  * and puts it into the @c hw_addr buffer.@n
- * For the @ref FNET_NETIF_TYPE_ETHERNET interface type, this hardware address is 
+ * For the @ref FNET_NETIF_TYPE_ETHERNET interface type, this hardware address is
  * the MAC address.
  *
  ******************************************************************************/
@@ -516,13 +516,13 @@ fnet_return_t fnet_netif_get_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
  *
  * @param netif_desc  Network interface descriptor.
  *
- * @return       This function returns the type of the @c netif 
+ * @return       This function returns the type of the @c netif
  *               interface.@n
  *               The type is defined by the @ref fnet_netif_type_t.
  *
  ******************************************************************************
  *
- * This function returns the type of the @c netif interface that is defined 
+ * This function returns the type of the @c netif interface that is defined
  * by the @ref fnet_netif_type_t.
  *
  ******************************************************************************/
@@ -541,8 +541,8 @@ fnet_netif_type_t fnet_netif_get_type( fnet_netif_desc_t netif_desc );
  *
  ******************************************************************************
  *
- * This function determines if the IPv4 parameters of the @c netif interface 
- * were set manually, or obtained by the DHCP client or 
+ * This function determines if the IPv4 parameters of the @c netif interface
+ * were set manually, or obtained by the DHCP client or
  * set during link-local autoconfiguartion (AutoIP - TBD)
  *
  ******************************************************************************/
@@ -560,11 +560,11 @@ fnet_netif_ip_addr_type_t fnet_netif_get_ip4_addr_type( fnet_netif_desc_t netif_
  *
  ******************************************************************************
  *
- * This function sets type of the interface IPv4 address parameters, if they 
- * were set manually, or obtained by the DHCP client or 
+ * This function sets type of the interface IPv4 address parameters, if they
+ * were set manually, or obtained by the DHCP client or
  * set during link-local autoconfiguartion (AutoIP - TBD). @n
- * fnet_netif_set_ip4_addr(), fnet_netif_set_ip4_subnet_mask(), 
- * fnet_netif_set_ip4_gateway() and fnet_netif_set_ip4_dns() sets 
+ * fnet_netif_set_ip4_addr(), fnet_netif_set_ip4_subnet_mask(),
+ * fnet_netif_set_ip4_gateway() and fnet_netif_set_ip4_dns() sets
  * the type to FNET_NETIF_IP_ADDR_TYPE_MANUAL automatically.
  *
  ******************************************************************************/
@@ -582,9 +582,9 @@ void fnet_netif_set_ip4_addr_type( fnet_netif_desc_t netif_desc, fnet_netif_ip_a
  *
  ******************************************************************************
  *
- * This function determines if the @c netif interface is marked as connected to 
+ * This function determines if the @c netif interface is marked as connected to
  * a network or not.
- * The Ethernet network interface gets this status from the PHY. 
+ * The Ethernet network interface gets this status from the PHY.
  *
  ******************************************************************************/
 fnet_bool_t fnet_netif_is_connected( fnet_netif_desc_t netif_desc );
@@ -595,29 +595,29 @@ fnet_bool_t fnet_netif_is_connected( fnet_netif_desc_t netif_desc );
  *
  * @param netif_desc  Network interface descriptor.
  *
- * @param statistics  Structure that receives the network interface statistics 
+ * @param statistics  Structure that receives the network interface statistics
  *                    defined by the @ref fnet_netif_statistics structure.
  *
  * @return This function returns:
  *   - @ref FNET_OK if no error occurs.
- *   - @ref FNET_ERR if an error occurs or the network interface driver does 
+ *   - @ref FNET_ERR if an error occurs or the network interface driver does
  *          not support this statistics.
  *
  ******************************************************************************
  *
- * This function retrieves the network statistics of the @c netif interface 
- * and puts it into the @c statistics defined by the @ref fnet_netif_statistics 
+ * This function retrieves the network statistics of the @c netif interface
+ * and puts it into the @c statistics defined by the @ref fnet_netif_statistics
  * structure.
  *
  ******************************************************************************/
 fnet_return_t fnet_netif_get_statistics( fnet_netif_desc_t netif_desc, struct fnet_netif_statistics *statistics );
 
 /**************************************************************************/ /*!
- * @brief Event handler callback function prototype, that is 
- * called when there is an IP address conflict with another system 
+ * @brief Event handler callback function prototype, that is
+ * called when there is an IP address conflict with another system
  * on the network.
- * 
- * @param netif      Network interface descriptor that has duplicated IP 
+ *
+ * @param netif      Network interface descriptor that has duplicated IP
  *                   address.
  *
  * @see fnet_socket_rx_handler_init()
@@ -628,13 +628,13 @@ typedef void(*fnet_netif_dupip_handler_t)( fnet_netif_desc_t netif );
  *
  * @brief    Registers the "duplicated IP address" event handler.
  *
- * @param handler    Pointer to the event-handler function defined by 
+ * @param handler    Pointer to the event-handler function defined by
  *                   @ref fnet_netif_dupip_handler_t.
  *
  ******************************************************************************
  *
- * This function registers the @c handler callback function for 
- * the "duplicated IP address" event. This event occurs when there is 
+ * This function registers the @c handler callback function for
+ * the "duplicated IP address" event. This event occurs when there is
  * an IP address conflict with another system on the network. @n
  * To stop the event handling, set @c handler parameter to zero value.
  *
@@ -642,7 +642,7 @@ typedef void(*fnet_netif_dupip_handler_t)( fnet_netif_desc_t netif );
 void fnet_netif_dupip_handler_init (fnet_netif_dupip_handler_t handler);
 
 #if (FNET_CFG_MULTICAST & FNET_CFG_IP4) || defined(__DOXYGEN__)
-  
+
 /***************************************************************************/ /*!
  *
  * @brief    Joins the specified network interface to IPv4 multicast group.
@@ -655,13 +655,13 @@ void fnet_netif_dupip_handler_init (fnet_netif_dupip_handler_t handler);
  *
  ******************************************************************************
  *
- * This function configures the HW interface to receive 
+ * This function configures the HW interface to receive
  * particular multicast address.
- * When the network interface picks up a packet which has a destination  
- * that matches any of the joined-multicast addresses, it will pass it to 
+ * When the network interface picks up a packet which has a destination
+ * that matches any of the joined-multicast addresses, it will pass it to
  * the upper layers for further processing. @n
  * @note User application should not call this function. @n
- * This function is available only if @ref FNET_CFG_MULTICAST and 
+ * This function is available only if @ref FNET_CFG_MULTICAST and
  * @ref FNET_CFG_IP4 are set to @c 1.
  *
  ******************************************************************************/
@@ -679,11 +679,11 @@ void fnet_netif_join_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_addr
  *
  ******************************************************************************
  *
- * This function configures the HW interface to ignore 
+ * This function configures the HW interface to ignore
  * particular multicast address. @n
  * @note User application should not call this function. @n
- * This function is available only if @ref FNET_CFG_MULTICAST and 
- * @ref FNET_CFG_IP4 are set to @c 1. 
+ * This function is available only if @ref FNET_CFG_MULTICAST and
+ * @ref FNET_CFG_IP4 are set to @c 1.
  *
  ******************************************************************************/
 void fnet_netif_leave_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t multicast_addr );
@@ -694,7 +694,7 @@ void fnet_netif_leave_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_add
 
 
 #if FNET_CFG_IP6 || defined(__DOXYGEN__)
-  
+
 /***************************************************************************/ /*!
  *
  * @brief    Joins the specified network interface to IPv6 multicast group.
@@ -707,10 +707,10 @@ void fnet_netif_leave_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_add
  *
  ******************************************************************************
  *
- * This function configures the HW interface to receive 
+ * This function configures the HW interface to receive
  * particular multicast address.
- * When the network interface picks up a packet which has a destination  
- * that matches any of the joined-multicast addresses, it will pass it to 
+ * When the network interface picks up a packet which has a destination
+ * that matches any of the joined-multicast addresses, it will pass it to
  * the upper layers for further processing. @n
  * @note User application should not call this function. @n
  * This function is available only if @ref FNET_CFG_IP6 is set to @c 1.
@@ -730,10 +730,10 @@ void fnet_netif_join_ip6_multicast ( fnet_netif_desc_t netif_desc, const fnet_ip
  *
  ******************************************************************************
  *
- * This function configures the HW interface to ignore 
+ * This function configures the HW interface to ignore
  * particular multicast address. @n
  * @note User application should not call this function. @n
- * This function is available only if @ref FNET_CFG_IP6 is set to @c 1. 
+ * This function is available only if @ref FNET_CFG_IP6 is set to @c 1.
  *
  ******************************************************************************/
 void fnet_netif_leave_ip6_multicast ( fnet_netif_desc_t netif_desc, fnet_ip6_addr_t *multicast_addr );
@@ -754,7 +754,7 @@ void fnet_netif_leave_ip6_multicast ( fnet_netif_desc_t netif_desc, fnet_ip6_add
  *
  ******************************************************************************
  *
- * This function is used to retrieve all IPv6 addresses registered with 
+ * This function is used to retrieve all IPv6 addresses registered with
  * the given interface.
  *
  ******************************************************************************/
@@ -778,7 +778,7 @@ fnet_bool_t fnet_netif_get_ip6_addr ( fnet_netif_desc_t netif_desc, fnet_index_t
  * @see FNET_CFG_ND6_RDNSS, FNET_CFG_DNS
  ******************************************************************************
  *
- * This function is used to retrieve all DNS IPv6 addresses registered with 
+ * This function is used to retrieve all DNS IPv6 addresses registered with
  * the given interface.@n
  * It is present only if @ref FNET_CFG_DNS is set to 1.
  *
@@ -794,7 +794,7 @@ fnet_bool_t fnet_netif_get_ip6_dns( fnet_netif_desc_t netif_desc, fnet_index_t n
  *
  * @param addr        The IPv6 address for the network interface.
  *
- * @param addr_type   The IPv6 address type that defines the way the IPv6 
+ * @param addr_type   The IPv6 address type that defines the way the IPv6
  *                    address to be assigned to the interface.
  *
  * @return This function returns:
@@ -806,15 +806,15 @@ fnet_bool_t fnet_netif_get_ip6_dns( fnet_netif_desc_t netif_desc, fnet_index_t n
  ******************************************************************************
  *
  * This function binds the IPv6 address to the @c netif interface.@n
- * The @c addr_type parameter defines the way the IPv6 address is assigned 
+ * The @c addr_type parameter defines the way the IPv6 address is assigned
  * to the interface:
- *   - @c FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE: value of the @c addr 
- *             parameter defines the first 64bits of the bind IPv6 address. 
- *            The last 64bits of the IPv6 address are overwritten with the 
- *            Interface Identifier. In case of Ethernet interface, 
- *            the Interface Identifier is formed from 48-bit MAC address, 
- *            according to [RFC2464]. 
- *   - @c !FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE:  value of the @c addr parameter 
+ *   - @c FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE: value of the @c addr
+ *             parameter defines the first 64bits of the bind IPv6 address.
+ *            The last 64bits of the IPv6 address are overwritten with the
+ *            Interface Identifier. In case of Ethernet interface,
+ *            the Interface Identifier is formed from 48-bit MAC address,
+ *            according to [RFC2464].
+ *   - @c !FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE:  value of the @c addr parameter
  *             defines the whole IPv6 address to be bind to the interface.
  *
  ******************************************************************************/
@@ -897,7 +897,7 @@ fnet_bool_t fnet_netif_get_ip6_neighbor_cache(fnet_netif_desc_t netif_desc, fnet
  *
  * @return This function returns:
  *          - Scope ID value.
- *          - @c 0 if no Scope ID was assigned to the interface. 
+ *          - @c 0 if no Scope ID was assigned to the interface.
  *
  ******************************************************************************
  *
@@ -937,8 +937,8 @@ fnet_size_t fnet_netif_get_mtu(fnet_netif_desc_t netif_desc);
  *
  ******************************************************************************
  *
- * This function scans the global network interface list looking for a network 
- * interface matching the specified Scope ID. 
+ * This function scans the global network interface list looking for a network
+ * interface matching the specified Scope ID.
  *
  ******************************************************************************/
 fnet_netif_desc_t fnet_netif_get_by_scope_id(fnet_scope_id_t scope_id);
@@ -959,8 +959,8 @@ fnet_netif_desc_t fnet_netif_get_by_scope_id(fnet_scope_id_t scope_id);
  *
  ******************************************************************************
  *
- * This function scans the global network interface list looking for a network 
- * interface matching the specified socket address. 
+ * This function scans the global network interface list looking for a network
+ * interface matching the specified socket address.
  *
  ******************************************************************************/
 fnet_netif_desc_t fnet_netif_get_by_sockaddr( const struct sockaddr *addr );

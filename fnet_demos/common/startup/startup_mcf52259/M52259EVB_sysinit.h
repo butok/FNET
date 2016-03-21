@@ -34,7 +34,7 @@ extern "C" {
 #define REF_CLOCK_KHZ         (8000)
 
 
-/* System Clock Info */ 
+/* System Clock Info */
 #define SYSTEM_CLOCK_KHZ           (80000)
 
 /* Serial Port Info */
@@ -45,8 +45,8 @@ extern "C" {
 
 /********************************************************************/
 /* __initialize_hardware Startup code routine
- * 
- * __initialize_hardware is called by the startup code right after reset, 
+ *
+ * __initialize_hardware is called by the startup code right after reset,
  * with interrupt disabled and SP pre-set to a valid memory area.
  * Here you should initialize memory and some peripherics;
  * at this point global variables are not initialized yet.

@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2015 by Andrey Butok and Gordon Jahn.
 *                        Freescale Semiconductor, Inc.
 *
@@ -42,8 +42,8 @@
 #define  FNET_CFG_CPU_TIMER_NUMBER_MAX                  (4)
 
 /*****************************************************************************
- *  Max priority. 
- ******************************************************************************/ 
+ *  Max priority.
+ ******************************************************************************/
 #define FNET_CFG_CPU_VECTOR_PRIORITY_MAX                (31)
 
 
@@ -66,7 +66,7 @@
 /* The platform does not have second Ethernet Module.*/
 #define FNET_CFG_CPU_ETH1                               (0)
 
-/* Defines the maximum number of incoming frames that may 
+/* Defines the maximum number of incoming frames that may
  *           be buffered by the Ethernet module.*/
 #ifndef FNET_CFG_CPU_ETH_RX_BUFS_MAX
     #define FNET_CFG_CPU_ETH_RX_BUFS_MAX                (4)
@@ -76,7 +76,7 @@
 #define FNET_CFG_CPU_FLASH_SIZE                         (1024 * 1024 * 5 / 2)   /* 2.5 MB*/
 
 /* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE                          (1024 * 384)   /* 384 KB */  
+#define FNET_CFG_CPU_SRAM_SIZE                          (1024 * 384)   /* 384 KB */
 
 /* PIT channel to use as timer */
 #ifndef FNET_CFG_CPU_TIMER_NUMBER
@@ -85,22 +85,22 @@
 
 
 /* To improve the TX performance.*/
-#ifndef FNET_CFG_CPU_ETH_HW_TX_IP_CHECKSUM 
+#ifndef FNET_CFG_CPU_ETH_HW_TX_IP_CHECKSUM
     #define FNET_CFG_CPU_ETH_HW_TX_IP_CHECKSUM          (1)
 #endif
 
 /* To improve the TX performance.*/
-#ifndef FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM 
+#ifndef FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM
     #define FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM    (1)
 #endif
 
 /* To improve the RX performance.*/
-#ifndef FNET_CFG_CPU_ETH_HW_RX_IP_CHECKSUM 
+#ifndef FNET_CFG_CPU_ETH_HW_RX_IP_CHECKSUM
     #define FNET_CFG_CPU_ETH_HW_RX_IP_CHECKSUM          (1)
 #endif
 
 /* To improve the RX performance.*/
-#ifndef FNET_CFG_CPU_ETH_HW_RX_PROTOCOL_CHECKSUM 
+#ifndef FNET_CFG_CPU_ETH_HW_RX_PROTOCOL_CHECKSUM
     #define FNET_CFG_CPU_ETH_HW_RX_PROTOCOL_CHECKSUM    (1)
 #endif
 

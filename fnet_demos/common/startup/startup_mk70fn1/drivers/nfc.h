@@ -1,7 +1,7 @@
 /*
  * File:        nfc.h
  * Purpose:     Provide common NAND flash controller routines
- * 
+ *
  * Notes:
  */
 
@@ -14,8 +14,8 @@
 /* Defines for NAND command values */
 #define NFC_READ_PAGE_CMD_CODE        	    0x7EF8
 #define NFC_PROGRAM_PAGE_CMD_CODE           0x7FD8
-#define NFC_DMA_PROGRAM_PAGE_CMD_CODE       0xFFC0  
-#define NFC_BLOCK_ERASE_CMD_CODE      	    0x4ED8    
+#define NFC_DMA_PROGRAM_PAGE_CMD_CODE       0xFFC0
+#define NFC_BLOCK_ERASE_CMD_CODE      	    0x4ED8
 #define NFC_READ_ID_CMD_CODE          	    0x4804
 #define NFC_RESET_CMD_CODE            	    0x4040
 
@@ -37,10 +37,10 @@
 #define NFC_16BIT		      1
 
 /* Define an NFC error code. In the future this code could be changed
- * to a list of specific error codes, but for now there is just one 
+ * to a list of specific error codes, but for now there is just one
  * generic code.
  */
-#define NFC_ERR                       99    
+#define NFC_ERR                       99
 #define NFC_GOOD                      0
 
 /* Defines for page sizes - used for page size and ECC page size */
@@ -58,7 +58,7 @@
 /* Function prototypes */
 void nand_init(void);
 void nfc_reset_cmd(void);
-void nfc_read_flash_id(uint8, uint32*, uint32*);
+void nfc_read_flash_id(uint8, uint32 *, uint32 *);
 void nfc_block_erase(uint32);
 void nfc_page_program(uint8, uint32, uint16);
 void nfc_page_read(uint8, uint32, uint16);

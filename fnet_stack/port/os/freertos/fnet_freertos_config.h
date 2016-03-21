@@ -25,7 +25,7 @@
 * @brief Default FreeRTOS-specific configuration. @n
 *        Experimental. Not supported.
 *
-***************************************************************************/ 
+***************************************************************************/
 
 
 #ifndef FNET_FREERTOS_CONFIG_H_

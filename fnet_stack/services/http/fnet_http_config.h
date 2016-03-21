@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_http_config.h
@@ -61,7 +61,7 @@
 
 /**************************************************************************/ /*!
  * @def     FNET_CFG_HTTP_SESSION_MAX
- * @brief   Maximum number of simultaneous user-session that can be handled 
+ * @brief   Maximum number of simultaneous user-session that can be handled
  *          by the HTTP server.@n
  *          Default value is @b @c 3.
  * @showinitializer
@@ -75,10 +75,10 @@
  * @brief   HTTP Server SSI (Server Side Includes) support:
  *               - @b @c 1 = is enabled (Default value).
  *               - @c 0 = is disabled.
- * @showinitializer 
- ******************************************************************************/ 
+ * @showinitializer
+ ******************************************************************************/
 #ifndef FNET_CFG_HTTP_SSI
-    #define FNET_CFG_HTTP_SSI               (1) 
+    #define FNET_CFG_HTTP_SSI               (1)
 #endif
 
 /**************************************************************************/ /*!
@@ -86,34 +86,34 @@
  * @brief   HTTP Server CGI (Common Gateway Interface) support:
  *               - @b @c 1 = is enabled (Default value).
  *               - @c 0 = is disabled.
- * @showinitializer 
- ******************************************************************************/  
+ * @showinitializer
+ ******************************************************************************/
 #ifndef FNET_CFG_HTTP_CGI
-    #define FNET_CFG_HTTP_CGI               (1) 
+    #define FNET_CFG_HTTP_CGI               (1)
 #endif
 
 /**************************************************************************/ /*!
  * @def     FNET_CFG_HTTP_PORT
  * @brief   Default HTTP port number (in network byte order).@n
- *          It can be changed during the HTTP server initialization by the 
+ *          It can be changed during the HTTP server initialization by the
  *          @ref fnet_http_init() function.@n
  *          Default value FNET_HTONS(80).
- * @showinitializer 
- ******************************************************************************/  
+ * @showinitializer
+ ******************************************************************************/
 #ifndef FNET_CFG_HTTP_PORT
     #define FNET_CFG_HTTP_PORT              (FNET_HTONS(80u))
 #endif
 
 /**************************************************************************/ /*!
  * @def     FNET_CFG_HTTP_REQUEST_SIZE_MAX
- * @brief   Maximum size of an incoming request.@n 
- *          Also it defines the maximum number of bytes to use for internal 
+ * @brief   Maximum size of an incoming request.@n
+ *          Also it defines the maximum number of bytes to use for internal
  *          buffering (parsing, receive and transmit buffering).@n
  *          Default value @b @c 300.
- * @showinitializer 
- ******************************************************************************/  
+ * @showinitializer
+ ******************************************************************************/
 #ifndef FNET_CFG_HTTP_REQUEST_SIZE_MAX
-    #define FNET_CFG_HTTP_REQUEST_SIZE_MAX  (300u) 
+    #define FNET_CFG_HTTP_REQUEST_SIZE_MAX  (300u)
 #endif
 
 /**************************************************************************/ /*!
@@ -121,9 +121,9 @@
  * @brief   Hypertext Transfer Protocol HTTP version 1.x support:
  *               - @c 1 = is enabled.
  *               - @b @c 0 = is disabled. It means HTTP/0.9 (Default value).
- ******************************************************************************/  
+ ******************************************************************************/
 #ifndef FNET_CFG_HTTP_VERSION_MAJOR
-    #define FNET_CFG_HTTP_VERSION_MAJOR     (1u) 
+    #define FNET_CFG_HTTP_VERSION_MAJOR     (1u)
 #endif
 
 /**************************************************************************/ /*!
@@ -131,9 +131,9 @@
  * @brief   The HTTP/1.x Basic Authentification Scheme (RFC2617) support:
  *               - @b @c 1 = is enabled (default value).
  *               - @c 0 = is disabled.
- ******************************************************************************/  
+ ******************************************************************************/
 #ifndef FNET_CFG_HTTP_AUTHENTICATION_BASIC
-    #define FNET_CFG_HTTP_AUTHENTICATION_BASIC  (0) 
+    #define FNET_CFG_HTTP_AUTHENTICATION_BASIC  (0)
 #endif
 
 /**************************************************************************/ /*!
@@ -141,10 +141,10 @@
  * @brief   The HTTP/1.x POST method support:
  *               - @c 1 = is enabled.
  *               - @b @c 0 = is disabled (Default value).
- * @showinitializer 
- ******************************************************************************/  
+ * @showinitializer
+ ******************************************************************************/
 #ifndef FNET_CFG_HTTP_POST
-    #define FNET_CFG_HTTP_POST                  (0) 
+    #define FNET_CFG_HTTP_POST                  (0)
 #endif
 
 /*! @} */

@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_ping_config.h
@@ -50,11 +50,11 @@
 
 /**************************************************************************/ /*!
  * @def     FNET_CFG_PING_PACKET_MAX
- * @brief   The maximum size of the echo request packet. It defines send 
+ * @brief   The maximum size of the echo request packet. It defines send
  *          and receive buffer size, used by the PING service.@n
  *          Default value is @b @c 64.
- * @showinitializer 
- ******************************************************************************/  
+ * @showinitializer
+ ******************************************************************************/
 #ifndef FNET_CFG_PING_PACKET_MAX
     #define FNET_CFG_PING_PACKET_MAX            (64U)
 #endif
@@ -64,8 +64,8 @@
  * @brief   The ICMP Identifier (in network byte order).@n
  *          It is used to help match echo requests to the associated reply.@n
  *          Default value is @b @c 1.
- * @showinitializer 
- ******************************************************************************/  
+ * @showinitializer
+ ******************************************************************************/
 #ifndef FNET_CFG_PING_IDENTIFIER
     #define FNET_CFG_PING_IDENTIFIER            (FNET_HTONS(1U))
 #endif

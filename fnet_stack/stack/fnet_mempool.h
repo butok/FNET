@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_mempool.h
@@ -43,11 +43,11 @@ typedef fnet_int32_t fnet_mempool_desc_t;
 
 /* Memory pool unit header.*/
 FNET_COMP_PACKED_BEGIN
-typedef struct fnet_mempool_unit_header 
+typedef struct fnet_mempool_unit_header
 {
     fnet_size_t                         size FNET_COMP_PACKED;                     /* Unit size. */
     struct fnet_mempool_unit_header     *ptr FNET_COMP_PACKED;   /* Pointer to the next free block. */
-} 
+}
 fnet_mempool_unit_header_t;
 FNET_COMP_PACKED_END
 

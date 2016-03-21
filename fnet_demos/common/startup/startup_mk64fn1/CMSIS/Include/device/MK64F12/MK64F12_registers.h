@@ -15647,7 +15647,8 @@ typedef union _hw_axbs_mgpcr5
 #pragma pack(1)
 typedef struct _hw_axbs
 {
-    struct {
+    struct
+    {
         __IO hw_axbs_prsn_t PRSn;          /*!< [0x0] Priority Registers Slave */
         uint8_t _reserved0[12];
         __IO hw_axbs_crsn_t CRSn;          /*!< [0x10] Control Register */
@@ -19150,7 +19151,8 @@ typedef struct _hw_can
     __IO hw_can_rxfgmask_t RXFGMASK;       /*!< [0x48] Rx FIFO Global Mask register */
     __I hw_can_rxfir_t RXFIR;              /*!< [0x4C] Rx FIFO Information Register */
     uint8_t _reserved4[48];
-    struct {
+    struct
+    {
         __IO hw_can_csn_t CSn;             /*!< [0x80] Message Buffer 0 CS Register */
         __IO hw_can_idn_t IDn;             /*!< [0x84] Message Buffer 0 ID Register */
         __IO hw_can_word0n_t WORD0n;       /*!< [0x88] Message Buffer 0 WORD0 Register */
@@ -27442,17 +27444,17 @@ typedef union _hw_crc_ctrlhu
 */
 
 #if defined(__ARMCC_VERSION)
-  #pragma push
-  #pragma anon_unions
+    #pragma push
+    #pragma anon_unions
 #elif defined(__CWCC__)
-  #pragma push
-  #pragma cpp_extensions on
+    #pragma push
+    #pragma cpp_extensions on
 #elif defined(__GNUC__)
-  /* anonymous unions are enabled by default */
+    /* anonymous unions are enabled by default */
 #elif defined(__IAR_SYSTEMS_ICC__)
-  #pragma language=extended
+    #pragma language=extended
 #else
-  #error Not supported compiler type
+    #error Not supported compiler type
 #endif
 
 /*******************************************************************************
@@ -27464,12 +27466,15 @@ typedef union _hw_crc_ctrlhu
 #pragma pack(1)
 typedef struct _hw_crc
 {
-    union {
-        struct {
+    union
+    {
+        struct
+        {
             __IO hw_crc_datal_t DATAL;     /*!< [0x0] CRC_DATAL register. */
             __IO hw_crc_datah_t DATAH;     /*!< [0x2] CRC_DATAH register. */
         } ACCESS16BIT;
-        struct {
+        struct
+        {
             __IO hw_crc_datall_t DATALL;   /*!< [0x0] CRC_DATALL register. */
             __IO hw_crc_datalu_t DATALU;   /*!< [0x1] CRC_DATALU register. */
             __IO hw_crc_datahl_t DATAHL;   /*!< [0x2] CRC_DATAHL register. */
@@ -27477,22 +27482,27 @@ typedef struct _hw_crc
         } ACCESS8BIT;
         __IO hw_crc_data_t DATA;           /*!< [0x0] CRC Data register */
     };
-    union {
+    union
+    {
         __IO hw_crc_gpoly_t GPOLY;         /*!< [0x4] CRC Polynomial register */
-        struct {
+        struct
+        {
             __IO hw_crc_gpolyl_t GPOLYL;   /*!< [0x4] CRC_GPOLYL register. */
             __IO hw_crc_gpolyh_t GPOLYH;   /*!< [0x6] CRC_GPOLYH register. */
         } GPOLY_ACCESS16BIT;
-        struct {
+        struct
+        {
             __IO hw_crc_gpolyll_t GPOLYLL; /*!< [0x4] CRC_GPOLYLL register. */
             __IO hw_crc_gpolylu_t GPOLYLU; /*!< [0x5] CRC_GPOLYLU register. */
             __IO hw_crc_gpolyhl_t GPOLYHL; /*!< [0x6] CRC_GPOLYHL register. */
             __IO hw_crc_gpolyhu_t GPOLYHU; /*!< [0x7] CRC_GPOLYHU register. */
         } GPOLY_ACCESS8BIT;
     };
-    union {
+    union
+    {
         __IO hw_crc_ctrl_t CTRL;           /*!< [0x8] CRC Control register */
-        struct {
+        struct
+        {
             uint8_t _reserved0[3];
             __IO hw_crc_ctrlhu_t CTRLHU;   /*!< [0xB] CRC_CTRLHU register. */
         } CTRL_ACCESS8BIT;
@@ -27511,15 +27521,15 @@ typedef struct _hw_crc
 */
 
 #if defined(__ARMCC_VERSION)
-  #pragma pop
+    #pragma pop
 #elif defined(__CWCC__)
-  #pragma pop
+    #pragma pop
 #elif defined(__GNUC__)
-  /* leave anonymous unions enabled */
+    /* leave anonymous unions enabled */
 #elif defined(__IAR_SYSTEMS_ICC__)
-  #pragma language=default
+    #pragma language=default
 #else
-  #error Not supported compiler type
+    #error Not supported compiler type
 #endif
 
 /*
@@ -28236,7 +28246,8 @@ typedef union _hw_dac_c2
 #pragma pack(1)
 typedef struct _hw_dac
 {
-    struct {
+    struct
+    {
         __IO hw_dac_datnl_t DATnL;         /*!< [0x0] DAC Data Low Register */
         __IO hw_dac_datnh_t DATnH;         /*!< [0x1] DAC Data High Register */
     } DAT[16];
@@ -33439,17 +33450,17 @@ typedef union _hw_dma_tcdn_biter_elinkyes
 */
 
 #if defined(__ARMCC_VERSION)
-  #pragma push
-  #pragma anon_unions
+    #pragma push
+    #pragma anon_unions
 #elif defined(__CWCC__)
-  #pragma push
-  #pragma cpp_extensions on
+    #pragma push
+    #pragma cpp_extensions on
 #elif defined(__GNUC__)
-  /* anonymous unions are enabled by default */
+    /* anonymous unions are enabled by default */
 #elif defined(__IAR_SYSTEMS_ICC__)
-  #pragma language=extended
+    #pragma language=extended
 #else
-  #error Not supported compiler type
+    #error Not supported compiler type
 #endif
 
 /*******************************************************************************
@@ -33484,11 +33495,13 @@ typedef struct _hw_dma
     uint8_t _reserved5[200];
     __IO hw_dma_dchprin_t DCHPRIn[16];     /*!< [0x100] Channel n Priority Register */
     uint8_t _reserved6[3824];
-    struct {
+    struct
+    {
         __IO hw_dma_tcdn_saddr_t TCDn_SADDR; /*!< [0x1000] TCD Source Address */
         __IO hw_dma_tcdn_soff_t TCDn_SOFF; /*!< [0x1004] TCD Signed Source Address Offset */
         __IO hw_dma_tcdn_attr_t TCDn_ATTR; /*!< [0x1006] TCD Transfer Attributes */
-        union {
+        union
+        {
             __IO hw_dma_tcdn_nbytes_mlno_t TCDn_NBYTES_MLNO; /*!< [0x1008] TCD Minor Byte Count (Minor Loop Disabled) */
             __IO hw_dma_tcdn_nbytes_mloffno_t TCDn_NBYTES_MLOFFNO; /*!< [0x1008] TCD Signed Minor Loop Offset (Minor Loop Enabled and Offset Disabled) */
             __IO hw_dma_tcdn_nbytes_mloffyes_t TCDn_NBYTES_MLOFFYES; /*!< [0x1008] TCD Signed Minor Loop Offset (Minor Loop and Offset Enabled) */
@@ -33496,13 +33509,15 @@ typedef struct _hw_dma
         __IO hw_dma_tcdn_slast_t TCDn_SLAST; /*!< [0x100C] TCD Last Source Address Adjustment */
         __IO hw_dma_tcdn_daddr_t TCDn_DADDR; /*!< [0x1010] TCD Destination Address */
         __IO hw_dma_tcdn_doff_t TCDn_DOFF; /*!< [0x1014] TCD Signed Destination Address Offset */
-        union {
+        union
+        {
             __IO hw_dma_tcdn_citer_elinkno_t TCDn_CITER_ELINKNO; /*!< [0x1016] TCD Current Minor Loop Link, Major Loop Count (Channel Linking Disabled) */
             __IO hw_dma_tcdn_citer_elinkyes_t TCDn_CITER_ELINKYES; /*!< [0x1016] TCD Current Minor Loop Link, Major Loop Count (Channel Linking Enabled) */
         };
         __IO hw_dma_tcdn_dlastsga_t TCDn_DLASTSGA; /*!< [0x1018] TCD Last Destination Address Adjustment/Scatter Gather Address */
         __IO hw_dma_tcdn_csr_t TCDn_CSR;   /*!< [0x101C] TCD Control and Status */
-        union {
+        union
+        {
             __IO hw_dma_tcdn_biter_elinkno_t TCDn_BITER_ELINKNO; /*!< [0x101E] TCD Beginning Minor Loop Link, Major Loop Count (Channel Linking Disabled) */
             __IO hw_dma_tcdn_biter_elinkyes_t TCDn_BITER_ELINKYES; /*!< [0x101E] TCD Beginning Minor Loop Link, Major Loop Count (Channel Linking Enabled) */
         };
@@ -33521,15 +33536,15 @@ typedef struct _hw_dma
 */
 
 #if defined(__ARMCC_VERSION)
-  #pragma pop
+    #pragma pop
 #elif defined(__CWCC__)
-  #pragma pop
+    #pragma pop
 #elif defined(__GNUC__)
-  /* leave anonymous unions enabled */
+    /* leave anonymous unions enabled */
 #elif defined(__IAR_SYSTEMS_ICC__)
-  #pragma language=default
+    #pragma language=default
 #else
-  #error Not supported compiler type
+    #error Not supported compiler type
 #endif
 
 /*
@@ -41085,7 +41100,8 @@ typedef struct _hw_enet
     __I hw_enet_atstmp_t ATSTMP;           /*!< [0x418] Timestamp of Last Transmitted Frame */
     uint8_t _reserved19[488];
     __IO hw_enet_tgsr_t TGSR;              /*!< [0x604] Timer Global Status Register */
-    struct {
+    struct
+    {
         __IO hw_enet_tcsrn_t TCSRn;        /*!< [0x608] Timer Control Status Register */
         __IO hw_enet_tccrn_t TCCRn;        /*!< [0x60C] Timer Compare Capture Register */
     } CHANNEL[4];
@@ -42257,7 +42273,8 @@ typedef union _hw_fb_cspmcr
 #pragma pack(1)
 typedef struct _hw_fb
 {
-    struct {
+    struct
+    {
         __IO hw_fb_csarn_t CSARn;          /*!< [0x0] Chip Select Address Register */
         __IO hw_fb_csmrn_t CSMRn;          /*!< [0x4] Chip Select Mask Register */
         __IO hw_fb_cscrn_t CSCRn;          /*!< [0x8] Chip Select Control Register */
@@ -44144,19 +44161,23 @@ typedef struct _hw_fmc
     __IO hw_fmc_tagvdw2sn_t TAGVDW2Sn[4];  /*!< [0x120] Cache Tag Storage */
     __IO hw_fmc_tagvdw3sn_t TAGVDW3Sn[4];  /*!< [0x130] Cache Tag Storage */
     uint8_t _reserved1[192];
-    struct {
+    struct
+    {
         __IO hw_fmc_dataw0snu_t DATAW0SnU; /*!< [0x200] Cache Data Storage (upper word) */
         __IO hw_fmc_dataw0snl_t DATAW0SnL; /*!< [0x204] Cache Data Storage (lower word) */
     } DATAW0Sn[4];
-    struct {
+    struct
+    {
         __IO hw_fmc_dataw1snu_t DATAW1SnU; /*!< [0x220] Cache Data Storage (upper word) */
         __IO hw_fmc_dataw1snl_t DATAW1SnL; /*!< [0x224] Cache Data Storage (lower word) */
     } DATAW1Sn[4];
-    struct {
+    struct
+    {
         __IO hw_fmc_dataw2snu_t DATAW2SnU; /*!< [0x240] Cache Data Storage (upper word) */
         __IO hw_fmc_dataw2snl_t DATAW2SnL; /*!< [0x244] Cache Data Storage (lower word) */
     } DATAW2Sn[4];
-    struct {
+    struct
+    {
         __IO hw_fmc_dataw3snu_t DATAW3SnU; /*!< [0x260] Cache Data Storage (upper word) */
         __IO hw_fmc_dataw3snl_t DATAW3SnL; /*!< [0x264] Cache Data Storage (lower word) */
     } DATAW3Sn[4];
@@ -52217,7 +52238,8 @@ typedef struct _hw_ftm
     __IO hw_ftm_sc_t SC;                   /*!< [0x0] Status And Control */
     __IO hw_ftm_cnt_t CNT;                 /*!< [0x4] Counter */
     __IO hw_ftm_mod_t MOD;                 /*!< [0x8] Modulo */
-    struct {
+    struct
+    {
         __IO hw_ftm_cnsc_t CnSC;           /*!< [0xC] Channel (n) Status And Control */
         __IO hw_ftm_cnv_t CnV;             /*!< [0x10] Channel (n) Value */
     } CONTROLS[8];
@@ -64135,12 +64157,14 @@ typedef struct _hw_mpu
 {
     __IO hw_mpu_cesr_t CESR;               /*!< [0x0] Control/Error Status Register */
     uint8_t _reserved0[12];
-    struct {
+    struct
+    {
         __I hw_mpu_earn_t EARn;            /*!< [0x10] Error Address Register, slave port n */
         __I hw_mpu_edrn_t EDRn;            /*!< [0x14] Error Detail Register, slave port n */
     } SP[5];
     uint8_t _reserved1[968];
-    struct {
+    struct
+    {
         __IO hw_mpu_rgdn_word0_t RGDn_WORD0; /*!< [0x400] Region Descriptor n, Word 0 */
         __IO hw_mpu_rgdn_word1_t RGDn_WORD1; /*!< [0x404] Region Descriptor n, Word 1 */
         __IO hw_mpu_rgdn_word2_t RGDn_WORD2; /*!< [0x408] Region Descriptor n, Word 2 */
@@ -66445,7 +66469,8 @@ typedef struct _hw_pdb
     __IO hw_pdb_mod_t MOD;                 /*!< [0x4] Modulus register */
     __I hw_pdb_cnt_t CNT;                  /*!< [0x8] Counter register */
     __IO hw_pdb_idly_t IDLY;               /*!< [0xC] Interrupt Delay register */
-    struct {
+    struct
+    {
         __IO hw_pdb_chnc1_t CHnC1;         /*!< [0x10] Channel n Control register 1 */
         __IO hw_pdb_chns_t CHnS;           /*!< [0x14] Channel n Status register */
         __IO hw_pdb_chndly0_t CHnDLY0;     /*!< [0x18] Channel n Delay 0 register */
@@ -66453,7 +66478,8 @@ typedef struct _hw_pdb
         uint8_t _reserved0[24];
     } CH[2];
     uint8_t _reserved0[240];
-    struct {
+    struct
+    {
         __IO hw_pdb_dacintcn_t DACINTCn;   /*!< [0x150] DAC Interval Trigger n Control register */
         __IO hw_pdb_dacintn_t DACINTn;     /*!< [0x154] DAC Interval n register */
     } DAC[2];
@@ -66887,7 +66913,8 @@ typedef struct _hw_pit
 {
     __IO hw_pit_mcr_t MCR;                 /*!< [0x0] PIT Module Control Register */
     uint8_t _reserved0[252];
-    struct {
+    struct
+    {
         __IO hw_pit_ldvaln_t LDVALn;       /*!< [0x100] Timer Load Value Register */
         __I hw_pit_cvaln_t CVALn;          /*!< [0x104] Current Timer Value Register */
         __IO hw_pit_tctrln_t TCTRLn;       /*!< [0x108] Timer Control Register */
@@ -82916,17 +82943,17 @@ typedef union _hw_spi_rxfrn
 */
 
 #if defined(__ARMCC_VERSION)
-  #pragma push
-  #pragma anon_unions
+    #pragma push
+    #pragma anon_unions
 #elif defined(__CWCC__)
-  #pragma push
-  #pragma cpp_extensions on
+    #pragma push
+    #pragma cpp_extensions on
 #elif defined(__GNUC__)
-  /* anonymous unions are enabled by default */
+    /* anonymous unions are enabled by default */
 #elif defined(__IAR_SYSTEMS_ICC__)
-  #pragma language=extended
+    #pragma language=extended
 #else
-  #error Not supported compiler type
+    #error Not supported compiler type
 #endif
 
 /*******************************************************************************
@@ -82941,14 +82968,16 @@ typedef struct _hw_spi
     __IO hw_spi_mcr_t MCR;                 /*!< [0x0] Module Configuration Register */
     uint8_t _reserved0[4];
     __IO hw_spi_tcr_t TCR;                 /*!< [0x8] Transfer Count Register */
-    union {
+    union
+    {
         __IO hw_spi_ctarn_t CTARn[2];      /*!< [0xC] Clock and Transfer Attributes Register (In Master Mode) */
         __IO hw_spi_ctarn_slave_t CTARn_SLAVE[1]; /*!< [0xC] Clock and Transfer Attributes Register (In Slave Mode) */
     };
     uint8_t _reserved1[24];
     __IO hw_spi_sr_t SR;                   /*!< [0x2C] Status Register */
     __IO hw_spi_rser_t RSER;               /*!< [0x30] DMA/Interrupt Request Select and Enable Register */
-    union {
+    union
+    {
         __IO hw_spi_pushr_t PUSHR;         /*!< [0x34] PUSH TX FIFO Register In Master Mode */
         __IO hw_spi_pushr_slave_t PUSHR_SLAVE; /*!< [0x34] PUSH TX FIFO Register In Slave Mode */
     };
@@ -82970,15 +82999,15 @@ typedef struct _hw_spi
 */
 
 #if defined(__ARMCC_VERSION)
-  #pragma pop
+    #pragma pop
 #elif defined(__CWCC__)
-  #pragma pop
+    #pragma pop
 #elif defined(__GNUC__)
-  /* leave anonymous unions enabled */
+    /* leave anonymous unions enabled */
 #elif defined(__IAR_SYSTEMS_ICC__)
-  #pragma language=default
+    #pragma language=default
 #else
-  #error Not supported compiler type
+    #error Not supported compiler type
 #endif
 
 /*
@@ -87286,17 +87315,17 @@ typedef union _hw_uart_tl7816
 */
 
 #if defined(__ARMCC_VERSION)
-  #pragma push
-  #pragma anon_unions
+    #pragma push
+    #pragma anon_unions
 #elif defined(__CWCC__)
-  #pragma push
-  #pragma cpp_extensions on
+    #pragma push
+    #pragma cpp_extensions on
 #elif defined(__GNUC__)
-  /* anonymous unions are enabled by default */
+    /* anonymous unions are enabled by default */
 #elif defined(__IAR_SYSTEMS_ICC__)
-  #pragma language=extended
+    #pragma language=extended
 #else
-  #error Not supported compiler type
+    #error Not supported compiler type
 #endif
 
 /*******************************************************************************
@@ -87335,7 +87364,8 @@ typedef struct _hw_uart
     __IO hw_uart_c7816_t C7816;            /*!< [0x18] UART 7816 Control Register */
     __IO hw_uart_ie7816_t IE7816;          /*!< [0x19] UART 7816 Interrupt Enable Register */
     __IO hw_uart_is7816_t IS7816;          /*!< [0x1A] UART 7816 Interrupt Status Register */
-    union {
+    union
+    {
         __IO hw_uart_wp7816t0_t WP7816T0;  /*!< [0x1B] UART 7816 Wait Parameter Register */
         __IO hw_uart_wp7816t1_t WP7816T1;  /*!< [0x1B] UART 7816 Wait Parameter Register */
     };
@@ -87357,15 +87387,15 @@ typedef struct _hw_uart
 */
 
 #if defined(__ARMCC_VERSION)
-  #pragma pop
+    #pragma pop
 #elif defined(__CWCC__)
-  #pragma pop
+    #pragma pop
 #elif defined(__GNUC__)
-  /* leave anonymous unions enabled */
+    /* leave anonymous unions enabled */
 #elif defined(__IAR_SYSTEMS_ICC__)
-  #pragma language=default
+    #pragma language=default
 #else
-  #error Not supported compiler type
+    #error Not supported compiler type
 #endif
 
 /*
@@ -91082,7 +91112,8 @@ typedef struct _hw_usb
     uint8_t _reserved20[3];
     __IO hw_usb_bdtpage3_t BDTPAGE3;       /*!< [0xB4] BDT Page Register 3 */
     uint8_t _reserved21[11];
-    struct {
+    struct
+    {
         __IO hw_usb_endptn_t ENDPTn;       /*!< [0xC0] Endpoint Control register */
         uint8_t _reserved0[3];
     } ENDPOINT[16];
@@ -91905,17 +91936,17 @@ typedef union _hw_usbdcd_timer2_bc12
 */
 
 #if defined(__ARMCC_VERSION)
-  #pragma push
-  #pragma anon_unions
+    #pragma push
+    #pragma anon_unions
 #elif defined(__CWCC__)
-  #pragma push
-  #pragma cpp_extensions on
+    #pragma push
+    #pragma cpp_extensions on
 #elif defined(__GNUC__)
-  /* anonymous unions are enabled by default */
+    /* anonymous unions are enabled by default */
 #elif defined(__IAR_SYSTEMS_ICC__)
-  #pragma language=extended
+    #pragma language=extended
 #else
-  #error Not supported compiler type
+    #error Not supported compiler type
 #endif
 
 /*******************************************************************************
@@ -91933,7 +91964,8 @@ typedef struct _hw_usbdcd
     uint8_t _reserved0[4];
     __IO hw_usbdcd_timer0_t TIMER0;        /*!< [0x10] TIMER0 register */
     __IO hw_usbdcd_timer1_t TIMER1;        /*!< [0x14] TIMER1 register */
-    union {
+    union
+    {
         __IO hw_usbdcd_timer2_bc11_t TIMER2_BC11; /*!< [0x18] TIMER2_BC11 register */
         __IO hw_usbdcd_timer2_bc12_t TIMER2_BC12; /*!< [0x18] TIMER2_BC12 register */
     };
@@ -91951,15 +91983,15 @@ typedef struct _hw_usbdcd
 */
 
 #if defined(__ARMCC_VERSION)
-  #pragma pop
+    #pragma pop
 #elif defined(__CWCC__)
-  #pragma pop
+    #pragma pop
 #elif defined(__GNUC__)
-  /* leave anonymous unions enabled */
+    /* leave anonymous unions enabled */
 #elif defined(__IAR_SYSTEMS_ICC__)
-  #pragma language=default
+    #pragma language=default
 #else
-  #error Not supported compiler type
+    #error Not supported compiler type
 #endif
 
 /*

@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -113,7 +113,7 @@ typedef struct
 {
     fnet_uint8_t       ttl       FNET_COMP_PACKED;       /**< TTL.*/
     fnet_uint8_t       tos       FNET_COMP_PACKED;       /**< TOS.*/
-#if FNET_CFG_MULTICAST   
+#if FNET_CFG_MULTICAST
     fnet_uint8_t       ttl_multicast FNET_COMP_PACKED;   /**< TTL.*/
 #endif
 } fnet_ip_sockopt_t;
@@ -126,7 +126,7 @@ FNET_COMP_PACKED_END
 FNET_COMP_PACKED_BEGIN
 typedef struct
 {
-    fnet_uint8_t version__header_length    FNET_COMP_PACKED;   /**< version =4 & header length (x4) (>=5)*/     
+    fnet_uint8_t version__header_length    FNET_COMP_PACKED;   /**< version =4 & header length (x4) (>=5)*/
     fnet_uint8_t tos                       FNET_COMP_PACKED;   /**< type of service */
     fnet_uint16_t  total_length             FNET_COMP_PACKED;   /**< total length */
     fnet_uint16_t  id                       FNET_COMP_PACKED;   /**< identification */
@@ -146,7 +146,7 @@ FNET_COMP_PACKED_END
 FNET_COMP_PACKED_BEGIN
 typedef struct fnet_ip_frag_header
 {
-    fnet_uint8_t version__header_length    FNET_COMP_PACKED;   /**< version =4 & header length (x4) (>=5)*/    
+    fnet_uint8_t version__header_length    FNET_COMP_PACKED;   /**< version =4 & header length (x4) (>=5)*/
     fnet_uint8_t mf                        FNET_COMP_PACKED;
     fnet_uint16_t total_length             FNET_COMP_PACKED;   /**< data-payload total length (Host endian)*/
     fnet_uint16_t id                       FNET_COMP_PACKED;   /**< identification*/
@@ -187,17 +187,17 @@ FNET_COMP_PACKED_END
  * Multicast related structures.
  ******************************************************************************/
 #if FNET_CFG_MULTICAST
-    /* Entry of the multicast group list.*/
-    typedef struct fnet_ip_multicast_list_entry
-    {
-        fnet_netif_t    *netif;         /* Interface to join on. */
-        fnet_ip4_addr_t group_addr;     /* IP address of joined multicast group. */
-        fnet_index_t    user_counter;   /* User counter. Keeps a reference count of the number 
+/* Entry of the multicast group list.*/
+typedef struct fnet_ip_multicast_list_entry
+{
+    fnet_netif_t    *netif;         /* Interface to join on. */
+    fnet_ip4_addr_t group_addr;     /* IP address of joined multicast group. */
+    fnet_index_t    user_counter;   /* User counter. Keeps a reference count of the number
                                         * of requests to join a particular host group. */
-    } fnet_ip4_multicast_list_entry_t;
+} fnet_ip4_multicast_list_entry_t;
 
-    /* Global multicast list.*/
-    extern fnet_ip4_multicast_list_entry_t fnet_ip_multicast_list[FNET_CFG_MULTICAST_MAX];
+/* Global multicast list.*/
+extern fnet_ip4_multicast_list_entry_t fnet_ip_multicast_list[FNET_CFG_MULTICAST_MAX];
 
 #endif /* FNET_CFG_MULTICAST */
 
@@ -218,21 +218,21 @@ fnet_return_t fnet_ip_init( void );
 void fnet_ip_release( void );
 fnet_bool_t fnet_ip_addr_is_broadcast( fnet_ip4_addr_t addr, fnet_netif_t *netif );
 fnet_error_t fnet_ip_output( fnet_netif_t *netif,    fnet_ip4_addr_t src_ip, fnet_ip4_addr_t dest_ip,
-                    fnet_uint8_t protocol, fnet_uint8_t tos,     fnet_uint8_t ttl,
-                    fnet_netbuf_t *nb, fnet_bool_t DF,  fnet_bool_t do_not_route,
-                    FNET_COMP_PACKED_VAR fnet_uint16_t *checksum );
+                             fnet_uint8_t protocol, fnet_uint8_t tos,     fnet_uint8_t ttl,
+                             fnet_netbuf_t *nb, fnet_bool_t DF,  fnet_bool_t do_not_route,
+                             FNET_COMP_PACKED_VAR fnet_uint16_t *checksum );
 void fnet_ip_input( fnet_netif_t *netif, fnet_netbuf_t *nb );
 fnet_netif_t *fnet_ip_route( fnet_ip4_addr_t dest_ip );
 fnet_size_t fnet_ip_maximum_packet( fnet_ip4_addr_t dest_ip );
 void fnet_ip_drain( void );
 fnet_return_t fnet_ip_queue_append( fnet_ip_queue_t *queue, fnet_netif_t *netif, fnet_netbuf_t *nb );
-fnet_netbuf_t *fnet_ip_queue_read( fnet_ip_queue_t *queue, fnet_netif_t ** netif );
+fnet_netbuf_t *fnet_ip_queue_read( fnet_ip_queue_t *queue, fnet_netif_t **netif );
 fnet_bool_t fnet_ip_will_fragment( fnet_netif_t *netif, fnet_size_t protocol_message_size);
 void fnet_ip_set_socket_addr(fnet_netif_t *netif, fnet_ip_header_t *ip_hdr, struct sockaddr *src_addr,  struct sockaddr *dest_addr );
 
 #if FNET_CFG_MULTICAST
-    fnet_ip4_multicast_list_entry_t *fnet_ip_multicast_join( fnet_netif_t *netif, fnet_ip4_addr_t group_addr );
-    void fnet_ip_multicast_leave_entry( fnet_ip4_multicast_list_entry_t *multicastentry );
+fnet_ip4_multicast_list_entry_t *fnet_ip_multicast_join( fnet_netif_t *netif, fnet_ip4_addr_t group_addr );
+void fnet_ip_multicast_leave_entry( fnet_ip4_multicast_list_entry_t *multicastentry );
 #endif /* FNET_CFG_MULTICAST */
 
 #if defined(__cplusplus)

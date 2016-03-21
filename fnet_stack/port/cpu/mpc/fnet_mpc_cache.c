@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2012-2015 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -29,13 +29,12 @@
 * @brief MPC-specific cache invalidation.
 *
 ***************************************************************************/
-#include "fnet.h" 
+#include "fnet.h"
 
 #if FNET_MPC
 
-#include "fnet_cpu.h"
+#include "port/cpu/fnet_cpu.h"
 
-#include "fnet_cpu.h"
 
 /************************************************************************
 * NAME: fnet_cpu_cache_invalidate
@@ -43,17 +42,14 @@
 * DESCRIPTION: Invalidate cache.
 *************************************************************************/
 #if FNET_CFG_CPU_CACHE
-    void fnet_cpu_cache_invalidate()
-    {
+void fnet_cpu_cache_invalidate(void)
+{
 #if FNET_CFG_CPU_MPC5744P
-       fnet_mpc5744p_cacr_wr();
+    fnet_mpc5744p_cacr_wr();
 #else
-       fnet_mcf_cacr_wr((0|FNET_CFG_MCF_CACHE_CACR|FNET_MCF_CACR_CINV));
-#endif        
-    }
-#else
-    void fnet_cpu_cache_invalidate()
-    {}   
-#endif        
+    fnet_mcf_cacr_wr((0 | FNET_CFG_MCF_CACHE_CACR | FNET_MCF_CACR_CINV));
+#endif
+}
+#endif
 #endif /*FNET_MPC*/
 

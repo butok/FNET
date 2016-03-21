@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_mk.c
@@ -28,7 +28,7 @@
 ***************************************************************************/
 #include "fnet.h"
 
-#if FNET_MK 
+#if FNET_MK
 
 
 /************************************************************************
@@ -40,8 +40,8 @@ void fnet_cpu_reset (void)
 {
     /* Application Interrupt and Reset Control Register.*/
     /* To write to this register, you must write 0x5FA to the VECTKEY field.*/
-    FNET_MK_SCB_AIRCR = FNET_MK_SCB_AIRCR_VECTKEY(0x5fa)|FNET_MK_SCB_AIRCR_SYSRESETREQ_MASK; /* Asserts a signal to the outer system that requests a reset.*/
- 
+    FNET_MK_SCB_AIRCR = FNET_MK_SCB_AIRCR_VECTKEY(0x5fa) | FNET_MK_SCB_AIRCR_SYSRESETREQ_MASK; /* Asserts a signal to the outer system that requests a reset.*/
+
 }
 
 /************************************************************************
@@ -51,7 +51,7 @@ void fnet_cpu_reset (void)
 *************************************************************************/
 fnet_cpu_irq_desc_t fnet_cpu_irq_disable(void)
 {
-     return fnet_mk_irq_disable();  
+    return fnet_mk_irq_disable();
 }
 
 /************************************************************************
@@ -71,7 +71,7 @@ void fnet_cpu_irq_enable(fnet_cpu_irq_desc_t irq_desc)
 *************************************************************************/
 fnet_uint32_t fnet_mk_periph_clk_khz(void)
 {
-    return (FNET_CPU_CLOCK_KHZ / (((FNET_MK_SIM_CLKDIV1 & FNET_MK_SIM_CLKDIV1_OUTDIV2_MASK) >> 24)+ 1u));
+    return (FNET_CPU_CLOCK_KHZ / (((FNET_MK_SIM_CLKDIV1 & FNET_MK_SIM_CLKDIV1_OUTDIV2_MASK) >> 24) + 1u));
 }
 
 #endif /*FNET_MK*/

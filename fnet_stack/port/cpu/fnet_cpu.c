@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,14 +17,14 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_cpu.c
 *
 * @author Andrey Butok
 *
-* @brief CPU-specific functions. 
+* @brief CPU-specific functions.
 *
 ***************************************************************************/
 #include "fnet.h"
@@ -43,7 +43,7 @@
 
 #if (FNET_CFG_CPU_ETH1_MTU > 1500u) /* Limit maximum size.*/
     #error "FNET_CFG_CPU_ETH1_MTU must be <= 1500"
-#endif 
+#endif
 
 #if (FNET_CFG_CPU_ETH_VECTOR_PRIORITY<1u)||(FNET_CFG_CPU_ETH_VECTOR_PRIORITY>FNET_CFG_CPU_VECTOR_PRIORITY_MAX)
     #error "FNET_CFG_CPU_ETH_VECTOR_PRIORITY must be from 1 to FNET_CFG_CPU_VECTOR_PRIORITY_MAX."
@@ -56,19 +56,19 @@
 #if (FNET_CFG_CPU_ETH_RX_BUFS_MAX < 2u)
     #error "FNET_CFG_CPU_ETH_RX_BUFS_MAX is less than 2, minimal required value is 2 - see errata MCF5235"
 #endif
-   
+
 
 #if FNET_CFG_CPU_LITTLE_ENDIAN
 /* Convert short from host- to network byte order.*/
-fnet_uint16_t fnet_htons(fnet_uint16_t short_var)                                
+fnet_uint16_t fnet_htons(fnet_uint16_t short_var)
 {
     fnet_uint16_t result = FNET_HTONS(short_var);
     return result;
 }
 /* Convert long from host- to network byte order.*/
-fnet_uint32_t fnet_htonl(fnet_uint32_t long_var)                                 
+fnet_uint32_t fnet_htonl(fnet_uint32_t long_var)
 {
     fnet_uint32_t result = FNET_HTONL(long_var);
-    return result;    
+    return result;
 }
 #endif /* FNET_CFG_CPU_LITTLE_ENDIAN */

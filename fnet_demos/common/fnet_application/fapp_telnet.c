@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fapp_telnet.c
@@ -34,23 +34,23 @@
 #include "fapp_mem.h"
 
 #if FAPP_CFG_SETGET_CMD
-#include "fapp_setget.h"
+    #include "fapp_setget.h"
 #endif
 #if FAPP_CFG_DHCP_CMD
 
-#include "fapp_dhcp.h"
+    #include "fapp_dhcp.h"
 
 #endif
-#if FAPP_CFG_HTTP_CMD || FAPP_CFG_EXP_CMD 
+#if FAPP_CFG_HTTP_CMD || FAPP_CFG_EXP_CMD
 
-#include "fapp_http.h"
-#include "fapp_fs.h"
+    #include "fapp_http.h"
+    #include "fapp_fs.h"
 
 #endif
 
 #if FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD
 
-#include "fapp_tftp.h"
+    #include "fapp_tftp.h"
 
 #endif
 
@@ -86,7 +86,7 @@ static fnet_telnet_desc_t fapp_telnet_desc = 0; /* Telnet descriptor. */
 void fapp_telnet_release(void)
 {
     fnet_telnet_release(fapp_telnet_desc);
-    fapp_telnet_desc = 0;    
+    fapp_telnet_desc = 0;
 }
 
 /************************************************************************
@@ -94,7 +94,7 @@ void fapp_telnet_release(void)
 *
 * DESCRIPTION: Run Telnet server.
 *************************************************************************/
-void fapp_telnet_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** argv )
+void fapp_telnet_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
     struct fnet_telnet_params   params;
     fnet_telnet_desc_t          telnet_desc;
@@ -102,8 +102,8 @@ void fapp_telnet_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** 
     if(argc == 1u) /* By default is "init".*/
     {
         fnet_memset_zero(&params, sizeof(struct fnet_telnet_params));
-        params.shell= &fapp_telnet_shell;
-        
+        params.shell = &fapp_telnet_shell;
+
         /* Init Telnet server */
         telnet_desc = fnet_telnet_init(&params);
         if(telnet_desc != FNET_ERR)
@@ -112,14 +112,14 @@ void fapp_telnet_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** 
             fnet_shell_println(desc, " Telnet Server started.");
             fapp_print_netif_addr(desc, AF_SUPPORTED, fnet_netif_get_default(), FNET_FALSE);
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
-            
+
             fapp_telnet_desc = telnet_desc;
         }
         else
         {
             fnet_shell_println(desc, FAPP_INIT_ERR, "Telnet");
         }
-       
+
     }
     else if((argc == 2u) && (fnet_strcasecmp(&FAPP_COMMAND_RELEASE[0], argv[1]) == 0)) /* [release] */
     {
@@ -134,14 +134,14 @@ void fapp_telnet_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** 
 /************************************************************************
 * NAME: fapp_telnet_exit_cmd
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 ************************************************************************/
 #if 0
-static void fapp_telnet_exit_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** argv )
+static void fapp_telnet_exit_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
     FNET_COMP_UNUSED_ARG(desc);
     FNET_COMP_UNUSED_ARG(argc);
-	FNET_COMP_UNUSED_ARG(argv);
+    FNET_COMP_UNUSED_ARG(argv);
 
     fnet_telnet_close_session(fapp_telnet_desc);
 }
@@ -167,10 +167,10 @@ void fapp_telnet_info(fnet_shell_desc_t desc)
 void fapp_telnet_test_cmd( fnet_shell_desc_t desc )
 {
     while(1)
-	{
-		fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "Free Heap", fnet_free_mem_status());
-		fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "MAX Heap", fnet_malloc_max());
-	}
+    {
+        fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "Free Heap", fnet_free_mem_status());
+        fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "MAX Heap", fnet_malloc_max());
+    }
 }
 #endif
 

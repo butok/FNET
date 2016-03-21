@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Alexey Shervashidze, Andrey Butok. Motorola SPS
@@ -18,7 +18,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_tcp.h
@@ -41,7 +41,7 @@
 *    Headers of options
 *************************************************************************/
 
-#define FNET_TCP_MSS_HEADER         (0x02040000u) /* MSS option*/ 
+#define FNET_TCP_MSS_HEADER         (0x02040000u) /* MSS option*/
 #define FNET_TCP_WINDOW_HEADER      (0x30300u)    /* Window scale option*/
 
 /************************************************************************
@@ -84,7 +84,7 @@ extern struct fnet_prot_if fnet_tcp_prot_if;
 #define FNET_TCP_FASTTIMO       (200u)       /* Fast timer period (ms).*/
 
 /************************************************************************
-*    Keepalive timer parameters                                          
+*    Keepalive timer parameters
 *************************************************************************/
 #define FNET_TCP_KEEPIDLE_DEFAULT   (14400u) /* x FNET_TCP_SLOWTIMO  
                                              * Standart value for keepalive timer (2 hours).
@@ -97,17 +97,17 @@ extern struct fnet_prot_if fnet_tcp_prot_if;
 
 
 /************************************************************************
-*    Initial value for the retransmission and persist timers (6 sec)     
+*    Initial value for the retransmission and persist timers (6 sec)
 *************************************************************************/
 #define FNET_TCP_TIMERS_INIT    (12u)
 
 /************************************************************************
-*    Limit of timers (60 sec)                                            
+*    Limit of timers (60 sec)
 *************************************************************************/
 #define FNET_TCP_TIMERS_LIMIT   (120u)
 
 /************************************************************************
-*    Shifts of the retransmission variables                              
+*    Shifts of the retransmission variables
 *************************************************************************/
 #define FNET_TCP_RTT_SHIFT      (3u) /* Smoothed round trip time shift.*/
 #define FNET_TCP_RTTVAR_SHIFT   (2u) /* Round trip time variance shift.*/
@@ -118,7 +118,7 @@ extern struct fnet_prot_if fnet_tcp_prot_if;
 #define FNET_TCP_MAX_OPT_SIZE       (8u)
 
 /************************************************************************
-*    Maximal window size 
+*    Maximal window size
 *************************************************************************/
 #define FNET_TCP_MAXWIN             (4u*1024u)/*(0xffff)*/
 
@@ -128,7 +128,7 @@ extern struct fnet_prot_if fnet_tcp_prot_if;
 #define FNET_TCP_MAX_SEQ            (0xffffffffu)
 
 /************************************************************************
-*    Maximal urgent pointer 
+*    Maximal urgent pointer
 *************************************************************************/
 #define FNET_TCP_MAX_URG_POINTER    (0xffffu)
 
@@ -148,7 +148,7 @@ extern struct fnet_prot_if fnet_tcp_prot_if;
 #define FNET_TCP_ABORT_INTERVAL     (240u/5u) /* 240 x FNET_TCP_SLOWTIMO = 2 minutes/5 */
 
 /************************************************************************
-*    Abort interval for the connection establishment                      
+*    Abort interval for the connection establishment
 *************************************************************************/
 #define FNET_TCP_ABORT_INTERVAL_CON (150u/5u) /* 150 x FNET_TCP_SLOWTIMO = 75 sec/5 */
 
@@ -158,7 +158,7 @@ extern struct fnet_prot_if fnet_tcp_prot_if;
 #define FNET_TCP_NUMBER_FOR_FAST_RET    (3u)
 
 /************************************************************************
-*    Timewait delay                                       
+*    Timewait delay
 *************************************************************************/
 #define FNET_TCP_TIME_WAIT              (240u/5u) /* 240 x FNET_TCP_SLOWTIMO  = 2 minutes/5 */
 
@@ -226,26 +226,26 @@ typedef struct
     fnet_uint32_t   keep_idle;      /* TCP_KEEPIDLE option. */
     fnet_uint32_t   keep_intvl;     /* TCP_KEEPINTVL option. */
     fnet_uint32_t   keep_cnt;       /* TCP_KEEPCNT option. */
-    fnet_bool_t     tcp_nodelay;    /*  If this option is set to FNET_TRUE, the Nagle algorithm 
+    fnet_bool_t     tcp_nodelay;    /*  If this option is set to FNET_TRUE, the Nagle algorithm
                                     *   is disabled (and vice versa). @n
-                                    *   The Nagle algorithm is effective in reducing the number 
-                                    *   of small packets sent by the host by essentially buffering 
-                                    *   send data, if there is unacknowledged data already "in flight", 
+                                    *   The Nagle algorithm is effective in reducing the number
+                                    *   of small packets sent by the host by essentially buffering
+                                    *   send data, if there is unacknowledged data already "in flight",
                                     *   or until a full-size packet can be sent.
-                                    *   But for some applications this algorithm can impede 
+                                    *   But for some applications this algorithm can impede
                                     *   performance, especially for a bulky data transfer.
-                                    */ 
-#if FNET_CFG_TCP_URGENT 
-                    fnet_bool_t tcp_bsd;    /*  If this option is set to FNET_TRUE, the BSD interpretation of 
-                                    *   the urgent pointer is used. In this case the 
-                                    *   urgent pointer of the TCP segment points to 
-                                    *   the next byte following after the urgent byte. 
-                                    *   Most of the TCP implementations use this 
+                                    */
+#if FNET_CFG_TCP_URGENT
+    fnet_bool_t tcp_bsd;    /*  If this option is set to FNET_TRUE, the BSD interpretation of
+                                    *   the urgent pointer is used. In this case the
+                                    *   urgent pointer of the TCP segment points to
+                                    *   the next byte following after the urgent byte.
+                                    *   Most of the TCP implementations use this
                                     *   interpretation by default.
                                     *   If this option is set to FNET_FALSE, the interpretation of
-                                    *   the TCP specification is used. In this case the 
-                                    *   urgent pointer of the TCP segment points 
-                                    *   to the urgent byte. 
+                                    *   the TCP specification is used. In this case the
+                                    *   urgent pointer of the TCP segment points
+                                    *   to the urgent byte.
                                     *   This option is avalable only if FNET_CFG_TCP_URGENT is set to 1.
                                     */
 #endif
@@ -283,7 +283,7 @@ FNET_COMP_PACKED_END
 #define FNET_TCP_SIZE_OPTIONS       (40u)
 
 /************************************************************************
-*    Default TTL 
+*    Default TTL
 *************************************************************************/
 #define FNET_TCP_TTL_DEFAULT        (64u)
 
@@ -342,12 +342,12 @@ typedef enum
 typedef struct
 {
     fnet_time_t abort;              /* Main timer (used for timing of the abort interval)*/
-    fnet_time_t keepalive;          /* Keepalive timer. 
+    fnet_time_t keepalive;          /* Keepalive timer.
                                     * It detects when the other end on an otherwise idle connection crashes or reboots.*/
     fnet_time_t connection;         /* Connection timer.*/
-    fnet_time_t retransmission;     /* Retransmission timer. 
+    fnet_time_t retransmission;     /* Retransmission timer.
                                     * It is used when expecting an acknowledgment from the other end. */
-    fnet_time_t persist;            /* Persist timer. 
+    fnet_time_t persist;            /* Persist timer.
                                     * It keeps window size information flowing even if the other end closes its receive window.*/
     fnet_time_t delayed_ack;        /* Delayed acknowledgment timer.*/
     fnet_time_t round_trip;         /* Round trip timer.*/
@@ -360,23 +360,23 @@ typedef struct
 typedef struct
 {
     /* Receive variables.*/
-#if !FNET_CFG_TCP_DISCARD_OUT_OF_ORDER    
+#if !FNET_CFG_TCP_DISCARD_OUT_OF_ORDER
     fnet_netbuf_t   *tcpcb_rcvchain;        /* Temporary buffer.*/
     fnet_size_t     tcpcb_count;            /* Size of data in the temporary buffer.*/
-#endif    
+#endif
     fnet_size_t     tcpcb_rcvcountmax;      /* Size of the input and temporary buffers.*/
-    
+
     fnet_uint32_t tcpcb_rcvack;             /* Highest acknowledged number of sent segments.*/
     fnet_uint32_t tcpcb_maxrcvack;          /* Maximal acknowledgment.*/
     fnet_uint32_t tcpcb_timingack;          /* Acknowledgment number for timing.*/
     fnet_uint32_t tcpcb_rcvwnd;             /* Window.*/
     fnet_uint16_t tcpcb_rcvmss;             /* Maximal RX segment size (MSS).*/
     fnet_uint8_t tcpcb_recvscale;           /* Scale of the window.*/
-#if FNET_CFG_TCP_URGENT    
+#if FNET_CFG_TCP_URGENT
     fnet_uint32_t tcpcb_rcvurgseq;          /* Sequence number of the urgent byte.*/
     fnet_int32_t tcpcb_rcvurgmark;          /* Number of bytes before the urgent character (-1 if urgent character is not present)*/
     fnet_uint8_t tcpcb_iobc;                /* Input character of the urgent data.*/
-#endif /* FNET_CFG_TCP_URGENT */     
+#endif /* FNET_CFG_TCP_URGENT */
 
     /* Send variables.*/
     fnet_uint32_t tcpcb_sndseq;         /* Current sequence number.*/
@@ -386,11 +386,11 @@ typedef struct
     fnet_uint32_t tcpcb_cwnd;           /* Congestion window.*/
     fnet_uint32_t tcpcb_pcount;         /* Counter of the tcpcb_cwnd parts.*/
     fnet_uint32_t tcpcb_ssthresh;       /* Slow start threshold.*/
-    fnet_uint16_t tcpcb_sndmss;         /* Maximal segment size (MSS).*/    
+    fnet_uint16_t tcpcb_sndmss;         /* Maximal segment size (MSS).*/
     fnet_uint8_t tcpcb_sendscale;       /* Scale of the window.*/
-#if FNET_CFG_TCP_URGENT     
+#if FNET_CFG_TCP_URGENT
     fnet_uint32_t tcpcb_sndurgseq;      /* Sequence number of the urgent byte.*/
-#endif /* FNET_CFG_TCP_URGENT */     
+#endif /* FNET_CFG_TCP_URGENT */
 
     /* Input buffer variables.*/
     fnet_size_t   tcpcb_newfreercvsize; /* Free size of the input buffer.*/
@@ -412,7 +412,7 @@ typedef struct
     fnet_tcp_connection_state_t tcpcb_prev_connection_state;    /* Previous connection state (used only for simultaneous open),
                                                                 * defined by fnet_tcp_connection_state_t.*/
     /* Flags.*/
-    fnet_flag_t tcpcb_flags; 
+    fnet_flag_t tcpcb_flags;
 } fnet_tcp_control_t;
 
 /*************************************************************************/

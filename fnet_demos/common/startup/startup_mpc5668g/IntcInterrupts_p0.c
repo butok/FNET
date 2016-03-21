@@ -1,21 +1,21 @@
 
-/** 
+/**
  FILE: IntcInterrupts_p0.c
  $Date: Dec-17-2012$
  $Revision: 1.2 $
 
- DESCRIPTION:  Contains the implementations of the generic interrupt 
- controller handling routines for the MPC551x. The __INTCInterruptHandler__ 
- is located at no specific address and is branched by the PowerPC Zen core 
- to that location if the __initExternalInterrupts function has been called 
+ DESCRIPTION:  Contains the implementations of the generic interrupt
+ controller handling routines for the MPC551x. The __INTCInterruptHandler__
+ is located at no specific address and is branched by the PowerPC Zen core
+ to that location if the __initExternalInterrupts function has been called
  to setup the core to do so.
 
  In the MPC5510 Family Reference Manual, processor 0 (zero) refers to the
- e200z1 and processor 1 refers to the e200z0. We use "_p0" suffix on 
+ e200z1 and processor 1 refers to the e200z0. We use "_p0" suffix on
  functions and section names to reference the e200z1 core, "_p1" for
  functions and section names using the e200z0 core.
- 
-COPYRIGHT	
+
+COPYRIGHT
 	(c) 2002-2007 Freescale Semiconductor, Inc.
 	All rights reserved.
 
@@ -69,12 +69,12 @@ MAKE_HLI_ADDRESS(INTC_MCR, &INTC.MCR.R)
 
 #pragma push /* Save the current state */
 #pragma section data_type ".__initialized_intc_handlertable" ".__uninitialized_intc_handlertable"
-/* The INTC vector table will be placed in RAM. 
-   We will use the ".__uninitialized_intc_handlertable" name to do the 
-   placement in the Linker Command File (.lcf) to avoid the initialization at 
-   startup time.  This will decrease the code size, but the table won't be 
+/* The INTC vector table will be placed in RAM.
+   We will use the ".__uninitialized_intc_handlertable" name to do the
+   placement in the Linker Command File (.lcf) to avoid the initialization at
+   startup time.  This will decrease the code size, but the table won't be
    initialized to zero.
-*/ 
+*/
 INTCInterruptFn INTCInterruptsHandlerTable_p0[INTC_INTERRUPTS_REQUEST_VECTOR_TABLE_SIZE];
 #pragma pop
 
@@ -89,7 +89,7 @@ __declspec(interrupt)
 __declspec(section ".__exception_handlers_p0")
 void INTC_INTCInterruptHandler(void)
 {
-    INTCInterruptFn *handlerFn = (INTCInterruptFn*)(*(unsigned int*)&INTC.IACKR_PRC0.R);
+    INTCInterruptFn *handlerFn = (INTCInterruptFn *)(*(unsigned int *)&INTC.IACKR_PRC0.R);
 
     (**handlerFn)();
 
@@ -102,7 +102,7 @@ __declspec(interrupt)
 __declspec(section ".__exception_handlers_p0")
 __asm void INTC_INTCInterruptHandler(void)
 {
-nofralloc
+    nofralloc
 prolog:
     stwu    r1, -0x50 (r1)      /* Create stack frame */
     stw r0,  0x24 (r1)          /* Store r0 working register  */
@@ -211,25 +211,25 @@ void INTC_InstallINTCInterruptHandler(INTCInterruptFn handlerFn, unsigned short 
     /* Set the function pointer in the ISR Handler table */
     INTCInterruptsHandlerTable_p0[vectorNum] = handlerFn;
     /* Set the PSR Priority */
-    INTC.PSR[vectorNum].B.PRI = psrPriority; 
+    INTC.PSR[vectorNum].B.PRI = psrPriority;
 }
 
 /**
- * This function will setup the PowerPC Zen core to jump to an Interrupt 
- * Service Routine handler. This function can be used from user_init() (no 
+ * This function will setup the PowerPC Zen core to jump to an Interrupt
+ * Service Routine handler. This function can be used from user_init() (no
  * stack frame, no memory access).
  */
 __asm void INTC_InitINTCInterrupts( void )
 {
-nofralloc
+    nofralloc
 
     mflr    r29
 
-   /* IVOR4 is for external interrupts. We've 
-    * initialized the IVOR4 entry to branch to INTC_INTCInterruptHandler()
-    * This code enables the ISR handler for external interrupt code to address
-    * INTC_INTCInterruptHandler (incl. large address by setting the IVPR value).
-    */
+    /* IVOR4 is for external interrupts. We've
+     * initialized the IVOR4 entry to branch to INTC_INTCInterruptHandler()
+     * This code enables the ISR handler for external interrupt code to address
+     * INTC_INTCInterruptHandler (incl. large address by setting the IVPR value).
+     */
     lis     r0, INTC_INTCInterruptHandler@h
     ori     r0, r0, INTC_INTCInterruptHandler@l
 
@@ -238,13 +238,13 @@ nofralloc
     /* Set the location of the ISR Handler Table in INTC IACKR Register */
     lis     r0, INTCInterruptsHandlerTable_p0@h
     ori     r0, r0, INTCInterruptsHandlerTable_p0@l
-    lis     r3,INTC_IACKR@ha
+    lis     r3, INTC_IACKR@ha
     stw     r0, INTC_IACKR@l(r3)
 
     /* Set INTC.MCR.B.HVEN_PRC0 = 0 for SW vector mode               */
     /* and INTC.MCR.B.VTES_PRC0 = 0 for 4-byte branch table entries. */
-    lis     r0,0
-    lis     r3,INTC_MCR@ha 
+    lis     r0, 0
+    lis     r3, INTC_MCR@ha
     stw     r0, INTC_MCR@l(r3)
 
     /* Enable external interrupts by setting MSR[EE]=1. */

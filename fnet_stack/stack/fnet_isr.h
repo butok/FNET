@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_isr.h
@@ -41,7 +41,7 @@
 #endif /* FNET_CFG_OS_ISR */
 
 /* Defines number of the first event handler. MUST be higher than any HW-vector number. */
-#define FNET_EVENT_VECTOR_NUMBER (1025) 
+#define FNET_EVENT_VECTOR_NUMBER (1025)
 
 /************************************************************************
 *     Events
@@ -57,7 +57,7 @@ extern "C" {
 
 fnet_return_t fnet_isr_vector_init( fnet_uint32_t vector_number, void (*handler_top)(fnet_uint32_t cookie), void (*handler_bottom)(fnet_uint32_t cookie), fnet_uint32_t priority, fnet_uint32_t cookie );
 fnet_event_desc_t fnet_event_init(void (*event_handler)(fnet_uint32_t cookie), fnet_uint32_t cookie);
-void fnet_event_raise(fnet_event_desc_t event_number);                                   
+void fnet_event_raise(fnet_event_desc_t event_number);
 void fnet_isr_vector_release(fnet_uint32_t vector_number);
 void fnet_isr_lock(void);
 void fnet_isr_unlock(void);

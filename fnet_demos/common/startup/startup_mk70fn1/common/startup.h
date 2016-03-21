@@ -2,7 +2,7 @@
  * File:    startup.h
  * Purpose: Determine cause of Reset and which processor is running
  *
- * Notes:   
+ * Notes:
  */
 
 #ifndef _STARTUP_H_

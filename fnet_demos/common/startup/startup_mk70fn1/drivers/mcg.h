@@ -13,7 +13,7 @@
  * though common.h should pull in cw.h.
  */
 #if (defined(CW))
-	#include "cw.h"
+    #include "cw.h"
 #endif
 
 // Constants for use in pll_init
@@ -98,11 +98,11 @@ unsigned char atc(unsigned char irc_select, int irc_freq, int mcg_out_freq);
 void clk_monitor_0(unsigned char en_dis);
 
 #if (defined(IAR))
-	__ramfunc void set_sys_dividers(uint32 outdiv1, uint32 outdiv2, uint32 outdiv3, uint32 outdiv4);
+    __ramfunc void set_sys_dividers(uint32 outdiv1, uint32 outdiv2, uint32 outdiv3, uint32 outdiv4);
 #elif (defined(CW))
-	__relocate_code__ 
-	void set_sys_dividers(uint32 outdiv1, uint32 outdiv2, uint32 outdiv3, uint32 outdiv4);
-#endif	
+    __relocate_code__
+    void set_sys_dividers(uint32 outdiv1, uint32 outdiv2, uint32 outdiv3, uint32 outdiv4);
+#endif
 
 
 

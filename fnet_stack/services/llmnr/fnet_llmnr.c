@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2014 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_llmnr.c
@@ -35,13 +35,13 @@
 #include "fnet_llmnr.h"
 #include "services/dns/fnet_dns_prv.h"
 
-#if FNET_CFG_DEBUG_LLMNR && FNET_CFG_DEBUG     
+#if FNET_CFG_DEBUG_LLMNR && FNET_CFG_DEBUG
     #define FNET_DEBUG_LLMNR   FNET_DEBUG
 #else
     #define FNET_DEBUG_LLMNR(...)   do{}while(0)
 #endif
 
- /* LLMNR requires multicast support.*/
+/* LLMNR requires multicast support.*/
 #if FNET_CFG_MULTICAST == 0
     #error FNET_CFG_MULTICAST must be enabled for LLMNR
 #endif
@@ -53,9 +53,9 @@
 /* LLMNR-server states. */
 typedef enum
 {
-    FNET_LLMNR_STATE_DISABLED = 0,       /**< @brief The LLMNR server is not 
+    FNET_LLMNR_STATE_DISABLED = 0,       /**< @brief The LLMNR server is not
                                              * initialized or released.  */
-    FNET_LLMNR_STATE_WAITING_REQUEST,    /**< @brief LLMNR server is waiting 
+    FNET_LLMNR_STATE_WAITING_REQUEST     /**< @brief LLMNR server is waiting
                                              * for a request from a LLMNR client. */
 } fnet_llmnr_state_t;
 
@@ -79,13 +79,13 @@ static const fnet_ip6_addr_t fnet_llmnr_ip6_link_local_multicast_addr = FNET_IP6
 #define FNET_LLMNR_MESSAGE_SIZE     (FNET_DNS_MESSAGE_SIZE) /* Messages carried by UDP are restricted to 512 bytes (not counting the IP
                                                             * or UDP headers).  
                                                             * Longer messages (not supported) are truncated and the TC bit is set in
-                                                            * the header.*/    
+                                                            * the header.*/
 
 /* For UDP queries and responses, the Hop Limit field in the IPv6 header
  * and the TTL field in the IPV4 header MAY be set to any value.
  * However, it is RECOMMENDED that the value 255 be used for
  * compatibility with early implementations of [RFC3927]. */
-#define FNET_LLMNR_TTL              (255u)            
+#define FNET_LLMNR_TTL              (255u)
 
 
 /************************************************************************
@@ -108,7 +108,7 @@ static const fnet_ip6_addr_t fnet_llmnr_ip6_link_local_multicast_addr = FNET_IP6
       |                    ARCOUNT                    |
       +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 */
-    
+
 FNET_COMP_PACKED_BEGIN
 typedef struct
 {
@@ -198,13 +198,13 @@ struct fnet_llmnr_if
     fnet_poll_desc_t        service_descriptor;     /* Network interface descriptor. */
     fnet_netif_desc_t       netif;                  /* Service descriptor. */
     const fnet_char_t       *host_name;             /* Link-local host name. */
-    fnet_uint32_t           host_name_ttl;          /* TTL value that indicates for how many seconds link-local host name 
+    fnet_uint32_t           host_name_ttl;          /* TTL value that indicates for how many seconds link-local host name
                                                      * is valid for LLMNR querier, in seconds (it is optional).@n
                                                      * Default value is defined by @ref FNET_CFG_LLMNR_HOSTNAME_TTL. */
     fnet_uint8_t           message[FNET_LLMNR_MESSAGE_SIZE]; /* Message buffer.*/
 };
 
-/* The LLMNR Server interface */ 
+/* The LLMNR Server interface */
 static struct fnet_llmnr_if llmnr_if_list[FNET_CFG_LLMNR_MAX];
 
 
@@ -224,11 +224,11 @@ static fnet_bool_t fnet_llmnr_hostname_cmp(const fnet_uint8_t *req_hostname, con
     req_hostname_len = req_hostname[req_hostname_index++];
     hostname_c = hostname[hostname_index];
 
-    while(req_hostname_len 
-            && ((req_hostname_len & FNET_DNS_NAME_COMPRESSED_MASK) == 0u) /* No compression is allowed in query.*/
-            && hostname_c )
+    while(req_hostname_len
+          && ((req_hostname_len & FNET_DNS_NAME_COMPRESSED_MASK) == 0u) /* No compression is allowed in query.*/
+          && hostname_c )
     {
-        for (i=0u; i<req_hostname_len; i++)
+        for (i = 0u; i < req_hostname_len; i++)
         {
             if (fnet_tolower(hostname[hostname_index++]) != fnet_tolower(req_hostname[req_hostname_index++]))
             {
@@ -242,9 +242,9 @@ static fnet_bool_t fnet_llmnr_hostname_cmp(const fnet_uint8_t *req_hostname, con
         {
             break;
         }
-    } 
+    }
 
-    return ((req_hostname_len == 0u) && (hostname_c == 0u)?FNET_TRUE:FNET_FALSE);
+    return ((req_hostname_len == 0u) && (hostname_c == 0u) ? FNET_TRUE : FNET_FALSE);
 }
 
 /************************************************************************
@@ -263,30 +263,30 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
 
     /* Check input paramters. */
     if((params == 0) || (params->netif_desc == 0) || (params->host_name == 0)
-    || ((host_name_length = fnet_strlen(params->host_name)) == 0u) || (host_name_length >= FNET_DNS_MAME_SIZE))
+       || ((host_name_length = fnet_strlen(params->host_name)) == 0u) || (host_name_length >= FNET_DNS_MAME_SIZE))
     {
         FNET_DEBUG_LLMNR(FNET_LLMNR_ERR_PARAMS);
         goto ERROR_1;
     }
 
     /* Try to find free LLMNR server descriptor. */
-    for(i=0u; i < FNET_CFG_LLMNR_MAX; i++)
+    for(i = 0u; i < FNET_CFG_LLMNR_MAX; i++)
     {
         if(llmnr_if_list[i].state == FNET_LLMNR_STATE_DISABLED)
         {
-            llmnr_if = &llmnr_if_list[i]; 
+            llmnr_if = &llmnr_if_list[i];
         }
     }
-    
+
     if(llmnr_if == 0)
     {
         /* No free LLMNR descriptor. */
         FNET_DEBUG_LLMNR(FNET_LLMNR_ERR_IS_INITIALIZED);
         goto ERROR_1;
     }
-    
+
     /* Reset interface structure. */
-    fnet_memset_zero(llmnr_if, sizeof(struct fnet_llmnr_if)); 
+    fnet_memset_zero(llmnr_if, sizeof(struct fnet_llmnr_if));
 
     /* Set parameters.*/
     llmnr_if->netif = params->netif_desc;
@@ -301,7 +301,7 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
     }
 
     /* Init local socket address.*/
-    fnet_memset_zero(&local_addr, sizeof(local_addr)); 
+    fnet_memset_zero(&local_addr, sizeof(local_addr));
     local_addr.sa_family = params->addr_family;
     if(local_addr.sa_family == 0u)
     {
@@ -325,66 +325,66 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
     }
 
     /* Join Multicast Group.*/
-    #if FNET_CFG_IP4
-        if((local_addr.sa_family & AF_INET) != 0u)
-        {
-            struct ip_mreq mreq; /* Multicast group information.*/
-            
-            mreq.imr_multiaddr.s_addr = FNET_LLMNR_IP4_LINK_LOCAL_MULTICAST_ADDR;
-            mreq.imr_interface = fnet_netif_get_scope_id(params->netif_desc); 
-            
-            /* Join multicast group. */
-            if(fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IP, IP_ADD_MEMBERSHIP, (fnet_char_t *)&mreq, sizeof(mreq)) == FNET_ERR) 
-    	    {
-            	FNET_DEBUG_LLMNR(FNET_LLMNR_ERR_JOIN_MULTICAST);
-                goto ERROR_2;		
-        	}
-            /*
-             * For UDP queries and responses, the Hop Limit field in the IPv6 header
-             * and the TTL field in the IPV4 header MAY be set to any value.
-             * However, it is RECOMMENDED that the value 255 be used for
-             * compatibility with early implementations of [RFC3927]. */
-            fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IP, IP_MULTICAST_TTL, (fnet_char_t *) &option, sizeof(option));
-    	}
-    #endif
-    #if FNET_CFG_IP6
-        if((local_addr.sa_family & AF_INET6) != 0u)
-        {
-            struct ipv6_mreq mreq6; /* Multicast group information.*/
-            
-            FNET_IP6_ADDR_COPY(&fnet_llmnr_ip6_link_local_multicast_addr, &mreq6.ipv6imr_multiaddr.s6_addr);
-            mreq6.ipv6imr_interface = fnet_netif_get_scope_id(params->netif_desc); 
-            
-            /* Join multicast group. */
-            if(fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IPV6, IPV6_JOIN_GROUP, (fnet_char_t *)&mreq6, sizeof(mreq6)) == FNET_ERR) 
-    	    {
-            	FNET_DEBUG_LLMNR(FNET_LLMNR_ERR_JOIN_MULTICAST);
-                goto ERROR_2;		
-        	}
+#if FNET_CFG_IP4
+    if((local_addr.sa_family & AF_INET) != 0u)
+    {
+        struct ip_mreq mreq; /* Multicast group information.*/
 
-            /* For UDP queries and responses, the Hop Limit field in the IPv6 header
-             * and the TTL field in the IPV4 header MAY be set to any value.
-             * However, it is RECOMMENDED that the value 255 be used for
-             * compatibility with early implementations of [RFC3927]. */
-            fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, (fnet_char_t *) &option, sizeof(option));
+        mreq.imr_multiaddr.s_addr = FNET_LLMNR_IP4_LINK_LOCAL_MULTICAST_ADDR;
+        mreq.imr_interface = fnet_netif_get_scope_id(params->netif_desc);
+
+        /* Join multicast group. */
+        if(fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IP, IP_ADD_MEMBERSHIP, (fnet_char_t *)&mreq, sizeof(mreq)) == FNET_ERR)
+        {
+            FNET_DEBUG_LLMNR(FNET_LLMNR_ERR_JOIN_MULTICAST);
+            goto ERROR_2;
         }
-    #endif    	
+        /*
+         * For UDP queries and responses, the Hop Limit field in the IPv6 header
+         * and the TTL field in the IPV4 header MAY be set to any value.
+         * However, it is RECOMMENDED that the value 255 be used for
+         * compatibility with early implementations of [RFC3927]. */
+        fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IP, IP_MULTICAST_TTL, (fnet_char_t *) &option, sizeof(option));
+    }
+#endif
+#if FNET_CFG_IP6
+    if((local_addr.sa_family & AF_INET6) != 0u)
+    {
+        struct ipv6_mreq mreq6; /* Multicast group information.*/
+
+        FNET_IP6_ADDR_COPY(&fnet_llmnr_ip6_link_local_multicast_addr, &mreq6.ipv6imr_multiaddr.s6_addr);
+        mreq6.ipv6imr_interface = fnet_netif_get_scope_id(params->netif_desc);
+
+        /* Join multicast group. */
+        if(fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IPV6, IPV6_JOIN_GROUP, (fnet_char_t *)&mreq6, sizeof(mreq6)) == FNET_ERR)
+        {
+            FNET_DEBUG_LLMNR(FNET_LLMNR_ERR_JOIN_MULTICAST);
+            goto ERROR_2;
+        }
+
+        /* For UDP queries and responses, the Hop Limit field in the IPv6 header
+         * and the TTL field in the IPV4 header MAY be set to any value.
+         * However, it is RECOMMENDED that the value 255 be used for
+         * compatibility with early implementations of [RFC3927]. */
+        fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, (fnet_char_t *) &option, sizeof(option));
+    }
+#endif
 
     /* Register service. */
     llmnr_if->service_descriptor = fnet_poll_service_register(fnet_llmnr_state_machine, (void *) llmnr_if);
-    
+
     if(llmnr_if->service_descriptor == (fnet_poll_desc_t)FNET_ERR)
     {
         FNET_DEBUG_LLMNR(FNET_LLMNR_ERR_SERVICE);
         goto ERROR_2;
     }
-    
-    llmnr_if->state = FNET_LLMNR_STATE_WAITING_REQUEST; 
+
+    llmnr_if->state = FNET_LLMNR_STATE_WAITING_REQUEST;
 
     return (fnet_llmnr_desc_t)llmnr_if;
 
 ERROR_2:
-    fnet_socket_close(llmnr_if->socket_listen);    
+    fnet_socket_close(llmnr_if->socket_listen);
 ERROR_1:
     return FNET_ERR;
 }
@@ -397,8 +397,8 @@ ERROR_1:
 static void fnet_llmnr_state_machine( void *fnet_llmnr_if_p )
 {
     struct sockaddr         addr;
-    fnet_size_t             addr_len;      
-    fnet_int32_t            received;    
+    fnet_size_t             addr_len;
+    fnet_int32_t            received;
     struct fnet_llmnr_if    *llmnr_if = (struct fnet_llmnr_if *)fnet_llmnr_if_p;
     fnet_llmnr_header_t     *llmnr_header;
 
@@ -406,14 +406,14 @@ static void fnet_llmnr_state_machine( void *fnet_llmnr_if_p )
     {
         /*---- WAITING_REQUEST --------------------------------------------*/
         case FNET_LLMNR_STATE_WAITING_REQUEST:
-		    addr_len = sizeof(addr);
-            
+            addr_len = sizeof(addr);
+
             received = fnet_socket_recvfrom(llmnr_if->socket_listen, llmnr_if->message, sizeof(llmnr_if->message), 0u, &addr, &addr_len );
 
             if(received >= (fnet_int32_t)sizeof(fnet_llmnr_header_t) )
             {
                 llmnr_header = (fnet_llmnr_header_t *)(&llmnr_if->message[0]);
-               
+
                 if( ((llmnr_header->flags & FNET_HTONS(FNET_LLMNR_HEADER_FLAGS_QR)) == 0u) /* Request.*/
                     /* LLMNR senders and responders MUST
                     * support standard queries (opcode value of zero).  LLMNR
@@ -429,9 +429,9 @@ static void fnet_llmnr_state_machine( void *fnet_llmnr_if_p )
                     /* LLMNR responders MUST silently discard LLMNR queries
                     * with NSCOUNT not equal to zero.*/
                     && (llmnr_header->nscount == 0u)
-                )
+                  )
                 {
-                    fnet_char_t                *req_hostname = (fnet_char_t*)&llmnr_if->message[sizeof(fnet_llmnr_header_t)];
+                    fnet_char_t                *req_hostname = (fnet_char_t *)&llmnr_if->message[sizeof(fnet_llmnr_header_t)];
                     fnet_dns_q_tail_t   *q_tail;
                     fnet_size_t         req_hostname_len = fnet_strlen(req_hostname);
 
@@ -439,68 +439,70 @@ static void fnet_llmnr_state_machine( void *fnet_llmnr_if_p )
                     if(received >= (fnet_int32_t)(sizeof(fnet_llmnr_header_t) + sizeof(fnet_dns_q_tail_t) + req_hostname_len))
                     {
                         FNET_DEBUG_LLMNR("LLMNR: Req name = %s", req_hostname);
-                          
+
                         /* Responders MUST NOT respond to LLMNR queries for names for which
-                           they are not authoritative.*/ 
+                           they are not authoritative.*/
                         if(fnet_llmnr_hostname_cmp((const fnet_uint8_t *)req_hostname, (const fnet_uint8_t *)llmnr_if->host_name))
                         {
                             q_tail = (fnet_dns_q_tail_t *)(req_hostname + req_hostname_len);
-                            
+
                             /* Check Question Class. */
-                            if (q_tail->qclass == FNET_HTONS(FNET_DNS_HEADER_CLASS_IN) ) 
+                            if (q_tail->qclass == FNET_HTONS(FNET_DNS_HEADER_CLASS_IN) )
                             {
-                                fnet_dns_rr_header_t      *rr_header = (fnet_dns_rr_header_t*)(q_tail+1);
-                                fnet_size_t               send_size = (fnet_size_t)((fnet_char_t*)rr_header - (fnet_char_t *)llmnr_header);
+                                fnet_dns_rr_header_t      *rr_header = (fnet_dns_rr_header_t *)(q_tail + 1);
+                                fnet_size_t               send_size = (fnet_size_t)((fnet_char_t *)rr_header - (fnet_char_t *)llmnr_header);
 
                                 /* Prepare query response.*/
-                            #if FNET_CFG_IP4
+#if FNET_CFG_IP4
                                 if(q_tail->qtype == FNET_HTONS(FNET_DNS_TYPE_A))
                                 {
                                     FNET_DEBUG_LLMNR("LLMNR: IPv4");
 
-                                    *((fnet_ip4_addr_t*)(&rr_header->rdata)) = fnet_netif_get_ip4_addr(llmnr_if->netif);
+                                    *((fnet_ip4_addr_t *)(&rr_header->rdata)) = fnet_netif_get_ip4_addr(llmnr_if->netif);
                                     rr_header->rdlength = fnet_htons(sizeof(fnet_ip4_addr_t));
                                     rr_header->type = FNET_HTONS(FNET_DNS_TYPE_A);
-                                    
+
                                     send_size += sizeof(fnet_dns_rr_header_t);
-                                }else
-                            #endif
-                            #if FNET_CFG_IP6
-                                if(q_tail->qtype == FNET_HTONS(FNET_DNS_TYPE_AAAA))
-                                {
-                                    fnet_netif_ip6_addr_info_t  addr_info;
-
-                                    FNET_DEBUG_LLMNR("LLMNR: IPv6");
-                                    
-                                    if(fnet_netif_get_ip6_addr (llmnr_if->netif, 0u, &addr_info) == FNET_TRUE)
+                                }
+                                else
+#endif
+#if FNET_CFG_IP6
+                                    if(q_tail->qtype == FNET_HTONS(FNET_DNS_TYPE_AAAA))
                                     {
-                                        FNET_IP6_ADDR_COPY( &addr_info.address, (fnet_ip6_addr_t*)(&rr_header->rdata));
-                                        rr_header->rdlength = fnet_htons(sizeof(fnet_ip6_addr_t));
-                                        rr_header->type = FNET_HTONS(FNET_DNS_TYPE_AAAA);
+                                        fnet_netif_ip6_addr_info_t  addr_info;
 
-                                        send_size += sizeof(fnet_dns_rr_header_t) - sizeof(fnet_uint32_t) + sizeof(fnet_ip6_addr_t);
+                                        FNET_DEBUG_LLMNR("LLMNR: IPv6");
+
+                                        if(fnet_netif_get_ip6_addr (llmnr_if->netif, 0u, &addr_info) == FNET_TRUE)
+                                        {
+                                            FNET_IP6_ADDR_COPY( &addr_info.address, (fnet_ip6_addr_t *)(&rr_header->rdata));
+                                            rr_header->rdlength = fnet_htons(sizeof(fnet_ip6_addr_t));
+                                            rr_header->type = FNET_HTONS(FNET_DNS_TYPE_AAAA);
+
+                                            send_size += sizeof(fnet_dns_rr_header_t) - sizeof(fnet_uint32_t) + sizeof(fnet_ip6_addr_t);
+                                        }
+                                        else
+                                        {
+                                            break; /* No IPv6 address.*/
+                                        }
                                     }
                                     else
+#endif
                                     {
-                                         break; /* No IPv6 address.*/
+                                        break; /* Not supported query type.*/
                                     }
-                                }else
-                            #endif
-                                {
-                                    break; /* Not supported query type.*/
-                                }
-                            
+
                                 /* Init the rest of answer parameters.*/
                                 rr_header->ttl = fnet_htonl(llmnr_if->host_name_ttl);
                                 rr_header->rr_class = FNET_HTONS(FNET_DNS_HEADER_CLASS_IN);
-                                rr_header->name_ptr = fnet_htons((FNET_DNS_NAME_COMPRESSED_MASK<<8) | (FNET_DNS_NAME_COMPRESSED_INDEX_MASK & sizeof(fnet_llmnr_header_t)));
+                                rr_header->name.name_ptr = fnet_htons((FNET_DNS_NAME_COMPRESSED_MASK << 8) | (FNET_DNS_NAME_COMPRESSED_INDEX_MASK & sizeof(fnet_llmnr_header_t)));
 
                                 /* Updtae LLMNR header response.*/
                                 llmnr_header->ancount = FNET_HTONS(1u);                          /* One answer.*/
                                 llmnr_header->flags |= FNET_HTONS(FNET_LLMNR_HEADER_FLAGS_QR    /* Query response.*/
-                                                        |FNET_LLMNR_HEADER_FLAGS_C);            /* The name is not considered unique.*/ 
+                                                                  | FNET_LLMNR_HEADER_FLAGS_C);           /* The name is not considered unique.*/
 
-                                /* A responder responds to a multicast query by sending a unicast UDP response to the sender.*/ 
+                                /* A responder responds to a multicast query by sending a unicast UDP response to the sender.*/
                                 fnet_socket_sendto(llmnr_if->socket_listen, llmnr_if->message, send_size, 0u, &addr, addr_len);
                             }
                         }
@@ -510,7 +512,7 @@ static void fnet_llmnr_state_machine( void *fnet_llmnr_if_p )
             }
             break;
         default:
-        	break;
+            break;
     }
 }
 
@@ -519,15 +521,15 @@ static void fnet_llmnr_state_machine( void *fnet_llmnr_if_p )
 *
 * DESCRIPTION: eleases the Link-Local Multicast Name Resolution (LLMNR)
 * server/responder service.
-************************************************************************/ 
+************************************************************************/
 void fnet_llmnr_release(fnet_llmnr_desc_t desc)
 {
     struct fnet_llmnr_if *llmnr_if = (struct fnet_llmnr_if *)desc;
-    
+
     if(llmnr_if && (llmnr_if->state != FNET_LLMNR_STATE_DISABLED))
     {
         fnet_socket_close(llmnr_if->socket_listen);
-        
+
         fnet_poll_service_unregister(llmnr_if->service_descriptor); /* Delete service.*/
         llmnr_if->state = FNET_LLMNR_STATE_DISABLED;
     }
@@ -536,23 +538,23 @@ void fnet_llmnr_release(fnet_llmnr_desc_t desc)
 /************************************************************************
 * NAME: fnet_llmnr_enabled
 *
-* DESCRIPTION: This function returns FNET_TRUE if the LLMNR server 
+* DESCRIPTION: This function returns FNET_TRUE if the LLMNR server
 *              is enabled/initialised.
 ************************************************************************/
 fnet_bool_t fnet_llmnr_enabled(fnet_llmnr_desc_t desc)
 {
     struct fnet_llmnr_if    *llmnr_if = (struct fnet_llmnr_if *) desc;
     fnet_bool_t             result;
-    
+
     if(llmnr_if)
     {
         result = (llmnr_if->state == FNET_LLMNR_STATE_DISABLED) ? FNET_FALSE : FNET_TRUE;
     }
     else
     {
-        result = FNET_FALSE;    
+        result = FNET_FALSE;
     }
-    
+
     return result;
 }
 

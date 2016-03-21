@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_poll.h
@@ -32,18 +32,18 @@
 
 #define _FNET_POLL_H_
 
-/*! @addtogroup fnet_polling 
+/*! @addtogroup fnet_polling
 * The polling mechanism enables the execution of registered services
-* (DHCP client, TFTP client, Shell, Telnet server or HTTP server) in 
-* "background" - during the application 
+* (DHCP client, TFTP client, Shell, Telnet server or HTTP server) in
+* "background" - during the application
 * idle time. Typically, the polling callback is registered during the service
 * initialization (for example the @ref fnet_http_init() or other service initialization
 * function).
-* In order to make the polling mechanism work, the user application should 
+* In order to make the polling mechanism work, the user application should
 * call the @ref fnet_poll_services() API function periodically, during the idle time.@n
 * @n
 * Configuration parameters:
-* - @ref FNET_CFG_POLL_MAX  
+* - @ref FNET_CFG_POLL_MAX
 */
 /*! @{ */
 
@@ -55,12 +55,12 @@ typedef fnet_uint32_t fnet_poll_desc_t;
 /**************************************************************************/ /*!
  * @brief Service callback function prototype.
  *
- * @param service_param   This parameter is assigned during 
- *                        a service registration by the @ref 
+ * @param service_param   This parameter is assigned during
+ *                        a service registration by the @ref
  *                        fnet_poll_service_register().
- *                        
+ *
  ******************************************************************************/
-typedef void (* fnet_poll_service_t)(void* service_param);
+typedef void (* fnet_poll_service_t)(void *service_param);
 
 #if defined(__cplusplus)
 extern "C" {
@@ -71,11 +71,11 @@ extern "C" {
  * @brief    Main polling function.
  *
  * @see fnet_poll_service_register()
- * 
+ *
  ******************************************************************************
  *
  * This function calls all registered service routines.@n
- * The user application should call this function periodically, after any service 
+ * The user application should call this function periodically, after any service
  * initialization.
  *
  ******************************************************************************/
@@ -90,10 +90,10 @@ void fnet_poll_services(void);
  *
  ******************************************************************************
  *
- * This function unregisters all registered service routines from 
+ * This function unregisters all registered service routines from
  * the polling list.
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 void fnet_poll_services_release(void);
 
 /***************************************************************************/ /*!
@@ -113,7 +113,7 @@ void fnet_poll_services_release(void);
  ******************************************************************************
  *
  * This function adds the service routine into the polling list.@n
- * This function is usually called during a service initialization. 
+ * This function is usually called during a service initialization.
  * User application should not call this function directly.
  *
  ******************************************************************************/
@@ -133,9 +133,9 @@ fnet_poll_desc_t fnet_poll_service_register( fnet_poll_service_t service, void *
  *
  ******************************************************************************
  *
- * This function unregisters the service routine assigned to the @c desc 
+ * This function unregisters the service routine assigned to the @c desc
  * descriptor.@n
- * This function is usually called during a service release. 
+ * This function is usually called during a service release.
  * User application should not call this function directly.
  *
  ******************************************************************************/

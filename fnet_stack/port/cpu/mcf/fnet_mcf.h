@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2005-2015 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -152,7 +152,7 @@ void fnet_mcf_nop(void);
 #if FNET_CFG_CPU_MCF54418
 
 #else /* Other MCFs */
-#define FNET_FEC0_BASE_ADDR                   ((fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x001004]))
+    #define FNET_FEC0_BASE_ADDR                   ((fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x001004]))
 #endif
 
 #if 0 /* Only for reference */
@@ -231,7 +231,7 @@ void fnet_mcf_nop(void);
     #define FNET_MCF_FEC_IEEE_R_ALIGN          (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x0012D4]))
     #define FNET_MCF_FEC_IEEE_R_MACERR         (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x0012D8]))
     #define FNET_MCF_FEC_IEEE_R_FDXFC          (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x0012DC]))
-    #define FNET_MCF_FEC_IEEE_R_OCTETS_OK      (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x0012E0])) 
+    #define FNET_MCF_FEC_IEEE_R_OCTETS_OK      (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x0012E0]))
 #endif /* 0 */
 
 
@@ -243,9 +243,9 @@ void fnet_mcf_nop(void);
 *********************************************************************/
 /* Register read/write macros */
 #if FNET_CFG_CPU_MCF52235
-#define FNET_MCF_EPHY_EPHYCTL0                    (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x1E0000]))
-#define FNET_MCF_EPHY_EPHYCTL1                    (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x1E0001]))
-#define FNET_MCF_EPHY_EPHYSR                      (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x1E0002]))
+    #define FNET_MCF_EPHY_EPHYCTL0                    (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x1E0000]))
+    #define FNET_MCF_EPHY_EPHYCTL1                    (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x1E0001]))
+    #define FNET_MCF_EPHY_EPHYSR                      (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x1E0002]))
 #endif
 
 
@@ -277,33 +277,33 @@ void fnet_mcf_nop(void);
 /* Register read/write macros */
 #if FNET_CFG_CPU_MCF54418
 
-#define FNET_MCF_INTC0_IPRH                       (*(fnet_vuint32_t*)(0xFC048000))
-#define FNET_MCF_INTC0_IPRL                       (*(fnet_vuint32_t*)(0xFC048004))
-#define FNET_MCF_INTC0_IMRH                       (*(fnet_vuint32_t*)(0xFC048008))
-#define FNET_MCF_INTC0_IMRL                       (*(fnet_vuint32_t*)(0xFC04800C))
-#define FNET_MCF_INTC0_IMR(x)                     (*(fnet_vuint32_t*)(0xFC04800C-((x)*0x4)))
-#define FNET_MCF_INTC0_INTFRCH                    (*(fnet_vuint32_t*)(0xFC048010))
-#define FNET_MCF_INTC0_INTFRCL                    (*(fnet_vuint32_t*)(0xFC048014))
-#define FNET_MCF_INTC0_ICR0                       (*(fnet_vuint8_t *)(0xFC048040))
-/*...*/
-#define FNET_MCF_INTC0_ICR63                      (*(fnet_vuint8_t *)(0xFC04807F))
-#define FNET_MCF_INTC0_ICR(x)                     (*(fnet_vuint8_t *)(0xFC048040 + ((x)*0x001)))
-#define FNET_MCF_INTC0_SWIACK                     (*(fnet_vuint8_t *)(0xFC0480E0))
+    #define FNET_MCF_INTC0_IPRH                       (*(fnet_vuint32_t*)(0xFC048000))
+    #define FNET_MCF_INTC0_IPRL                       (*(fnet_vuint32_t*)(0xFC048004))
+    #define FNET_MCF_INTC0_IMRH                       (*(fnet_vuint32_t*)(0xFC048008))
+    #define FNET_MCF_INTC0_IMRL                       (*(fnet_vuint32_t*)(0xFC04800C))
+    #define FNET_MCF_INTC0_IMR(x)                     (*(fnet_vuint32_t*)(0xFC04800C-((x)*0x4)))
+    #define FNET_MCF_INTC0_INTFRCH                    (*(fnet_vuint32_t*)(0xFC048010))
+    #define FNET_MCF_INTC0_INTFRCL                    (*(fnet_vuint32_t*)(0xFC048014))
+    #define FNET_MCF_INTC0_ICR0                       (*(fnet_vuint8_t *)(0xFC048040))
+    /*...*/
+    #define FNET_MCF_INTC0_ICR63                      (*(fnet_vuint8_t *)(0xFC04807F))
+    #define FNET_MCF_INTC0_ICR(x)                     (*(fnet_vuint8_t *)(0xFC048040 + ((x)*0x001)))
+    #define FNET_MCF_INTC0_SWIACK                     (*(fnet_vuint8_t *)(0xFC0480E0))
 
 #else /* Other MCFs */
 
-#define FNET_MCF_INTC0_IPRH         (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000C00]))
-#define FNET_MCF_INTC0_IPRL         (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000C04]))
-#define FNET_MCF_INTC0_IMRH         (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000C08]))
-#define FNET_MCF_INTC0_IMRL         (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000C0C]))
-#define FNET_MCF_INTC0_IMR(x)       (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000C0C-((x)*0x4)]))
-#define FNET_MCF_INTC0_INTFRCH      (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000C10]))
-#define FNET_MCF_INTC0_INTFRCL      (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000C14]))
-#define FNET_MCF_INTC0_ICR0         (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x000C40]))
-/*...*/
-#define FNET_MCF_INTC0_ICR63        (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x000C7F]))
-#define FNET_MCF_INTC0_ICR(x)       (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x000C40+((x)*0x001)]))
-#define FNET_MCF_INTC0_SWIACK       (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x000CE0]))
+    #define FNET_MCF_INTC0_IPRH         (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000C00]))
+    #define FNET_MCF_INTC0_IPRL         (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000C04]))
+    #define FNET_MCF_INTC0_IMRH         (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000C08]))
+    #define FNET_MCF_INTC0_IMRL         (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000C0C]))
+    #define FNET_MCF_INTC0_IMR(x)       (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000C0C-((x)*0x4)]))
+    #define FNET_MCF_INTC0_INTFRCH      (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000C10]))
+    #define FNET_MCF_INTC0_INTFRCL      (*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000C14]))
+    #define FNET_MCF_INTC0_ICR0         (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x000C40]))
+    /*...*/
+    #define FNET_MCF_INTC0_ICR63        (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x000C7F]))
+    #define FNET_MCF_INTC0_ICR(x)       (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x000C40+((x)*0x001)]))
+    #define FNET_MCF_INTC0_SWIACK       (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x000CE0]))
 
 #endif
 
@@ -518,11 +518,11 @@ void fnet_mcf_nop(void);
 
 /* Bit definitions and macros for FNET_MCF_INTC0_ICRn */
 #if FNET_CFG_CPU_MCF54418
-#define FNET_MCF_INTC0_ICRn_IP(x)          (0)
-#define FNET_MCF_INTC0_ICRn_IL(x)          (((x)&0x07)<<0)
+    #define FNET_MCF_INTC0_ICRn_IP(x)          (0)
+    #define FNET_MCF_INTC0_ICRn_IL(x)          (((x)&0x07)<<0)
 #else /* Other MCFs */
-#define FNET_MCF_INTC0_ICRn_IP(x)          (((x)&0x07)<<0)
-#define FNET_MCF_INTC0_ICRn_IL(x)          (((x)&0x07)<<3)
+    #define FNET_MCF_INTC0_ICRn_IP(x)          (((x)&0x07)<<0)
+    #define FNET_MCF_INTC0_ICRn_IL(x)          (((x)&0x07)<<3)
 #endif
 
 #define FNET_MCF_INTC0_IMR_INT_MASK(x)      (0x00000001<<(x%32))
@@ -536,12 +536,12 @@ void fnet_mcf_nop(void);
 /* Register read/write macros */
 #if FNET_CFG_CPU_MCF54418
 #else /* Other MCFs */
-#define FNET_MCF_EPORT_EPPAR    (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x130000]))
-#define FNET_MCF_EPORT_EPDDR    (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x130002]))
-#define FNET_MCF_EPORT_EPIER    (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x130003]))
-#define FNET_MCF_EPORT_EPDR     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x130004]))
-#define FNET_MCF_EPORT_EPPDR    (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x130005]))
-#define FNET_MCF_EPORT_EPFR     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x130006]))
+    #define FNET_MCF_EPORT_EPPAR    (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x130000]))
+    #define FNET_MCF_EPORT_EPDDR    (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x130002]))
+    #define FNET_MCF_EPORT_EPIER    (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x130003]))
+    #define FNET_MCF_EPORT_EPDR     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x130004]))
+    #define FNET_MCF_EPORT_EPPDR    (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x130005]))
+    #define FNET_MCF_EPORT_EPFR     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x130006]))
 #endif
 
 /* Bit definitions and macros for FNET_MCF_EPORT_EPPAR */
@@ -613,21 +613,21 @@ void fnet_mcf_nop(void);
 /* Register read/write macros */
 #if FNET_CFG_CPU_MCF54418
 
-#define FNET_MCF_DTIM_DTMR(x)		(*(fnet_vuint16_t*)(0xFC070000 + ((x)*0x4000)))
-#define FNET_MCF_DTIM_DTXMR(x) 		(*(fnet_vuint8_t *)(0xFC070002 + ((x)*0x4000)))
-#define FNET_MCF_DTIM_DTER(x)      	(*(fnet_vuint8_t *)(0xFC070003 + ((x)*0x4000)))
-#define FNET_MCF_DTIM_DTRR(x)     	(*(fnet_vuint32_t*)(0xFC070004 + ((x)*0x4000)))
-#define FNET_MCF_DTIM_DTCR(x)      	(*(fnet_vuint32_t*)(0xFC070008 + ((x)*0x4000)))
-#define FNET_MCF_DTIM_DTCN(x)      	(*(fnet_vuint32_t*)(0xFC07000C + ((x)*0x4000)))
+    #define FNET_MCF_DTIM_DTMR(x)		(*(fnet_vuint16_t*)(0xFC070000 + ((x)*0x4000)))
+    #define FNET_MCF_DTIM_DTXMR(x) 		(*(fnet_vuint8_t *)(0xFC070002 + ((x)*0x4000)))
+    #define FNET_MCF_DTIM_DTER(x)      	(*(fnet_vuint8_t *)(0xFC070003 + ((x)*0x4000)))
+    #define FNET_MCF_DTIM_DTRR(x)     	(*(fnet_vuint32_t*)(0xFC070004 + ((x)*0x4000)))
+    #define FNET_MCF_DTIM_DTCR(x)      	(*(fnet_vuint32_t*)(0xFC070008 + ((x)*0x4000)))
+    #define FNET_MCF_DTIM_DTCN(x)      	(*(fnet_vuint32_t*)(0xFC07000C + ((x)*0x4000)))
 
 #else /* Other MCFs */
 
-#define FNET_MCF_DTIM_DTMR(x)     	(*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x000400+((x)*0x040)]))
-#define FNET_MCF_DTIM_DTXMR(x)    	(*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x000402+((x)*0x040)]))
-#define FNET_MCF_DTIM_DTER(x)     	(*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x000403+((x)*0x040)]))
-#define FNET_MCF_DTIM_DTRR(x)     	(*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000404+((x)*0x040)]))
-#define FNET_MCF_DTIM_DTCR(x)     	(*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000408+((x)*0x040)]))
-#define FNET_MCF_DTIM_DTCN(x)     	(*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x00040C+((x)*0x040)]))
+    #define FNET_MCF_DTIM_DTMR(x)     	(*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x000400+((x)*0x040)]))
+    #define FNET_MCF_DTIM_DTXMR(x)    	(*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x000402+((x)*0x040)]))
+    #define FNET_MCF_DTIM_DTER(x)     	(*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x000403+((x)*0x040)]))
+    #define FNET_MCF_DTIM_DTRR(x)     	(*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000404+((x)*0x040)]))
+    #define FNET_MCF_DTIM_DTCR(x)     	(*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x000408+((x)*0x040)]))
+    #define FNET_MCF_DTIM_DTCN(x)     	(*(fnet_vuint32_t*)(&FNET_CFG_MCF_IPSBAR[0x00040C+((x)*0x040)]))
 
 #endif
 
@@ -665,17 +665,17 @@ void fnet_mcf_nop(void);
 /* Register read/write macros */
 #if FNET_CFG_CPU_MCF54418
 #else /* Other MCFs */
-#define FNET_MCF_PIT0_PCSR                        (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00150000]))
-#define FNET_MCF_PIT0_PMR                         (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00150002]))
-#define FNET_MCF_PIT0_PCNTR                       (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00150004]))
+    #define FNET_MCF_PIT0_PCSR                        (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00150000]))
+    #define FNET_MCF_PIT0_PMR                         (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00150002]))
+    #define FNET_MCF_PIT0_PCNTR                       (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00150004]))
 
-#define FNET_MCF_PIT1_PCSR                        (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00160000]))
-#define FNET_MCF_PIT1_PMR                         (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00160002]))
-#define FNET_MCF_PIT1_PCNTR                       (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00160004]))
+    #define FNET_MCF_PIT1_PCSR                        (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00160000]))
+    #define FNET_MCF_PIT1_PMR                         (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00160002]))
+    #define FNET_MCF_PIT1_PCNTR                       (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00160004]))
 
-#define FNET_MCF_PIT_PCSR(x)                      (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00150000 + ((x)*0x10000)]))
-#define FNET_MCF_PIT_PMR(x)                       (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00150002 + ((x)*0x10000)]))
-#define FNET_MCF_PIT_PCNTR(x)                     (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00150004 + ((x)*0x10000)]))
+    #define FNET_MCF_PIT_PCSR(x)                      (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00150000 + ((x)*0x10000)]))
+    #define FNET_MCF_PIT_PMR(x)                       (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00150002 + ((x)*0x10000)]))
+    #define FNET_MCF_PIT_PCNTR(x)                     (*(fnet_vuint16_t*)(&FNET_CFG_MCF_IPSBAR[0x00150004 + ((x)*0x10000)]))
 #endif
 
 /* Bit definitions and macros for FNET_MCF_PIT_PCSR */
@@ -704,39 +704,39 @@ void fnet_mcf_nop(void);
 /* Register read/write macros */
 #if FNET_CFG_CPU_MCF54418
 
-#define FNET_MCF_UART_UMR(x)                      (*(fnet_vuint8_t *)(0xEC060000 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
-#define FNET_MCF_UART_USR(x)                      (*(fnet_vuint8_t *)(0xEC060004 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
-#define FNET_MCF_UART_UCSR(x)                     (*(fnet_vuint8_t *)(0xEC060004 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
-#define FNET_MCF_UART_UCR(x)                      (*(fnet_vuint8_t *)(0xEC060008 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
-#define FNET_MCF_UART_URB(x)                      (*(fnet_vuint8_t *)(0xEC06000C + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
-#define FNET_MCF_UART_UTB(x)                      (*(fnet_vuint8_t *)(0xEC06000C + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
-#define FNET_MCF_UART_UACR(x)                     (*(fnet_vuint8_t *)(0xEC060010 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
-#define FNET_MCF_UART_UIPCR(x)                    (*(fnet_vuint8_t *)(0xEC060010 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
-#define FNET_MCF_UART_UIMR(x)                     (*(fnet_vuint8_t *)(0xEC060014 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
-#define FNET_MCF_UART_UISR(x)                     (*(fnet_vuint8_t *)(0xEC060014 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
-#define FNET_MCF_UART_UBG1(x)                     (*(fnet_vuint8_t *)(0xEC060018 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
-#define FNET_MCF_UART_UBG2(x)                     (*(fnet_vuint8_t *)(0xEC06001C + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
-#define FNET_MCF_UART_UIP(x)                      (*(fnet_vuint8_t *)(0xEC060034 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
-#define FNET_MCF_UART_UOP1(x)                     (*(fnet_vuint8_t *)(0xEC060038 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
-#define FNET_MCF_UART_UOP0(x)                     (*(fnet_vuint8_t *)(0xEC06003C + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
+    #define FNET_MCF_UART_UMR(x)                      (*(fnet_vuint8_t *)(0xEC060000 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
+    #define FNET_MCF_UART_USR(x)                      (*(fnet_vuint8_t *)(0xEC060004 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
+    #define FNET_MCF_UART_UCSR(x)                     (*(fnet_vuint8_t *)(0xEC060004 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
+    #define FNET_MCF_UART_UCR(x)                      (*(fnet_vuint8_t *)(0xEC060008 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
+    #define FNET_MCF_UART_URB(x)                      (*(fnet_vuint8_t *)(0xEC06000C + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
+    #define FNET_MCF_UART_UTB(x)                      (*(fnet_vuint8_t *)(0xEC06000C + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
+    #define FNET_MCF_UART_UACR(x)                     (*(fnet_vuint8_t *)(0xEC060010 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
+    #define FNET_MCF_UART_UIPCR(x)                    (*(fnet_vuint8_t *)(0xEC060010 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
+    #define FNET_MCF_UART_UIMR(x)                     (*(fnet_vuint8_t *)(0xEC060014 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
+    #define FNET_MCF_UART_UISR(x)                     (*(fnet_vuint8_t *)(0xEC060014 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
+    #define FNET_MCF_UART_UBG1(x)                     (*(fnet_vuint8_t *)(0xEC060018 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
+    #define FNET_MCF_UART_UBG2(x)                     (*(fnet_vuint8_t *)(0xEC06001C + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
+    #define FNET_MCF_UART_UIP(x)                      (*(fnet_vuint8_t *)(0xEC060034 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
+    #define FNET_MCF_UART_UOP1(x)                     (*(fnet_vuint8_t *)(0xEC060038 + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
+    #define FNET_MCF_UART_UOP0(x)                     (*(fnet_vuint8_t *)(0xEC06003C + (((x)<4)? (0x10000000 + ((x)*0x4000)) : ((x-4)*0x4000))))
 
 #else /* Other MCFs */
 
-#define FNET_MCF_UART_UMR(x)                      (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x200 + ((x)*0x40)]))
-#define FNET_MCF_UART_USR(x)                      (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x204 + ((x)*0x40)]))
-#define FNET_MCF_UART_UCSR(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x204 + ((x)*0x40)]))
-#define FNET_MCF_UART_UCR(x)                      (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x208 + ((x)*0x40)]))
-#define FNET_MCF_UART_URB(x)                      (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x20C + ((x)*0x40)]))
-#define FNET_MCF_UART_UTB(x)                      (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x20C + ((x)*0x40)]))
-#define FNET_MCF_UART_UIPCR(x)                    (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x210 + ((x)*0x40)]))
-#define FNET_MCF_UART_UACR(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x210 + ((x)*0x40)]))
-#define FNET_MCF_UART_UIMR(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x214 + ((x)*0x40)]))
-#define FNET_MCF_UART_UISR(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x214 + ((x)*0x40)]))
-#define FNET_MCF_UART_UBG1(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x218 + ((x)*0x40)]))
-#define FNET_MCF_UART_UBG2(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x21C + ((x)*0x40)]))
-#define FNET_MCF_UART_UIP(x)                      (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x234 + ((x)*0x40)]))
-#define FNET_MCF_UART_UOP1(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x238 + ((x)*0x40)]))
-#define FNET_MCF_UART_UOP0(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x23C + ((x)*0x40)]))
+    #define FNET_MCF_UART_UMR(x)                      (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x200 + ((x)*0x40)]))
+    #define FNET_MCF_UART_USR(x)                      (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x204 + ((x)*0x40)]))
+    #define FNET_MCF_UART_UCSR(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x204 + ((x)*0x40)]))
+    #define FNET_MCF_UART_UCR(x)                      (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x208 + ((x)*0x40)]))
+    #define FNET_MCF_UART_URB(x)                      (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x20C + ((x)*0x40)]))
+    #define FNET_MCF_UART_UTB(x)                      (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x20C + ((x)*0x40)]))
+    #define FNET_MCF_UART_UIPCR(x)                    (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x210 + ((x)*0x40)]))
+    #define FNET_MCF_UART_UACR(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x210 + ((x)*0x40)]))
+    #define FNET_MCF_UART_UIMR(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x214 + ((x)*0x40)]))
+    #define FNET_MCF_UART_UISR(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x214 + ((x)*0x40)]))
+    #define FNET_MCF_UART_UBG1(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x218 + ((x)*0x40)]))
+    #define FNET_MCF_UART_UBG2(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x21C + ((x)*0x40)]))
+    #define FNET_MCF_UART_UIP(x)                      (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x234 + ((x)*0x40)]))
+    #define FNET_MCF_UART_UOP1(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x238 + ((x)*0x40)]))
+    #define FNET_MCF_UART_UOP0(x)                     (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x23C + ((x)*0x40)]))
 
 #endif
 
@@ -857,15 +857,15 @@ void fnet_mcf_nop(void);
 /* Register read/write macros */
 #if FNET_CFG_CPU_MCF54418
 #else /* Other MCFs */
-#define FNET_MCF_CFM_CFMMCR                       (*(fnet_vuint16_t *)(&FNET_CFG_MCF_IPSBAR[0x001D0000]))
-#define FNET_MCF_CFM_CFMCLKD                      (*(fnet_vuint8_t  *)(&FNET_CFG_MCF_IPSBAR[0x001D0002]))
-#define FNET_MCF_CFM_CFMSEC                       (*(fnet_vuint32_t *)(&FNET_CFG_MCF_IPSBAR[0x001D0008]))
-#define FNET_MCF_CFM_CFMPROT                      (*(fnet_vuint32_t *)(&FNET_CFG_MCF_IPSBAR[0x001D0010]))
-#define FNET_MCF_CFM_CFMSACC                      (*(fnet_vuint32_t *)(&FNET_CFG_MCF_IPSBAR[0x001D0014]))
-#define FNET_MCF_CFM_CFMDACC                      (*(fnet_vuint32_t *)(&FNET_CFG_MCF_IPSBAR[0x001D0018]))
-#define FNET_MCF_CFM_CFMUSTAT                     (*(fnet_vuint8_t  *)(&FNET_CFG_MCF_IPSBAR[0x001D0020]))
-#define FNET_MCF_CFM_CFMCMD                       (*(fnet_vuint8_t  *)(&FNET_CFG_MCF_IPSBAR[0x001D0024]))
-#define FNET_MCF_CFM_CFMCLKSEL                    (*(fnet_vuint16_t *)(&FNET_CFG_MCF_IPSBAR[0x001D004A]))
+    #define FNET_MCF_CFM_CFMMCR                       (*(fnet_vuint16_t *)(&FNET_CFG_MCF_IPSBAR[0x001D0000]))
+    #define FNET_MCF_CFM_CFMCLKD                      (*(fnet_vuint8_t  *)(&FNET_CFG_MCF_IPSBAR[0x001D0002]))
+    #define FNET_MCF_CFM_CFMSEC                       (*(fnet_vuint32_t *)(&FNET_CFG_MCF_IPSBAR[0x001D0008]))
+    #define FNET_MCF_CFM_CFMPROT                      (*(fnet_vuint32_t *)(&FNET_CFG_MCF_IPSBAR[0x001D0010]))
+    #define FNET_MCF_CFM_CFMSACC                      (*(fnet_vuint32_t *)(&FNET_CFG_MCF_IPSBAR[0x001D0014]))
+    #define FNET_MCF_CFM_CFMDACC                      (*(fnet_vuint32_t *)(&FNET_CFG_MCF_IPSBAR[0x001D0018]))
+    #define FNET_MCF_CFM_CFMUSTAT                     (*(fnet_vuint8_t  *)(&FNET_CFG_MCF_IPSBAR[0x001D0020]))
+    #define FNET_MCF_CFM_CFMCMD                       (*(fnet_vuint8_t  *)(&FNET_CFG_MCF_IPSBAR[0x001D0024]))
+    #define FNET_MCF_CFM_CFMCLKSEL                    (*(fnet_vuint16_t *)(&FNET_CFG_MCF_IPSBAR[0x001D004A]))
 #endif
 
 /* Bit definitions and macros for FNET_MCF_CFM_CFMMCR */
@@ -922,11 +922,11 @@ void fnet_mcf_nop(void);
 
 /* Register read/write macros */
 #if FNET_CFG_CPU_MCF54418
-#define FNET_MCF_RCM_RCR                          (*(fnet_vuint8_t *)(0xEC090000))
-#define FNET_MCF_RCM_RSR                          (*(fnet_vuint8_t *)(0xEC090001))
+    #define FNET_MCF_RCM_RCR                          (*(fnet_vuint8_t *)(0xEC090000))
+    #define FNET_MCF_RCM_RSR                          (*(fnet_vuint8_t *)(0xEC090001))
 #else /* Other MCFs */
-#define FNET_MCF_RCM_RCR                          (*(fnet_vuint8_t  *)(&FNET_CFG_MCF_IPSBAR[0x00110000]))
-#define FNET_MCF_RCM_RSR                          (*(fnet_vuint8_t  *)(&FNET_CFG_MCF_IPSBAR[0x00110001]))
+    #define FNET_MCF_RCM_RCR                          (*(fnet_vuint8_t  *)(&FNET_CFG_MCF_IPSBAR[0x00110000]))
+    #define FNET_MCF_RCM_RSR                          (*(fnet_vuint8_t  *)(&FNET_CFG_MCF_IPSBAR[0x00110001]))
 #endif
 
 
@@ -950,7 +950,7 @@ void fnet_mcf_nop(void);
 
 /*********************************************************************
 *
-* MCFV1 Peripheral Registers     
+* MCFV1 Peripheral Registers
 *
 *********************************************************************/
 #if FNET_CFG_CPU_MCF51CN128 /* Lasko  registers map*/
@@ -971,7 +971,7 @@ void fnet_mcf_nop(void);
     #define FNET_MCF_SCI1S1_PTR     (0xFFFF8164)
     #define FNET_MCF_SCI1C3_PTR     (0xFFFF8166)
     #define FNET_MCF_SCI1D_PTR      (0xFFFF8167)
-       
+
     #define FNET_MCF_SCI2S1_PTR     (0xFFFF8184)
     #define FNET_MCF_SCI2D_PTR      (0xFFFF8187)
 
@@ -1007,18 +1007,20 @@ void fnet_mcf_nop(void);
 
 #if FNET_CFG_MCF_V1
 /*** PTADS - Port A Drive Strength Selection Register ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t PTADS0      :1;                                       /* Output Drive Strength Selection for Port A Bit 0 */
-    fnet_uint8_t PTADS1      :1;                                       /* Output Drive Strength Selection for Port A Bit 1 */
-    fnet_uint8_t PTADS2      :1;                                       /* Output Drive Strength Selection for Port A Bit 2 */
-    fnet_uint8_t PTADS3      :1;                                       /* Output Drive Strength Selection for Port A Bit 3 */
-    fnet_uint8_t PTADS4      :1;                                       /* Output Drive Strength Selection for Port A Bit 4 */
-    fnet_uint8_t PTADS5      :1;                                       /* Output Drive Strength Selection for Port A Bit 5 */
-    fnet_uint8_t PTADS6      :1;                                       /* Output Drive Strength Selection for Port A Bit 6 */
-    fnet_uint8_t PTADS7      :1;                                       /* Output Drive Strength Selection for Port A Bit 7 */
-  } Bits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t PTADS0      : 1;                                      /* Output Drive Strength Selection for Port A Bit 0 */
+        fnet_uint8_t PTADS1      : 1;                                      /* Output Drive Strength Selection for Port A Bit 1 */
+        fnet_uint8_t PTADS2      : 1;                                      /* Output Drive Strength Selection for Port A Bit 2 */
+        fnet_uint8_t PTADS3      : 1;                                      /* Output Drive Strength Selection for Port A Bit 3 */
+        fnet_uint8_t PTADS4      : 1;                                      /* Output Drive Strength Selection for Port A Bit 4 */
+        fnet_uint8_t PTADS5      : 1;                                      /* Output Drive Strength Selection for Port A Bit 5 */
+        fnet_uint8_t PTADS6      : 1;                                      /* Output Drive Strength Selection for Port A Bit 6 */
+        fnet_uint8_t PTADS7      : 1;                                      /* Output Drive Strength Selection for Port A Bit 7 */
+    } Bits;
 } FNET_MCF_PTADSSTR;
 extern volatile FNET_MCF_PTADSSTR _FNET_MCF_PTADS @FNET_MCF_PTADS_PTR;
 #define FNET_MCF_PTADS                           _FNET_MCF_PTADS.Byte
@@ -1041,18 +1043,20 @@ extern volatile FNET_MCF_PTADSSTR _FNET_MCF_PTADS @FNET_MCF_PTADS_PTR;
 #define FNET_MCF_PTADS_PTADS7_MASK               128
 
 /*** PTBDS - Port B Drive Strength Selection Register ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t PTBDS0      :1;                                       /* Output Drive Strength Selection for Port B Bit 0 */
-    fnet_uint8_t PTBDS1      :1;                                       /* Output Drive Strength Selection for Port B Bit 1 */
-    fnet_uint8_t PTBDS2      :1;                                       /* Output Drive Strength Selection for Port B Bit 2 */
-    fnet_uint8_t PTBDS3      :1;                                       /* Output Drive Strength Selection for Port B Bit 3 */
-    fnet_uint8_t PTBDS4      :1;                                       /* Output Drive Strength Selection for Port B Bit 4 */
-    fnet_uint8_t PTBDS5      :1;                                       /* Output Drive Strength Selection for Port B Bit 5 */
-    fnet_uint8_t PTBDS6      :1;                                       /* Output Drive Strength Selection for Port B Bit 6 */
-    fnet_uint8_t PTBDS7      :1;                                       /* Output Drive Strength Selection for Port B Bit 7 */
-  } Bits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t PTBDS0      : 1;                                      /* Output Drive Strength Selection for Port B Bit 0 */
+        fnet_uint8_t PTBDS1      : 1;                                      /* Output Drive Strength Selection for Port B Bit 1 */
+        fnet_uint8_t PTBDS2      : 1;                                      /* Output Drive Strength Selection for Port B Bit 2 */
+        fnet_uint8_t PTBDS3      : 1;                                      /* Output Drive Strength Selection for Port B Bit 3 */
+        fnet_uint8_t PTBDS4      : 1;                                      /* Output Drive Strength Selection for Port B Bit 4 */
+        fnet_uint8_t PTBDS5      : 1;                                      /* Output Drive Strength Selection for Port B Bit 5 */
+        fnet_uint8_t PTBDS6      : 1;                                      /* Output Drive Strength Selection for Port B Bit 6 */
+        fnet_uint8_t PTBDS7      : 1;                                      /* Output Drive Strength Selection for Port B Bit 7 */
+    } Bits;
 } FNET_MCF_PTBDSSTR;
 extern volatile FNET_MCF_PTBDSSTR _FNET_MCF_PTBDS @FNET_MCF_PTBDS_PTR;
 #define FNET_MCF_PTBDS                           _FNET_MCF_PTBDS.Byte
@@ -1075,18 +1079,20 @@ extern volatile FNET_MCF_PTBDSSTR _FNET_MCF_PTBDS @FNET_MCF_PTBDS_PTR;
 #define FNET_MCF_PTBDS_PTBDS7_MASK               128
 
 /*** PTCDS - Port C Drive Strength Selection Register ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t PTCDS0      :1;                                       /* Output Drive Strength Selection for Port C Bit 0 */
-    fnet_uint8_t PTCDS1      :1;                                       /* Output Drive Strength Selection for Port C Bit 1 */
-    fnet_uint8_t PTCDS2      :1;                                       /* Output Drive Strength Selection for Port C Bit 2 */
-    fnet_uint8_t PTCDS3      :1;                                       /* Output Drive Strength Selection for Port C Bit 3 */
-    fnet_uint8_t PTCDS4      :1;                                       /* Output Drive Strength Selection for Port C Bit 4 */
-    fnet_uint8_t PTCDS5      :1;                                       /* Output Drive Strength Selection for Port C Bit 5 */
-    fnet_uint8_t PTCDS6      :1;                                       /* Output Drive Strength Selection for Port C Bit 6 */
-    fnet_uint8_t PTCDS7      :1;                                       /* Output Drive Strength Selection for Port C Bit 7 */
-  } Bits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t PTCDS0      : 1;                                      /* Output Drive Strength Selection for Port C Bit 0 */
+        fnet_uint8_t PTCDS1      : 1;                                      /* Output Drive Strength Selection for Port C Bit 1 */
+        fnet_uint8_t PTCDS2      : 1;                                      /* Output Drive Strength Selection for Port C Bit 2 */
+        fnet_uint8_t PTCDS3      : 1;                                      /* Output Drive Strength Selection for Port C Bit 3 */
+        fnet_uint8_t PTCDS4      : 1;                                      /* Output Drive Strength Selection for Port C Bit 4 */
+        fnet_uint8_t PTCDS5      : 1;                                      /* Output Drive Strength Selection for Port C Bit 5 */
+        fnet_uint8_t PTCDS6      : 1;                                      /* Output Drive Strength Selection for Port C Bit 6 */
+        fnet_uint8_t PTCDS7      : 1;                                      /* Output Drive Strength Selection for Port C Bit 7 */
+    } Bits;
 } FNET_MCF_PTCDSSTR;
 extern volatile FNET_MCF_PTCDSSTR _FNET_MCF_PTCDS @FNET_MCF_PTCDS_PTR;
 #define FNET_MCF_PTCDS                           _FNET_MCF_PTCDS.Byte
@@ -1111,24 +1117,27 @@ extern volatile FNET_MCF_PTCDSSTR _FNET_MCF_PTCDS @FNET_MCF_PTCDS_PTR;
 
 
 /*** PTAPF1 - Port A Routing Register 1 ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t A40         :1;                                       /* Port PTA4 Pin Mux Controls, bit 0 */
-    fnet_uint8_t A41         :1;                                       /* Port PTA4 Pin Mux Controls, bit 1 */
-    fnet_uint8_t A50         :1;                                       /* Port PTA5 Pin Mux Controls, bit 0 */
-    fnet_uint8_t A51         :1;                                       /* Port PTA5 Pin Mux Controls, bit 1 */
-    fnet_uint8_t A60         :1;                                       /* Port PTA6 Pin Mux Controls, bit 0 */
-    fnet_uint8_t A61         :1;                                       /* Port PTA6 Pin Mux Controls, bit 1 */
-    fnet_uint8_t A70         :1;                                       /* Port PTA7 Pin Mux Controls, bit 0 */
-    fnet_uint8_t A71         :1;                                       /* Port PTA7 Pin Mux Controls, bit 1 */
-  } Bits;
-  struct {
-    fnet_uint8_t grpA4   :2;
-    fnet_uint8_t grpA5   :2;
-    fnet_uint8_t grpA6   :2;
-    fnet_uint8_t grpA7   :2;
-  } MergedBits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t A40         : 1;                                      /* Port PTA4 Pin Mux Controls, bit 0 */
+        fnet_uint8_t A41         : 1;                                      /* Port PTA4 Pin Mux Controls, bit 1 */
+        fnet_uint8_t A50         : 1;                                      /* Port PTA5 Pin Mux Controls, bit 0 */
+        fnet_uint8_t A51         : 1;                                      /* Port PTA5 Pin Mux Controls, bit 1 */
+        fnet_uint8_t A60         : 1;                                      /* Port PTA6 Pin Mux Controls, bit 0 */
+        fnet_uint8_t A61         : 1;                                      /* Port PTA6 Pin Mux Controls, bit 1 */
+        fnet_uint8_t A70         : 1;                                      /* Port PTA7 Pin Mux Controls, bit 0 */
+        fnet_uint8_t A71         : 1;                                      /* Port PTA7 Pin Mux Controls, bit 1 */
+    } Bits;
+    struct
+    {
+        fnet_uint8_t grpA4   : 2;
+        fnet_uint8_t grpA5   : 2;
+        fnet_uint8_t grpA6   : 2;
+        fnet_uint8_t grpA7   : 2;
+    } MergedBits;
 } FNET_MCF_PTAPF1STR;
 extern volatile FNET_MCF_PTAPF1STR _FNET_MCF_PTAPF1 @FNET_MCF_PTAPF1_PTR;
 #define FNET_MCF_PTAPF1                          _FNET_MCF_PTAPF1.Byte
@@ -1164,24 +1173,27 @@ extern volatile FNET_MCF_PTAPF1STR _FNET_MCF_PTAPF1 @FNET_MCF_PTAPF1_PTR;
 #define FNET_MCF_PTAPF1_A7_BITNUM                6
 
 /*** PTAPF2 - Port A Routing Register 2 ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t A00         :1;                                       /* Port PTA0 Pin Mux Controls, bit 0 */
-    fnet_uint8_t A01         :1;                                       /* Port PTA0 Pin Mux Controls, bit 1 */
-    fnet_uint8_t A10         :1;                                       /* Port PTA1 Pin Mux Controls, bit 0 */
-    fnet_uint8_t A11         :1;                                       /* Port PTA1 Pin Mux Controls, bit 1 */
-    fnet_uint8_t A20         :1;                                       /* Port PTA2 Pin Mux Controls, bit 0 */
-    fnet_uint8_t A21         :1;                                       /* Port PTA2 Pin Mux Controls, bit 1 */
-    fnet_uint8_t A30         :1;                                       /* Port PTA3 Pin Mux Controls, bit 0 */
-    fnet_uint8_t A31         :1;                                       /* Port PTA3 Pin Mux Controls, bit 1 */
-  } Bits;
-  struct {
-    fnet_uint8_t grpA0   :2;
-    fnet_uint8_t grpA1   :2;
-    fnet_uint8_t grpA2   :2;
-    fnet_uint8_t grpA3   :2;
-  } MergedBits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t A00         : 1;                                      /* Port PTA0 Pin Mux Controls, bit 0 */
+        fnet_uint8_t A01         : 1;                                      /* Port PTA0 Pin Mux Controls, bit 1 */
+        fnet_uint8_t A10         : 1;                                      /* Port PTA1 Pin Mux Controls, bit 0 */
+        fnet_uint8_t A11         : 1;                                      /* Port PTA1 Pin Mux Controls, bit 1 */
+        fnet_uint8_t A20         : 1;                                      /* Port PTA2 Pin Mux Controls, bit 0 */
+        fnet_uint8_t A21         : 1;                                      /* Port PTA2 Pin Mux Controls, bit 1 */
+        fnet_uint8_t A30         : 1;                                      /* Port PTA3 Pin Mux Controls, bit 0 */
+        fnet_uint8_t A31         : 1;                                      /* Port PTA3 Pin Mux Controls, bit 1 */
+    } Bits;
+    struct
+    {
+        fnet_uint8_t grpA0   : 2;
+        fnet_uint8_t grpA1   : 2;
+        fnet_uint8_t grpA2   : 2;
+        fnet_uint8_t grpA3   : 2;
+    } MergedBits;
 } FNET_MCF_PTAPF2STR;
 extern volatile FNET_MCF_PTAPF2STR _FNET_MCF_PTAPF2 @FNET_MCF_PTAPF2_PTR;
 #define FNET_MCF_PTAPF2                          _FNET_MCF_PTAPF2.Byte
@@ -1217,24 +1229,27 @@ extern volatile FNET_MCF_PTAPF2STR _FNET_MCF_PTAPF2 @FNET_MCF_PTAPF2_PTR;
 #define FNET_MCF_PTAPF2_A3_BITNUM                6
 
 /*** PTBPF1 - Port B Routing Register 1 ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t B40         :1;                                       /* Port PTB4 Pin Mux Controls, bit 0 */
-    fnet_uint8_t B41         :1;                                       /* Port PTB4 Pin Mux Controls, bit 1 */
-    fnet_uint8_t B50         :1;                                       /* Port PTB5 Pin Mux Controls, bit 0 */
-    fnet_uint8_t B51         :1;                                       /* Port PTB5 Pin Mux Controls, bit 1 */
-    fnet_uint8_t B60         :1;                                       /* Port PTB6 Pin Mux Controls, bit 0 */
-    fnet_uint8_t B61         :1;                                       /* Port PTB6 Pin Mux Controls, bit 1 */
-    fnet_uint8_t B70         :1;                                       /* Port PTB7 Pin Mux Controls, bit 0 */
-    fnet_uint8_t B71         :1;                                       /* Port PTB7 Pin Mux Controls, bit 1 */
-  } Bits;
-  struct {
-    fnet_uint8_t grpB4   :2;
-    fnet_uint8_t grpB5   :2;
-    fnet_uint8_t grpB6   :2;
-    fnet_uint8_t grpB7   :2;
-  } MergedBits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t B40         : 1;                                      /* Port PTB4 Pin Mux Controls, bit 0 */
+        fnet_uint8_t B41         : 1;                                      /* Port PTB4 Pin Mux Controls, bit 1 */
+        fnet_uint8_t B50         : 1;                                      /* Port PTB5 Pin Mux Controls, bit 0 */
+        fnet_uint8_t B51         : 1;                                      /* Port PTB5 Pin Mux Controls, bit 1 */
+        fnet_uint8_t B60         : 1;                                      /* Port PTB6 Pin Mux Controls, bit 0 */
+        fnet_uint8_t B61         : 1;                                      /* Port PTB6 Pin Mux Controls, bit 1 */
+        fnet_uint8_t B70         : 1;                                      /* Port PTB7 Pin Mux Controls, bit 0 */
+        fnet_uint8_t B71         : 1;                                      /* Port PTB7 Pin Mux Controls, bit 1 */
+    } Bits;
+    struct
+    {
+        fnet_uint8_t grpB4   : 2;
+        fnet_uint8_t grpB5   : 2;
+        fnet_uint8_t grpB6   : 2;
+        fnet_uint8_t grpB7   : 2;
+    } MergedBits;
 } FNET_MCF_PTBPF1STR;
 extern volatile FNET_MCF_PTBPF1STR _FNET_MCF_PTBPF1 @FNET_MCF_PTBPF1_PTR;
 #define FNET_MCF_PTBPF1                          _FNET_MCF_PTBPF1.Byte
@@ -1270,24 +1285,27 @@ extern volatile FNET_MCF_PTBPF1STR _FNET_MCF_PTBPF1 @FNET_MCF_PTBPF1_PTR;
 #define FNET_MCF_PTBPF1_B7_BITNUM                6
 
 /*** PTBPF2 - Port B Routing Register 2 ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t B00         :1;                                       /* Port PTB0 Pin Mux Controls, bit 0 */
-    fnet_uint8_t B01         :1;                                       /* Port PTB0 Pin Mux Controls, bit 1 */
-    fnet_uint8_t B10         :1;                                       /* Port PTB1 Pin Mux Controls, bit 0 */
-    fnet_uint8_t B11         :1;                                       /* Port PTB1 Pin Mux Controls, bit 1 */
-    fnet_uint8_t B20         :1;                                       /* Port PTB2 Pin Mux Controls, bit 0 */
-    fnet_uint8_t B21         :1;                                       /* Port PTB2 Pin Mux Controls, bit 1 */
-    fnet_uint8_t B30         :1;                                       /* Port PTB3 Pin Mux Controls, bit 0 */
-    fnet_uint8_t B31         :1;                                       /* Port PTB3 Pin Mux Controls, bit 1 */
-  } Bits;
-  struct {
-    fnet_uint8_t grpB0   :2;
-    fnet_uint8_t grpB1   :2;
-    fnet_uint8_t grpB2   :2;
-    fnet_uint8_t grpB3   :2;
-  } MergedBits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t B00         : 1;                                      /* Port PTB0 Pin Mux Controls, bit 0 */
+        fnet_uint8_t B01         : 1;                                      /* Port PTB0 Pin Mux Controls, bit 1 */
+        fnet_uint8_t B10         : 1;                                      /* Port PTB1 Pin Mux Controls, bit 0 */
+        fnet_uint8_t B11         : 1;                                      /* Port PTB1 Pin Mux Controls, bit 1 */
+        fnet_uint8_t B20         : 1;                                      /* Port PTB2 Pin Mux Controls, bit 0 */
+        fnet_uint8_t B21         : 1;                                      /* Port PTB2 Pin Mux Controls, bit 1 */
+        fnet_uint8_t B30         : 1;                                      /* Port PTB3 Pin Mux Controls, bit 0 */
+        fnet_uint8_t B31         : 1;                                      /* Port PTB3 Pin Mux Controls, bit 1 */
+    } Bits;
+    struct
+    {
+        fnet_uint8_t grpB0   : 2;
+        fnet_uint8_t grpB1   : 2;
+        fnet_uint8_t grpB2   : 2;
+        fnet_uint8_t grpB3   : 2;
+    } MergedBits;
 } FNET_MCF_PTBPF2STR;
 extern volatile FNET_MCF_PTBPF2STR _FNET_MCF_PTBPF2 @FNET_MCF_PTBPF2_PTR;
 #define FNET_MCF_PTBPF2                          _FNET_MCF_PTBPF2.Byte
@@ -1323,24 +1341,27 @@ extern volatile FNET_MCF_PTBPF2STR _FNET_MCF_PTBPF2 @FNET_MCF_PTBPF2_PTR;
 #define FNET_MCF_PTBPF2_B3_BITNUM                6
 
 /*** PTCPF2 - Port C Routing Register 2 ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t C00         :1;                                       /* Port PTC0 Pin Mux Controls, bit 0 */
-    fnet_uint8_t C01         :1;                                       /* Port PTC0 Pin Mux Controls, bit 1 */
-    fnet_uint8_t C10         :1;                                       /* Port PTC1 Pin Mux Controls, bit 0 */
-    fnet_uint8_t C11         :1;                                       /* Port PTC1 Pin Mux Controls, bit 1 */
-    fnet_uint8_t C20         :1;                                       /* Port PTC2 Pin Mux Controls, bit 0 */
-    fnet_uint8_t C21         :1;                                       /* Port PTC2 Pin Mux Controls, bit 1 */
-    fnet_uint8_t C30         :1;                                       /* Port PTC3 Pin Mux Controls, bit 0 */
-    fnet_uint8_t C31         :1;                                       /* Port PTC3 Pin Mux Controls, bit 1 */
-  } Bits;
-  struct {
-    fnet_uint8_t grpC0   :2;
-    fnet_uint8_t grpC1   :2;
-    fnet_uint8_t grpC2   :2;
-    fnet_uint8_t grpC3   :2;
-  } MergedBits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t C00         : 1;                                      /* Port PTC0 Pin Mux Controls, bit 0 */
+        fnet_uint8_t C01         : 1;                                      /* Port PTC0 Pin Mux Controls, bit 1 */
+        fnet_uint8_t C10         : 1;                                      /* Port PTC1 Pin Mux Controls, bit 0 */
+        fnet_uint8_t C11         : 1;                                      /* Port PTC1 Pin Mux Controls, bit 1 */
+        fnet_uint8_t C20         : 1;                                      /* Port PTC2 Pin Mux Controls, bit 0 */
+        fnet_uint8_t C21         : 1;                                      /* Port PTC2 Pin Mux Controls, bit 1 */
+        fnet_uint8_t C30         : 1;                                      /* Port PTC3 Pin Mux Controls, bit 0 */
+        fnet_uint8_t C31         : 1;                                      /* Port PTC3 Pin Mux Controls, bit 1 */
+    } Bits;
+    struct
+    {
+        fnet_uint8_t grpC0   : 2;
+        fnet_uint8_t grpC1   : 2;
+        fnet_uint8_t grpC2   : 2;
+        fnet_uint8_t grpC3   : 2;
+    } MergedBits;
 } FNET_MCF_PTCPF2STR;
 extern volatile FNET_MCF_PTCPF2STR _FNET_MCF_PTCPF2 @FNET_MCF_PTCPF2_PTR;
 #define FNET_MCF_PTCPF2                          _FNET_MCF_PTCPF2.Byte
@@ -1377,25 +1398,28 @@ extern volatile FNET_MCF_PTCPF2STR _FNET_MCF_PTCPF2 @FNET_MCF_PTCPF2_PTR;
 
 
 /*** PTDPF2 - Port D Routing Register 2; 0xFFFF80C7 ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t D00         :1;                                       /* Port PTD0 Pin Mux Controls, bit 0 */
-    fnet_uint8_t D01         :1;                                       /* Port PTD0 Pin Mux Controls, bit 1 */
-    fnet_uint8_t D10         :1;                                       /* Port PTD1 Pin Mux Controls, bit 0 */
-    fnet_uint8_t D11         :1;                                       /* Port PTD1 Pin Mux Controls, bit 1 */
-    fnet_uint8_t D20         :1;                                       /* Port PTD2 Pin Mux Controls, bit 0 */
-    fnet_uint8_t D21         :1;                                       /* Port PTD2 Pin Mux Controls, bit 1 */
-    fnet_uint8_t D30         :1;                                       /* Port PTD3 Pin Mux Controls, bit 0 */
-    fnet_uint8_t D31         :1;                                       /* Port PTD3 Pin Mux Controls, bit 1 */
-  } Bits;
-  struct {
-    fnet_uint8_t grpD0   :2;
-    fnet_uint8_t grpD1   :2;
-    fnet_uint8_t grpD2   :2;
-    fnet_uint8_t grpD3   :2;
-  } MergedBits;
-} FNET_MCF_PTDPF2STR;  
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t D00         : 1;                                      /* Port PTD0 Pin Mux Controls, bit 0 */
+        fnet_uint8_t D01         : 1;                                      /* Port PTD0 Pin Mux Controls, bit 1 */
+        fnet_uint8_t D10         : 1;                                      /* Port PTD1 Pin Mux Controls, bit 0 */
+        fnet_uint8_t D11         : 1;                                      /* Port PTD1 Pin Mux Controls, bit 1 */
+        fnet_uint8_t D20         : 1;                                      /* Port PTD2 Pin Mux Controls, bit 0 */
+        fnet_uint8_t D21         : 1;                                      /* Port PTD2 Pin Mux Controls, bit 1 */
+        fnet_uint8_t D30         : 1;                                      /* Port PTD3 Pin Mux Controls, bit 0 */
+        fnet_uint8_t D31         : 1;                                      /* Port PTD3 Pin Mux Controls, bit 1 */
+    } Bits;
+    struct
+    {
+        fnet_uint8_t grpD0   : 2;
+        fnet_uint8_t grpD1   : 2;
+        fnet_uint8_t grpD2   : 2;
+        fnet_uint8_t grpD3   : 2;
+    } MergedBits;
+} FNET_MCF_PTDPF2STR;
 extern volatile FNET_MCF_PTDPF2STR _FNET_MCF_PTDPF2 @FNET_MCF_PTDPF2_PTR;
 #define FNET_MCF_PTDPF2                          _FNET_MCF_PTDPF2.Byte
 #define FNET_MCF_PTDPF2_D00                      _FNET_MCF_PTDPF2.Bits.D00
@@ -1429,24 +1453,27 @@ extern volatile FNET_MCF_PTDPF2STR _FNET_MCF_PTDPF2 @FNET_MCF_PTDPF2_PTR;
 #define FNET_MCF_PTDPF2_D3_BITNUM                6
 
 /*** PTEPF1 - Port E Routing Register 1; 0xFFFF80C8 ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t E40         :1;                                       /* Port PTE4 Pin Mux Controls, bit 0 */
-    fnet_uint8_t E41         :1;                                       /* Port PTE4 Pin Mux Controls, bit 1 */
-    fnet_uint8_t E50         :1;                                       /* Port PTE5 Pin Mux Controls, bit 0 */
-    fnet_uint8_t E51         :1;                                       /* Port PTE5 Pin Mux Controls, bit 1 */
-    fnet_uint8_t E60         :1;                                       /* Port PTE6 Pin Mux Controls, bit 0 */
-    fnet_uint8_t E61         :1;                                       /* Port PTE6 Pin Mux Controls, bit 1 */
-    fnet_uint8_t E70         :1;                                       /* Port PTE7 Pin Mux Controls, bit 0 */
-    fnet_uint8_t E71         :1;                                       /* Port PTE7 Pin Mux Controls, bit 1 */
-  } Bits;
-  struct {
-    fnet_uint8_t grpE4   :2;
-    fnet_uint8_t grpE5   :2;
-    fnet_uint8_t grpE6   :2;
-    fnet_uint8_t grpE7   :2;
-  } MergedBits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t E40         : 1;                                      /* Port PTE4 Pin Mux Controls, bit 0 */
+        fnet_uint8_t E41         : 1;                                      /* Port PTE4 Pin Mux Controls, bit 1 */
+        fnet_uint8_t E50         : 1;                                      /* Port PTE5 Pin Mux Controls, bit 0 */
+        fnet_uint8_t E51         : 1;                                      /* Port PTE5 Pin Mux Controls, bit 1 */
+        fnet_uint8_t E60         : 1;                                      /* Port PTE6 Pin Mux Controls, bit 0 */
+        fnet_uint8_t E61         : 1;                                      /* Port PTE6 Pin Mux Controls, bit 1 */
+        fnet_uint8_t E70         : 1;                                      /* Port PTE7 Pin Mux Controls, bit 0 */
+        fnet_uint8_t E71         : 1;                                      /* Port PTE7 Pin Mux Controls, bit 1 */
+    } Bits;
+    struct
+    {
+        fnet_uint8_t grpE4   : 2;
+        fnet_uint8_t grpE5   : 2;
+        fnet_uint8_t grpE6   : 2;
+        fnet_uint8_t grpE7   : 2;
+    } MergedBits;
 } FNET_MCF_PTEPF1STR;
 extern volatile FNET_MCF_PTEPF1STR _FNET_MCF_PTEPF1 @FNET_MCF_PTEPF1_PTR;
 #define FNET_MCF_PTEPF1                          _FNET_MCF_PTEPF1.Byte
@@ -1483,18 +1510,20 @@ extern volatile FNET_MCF_PTEPF1STR _FNET_MCF_PTEPF1 @FNET_MCF_PTEPF1_PTR;
 
 
 /*** PTAIFE - Port A Input Filter Enable Register; 0xFFFF800B ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t PTAIFE0     :1;                                       /* Port A Input Filter Enable Bit 0 */
-    fnet_uint8_t PTAIFE1     :1;                                       /* Port A Input Filter Enable Bit 1 */
-    fnet_uint8_t PTAIFE2     :1;                                       /* Port A Input Filter Enable Bit 2 */
-    fnet_uint8_t PTAIFE3     :1;                                       /* Port A Input Filter Enable Bit 3 */
-    fnet_uint8_t PTAIFE4     :1;                                       /* Port A Input Filter Enable Bit 4 */
-    fnet_uint8_t PTAIFE5     :1;                                       /* Port A Input Filter Enable Bit 5 */
-    fnet_uint8_t PTAIFE6     :1;                                       /* Port A Input Filter Enable Bit 6 */
-    fnet_uint8_t PTAIFE7     :1;                                       /* Port A Input Filter Enable Bit 7 */
-  } Bits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t PTAIFE0     : 1;                                      /* Port A Input Filter Enable Bit 0 */
+        fnet_uint8_t PTAIFE1     : 1;                                      /* Port A Input Filter Enable Bit 1 */
+        fnet_uint8_t PTAIFE2     : 1;                                      /* Port A Input Filter Enable Bit 2 */
+        fnet_uint8_t PTAIFE3     : 1;                                      /* Port A Input Filter Enable Bit 3 */
+        fnet_uint8_t PTAIFE4     : 1;                                      /* Port A Input Filter Enable Bit 4 */
+        fnet_uint8_t PTAIFE5     : 1;                                      /* Port A Input Filter Enable Bit 5 */
+        fnet_uint8_t PTAIFE6     : 1;                                      /* Port A Input Filter Enable Bit 6 */
+        fnet_uint8_t PTAIFE7     : 1;                                      /* Port A Input Filter Enable Bit 7 */
+    } Bits;
 } FNET_MCF_PTAIFESTR;
 extern volatile FNET_MCF_PTAIFESTR _FNET_MCF_PTAIFE @FNET_MCF_PTAIFE_PTR;
 #define FNET_MCF_PTAIFE                 _FNET_MCF_PTAIFE.Byte
@@ -1518,18 +1547,20 @@ extern volatile FNET_MCF_PTAIFESTR _FNET_MCF_PTAIFE @FNET_MCF_PTAIFE_PTR;
 
 
 /*** PTBIFE - Port B Input Filter Enable Register; 0xFFFF801B ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t PTBIFE0     :1;                                       /* Port A Input Filter Enable Bit 0 */
-    fnet_uint8_t PTBIFE1     :1;                                       /* Port A Input Filter Enable Bit 1 */
-    fnet_uint8_t PTBIFE2     :1;                                       /* Port A Input Filter Enable Bit 2 */
-    fnet_uint8_t PTBIFE3     :1;                                       /* Port A Input Filter Enable Bit 3 */
-    fnet_uint8_t PTBIFE4     :1;                                       /* Port A Input Filter Enable Bit 4 */
-    fnet_uint8_t PTBIFE5     :1;                                       /* Port A Input Filter Enable Bit 5 */
-    fnet_uint8_t PTBIFE6     :1;                                       /* Port A Input Filter Enable Bit 6 */
-    fnet_uint8_t PTBIFE7     :1;                                       /* Port A Input Filter Enable Bit 7 */
-  } Bits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t PTBIFE0     : 1;                                      /* Port A Input Filter Enable Bit 0 */
+        fnet_uint8_t PTBIFE1     : 1;                                      /* Port A Input Filter Enable Bit 1 */
+        fnet_uint8_t PTBIFE2     : 1;                                      /* Port A Input Filter Enable Bit 2 */
+        fnet_uint8_t PTBIFE3     : 1;                                      /* Port A Input Filter Enable Bit 3 */
+        fnet_uint8_t PTBIFE4     : 1;                                      /* Port A Input Filter Enable Bit 4 */
+        fnet_uint8_t PTBIFE5     : 1;                                      /* Port A Input Filter Enable Bit 5 */
+        fnet_uint8_t PTBIFE6     : 1;                                      /* Port A Input Filter Enable Bit 6 */
+        fnet_uint8_t PTBIFE7     : 1;                                      /* Port A Input Filter Enable Bit 7 */
+    } Bits;
 } FNET_MCF_PTBIFESTR;
 extern volatile FNET_MCF_PTBIFESTR _FNET_MCF_PTBIFE @FNET_MCF_PTBIFE_PTR;
 #define FNET_MCF_PTBIFE                          _FNET_MCF_PTBIFE.Byte
@@ -1553,18 +1584,20 @@ extern volatile FNET_MCF_PTBIFESTR _FNET_MCF_PTBIFE @FNET_MCF_PTBIFE_PTR;
 
 
 /*** PTCIFE - Port C Input Filter Enable Register; 0xFFFF802B ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t PTCIFE0     :1;                                       /* Port A Input Filter Enable Bit 0 */
-    fnet_uint8_t PTCIFE1     :1;                                       /* Port A Input Filter Enable Bit 1 */
-    fnet_uint8_t PTCIFE2     :1;                                       /* Port A Input Filter Enable Bit 2 */
-    fnet_uint8_t PTCIFE3     :1;                                       /* Port A Input Filter Enable Bit 3 */
-    fnet_uint8_t PTCIFE4     :1;                                       /* Port A Input Filter Enable Bit 4 */
-    fnet_uint8_t PTCIFE5     :1;                                       /* Port A Input Filter Enable Bit 5 */
-    fnet_uint8_t PTCIFE6     :1;                                       /* Port A Input Filter Enable Bit 6 */
-    fnet_uint8_t PTCIFE7     :1;                                       /* Port A Input Filter Enable Bit 7 */
-  } Bits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t PTCIFE0     : 1;                                      /* Port A Input Filter Enable Bit 0 */
+        fnet_uint8_t PTCIFE1     : 1;                                      /* Port A Input Filter Enable Bit 1 */
+        fnet_uint8_t PTCIFE2     : 1;                                      /* Port A Input Filter Enable Bit 2 */
+        fnet_uint8_t PTCIFE3     : 1;                                      /* Port A Input Filter Enable Bit 3 */
+        fnet_uint8_t PTCIFE4     : 1;                                      /* Port A Input Filter Enable Bit 4 */
+        fnet_uint8_t PTCIFE5     : 1;                                      /* Port A Input Filter Enable Bit 5 */
+        fnet_uint8_t PTCIFE6     : 1;                                      /* Port A Input Filter Enable Bit 6 */
+        fnet_uint8_t PTCIFE7     : 1;                                      /* Port A Input Filter Enable Bit 7 */
+    } Bits;
 } FNET_MCF_PTCIFESTR;
 extern volatile FNET_MCF_PTCIFESTR _FNET_MCF_PTCIFE @FNET_MCF_PTCIFE_PTR;
 #define FNET_MCF_PTCIFE                          _FNET_MCF_PTCIFE.Byte
@@ -1593,25 +1626,28 @@ extern volatile FNET_MCF_PTCIFESTR _FNET_MCF_PTCIFE @FNET_MCF_PTCIFE_PTR;
 *
 *********************************************************************/
 /*** MCGC1 - MCG Control Register 1 ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t IREFSTEN    :1;                                       /* Internal Reference Stop Enable */
-    fnet_uint8_t IRCLKEN     :1;                                       /* Internal Reference Clock Enable */
-    fnet_uint8_t IREFS       :1;                                       /* Internal Reference Select */
-    fnet_uint8_t RDIV0       :1;                                       /* Reference Divider, bit 0 */
-    fnet_uint8_t RDIV1       :1;                                       /* Reference Divider, bit 1 */
-    fnet_uint8_t RDIV2       :1;                                       /* Reference Divider, bit 2 */
-    fnet_uint8_t CLKS0       :1;                                       /* Clock Source Select, bit 0 */
-    fnet_uint8_t CLKS1       :1;                                       /* Clock Source Select, bit 1 */
-  } Bits;
-  struct {
-    fnet_uint8_t         :1;
-    fnet_uint8_t         :1;
-    fnet_uint8_t         :1;
-    fnet_uint8_t grpRDIV :3;
-    fnet_uint8_t grpCLKS :2;
-  } MergedBits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t IREFSTEN    : 1;                                      /* Internal Reference Stop Enable */
+        fnet_uint8_t IRCLKEN     : 1;                                      /* Internal Reference Clock Enable */
+        fnet_uint8_t IREFS       : 1;                                      /* Internal Reference Select */
+        fnet_uint8_t RDIV0       : 1;                                      /* Reference Divider, bit 0 */
+        fnet_uint8_t RDIV1       : 1;                                      /* Reference Divider, bit 1 */
+        fnet_uint8_t RDIV2       : 1;                                      /* Reference Divider, bit 2 */
+        fnet_uint8_t CLKS0       : 1;                                      /* Clock Source Select, bit 0 */
+        fnet_uint8_t CLKS1       : 1;                                      /* Clock Source Select, bit 1 */
+    } Bits;
+    struct
+    {
+        fnet_uint8_t         : 1;
+        fnet_uint8_t         : 1;
+        fnet_uint8_t         : 1;
+        fnet_uint8_t grpRDIV : 3;
+        fnet_uint8_t grpCLKS : 2;
+    } MergedBits;
 } FNET_MCF_MCGC1STR;
 extern volatile FNET_MCF_MCGC1STR _FNET_MCF_MCGC1 @FNET_MCF_MCGC1_PTR;
 #define FNET_MCF_MCGC1                           _FNET_MCF_MCGC1.Byte
@@ -1640,18 +1676,20 @@ extern volatile FNET_MCF_MCGC1STR _FNET_MCF_MCGC1 @FNET_MCF_MCGC1_PTR;
 #define FNET_MCF_MCGC1_CLKS_BITNUM               6
 
 /*** MCGTRM - MCG Trim Register ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t TRIM0       :1;                                       /* MCG Trim Setting, bit 0 */
-    fnet_uint8_t TRIM1       :1;                                       /* MCG Trim Setting, bit 1 */
-    fnet_uint8_t TRIM2       :1;                                       /* MCG Trim Setting, bit 2 */
-    fnet_uint8_t TRIM3       :1;                                       /* MCG Trim Setting, bit 3 */
-    fnet_uint8_t TRIM4       :1;                                       /* MCG Trim Setting, bit 4 */
-    fnet_uint8_t TRIM5       :1;                                       /* MCG Trim Setting, bit 5 */
-    fnet_uint8_t TRIM6       :1;                                       /* MCG Trim Setting, bit 6 */
-    fnet_uint8_t TRIM7       :1;                                       /* MCG Trim Setting, bit 7 */
-  } Bits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t TRIM0       : 1;                                      /* MCG Trim Setting, bit 0 */
+        fnet_uint8_t TRIM1       : 1;                                      /* MCG Trim Setting, bit 1 */
+        fnet_uint8_t TRIM2       : 1;                                      /* MCG Trim Setting, bit 2 */
+        fnet_uint8_t TRIM3       : 1;                                      /* MCG Trim Setting, bit 3 */
+        fnet_uint8_t TRIM4       : 1;                                      /* MCG Trim Setting, bit 4 */
+        fnet_uint8_t TRIM5       : 1;                                      /* MCG Trim Setting, bit 5 */
+        fnet_uint8_t TRIM6       : 1;                                      /* MCG Trim Setting, bit 6 */
+        fnet_uint8_t TRIM7       : 1;                                      /* MCG Trim Setting, bit 7 */
+    } Bits;
 } FNET_MCF_MCGTRMSTR;
 extern volatile FNET_MCF_MCGTRMSTR _FNET_MCF_MCGTRM @FNET_MCF_MCGTRM_PTR;
 #define FNET_MCF_MCGTRM                          _FNET_MCF_MCGTRM.Byte
@@ -1674,18 +1712,20 @@ extern volatile FNET_MCF_MCGTRMSTR _FNET_MCF_MCGTRM @FNET_MCF_MCGTRM_PTR;
 #define FNET_MCF_MCGTRM_TRIM7_MASK               128
 
 /*** NVMCGTRM - Nonvolatile MCG Trim Register ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t TRIM0       :1;                                       /* MCG Trim Setting, bit 0 */
-    fnet_uint8_t TRIM1       :1;                                       /* MCG Trim Setting, bit 1 */
-    fnet_uint8_t TRIM2       :1;                                       /* MCG Trim Setting, bit 2 */
-    fnet_uint8_t TRIM3       :1;                                       /* MCG Trim Setting, bit 3 */
-    fnet_uint8_t TRIM4       :1;                                       /* MCG Trim Setting, bit 4 */
-    fnet_uint8_t TRIM5       :1;                                       /* MCG Trim Setting, bit 5 */
-    fnet_uint8_t TRIM6       :1;                                       /* MCG Trim Setting, bit 6 */
-    fnet_uint8_t TRIM7       :1;                                       /* MCG Trim Setting, bit 7 */
-  } Bits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t TRIM0       : 1;                                      /* MCG Trim Setting, bit 0 */
+        fnet_uint8_t TRIM1       : 1;                                      /* MCG Trim Setting, bit 1 */
+        fnet_uint8_t TRIM2       : 1;                                      /* MCG Trim Setting, bit 2 */
+        fnet_uint8_t TRIM3       : 1;                                      /* MCG Trim Setting, bit 3 */
+        fnet_uint8_t TRIM4       : 1;                                      /* MCG Trim Setting, bit 4 */
+        fnet_uint8_t TRIM5       : 1;                                      /* MCG Trim Setting, bit 5 */
+        fnet_uint8_t TRIM6       : 1;                                      /* MCG Trim Setting, bit 6 */
+        fnet_uint8_t TRIM7       : 1;                                      /* MCG Trim Setting, bit 7 */
+    } Bits;
 } FNET_MCF_NVMCGTRMSTR;
 /* Tip for register initialization in the user code:  const byte NVMCGTRM_INIT @0x000003FF = <NVMCGTRM_INITVAL>; */
 #define _FNET_MCF_NVMCGTRM (*(const FNET_MCF_NVMCGTRMSTR *)FNET_MCF_NVMCGTRM_PTR)
@@ -1716,18 +1756,20 @@ typedef union {
 *********************************************************************/
 
 /*** SCI_S1 - SCI Status Register 1 ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t PF          :1;                                       /* Parity Error Flag */
-    fnet_uint8_t FE          :1;                                       /* Framing Error Flag */
-    fnet_uint8_t NF          :1;                                       /* Noise Flag */
-    fnet_uint8_t OR          :1;                                       /* Receiver Overrun Flag */
-    fnet_uint8_t IDLE        :1;                                       /* Idle Line Flag */
-    fnet_int8_t RDRF        :1;                                       /* Receive Data Register Full Flag */
-    fnet_uint8_t TC          :1;                                       /* Transmission Complete Flag */
-    fnet_uint8_t TDRE        :1;                                       /* Transmit Data Register Empty Flag */
-  } Bits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t PF          : 1;                                      /* Parity Error Flag */
+        fnet_uint8_t FE          : 1;                                      /* Framing Error Flag */
+        fnet_uint8_t NF          : 1;                                      /* Noise Flag */
+        fnet_uint8_t OR          : 1;                                      /* Receiver Overrun Flag */
+        fnet_uint8_t IDLE        : 1;                                      /* Idle Line Flag */
+        fnet_int8_t RDRF        : 1;                                      /* Receive Data Register Full Flag */
+        fnet_uint8_t TC          : 1;                                      /* Transmission Complete Flag */
+        fnet_uint8_t TDRE        : 1;                                      /* Transmit Data Register Empty Flag */
+    } Bits;
 } FNET_MCF_SCI_S1STR;
 
 #define _FNET_MCF_SCI_S1(x)                         (*(volatile FNET_MCF_SCI_S1STR*)(FNET_MCF_SCI1S1_PTR+((x)*0x20)))//(*(vuint8 *)(&FNET_CFG_MCF_IPSBAR[0x204 + ((x)*0x40)]))
@@ -1753,18 +1795,20 @@ typedef union {
 #define FNET_MCF_SCI_S1_TDRE_MASK                   (128)
 
 /*** SCI_D - SCI Data Register ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t R0_T0       :1;                                       /* Receive/Transmit Data Bit 0 */
-    fnet_uint8_t R1_T1       :1;                                       /* Receive/Transmit Data Bit 1 */
-    fnet_uint8_t R2_T2       :1;                                       /* Receive/Transmit Data Bit 2 */
-    fnet_uint8_t R3_T3       :1;                                       /* Receive/Transmit Data Bit 3 */
-    fnet_uint8_t R4_T4       :1;                                       /* Receive/Transmit Data Bit 4 */
-    fnet_uint8_t R5_T5       :1;                                       /* Receive/Transmit Data Bit 5 */
-    fnet_uint8_t R6_T6       :1;                                       /* Receive/Transmit Data Bit 6 */
-    fnet_uint8_t R7_T7       :1;                                       /* Receive/Transmit Data Bit 7 */
-  } Bits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t R0_T0       : 1;                                      /* Receive/Transmit Data Bit 0 */
+        fnet_uint8_t R1_T1       : 1;                                      /* Receive/Transmit Data Bit 1 */
+        fnet_uint8_t R2_T2       : 1;                                      /* Receive/Transmit Data Bit 2 */
+        fnet_uint8_t R3_T3       : 1;                                      /* Receive/Transmit Data Bit 3 */
+        fnet_uint8_t R4_T4       : 1;                                      /* Receive/Transmit Data Bit 4 */
+        fnet_uint8_t R5_T5       : 1;                                      /* Receive/Transmit Data Bit 5 */
+        fnet_uint8_t R6_T6       : 1;                                      /* Receive/Transmit Data Bit 6 */
+        fnet_uint8_t R7_T7       : 1;                                      /* Receive/Transmit Data Bit 7 */
+    } Bits;
 } FNET_MCF_SCI_DSTR;
 
 #define _FNET_MCF_SCI_D(x)                          (*(volatile FNET_MCF_SCI_DSTR*)(FNET_MCF_SCI1D_PTR+((x)*0x20)))//(*(vuint8 *)(&FNET_CFG_MCF_IPSBAR[0x204 + ((x)*0x40)]))
@@ -1790,111 +1834,120 @@ typedef union {
 
 
 /*** SCI1BD - SCI1 Baud Rate Register; 0xFFFF8160 ***/
-typedef union {
-  fnet_uint16_t Word;
-   /* Overlapped registers: */
-  struct {
-    /*** SCI1BDH - SCI1 Baud Rate Register High; 0xFFFF8160 ***/
-    union {
-      fnet_uint8_t Byte;
-      struct {
-        fnet_uint8_t SBR8        :1;                                       /* Baud Rate Modulo Divisor Bit 8 */
-        fnet_uint8_t SBR9        :1;                                       /* Baud Rate Modulo Divisor Bit 9 */
-        fnet_uint8_t SBR10       :1;                                       /* Baud Rate Modulo Divisor Bit 10 */
-        fnet_uint8_t SBR11       :1;                                       /* Baud Rate Modulo Divisor Bit 11 */
-        fnet_uint8_t SBR12       :1;                                       /* Baud Rate Modulo Divisor Bit 12 */
-        fnet_uint8_t             :1; 
-        fnet_uint8_t RXEDGIE     :1;                                       /* RxD Input Active Edge Interrupt Enable (for RXEDGIF) */
-        fnet_uint8_t LBKDIE      :1;                                       /* LIN Break Detect Interrupt Enable (for LBKDIF) */
-      } Bits;
-      struct {
-        fnet_uint8_t grpSBR_8 :5;
-        fnet_uint8_t     :1;
-        fnet_uint8_t     :1;
-        fnet_uint8_t     :1;
-      } MergedBits;
-    } FNET_MCF_SCI_BDHSTR;
-    #define FNET_MCF_SCI_BDH(x)                     _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Byte
-    #define FNET_MCF_SCI_BDH_SBR8(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Bits.SBR8
-    #define FNET_MCF_SCI_BDH_SBR9(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Bits.SBR9
-    #define FNET_MCF_SCI_BDH_SBR10(x)               _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Bits.SBR10
-    #define FNET_MCF_SCI_BDH_SBR11(x)               _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Bits.SBR11
-    #define FNET_MCF_SCI_BDH_SBR12(x)               _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Bits.SBR12
-    #define FNET_MCF_SCI_BDH_RXEDGIE(x)             _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Bits.RXEDGIE
-    #define FNET_MCF_SCI_BDH_LBKDIE(x)              _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Bits.LBKDIE
-    #define FNET_MCF_SCI_BDH_SBR_8(x)               _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.MergedBits.grpSBR_8
-    #define FNET_MCF_SCI_BDH_SBR(x)                 FNET_MCF_SCI_BDH_SBR_8
-    
-    #define FNET_MCF_SCI_BDH_SBR8_MASK           1
-    #define FNET_MCF_SCI_BDH_SBR9_MASK           2
-    #define FNET_MCF_SCI_BDH_SBR10_MASK          4
-    #define FNET_MCF_SCI_BDH_SBR11_MASK          8
-    #define FNET_MCF_SCI_BDH_SBR12_MASK          16
-    #define FNET_MCF_SCI_BDH_RXEDGIE_MASK        64
-    #define FNET_MCF_SCI_BDH_LBKDIE_MASK         128
-    #define FNET_MCF_SCI_BDH_SBR_8_MASK          31
-    #define FNET_MCF_SCI_BDH_SBR_8_BITNUM        0
-    
+typedef union
+{
+    fnet_uint16_t Word;
+    /* Overlapped registers: */
+    struct
+    {
+        /*** SCI1BDH - SCI1 Baud Rate Register High; 0xFFFF8160 ***/
+        union
+        {
+            fnet_uint8_t Byte;
+            struct
+            {
+                fnet_uint8_t SBR8        : 1;                                      /* Baud Rate Modulo Divisor Bit 8 */
+                fnet_uint8_t SBR9        : 1;                                      /* Baud Rate Modulo Divisor Bit 9 */
+                fnet_uint8_t SBR10       : 1;                                      /* Baud Rate Modulo Divisor Bit 10 */
+                fnet_uint8_t SBR11       : 1;                                      /* Baud Rate Modulo Divisor Bit 11 */
+                fnet_uint8_t SBR12       : 1;                                      /* Baud Rate Modulo Divisor Bit 12 */
+                fnet_uint8_t             : 1;
+                fnet_uint8_t RXEDGIE     : 1;                                      /* RxD Input Active Edge Interrupt Enable (for RXEDGIF) */
+                fnet_uint8_t LBKDIE      : 1;                                      /* LIN Break Detect Interrupt Enable (for LBKDIF) */
+            } Bits;
+            struct
+            {
+                fnet_uint8_t grpSBR_8 : 5;
+                fnet_uint8_t     : 1;
+                fnet_uint8_t     : 1;
+                fnet_uint8_t     : 1;
+            } MergedBits;
+        } FNET_MCF_SCI_BDHSTR;
+#define FNET_MCF_SCI_BDH(x)                     _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Byte
+#define FNET_MCF_SCI_BDH_SBR8(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Bits.SBR8
+#define FNET_MCF_SCI_BDH_SBR9(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Bits.SBR9
+#define FNET_MCF_SCI_BDH_SBR10(x)               _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Bits.SBR10
+#define FNET_MCF_SCI_BDH_SBR11(x)               _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Bits.SBR11
+#define FNET_MCF_SCI_BDH_SBR12(x)               _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Bits.SBR12
+#define FNET_MCF_SCI_BDH_RXEDGIE(x)             _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Bits.RXEDGIE
+#define FNET_MCF_SCI_BDH_LBKDIE(x)              _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.Bits.LBKDIE
+#define FNET_MCF_SCI_BDH_SBR_8(x)               _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDHSTR.MergedBits.grpSBR_8
+#define FNET_MCF_SCI_BDH_SBR(x)                 FNET_MCF_SCI_BDH_SBR_8
 
-    /*** SCI1BDL - SCI1 Baud Rate Register Low; 0xFFFF8161 ***/
-    union {
-      fnet_uint8_t Byte;
-      struct {
-        fnet_uint8_t SBR0        :1;                                       /* Baud Rate Modulo Divisor Bit 0 */
-        fnet_uint8_t SBR1        :1;                                       /* Baud Rate Modulo Divisor Bit 1 */
-        fnet_uint8_t SBR2        :1;                                       /* Baud Rate Modulo Divisor Bit 2 */
-        fnet_uint8_t SBR3        :1;                                       /* Baud Rate Modulo Divisor Bit 3 */
-        fnet_uint8_t SBR4        :1;                                       /* Baud Rate Modulo Divisor Bit 4 */
-        fnet_uint8_t SBR5        :1;                                       /* Baud Rate Modulo Divisor Bit 5 */
-        fnet_uint8_t SBR6        :1;                                       /* Baud Rate Modulo Divisor Bit 6 */
-        fnet_uint8_t SBR7        :1;                                       /* Baud Rate Modulo Divisor Bit 7 */
-      } Bits;
-    } FNET_MCF_SCI_BDLSTR;
-    #define FNET_MCF_SCI_BDL(x)                     _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Byte
-    #define FNET_MCF_SCI_BDL_SBR0(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR0
-    #define FNET_MCF_SCI_BDL_SBR1(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR1
-    #define FNET_MCF_SCI_BDL_SBR2(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR2
-    #define FNET_MCF_SCI_BDL_SBR3(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR3
-    #define FNET_MCF_SCI_BDL_SBR4(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR4
-    #define FNET_MCF_SCI_BDL_SBR5(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR5
-    #define FNET_MCF_SCI_BDL_SBR6(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR6
-    #define FNET_MCF_SCI_BDL_SBR7(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR7
-    
-    #define FNET_MCF_SCI_BDL_SBR0_MASK           1
-    #define FNET_MCF_SCI_BDL_SBR1_MASK           2
-    #define FNET_MCF_SCI_BDL_SBR2_MASK           4
-    #define FNET_MCF_SCI_BDL_SBR3_MASK           8
-    #define FNET_MCF_SCI_BDL_SBR4_MASK           16
-    #define FNET_MCF_SCI_BDL_SBR5_MASK           32
-    #define FNET_MCF_SCI_BDL_SBR6_MASK           64
-    #define FNET_MCF_SCI_BDL_SBR7_MASK           128
-    
-  } Overlap_STR;
+#define FNET_MCF_SCI_BDH_SBR8_MASK           1
+#define FNET_MCF_SCI_BDH_SBR9_MASK           2
+#define FNET_MCF_SCI_BDH_SBR10_MASK          4
+#define FNET_MCF_SCI_BDH_SBR11_MASK          8
+#define FNET_MCF_SCI_BDH_SBR12_MASK          16
+#define FNET_MCF_SCI_BDH_RXEDGIE_MASK        64
+#define FNET_MCF_SCI_BDH_LBKDIE_MASK         128
+#define FNET_MCF_SCI_BDH_SBR_8_MASK          31
+#define FNET_MCF_SCI_BDH_SBR_8_BITNUM        0
 
-  struct {
-    fnet_uint16_t SBR0        :1;                                       /* Baud Rate Modulo Divisor Bit 0 */
-    fnet_uint16_t SBR1        :1;                                       /* Baud Rate Modulo Divisor Bit 1 */
-    fnet_uint16_t SBR2        :1;                                       /* Baud Rate Modulo Divisor Bit 2 */
-    fnet_uint16_t SBR3        :1;                                       /* Baud Rate Modulo Divisor Bit 3 */
-    fnet_uint16_t SBR4        :1;                                       /* Baud Rate Modulo Divisor Bit 4 */
-    fnet_uint16_t SBR5        :1;                                       /* Baud Rate Modulo Divisor Bit 5 */
-    fnet_uint16_t SBR6        :1;                                       /* Baud Rate Modulo Divisor Bit 6 */
-    fnet_uint16_t SBR7        :1;                                       /* Baud Rate Modulo Divisor Bit 7 */
-    fnet_uint16_t SBR8        :1;                                       /* Baud Rate Modulo Divisor Bit 8 */
-    fnet_uint16_t SBR9        :1;                                       /* Baud Rate Modulo Divisor Bit 9 */
-    fnet_uint16_t SBR10       :1;                                       /* Baud Rate Modulo Divisor Bit 10 */
-    fnet_uint16_t SBR11       :1;                                       /* Baud Rate Modulo Divisor Bit 11 */
-    fnet_uint16_t SBR12       :1;                                       /* Baud Rate Modulo Divisor Bit 12 */
-    fnet_uint16_t             :1; 
-    fnet_uint16_t RXEDGIE     :1;                                       /* RxD Input Active Edge Interrupt Enable (for RXEDGIF) */
-    fnet_uint16_t LBKDIE      :1;                                       /* LIN Break Detect Interrupt Enable (for LBKDIF) */
-  } Bits;
-  struct {
-    fnet_uint16_t grpSBR  :13;
-    fnet_uint16_t         :1;
-    fnet_uint16_t         :1;
-    fnet_uint16_t         :1;
-  } MergedBits;
+
+        /*** SCI1BDL - SCI1 Baud Rate Register Low; 0xFFFF8161 ***/
+        union
+        {
+            fnet_uint8_t Byte;
+            struct
+            {
+                fnet_uint8_t SBR0        : 1;                                      /* Baud Rate Modulo Divisor Bit 0 */
+                fnet_uint8_t SBR1        : 1;                                      /* Baud Rate Modulo Divisor Bit 1 */
+                fnet_uint8_t SBR2        : 1;                                      /* Baud Rate Modulo Divisor Bit 2 */
+                fnet_uint8_t SBR3        : 1;                                      /* Baud Rate Modulo Divisor Bit 3 */
+                fnet_uint8_t SBR4        : 1;                                      /* Baud Rate Modulo Divisor Bit 4 */
+                fnet_uint8_t SBR5        : 1;                                      /* Baud Rate Modulo Divisor Bit 5 */
+                fnet_uint8_t SBR6        : 1;                                      /* Baud Rate Modulo Divisor Bit 6 */
+                fnet_uint8_t SBR7        : 1;                                      /* Baud Rate Modulo Divisor Bit 7 */
+            } Bits;
+        } FNET_MCF_SCI_BDLSTR;
+#define FNET_MCF_SCI_BDL(x)                     _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Byte
+#define FNET_MCF_SCI_BDL_SBR0(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR0
+#define FNET_MCF_SCI_BDL_SBR1(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR1
+#define FNET_MCF_SCI_BDL_SBR2(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR2
+#define FNET_MCF_SCI_BDL_SBR3(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR3
+#define FNET_MCF_SCI_BDL_SBR4(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR4
+#define FNET_MCF_SCI_BDL_SBR5(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR5
+#define FNET_MCF_SCI_BDL_SBR6(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR6
+#define FNET_MCF_SCI_BDL_SBR7(x)                _FNET_MCF_SCI_BD(x).Overlap_STR.FNET_MCF_SCI_BDLSTR.Bits.SBR7
+
+#define FNET_MCF_SCI_BDL_SBR0_MASK           1
+#define FNET_MCF_SCI_BDL_SBR1_MASK           2
+#define FNET_MCF_SCI_BDL_SBR2_MASK           4
+#define FNET_MCF_SCI_BDL_SBR3_MASK           8
+#define FNET_MCF_SCI_BDL_SBR4_MASK           16
+#define FNET_MCF_SCI_BDL_SBR5_MASK           32
+#define FNET_MCF_SCI_BDL_SBR6_MASK           64
+#define FNET_MCF_SCI_BDL_SBR7_MASK           128
+
+    } Overlap_STR;
+
+    struct
+    {
+        fnet_uint16_t SBR0        : 1;                                      /* Baud Rate Modulo Divisor Bit 0 */
+        fnet_uint16_t SBR1        : 1;                                      /* Baud Rate Modulo Divisor Bit 1 */
+        fnet_uint16_t SBR2        : 1;                                      /* Baud Rate Modulo Divisor Bit 2 */
+        fnet_uint16_t SBR3        : 1;                                      /* Baud Rate Modulo Divisor Bit 3 */
+        fnet_uint16_t SBR4        : 1;                                      /* Baud Rate Modulo Divisor Bit 4 */
+        fnet_uint16_t SBR5        : 1;                                      /* Baud Rate Modulo Divisor Bit 5 */
+        fnet_uint16_t SBR6        : 1;                                      /* Baud Rate Modulo Divisor Bit 6 */
+        fnet_uint16_t SBR7        : 1;                                      /* Baud Rate Modulo Divisor Bit 7 */
+        fnet_uint16_t SBR8        : 1;                                      /* Baud Rate Modulo Divisor Bit 8 */
+        fnet_uint16_t SBR9        : 1;                                      /* Baud Rate Modulo Divisor Bit 9 */
+        fnet_uint16_t SBR10       : 1;                                      /* Baud Rate Modulo Divisor Bit 10 */
+        fnet_uint16_t SBR11       : 1;                                      /* Baud Rate Modulo Divisor Bit 11 */
+        fnet_uint16_t SBR12       : 1;                                      /* Baud Rate Modulo Divisor Bit 12 */
+        fnet_uint16_t             : 1;
+        fnet_uint16_t RXEDGIE     : 1;                                      /* RxD Input Active Edge Interrupt Enable (for RXEDGIF) */
+        fnet_uint16_t LBKDIE      : 1;                                      /* LIN Break Detect Interrupt Enable (for LBKDIF) */
+    } Bits;
+    struct
+    {
+        fnet_uint16_t grpSBR  : 13;
+        fnet_uint16_t         : 1;
+        fnet_uint16_t         : 1;
+        fnet_uint16_t         : 1;
+    } MergedBits;
 } FNET_MCF_SCI_BDSTR;
 
 #define _FNET_MCF_SCI_BD(x)                         (*(volatile FNET_MCF_SCI_BDSTR*)(FNET_MCF_SCI1BD_PTR+((x)*0x20)))
@@ -1937,18 +1990,20 @@ typedef union {
 
 
 /*** SCI1C1 - SCI1 Control Register 1; 0xFFFF8162 ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t PT          :1;                                       /* Parity Type */
-    fnet_uint8_t PE          :1;                                       /* Parity Enable */
-    fnet_uint8_t ILT         :1;                                       /* Idle Line Type Select */
-    fnet_uint8_t WAKE        :1;                                       /* Receiver Wakeup Method Select */
-    fnet_uint8_t M           :1;                                       /* 9-Bit or 8-Bit Mode Select */
-    fnet_uint8_t RSRC        :1;                                       /* Receiver Source Select */
-    fnet_uint8_t SCISWAI     :1;                                       /* SCI Stops in Wait Mode */
-    fnet_uint8_t LOOPS       :1;                                       /* Loop Mode Select */
-  } Bits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t PT          : 1;                                      /* Parity Type */
+        fnet_uint8_t PE          : 1;                                      /* Parity Enable */
+        fnet_uint8_t ILT         : 1;                                      /* Idle Line Type Select */
+        fnet_uint8_t WAKE        : 1;                                      /* Receiver Wakeup Method Select */
+        fnet_uint8_t M           : 1;                                      /* 9-Bit or 8-Bit Mode Select */
+        fnet_uint8_t RSRC        : 1;                                      /* Receiver Source Select */
+        fnet_uint8_t SCISWAI     : 1;                                      /* SCI Stops in Wait Mode */
+        fnet_uint8_t LOOPS       : 1;                                      /* Loop Mode Select */
+    } Bits;
 } FNET_MCF_SCI_C1STR;
 
 #define _FNET_MCF_SCI_C1(x)                         (*(volatile FNET_MCF_SCI_C1STR*)(FNET_MCF_SCI1C1_PTR+((x)*0x20)))
@@ -1973,18 +2028,20 @@ typedef union {
 #define FNET_MCF_SCI_C1_LOOPS_MASK               128
 
 /*** SCI1C2 - SCI1 Control Register 2; 0xFFFF8163 ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t SBK         :1;                                       /* Send Break */
-    fnet_uint8_t RWU         :1;                                       /* Receiver Wakeup Control */
-    fnet_uint8_t RE          :1;                                       /* Receiver Enable */
-    fnet_uint8_t TE          :1;                                       /* Transmitter Enable */
-    fnet_uint8_t ILIE        :1;                                       /* Idle Line Interrupt Enable (for IDLE) */
-    fnet_uint8_t RIE         :1;                                       /* Receiver Interrupt Enable (for RDRF) */
-    fnet_uint8_t TCIE        :1;                                       /* Transmission Complete Interrupt Enable (for TC) */
-    fnet_uint8_t TIE         :1;                                       /* Transmit Interrupt Enable (for TDRE) */
-  } Bits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t SBK         : 1;                                      /* Send Break */
+        fnet_uint8_t RWU         : 1;                                      /* Receiver Wakeup Control */
+        fnet_uint8_t RE          : 1;                                      /* Receiver Enable */
+        fnet_uint8_t TE          : 1;                                      /* Transmitter Enable */
+        fnet_uint8_t ILIE        : 1;                                      /* Idle Line Interrupt Enable (for IDLE) */
+        fnet_uint8_t RIE         : 1;                                      /* Receiver Interrupt Enable (for RDRF) */
+        fnet_uint8_t TCIE        : 1;                                      /* Transmission Complete Interrupt Enable (for TC) */
+        fnet_uint8_t TIE         : 1;                                      /* Transmit Interrupt Enable (for TDRE) */
+    } Bits;
 } FNET_MCF_SCI_C2STR;
 
 #define _FNET_MCF_SCI_C2(x)                         (*(volatile FNET_MCF_SCI_C2STR*)(FNET_MCF_SCI1C2_PTR+((x)*0x20)))
@@ -2010,18 +2067,20 @@ typedef union {
 
 
 /*** SCI1C3 - SCI1 Control Register 3; 0xFFFF8166 ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t PEIE        :1;                                       /* Parity Error Interrupt Enable */
-    fnet_uint8_t FEIE        :1;                                       /* Framing Error Interrupt Enable */
-    fnet_uint8_t NEIE        :1;                                       /* Noise Error Interrupt Enable */
-    fnet_uint8_t ORIE        :1;                                       /* Overrun Interrupt Enable */
-    fnet_uint8_t TXINV       :1;                                       /* Transmit Data Inversion */
-    fnet_uint8_t TXDIR       :1;                                       /* TxD Pin Direction in Single-Wire Mode */
-    fnet_uint8_t T8          :1;                                       /* Ninth Data Bit for Transmitter */
-    fnet_uint8_t R8          :1;                                       /* Ninth Data Bit for Receiver */
-  } Bits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t PEIE        : 1;                                      /* Parity Error Interrupt Enable */
+        fnet_uint8_t FEIE        : 1;                                      /* Framing Error Interrupt Enable */
+        fnet_uint8_t NEIE        : 1;                                      /* Noise Error Interrupt Enable */
+        fnet_uint8_t ORIE        : 1;                                      /* Overrun Interrupt Enable */
+        fnet_uint8_t TXINV       : 1;                                      /* Transmit Data Inversion */
+        fnet_uint8_t TXDIR       : 1;                                      /* TxD Pin Direction in Single-Wire Mode */
+        fnet_uint8_t T8          : 1;                                      /* Ninth Data Bit for Transmitter */
+        fnet_uint8_t R8          : 1;                                      /* Ninth Data Bit for Receiver */
+    } Bits;
 } FNET_MCF_SCI_C3STR;
 
 #define _FNET_MCF_SCI_C3(x)                         (*(volatile FNET_MCF_SCI_C3STR*)(FNET_MCF_SCI1C3_PTR+((x)*0x20)))
@@ -2054,24 +2113,27 @@ typedef union {
 *********************************************************************/
 
 /*** RTCSC - RTC Status and Control Register ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t RTCPS0      :1;                                       /* Real-Time Clock Prescaler Select, bit 0 */
-    fnet_uint8_t RTCPS1      :1;                                       /* Real-Time Clock Prescaler Select, bit 1 */
-    fnet_uint8_t RTCPS2      :1;                                       /* Real-Time Clock Prescaler Select, bit 2 */
-    fnet_uint8_t RTCPS3      :1;                                       /* Real-Time Clock Prescaler Select, bit 3 */
-    fnet_uint8_t RTIE        :1;                                       /* Real-Time Interrupt Enable */
-    fnet_uint8_t RTCLKS0     :1;                                       /* Real-Time Clock Source Select, bit 0 */
-    fnet_uint8_t RTCLKS1     :1;                                       /* Real-Time Clock Source Select, bit 1 */
-    fnet_uint8_t RTIF        :1;                                       /* Real-Time Interrupt Flag */
-  } Bits;
-  struct {
-    fnet_uint8_t grpRTCPS :4;
-    fnet_uint8_t         :1;
-    fnet_uint8_t grpRTCLKS :2;
-    fnet_uint8_t         :1;
-  } MergedBits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t RTCPS0      : 1;                                      /* Real-Time Clock Prescaler Select, bit 0 */
+        fnet_uint8_t RTCPS1      : 1;                                      /* Real-Time Clock Prescaler Select, bit 1 */
+        fnet_uint8_t RTCPS2      : 1;                                      /* Real-Time Clock Prescaler Select, bit 2 */
+        fnet_uint8_t RTCPS3      : 1;                                      /* Real-Time Clock Prescaler Select, bit 3 */
+        fnet_uint8_t RTIE        : 1;                                      /* Real-Time Interrupt Enable */
+        fnet_uint8_t RTCLKS0     : 1;                                      /* Real-Time Clock Source Select, bit 0 */
+        fnet_uint8_t RTCLKS1     : 1;                                      /* Real-Time Clock Source Select, bit 1 */
+        fnet_uint8_t RTIF        : 1;                                      /* Real-Time Interrupt Flag */
+    } Bits;
+    struct
+    {
+        fnet_uint8_t grpRTCPS : 4;
+        fnet_uint8_t         : 1;
+        fnet_uint8_t grpRTCLKS : 2;
+        fnet_uint8_t         : 1;
+    } MergedBits;
 } FNET_MCF_RTCSCSTR;
 extern volatile FNET_MCF_RTCSCSTR _FNET_MCF_RTCSC @FNET_MCF_RTCSC_PTR;
 #define FNET_MCF_RTCSC                           _FNET_MCF_RTCSC.Byte
@@ -2101,16 +2163,18 @@ extern volatile FNET_MCF_RTCSCSTR _FNET_MCF_RTCSC @FNET_MCF_RTCSC_PTR;
 
 
 /*** RTCCNT - RTC Counter Register ***/
-typedef union {
-  fnet_uint8_t Byte;
+typedef union
+{
+    fnet_uint8_t Byte;
 } FNET_MCF_RTCCNTSTR;
 extern volatile FNET_MCF_RTCCNTSTR _FNET_MCF_RTCCNT @FNET_MCF_RTCCNT_PTR;
 #define FNET_RTCCNT                          _FNET_MCF_RTCCNT.Byte
 
 
 /*** RTCMOD - RTC Modulo Register ***/
-typedef union {
-  fnet_uint8_t Byte;
+typedef union
+{
+    fnet_uint8_t Byte;
 } FNET_MCF_RTCMODSTR;
 extern volatile FNET_MCF_RTCMODSTR _FNET_MCF_RTCMOD @FNET_MCF_RTCMOD_PTR;
 #define FNET_MCF_RTCMOD                          _FNET_MCF_RTCMOD.Byte
@@ -2125,25 +2189,28 @@ extern volatile FNET_MCF_RTCMODSTR _FNET_MCF_RTCMOD @FNET_MCF_RTCMOD_PTR;
 *********************************************************************/
 
 /*** SCGC1 - System Clock Gating Control 1 Register; 0xFFFF8108 ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t SCI1        :1;                                       /* SCI1 Clock Gate Control */
-    fnet_uint8_t SCI2        :1;                                       /* SCI2 Clock Gate Control */
-    fnet_uint8_t IIC1        :1;                                       /* IIC1 Clock Gate Control */
-    fnet_uint8_t IIC2        :1;                                       /* IIC2 Clock Gate Control */
-    fnet_uint8_t ADC         :1;                                       /* ADC Clock Gate Control */
-    fnet_uint8_t TPM1        :1;                                       /* TPM1 Clock Gate Control */
-    fnet_uint8_t TPM2        :1;                                       /* TPM2 Clock Gate Control */
-    fnet_uint8_t MTIM1       :1;                                       /* MTIM1 Clock Gate Control */
-  } Bits;
-  struct {
-    fnet_uint8_t grpSCI_1 :2;
-    fnet_uint8_t grpIIC_1 :2;
-    fnet_uint8_t         :1;
-    fnet_uint8_t grpTPM_1 :2;
-    fnet_uint8_t grpMTIM_1 :1;
-  } MergedBits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t SCI1        : 1;                                      /* SCI1 Clock Gate Control */
+        fnet_uint8_t SCI2        : 1;                                      /* SCI2 Clock Gate Control */
+        fnet_uint8_t IIC1        : 1;                                      /* IIC1 Clock Gate Control */
+        fnet_uint8_t IIC2        : 1;                                      /* IIC2 Clock Gate Control */
+        fnet_uint8_t ADC         : 1;                                      /* ADC Clock Gate Control */
+        fnet_uint8_t TPM1        : 1;                                      /* TPM1 Clock Gate Control */
+        fnet_uint8_t TPM2        : 1;                                      /* TPM2 Clock Gate Control */
+        fnet_uint8_t MTIM1       : 1;                                      /* MTIM1 Clock Gate Control */
+    } Bits;
+    struct
+    {
+        fnet_uint8_t grpSCI_1 : 2;
+        fnet_uint8_t grpIIC_1 : 2;
+        fnet_uint8_t         : 1;
+        fnet_uint8_t grpTPM_1 : 2;
+        fnet_uint8_t grpMTIM_1 : 1;
+    } MergedBits;
 } FNET_MCF_SCGC1STR;
 extern volatile FNET_MCF_SCGC1STR _FNET_MCF_SCGC1 @FNET_MCF_SCGC1_PTR;
 #define FNET_MCF_SCGC1                           _FNET_MCF_SCGC1.Byte
@@ -2179,26 +2246,29 @@ extern volatile FNET_MCF_SCGC1STR _FNET_MCF_SCGC1 @FNET_MCF_SCGC1_PTR;
 
 
 /*** SCGC2 - System Clock Gating Control 2 Register; 0xFFFF8109 ***/
-typedef union {
-  fnet_uint8_t Byte;
-  struct {
-    fnet_uint8_t SPI1        :1;                                       /* SPI1 Clock Gate Control */
-    fnet_uint8_t SPI2        :1;                                       /* SPI2 Clock Gate Control */
-    fnet_uint8_t RTC         :1;                                       /* RTC Clock Gate Control */
-    fnet_uint8_t KBI1        :1;                                       /* KBI1 Clock Gate Control */
-    fnet_uint8_t KBI2        :1;                                       /* KBI2 Clock Gate Control */
-    fnet_uint8_t IRQ         :1;                                       /* IRQ Clock Gate Control */
-    fnet_uint8_t FTSR        :1;                                       /* FTSR Clock Gate Control */
-    fnet_uint8_t SCI3        :1;                                       /* SCI3 Clock Gate Control */
-  } Bits;
-  struct {
-    fnet_uint8_t grpSPI_1 :2;
-    fnet_uint8_t         :1;
-    fnet_uint8_t grpKBI_1 :2;
-    fnet_uint8_t         :1;
-    fnet_uint8_t         :1;
-    fnet_uint8_t grpSCI_3 :1;
-  } MergedBits;
+typedef union
+{
+    fnet_uint8_t Byte;
+    struct
+    {
+        fnet_uint8_t SPI1        : 1;                                      /* SPI1 Clock Gate Control */
+        fnet_uint8_t SPI2        : 1;                                      /* SPI2 Clock Gate Control */
+        fnet_uint8_t RTC         : 1;                                      /* RTC Clock Gate Control */
+        fnet_uint8_t KBI1        : 1;                                      /* KBI1 Clock Gate Control */
+        fnet_uint8_t KBI2        : 1;                                      /* KBI2 Clock Gate Control */
+        fnet_uint8_t IRQ         : 1;                                      /* IRQ Clock Gate Control */
+        fnet_uint8_t FTSR        : 1;                                      /* FTSR Clock Gate Control */
+        fnet_uint8_t SCI3        : 1;                                      /* SCI3 Clock Gate Control */
+    } Bits;
+    struct
+    {
+        fnet_uint8_t grpSPI_1 : 2;
+        fnet_uint8_t         : 1;
+        fnet_uint8_t grpKBI_1 : 2;
+        fnet_uint8_t         : 1;
+        fnet_uint8_t         : 1;
+        fnet_uint8_t grpSCI_3 : 1;
+    } MergedBits;
 } FNET_MCF_SCGC2STR;
 extern volatile FNET_MCF_SCGC2STR _FNET_MCF_SCGC2 @FNET_MCF_SCGC2_PTR;
 #define FNET_MCF_SCGC2                           _FNET_MCF_SCGC2.Byte
@@ -2245,26 +2315,26 @@ extern volatile FNET_MCF_SCGC2STR _FNET_MCF_SCGC2 @FNET_MCF_SCGC2_PTR;
 *
 *********************************************************************/
 #if FNET_CFG_CPU_MCF54418
-/* Register read/write macros */
-#define FNET_MCF_PMM_PPMLR0                       (*(fnet_vuint32_t*)(0xFC040034))
-#define FNET_MCF_PMM_PPMLR1                       (*(fnet_vuint32_t*)(0xFC04003C))
+    /* Register read/write macros */
+    #define FNET_MCF_PMM_PPMLR0                       (*(fnet_vuint32_t*)(0xFC040034))
+    #define FNET_MCF_PMM_PPMLR1                       (*(fnet_vuint32_t*)(0xFC04003C))
 
-#define FNET_MCF_PMM_PPMLR0_CD18                  (0x40000)
-#define FNET_MCF_PMM_PPMLR0_CD19                  (0x80000)
-#define FNET_MCF_PMM_PPMLR0_CD20                  (0x100000)
-#define FNET_MCF_PMM_PPMLR0_CD24                  (0x1000000)
-#define FNET_MCF_PMM_PPMLR0_CD25                  (0x2000000)
-#define FNET_MCF_PMM_PPMLR0_CD26                  (0x4000000)
-#define FNET_MCF_PMM_PPMLR0_CD27                  (0x8000000)
-#define FNET_MCF_PMM_PPMLR0_CD28                  (0x10000000)
-#define FNET_MCF_PMM_PPMLR0_CD29                  (0x20000000)
-#define FNET_MCF_PMM_PPMLR0_CD30                  (0x40000000)
-#define FNET_MCF_PMM_PPMLR0_CD31                  (0x80000000)
+    #define FNET_MCF_PMM_PPMLR0_CD18                  (0x40000)
+    #define FNET_MCF_PMM_PPMLR0_CD19                  (0x80000)
+    #define FNET_MCF_PMM_PPMLR0_CD20                  (0x100000)
+    #define FNET_MCF_PMM_PPMLR0_CD24                  (0x1000000)
+    #define FNET_MCF_PMM_PPMLR0_CD25                  (0x2000000)
+    #define FNET_MCF_PMM_PPMLR0_CD26                  (0x4000000)
+    #define FNET_MCF_PMM_PPMLR0_CD27                  (0x8000000)
+    #define FNET_MCF_PMM_PPMLR0_CD28                  (0x10000000)
+    #define FNET_MCF_PMM_PPMLR0_CD29                  (0x20000000)
+    #define FNET_MCF_PMM_PPMLR0_CD30                  (0x40000000)
+    #define FNET_MCF_PMM_PPMLR0_CD31                  (0x80000000)
 
-#define FNET_MCF_PMM_PPMLR1_CD24                  (0x1000000)
-#define FNET_MCF_PMM_PPMLR1_CD25                  (0x2000000)
-#define FNET_MCF_PMM_PPMLR1_CD26                  (0x4000000)
-#define FNET_MCF_PMM_PPMLR1_CD27                  (0x8000000)
+    #define FNET_MCF_PMM_PPMLR1_CD24                  (0x1000000)
+    #define FNET_MCF_PMM_PPMLR1_CD25                  (0x2000000)
+    #define FNET_MCF_PMM_PPMLR1_CD26                  (0x4000000)
+    #define FNET_MCF_PMM_PPMLR1_CD27                  (0x8000000)
 
 #endif /* FNET_CFG_CPU_MCF54418 */
 
@@ -2297,7 +2367,7 @@ extern volatile FNET_MCF_SCGC2STR _FNET_MCF_SCGC2 @FNET_MCF_SCGC2_PTR;
     #define FNET_MCF522XX_GPIO_PUCPAR_URXD2_URXD2       (0x2)
 #else /* Quad-Function Pin Assignment.*/
     #define FNET_MCF522XX_GPIO_PUCPAR_URXD2_URXD2       (0x4)
-#endif 
+#endif
 #define FNET_MCF522XX_GPIO_PUCPAR_UTXD2_UTXD2           (0x1)
 
 #define FNET_MCF522XX_GPIO_PUBPAR       (*(fnet_vuint8_t *)(&FNET_CFG_MCF_IPSBAR[0x100072]))

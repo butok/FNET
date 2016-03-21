@@ -2,8 +2,8 @@
  * File:        nand.h
  * Purpose:     Defines used to specify the parameters for a particular
  *              NAND flash on a given board. This version of the file
- *              is for the TWR-K70F120M and TWR-K60F120M. 
- * 
+ *              is for the TWR-K70F120M and TWR-K60F120M.
+ *
  * Notes:       This file should be updated as needed when the nfc driver
  *              is being ported to a new board.
  */

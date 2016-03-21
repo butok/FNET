@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -35,12 +35,12 @@
 
 /*! @addtogroup fnet_shell
 * The shell service provides application-specific command-line interface.@n
-* It runs on asigned serial stream, parses the input text, decodes the command 
-* name and arguments and calls back user-specified functions assigned to 
+* It runs on asigned serial stream, parses the input text, decodes the command
+* name and arguments and calls back user-specified functions assigned to
 * each command. @n
 * @n
-* After the Shell service is initialized by calling the @ref fnet_shell_init() 
-* function, the user application should call the main service polling function  
+* After the Shell service is initialized by calling the @ref fnet_shell_init()
+* function, the user application should call the main service polling function
 * @ref fnet_poll_services() periodically in background. @n
 * @n
 * For example:
@@ -64,9 +64,9 @@
 * // *************************************************************************
 * struct fnet_shell fapp_shell =
 * {
-*   fapp_cmd_tab,                                         
-*   "PROMT> ",                                
-*   fapp_shell_init,                                              
+*   fapp_cmd_tab,
+*   "PROMT> ",
+*   fapp_shell_init,
 * };
 * fnet_shell_desc_t fapp_shell_desc = 0; // Shell descriptor.
 * ...
@@ -104,25 +104,25 @@
 * Configuration parameters:
 * - @ref FNET_CFG_SHELL_MAX
 * - @ref FNET_CFG_SHELL_ARGS_MAX
-* - @ref FNET_CFG_SHELL_HELP_FORMAT  
+* - @ref FNET_CFG_SHELL_HELP_FORMAT
 */
 /*! @{ */
 
 /**************************************************************************/ /*!
- * @brief The quote (@c ') symbol is used to combine multiple words 
+ * @brief The quote (@c ') symbol is used to combine multiple words
  *        to one argument.
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
-#define FNET_SHELL_QUOTE_SYMBOL      '\''    
+#define FNET_SHELL_QUOTE_SYMBOL      '\''
 
 /**************************************************************************/ /*!
  * @brief The escape symbol (@c \).
  *
- * The escape character (@c \) provides the way to include the 
- * @ref FNET_SHELL_QUOTE_SYMBOL quote symbol and 
- * the @ref FNET_SHELL_COMMAND_SPLITTER split symbol 
+ * The escape character (@c \) provides the way to include the
+ * @ref FNET_SHELL_QUOTE_SYMBOL quote symbol and
+ * the @ref FNET_SHELL_COMMAND_SPLITTER split symbol
  * inside a string argument.@n
- * For example, to set the @c bootscript parameter to the value: 
+ * For example, to set the @c bootscript parameter to the value:
  * @code
  * dhcp ; tftp; set bootscript 'tftp\; go 0x20000'
  * @endcode
@@ -130,17 +130,17 @@
  * @code
  * FNET> set bootscript `dhcp \; info\; set bootscrpt \` tftp\\; go 0x20000\``
  * @endcode
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
-#define FNET_SHELL_ESCAPE_SYMBOL      '\\'    
+#define FNET_SHELL_ESCAPE_SYMBOL      '\\'
 
 /**************************************************************************/ /*!
  * @brief Split symbol used to split shell commands. @n
- *        User may enter several commands in one command line, but they must 
+ *        User may enter several commands in one command line, but they must
  *        be split by this symbol.
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
-#define FNET_SHELL_COMMAND_SPLITTER          ';'   
+#define FNET_SHELL_COMMAND_SPLITTER          ';'
 
 /**************************************************************************/ /*!
  * @brief Shell states.@n
@@ -148,21 +148,21 @@
  ******************************************************************************/
 typedef enum
 {
-    FNET_SHELL_STATE_DISABLED = 0,      /**< @brief The Shell service is not 
+    FNET_SHELL_STATE_DISABLED = 0,      /**< @brief The Shell service is not
                                          * initialized.
                                          */
-    FNET_SHELL_STATE_INIT,              /**< @brief The Shell service is not 
+    FNET_SHELL_STATE_INIT,              /**< @brief The Shell service is not
                                          * initialized.
-                                         */                                     
+                                         */
     FNET_SHELL_STATE_GET_USER_INPUT,    /**< @brief The Shell service is accepting user commnads.
                                          */
     FNET_SHELL_STATE_EXEC_CMD,          /**< @brief The Shell service is executing user commnads.
                                          */
-    FNET_SHELL_STATE_BLOCKED,           /**< @brief The Shell service is blocked and 
+    FNET_SHELL_STATE_BLOCKED,           /**< @brief The Shell service is blocked and
                                          * ignores user commnads.
                                          */
     FNET_SHELL_STATE_END_CMD            /**< @brief The Shell service finished command execution.
-                                         */                         
+                                         */
 } fnet_shell_state_t;
 
 /**************************************************************************/ /*!
@@ -176,15 +176,15 @@ typedef fnet_int32_t fnet_shell_desc_t;
  *
  * @param desc      Shell descriptor.
  *
- * @param srgc      This parameter is a count of the arguments supplied to 
+ * @param srgc      This parameter is a count of the arguments supplied to
  *                  the command function. @n
  *                  It is equal to @c 1 when the command was entered without
  *                  any argument.
  *
- * @param srgv      This parameter is an array of pointers to the strings 
+ * @param srgv      This parameter is an array of pointers to the strings
  *                  which are the command arguments.
  *                  The first array element points to the command name.
- *                        
+ *
  ******************************************************************************/
 typedef void(*fnet_shell_cmd_function_t)( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 
@@ -192,13 +192,13 @@ struct fnet_shell_command;
 /**************************************************************************/ /*!
  * @brief Shell command control structure.
  *
- * This structure is used to define properties of a command that will be 
+ * This structure is used to define properties of a command that will be
  * supported by the shell.@n
- * An application should define the command table and pass it to the 
+ * An application should define the command table and pass it to the
  * @c fnet_shell structure. @n
- * The last table element must have all fields 
+ * The last table element must have all fields
  * set to zero as the end-of-table mark.
- * The good example of @ref fnet_shell_command usage is in the FNET Shell application. 
+ * The good example of @ref fnet_shell_command usage is in the FNET Shell application.
  *
  * @see fnet_shell
  ******************************************************************************/
@@ -212,16 +212,16 @@ struct fnet_shell_command
     fnet_char_t                 *description;   /**< @brief Brief description of the command (null-terminated string). @n
                                                 * This field is used by the @ref fnet_shell_help() function.@n*/
     fnet_char_t                 *syntax;        /**< @brief Syntax of the command (null-terminated string). @n
-                                                * This field is used by the @ref fnet_shell_help() function. 
-                                                * The standard command line syntax information 
-                                                * which will be helpful to describe the possible command 
+                                                * This field is used by the @ref fnet_shell_help() function.
+                                                * The standard command line syntax information
+                                                * which will be helpful to describe the possible command
                                                 * line parameters in a help display is:
-                                                * - @c [] = When a parameter is surrounded with square 
-                                                * brackets, this means the parameter is optional. 
-                                                * - @c <> = When a parameter is surrounded with angle 
-                                                * brackets, this means the parameter is required for 
+                                                * - @c [] = When a parameter is surrounded with square
+                                                * brackets, this means the parameter is optional.
+                                                * - @c <> = When a parameter is surrounded with angle
+                                                * brackets, this means the parameter is required for
                                                 * normal operations of command.
-                                                * - @c | = The vertical bar means a choice between 
+                                                * - @c | = The vertical bar means a choice between
                                                 * parameter value is acceptable.*/
 };
 
@@ -229,23 +229,23 @@ struct fnet_shell_command
  * @brief Shell main control structure.
  *
  * This structure defines shell-specific parameters.@n
- * The good example of @ref fnet_shell usage is in the FNET Shell application. 
+ * The good example of @ref fnet_shell usage is in the FNET Shell application.
  *
  * @see fnet_shell_params
  ******************************************************************************/
 struct fnet_shell
 {
-    const struct fnet_shell_command *cmd_table; /**< @brief The pointer to the command table.@n 
-                                                 * The last table element must have all fields 
+    const struct fnet_shell_command *cmd_table; /**< @brief The pointer to the command table.@n
+                                                 * The last table element must have all fields
                                                  * set to zero as the end-of-table mark.
                                                  */
     fnet_char_t *prompt_str;                    /**< @brief Shell prompt (null-terminated string).
                                                  */
-    void (*shell_init)( fnet_shell_desc_t shell_desc );/**< @brief Routine called during the shell initialization. 
+    void (*shell_init)( fnet_shell_desc_t shell_desc );/**< @brief Routine called during the shell initialization.
                                                  * It's called by the @ref fnet_shell_init() function.@n
                                                  * This parameter is optional and can be set to @c 0.
                                                  */
- };
+};
 
 
 /**************************************************************************/ /*!
@@ -255,16 +255,16 @@ struct fnet_shell_params
 {
     const struct fnet_shell *shell;                 /**< @brief Shell control structure. */
     fnet_char_t             *cmd_line_buffer;       /**< @brief Command-line buffer. */
-    fnet_size_t             cmd_line_buffer_size;   /**< @brief Size of the command-line buffer. 
-                                                    * It defines the maximum length of the 
+    fnet_size_t             cmd_line_buffer_size;   /**< @brief Size of the command-line buffer.
+                                                    * It defines the maximum length of the
                                                     * entered input-command line. */
     fnet_serial_stream_t    stream;                 /**< @brief Serial stream assigned to the shell. */
     fnet_bool_t             echo;                   /**< @brief Enable/disable terminal echo flag.
-                                                    * When set to @c FNET_TRUE the echo is enabled, 
-                                                    * characters received by the shell are echoed 
+                                                    * When set to @c FNET_TRUE the echo is enabled,
+                                                    * characters received by the shell are echoed
                                                     * back to the terminal.@n
                                                     * When set to @c FNET_FALSE the echo is disabled,
-                                                    * characters are transferred to the terminal 
+                                                    * characters are transferred to the terminal
                                                     * without echoing them to the terminal display. */
 };
 
@@ -286,17 +286,17 @@ extern "C" {
  *
  ******************************************************************************
  *
- * This function executes the initialization of the shell service according to 
+ * This function executes the initialization of the shell service according to
  * settings pointed to by @c params parameters. It allocates all
  * resources needed, and registers the shell service in the polling list.@n
- * After the initialization, the user application should call the main polling 
+ * After the initialization, the user application should call the main polling
  * function  @ref fnet_poll_services() periodically to run the Shell service in background.@n
- * The shell service runs on asigned serial stream, executes parsing of 
- * the user-entered commands, and calls user-defined command functions, 
+ * The shell service runs on asigned serial stream, executes parsing of
+ * the user-entered commands, and calls user-defined command functions,
  * if the parsing was successful.
  *
  ******************************************************************************/
-fnet_shell_desc_t fnet_shell_init( struct fnet_shell_params * params);
+fnet_shell_desc_t fnet_shell_init( struct fnet_shell_params *params);
 
 /***************************************************************************/ /*!
  *
@@ -308,9 +308,9 @@ fnet_shell_desc_t fnet_shell_init( struct fnet_shell_params * params);
  *
  ******************************************************************************
  *
- * This function releases the Shell service assigned to the @c desc 
- * descriptor.@n 
- * It releases all occupied resources, and unregisters the Shell service from 
+ * This function releases the Shell service assigned to the @c desc
+ * descriptor.@n
+ * It releases all occupied resources, and unregisters the Shell service from
  * the polling list.
  *
  ******************************************************************************/
@@ -371,7 +371,7 @@ void fnet_shell_help( fnet_shell_desc_t desc);
  ******************************************************************************
  *
  * This function executes a predefined command-line script pointed by the @c script. @n
- * The script string may have several commands but they must be split by 
+ * The script string may have several commands but they must be split by
  * the @ref FNET_SHELL_COMMAND_SPLITTER symbol.
  *
  ******************************************************************************/
@@ -385,11 +385,11 @@ void fnet_shell_script(fnet_shell_desc_t desc, fnet_char_t *script );
  *
  ******************************************************************************
  *
- * This function stops execution of the all shell commands that are waiting 
+ * This function stops execution of the all shell commands that are waiting
  * for execution. @n
- * This function is usually called when the execution of a critical command is 
- * failed and no sense to execute the rest of the commands that were entered 
- * by a user in one command line or executed by the @ref fnet_shell_script() 
+ * This function is usually called when the execution of a critical command is
+ * failed and no sense to execute the rest of the commands that were entered
+ * by a user in one command line or executed by the @ref fnet_shell_script()
  * function.
  *
  ******************************************************************************/
@@ -416,7 +416,7 @@ void fnet_shell_script_release( fnet_shell_desc_t desc);
  * In this state the shell ignore any commands entered by a user into a terminal
  * console. @n
  * The shell can be unblocked by the @ref fnet_shell_unblock() function.
- * Also the shell may be unblocked by pressing the [Ctrl]+[c] button combination 
+ * Also the shell may be unblocked by pressing the [Ctrl]+[c] button combination
  * in a terminal console, after that the callback function,
  * pointed by the @c on_ctrlc() parameter, will be called.
  *
@@ -436,7 +436,7 @@ fnet_return_t fnet_shell_block( fnet_shell_desc_t desc, void (*on_ctrlc)(fnet_sh
  * This function moves the shell from the blocked state to the normal state.
  * In this state the shell accepts all supported commands.@n
  * @n
- * NOTE: Also the shell may be unblocked by a user by pressing the [Ctrl]+[c] 
+ * NOTE: Also the shell may be unblocked by a user by pressing the [Ctrl]+[c]
  * buttons in a terminal console.
  *
  ******************************************************************************/
@@ -450,7 +450,7 @@ void fnet_shell_unblock( fnet_shell_desc_t desc);
  *
  * @param format       Format string.
  *
- * @return This function returns the number of characters that were 
+ * @return This function returns the number of characters that were
  *         successfully output.
  *
  * @see fnet_shell_putchar(), fnet_shell_getchar(), fnet_shell_println()
@@ -458,10 +458,10 @@ void fnet_shell_unblock( fnet_shell_desc_t desc);
  ******************************************************************************
  *
  * This function outputs formatted text to the shell stream. @n
- * The function takes one or more arguments. The first argument is a string parameter 
+ * The function takes one or more arguments. The first argument is a string parameter
  * called the "format string".
  * The optional arguments following @c format are items
- * (integers, characters or strings) that are to be converted to character strings 
+ * (integers, characters or strings) that are to be converted to character strings
  * and inserted into the output of @c format at specified points.@n
  * The syntax for a format placeholder is @a "%[Flags][Width][Length]Type".
  * - @a Flasgs can be omitted or be any of:
@@ -484,10 +484,10 @@ void fnet_shell_unblock( fnet_shell_desc_t desc);
  *    - @c s : Char string.
  *    - @c n : Nothing.
  * @note
- * To save some bytes from all the hard coded strings the (s)printf() functions will 
- * expand all line feeds ("\n") inside the format string to CR LF ("\r\n"). 
- * So do not use "\r\n" in	the format string - it will be expanded to 
- * "\r\r\n". It is save to add it via a parameter though, e.g. 
+ * To save some bytes from all the hard coded strings the (s)printf() functions will
+ * expand all line feeds ("\n") inside the format string to CR LF ("\r\n").
+ * So do not use "\r\n" in	the format string - it will be expanded to
+ * "\r\r\n". It is save to add it via a parameter though, e.g.
  * fnet_printf("%s", "\r\n");@n
  * This feature can be disable/enabled by the @ref FNET_CFG_SERIAL_PRINTF_N_TO_RN
  * configuration parameter.
@@ -496,26 +496,26 @@ fnet_size_t fnet_shell_printf(fnet_shell_desc_t desc, const fnet_char_t *format,
 
 /***************************************************************************/ /*!
  *
- * @brief    Prints formatted text to the shell stream and terminates the 
+ * @brief    Prints formatted text to the shell stream and terminates the
  *           printed text by the line separator string.
  *
  * @param desc      Shell service descriptor.
  *
  * @param format       Format string.
  *
- * @return This function returns the number of characters that were 
+ * @return This function returns the number of characters that were
  *         successfully output.
  *
  * @see fnet_shell_putchar(), fnet_shell_getchar(), fnet_shell_printf()
  *
  ******************************************************************************
  *
- * This function outputs formatted text to the shell stream and terminates the 
+ * This function outputs formatted text to the shell stream and terminates the
  * printed text by the line separator string. @n
- * The function takes one or more arguments. The first argument is a string parameter 
+ * The function takes one or more arguments. The first argument is a string parameter
  * called the "format string".
  * The optional arguments following @c format are items
- * (integers, characters or strings) that are to be converted to character strings 
+ * (integers, characters or strings) that are to be converted to character strings
  * and inserted into the output of @c format at specified points.@n
  * The syntax for a format placeholder is @a "%[Flags][Width][Length]Type".
  * - @a Flasgs can be omitted or be any of:
@@ -538,10 +538,10 @@ fnet_size_t fnet_shell_printf(fnet_shell_desc_t desc, const fnet_char_t *format,
  *    - @c s : Char string.
  *    - @c n : Nothing.
  * @note
- * To save some bytes from all the hard coded strings the (s)printf() functions will 
- * expand all line feeds ("\n") inside the format string to CR LF ("\r\n"). 
- * So do not use "\r\n" in	the format string - it will be expanded to 
- * "\r\r\n". It is save to add it via a parameter though, e.g. 
+ * To save some bytes from all the hard coded strings the (s)printf() functions will
+ * expand all line feeds ("\n") inside the format string to CR LF ("\r\n").
+ * So do not use "\r\n" in	the format string - it will be expanded to
+ * "\r\r\n". It is save to add it via a parameter though, e.g.
  * fnet_printf("%s", "\r\n");@n
  * This feature can be disable/enabled by the @ref FNET_CFG_SERIAL_PRINTF_N_TO_RN
  * configuration parameter.
@@ -595,7 +595,7 @@ fnet_int32_t fnet_shell_getchar(fnet_shell_desc_t desc);
  *
  * @return This function returns:
  *   - @ref FNET_OK if no error occurs.
- *   - @ref FNET_ERR if an error occurs (desc is zero). @n 
+ *   - @ref FNET_ERR if an error occurs (desc is zero). @n
  *
  * @see fnet_shell_init()
  *
@@ -615,11 +615,11 @@ fnet_return_t fnet_shell_switch( fnet_shell_desc_t desc, const struct fnet_shell
  * @return This function returns:
  *   - @c 0 if [Ctrl]+[c] is not received/pressed.
  *   - @c 1 if [Ctrl]+[c] is received/pressed.
- * 
+ *
  ******************************************************************************
  *
- * This function detects if the [Ctrl]+[c] command is received.@n 
- * It can be used by blocking shell commands to detect that a user wants to 
+ * This function detects if the [Ctrl]+[c] command is received.@n
+ * It can be used by blocking shell commands to detect that a user wants to
  * terminate the command activity.
  *
  ******************************************************************************/

@@ -15,7 +15,7 @@
 #define FAPP_CFG_APPLICATION_SIZE       (48*1024) /* First 48 KB of FLASH are reserved by 
                                                    * the Bootloader application.*/
 
-#define FAPP_CFG_NAME                   "FNET Bootloader" 
+#define FAPP_CFG_NAME                   "FNET Bootloader"
 #define FAPP_CFG_SHELL_PROMPT           "BOOT> "
 
 /* Enable startup boot mode. */
@@ -78,12 +78,12 @@
 #define FAPP_CFG_PARAMS_TFTP_FILE_NAME  "shell_boot_intflash.elf.S19"
 
 #if FNET_CFG_IP4
-    #define FAPP_CFG_PARAMS_TFTP_SERVER     {AF_INET, 0, 0, {192,168,0,5}} 
+    #define FAPP_CFG_PARAMS_TFTP_SERVER     {AF_INET, 0, 0, {192,168,0,5}}
 #else /* FNET_CFG_IP6 */
     #define FAPP_CFG_PARAMS_TFTP_SERVER     {AF_INET6, 0, 0, {0xfe,0x80,0,0,0,0,0,0,0xa0,0x9a,0x5,0x30,0xab,0xf7,0xa8,0xfd}}
 #endif
 
-#define FAPP_CFG_PARAMS_BOOT_MODE       FAPP_PARAMS_BOOT_MODE_STOP 
+#define FAPP_CFG_PARAMS_BOOT_MODE       FAPP_PARAMS_BOOT_MODE_STOP
 #define FAPP_CFG_PARAMS_BOOT_SCRIPT     "dhcp; erase all; tftp; set boot go; save; go"
 
 /* Script on TFTP server "WRITE request" received.*/

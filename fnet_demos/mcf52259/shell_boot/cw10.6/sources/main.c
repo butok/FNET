@@ -10,11 +10,11 @@
 void main(void)
 {
     /* Init UART */
-	fnet_cpu_serial_init(FNET_CFG_CPU_SERIAL_PORT_DEFAULT, 115200);
+    fnet_cpu_serial_init(FNET_CFG_CPU_SERIAL_PORT_DEFAULT, 115200);
 
-	/* Enable interrupts */
-	fnet_cpu_irq_enable(0);
+    /* Enable interrupts */
+    fnet_cpu_irq_enable(0);
 
     /* Run application */
-	fapp_main();
+    fapp_main();
 }

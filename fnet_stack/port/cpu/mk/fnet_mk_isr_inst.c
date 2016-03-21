@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_mk_isr_inst.c
@@ -27,15 +27,15 @@
 *
 ***************************************************************************/
 
-#include "fnet.h" 
-#if FNET_MK 
+#include "fnet.h"
 
+#if FNET_MK
 #if !FNET_OS
 
 /************************************************************************
 * NAME: fnet_cpu_isr_install
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t priority)
 {
@@ -47,7 +47,8 @@ fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t pr
     irq_vec = (fnet_uint32_t *)(FNET_CFG_CPU_VECTOR_TABLE) + vector_number;
 
     if(*irq_vec != (fnet_uint32_t) FNET_ISR_HANDLER)
-    { /* It's not installed yet.*/
+    {
+        /* It's not installed yet.*/
         *irq_vec = (fnet_uint32_t) FNET_ISR_HANDLER;
     }
 
@@ -55,19 +56,19 @@ fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t pr
     {
         priority = FNET_CFG_CPU_VECTOR_PRIORITY_MAX;
     }
-        
+
     if(*irq_vec == (fnet_uint32_t) FNET_ISR_HANDLER)
-    {        
+    {
         /* Make sure that the IRQ is an allowable number. */
         irq_number = vector_number - 16u;
-        divider = irq_number/32u;
+        divider = irq_number / 32u;
         if(divider < 3u)
         {
             /* Initialize the NVIC to enable the specified IRQ.*/
-            FNET_MK_NVIC_ICPR(divider) |= (fnet_uint32_t)(1u << (irq_number%32u)); /* Clear-pending. */
-            FNET_MK_NVIC_ISER(divider) |= (fnet_uint32_t)(1u << (irq_number%32u)); /* Set-enable.*/
+            FNET_MK_NVIC_ICPR(divider) |= (fnet_uint32_t)(1u << (irq_number % 32u)); /* Clear-pending. */
+            FNET_MK_NVIC_ISER(divider) |= (fnet_uint32_t)(1u << (irq_number % 32u)); /* Set-enable.*/
             /* Set priority.*/
-            FNET_MK_NVIC_IP(irq_number) = (fnet_uint8_t)(FNET_CFG_CPU_VECTOR_PRIORITY_MAX - priority)<<4;
+            FNET_MK_NVIC_IP(irq_number) = (fnet_uint8_t)(FNET_CFG_CPU_VECTOR_PRIORITY_MAX - priority) << 4;
         }
         result = FNET_OK;
     }
@@ -75,8 +76,8 @@ fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t pr
     {
         result = FNET_ERR;
     }
-   
-   return result;            
+
+    return result;
 }
 
 #endif /* !FNET_OS */

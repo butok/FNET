@@ -39,15 +39,15 @@ static void fnet_stack_release( void );
 /************************************************************************
 * NAME: fnet_init
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 fnet_return_t fnet_init( struct fnet_init_params *init_params )
 {
     fnet_return_t result = FNET_ERR;
 
-    if(init_params 
-        && (fnet_os_mutex_init() == FNET_OK)
-        && (fnet_os_event_init() == FNET_OK))
+    if(init_params
+       && (fnet_os_mutex_init() == FNET_OK)
+       && (fnet_os_event_init() == FNET_OK))
     {
         fnet_os_mutex_lock();
 
@@ -71,7 +71,7 @@ fnet_return_t fnet_init( struct fnet_init_params *init_params )
 /************************************************************************
 * NAME: fnet_init_static
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 fnet_return_t fnet_init_static(void)
 {
@@ -87,7 +87,7 @@ fnet_return_t fnet_init_static(void)
 /************************************************************************
 * NAME: fnet_release
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 void fnet_release(void)
 {
@@ -112,17 +112,17 @@ void fnet_release(void)
 static fnet_return_t fnet_stack_init( void )
 {
     fnet_isr_init();
-   
+
     if (fnet_timer_init(FNET_TIMER_PERIOD_MS) == FNET_ERR)
     {
         goto ERROR;
     }
 
 #if FNET_CFG_DEBUG_STARTUP_MS && FNET_CFG_DEBUG
-	fnet_println("\n Waiting %d Seconds...", FNET_CFG_DEBUG_STARTUP_MS/1000);
-	fnet_timer_delay(fnet_timer_ms2ticks(FNET_CFG_DEBUG_STARTUP_MS));
+    fnet_println("\n Waiting %d Seconds...", FNET_CFG_DEBUG_STARTUP_MS / 1000);
+    fnet_timer_delay(fnet_timer_ms2ticks(FNET_CFG_DEBUG_STARTUP_MS));
 #endif
- 
+
     if(fnet_prot_init() == FNET_ERR)
     {
         goto ERROR;

@@ -8,10 +8,10 @@ int main (void)
     fnet_cpu_serial_init(FNET_CFG_CPU_SERIAL_PORT_DEFAULT, 115200);
 
     fnet_cpu_irq_enable(0);
-    
+
     /* Run application */
     fapp_main();
-  
+
     return(0);
 }
 

@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_shell_config.h
@@ -54,28 +54,28 @@
 #endif
 
 /**************************************************************************/ /*!
- * @def     FNET_CFG_SHELL_ARGS_MAX 
- * @brief Maximum number of arguments that can be handled by the 
+ * @def     FNET_CFG_SHELL_ARGS_MAX
+ * @brief Maximum number of arguments that can be handled by the
  *        shell command parser. @n
- *        Arguments must be split by the space symbol. Note that the 
- *        quote @ref FNET_SHELL_QUOTE_SYMBOL is used to combine multiple 
+ *        Arguments must be split by the space symbol. Note that the
+ *        quote @ref FNET_SHELL_QUOTE_SYMBOL is used to combine multiple
  *        words to one argument. @n
  *        Default value is @b @c 16.
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_SHELL_ARGS_MAX
     #define FNET_CFG_SHELL_ARGS_MAX         (16u)
 #endif
 
 /**************************************************************************/ /*!
- * @def     FNET_CFG_SHELL_HELP_FORMAT 
+ * @def     FNET_CFG_SHELL_HELP_FORMAT
  * @brief Format of the command-shell @c help message,
  *        that is used by the @ref fnet_shell_help() function.@n
- *        For example it can set to the @c ">%7s %-32s- %s" value , where the first string is 
- *        the command name, second one is the brief description of the command 
+ *        For example it can set to the @c ">%7s %-32s- %s" value , where the first string is
+ *        the command name, second one is the brief description of the command
  *        and the third one is the syntax of the command.
  * @see fnet_shell_command, fnet_shell_help()
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_SHELL_HELP_FORMAT
     #define FNET_CFG_SHELL_HELP_FORMAT      (">%7s %-32s- %s")

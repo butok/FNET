@@ -11,8 +11,8 @@
 
 #define _FAPP_USER_CONFIG_H_
 
-#define FAPP_CFG_NAME                   "FNET Throughput Benchmark" 
-#define FAPP_CFG_SHELL_PROMPT           "BENCH> " 
+#define FAPP_CFG_NAME                   "FNET Throughput Benchmark"
+#define FAPP_CFG_SHELL_PROMPT           "BENCH> "
 
 /*  "dhcp" command.*/
 #define FAPP_CFG_DHCP_CMD               (1)
@@ -48,18 +48,18 @@
 /*  "bench" command.*/
 #define FAPP_CFG_BENCH_CMD              (1)
 
-/* Reading of the configuration parameters from the Flash 
+/* Reading of the configuration parameters from the Flash
  * memory during the application bootup.*/
 #define FAPP_CFG_PARAMS_READ_FLASH      (1)
 
-/* Rewriting of the configuration parameters in the Flash 
+/* Rewriting of the configuration parameters in the Flash
  * memory duiring flashing of the application. */
 #define FAPP_CFG_PARAMS_REWRITE_FLASH   (1)
 
 
 #if 0 /* To run HTTP and Telnet server on startup set to 1. */
     #define FAPP_CFG_STARTUP            (1)
-    #define FAPP_CFG_STARTUP_SCRIPT     "http; telnet" 
+    #define FAPP_CFG_STARTUP_SCRIPT     "http; telnet"
 #endif
 
 #endif /* _FAPP_USER_CONFIG_H_ */

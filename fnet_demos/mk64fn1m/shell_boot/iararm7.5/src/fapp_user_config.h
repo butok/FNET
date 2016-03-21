@@ -11,8 +11,8 @@
 
 #define _FAPP_USER_CONFIG_H_
 
-#define FAPP_CFG_NAME                   "FNET Shell Demo (bootloader aware)" 
-#define FAPP_CFG_SHELL_PROMPT           "SHELLB> " 
+#define FAPP_CFG_NAME                   "FNET Shell Demo (bootloader aware)"
+#define FAPP_CFG_SHELL_PROMPT           "SHELLB> "
 
 /*  "dhcp" command.*/
 #define FAPP_CFG_DHCP_CMD               (1)
@@ -59,21 +59,21 @@
 #define FAPP_CFG_DNS_CMD                (1)
 
 /*  "ping" command.*/
-#define FAPP_CFG_PING_CMD               (1) 
+#define FAPP_CFG_PING_CMD               (1)
 
 /*  "bind" command.*/
-#define FAPP_CFG_BIND_CMD               (1) 
+#define FAPP_CFG_BIND_CMD               (1)
 
 /*  "unbind" command.*/
 #define FAPP_CFG_UNBIND_CMD             (1)
-/* Reading of the configuration parameters from the Flash 
+/* Reading of the configuration parameters from the Flash
  * memory during the application bootup.*/
 #define FAPP_CFG_PARAMS_READ_FLASH       (1)
 
 
 #if 0 /* To run HTTP and Telnet server on startup set to 1. */
     #define FAPP_CFG_STARTUP_SCRIPT_ENABLED	(1)
-    #define FAPP_CFG_STARTUP_SCRIPT     "http; telnet" 
+    #define FAPP_CFG_STARTUP_SCRIPT     "http; telnet"
 #endif
 
 #endif  /* _FAPP_USER_CONFIG_H_ */

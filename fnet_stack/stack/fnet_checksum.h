@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_checksum.h
@@ -41,7 +41,7 @@ extern "C" {
 
 fnet_uint16_t fnet_checksum_buf(fnet_uint8_t *buf, fnet_size_t buf_len);
 fnet_uint16_t fnet_checksum_pseudo_buf(fnet_uint8_t *buf, fnet_uint16_t buf_len, fnet_uint16_t protocol, const fnet_uint8_t *ip_src, const fnet_uint8_t *ip_dest, fnet_size_t addr_size);
-fnet_uint16_t fnet_checksum(fnet_netbuf_t * nb, fnet_size_t len);
+fnet_uint16_t fnet_checksum(fnet_netbuf_t *nb, fnet_size_t len);
 fnet_uint16_t fnet_checksum_pseudo_start( fnet_netbuf_t *nb, fnet_uint16_t protocol, fnet_uint16_t protocol_len );
 fnet_uint16_t fnet_checksum_pseudo_end( fnet_uint16_t sum_s, const fnet_uint8_t *ip_src, const fnet_uint8_t *ip_dest, fnet_size_t addr_size );
 

@@ -1,7 +1,7 @@
 /*
  * File:        rcm.h
  * Purpose:     Provides routines for the reset controller module
- *              
+ *
  */
 
 #ifndef __RCM_H__

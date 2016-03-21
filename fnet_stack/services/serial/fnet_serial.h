@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -34,20 +34,20 @@
 #include "fnet.h"
 
 /*! @addtogroup fnet_serial
-* The Serial Input/Output (I/O) library provides commonly used I/O functions 
+* The Serial Input/Output (I/O) library provides commonly used I/O functions
 * like printf(), putchar() and getchar().@n
-* It uses stream abstraction to allow reading and writing data in an uniform way. 
-* There are three standard streams allocated automatically that are 
+* It uses stream abstraction to allow reading and writing data in an uniform way.
+* There are three standard streams allocated automatically that are
 * associated with physical serial ports (one per UART module). @n
 * For the serial library usage example, refer to FNET demo application source code. @n
 * @n
-* NOTE: The HW serial ports associated with I/O streams are not initialized by the serial 
+* NOTE: The HW serial ports associated with I/O streams are not initialized by the serial
 * library and should be initialized by the application. It can be inialized by
 * the @ref fnet_cpu_serial_init() function. @n
 * @n
 * Configuration parameters:
 * - @ref FNET_CFG_SERIAL_PRINTF_N_TO_RN
-* 
+*
 */
 /*! @{ */
 
@@ -99,42 +99,42 @@
 /**************************************************************************/ /*!
  * @brief Stream control structure.
  *
- * This structure defines stream-specific parameters. All streams have similar 
- * properties independently of the individual characteristics of 
+ * This structure defines stream-specific parameters. All streams have similar
+ * properties independently of the individual characteristics of
  * the media they are associated with.
  *
  * @see fnet_serial_stream_t
  ******************************************************************************/
 struct fnet_serial_stream
 {
-    fnet_index_t id;            /**< @brief  The @c id parameter provides a way for a stream 
+    fnet_index_t id;            /**< @brief  The @c id parameter provides a way for a stream
                                  * driver to identify a particular device. @n
-                                 * For example it can be used as serial port number 
+                                 * For example it can be used as serial port number
                                  * or pointer to a stream private structure.@n
-                                 * This parameter is passed to  
+                                 * This parameter is passed to
                                  * @c fnet_serial_stream.putchar() and to
                                  * @c fnet_serial_stream.getchar() as the first parameter.
                                  */
-    void (*putchar)(fnet_index_t stream_id, fnet_char_t character);/**< @brief Callback function used 
+    void (*putchar)(fnet_index_t stream_id, fnet_char_t character);/**< @brief Callback function used
                                                     * for writing the @c character to the stream.
                                                     */
-    fnet_int32_t (*getchar)(fnet_index_t stream_id);   /**< @brief Callback function used for reading 
+    fnet_int32_t (*getchar)(fnet_index_t stream_id);   /**< @brief Callback function used for reading
                                         * a character from the stream.
                                         */
-    void (*flush)(fnet_index_t stream_id);     /**< @brief Callback function used for 
+    void (*flush)(fnet_index_t stream_id);     /**< @brief Callback function used for
                                         * immediate data sending from internal stream buffer
                                         * to the steam client.@n
                                         * This function is optional and can be set to zero.@n
-                                        * The function only has meaning for buffered streams. 
-                                        * UART stream does not have internal buffer and does 
+                                        * The function only has meaning for buffered streams.
+                                        * UART stream does not have internal buffer and does
                                         * not use this flush function.
-                                        */                                 
+                                        */
 };
 
 /**************************************************************************/ /*!
  * @brief Serial stream descriptor.
  ******************************************************************************/
-typedef const struct fnet_serial_stream *fnet_serial_stream_t; 
+typedef const struct fnet_serial_stream *fnet_serial_stream_t;
 
 
 extern const struct fnet_serial_stream fnet_serial_stream_port0;
@@ -183,8 +183,8 @@ extern const struct fnet_serial_stream fnet_serial_stream_port5;
 
 /**************************************************************************/ /*!
  * @def FNET_SERIAL_STREAM_DEFAULT
- * @brief Descriptor of the default stream. It's assigned to the default 
- * serial port defined by @ref FNET_CFG_CPU_SERIAL_PORT_DEFAULT 
+ * @brief Descriptor of the default stream. It's assigned to the default
+ * serial port defined by @ref FNET_CFG_CPU_SERIAL_PORT_DEFAULT
  * (usually the serial port 0).
  ******************************************************************************/
 #if (FNET_CFG_CPU_SERIAL_PORT_DEFAULT == 0u)
@@ -192,13 +192,13 @@ extern const struct fnet_serial_stream fnet_serial_stream_port5;
 #elif (FNET_CFG_CPU_SERIAL_PORT_DEFAULT == 1u)
     #define FNET_SERIAL_STREAM_DEFAULT     FNET_SERIAL_STREAM_PORT1
 #elif (FNET_CFG_CPU_SERIAL_PORT_DEFAULT == 2u)
-    #define FNET_SERIAL_STREAM_DEFAULT     FNET_SERIAL_STREAM_PORT2    
+    #define FNET_SERIAL_STREAM_DEFAULT     FNET_SERIAL_STREAM_PORT2
 #elif (FNET_CFG_CPU_SERIAL_PORT_DEFAULT == 3u)
     #define FNET_SERIAL_STREAM_DEFAULT     FNET_SERIAL_STREAM_PORT3
 #elif (FNET_CFG_CPU_SERIAL_PORT_DEFAULT == 4u)
     #define FNET_SERIAL_STREAM_DEFAULT     FNET_SERIAL_STREAM_PORT4
 #elif (FNET_CFG_CPU_SERIAL_PORT_DEFAULT == 5u)
-    #define FNET_SERIAL_STREAM_DEFAULT     FNET_SERIAL_STREAM_PORT5            
+    #define FNET_SERIAL_STREAM_DEFAULT     FNET_SERIAL_STREAM_PORT5
 #else
     #error "The serial library defines only 6 ports."
 #endif
@@ -253,12 +253,12 @@ fnet_int32_t fnet_serial_getchar(fnet_serial_stream_t stream);
  *
  ******************************************************************************
  *
- * This function immediately sends data from the internal stream 
+ * This function immediately sends data from the internal stream
  * buffer to the stream client. @n
- * If you do not explicitly call the flush function, stream sends data to 
- * the client after the internal buffer is full.@n 
+ * If you do not explicitly call the flush function, stream sends data to
+ * the client after the internal buffer is full.@n
  * The function only has meaning for buffered streams.@n
- * UART stream does not have internal buffer and does not use 
+ * UART stream does not have internal buffer and does not use
  * this flush function.
  *
  ******************************************************************************/
@@ -305,7 +305,7 @@ fnet_int32_t fnet_getchar(void);
  *
  * @param format      Format string.
  *
- * @return This function returns the number of characters that were 
+ * @return This function returns the number of characters that were
  *         successfully written, excluding the trailing null.
  *
  * @see fnet_serial_putchar(), fnet_serial_vprintf()
@@ -313,13 +313,13 @@ fnet_int32_t fnet_getchar(void);
  ******************************************************************************
  *
  * This function outputs formatted text to the @c stream. @n
- * The function takes one or more arguments. The first argument is a string parameter 
+ * The function takes one or more arguments. The first argument is a string parameter
  * called the "format string".
  * The optional arguments following @c format are items
- * (integers, characters or strings) that are to be converted to character strings 
+ * (integers, characters or strings) that are to be converted to character strings
  * and inserted into the output of @c format at specified placeholders.
- * The number of arguments following the @c format parameters should at 
- * least be as much as the number of format placeholders. @n 
+ * The number of arguments following the @c format parameters should at
+ * least be as much as the number of format placeholders. @n
  * The syntax for a format placeholder is @a "%[Flags][Width][Length]Type".
  * - @a Flags can be omitted or be any of:
  *    - @c - : Left justify.
@@ -342,10 +342,10 @@ fnet_int32_t fnet_getchar(void);
  *    - @c n : Nothing.
  *
  * @note
- * To save some bytes from all the hard coded strings the fnet_(s)printf() functions will 
- * expand all line feeds ("\n") inside the format string to CR LF ("\r\n"). 
- * So do not use "\r\n" in	the format string - it will be expanded to 
- * "\r\r\n". It is save to add it via a parameter though, e.g. 
+ * To save some bytes from all the hard coded strings the fnet_(s)printf() functions will
+ * expand all line feeds ("\n") inside the format string to CR LF ("\r\n").
+ * So do not use "\r\n" in	the format string - it will be expanded to
+ * "\r\r\n". It is save to add it via a parameter though, e.g.
  * fnet_printf("%s", "\r\n");@n
  * This feature can be disable/enabled by the @ref FNET_CFG_SERIAL_PRINTF_N_TO_RN
  * configuration parameter.
@@ -360,20 +360,20 @@ fnet_size_t fnet_serial_printf(fnet_serial_stream_t stream, const fnet_char_t *f
  *
  * @param format      Format string.
  *
- * @param arg         Variable arguments list. It shall have been initialized by @c va_start() macro 
+ * @param arg         Variable arguments list. It shall have been initialized by @c va_start() macro
  *
- * @return This function returns the number of characters that were 
+ * @return This function returns the number of characters that were
  *         successfully written, excluding the trailing null.
  *
  * @see fnet_serial_printf()
  *
  ******************************************************************************
  *
- * This function outputs formatted text to the @c stream, expanding the format 
+ * This function outputs formatted text to the @c stream, expanding the format
  * placeholders with the value of the argument list @c arg. @n
- * This function behaves exactly as @c printf except that the variable argument 
- * list is passed as a @c va_list instead of a succession of arguments, 
- * which becomes specially useful when the argument list to be passed comes 
+ * This function behaves exactly as @c printf except that the variable argument
+ * list is passed as a @c va_list instead of a succession of arguments,
+ * which becomes specially useful when the argument list to be passed comes
  * itself from a variable argument list in the calling function. @n
  * @n
  * The syntax for a format placeholder is @a "%[Flags][Width][Length]Type".
@@ -398,10 +398,10 @@ fnet_size_t fnet_serial_printf(fnet_serial_stream_t stream, const fnet_char_t *f
  *    - @c n : Nothing.
  *
  * @note
- * To save some bytes from all the hard coded strings the fnet_(s)printf() functions will 
- * expand all line feeds ("\n") inside the format string to CR LF ("\r\n"). 
- * So do not use "\r\n" in	the format string - it will be expanded to 
- * "\r\r\n". It is save to add it via a parameter though, e.g. 
+ * To save some bytes from all the hard coded strings the fnet_(s)printf() functions will
+ * expand all line feeds ("\n") inside the format string to CR LF ("\r\n").
+ * So do not use "\r\n" in	the format string - it will be expanded to
+ * "\r\r\n". It is save to add it via a parameter though, e.g.
  * fnet_printf("%s", "\r\n");@n
  * This feature can be disable/enabled by the @ref FNET_CFG_SERIAL_PRINTF_N_TO_RN
  * configuration parameter.
@@ -414,7 +414,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
  *
  * @param format      Format string.
  *
- * @return This function returns the number of characters that were 
+ * @return This function returns the number of characters that were
  *         successfully written, excluding the trailing null.
  *
  * @see fnet_sprintf()
@@ -423,12 +423,12 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
  *
  * This function outputs formatted text to the default stream, its descriptor is
  * defined by @ref FNET_SERIAL_STREAM_DEFAULT. @n
- * The function takes one or more arguments. The first argument is a string parameter 
+ * The function takes one or more arguments. The first argument is a string parameter
  * called the "format string".
  * The optional arguments following @c format are items
- * (integers, characters or strings) that are to be converted to character strings 
+ * (integers, characters or strings) that are to be converted to character strings
  * and inserted into the output of @c format at specified placeholders.
- * The number of arguments following the @c format parameters should at 
+ * The number of arguments following the @c format parameters should at
  * least be as much as the number of format placeholders. @n
  * The syntax for a format placeholder is @a "%[Flags][Width][Length]Type".
  * - @a Flags can be omitted or be any of:
@@ -452,10 +452,10 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
  *    - @c n : Nothing.
  *
  * @note
- * To save some bytes from all the hard coded strings the fnet_(s)printf() functions will 
- * expand all line feeds ("\n") inside the format string to CR LF ("\r\n"). 
- * So do not use "\r\n" in	the format string - it will be expanded to 
- * "\r\r\n". It is save to add it via a parameter though, e.g. 
+ * To save some bytes from all the hard coded strings the fnet_(s)printf() functions will
+ * expand all line feeds ("\n") inside the format string to CR LF ("\r\n").
+ * So do not use "\r\n" in	the format string - it will be expanded to
+ * "\r\r\n". It is save to add it via a parameter though, e.g.
  * fnet_printf("%s", "\r\n"); @n
  * This feature can be disable/enabled by the @ref FNET_CFG_SERIAL_PRINTF_N_TO_RN
  * configuration parameter.
@@ -464,27 +464,27 @@ fnet_size_t fnet_printf( const fnet_char_t *format, ... );
 
 
 /***************************************************************************/ /*!
- * @brief    Prints formatted text to the default stream and terminates the 
+ * @brief    Prints formatted text to the default stream and terminates the
  *           printed text by the line separator string.
- 
+
  * @param format      Format string.
  *
- * @return This function returns the number of characters that were 
+ * @return This function returns the number of characters that were
  *         successfully written, excluding the trailing null.
  *
  * @see fnet_sprintf()
  *
  ******************************************************************************
  *
- * This function outputs formatted text to the default stream and terminates the 
+ * This function outputs formatted text to the default stream and terminates the
  * printed text by the line separator string. Its descriptor is
  * defined by @ref FNET_SERIAL_STREAM_DEFAULT. @n
- * The function takes one or more arguments. The first argument is a string parameter 
+ * The function takes one or more arguments. The first argument is a string parameter
  * called the "format string".
  * The optional arguments following @c format are items
- * (integers, characters or strings) that are to be converted to character strings 
+ * (integers, characters or strings) that are to be converted to character strings
  * and inserted into the output of @c format at specified placeholders.
- * The number of arguments following the @c format parameters should at 
+ * The number of arguments following the @c format parameters should at
  * least be as much as the number of format placeholders. @n
  * The syntax for a format placeholder is @a "%[Flags][Width][Length]Type".
  * - @a Flags can be omitted or be any of:
@@ -508,10 +508,10 @@ fnet_size_t fnet_printf( const fnet_char_t *format, ... );
  *    - @c n : Nothing.
  *
  * @note
- * To save some bytes from all the hard coded strings the fnet_(s)printf() functions will 
- * expand all line feeds ("\n") inside the format string to CR LF ("\r\n"). 
- * So do not use "\r\n" in	the format string - it will be expanded to 
- * "\r\r\n". It is save to add it via a parameter though, e.g. 
+ * To save some bytes from all the hard coded strings the fnet_(s)printf() functions will
+ * expand all line feeds ("\n") inside the format string to CR LF ("\r\n").
+ * So do not use "\r\n" in	the format string - it will be expanded to
+ * "\r\r\n". It is save to add it via a parameter though, e.g.
  * fnet_printf("%s", "\r\n"); @n
  * This feature can be disable/enabled by the @ref FNET_CFG_SERIAL_PRINTF_N_TO_RN
  * configuration parameter.
@@ -525,7 +525,7 @@ fnet_size_t fnet_println(const fnet_char_t *format, ... );
  *
  * @param format      Format string.
  *
- * @return This function returns the number of characters that were 
+ * @return This function returns the number of characters that were
  *         successfully written, excluding the trailing null.
  *
  * @see fnet_snprintf()
@@ -534,9 +534,9 @@ fnet_size_t fnet_println(const fnet_char_t *format, ... );
  *
  * The @c format string contains the text to be written to the @c str buffer.
  * The optional arguments following @c format are items
- * (integers, characters or strings) that are to be converted to character strings 
+ * (integers, characters or strings) that are to be converted to character strings
  * and inserted into the output of @c format at specified placeholders.
- * The number of arguments following the @c format parameters should at 
+ * The number of arguments following the @c format parameters should at
  * least be as much as the number of format placeholders. @n
  * The syntax for a format placeholder is @a "%[Flags][Width][Length]Type".
  * - @a Flags can be omitted or be any of:
@@ -559,50 +559,50 @@ fnet_size_t fnet_println(const fnet_char_t *format, ... );
  *    - @c s : Char string.
  *    - @c n : Nothing.
  *
- * The @ref fnet_sprintf() function is just like @ref fnet_printf(), except 
+ * The @ref fnet_sprintf() function is just like @ref fnet_printf(), except
  * that the output is sent to buffer.@n
  * @n
- * This function does not check the bounds of the buffer and therefore 
+ * This function does not check the bounds of the buffer and therefore
  * creates the risk of a buffer overflow. It is recommended to use @ref fnet_snprintf()
  * that doesn't suffer from buffer overruns.
  * @note
- * To save some bytes from all the hard coded strings the fnet_(s)printf() functions will 
- * expand all line feeds ("\n") inside the format string to CR LF ("\r\n"). 
- * So do not use "\r\n" in	the format string - it will be expanded to 
- * "\r\r\n". It is save to add it via a parameter though, e.g. 
+ * To save some bytes from all the hard coded strings the fnet_(s)printf() functions will
+ * expand all line feeds ("\n") inside the format string to CR LF ("\r\n").
+ * So do not use "\r\n" in	the format string - it will be expanded to
+ * "\r\r\n". It is save to add it via a parameter though, e.g.
  * fnet_printf("%s", "\r\n");@n
  * This feature can be disable/enabled by the @ref FNET_CFG_SERIAL_PRINTF_N_TO_RN
  * configuration parameter.
  ******************************************************************************/
- fnet_size_t fnet_sprintf( fnet_char_t *str, const fnet_char_t *format, ... );
- 
+fnet_size_t fnet_sprintf( fnet_char_t *str, const fnet_char_t *format, ... );
+
 /***************************************************************************/ /*!
  *
- * @brief    Prints formatted text to the buffer. 
+ * @brief    Prints formatted text to the buffer.
  *           The length of the buffer is given, that prevents the buffer overflows.
  *
  * @param str         Pointer to buffer where the resulting string is stored.
- *  
- * @param size        Maximum number of characters to produce. 
+ *
+ * @param size        Maximum number of characters to produce.
  *                    The trailing null character is counted towards this limit
- * 
+ *
  * @param format      Format string.
  *
- * @return This function returns the number of characters that were 
+ * @return This function returns the number of characters that were
  *         successfully written, excluding the trailing null.
  *
  * @see fnet_sprintf()
  *
  ******************************************************************************
  *
- * This function is just like fnet_sprintf(), except that 
+ * This function is just like fnet_sprintf(), except that
  * the length of the buffer is given. This prevents buffer overflows.@n
  * @n
  * The @c format string contains the text to be written to the @c str buffer.
  * The optional arguments following @c format are items
- * (integers, characters or strings) that are to be converted to character strings 
+ * (integers, characters or strings) that are to be converted to character strings
  * and inserted into the output of @c format at specified placeholders.
- * The number of arguments following the @c format parameters should at 
+ * The number of arguments following the @c format parameters should at
  * least be as much as the number of format placeholders. @n
  * The syntax for a format placeholder is @a "%[Flags][Width][Length]Type".
  * - @a Flags can be omitted or be any of:
@@ -626,10 +626,10 @@ fnet_size_t fnet_println(const fnet_char_t *format, ... );
  *    - @c n : Nothing.
  *
  * @note
- * To save some bytes from all the hard coded strings the fnet_(s)printf() functions will 
- * expand all line feeds ("\n") inside the format string to CR LF ("\r\n"). 
- * So do not use "\r\n" in	the format string - it will be expanded to 
- * "\r\r\n". It is save to add it via a parameter though, e.g. 
+ * To save some bytes from all the hard coded strings the fnet_(s)printf() functions will
+ * expand all line feeds ("\n") inside the format string to CR LF ("\r\n").
+ * So do not use "\r\n" in	the format string - it will be expanded to
+ * "\r\r\n". It is save to add it via a parameter though, e.g.
  * fnet_printf("%s", "\r\n");@n
  * This feature can be disable/enabled by the @ref FNET_CFG_SERIAL_PRINTF_N_TO_RN
  * configuration parameter.

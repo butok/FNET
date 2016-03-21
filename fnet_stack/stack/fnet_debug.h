@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_debug.h
@@ -38,15 +38,15 @@ extern "C" {
 
 #if FNET_CFG_DEBUG
 
-    #define FNET_DEBUG(...) fnet_println(__VA_ARGS__)
+#define FNET_DEBUG(...) fnet_println(__VA_ARGS__)
 
-    #if FNET_CFG_DEBUG_STACK && FNET_CFG_DEBUG
-        extern fnet_size_t fnet_dbg_stack_max;
-    #endif
+#if FNET_CFG_DEBUG_STACK && FNET_CFG_DEBUG
+extern fnet_size_t fnet_dbg_stack_max;
+#endif
 
 #else
 
-    #define FNET_DEBUG(...) do{}while(0)
+#define FNET_DEBUG(...) do{}while(0)
 
 #endif
 

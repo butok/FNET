@@ -7,8 +7,8 @@
  *
  * Notes:	There are more DMA requests than DMA channels, so
  *		care should be taken to make sure that DMA channel
- *		assignments are unique for the modules that are 
- *		being used at any time. 
+ *		assignments are unique for the modules that are
+ *		being used at any time.
  */
 
 #ifndef _DMA_CHANNELS_H
@@ -17,26 +17,26 @@
 /********************************************************************/
 /* NOTE: There are more DMA requests than DMA channels, so
  *       care should be taken to make sure that DMA channel
- *	 assignments are unique for the modules that are 
- *	 being used at any time. 
- *	
+ *	 assignments are unique for the modules that are
+ *	 being used at any time.
+ *
  *	 It is recommended that you read the appropriate DMAMUX_CHCFGn
  *	 register before updating it to verify it is 0x0. If the
- *	 DMAMUX_CHCFGn register is not zero, then that indicates the 
+ *	 DMAMUX_CHCFGn register is not zero, then that indicates the
  *	 selected DMA channel might already be in use by another peripheral
  *	 (a more specific test would be to look for DMAMUX_CHCFGn[ENBL] set).
  *	 The module's DMA configuration routine can return an error
  *	 when this situation is detected.
  */
- 
- 
+
+
 /* Default DMA channel assignments and module request macros */
 
 /* UARTs */
 #define DMA_UART0RX_CH			16  /* 0 - 31 are valid */
 #define DMA_UART0TX_CH			17  /* 0 - 31 are valid */
 
-#define DMA_UART1RX_CH			2   /* 0 - 31 are valid */    
+#define DMA_UART1RX_CH			2   /* 0 - 31 are valid */
 #define DMA_UART1TX_CH			3   /* 0 - 31 are valid */
 
 #define DMA_UART2RX_CH			8   /* 0 - 31 are valid */

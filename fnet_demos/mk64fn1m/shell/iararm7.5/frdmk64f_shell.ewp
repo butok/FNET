@@ -119,7 +119,7 @@
         <option>
           <name>GeneralMisraRules04</name>
           <version>0</version>
-          <state>011111111111111110111111111011110111111010101110111100001110111111110111111110100101111111101111111111110111110011111111010011111111111111111</state>
+          <state>011111111111111110111111111011110111111010101110111000001110111111110111111110100101111111101111111111110111110011111111010011111111111111111</state>
         </option>
         <option>
           <name>RTConfigPath2</name>
@@ -245,7 +245,7 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>00000000</state>
+          <state>11111110</state>
         </option>
         <option>
           <name>CCDebugInfo</name>
@@ -339,7 +339,7 @@
         </option>
         <option>
           <name>CCOptLevel</name>
-          <state>1</state>
+          <state>3</state>
         </option>
         <option>
           <name>CCOptStrategy</name>
@@ -348,7 +348,7 @@
         </option>
         <option>
           <name>CCOptLevelSlave</name>
-          <state>1</state>
+          <state>3</state>
         </option>
         <option>
           <name>CompilerMisraRules98</name>
@@ -1047,7 +1047,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.40.3.8937</state>
+          <state>7.50.1.10270</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -1098,7 +1098,7 @@
         <option>
           <name>GBECoreSlave</name>
           <version>22</version>
-          <state>40</state>
+          <state>39</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -1589,7 +1589,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state></state>
+          <state>frdmk64f_shell.srec</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -2123,11 +2123,20 @@
       </group>
       <group>
         <name>os</name>
+        <group>
+          <name>freertos</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\os\freertos\fnet_freertos.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\os\freertos\fnet_freertos_config.h</name>
+          </file>
+        </group>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\os\fnet_os.h</name>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\os\fnet_os.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\os\fnet_os_config.h</name>
+          <name>$PROJ_DIR$\..\..\..\..\fnet_stack\port\os\fnet_os_config.h</name>
         </file>
       </group>
     </group>

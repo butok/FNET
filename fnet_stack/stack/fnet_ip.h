@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_ip.h
@@ -40,7 +40,7 @@
 /**************************************************************************/ /*!
  * @brief 32-bit IPv4 address type.
  ******************************************************************************/
-typedef fnet_uint32_t fnet_ip4_addr_t; 
+typedef fnet_uint32_t fnet_ip4_addr_t;
 
 /**************************************************************************/ /*!
  * @def FNET_IP4_ADDR_INIT
@@ -49,18 +49,18 @@ typedef fnet_uint32_t fnet_ip4_addr_t;
  * @param c Third  octet of an IP address.
  * @param d Fourth  octet of an IP address.
  * @hideinitializer
- * @brief Converts the standard dotted-decimal notation @c a.b.c.d 
+ * @brief Converts the standard dotted-decimal notation @c a.b.c.d
  *        to an integer value, suitable for use as an Internet address (in network byte order).
  ******************************************************************************/
 #define FNET_IP4_ADDR_INIT(a, b, c, d)   (fnet_ip4_addr_t)(FNET_NTOHL((((fnet_uint32_t)(a)&0xFFUL)<< 24U) + (((fnet_uint32_t)(b)&0xFFUL)<< 16U) + (((fnet_uint32_t)(c)&0xFFUL)<< 8U ) + ((fnet_uint32_t)(d)&0xFFUL)))
 
 /**************************************************************************/ /*!
  * @def     FNET_IP4_ADDR_STR_SIZE
- * @brief   Size of the string buffer that will contain 
+ * @brief   Size of the string buffer that will contain
  *          null-terminated ASCII string of an IPv4 address
  *          in standard "." notation.
  * @see fnet_inet_ntoa, fnet_inet_ntop
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
 #define FNET_IP4_ADDR_STR_SIZE          sizeof("255.255.255.255")
 

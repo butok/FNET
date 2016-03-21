@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fapp_params_prv.h
@@ -39,11 +39,11 @@
 *************************************************************************/
 extern fnet_char_t fapp_params_host_name[FAPP_PARAMS_HOST_NAME_SIZE];
 
-#if FAPP_CFG_PARAMS_BOOT 
-extern struct fapp_params_boot fapp_params_boot_config;
+#if FAPP_CFG_PARAMS_BOOT
+    extern struct fapp_params_boot fapp_params_boot_config;
 #endif
-#if FAPP_CFG_PARAMS_TFTP 
-extern struct fapp_params_tftp fapp_params_tftp_config;
+#if FAPP_CFG_PARAMS_TFTP
+    extern struct fapp_params_tftp fapp_params_tftp_config;
 #endif
 
 #if defined(__cplusplus)

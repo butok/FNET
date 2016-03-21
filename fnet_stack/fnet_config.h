@@ -38,12 +38,12 @@
 /* !! Do not change the order !! */
 
 #ifndef __DOXYGEN__
-#include "fnet_user_config.h"               /* User configuration. Highest priority. */
+    #include "fnet_user_config.h"               /* User configuration. Highest priority. */
 #else
-#include "fnet_doxygen_user_config.h"       /* Configuration used during generation of documentation.*/
+    #include "fnet_doxygen_user_config.h"       /* Configuration used during generation of documentation.*/
 #endif
 
-#include "port/compiler/fnet_comp_config.h"      /* Default compiler specific configuration. */  
+#include "port/compiler/fnet_comp_config.h"      /* Default compiler specific configuration. */
 #include "port/cpu/fnet_cpu_config.h"            /* Default platform configuration. */
 #include "port/os/fnet_os_config.h"              /* Default OS-specific configuration. */
 #include "stack/fnet_stack_config.h"        /* Default TCP/IP stack configuration. */

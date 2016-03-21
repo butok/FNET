@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -34,14 +34,14 @@
 /************************************************************************
 * NAME: void fnet_cpu_isr(void);
 *
-* DESCRIPTION: This handler is executed on every FNET interrupt 
+* DESCRIPTION: This handler is executed on every FNET interrupt
 *              (from ethernet and timer module).
 *              Extructs vector number and calls fnet_isr_handler().
 *************************************************************************/
 void fnet_cpu_isr(void)
 {
-    /* ICSR register [VECTACTIVE].*/ 
-    fnet_uint8_t vector_number = (*(volatile fnet_uint8_t*)(0xE000ED04u));
+    /* ICSR register [VECTACTIVE].*/
+    fnet_uint8_t vector_number = (*(volatile fnet_uint8_t *)(0xE000ED04u));
 
     /* Call FNET isr handler.*/
     fnet_isr_handler((fnet_uint32_t)vector_number );
@@ -49,6 +49,6 @@ void fnet_cpu_isr(void)
     return;
 }
 
-#endif /*FNET_MK*/ 
+#endif /*FNET_MK*/
 
 

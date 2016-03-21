@@ -1,8 +1,8 @@
 /*
  * File:	start.h
- * Purpose:	Kinetis start up routines. 
+ * Purpose:	Kinetis start up routines.
  *
- * Notes:		
+ * Notes:
  */
 
 

@@ -34,8 +34,8 @@
  * Serial Port Info
  */
 
-/* 
- * Select the serial port that is being used below. Only one of the 
+/*
+ * Select the serial port that is being used below. Only one of the
  * options should be uncommented at any time.
  */
 #define SERIAL_CARD     // this is the default option, so it is uncommented
@@ -50,7 +50,7 @@
     #define TERMINAL_BAUD       115200
     #undef  HW_FLOW_CONTROL
 #else
-  #error "No valid serial port defined"
+    #error "No valid serial port defined"
 #endif
 
 

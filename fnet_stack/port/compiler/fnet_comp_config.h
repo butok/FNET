@@ -1,6 +1,6 @@
 /**************************************************************************
-* 
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+*
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_comp_config.h
@@ -42,19 +42,20 @@
 /*! @addtogroup fnet_platform_config  */
 /*! @{ */
 /**************************************************************************/ /*!
- * @def      FNET_CFG_COMP_compiler_type 
- * @brief    This is the set of the @c FNET_CFG_COMP_[compiler_type] definitions that 
+ * @def      FNET_CFG_COMP_compiler_type
+ * @brief    This is the set of the @c FNET_CFG_COMP_[compiler_type] definitions that
  *           define a currently used compiler. @n
  *           Current version of the FNET supports the following compiler definitions:
- *            - @c FNET_CFG_COMP_CW  = Used compiler is the CodeWarrior.
- *            - @c FNET_CFG_COMP_IAR = Used compiler is the IAR.
- *            - @c FNET_CFG_COMP_UV  = Used compiler is the Keil uVision. 
- *            - @c FNET_CFG_COMP_GHS = Used compiler is the Green Hills. 
+ *            - @c FNET_CFG_COMP_CW  = Used compiler is CodeWarrior.
+ *            - @c FNET_CFG_COMP_IAR = Used compiler is IAR.
+ *            - @c FNET_CFG_COMP_UV  = Used compiler is Keil uVision.
+ *            - @c FNET_CFG_COMP_GHS = Used compiler is Green Hills.
+ *            - @c FNET_CFG_COMP_DCC = Used compiler is Diab.
  *            @n @n
- *            Selected compiler definition should be only one and must be defined as 1. 
+ *            Selected compiler definition should be only one and must be defined as 1.
  *            All others may be defined but must have the 0 value.
  *            If no compiler definition is defined, the default compiler is CodeWarrior.
- * 
+ *
  ******************************************************************************/
 #define FNET_CFG_COMP_compiler_type /* Ignore it. Just only for Doxygen documentation */
 
@@ -84,6 +85,11 @@
     #define FNET_CFG_COMP_GHS   (0)
 #endif
 
+/* Diab DCC */
+#ifndef FNET_CFG_COMP_DCC
+    #define FNET_CFG_COMP_DCC   (0)
+#endif
+
 #if FNET_CFG_COMP_CW
     #define FNET_COMP_STR    "CW"
 #elif FNET_CFG_COMP_IAR
@@ -91,9 +97,11 @@
 #elif FNET_CFG_COMP_UV
     #define FNET_COMP_STR    "UV"
 #elif FNET_CFG_COMP_GNUC
-   #define FNET_COMP_STR     "GCC"
+    #define FNET_COMP_STR     "GCC"
 #elif FNET_CFG_COMP_GHS
     #define FNET_COMP_STR    "GHS"
+#elif FNET_CFG_COMP_DCC
+    #define FNET_COMP_STR     "DCC"
 #else
     #if (defined(__MWERKS__) || defined(__CODEWARRIOR__))
         #define FNET_CFG_COMP_CW    (1)
@@ -105,13 +113,14 @@
         #define FNET_CFG_COMP_GHS   (1)
         #define FNET_COMP_STR       "GHS"
     #elif (defined(__CC_ARM))
-        #define FNET_CFG_COMP_UV  (1)
-		#define FNET_COMP_STR       "UV"
-	#elif (defined(__GNUC__))
+        #define FNET_CFG_COMP_UV    (1)
+        #define FNET_COMP_STR       "UV"
+    #elif (defined(__GNUC__))
         #define FNET_CFG_COMP_GNUC  (1)
-		#define FNET_COMP_STR       "GCC"
+        #define FNET_COMP_STR       "GCC"
     #elif (defined(__DCC__))
-        #error "DIAB compiler is not tested/supported."
+        #define FNET_CFG_COMP_DCC   (1)
+        #define FNET_COMP_STR       "DCC"
     #else
         #error "It is not possible to define the compiler. Please set a FNET_CFG_COMP_XXXX parameter."
     #endif

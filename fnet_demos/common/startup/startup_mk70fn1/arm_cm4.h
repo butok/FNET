@@ -21,10 +21,10 @@ void disable_irq (int);
 void set_irq_priority (int, int);
 
 /***********************************************************************/
-  /*!< Macro to enable all interrupts. */
+/*!< Macro to enable all interrupts. */
 #define EnableInterrupts asm(" CPSIE i");
 
-  /*!< Macro to disable all interrupts. */
+/*!< Macro to disable all interrupts. */
 #define DisableInterrupts asm(" CPSID i");
 /***********************************************************************/
 
@@ -33,27 +33,27 @@ void set_irq_priority (int, int);
  * Misc. Defines
  */
 #ifdef	FALSE
-#undef	FALSE
+    #undef	FALSE
 #endif
 #define FALSE	(0)
 
 #ifdef	TRUE
-#undef	TRUE
+    #undef	TRUE
 #endif
 #define	TRUE	(1)
 
 #ifdef	NULL
-#undef	NULL
+    #undef	NULL
 #endif
 #define NULL	(0)
 
 #ifdef  ON
-#undef  ON
+    #undef  ON
 #endif
 #define ON      (1)
 
 #ifdef  OFF
-#undef  OFF
+    #undef  OFF
 #endif
 #define OFF     (0)
 

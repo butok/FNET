@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_mld.h
@@ -40,7 +40,7 @@
 #include "fnet_ip6_prv.h"
 
 /************************************************************************
- * RFC3810: MLD is used by an IPv6 router to discover the presence of 
+ * RFC3810: MLD is used by an IPv6 router to discover the presence of
  * multicast listeners on directly attached links, and to discover which
  * multicast addresses are of interest to those neighboring nodes.
  ************************************************************************/
@@ -68,10 +68,10 @@
 FNET_COMP_PACKED_BEGIN
 typedef struct fnet_mld_header
 {
-    fnet_icmp6_header_t icmp6_header        FNET_COMP_PACKED; 
+    fnet_icmp6_header_t icmp6_header        FNET_COMP_PACKED;
     fnet_uint16_t       max_resp_delay      FNET_COMP_PACKED;
     fnet_uint8_t        _reserved[2]        FNET_COMP_PACKED;
-    fnet_ip6_addr_t     multicast_addr      FNET_COMP_PACKED;    
+    fnet_ip6_addr_t     multicast_addr      FNET_COMP_PACKED;
 } fnet_mld_header_t;
 FNET_COMP_PACKED_END
 
@@ -95,8 +95,8 @@ typedef struct fnet_mld_ra_option
                                                                          * Hop Options header in 8-octet units, not
                                                                          * including the first 8 octets. */
     fnet_ip6_option_header_t    ra_option_header    FNET_COMP_PACKED;   /* Router Alert Option. */
-    fnet_uint16_t               ra_option_value     FNET_COMP_PACKED;   /* Router Alert Option value. */   
-    fnet_ip6_option_header_t    padn_option_header  FNET_COMP_PACKED;   /* Padding. It must be multiple to 8 octets. */                                                 
+    fnet_uint16_t               ra_option_value     FNET_COMP_PACKED;   /* Router Alert Option value. */
+    fnet_ip6_option_header_t    padn_option_header  FNET_COMP_PACKED;   /* Padding. It must be multiple to 8 octets. */
 } fnet_mld_ra_option_header_t;
 FNET_COMP_PACKED_END
 

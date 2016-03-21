@@ -23,22 +23,22 @@
 
 /* copy ROM to RAM locations.  Set to 0 for more aggressive dead stripping ... */
 #ifndef SUPPORT_ROM_TO_RAM
-#define SUPPORT_ROM_TO_RAM			1
+    #define SUPPORT_ROM_TO_RAM			1
 #endif
 
-	/* imported data */
+/* imported data */
 
 extern unsigned long _SP_INIT, _SDA_BASE;
 extern unsigned long _START_BSS, _END_BSS;
 extern unsigned long _START_SBSS, _END_SBSS;
 extern unsigned long __DATA_RAM, __DATA_ROM, __DATA_END;
 
-	/* imported routines */
+/* imported routines */
 
 extern int main(int, char **);
 extern void exit(int);
 
-	/* exported routines */
+/* exported routines */
 
 extern void _startup(void);
 
@@ -52,15 +52,15 @@ void clear_mem(char *dst, unsigned long n);
 /*
  *	Routine to copy a single section from ROM to RAM ...
  */
-void __copy_rom_section(char* dst, const char* src, unsigned long size)
+void __copy_rom_section(char *dst, const char *src, unsigned long size)
 {
-    #if 0
-    	if (dst != src)
-		 while (size--)
-		    *dst++ = *src++;
-    #else
-        fnet_memcpy(dst, src, size);
-    #endif        		    
+#if 0
+    if (dst != src)
+        while (size--)
+            *dst++ = *src++;
+#else
+    fnet_memcpy(dst, src, size);
+#endif
 }
 
 /*
@@ -74,14 +74,14 @@ void __copy_rom_section(char* dst, const char* src, unsigned long size)
  */
 void __copy_rom_sections_to_ram(void)
 {
-	RomInfo		*info;
+    RomInfo		*info;
 
-	/*
-	 *	Go through the entire table, copying sections from ROM to RAM.
-	 */
-	for (info = _S_romp; info->Source != 0L || info->Target != 0L || info->Size != 0; ++info)
-        __copy_rom_section( (char *)info->Target,(char *)info->Source, info->Size);
-							
+    /*
+     *	Go through the entire table, copying sections from ROM to RAM.
+     */
+    for (info = _S_romp; info->Source != 0L || info->Target != 0L || info->Size != 0; ++info)
+        __copy_rom_section( (char *)info->Target, (char *)info->Source, info->Size);
+
 }
 
 /*
@@ -90,66 +90,66 @@ void __copy_rom_sections_to_ram(void)
  */
 void clear_mem(char *dst, unsigned long n)
 {
-    #if 0
-    	unsigned long i;
-    	long *lptr;
+#if 0
+    unsigned long i;
+    long *lptr;
 
-    	if (n >= 32)
-    	{
-    		/* align start address to a 4 byte boundary */
-    		i = (- (unsigned long) dst) & 3;
+    if (n >= 32)
+    {
+        /* align start address to a 4 byte boundary */
+        i = (- (unsigned long) dst) & 3;
 
-    		if (i)
-    		{
-    			n -= i;
-    			do
-    				*dst++ = 0;
-    			while (--i);
-    		}
+        if (i)
+        {
+            n -= i;
+            do
+                *dst++ = 0;
+            while (--i);
+        }
 
-    		/* use an unrolled loop to zero out 32byte blocks */
-    		i = n >> 5;
-    		if (i)
-    		{
-    			lptr = (long *)dst;
-    			dst += i * 32;
-    			do
-    			{
-    				*lptr++ = 0;
-    				*lptr++ = 0;
-    				*lptr++ = 0;
-    				*lptr++ = 0;
-    				*lptr++ = 0;
-    				*lptr++ = 0;
-    				*lptr++ = 0;
-    				*lptr++ = 0;
-    			}
-    			while (--i);
-    		}
-    		i = (n & 31) >> 2;
+        /* use an unrolled loop to zero out 32byte blocks */
+        i = n >> 5;
+        if (i)
+        {
+            lptr = (long *)dst;
+            dst += i * 32;
+            do
+            {
+                *lptr++ = 0;
+                *lptr++ = 0;
+                *lptr++ = 0;
+                *lptr++ = 0;
+                *lptr++ = 0;
+                *lptr++ = 0;
+                *lptr++ = 0;
+                *lptr++ = 0;
+            }
+            while (--i);
+        }
+        i = (n & 31) >> 2;
 
-    		/* handle any 4 byte blocks left */
-    		if (i)
-    		{
-    			lptr = (long *)dst;
-    			dst += i * 4;
-    			do
-    				*lptr++ = 0;
-    			while (--i);
-    		}
-    		n &= 3;
-    	}
+        /* handle any 4 byte blocks left */
+        if (i)
+        {
+            lptr = (long *)dst;
+            dst += i * 4;
+            do
+                *lptr++ = 0;
+            while (--i);
+        }
+        n &= 3;
+    }
 
-    	/* handle any byte blocks left */
-    	if (n)
-    		do
-    			*dst++ = 0;
-    		while (--n);
-    #else
+    /* handle any byte blocks left */
+    if (n)
+        do
+            *dst++ = 0;
+        while (--n);
+#else
 
-        fnet_memset_zero(dst, n);
-        
-    #endif		
+    fnet_memset_zero(dst, n);
+
+#endif
 }
 
 #endif

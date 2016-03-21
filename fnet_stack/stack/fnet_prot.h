@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_prot.h
@@ -68,11 +68,11 @@ typedef struct fnet_prot_if
     fnet_socket_if_t           *head;      /* Pointer to the head of the protocol's socket list.*/
     fnet_address_family_t   family;     /* Address domain family.*/
     fnet_socket_type_t      type;       /* Socket type used for.*/
-    fnet_uint32_t           protocol; 
+    fnet_uint32_t           protocol;
     fnet_return_t           (*prot_init)( void );      /* (Optional) Protocol initialization function.*/
     void                    (*prot_release)( void );   /* (Optional) Protocol release function.*/
-    void                    (*prot_input)(fnet_netif_t *netif, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb); /* Protocol input function.*/       
-    void                    (*prot_control_input)(fnet_prot_notify_t command, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb);  /* (Optional) Protocol input control function.*/ 
+    void                    (*prot_input)(fnet_netif_t *netif, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb); /* Protocol input function.*/
+    void                    (*prot_control_input)(fnet_prot_notify_t command, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb);  /* (Optional) Protocol input control function.*/
     void                    (*prot_drain)( void );      /* Protocol drain function. */
     const fnet_socket_prot_if_t *socket_api;            /* Pointer to Transport Protocol API structure.*/
 } fnet_prot_if_t;

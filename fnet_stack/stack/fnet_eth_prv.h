@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_eth_prv.h
@@ -73,29 +73,29 @@ typedef struct
 FNET_COMP_PACKED_END
 
 /*****************************************************************************
-*     Ethernet Control data structure 
+*     Ethernet Control data structure
 ******************************************************************************/
 typedef struct fnet_eth_if
 {
     void                *if_cpu_ptr;  /* Points to CPU-specific control data structure of the interface. */
     fnet_index_t        mac_number;   /* MAC module number [0-1]. */
-    void                ( *output)(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t* nb);
-#if FNET_CFG_MULTICAST      
+    void                ( *output)(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb);
+#if FNET_CFG_MULTICAST
     void                ( *multicast_join)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);
     void                ( *multicast_leave)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);
 #endif /* FNET_CFG_MULTICAST */
     /* Internal parameters.*/
     fnet_bool_t         connection_flag;
     fnet_timer_desc_t   eth_timer;    /* Optional ETH timer.*/
-#if FNET_CFG_IP4    
+#if FNET_CFG_IP4
     fnet_arp_if_t       arp_if;
-#endif   
-#if FNET_CFG_IP6   
+#endif
+#if FNET_CFG_IP6
     fnet_nd6_if_t       nd6_if;
-#endif 
-#if !FNET_CFG_CPU_ETH_MIB     
+#endif
+#if !FNET_CFG_CPU_ETH_MIB
     struct fnet_netif_statistics statistics;
-#endif    
+#endif
 } fnet_eth_if_t;
 
 /************************************************************************
@@ -104,14 +104,14 @@ typedef struct fnet_eth_if
 extern const fnet_mac_addr_t fnet_eth_null_addr;
 extern const fnet_mac_addr_t fnet_eth_broadcast;
 
-#if FNET_CFG_CPU_ETH0 
+#if FNET_CFG_CPU_ETH0
     extern fnet_netif_t fnet_eth0_if;
     #define FNET_ETH0_IF ((fnet_netif_desc_t)(&fnet_eth0_if))
 #endif
-#if FNET_CFG_CPU_ETH1 
+#if FNET_CFG_CPU_ETH1
     extern fnet_netif_t fnet_eth1_if;
     #define FNET_ETH1_IF ((fnet_netif_desc_t)(&fnet_eth1_if))
-#endif    
+#endif
 
 /************************************************************************
 *     Function Prototypes
@@ -127,36 +127,36 @@ void fnet_eth_drain(fnet_netif_t *netif);
 void fnet_eth_change_addr_notify(fnet_netif_t *netif);
 
 #if FNET_CFG_IP4
-    void fnet_eth_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t* nb);
-#endif 
+void fnet_eth_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb);
+#endif
 
 void fnet_eth_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb );
-void fnet_eth_prot_input( fnet_netif_t *netif, fnet_netbuf_t *nb, fnet_uint16_t protocol ); 
+void fnet_eth_prot_input( fnet_netif_t *netif, fnet_netbuf_t *nb, fnet_uint16_t protocol );
 
 #if FNET_CFG_MULTICAST
-    #if FNET_CFG_IP4 
-        void fnet_eth_multicast_leave_ip4(fnet_netif_t *netif, fnet_ip4_addr_t multicast_addr );
-        void fnet_eth_multicast_join_ip4(fnet_netif_t *netif, fnet_ip4_addr_t  multicast_addr );
-    #endif
-    #if FNET_CFG_IP6
-        void fnet_eth_multicast_leave_ip6(fnet_netif_t *netif, fnet_ip6_addr_t *multicast_addr );
-        void fnet_eth_multicast_join_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t  *multicast_addr );
-    #endif        
+#if FNET_CFG_IP4
+void fnet_eth_multicast_leave_ip4(fnet_netif_t *netif, fnet_ip4_addr_t multicast_addr );
+void fnet_eth_multicast_join_ip4(fnet_netif_t *netif, fnet_ip4_addr_t  multicast_addr );
+#endif
+#if FNET_CFG_IP6
+void fnet_eth_multicast_leave_ip6(fnet_netif_t *netif, fnet_ip6_addr_t *multicast_addr );
+void fnet_eth_multicast_join_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t  *multicast_addr );
+#endif
 #endif /* FNET_CFG_MULTICAST */
 
 #if FNET_CFG_IP6
-    void fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr,  const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t* nb);
+void fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr,  const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb);
 #endif
 
 #if FNET_CFG_DEBUG_TRACE_ETH && FNET_CFG_DEBUG_TRACE
-    void fnet_eth_trace(fnet_uint8_t *str, fnet_eth_header_t *eth_hdr);
+void fnet_eth_trace(fnet_uint8_t *str, fnet_eth_header_t *eth_hdr);
 #else
-    #define fnet_eth_trace(str, eth_hdr)    do{}while(0)
-#endif            
+#define fnet_eth_trace(str, eth_hdr)    do{}while(0)
+#endif
 
 #if defined(__cplusplus)
 }
-#endif              
+#endif
 
 #endif /* FNET_CFG_ETH */
 

@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
@@ -18,7 +18,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_serial.c
@@ -110,7 +110,7 @@ void fnet_serial_flush(fnet_serial_stream_t stream)
 
 /*********************************************************************
  * fnet_prinf & fnet_sprintf staff
- * 
+ *
  ********************************************************************/
 
 /********************************************************************/
@@ -245,7 +245,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
     fnet_char_t         *sval;
     fnet_char_t         cval;
     fnet_uint32_t       uval;
-    
+
     /*
      * Start parsing apart the format string and display appropriate
      * formats and data.
@@ -260,15 +260,15 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
          */
         if(c != '%')
         {
-        
-    #if FNET_CFG_SERIAL_PRINTF_N_TO_RN
+
+#if FNET_CFG_SERIAL_PRINTF_N_TO_RN
             if(c == '\n') /* LF.*/
             {
                 count++;
                 fnet_serial_putchar(stream, '\r' /* CR */);
             }
-    #endif            
-            
+#endif
+
             count++;
             fnet_serial_putchar(stream, c);
 
@@ -286,30 +286,30 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
             switch( /* c = */*++p)
             {
                 case '-':
-                  flags_used |= FNET_SERIAL_FLAGS_MINUS;
-                  break;
+                    flags_used |= FNET_SERIAL_FLAGS_MINUS;
+                    break;
 
                 case '+':
-                  flags_used |= FNET_SERIAL_FLAGS_PLUS;
-                  break;
+                    flags_used |= FNET_SERIAL_FLAGS_PLUS;
+                    break;
 
                 case ' ':
-                  flags_used |= FNET_SERIAL_FLAGS_SPACE;
-                  break;
+                    flags_used |= FNET_SERIAL_FLAGS_SPACE;
+                    break;
 
                 case '0':
-                  flags_used |= FNET_SERIAL_FLAGS_ZERO;
-                  break;
+                    flags_used |= FNET_SERIAL_FLAGS_ZERO;
+                    break;
 
                 case '#':
-                  flags_used |= FNET_SERIAL_FLAGS_POUND;
-                  break;
+                    flags_used |= FNET_SERIAL_FLAGS_POUND;
+                    break;
 
                 default:
-                  /* we've gone one char too far */
-                  --p;
-                  done = FNET_TRUE;
-                  break;
+                    /* we've gone one char too far */
+                    --p;
+                    done = FNET_TRUE;
+                    break;
             }
         }
 
@@ -334,16 +334,16 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                 case '7':
                 case '8':
                 case '9':
-                  field_width = (field_width * 10) + (c - '0');
-                  break;
+                    field_width = (field_width * 10) + (c - '0');
+                    break;
 
                 default:
-                  /* we've gone one char too far */
-                  --p;
-                  done = FNET_TRUE;
-                  break;
+                    /* we've gone one char too far */
+                    --p;
+                    done = FNET_TRUE;
+                    break;
             }
-#else 
+#else
             c = *++p;
             if((c >= '0') && (c <= '9'))
             {
@@ -355,9 +355,9 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                 --p;
                 done = FNET_TRUE;
             }
-#endif            
+#endif
 
-           
+
         }
 
         /*
@@ -365,21 +365,22 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
          */
         if( /* (c = *++p) */*++p == '.')
         {
-        #if 0
-            precision_used = FNET_TRUE; 
-        #endif
+#if 0
+            precision_used = FNET_TRUE;
+#endif
 
             /*
              * Must get precision field width, if present.
              */
-        #if 0
-            precision_width = 0; */
-        #endif
+#if 0
+            precision_width = 0;
+            * /
+#endif
             done = FNET_FALSE;
 
             while(done == FNET_FALSE)
             {
-            #if 0
+#if 0
                 switch( /* c = uncomment if used below */*++p)
                 {
                     case '0':
@@ -393,25 +394,25 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                     case '8':
                     case '9':
 
-                    #if 0
-                          precision_width = (precision_width * 10) + (c - '0');
-                    #endif
+#if 0
+                        precision_width = (precision_width * 10) + (c - '0');
+#endif
 
-                      break;
+                        break;
 
                     default:
-                      /* we've gone one char too far */
-                      --p;
-                      done = FNET_TRUE;
-                      break;
+                        /* we've gone one char too far */
+                        --p;
+                        done = FNET_TRUE;
+                        break;
                 }
-            #else
+#else
                 c = (*++p);
                 if((c >= '0') && (c <= '9'))
                 {
-                    #if 0
-                      precision_width = (precision_width * 10) + (c - '0');
-                    #endif
+#if 0
+                    precision_width = (precision_width * 10) + (c - '0');
+#endif
                 }
                 else
                 {
@@ -419,7 +420,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                     --p;
                     done = FNET_TRUE;
                 }
-            #endif
+#endif
             }
         }
         else
@@ -427,40 +428,40 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
             /* we've gone one char too far */
             --p;
 
-        #if 0
+#if 0
             precision_used = FNET_FALSE;
             precision_width = 0;
-        #endif
+#endif
 
         }
 
         /*
          * Check for the length modifier.
          */
-        #if 0
-         length_modifier = 0; 
-        #endif
+#if 0
+        length_modifier = 0;
+#endif
         switch( *++p)
         {
             case 'h':
-            #if 0    
-              length_modifier |= LENMOD_h; 
-            #endif
-              break;
+#if 0
+                length_modifier |= LENMOD_h;
+#endif
+                break;
             case 'l':
-            #if 0 
-               length_modifier |= LENMOD_l; 
-            #endif
-              break;
+#if 0
+                length_modifier |= LENMOD_l;
+#endif
+                break;
             case 'L':
-            #if 0 
-              length_modifier |= LENMOD_L; 
-            #endif
-              break;
+#if 0
+                length_modifier |= LENMOD_L;
+#endif
+                break;
             default:
-              /* we've gone one char too far */
-              --p;
-              break;
+                /* we've gone one char too far */
+                --p;
+                break;
         }
 
         /*
@@ -516,7 +517,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                     dschar = FNET_TRUE;
 
                     fnet_serial_printk_pad('0', stream, vlen, field_width, &count);
-                    
+
                     vlen = field_width;
                 }
                 else
@@ -557,10 +558,10 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                 {
                     if(FNET_SERIAL_IS_FLAG_POUND(flags_used))
                     {
-                        count+=2u;
+                        count += 2u;
                         fnet_serial_putchar(stream, '0');
                         fnet_serial_putchar(stream, 'x');
-                      
+
                         dschar = FNET_TRUE;
                     }
 
@@ -580,20 +581,20 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
 
                         if(FNET_SERIAL_IS_FLAG_POUND(flags_used))
                         {
-                            count+=2u;
+                            count += 2u;
                             fnet_serial_putchar(stream, '0');
                             fnet_serial_putchar(stream, 'x');
                             dschar = FNET_TRUE;
                         }
                     }
                 }
-    
+
                 if((FNET_SERIAL_IS_FLAG_POUND(flags_used)) && (dschar == FNET_FALSE))
                 {
-                    count+=2u;
+                    count += 2u;
                     fnet_serial_putchar(stream, '0');
                     fnet_serial_putchar(stream, 'x');
-                    
+
                     vlen += 2u;
                 }
 
@@ -602,7 +603,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
             case 'o':
                 uval = (fnet_uint32_t)va_arg(arg, fnet_uint32_t);
                 vlen = fnet_serial_printk_mknumstr(vstr, &uval, FNET_FALSE, 8u);
-    
+
                 cont_u = FNET_TRUE;
                 break;
             case 'b':
@@ -666,8 +667,8 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                 fnet_serial_putchar(stream, c);
                 break;
         }
-				
-				
+
+
         if(cont_u == FNET_TRUE)
         {
             vstrp = &vstr[vlen];
@@ -685,7 +686,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                 }
             }
         }
-				
+
         if(cont_xd == FNET_TRUE)
         {
             while(*vstrp)
@@ -698,7 +699,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                 fnet_serial_printk_pad(' ', stream, vlen, field_width, &count);
             }
         }
-				
+
     }
 
     return count;
@@ -724,7 +725,7 @@ fnet_size_t fnet_printf(const fnet_char_t *format, ... )
      * Initialize the pointer to the variable length argument list.
      */
     va_start(ap, format);
-    return fnet_serial_vprintf(FNET_SERIAL_STREAM_DEFAULT, format, ap);  
+    return fnet_serial_vprintf(FNET_SERIAL_STREAM_DEFAULT, format, ap);
 }
 
 /************************************************************************
@@ -736,14 +737,14 @@ fnet_size_t fnet_println(const fnet_char_t *format, ... )
 {
     va_list         ap;
     fnet_size_t     result = 0u;
-    
+
     /*
      * Initialize the pointer to the variable length argument list.
      */
     va_start(ap, format);
     result = fnet_serial_vprintf(FNET_SERIAL_STREAM_DEFAULT, format, ap);
     result += fnet_printf("\n");
-    
+
     return result;
 }
 
@@ -752,20 +753,20 @@ fnet_size_t fnet_println(const fnet_char_t *format, ... )
  ******************************************************************************/
 struct fnet_serial_buffer_id
 {
-    fnet_char_t            *dest;      /* Pointer to the destination buffer.*/ 
+    fnet_char_t            *dest;      /* Pointer to the destination buffer.*/
     fnet_size_t     dest_size;  /* Maximum number of characters to be written to the buffer.*/
 };
 
 /********************************************************************/
 static void fnet_serial_buffer_putchar(fnet_index_t p_dest, fnet_char_t character)
 {
-    struct fnet_serial_buffer_id *buffer_id = (struct fnet_serial_buffer_id*)p_dest;
+    struct fnet_serial_buffer_id *buffer_id = (struct fnet_serial_buffer_id *)p_dest;
 
     if(buffer_id->dest_size)
     {
         *(buffer_id->dest) = (fnet_uint8_t)character;
         buffer_id->dest++;
-        
+
         --buffer_id->dest_size;
     }
 }
@@ -775,18 +776,18 @@ fnet_size_t fnet_sprintf( fnet_char_t *str, const fnet_char_t *format, ... )
 {
     va_list     ap;
     fnet_size_t result = 0u;
-   
+
     struct fnet_serial_stream buffer_stream;
     struct fnet_serial_buffer_id buffer_id;
-    
+
     if(str != 0)
     {
         buffer_id.dest = str;
-        buffer_id.dest_size = (fnet_size_t)-1; /* No limit.*/
+        buffer_id.dest_size = (fnet_size_t) - 1; /* No limit.*/
 
         buffer_stream.id = (fnet_index_t)&buffer_id;
         buffer_stream.putchar = fnet_serial_buffer_putchar;
-        
+
         /*
          * Initialize the pointer to the variable length argument list.
          */
@@ -794,7 +795,7 @@ fnet_size_t fnet_sprintf( fnet_char_t *str, const fnet_char_t *format, ... )
         result = fnet_serial_vprintf(&buffer_stream, format, ap);
         *buffer_id.dest = '\0'; /* Trailing null character.*/
     }
-    
+
     return result;
 }
 
@@ -805,17 +806,17 @@ fnet_size_t fnet_snprintf( fnet_char_t *str, fnet_size_t size, const fnet_char_t
     fnet_size_t                     result = 0u;
     struct fnet_serial_stream       buffer_stream;
     struct fnet_serial_buffer_id    buffer_id;
-    
-    
+
+
     if((str != 0) && (size != 0u))
     {
         --size; /* Space for the trailing null character.*/
         buffer_id.dest = str;
-        buffer_id.dest_size = size; 
-        
+        buffer_id.dest_size = size;
+
         buffer_stream.id = (fnet_index_t)&buffer_id;
         buffer_stream.putchar = fnet_serial_buffer_putchar;
-        
+
         /*
          * Initialize the pointer to the variable length argument list.
          */
@@ -826,7 +827,7 @@ fnet_size_t fnet_snprintf( fnet_char_t *str, fnet_size_t size, const fnet_char_t
         {
             result = size;
         }
-    } 
+    }
     return result;
 }
 
@@ -839,6 +840,6 @@ void fnet_putchar( fnet_char_t character )
 /********************************************************************/
 fnet_int32_t fnet_getchar( void )
 {
-    return fnet_cpu_serial_getchar(FNET_CFG_CPU_SERIAL_PORT_DEFAULT);    
+    return fnet_cpu_serial_getchar(FNET_CFG_CPU_SERIAL_PORT_DEFAULT);
 }
 

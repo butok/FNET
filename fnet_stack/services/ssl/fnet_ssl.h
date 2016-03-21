@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2015 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -32,7 +32,7 @@
 #include "fnet_config.h"
 
 #if FNET_CFG_SSL /* TBD under development */
- 
+
 #include "fnet.h"
 
 /**************************************************************************/ /*!
@@ -65,7 +65,7 @@ struct fnet_ssl_session_params
     char                    *priv_key_file_path;    /**< @brief Private Key file path (null-terminated string). It is optional. */
     char                    *ca_cert_file_path;     /**< @brief CA (Certificate Authority) certificate file path (null-terminated string). It is optional. */
 };
- 
+
 
 fnet_ssl_session_desc_t fnet_ssl_session_init(struct fnet_ssl_session_params *params);
 void fnet_ssl_session_release(fnet_ssl_session_desc_t ssl_desc);

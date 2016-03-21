@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fapp_fs.h
@@ -37,7 +37,7 @@
 *     File System Image
 *************************************************************************/
 #if FNET_CFG_FS && FNET_CFG_FS_ROM
-extern const struct fnet_fs_rom_image fnet_fs_image;
+    extern const struct fnet_fs_rom_image fnet_fs_image;
 #endif
 
 #if defined(__cplusplus)
@@ -52,7 +52,7 @@ void fapp_fs_mount(void);
 void fapp_fs_unmount(void);
 #endif
 
-#if FAPP_CFG_EXP_CMD 
+#if FAPP_CFG_EXP_CMD
 extern const struct fnet_shell fapp_fs_shell;
 #endif
 

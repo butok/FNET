@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_serial_config.h
@@ -40,18 +40,18 @@
 /*! @{ */
 
 /**************************************************************************/ /*!
- * @def     FNET_CFG_SERIAL_PRINTF_N_TO_RN 
- * @brief   Automatic replacing of all line feeds ("\n") inside the format 
+ * @def     FNET_CFG_SERIAL_PRINTF_N_TO_RN
+ * @brief   Automatic replacing of all line feeds ("\n") inside the format
  *          string to CR LF ("\r\n") by fnet_(s)printf() functions:
  *               - @b @c 1 = is enabled (Deafault value, to save some ROM).
  *               - @c 0 = is disabled.@n
  *           @n
- * To save some bytes from all the hard coded strings the fnet_(s)printf() functions will 
- * expand all line feeds ("\n") inside the format string to CR LF ("\r\n"). 
- * So do not use "\r\n" in	the format string - it will be expanded to 
- * "\r\r\n". It is save to add it via a parameter though, e.g. 
+ * To save some bytes from all the hard coded strings the fnet_(s)printf() functions will
+ * expand all line feeds ("\n") inside the format string to CR LF ("\r\n").
+ * So do not use "\r\n" in	the format string - it will be expanded to
+ * "\r\r\n". It is save to add it via a parameter though, e.g.
  * fnet_printf("%s", "\r\n");
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_SERIAL_PRINTF_N_TO_RN
     #define FNET_CFG_SERIAL_PRINTF_N_TO_RN     (1)

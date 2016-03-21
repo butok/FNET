@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -37,11 +37,11 @@
 #if FNET_CFG_HTTP && FNET_CFG_FS
 
 #if FNET_CFG_HTTP_SSI
-#include "fnet_http_ssi_prv.h"
+    #include "fnet_http_ssi_prv.h"
 #endif
 
 #if FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR
-#include "fnet_http_post.h"
+    #include "fnet_http_post.h"
 #endif
 
 /* Minimum size of the internal buffer */
@@ -58,7 +58,7 @@
     #define FNET_HTTP_BUF_SIZE  FNET_HTTP_BUF_SIZE_MIN
 #endif
 
-#if FNET_CFG_DEBUG_HTTP    
+#if FNET_CFG_DEBUG_HTTP
     #define FNET_DEBUG_HTTP   FNET_DEBUG
 #else
     #define FNET_DEBUG_HTTP(...)    do{}while(0)
@@ -68,7 +68,7 @@
 
 /************************************************************************
 *    HTTP 1.0 Reason-Phrase definitions.
-*    RFC1945: The Reason-Phrase is intended to give a short textual 
+*    RFC1945: The Reason-Phrase is intended to give a short textual
 *             description of the Status-Code.
 *************************************************************************/
 #define FNET_HTTP_REASON_PHRASE_OK                      "OK"
@@ -101,7 +101,7 @@ struct fnet_http_status
 *************************************************************************/
 struct fnet_http_version
 {
-    fnet_uint8_t major; 
+    fnet_uint8_t major;
     fnet_uint8_t minor;
 };
 
@@ -113,19 +113,19 @@ struct fnet_http_version
  ******************************************************************************/
 typedef enum
 {
-    FNET_HTTP_STATE_DISABLED = 0,       /**< @brief HTTP server service is 
+    FNET_HTTP_STATE_DISABLED = 0,       /**< @brief HTTP server service is
                                          * not initialized.*/
-    FNET_HTTP_STATE_LISTENING = 1,      /**< @brief HTTP server is listening 
+    FNET_HTTP_STATE_LISTENING = 1,      /**< @brief HTTP server is listening
                                          * for client socket.*/
-    FNET_HTTP_STATE_RX_REQUEST = 2,     /**< @brief HTTP server is waiting or receiving  
+    FNET_HTTP_STATE_RX_REQUEST = 2,     /**< @brief HTTP server is waiting or receiving
                                          * a HTTP request.*/
-#if FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR 
-    FNET_HTTP_STATE_RX = 3,             /**< @brief HTTP server is receiving the 
+#if FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR
+    FNET_HTTP_STATE_RX = 3,             /**< @brief HTTP server is receiving the
                                          * Entity-Body of a HTTP request.*/
 #endif
-    FNET_HTTP_STATE_TX = 4,             /**< @brief HTTP server is sending a 
+    FNET_HTTP_STATE_TX = 4,             /**< @brief HTTP server is sending a
                                          * response to a client.*/
-    FNET_HTTP_STATE_CLOSING = 5         /**< @brief HTTP server is closing 
+    FNET_HTTP_STATE_CLOSING = 5         /**< @brief HTTP server is closing
                                          * the socket connection.*/
 } fnet_http_state_t;
 
@@ -137,22 +137,22 @@ struct fnet_http_if; /* Forward declaration.*/
 struct fnet_http_response
 {
     const struct fnet_http_file_handler     *send_file_handler;
-    fnet_return_t                           (*tx_data)(struct fnet_http_if * http); /* TX state handler.*/
+    fnet_return_t                           (*tx_data)(struct fnet_http_if *http);  /* TX state handler.*/
     fnet_bool_t                             send_eof;                   /* Optional EOF flag. It means nomore data for send*/
     fnet_size_t                             buffer_sent;                /* A number of bytes were sent.*/
     fnet_index_t                            status_line_state;
     fnet_uint32_t                           cookie;
-#if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/    
+#if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
     fnet_bool_t                             no_header;                  /* Flag do not send HTTP respnse status line and header*/
     const struct fnet_http_content_type     *send_file_content_type;    /* MIME Content-Type.*/
     struct fnet_http_status                 status;                     /* Status of the response.*/
     struct fnet_http_version                version;                    /* Protocol version used for current request.*/
     fnet_int32_t                            content_length;             /* The total size of the data to send (is -1 if unknown).*/
 #endif
-#if FNET_CFG_HTTP_AUTHENTICATION_BASIC && FNET_CFG_HTTP_VERSION_MAJOR    
+#if FNET_CFG_HTTP_AUTHENTICATION_BASIC && FNET_CFG_HTTP_VERSION_MAJOR
     const struct fnet_http_auth             *auth_entry;
     const struct fnet_http_auth_scheme      *auth_scheme;
-#endif 
+#endif
 };
 
 /************************************************************************
@@ -160,9 +160,9 @@ struct fnet_http_response
 *************************************************************************/
 struct fnet_http_uri
 {
-	fnet_char_t         *path;          /* File path (with file extension). */
-	const fnet_char_t   *extension;     /* File extension. */
-	fnet_char_t         *query;         /* Optional query string. */
+    fnet_char_t         *path;          /* File path (with file extension). */
+    const fnet_char_t   *extension;     /* File extension. */
+    fnet_char_t         *query;         /* Optional query string. */
 };
 
 /************************************************************************
@@ -173,9 +173,9 @@ struct fnet_http_request
     const struct fnet_http_method   *method;
     struct fnet_http_uri            uri;
     fnet_int32_t                    content_length;
-#if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/ 
-    fnet_bool_t                     skip_line; 
-#endif           
+#if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
+    fnet_bool_t                     skip_line;
+#endif
 };
 
 /************************************************************************
@@ -186,16 +186,16 @@ struct fnet_http_session_if
     fnet_http_state_t           state;                          /* Current state.*/
     fnet_time_t                 state_time;                     /* Start time used by the state machine for timeout calculation.*/
     fnet_socket_t               socket_foreign;                 /* Foreign socket.*/
-    fnet_uint8_t                buffer[FNET_HTTP_BUF_SIZE+1u];  /* Receive/Transmit buffer */
+    fnet_uint8_t                buffer[FNET_HTTP_BUF_SIZE + 1u]; /* Receive/Transmit buffer */
     fnet_size_t                 buffer_actual_size;             /* Size of the actual data in the buffer.*/
-    union 
+    union
     {
         fnet_fs_file_t  file_desc;
         const void      *data_ptr;
     } send_param;
     struct fnet_http_response   response;                       /* Holds the accumulated data for the HTTP 1.0 response header */
-    struct fnet_http_request    request; 
-}; 
+    struct fnet_http_request    request;
+};
 
 /************************************************************************
 *    HTTP interface control structure.
@@ -213,33 +213,33 @@ struct fnet_http_if
     struct fnet_http_session_if             session[FNET_CFG_HTTP_SESSION_MAX];
 #if FNET_CFG_HTTP_VERSION_MAJOR
     const struct fnet_http_content_type     *index_file_content_type; /* MIME Content-Type of Index File.*/
-#endif        
-#if FNET_CFG_HTTP_SSI    
+#endif
+#if FNET_CFG_HTTP_SSI
     struct fnet_http_ssi_if                 ssi;
 #endif
-#if FNET_CFG_HTTP_CGI    
+#if FNET_CFG_HTTP_CGI
     const struct fnet_http_cgi              *cgi_table;
-#endif 
+#endif
 #if FNET_CFG_HTTP_AUTHENTICATION_BASIC && FNET_CFG_HTTP_VERSION_MAJOR
-    const struct fnet_http_auth *auth_table;	        
+    const struct fnet_http_auth *auth_table;
 #endif
 #if FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR
     const struct fnet_http_post *post_table;
 #endif
-}; 
+};
 
 /************************************************************************
 *    HTTP request handler structure.
 *************************************************************************/
 struct fnet_http_method
 {
-	fnet_char_t     *token;	            /* Method token, which will identify protocol.
-	                                    * It indicates the method to be performed on the resource identified 
+    fnet_char_t     *token;	            /* Method token, which will identify protocol.
+	                                    * It indicates the method to be performed on the resource identified
 	                                    * by the Request-URI.*/
-	fnet_return_t   (* handle)(struct fnet_http_if * http, struct fnet_http_uri * uri);
-    fnet_return_t   (* receive)(struct fnet_http_if * http);
-	fnet_return_t   (* send)(struct fnet_http_if * http);
-	void            (* close)(struct fnet_http_if * http);
+    fnet_return_t   (* handle)(struct fnet_http_if *http, struct fnet_http_uri *uri);
+    fnet_return_t   (* receive)(struct fnet_http_if *http);
+    fnet_return_t   (* send)(struct fnet_http_if *http);
+    void            (* close)(struct fnet_http_if *http);
 };
 
 /************************************************************************
@@ -247,10 +247,10 @@ struct fnet_http_method
 *************************************************************************/
 struct fnet_http_file_handler
 {
-	fnet_char_t     *file_extension;	      /* File extension */
-	fnet_return_t   (*file_handle)(struct fnet_http_if * http, struct fnet_http_uri * uri);
-	fnet_size_t     (*file_send)(struct fnet_http_if * http);
-	void            (*file_close)(struct fnet_http_if * http);
+    fnet_char_t     *file_extension;	      /* File extension */
+    fnet_return_t   (*file_handle)(struct fnet_http_if *http, struct fnet_http_uri *uri);
+    fnet_size_t     (*file_send)(struct fnet_http_if *http);
+    void            (*file_close)(struct fnet_http_if *http);
 };
 
 /************************************************************************
@@ -258,7 +258,7 @@ struct fnet_http_file_handler
 *************************************************************************/
 struct fnet_http_content_type
 {
-	const fnet_char_t *file_extension;	      /* File extension string*/
+    const fnet_char_t *file_extension;	      /* File extension string*/
     const fnet_char_t *content_type;	      /* Content type string */
 };
 
@@ -271,12 +271,12 @@ extern const struct fnet_http_method fnet_http_method_get;
 #if FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR
 extern const struct fnet_http_method fnet_http_method_post;
 #endif
-fnet_return_t fnet_http_default_handle (struct fnet_http_if * http, struct fnet_http_uri * uri);
-fnet_size_t fnet_http_default_send (struct fnet_http_if * http);
-void fnet_http_default_close (struct fnet_http_if * http);
-fnet_char_t *fnet_http_uri_parse(fnet_char_t *in_str, struct fnet_http_uri * uri);
-const struct fnet_http_file_handler * fnet_http_find_handler(struct fnet_http_if * http, struct fnet_http_uri * uri);
-const struct fnet_http_content_type * fnet_http_find_content_type(struct fnet_http_if * http, struct fnet_http_uri * uri);
+fnet_return_t fnet_http_default_handle (struct fnet_http_if *http, struct fnet_http_uri *uri);
+fnet_size_t fnet_http_default_send (struct fnet_http_if *http);
+void fnet_http_default_close (struct fnet_http_if *http);
+fnet_char_t *fnet_http_uri_parse(fnet_char_t *in_str, struct fnet_http_uri *uri);
+const struct fnet_http_file_handler *fnet_http_find_handler(struct fnet_http_if *http, struct fnet_http_uri *uri);
+const struct fnet_http_content_type *fnet_http_find_content_type(struct fnet_http_if *http, struct fnet_http_uri *uri);
 
 #if defined(__cplusplus)
 }

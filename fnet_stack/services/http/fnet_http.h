@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_http.h
@@ -38,35 +38,35 @@
 
 /*! @addtogroup fnet_http
 * The current version of the FNET HTTP Server supports:
-* - HTTP/0.9 or HTTP/1.0 protocol responces. 
-* - GET and POST (enabled by @ref FNET_CFG_HTTP_POST) HTTP requests. 
+* - HTTP/0.9 or HTTP/1.0 protocol responces.
+* - GET and POST (enabled by @ref FNET_CFG_HTTP_POST) HTTP requests.
 * - Server Side Includes (SSI). @n
-*   SSI directives have the following format: 
-*   @code 
-*   <!--#command [parameter(s)]--> 
+*   SSI directives have the following format:
+*   @code
+*   <!--#command [parameter(s)]-->
 *   @endcode
 * - Common Gateway Interface (CGI).
 * - Basic Access Authentication (enabled by @ref FNET_CFG_HTTP_AUTHENTICATION_BASIC).
 * - FNET File System Interface.
-* 
+*
 * @n
-* After the FNET HTTP server is initialized by calling the @ref fnet_http_init() 
-* function, the user application should call the main service polling function  
+* After the FNET HTTP server is initialized by calling the @ref fnet_http_init()
+* function, the user application should call the main service polling function
 * @ref fnet_poll_services() periodically in background. @n
 * @n
 * For HTTP server usage example, refer to FNET demo application source code.@n
 * @n
 * Configuration parameters:
 * - @ref FNET_CFG_HTTP
-* - @ref FNET_CFG_HTTP_VERSION_MAJOR  
+* - @ref FNET_CFG_HTTP_VERSION_MAJOR
 * - @ref FNET_CFG_HTTP_MAX
-* - @ref FNET_CFG_HTTP_SESSION_MAX  
-* - @ref FNET_CFG_HTTP_SSI 
-* - @ref FNET_CFG_HTTP_CGI 
+* - @ref FNET_CFG_HTTP_SESSION_MAX
+* - @ref FNET_CFG_HTTP_SSI
+* - @ref FNET_CFG_HTTP_CGI
 * - @ref FNET_CFG_HTTP_POST
-* - @ref FNET_CFG_HTTP_AUTHENTICATION_BASIC 
-* - @ref FNET_CFG_HTTP_PORT 
-* - @ref FNET_CFG_HTTP_REQUEST_SIZE_MAX 
+* - @ref FNET_CFG_HTTP_AUTHENTICATION_BASIC
+* - @ref FNET_CFG_HTTP_PORT
+* - @ref FNET_CFG_HTTP_REQUEST_SIZE_MAX
 */
 /*! @{ */
 
@@ -96,92 +96,92 @@
 /********************************************************************/ /*!
 * @brief HTTP/1.0 Status-Code definitions according to RFC1945.
 *
-* Can be used by inside CGI and POST handlers: @ref fnet_http_cgi_handle_t(), 
-* @ref fnet_http_post_handle_t() and @ref fnet_http_post_receive_t() 
+* Can be used by inside CGI and POST handlers: @ref fnet_http_cgi_handle_t(),
+* @ref fnet_http_post_handle_t() and @ref fnet_http_post_receive_t()
 * call-back functions.
-* @see fnet_http_cgi_handle_t(), fnet_http_post_handle_t(), fnet_http_post_receive_t() 
+* @see fnet_http_cgi_handle_t(), fnet_http_post_handle_t(), fnet_http_post_receive_t()
 *************************************************************************/
 typedef enum
 {
-    FNET_HTTP_STATUS_CODE_NONE                  = 0,    /**< @brief NONE.@n 
+    FNET_HTTP_STATUS_CODE_NONE                  = 0,    /**< @brief NONE.@n
                                                         * Status code is not defined.
                                                         */
-    FNET_HTTP_STATUS_CODE_OK                    = 200,  /**< @brief OK.@n 
+    FNET_HTTP_STATUS_CODE_OK                    = 200,  /**< @brief OK.@n
                                                         * The request has succeeded.
                                                         */
-    FNET_HTTP_STATUS_CODE_CREATED               = 201,  /**< @brief Created.@n 
-                                                        * The request has been fulfilled 
-                                                        * and resulted in a new resource 
+    FNET_HTTP_STATUS_CODE_CREATED               = 201,  /**< @brief Created.@n
+                                                        * The request has been fulfilled
+                                                        * and resulted in a new resource
                                                         * being created.
                                                         */
-    FNET_HTTP_STATUS_CODE_ACCEPTED              = 202,  /**< @brief Accepted.@n 
-                                                        * The request has been accepted 
+    FNET_HTTP_STATUS_CODE_ACCEPTED              = 202,  /**< @brief Accepted.@n
+                                                        * The request has been accepted
                                                         * for processing, but the processing
                                                         * has not been completed.
                                                         */
-    FNET_HTTP_STATUS_CODE_NO_CONTENT            = 204,  /**< @brief No Content.@n 
-                                                        * The server has fulfilled the request 
-                                                        * but there is no new information to 
+    FNET_HTTP_STATUS_CODE_NO_CONTENT            = 204,  /**< @brief No Content.@n
+                                                        * The server has fulfilled the request
+                                                        * but there is no new information to
                                                         * send back.
                                                         */
-    FNET_HTTP_STATUS_CODE_MOVED_PERMANENTLY     = 301,  /**< @brief Moved Permanently.@n 
-                                                        * The requested resource has been 
+    FNET_HTTP_STATUS_CODE_MOVED_PERMANENTLY     = 301,  /**< @brief Moved Permanently.@n
+                                                        * The requested resource has been
                                                         * assigned a new permanent URL and
-                                                        * any future references to 
-                                                        * this resource should be 
+                                                        * any future references to
+                                                        * this resource should be
                                                         * done using that URL.@n
                                                         * It's not supported by the FNET HTTP Server.
                                                         */
-    FNET_HTTP_STATUS_CODE_MOVED_TEMPORARILY     = 302,  /**< @brief Moved Temporarily.@n 
-                                                        * The requested resource resides 
+    FNET_HTTP_STATUS_CODE_MOVED_TEMPORARILY     = 302,  /**< @brief Moved Temporarily.@n
+                                                        * The requested resource resides
                                                         * temporarily under a different URL.@n
                                                         * It's not supported by the FNET HTTP Server.
                                                         */
-    FNET_HTTP_STATUS_CODE_NOT_MODIFIED          = 304,  /**< @brief Not Modified.@n 
-                                                        * If the client has performed a 
+    FNET_HTTP_STATUS_CODE_NOT_MODIFIED          = 304,  /**< @brief Not Modified.@n
+                                                        * If the client has performed a
                                                         * conditional GET request and access is
-                                                        * allowed, but the document has not been 
-                                                        * modified since the date and time specified 
-                                                        * in the If-Modified-Since field, the server 
-                                                        * must respond with this status code and 
+                                                        * allowed, but the document has not been
+                                                        * modified since the date and time specified
+                                                        * in the If-Modified-Since field, the server
+                                                        * must respond with this status code and
                                                         * not send an Entity-Body to the client.@n
                                                         * It's not supported by the FNET HTTP Server.
                                                         */
-    FNET_HTTP_STATUS_CODE_BAD_REQUEST           = 400,  /**< @brief Bad Request.@n 
-                                                        * The request could not be understood by 
+    FNET_HTTP_STATUS_CODE_BAD_REQUEST           = 400,  /**< @brief Bad Request.@n
+                                                        * The request could not be understood by
                                                         * the server due to malformed syntax.
                                                         */
-    FNET_HTTP_STATUS_CODE_UNAUTHORIZED          = 401,  /**< @brief Unauthorized.@n 
+    FNET_HTTP_STATUS_CODE_UNAUTHORIZED          = 401,  /**< @brief Unauthorized.@n
                                                         * The request requires user authentication.
                                                         */
-    FNET_HTTP_STATUS_CODE_FORBIDDEN             = 403,  /**< @brief Forbidden.@n 
-                                                        * The server understood the request, but is 
+    FNET_HTTP_STATUS_CODE_FORBIDDEN             = 403,  /**< @brief Forbidden.@n
+                                                        * The server understood the request, but is
                                                         * refusing to fulfill it.
                                                         */
-    FNET_HTTP_STATUS_CODE_NOT_FOUND             = 404,  /**< @brief Not Found.@n 
-                                                        * The server has not found anything matching 
+    FNET_HTTP_STATUS_CODE_NOT_FOUND             = 404,  /**< @brief Not Found.@n
+                                                        * The server has not found anything matching
                                                         * the Request-URI.
                                                         */
-    FNET_HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR = 500,  /**< @brief Internal Server Error.@n 
-                                                        * The server encountered an unexpected condition 
+    FNET_HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR = 500,  /**< @brief Internal Server Error.@n
+                                                        * The server encountered an unexpected condition
                                                         * which prevented it from fulfilling the request.
                                                         */
-    FNET_HTTP_STATUS_CODE_NOT_IMPLEMENTED       = 501,  /**< @brief Not Implemented.@n 
-                                                        * The server does not support the functionality 
+    FNET_HTTP_STATUS_CODE_NOT_IMPLEMENTED       = 501,  /**< @brief Not Implemented.@n
+                                                        * The server does not support the functionality
                                                         * required to fulfill the request.
                                                         */
-    FNET_HTTP_STATUS_CODE_BAD_GATEWAY           = 502,  /**< @brief Bad Gateway.@n 
-                                                        * The server, while acting as a gateway or proxy, 
-                                                        * received an invalid response from the upstream 
+    FNET_HTTP_STATUS_CODE_BAD_GATEWAY           = 502,  /**< @brief Bad Gateway.@n
+                                                        * The server, while acting as a gateway or proxy,
+                                                        * received an invalid response from the upstream
                                                         * server it accessed in attempting to fulfill the request.
                                                         */
-    FNET_HTTP_STATUS_CODE_SERVICE_UNAVAILABLE   = 503   /**< @brief Service Unavailable.@n 
-                                                        * The server is currently unable to handle the 
-                                                        * request due to a temporary overloading or 
+    FNET_HTTP_STATUS_CODE_SERVICE_UNAVAILABLE   = 503   /**< @brief Service Unavailable.@n
+                                                        * The server is currently unable to handle the
+                                                        * request due to a temporary overloading or
                                                         * maintenance of the server.
                                                         */
 
-}fnet_http_status_code_t;
+} fnet_http_status_code_t;
 #endif
 
 
@@ -190,8 +190,8 @@ typedef enum
  ******************************************************************************/
 struct fnet_http_params
 {
-    fnet_char_t * root_path;           /**< @brief Server root-directory path (null-terminated string). */
-    fnet_char_t * index_path;          /**< @brief Index file path (null-terminated string). @n
+    fnet_char_t *root_path;            /**< @brief Server root-directory path (null-terminated string). */
+    fnet_char_t *index_path;          /**< @brief Index file path (null-terminated string). @n
                                  *   It's relative to the @c root_path.*/
     struct sockaddr address;    /**< @brief Server socket address. @n
                                  * If server IP address is set to @c 0s, the server will listen to all current network interfaces. @n
@@ -201,13 +201,13 @@ struct fnet_http_params
     const struct fnet_http_ssi *ssi_table;      /**< @brief Pointer to the optional
                                                  * SSI callback function table. */
 #endif
-#if FNET_CFG_HTTP_CGI || defined(__DOXYGEN__)    
+#if FNET_CFG_HTTP_CGI || defined(__DOXYGEN__)
     const struct fnet_http_cgi *cgi_table;      /**< @brief Pointer to the optional
                                                  * CGI callback function table. */
 #endif
 #if (FNET_CFG_HTTP_AUTHENTICATION_BASIC && FNET_CFG_HTTP_VERSION_MAJOR) || defined(__DOXYGEN__)
     const struct fnet_http_auth  *auth_table;   /**< @brief Pointer to the optional
-                                                 * HTTP Access Authentification table. */	        
+                                                 * HTTP Access Authentification table. */
 #endif
 #if (FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR) || defined(__DOXYGEN__)
     const struct fnet_http_post *post_table;    /**< @brief Pointer to the optional
@@ -254,11 +254,11 @@ extern "C" {
  *
  * This function initializes the HTTP server service. It allocates all
  * resources needed, and registers the HTTP server service in the polling list.@n
- * After the initialization, the user application should call the main polling 
+ * After the initialization, the user application should call the main polling
  * function  @ref fnet_poll_services() periodically to run the HTTP server in background.
  *
  ******************************************************************************/
-fnet_http_desc_t fnet_http_init( struct fnet_http_params * params);
+fnet_http_desc_t fnet_http_init( struct fnet_http_params *params);
 
 /***************************************************************************/ /*!
  *
@@ -270,9 +270,9 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params * params);
  *
  ******************************************************************************
  *
- * This function releases the HTTP Server assigned to the @c desc 
- * descriptor.@n 
- * It releases all occupied resources, and unregisters the HTTP service from 
+ * This function releases the HTTP Server assigned to the @c desc
+ * descriptor.@n
+ * It releases all occupied resources, and unregisters the HTTP service from
  * the polling list.
  *
  ******************************************************************************/
@@ -297,7 +297,7 @@ fnet_bool_t fnet_http_enabled(fnet_http_desc_t desc);
 
 /***************************************************************************/ /*!
  *
- * @brief    Converts escaped string to an original format. 
+ * @brief    Converts escaped string to an original format.
  *
  * @param dest    Destination string.
  *
@@ -306,10 +306,10 @@ fnet_bool_t fnet_http_enabled(fnet_http_desc_t desc);
  ******************************************************************************
  *
  * This function converts encoded string to the original format.
- * The '+' symbol is replaced by the space symbol, and the % symbol followed 
- * by two hexadecimal digits is replaced by proper ASCII value 
+ * The '+' symbol is replaced by the space symbol, and the % symbol followed
+ * by two hexadecimal digits is replaced by proper ASCII value
  * (for example the exclamation mark encoded as \%21). @n
- * This function should be used by CGI functions to eliminate escape symbols 
+ * This function should be used by CGI functions to eliminate escape symbols
  * from a query string.@n
  * @n
  * INFO:@n
@@ -319,7 +319,7 @@ fnet_bool_t fnet_http_enabled(fnet_http_desc_t desc);
  * to properly interpret the request.
  *
  ******************************************************************************/
-void fnet_http_query_unencode(fnet_uint8_t * dest, fnet_uint8_t * src);
+void fnet_http_query_unencode(fnet_uint8_t *dest, fnet_uint8_t *src);
 
 #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/ || defined(__DOXYGEN__)
 
@@ -329,11 +329,11 @@ void fnet_http_query_unencode(fnet_uint8_t * dest, fnet_uint8_t * src);
  * @param session       HTTP session handle.
  * @param status_code   HTTP Response Status-Code.
  *
- * If the HTTP server works according to HTTP/1.x (@ref FNET_CFG_HTTP_VERSION_MAJOR is @c 1), 
+ * If the HTTP server works according to HTTP/1.x (@ref FNET_CFG_HTTP_VERSION_MAJOR is @c 1),
  * this function may be used to change the default HTTP response status-code.
- * 
- ******************************************************************************/ 
-void fnet_http_set_response_status_code (fnet_http_session_t session, fnet_http_status_code_t status_code); 
+ *
+ ******************************************************************************/
+void fnet_http_set_response_status_code (fnet_http_session_t session, fnet_http_status_code_t status_code);
 
 /**************************************************************************/ /*!
  * @brief Sets content length in HTTP response header.
@@ -341,22 +341,22 @@ void fnet_http_set_response_status_code (fnet_http_session_t session, fnet_http_
  * @param session       HTTP session handle.
  * @param content_length   HTTP Response Content length.
  *
- * If the HTTP server works according to HTTP/1.x  (@ref FNET_CFG_HTTP_VERSION_MAJOR is @c 1), 
+ * If the HTTP server works according to HTTP/1.x  (@ref FNET_CFG_HTTP_VERSION_MAJOR is @c 1),
  * this function may be used to change the default HTTP response content-length.
- * 
- ******************************************************************************/ 
-void fnet_http_set_response_content_length (fnet_http_session_t session, fnet_size_t content_length); 
+ *
+ ******************************************************************************/
+void fnet_http_set_response_content_length (fnet_http_session_t session, fnet_size_t content_length);
 
 /**************************************************************************/ /*!
  * @brief Disables sending of HTTP response status-code and header.
  *
  * @param session       HTTP session handle.
  *
- * If the HTTP server works according to HTTP/1.x (@ref FNET_CFG_HTTP_VERSION_MAJOR is @c 1), 
+ * If the HTTP server works according to HTTP/1.x (@ref FNET_CFG_HTTP_VERSION_MAJOR is @c 1),
  * this function may be used to disables automatic sending of HTTP response status-code and header.
  * It can be sent by a user handler.
- * 
- ******************************************************************************/ 
+ *
+ ******************************************************************************/
 void fnet_http_set_response_no_header (fnet_http_session_t session);
 
 #endif

@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2005-2015 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -35,7 +35,7 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static fnet_cpu_irq_desc_t fnet_mcf_set_irqlevel(unsigned long level);
+static fnet_cpu_irq_desc_t fnet_mcf_set_irqlevel(fnet_uint32_t level);
 
 /************************************************************************
 * NAME: fnet_cpu_reset
@@ -44,14 +44,14 @@ static fnet_cpu_irq_desc_t fnet_mcf_set_irqlevel(unsigned long level);
 *************************************************************************/
 void fnet_cpu_reset (void)
 {
-#if FNET_CFG_MCF_RCM	 
-	 FNET_MCF_RCM_RCR = FNET_MCF_RCM_RCR_SOFTRST | FNET_MCF_RCM_RCR_FRCRSTOUT;
-#else	 
-    unsigned long address = *((unsigned long *)(0x4));
-  
+#if FNET_CFG_MCF_RCM
+    FNET_MCF_RCM_RCR = FNET_MCF_RCM_RCR_SOFTRST | FNET_MCF_RCM_RCR_FRCRSTOUT;
+#else
+    fnet_uint32_t address = *((fnet_uint32_t *)(0x4));
+
     (( void(*)() )address)(); /* Jump. */
 #endif
- 
+
 }
 
 /************************************************************************
@@ -59,11 +59,11 @@ void fnet_cpu_reset (void)
 *
 * DESCRIPTION: Initiate software reset.
 *************************************************************************/
-static fnet_cpu_irq_desc_t fnet_mcf_set_irqlevel(unsigned long level)
+static fnet_cpu_irq_desc_t fnet_mcf_set_irqlevel(fnet_uint32_t level)
 {
     fnet_uint16_t csr;
     fnet_cpu_irq_desc_t oldlevel;
-    
+
     csr = fnet_mcf_sr_rd();
 
     oldlevel = (fnet_cpu_irq_desc_t)((csr & FNET_MCF_SR_IPL) >> 8);

@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,14 +17,14 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_cpu.h
 *
 * @author Andrey Butok
 *
-* @brief CPU-specific library API. 
+* @brief CPU-specific library API.
 *
 ***************************************************************************/
 
@@ -34,36 +34,36 @@
 
 #include "fnet_config.h"
 
-#if FNET_MCF    /* ColdFire.*/ 
+#if FNET_MCF    /* ColdFire.*/
     #include "mcf/fnet_mcf.h"
-#endif    
+#endif
 
 #if FNET_MK     /* Kinetis.*/
     #include "mk/fnet_mk.h"
-#endif    
+#endif
 
 #if FNET_MPC     /* MPC.*/
     #include "mpc/fnet_mpc.h"
-#endif  
+#endif
 
 #if FNET_LPC     /* NXP's LPC.*/
     #include "lpc/fnet_lpc.h"
 #endif
 
-#include "../../stack/fnet_stdlib.h"
+#include "stack/fnet_stdlib.h"
 
 /*! @addtogroup fnet_socket */
 /*! @{ */
 
 /* native Flash controller align */
 #if FNET_CFG_CPU_FLASH
-	#if (FNET_CFG_CPU_FLASH_PROGRAM_SIZE == 8U)
-	  #define FNET_COMP_PACKED_NATIVE         FNET_COMP_PACKED_8
-	#elif (FNET_CFG_CPU_FLASH_PROGRAM_SIZE == 4U)
-	  #define FNET_COMP_PACKED_NATIVE         FNET_COMP_PACKED_4
-	#else
-	  #error The macro FNET_CFG_CPU_FLASH_PROGRAM_SIZE must be set to correct value.
-	#endif
+    #if (FNET_CFG_CPU_FLASH_PROGRAM_SIZE == 8U)
+        #define FNET_COMP_PACKED_NATIVE         FNET_COMP_PACKED_8
+    #elif (FNET_CFG_CPU_FLASH_PROGRAM_SIZE == 4U)
+        #define FNET_COMP_PACKED_NATIVE         FNET_COMP_PACKED_4
+    #else
+        #error The macro FNET_CFG_CPU_FLASH_PROGRAM_SIZE must be set to correct value.
+    #endif
 #endif
 
 #if defined(__cplusplus)
@@ -71,49 +71,49 @@ extern "C" {
 #endif
 
 /************************************************************************
-*     For doing byte order conversions between CPU 
+*     For doing byte order conversions between CPU
 *     and the independent "network" order.
 *     For Freescale CPUs they just return the variable passed.
 *************************************************************************/
 
 #if FNET_CFG_CPU_LITTLE_ENDIAN /* Little endian.*/ || defined(__DOXYGEN__)
-  
+
 /**************************************************************************/ /*!
  * @def FNET_HTONS
  * @param short_var A 16-bit number in host byte order.
  * @hideinitializer
  * @see FNET_NTOHS(), FNET_HTONL(), FNET_NTOHL(), fnet_htons(), fnet_ntohs(), fnet_htonl(), fnet_ntohl()
- * @brief Macros which converts the unsigned short integer from host byte order to 
+ * @brief Macros which converts the unsigned short integer from host byte order to
  * network byte order.
  ******************************************************************************/
-    #define FNET_HTONS(short_var)   ((((short_var) & 0x00FFU) << 8U) | (((short_var) & 0xFF00U) >> 8U))
+#define FNET_HTONS(short_var)   ((((short_var) & 0x00FFU) << 8U) | (((short_var) & 0xFF00U) >> 8U))
 /**************************************************************************/ /*!
  * @def FNET_NTOHS
  * @param short_var A 16-bit number in network byte order.
  * @hideinitializer
- * @see FNET_HTONS(), FNET_HTONL(), FNET_NTOHL(), fnet_htons(), fnet_ntohs(), fnet_htonl(), fnet_ntohl() 
- * @brief Macros which converts the unsigned 16-bit integer from network byte order to 
+ * @see FNET_HTONS(), FNET_HTONL(), FNET_NTOHL(), fnet_htons(), fnet_ntohs(), fnet_htonl(), fnet_ntohl()
+ * @brief Macros which converts the unsigned 16-bit integer from network byte order to
  * host byte order.
- ******************************************************************************/      
-    #define FNET_NTOHS(short_var)   FNET_HTONS(short_var) 
+ ******************************************************************************/
+#define FNET_NTOHS(short_var)   FNET_HTONS(short_var)
 /**************************************************************************/ /*!
  * @def FNET_HTONL
  * @param long_var A 32-bit number in host byte order.
  * @hideinitializer
- * @see FNET_HTONS(), FNET_NTOHS(), FNET_NTOHL(), fnet_htons(), fnet_ntohs(), fnet_htonl(), fnet_ntohl() 
- * @brief Macros which converts the unsigned long integer from host byte order to 
+ * @see FNET_HTONS(), FNET_NTOHS(), FNET_NTOHL(), fnet_htons(), fnet_ntohs(), fnet_htonl(), fnet_ntohl()
+ * @brief Macros which converts the unsigned long integer from host byte order to
  * network byte order.
- ******************************************************************************/      
-    #define FNET_HTONL(long_var)    ((((long_var) & 0x000000FFU) << 24U) | (((long_var) & 0x0000FF00U) << 8U) | (((long_var) & 0x00FF0000U) >> 8U) | (((long_var) & 0xFF000000U) >> 24U))   
+ ******************************************************************************/
+#define FNET_HTONL(long_var)    ((((long_var) & 0x000000FFU) << 24U) | (((long_var) & 0x0000FF00U) << 8U) | (((long_var) & 0x00FF0000U) >> 8U) | (((long_var) & 0xFF000000U) >> 24U))
 /**************************************************************************/ /*!
  * @def FNET_NTOHL
  * @param long_var A 32-bit number in network byte order.
  * @hideinitializer
- * @see FNET_HTONS(), FNET_NTOHS(), FNET_HTONL(), fnet_htons(), fnet_ntohs(), fnet_htonl(), fnet_ntohl() 
- * @brief Macros which converts the unsigned long integer from network byte order to 
+ * @see FNET_HTONS(), FNET_NTOHS(), FNET_HTONL(), fnet_htons(), fnet_ntohs(), fnet_htonl(), fnet_ntohl()
+ * @brief Macros which converts the unsigned long integer from network byte order to
  * host byte order.
- ******************************************************************************/     
-    #define FNET_NTOHL(long_var)    FNET_HTONL(long_var)  
+ ******************************************************************************/
+#define FNET_NTOHL(long_var)    FNET_HTONL(long_var)
 
 /***************************************************************************/ /*!
  *
@@ -129,13 +129,13 @@ extern "C" {
  *
  ******************************************************************************
  *
- * The function converts the unsigned 16-bit integer from host byte order to 
+ * The function converts the unsigned 16-bit integer from host byte order to
  * network byte order.
  *
  ******************************************************************************/
-    fnet_uint16_t fnet_htons(fnet_uint16_t short_var);
- 
-    #define fnet_ntohs   fnet_htons
+fnet_uint16_t fnet_htons(fnet_uint16_t short_var);
+
+#define fnet_ntohs   fnet_htons
 /***************************************************************************/ /*!
  *
  * @brief    Converts 16-bit value from network to host byte order.
@@ -150,12 +150,12 @@ extern "C" {
  *
  ******************************************************************************
  *
- * The function converts the unsigned 16-bit integer from network byte order to 
+ * The function converts the unsigned 16-bit integer from network byte order to
  * host byte order.
  *
- ******************************************************************************/    
-     fnet_uint16_t fnet_ntohs(fnet_uint16_t short_var);
-     
+ ******************************************************************************/
+fnet_uint16_t fnet_ntohs(fnet_uint16_t short_var);
+
 /***************************************************************************/ /*!
  *
  * @brief    Converts 32-bit value from host to network byte order.
@@ -170,11 +170,11 @@ extern "C" {
  *
  ******************************************************************************
  *
- * The function converts the unsigned long integer from host byte order to 
+ * The function converts the unsigned long integer from host byte order to
  * network byte order.
  *
  ******************************************************************************/
-    fnet_uint32_t fnet_htonl(fnet_uint32_t long_var);
+fnet_uint32_t fnet_htonl(fnet_uint32_t long_var);
 
 #define fnet_ntohl    fnet_htonl
 /***************************************************************************/ /*!
@@ -191,23 +191,23 @@ extern "C" {
  *
  ******************************************************************************
  *
- * The function converts the unsigned long integer from network byte order to 
+ * The function converts the unsigned long integer from network byte order to
  * host byte order.
  *
- ******************************************************************************/       
-     fnet_uint32_t fnet_ntohl(fnet_uint32_t long_var);
+ ******************************************************************************/
+fnet_uint32_t fnet_ntohl(fnet_uint32_t long_var);
 
 
 #else /* Big endian. */
-    #define FNET_HTONS(short_var)   (short_var) 
-    #define FNET_NTOHS(short_var)   (short_var)
-    #define FNET_HTONL(long_var)    (long_var)
-    #define FNET_NTOHL(long_var)    (long_var)
-    
-    #define fnet_htons(short_var)   (short_var) /* Convert 16 bit integer from host- to network byte order.*/
-    #define fnet_ntohs(short_var)   (short_var) /* Convert 16 bit integer from network - to host byte order.*/
-    #define fnet_htonl(long_var)    (long_var)  /* Convert 32 bit integer from host- to network byte order.*/
-    #define fnet_ntohl(long_var)    (long_var)  /* Convert 32 bit integer from network - to host byte order.*/
+#define FNET_HTONS(short_var)   (short_var)
+#define FNET_NTOHS(short_var)   (short_var)
+#define FNET_HTONL(long_var)    (long_var)
+#define FNET_NTOHL(long_var)    (long_var)
+
+#define fnet_htons(short_var)   (short_var) /* Convert 16 bit integer from host- to network byte order.*/
+#define fnet_ntohs(short_var)   (short_var) /* Convert 16 bit integer from network - to host byte order.*/
+#define fnet_htonl(long_var)    (long_var)  /* Convert 32 bit integer from host- to network byte order.*/
+#define fnet_ntohl(long_var)    (long_var)  /* Convert 32 bit integer from network - to host byte order.*/
 #endif
 
 /*! @} */
@@ -234,7 +234,7 @@ typedef fnet_uint32_t fnet_cpu_irq_desc_t;
  *
  ******************************************************************************
  *
- * This function performs software reset and asserts the external reset 
+ * This function performs software reset and asserts the external reset
  * (RSTO) pin.
  *
  ******************************************************************************/
@@ -244,7 +244,7 @@ void fnet_cpu_reset (void);
  *
  * @brief    Disables all interrupts.
  *
- * @return This function returns the current IRQ status defined 
+ * @return This function returns the current IRQ status defined
  * by @ref fnet_cpu_irq_desc_t.
  *
  * @see fnet_cpu_irq_enable()
@@ -254,14 +254,14 @@ void fnet_cpu_reset (void);
  * This function disables all interrupts. @n
  * The interrupts can be enabled again by the @ref fnet_cpu_irq_enable() function.
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 fnet_cpu_irq_desc_t fnet_cpu_irq_disable(void);
 
 /***************************************************************************/ /*!
  *
  * @brief    Enables interrupts.
  *
- * @param irq_desc     IRQ status descriptor returned by the 
+ * @param irq_desc     IRQ status descriptor returned by the
  *                      @ref fnet_cpu_irq_disable() function.@n
  *                      Pass @c 0 value to enable all interrupts.
  *
@@ -269,7 +269,7 @@ fnet_cpu_irq_desc_t fnet_cpu_irq_disable(void);
  *
  ******************************************************************************
  *
- * This function enables interrupts that were disabled by the 
+ * This function enables interrupts that were disabled by the
  * @ref fnet_cpu_irq_disable function. @n
  * The functions can enable all interrupts by passing into it the @c 0 value.
  *
@@ -288,10 +288,10 @@ void fnet_cpu_irq_enable(fnet_cpu_irq_desc_t irq_desc);
  *
  ******************************************************************************
  *
- * This function writes @c character to the serial port defined 
+ * This function writes @c character to the serial port defined
  * by @c port_number. @n
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 void fnet_cpu_serial_putchar( fnet_index_t port_number, fnet_char_t character );
 
 /***************************************************************************/ /*!
@@ -308,10 +308,10 @@ void fnet_cpu_serial_putchar( fnet_index_t port_number, fnet_char_t character );
  *
  ******************************************************************************
  *
- * This function reads character from the serial port defined 
+ * This function reads character from the serial port defined
  * by @c port_number. @n
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 fnet_int32_t fnet_cpu_serial_getchar( fnet_index_t port_number );
 
 /***************************************************************************/ /*!
@@ -319,14 +319,14 @@ fnet_int32_t fnet_cpu_serial_getchar( fnet_index_t port_number );
  * @brief    Initializes the serial port.
  *
  * @param port_number     Serial port number.
- * 
+ *
  * @param baud_rate       Baud rate to be set to the serial port.
  *
  * @see fnet_cpu_serial_putchar(), fnet_cpu_serial_getchar()
  *
  ******************************************************************************
  *
- * This function executes the  HW initialization of the serial port defined 
+ * This function executes the  HW initialization of the serial port defined
  * by the @c port_number.
  *
  ******************************************************************************/
@@ -339,10 +339,15 @@ void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate);
  *
  ******************************************************************************
  *
- * If the CPU has cache memory, this function invalidates it.
+ * If the CPU has cache memory, this function invalidates it.@n
+ * This function is called only if @c FNET_CFG_CPU_CACHE is @c 1.
  *
  ******************************************************************************/
+#if FNET_CFG_CPU_CACHE || defined(__DOXYGEN__)
 void fnet_cpu_cache_invalidate(void);
+#else
+#define fnet_cpu_cache_invalidate()        do{}while(0)
+#endif
 
 /***************************************************************************/ /*!
  *
@@ -367,7 +372,7 @@ void fnet_cpu_flash_erase(void *flash_page_addr);
  * @param dest            Destination address in the Flash to write to.
  *
  * @param data            Pointer to the block of data to write to the Flash memory
- *                        Size of the data block must be equal to 
+ *                        Size of the data block must be equal to
  *                        @ref FNET_CFG_CPU_FLASH_PROGRAM_SIZE.
  *
  * @see fnet_cpu_flash_erase()
@@ -386,7 +391,7 @@ void fnet_cpu_flash_write(fnet_uint8_t *dest, const fnet_uint8_t *data);
  *
  ******************************************************************************
  *
- * This is CPU-specific ISR which is executed on every FNET interrupt 
+ * This is CPU-specific ISR which is executed on every FNET interrupt
  * (from Ethernet and timer module).@n
  * It extracts vector number and calls fnet_isr_handler().
  *
@@ -403,17 +408,17 @@ void fnet_cpu_isr(void);
  ******************************************************************************
  *
  * This is CPU-specific macro that adjusts the instruction address. @n
- * If the current platform is Kinetis, it sets the Thumb bit (bit 0) of 
+ * If the current platform is Kinetis, it sets the Thumb bit (bit 0) of
  * the address to 1. @n
  * If the current platform is ColdFire or MPC, it does nothing.
  *
  ******************************************************************************/
 #ifndef FNET_CPU_ADDR_TO_INSTRUCTION
-    #define FNET_CPU_ADDR_TO_INSTRUCTION(addr)    (addr)
+#define FNET_CPU_ADDR_TO_INSTRUCTION(addr)    (addr)
 #endif
 
 #ifndef FNET_CPU_INSTRUCTION_TO_ADDR
-    #define FNET_CPU_INSTRUCTION_TO_ADDR(addr)    (addr)
+#define FNET_CPU_INSTRUCTION_TO_ADDR(addr)    (addr)
 #endif
 
 #if defined(__cplusplus)

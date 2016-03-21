@@ -7,7 +7,7 @@
 #include "fapp_mem.h"
 
 /* Sector Size.*/
-#define FAPP_CFM_SECTOR_SIZE    (FNET_CFG_CPU_FLASH_SIZE/32) 
+#define FAPP_CFM_SECTOR_SIZE    (FNET_CFG_CPU_FLASH_SIZE/32)
 
 /* Number of sectors occupied by the application.*/
 #define FAPP_APPLICATION_SECTOR_NUMBER    (FAPP_APPLICATION_SIZE/FAPP_CFM_SECTOR_SIZE+(FAPP_APPLICATION_SIZE%FAPP_CFM_SECTOR_SIZE?1:0))
@@ -29,11 +29,11 @@ const unsigned long _cfm[6] =
 {
     0, /*KEY_UPPER (0x00000400) */
     0, /*KEY_LOWER (0x00000404 */
-#if FAPP_CFG_CFM_PROTECTION	
+#if FAPP_CFG_CFM_PROTECTION
     FAPP_CFMPROT_REG,   /* CFMPROT (0x00000408) */
 #else
     0, /* No protection. */
-#endif	
+#endif
     0, /*CFMSACC (0x0000040C) */
     0, /*CFMDACC (0x00000410) */
     0, /*CFMSEC (0x00000414) */

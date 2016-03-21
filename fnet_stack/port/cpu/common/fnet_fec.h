@@ -19,7 +19,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_fec.h
@@ -45,87 +45,87 @@
 
 
 /* CPU-specific configuration.*/
-#if FNET_MCF    /* ColdFire.*/ 
+#if FNET_MCF    /* ColdFire.*/
     #define FNET_FEC_CLOCK_KHZ  FNET_CPU_CLOCK_KHZ
-    /* Transmit buffer descriptor queue. This pointer 
-     * must be 32-bit aligned; however, it is recommended it be 
-     * made 128-bit aligned (evenly divisible by 16).*/
+    /* Transmit buffer descriptor queue. This pointer
+    * must be 32-bit aligned; however, it is recommended it be
+    * made 128-bit aligned (evenly divisible by 16).*/
     #define FNET_FEC_BUF_DESC_DIV       (16U)
-    /* The transmit buffer pointer, containing the address 
-     * of the associated data buffer, 
-     * must always be evenly divisible by 4.*/
+    /* The transmit buffer pointer, containing the address
+    * of the associated data buffer,
+    * must always be evenly divisible by 4.*/
     #define FNET_FEC_TX_BUF_DIV         (4U)
-    /* The receive buffer pointer, containing the address 
-     * of the associated data buffer, 
-     * must always be evenly divisible by 16.*/
+    /* The receive buffer pointer, containing the address
+    * of the associated data buffer,
+    * must always be evenly divisible by 16.*/
     #define FNET_FEC_RX_BUF_DIV         (16U)
 #endif
 
 #if FNET_MK     /* Kinetis.*/
     #define FNET_FEC_CLOCK_KHZ  FNET_MK_PERIPH_CLOCK_KHZ
-    /* Transmit buffer descriptor queue. This pointer 
-     * must be 32-bit aligned; however, it is recommended it be 
-     * made 128-bit aligned (evenly divisible by 16).*/
+    /* Transmit buffer descriptor queue. This pointer
+    * must be 32-bit aligned; however, it is recommended it be
+    * made 128-bit aligned (evenly divisible by 16).*/
     #define FNET_FEC_BUF_DESC_DIV       (16U)
-    /* The transmit buffer pointer, containing the address 
-     * of the associated data buffer, 
-     * must always be evenly divisible by 8.*/
+    /* The transmit buffer pointer, containing the address
+    * of the associated data buffer,
+    * must always be evenly divisible by 8.*/
     #define FNET_FEC_TX_BUF_DIV         (8U)
-    /* The receive buffer pointer, containing the address 
-     * of the associated data buffer, 
-     * must always be evenly divisible by 16.*/
+    /* The receive buffer pointer, containing the address
+    * of the associated data buffer,
+    * must always be evenly divisible by 16.*/
     #define FNET_FEC_RX_BUF_DIV         (16U)
-#endif   
+#endif
 
 #if FNET_MPC
     #if FNET_CFG_CPU_MPC564xBC /* Bolero3M.*/
-         #define FNET_FEC_CLOCK_KHZ  (FNET_CPU_CLOCK_KHZ/2)           
-         /* Transmit buffer descriptor queue. This pointer 
-          * must be 32-bit aligned; however, it is recommended it be 
-          * made 128-bit aligned (evenly divisible by 16).*/
-         #define FNET_FEC_BUF_DESC_DIV       (16U)
-         /* The transmit buffer pointer, containing the address 
-          * of the associated data buffer, 
-          * must always be evenly divisible by 4.*/
-         #define FNET_FEC_TX_BUF_DIV         (8U)
-         /* The receive buffer pointer, containing the address 
-          * of the associated data buffer, 
-          * must always be evenly divisible by 16.*/
-         #define FNET_FEC_RX_BUF_DIV         (16U)
-    #elif FNET_CFG_CPU_MPC5744P
-         /* Phanter's ENET runs quarter of core max frequency = 200MHz/4 = 50MHz */
-         #define FNET_FEC_CLOCK_KHZ  (FNET_CPU_CLOCK_KHZ/4)
-         /* Transmit buffer descriptor queue. This pointer 
-          * must be 64-bit aligned (bits 2–0 must be zero);
-          * however, it is recommended to be 128-bit aligned,
-          * that is, evenly divisible by 16.*/
-         #define FNET_FEC_BUF_DESC_DIV       (16U)
-          /* The transmit buffer pointer, containing the address 
-           * of the associated data buffer, 
-           * must always be evenly divisible by 8.*/
-          #define FNET_FEC_TX_BUF_DIV         (8U)
-          /* The receive buffer pointer, containing the address 
-           * of the associated data buffer, 
-           * must always be evenly divisible by 16.*/
-          #define FNET_FEC_RX_BUF_DIV         (16U)
+        #define FNET_FEC_CLOCK_KHZ  (FNET_CPU_CLOCK_KHZ/2)
+        /* Transmit buffer descriptor queue. This pointer
+        * must be 32-bit aligned; however, it is recommended it be
+        * made 128-bit aligned (evenly divisible by 16).*/
+        #define FNET_FEC_BUF_DESC_DIV       (16U)
+        /* The transmit buffer pointer, containing the address
+        * of the associated data buffer,
+        * must always be evenly divisible by 4.*/
+        #define FNET_FEC_TX_BUF_DIV         (8U)
+        /* The receive buffer pointer, containing the address
+        * of the associated data buffer,
+        * must always be evenly divisible by 16.*/
+        #define FNET_FEC_RX_BUF_DIV         (16U)
+    #elif FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_MPC5566
+        /* Phanter's and Viper's ENET runs quarter of core max frequency = 200MHz/4 = 50MHz */
+        #define FNET_FEC_CLOCK_KHZ  (FNET_CPU_CLOCK_KHZ/4)
+        /* Transmit buffer descriptor queue. This pointer
+        * must be 64-bit aligned (bits 2–0 must be zero);
+        * however, it is recommended to be 128-bit aligned,
+        * that is, evenly divisible by 16.*/
+        #define FNET_FEC_BUF_DESC_DIV       (16U)
+        /* The transmit buffer pointer, containing the address
+        * of the associated data buffer,
+        * must always be evenly divisible by 8.*/
+        #define FNET_FEC_TX_BUF_DIV         (8U)
+        /* The receive buffer pointer, containing the address
+        * of the associated data buffer,
+        * must always be evenly divisible by 16.*/
+        #define FNET_FEC_RX_BUF_DIV         (16U)
     #else
-          #define FNET_FEC_CLOCK_KHZ  (FNET_CPU_CLOCK_KHZ)            
-          /* Transmit buffer descriptor queue. This pointer 
-           * must be 32-bit aligned; however, it is recommended it be 
-           * made 128-bit aligned (evenly divisible by 16).*/
-          #define FNET_FEC_BUF_DESC_DIV       (16U)
-          /* The transmit buffer pointer, containing the address 
-           * of the associated data buffer, 
-           * must always be evenly divisible by 4.*/
-          #define FNET_FEC_TX_BUF_DIV         (8U)
-          /* The receive buffer pointer, containing the address 
-           * of the associated data buffer, 
-           * must always be evenly divisible by 16.*/
-          #define FNET_FEC_RX_BUF_DIV         (16U)
+        #define FNET_FEC_CLOCK_KHZ  (FNET_CPU_CLOCK_KHZ)
+        /* Transmit buffer descriptor queue. This pointer
+        * must be 32-bit aligned; however, it is recommended it be
+        * made 128-bit aligned (evenly divisible by 16).*/
+        #define FNET_FEC_BUF_DESC_DIV       (16U)
+        /* The transmit buffer pointer, containing the address
+        * of the associated data buffer,
+        * must always be evenly divisible by 4.*/
+        #define FNET_FEC_TX_BUF_DIV         (8U)
+        /* The receive buffer pointer, containing the address
+        * of the associated data buffer,
+        * must always be evenly divisible by 16.*/
+        #define FNET_FEC_RX_BUF_DIV         (16U)
     #endif
 #endif
 
-/* frequency of less than or equal to 2.5 MHz to be compliant with 
+/* frequency of less than or equal to 2.5 MHz to be compliant with
 * the IEEE 802.3 MII specification. */
 #define FNET_FEC_MII_CLOCK_KHZ      (2500U)
 
@@ -148,22 +148,22 @@
 #define FNET_FEC_MII_REG_ANNPTR      (0x0007U)   /* Auto-Negotiation Next Page TX Register */
 
 #if FNET_CFG_CPU_MPC5744P
-   #define FNET_FEC_MII_REG_PHYSTS      (0x0010U)   /* PHY Status Register */
-   #define FNET_FEC_MII_REG_ICR         (0x0011U)   /* Interrupt Control Register */
-   #define FNET_FEC_MII_REG_ISR         (0x0012U)   /* Interrupt Status Register */
-   #define FNET_FEC_MII_REG_FCSCR       (0x0014U)   /* False Carrier Sense Counter Register */
-   #define FNET_FEC_MII_REG_RECR        (0x0015U)   /* Receive Error Counter Register */
-   #define FNET_FEC_MII_REG_PCSR        (0x0016U)   /* PCS Sub-Layer Configuration and Status Register */
-   #define FNET_FEC_MII_REG_RBR         (0x0017U)   /* RMII and Bypass Register */
-   #define FNET_FEC_MII_REG_LEDCR       (0x0018U)   /* LED Direct Control Register */
-   #define FNET_FEC_MII_REG_PHYCR       (0x0019U)   /* PHY Status Register */
-   #define FNET_FEC_MII_REG_10BTSCR     (0x001AU)   /* 10Base-T Status/Control Register */
-   #define FNET_FEC_MII_REG_CDCTRL1     (0x001BU)   /* CD Test Control Register and BIST Extensions Register */
-   #define FNET_FEC_MII_REG_EDCR        (0x001DU)   /* Energy Detect Control Register */
+    #define FNET_FEC_MII_REG_PHYSTS      (0x0010U)   /* PHY Status Register */
+    #define FNET_FEC_MII_REG_ICR         (0x0011U)   /* Interrupt Control Register */
+    #define FNET_FEC_MII_REG_ISR         (0x0012U)   /* Interrupt Status Register */
+    #define FNET_FEC_MII_REG_FCSCR       (0x0014U)   /* False Carrier Sense Counter Register */
+    #define FNET_FEC_MII_REG_RECR        (0x0015U)   /* Receive Error Counter Register */
+    #define FNET_FEC_MII_REG_PCSR        (0x0016U)   /* PCS Sub-Layer Configuration and Status Register */
+    #define FNET_FEC_MII_REG_RBR         (0x0017U)   /* RMII and Bypass Register */
+    #define FNET_FEC_MII_REG_LEDCR       (0x0018U)   /* LED Direct Control Register */
+    #define FNET_FEC_MII_REG_PHYCR       (0x0019U)   /* PHY Status Register */
+    #define FNET_FEC_MII_REG_10BTSCR     (0x001AU)   /* 10Base-T Status/Control Register */
+    #define FNET_FEC_MII_REG_CDCTRL1     (0x001BU)   /* CD Test Control Register and BIST Extensions Register */
+    #define FNET_FEC_MII_REG_EDCR        (0x001DU)   /* Energy Detect Control Register */
 #else
-   #define FNET_FEC_MII_REG_ICR         (0x0010U)   /* Interrupt Control Register */
-   #define FNET_FEC_MII_REG_PSR         (0x0011U)   /* Proprietary Status Register */
-   #define FNET_FEC_MII_REG_PCR         (0x0012U)   /* Proprietary Control Register */
+    #define FNET_FEC_MII_REG_ICR         (0x0010U)   /* Interrupt Control Register */
+    #define FNET_FEC_MII_REG_PSR         (0x0011U)   /* Proprietary Status Register */
+    #define FNET_FEC_MII_REG_PCR         (0x0012U)   /* Proprietary Control Register */
 #endif
 
 #define FNET_FEC_MII_REG_SR_LINK_STATUS (0x0004U)
@@ -187,17 +187,18 @@
 *     FEC registers.
 *************************************************************************/
 typedef struct
-{                    /* Detailed Memory Map (Control/Status Registers)*/
+{
+    /* Detailed Memory Map (Control/Status Registers)*/
 #if FNET_MPC
-    #if FNET_CFG_CPU_MPC5744P
-        volatile fnet_uint32_t reserved0;
-    #else
-        volatile fnet_uint8_t  reserved0[4100];    /*Reserved 4100 bytes (Base+0x0000-0x0103)*/
-    #endif
+#if FNET_CFG_CPU_MPC5744P
+    volatile fnet_uint32_t reserved0;
+#else
+    volatile fnet_uint8_t  reserved0[4100];    /*Reserved 4100 bytes (Base+0x0000-0x0103)*/
+#endif
 #endif
     volatile fnet_uint32_t EIR;                /* Interrupt even reg. */
     volatile fnet_uint32_t EIMR;               /* Interrupt mask reg. */
-    volatile fnet_uint32_t reserved1[1]; 
+    volatile fnet_uint32_t reserved1[1];
     volatile fnet_uint32_t RDAR;               /* Receive descriptor active reg.*/
     volatile fnet_uint32_t TDAR;               /* Transmit descriptor active reg.*/
     volatile fnet_uint32_t reserved2[3];
@@ -206,11 +207,11 @@ typedef struct
     volatile fnet_uint32_t MMFR;               /* MII management frame reg.*/
     volatile fnet_uint32_t MSCR;               /* MII speed control reg.*/
     volatile fnet_uint32_t reserved4[7];
-#if FNET_CFG_CPU_ETH_MIB    
+#if FNET_CFG_CPU_ETH_MIB
     volatile fnet_uint32_t MIBC;               /* MIB Control/Status Register.*/
 #else
     volatile fnet_uint32_t reserved4_1;
-#endif        
+#endif
     volatile fnet_uint32_t reserved5[7];
     volatile fnet_uint32_t RCR;                /* Receive control reg.*/
     volatile fnet_uint32_t reserved6[15];
@@ -228,16 +229,16 @@ typedef struct
     volatile fnet_uint32_t TFWR;               /* FIFO transmit water mark.*/
 #if FNET_MK
     volatile fnet_uint32_t reserved10[14];
-#else /* MCF || MPC */  
-    #if FNET_CFG_CPU_MPC5744P
-        volatile fnet_uint32_t reserved10[14];
-    #else
-        volatile fnet_uint32_t reserved10[1];
-        volatile fnet_uint32_t FRBR;               /* FIFO receive bound reg.*/
-        volatile fnet_uint32_t FRSR;               /* FIFO receive start reg.*/
-        volatile fnet_uint32_t reserved11[11];
-    #endif
-#endif    
+#else /* MCF || MPC */
+#if FNET_CFG_CPU_MPC5744P
+    volatile fnet_uint32_t reserved10[14];
+#else
+    volatile fnet_uint32_t reserved10[1];
+    volatile fnet_uint32_t FRBR;               /* FIFO receive bound reg.*/
+    volatile fnet_uint32_t FRSR;               /* FIFO receive start reg.*/
+    volatile fnet_uint32_t reserved11[11];
+#endif
+#endif
     volatile fnet_uint32_t ERDSR;              /* Pointer to receive descriptor ring.*/
     volatile fnet_uint32_t ETDSR;              /* Pointer to transmit descriptor ring.*/
     volatile fnet_uint32_t EMRBR;              /* Maximum receive buffer size.*/
@@ -256,20 +257,20 @@ typedef struct
     volatile fnet_uint32_t reserved13[3];
     volatile fnet_uint32_t TACC;               /* Transmit Accelerator Function Configuration, offset: 0x1C0 */
     volatile fnet_uint32_t RACC;               /* Receive Accelerator Function Configuration, offset: 0x1C4 */
-    #if FNET_CFG_CPU_MPC5744P
-        volatile fnet_uint32_t reserved14[15];
-    #else
-        volatile fnet_uint32_t reserved14[14];
-    #endif
+#if FNET_CFG_CPU_MPC5744P
+    volatile fnet_uint32_t reserved14[15];
+#else
+    volatile fnet_uint32_t reserved14[14];
+#endif
 #else /* MCF || MPC */
     volatile fnet_uint32_t reserved14[29];
-#endif    
-    
-#if FNET_CFG_CPU_ETH_MIB 
+#endif
+
+#if FNET_CFG_CPU_ETH_MIB
     /* Ethernet Management Information Base (MIB) Block Counters:*/
 #if !FNET_CFG_CPU_MPC5744P
     volatile fnet_uint32_t RMON_T_DROP;
-#endif        
+#endif
     volatile fnet_uint32_t RMON_T_PACKETS;
     volatile fnet_uint32_t RMON_T_BC_PKT;
     volatile fnet_uint32_t RMON_T_MC_PKT;
@@ -289,9 +290,9 @@ typedef struct
     volatile fnet_uint32_t RMON_T_OCTETS;
 #if FNET_CFG_CPU_MPC5744P
     volatile fnet_uint32_t reserved15[1];
-#else     
+#else
     volatile fnet_uint32_t IEEE_T_DROP;
-#endif    
+#endif
     volatile fnet_uint32_t IEEE_T_FRAME_OK;
     volatile fnet_uint32_t IEEE_T_1COL;
     volatile fnet_uint32_t IEEE_T_MCOL;
@@ -302,9 +303,9 @@ typedef struct
     volatile fnet_uint32_t IEEE_T_CSERR;
 #if FNET_CFG_CPU_MPC5744P
     volatile fnet_uint32_t reserved16[1];
-#else     
+#else
     volatile fnet_uint32_t IEEE_T_SQE;
-#endif     
+#endif
     volatile fnet_uint32_t IEEE_T_FDXFC;
     volatile fnet_uint32_t IEEE_T_OCTETS_OK;
     volatile fnet_uint32_t reserved17[3];
@@ -344,12 +345,13 @@ typedef struct
     volatile fnet_uint32_t ATSTMP;                 /* Timestamp of Last Transmitted Frame, offset: 0x418 */
     volatile fnet_uint32_t RESERVED_19[122];
     volatile fnet_uint32_t TGSR;                   /* Timer Global Status Register, offset: 0x604 */
-    struct 
-    {                                   /* offset: 0x608, array step: 0x8 */
+    struct
+    {
+        /* offset: 0x608, array step: 0x8 */
         volatile fnet_uint32_t TCSR;               /*!< Timer Control Status Register, array offset: 0x608, array step: 0x8 */
         volatile fnet_uint32_t TCCR;               /*!< Timer Compare Capture Register, array offset: 0x60C, array step: 0x8 */
     } CHANNEL[4];
-#endif    
+#endif
 }
 fnet_fec_reg_t;
 
@@ -367,7 +369,7 @@ fnet_fec_reg_t;
 #define FNET_FEC_EIR_BABT                (0x20000000U)
 #define FNET_FEC_EIR_BABR                (0x40000000U)
 #if !FNET_CFG_CPU_MPC5744P
-#define FNET_FEC_EIR_HBERR               (0x80000000U)
+    #define FNET_FEC_EIR_HBERR               (0x80000000U)
 #endif
 
 /* Bit definitions and macros for FNET_FEC_EIMR */
@@ -384,7 +386,7 @@ fnet_fec_reg_t;
 #define FNET_FEC_EIMR_BABT               (0x20000000U)
 #define FNET_FEC_EIMR_BABR               (0x40000000U)
 #if !FNET_CFG_CPU_MPC5744P
-#define FNET_FEC_EIMR_HBERR              (0x80000000U)
+    #define FNET_FEC_EIMR_HBERR              (0x80000000U)
 #endif
 
 /* Bit definitions and macros for FNET_FEC_RDAR */
@@ -427,16 +429,16 @@ fnet_fec_reg_t;
 #define FNET_FEC_RCR_FCE                 (0x00000020U)
 #if FNET_CFG_CPU_MPC5744P
     #define FNET_FEC_RCR_MAX_FL(x)           (((x)&0x00003FFFU)<<16U)
-#else     
+#else
     #define FNET_FEC_RCR_MAX_FL(x)           (((x)&0x000007FFU)<<16U)
-#endif  
+#endif
 #define FNET_FEC_RCR_RMII_MODE           (0x00000100U)
 #define FNET_FEC_RCR_RMII_10T            (0x00000200U)
 
 /* Bit definitions and macros for FNET_MCF_FEC_TCR */
 #define FNET_FEC_TCR_GTS                 (0x00000001U)
 #if !FNET_CFG_CPU_MPC5744P
-#define FNET_FEC_TCR_HBC                 (0x00000002U)
+    #define FNET_FEC_TCR_HBC                 (0x00000002U)
 #endif
 #define FNET_FEC_TCR_FDEN                (0x00000004U)
 #define FNET_FEC_TCR_TFC_PAUSE           (0x00000008U)
@@ -453,36 +455,36 @@ fnet_fec_reg_t;
 
 #if FNET_CFG_CPU_MPC5744P
 
-/* Bit definitions and macros for FNET_MPC_FEC_TFWR */
-#define FNET_FEC_TFWR_X_WMRK(x)         (((x)&0x0000003FU)<<0U)
+    /* Bit definitions and macros for FNET_MPC_FEC_TFWR */
+    #define FNET_FEC_TFWR_X_WMRK(x)         (((x)&0x0000003FU)<<0U)
 
-/* Bit definitions and macros for FNET_MPC_FEC_ERDSR */
-#define FNET_FEC_ERDSR_R_DES_START(x)   (((x)&0x1FFFFFFFU)<<3U)
+    /* Bit definitions and macros for FNET_MPC_FEC_ERDSR */
+    #define FNET_FEC_ERDSR_R_DES_START(x)   (((x)&0x1FFFFFFFU)<<3U)
 
-/* Bit definitions and macros for FNET_MPC_FEC_ETDSR */
-#define FNET_FEC_ETDSR_X_DES_START(x)   (((x)&0x1FFFFFFFU)<<3U)
+    /* Bit definitions and macros for FNET_MPC_FEC_ETDSR */
+    #define FNET_FEC_ETDSR_X_DES_START(x)   (((x)&0x1FFFFFFFU)<<3U)
 
-/* Bit definitions and macros for FNET_MPC_FEC_EMRBR */
-#define FNET_FEC_EMRBR_R_BUF_SIZE(x)    (((x)&0x000003FFU)<<4U)
+    /* Bit definitions and macros for FNET_MPC_FEC_EMRBR */
+    #define FNET_FEC_EMRBR_R_BUF_SIZE(x)    (((x)&0x000003FFU)<<4U)
 
 #else
-/* Bit definitions and macros for FNET_MCF_FEC_TFWR */
-#define FNET_FEC_TFWR_X_WMRK(x)         (((x)&0x00000003U)<<0U)
+    /* Bit definitions and macros for FNET_MCF_FEC_TFWR */
+    #define FNET_FEC_TFWR_X_WMRK(x)         (((x)&0x00000003U)<<0U)
 
-/* Bit definitions and macros for FNET_MCF_FEC_FRBR */
-#define FNET_FEC_FRBR_R_BOUND(x)        (((x)&0x000000FFU)<<2U)
+    /* Bit definitions and macros for FNET_MCF_FEC_FRBR */
+    #define FNET_FEC_FRBR_R_BOUND(x)        (((x)&0x000000FFU)<<2U)
 
-/* Bit definitions and macros for FNET_MCF_FEC_FRSR */
-#define FNET_FEC_FRSR_R_FSTART(x)       (((x)&0x000000FFU)<<2U)
+    /* Bit definitions and macros for FNET_MCF_FEC_FRSR */
+    #define FNET_FEC_FRSR_R_FSTART(x)       (((x)&0x000000FFU)<<2U)
 
-/* Bit definitions and macros for FNET_MCF_FEC_ERDSR */
-#define FNET_FEC_ERDSR_R_DES_START(x)   (((x)&0x3FFFFFFFU)<<2U)
+    /* Bit definitions and macros for FNET_MCF_FEC_ERDSR */
+    #define FNET_FEC_ERDSR_R_DES_START(x)   (((x)&0x3FFFFFFFU)<<2U)
 
-/* Bit definitions and macros for FNET_MCF_FEC_ETDSR */
-#define FNET_FEC_ETDSR_X_DES_START(x)   (((x)&0x3FFFFFFFU)<<2U)
+    /* Bit definitions and macros for FNET_MCF_FEC_ETDSR */
+    #define FNET_FEC_ETDSR_X_DES_START(x)   (((x)&0x3FFFFFFFU)<<2U)
 
-/* Bit definitions and macros for FNET_MCF_FEC_EMRBR */
-#define FNET_FEC_EMRBR_R_BUF_SIZE(x)    (((x)&0x0000007FU)<<4U)
+    /* Bit definitions and macros for FNET_MCF_FEC_EMRBR */
+    #define FNET_FEC_EMRBR_R_BUF_SIZE(x)    (((x)&0x0000007FU)<<4U)
 
 #endif
 
@@ -516,9 +518,9 @@ fnet_fec_reg_t;
 #define FNET_FEC_RX_BD_LG       (0x0020U)
 #define FNET_FEC_RX_BD_NO       (0x0010U)
 #if FNET_CFG_CPU_MPC5744P
-#define FNET_FEC_RX_BD_SH       (0x0U)
+    #define FNET_FEC_RX_BD_SH       (0x0U)
 #else
-#define FNET_FEC_RX_BD_SH       (0x0008U)
+    #define FNET_FEC_RX_BD_SH       (0x0008U)
 #endif
 #define FNET_FEC_RX_BD_CR       (0x0004U)
 #define FNET_FEC_RX_BD_OV       (0x0002U)
@@ -531,14 +533,14 @@ fnet_fec_reg_t;
 #define FNET_FEC_TX_BD_L        (0x0800U)
 #define FNET_FEC_TX_BD_TC       (0x0400U)
 #if FNET_CFG_CPU_MPC5744P
-#define FNET_FEC_TX_BD_ABC      (0x0200U)
+    #define FNET_FEC_TX_BD_ABC      (0x0200U)
 #else
-#define FNET_FEC_TX_BD_DEF      (0x0200U)
-#define FNET_FEC_TX_BD_HB       (0x0100U)
-#define FNET_FEC_TX_BD_LC       (0x0080U)
-#define FNET_FEC_TX_BD_RL       (0x0040U)
-#define FNET_FEC_TX_BD_UN       (0x0002U)
-#define FNET_FEC_TX_BD_CSL      (0x0001U)
+    #define FNET_FEC_TX_BD_DEF      (0x0200U)
+    #define FNET_FEC_TX_BD_HB       (0x0100U)
+    #define FNET_FEC_TX_BD_LC       (0x0080U)
+    #define FNET_FEC_TX_BD_RL       (0x0040U)
+    #define FNET_FEC_TX_BD_UN       (0x0002U)
+    #define FNET_FEC_TX_BD_CSL      (0x0001U)
 #endif
 
 
@@ -564,16 +566,16 @@ typedef struct
     fnet_fec_buf_desc_t      *rx_buf_desc;       /* Rx Buffer Descriptors.*/
     fnet_fec_buf_desc_t      *rx_buf_desc_cur;   /* Points to the descriptor of the current incoming buffer.*/
     fnet_uint8_t             phy_addr;
-    fnet_uint8_t             tx_buf_desc_num;    /* Number of allocated Tx Buffer Descriptors.*/    
-    fnet_uint8_t             rx_buf_desc_num;    /* Number of allocated Tx Buffer Descriptors.*/  
-#if FNET_CFG_MULTICAST    
+    fnet_uint8_t             tx_buf_desc_num;    /* Number of allocated Tx Buffer Descriptors.*/
+    fnet_uint8_t             rx_buf_desc_num;    /* Number of allocated Tx Buffer Descriptors.*/
+#if FNET_CFG_MULTICAST
     fnet_uint32_t              GALR_double;
     fnet_uint32_t              GAUR_double;
 #endif
-    fnet_uint8_t tx_buf_desc_buf[(FNET_FEC_TX_BUF_NUM * sizeof(fnet_fec_buf_desc_t)) + (FNET_FEC_BUF_DESC_DIV-1U)];
-    fnet_uint8_t rx_buf_desc_buf[(FNET_FEC_RX_BUF_NUM * sizeof(fnet_fec_buf_desc_t)) + (FNET_FEC_BUF_DESC_DIV-1U)];
-    fnet_uint8_t tx_buf[FNET_FEC_TX_BUF_NUM][FNET_FEC_BUF_SIZE + (FNET_FEC_TX_BUF_DIV-1U)];
-    fnet_uint8_t rx_buf[FNET_FEC_RX_BUF_NUM][FNET_FEC_BUF_SIZE + (FNET_FEC_RX_BUF_DIV-1U)];    
+    fnet_uint8_t tx_buf_desc_buf[(FNET_FEC_TX_BUF_NUM * sizeof(fnet_fec_buf_desc_t)) + (FNET_FEC_BUF_DESC_DIV - 1U)];
+    fnet_uint8_t rx_buf_desc_buf[(FNET_FEC_RX_BUF_NUM * sizeof(fnet_fec_buf_desc_t)) + (FNET_FEC_BUF_DESC_DIV - 1U)];
+    fnet_uint8_t tx_buf[FNET_FEC_TX_BUF_NUM][FNET_FEC_BUF_SIZE + (FNET_FEC_TX_BUF_DIV - 1U)];
+    fnet_uint8_t rx_buf[FNET_FEC_RX_BUF_NUM][FNET_FEC_BUF_SIZE + (FNET_FEC_RX_BUF_DIV - 1U)];
 }
 fnet_fec_if_t;
 
@@ -599,21 +601,21 @@ extern "C" {
 void fnet_eth_io_init(void) ;
 /* Ethernet On-chip Physical Transceiver initialization and/or reset. */
 void fnet_eth_phy_init(fnet_fec_if_t *ethif);
-void fnet_fec_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t* nb);
-#if FNET_CFG_MULTICAST      
+void fnet_fec_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb);
+#if FNET_CFG_MULTICAST
 void fnet_fec_multicast_join(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);
 void fnet_fec_multicast_leave(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);
 #endif /* FNET_CFG_MULTICAST */
 
 /* For debug needs.*/
-void fnet_fec_output_frame(fnet_netif_t *netif, fnet_uint8_t* frame, fnet_size_t frame_size);
-fnet_size_t fnet_fec_input_frame(fnet_netif_t *netif, fnet_uint8_t* buf, fnet_size_t buf_size);    
+void fnet_fec_output_frame(fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t frame_size);
+fnet_size_t fnet_fec_input_frame(fnet_netif_t *netif, fnet_uint8_t *buf, fnet_size_t buf_size);
 void fnet_fec_debug_mii_print_regs(fnet_netif_t *netif);
 void fnet_fec_stop(fnet_netif_t *netif);
 void fnet_fec_resume(fnet_netif_t *netif);
 
 fnet_return_t fnet_fec_mii_write(fnet_fec_if_t *ethif, fnet_uint32_t reg_addr, fnet_uint16_t data);
-fnet_return_t fnet_fec_mii_read(fnet_fec_if_t *ethif, fnet_uint32_t reg_addr, fnet_uint16_t *data); 
+fnet_return_t fnet_fec_mii_read(fnet_fec_if_t *ethif, fnet_uint32_t reg_addr, fnet_uint16_t *data);
 
 #if defined(__cplusplus)
 }

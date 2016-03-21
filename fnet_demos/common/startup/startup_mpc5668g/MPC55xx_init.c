@@ -4,7 +4,7 @@
  * FILE : MPC55xx_init.c
  *
  * DESCRIPTION:
- *  This file contains the MPC55xx derivative needed initializations. 
+ *  This file contains the MPC55xx derivative needed initializations.
  *  usr_init() is called by the startup code of the application at initialization time
  *  You can add needed hardware initializations here.
  *  This file also contains the RCHW and Reset Vector setup:
@@ -22,11 +22,11 @@
 #define INIT_EXTERNAL_BUS_INTERFACE_SETUP 1
 
 #ifndef INIT_DERIVATIVE_INTERNAL_SETUP
-#pragma error INIT_DERIVATIVE_INTERNAL_SETUP should be defined !
+    #pragma error INIT_DERIVATIVE_INTERNAL_SETUP should be defined !
 #endif
 
 #ifndef INIT_EXTERNAL_BUS_INTERFACE_SETUP
-#pragma error INIT_EXTERNAL_BUS_INTERFACE_SETUP should be defined !
+    #pragma error INIT_EXTERNAL_BUS_INTERFACE_SETUP should be defined !
 #endif
 
 #ifdef __cplusplus
@@ -43,21 +43,21 @@ __asm void usr_init();
 
 /* Init PLL */
 void PLLinit(void)
-{  	
-	/* Configure the clocks */
-	SIU.SYSCLK.B.SYSCLKSEL = 0x0;				/* Select IRC as CLK Source */ 
+{
+    /* Configure the clocks */
+    SIU.SYSCLK.B.SYSCLKSEL = 0x0;				/* Select IRC as CLK Source */
 
-	FMPLL.ESYNCR1.B.CLKCFG = 0x7; 				/* Configure PLL CTRL Regs. Fsys = 94 MHz from a 40MHz oscillator*/
-	FMPLL.ESYNCR2.B.ERFD = 5;					/* Fsys = (Fxtal * (EMFD+16))/((EPREDIV+1)*(ERFD+1)) */
-	FMPLL.ESYNCR1.B.EPREDIV = 9;       
-	FMPLL.ESYNCR1.B.EMFD = 125;     		
+    FMPLL.ESYNCR1.B.CLKCFG = 0x7; 				/* Configure PLL CTRL Regs. Fsys = 94 MHz from a 40MHz oscillator*/
+    FMPLL.ESYNCR2.B.ERFD = 5;					/* Fsys = (Fxtal * (EMFD+16))/((EPREDIV+1)*(ERFD+1)) */
+    FMPLL.ESYNCR1.B.EPREDIV = 9;
+    FMPLL.ESYNCR1.B.EMFD = 125;
 
-	while(FMPLL.SYNSR.B.LOCK != 1){}			/* Wait for PLL to lock */ 
+    while(FMPLL.SYNSR.B.LOCK != 1) {}			/* Wait for PLL to lock */
 
-	SIU.SYSCLK.B.SYSCLKSEL = 0x2;				/* Switch from IRC to PLL */ 
+    SIU.SYSCLK.B.SYSCLKSEL = 0x2;				/* Switch from IRC to PLL */
 
-	SIU.SYSCLK.B.LPCLKDIV0 = 2;					/* Peripheral Set 1 divisor (SCI). PC1 = FSYS/4 = 16MHz */
-} 
+    SIU.SYSCLK.B.LPCLKDIV0 = 2;					/* Peripheral Set 1 divisor (SCI). PC1 = FSYS/4 = 16MHz */
+}
 
 
 /*****************************************************************/
@@ -93,7 +93,7 @@ extern "C" {
 /**************************************************************/
 /* RCHW and Reset Vector setup:                               */
 /*   The chip is by default setup to boot from internal Flash */
-/*   and the watchdog is disabled.                            */ 
+/*   and the watchdog is disabled.                            */
 
 typedef void (*resetfuncptr)(void);
 
@@ -113,10 +113,10 @@ extern const resetfuncptr bam_resetvector;
 #if VLE_IS_ON == 1
 #define RCHW_VALUE RCHW_BOOTIDENTIFIER|RCHW_PS0_32BITS|RCHW_VLE
 #else
-#define RCHW_VALUE RCHW_BOOTIDENTIFIER|RCHW_PS0_32BITS 
+#define RCHW_VALUE RCHW_BOOTIDENTIFIER|RCHW_PS0_32BITS
 #endif
 
-const unsigned long bam_rchw = ((RCHW_VALUE)<<16) + (RCHW_VALUE);
+const unsigned long bam_rchw = ((RCHW_VALUE) << 16) + (RCHW_VALUE);
 const resetfuncptr bam_resetvector = __start;
 
 #pragma pop

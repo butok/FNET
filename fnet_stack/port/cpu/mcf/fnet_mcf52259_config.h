@@ -1,6 +1,6 @@
 /**************************************************************************
-* 
-* Copyright 2012-2015 by Andrey Butok. FNET Community. 
+*
+* Copyright 2012-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2011 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -38,21 +38,21 @@
 
 /* Size of the internal static heap buffer. */
 #ifndef FNET_CFG_HEAP_SIZE
-	#define FNET_CFG_HEAP_SIZE     			(30 * 1024)
-#endif	
+    #define FNET_CFG_HEAP_SIZE     			(30 * 1024)
+#endif
 
 /* System frequency in Hz */
 #ifndef FNET_CFG_CPU_CLOCK_HZ
-	#define FNET_CFG_CPU_CLOCK_HZ    		(80000000)
+    #define FNET_CFG_CPU_CLOCK_HZ    		(80000000)
 #endif
 
 /* The platform does not have second Ethernet Module.*/
 #define FNET_CFG_CPU_ETH1        			(0)
 
-/* Defines the maximum number of incoming frames that may 
+/* Defines the maximum number of incoming frames that may
  *           be buffered by the Ethernet module.*/
 #ifndef FNET_CFG_CPU_ETH_RX_BUFS_MAX
-	#define FNET_CFG_CPU_ETH_RX_BUFS_MAX 	(4)
+    #define FNET_CFG_CPU_ETH_RX_BUFS_MAX 	(4)
 #endif
 
 /* The platform has ColdFire Flash Module.*/
@@ -67,6 +67,6 @@
 #define FNET_CFG_CPU_FLASH_SIZE         	(1024 * 512)    /* 512 KB */
 
 /* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE          	(1024 * 64)     /* 64 KB */  
+#define FNET_CFG_CPU_SRAM_SIZE          	(1024 * 64)     /* 64 KB */
 
 #endif

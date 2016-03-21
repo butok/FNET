@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_fs_config.h
@@ -47,9 +47,9 @@
  ******************************************************************************/
 #ifndef FNET_CFG_FS
     #if FNET_CFG_HTTP
-        #define FNET_CFG_FS         (1) 
+        #define FNET_CFG_FS         (1)
     #else
-        #define FNET_CFG_FS         (0) 
+        #define FNET_CFG_FS         (0)
     #endif
 #endif
 
@@ -68,7 +68,7 @@
  * @brief    Maximum size of a mount-point name. @n
  *           For example, for mount point named "rom" the name size is 3.@n
  *           Default value is @b @c 10.
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_FS_MOUNT_NAME_MAX
     #define FNET_CFG_FS_MOUNT_NAME_MAX      (10U)
@@ -76,10 +76,10 @@
 
 /**************************************************************************/ /*!
  * @def      FNET_CFG_FS_DESC_MAX
- * @brief    Maximum number of file and directory descriptors opened 
+ * @brief    Maximum number of file and directory descriptors opened
  *           simultaneously.@n
  *           Default value is @b @c 5.
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_FS_DESC_MAX
     #define FNET_CFG_FS_DESC_MAX            (5U)
@@ -90,10 +90,10 @@
  * @brief    FNET ROM File System support:
  *               - @b @c 1 = is enabled (Default value) .
  *               - @c 0 = is disabled.
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_FS_ROM
-    #define FNET_CFG_FS_ROM                 (1) 
+    #define FNET_CFG_FS_ROM                 (1)
 #endif
 
 /** @} */

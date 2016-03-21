@@ -123,92 +123,92 @@
 #define BF_WR(reg, field, v)     BW_##reg##_##field(v)
 
 #define BF_CS1(reg, f1, v1)  \
-        (HW_##reg##_CLR(BM_##reg##_##f1),      \
-         HW_##reg##_SET(BF_##reg##_##f1(v1)))
+    (HW_##reg##_CLR(BM_##reg##_##f1),      \
+     HW_##reg##_SET(BF_##reg##_##f1(v1)))
 
 #define BF_CS2(reg, f1, v1, f2, v2)  \
-        (HW_##reg##_CLR(BM_##reg##_##f1 |      \
-                        BM_##reg##_##f2),      \
-         HW_##reg##_SET(BF_##reg##_##f1(v1) |  \
-                        BF_##reg##_##f2(v2)))
+    (HW_##reg##_CLR(BM_##reg##_##f1 |      \
+                    BM_##reg##_##f2),      \
+     HW_##reg##_SET(BF_##reg##_##f1(v1) |  \
+                    BF_##reg##_##f2(v2)))
 
 #define BF_CS3(reg, f1, v1, f2, v2, f3, v3)  \
-        (HW_##reg##_CLR(BM_##reg##_##f1 |      \
-                        BM_##reg##_##f2 |      \
-                        BM_##reg##_##f3),      \
-         HW_##reg##_SET(BF_##reg##_##f1(v1) |  \
-                        BF_##reg##_##f2(v2) |  \
-                        BF_##reg##_##f3(v3)))
+    (HW_##reg##_CLR(BM_##reg##_##f1 |      \
+                    BM_##reg##_##f2 |      \
+                    BM_##reg##_##f3),      \
+     HW_##reg##_SET(BF_##reg##_##f1(v1) |  \
+                    BF_##reg##_##f2(v2) |  \
+                    BF_##reg##_##f3(v3)))
 
 #define BF_CS4(reg, f1, v1, f2, v2, f3, v3, f4, v4)  \
-        (HW_##reg##_CLR(BM_##reg##_##f1 |      \
-                        BM_##reg##_##f2 |      \
-                        BM_##reg##_##f3 |      \
-                        BM_##reg##_##f4),      \
-         HW_##reg##_SET(BF_##reg##_##f1(v1) |  \
-                        BF_##reg##_##f2(v2) |  \
-                        BF_##reg##_##f3(v3) |  \
-                        BF_##reg##_##f4(v4)))
+    (HW_##reg##_CLR(BM_##reg##_##f1 |      \
+                    BM_##reg##_##f2 |      \
+                    BM_##reg##_##f3 |      \
+                    BM_##reg##_##f4),      \
+     HW_##reg##_SET(BF_##reg##_##f1(v1) |  \
+                    BF_##reg##_##f2(v2) |  \
+                    BF_##reg##_##f3(v3) |  \
+                    BF_##reg##_##f4(v4)))
 
 #define BF_CS5(reg, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5)  \
-        (HW_##reg##_CLR(BM_##reg##_##f1 |      \
-                        BM_##reg##_##f2 |      \
-                        BM_##reg##_##f3 |      \
-                        BM_##reg##_##f4 |      \
-                        BM_##reg##_##f5),      \
-         HW_##reg##_SET(BF_##reg##_##f1(v1) |  \
-                        BF_##reg##_##f2(v2) |  \
-                        BF_##reg##_##f3(v3) |  \
-                        BF_##reg##_##f4(v4) |  \
-                        BF_##reg##_##f5(v5)))
+    (HW_##reg##_CLR(BM_##reg##_##f1 |      \
+                    BM_##reg##_##f2 |      \
+                    BM_##reg##_##f3 |      \
+                    BM_##reg##_##f4 |      \
+                    BM_##reg##_##f5),      \
+     HW_##reg##_SET(BF_##reg##_##f1(v1) |  \
+                    BF_##reg##_##f2(v2) |  \
+                    BF_##reg##_##f3(v3) |  \
+                    BF_##reg##_##f4(v4) |  \
+                    BF_##reg##_##f5(v5)))
 
 #define BF_CS6(reg, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5, f6, v6)  \
-        (HW_##reg##_CLR(BM_##reg##_##f1 |      \
-                        BM_##reg##_##f2 |      \
-                        BM_##reg##_##f3 |      \
-                        BM_##reg##_##f4 |      \
-                        BM_##reg##_##f5 |      \
-                        BM_##reg##_##f6),      \
-         HW_##reg##_SET(BF_##reg##_##f1(v1) |  \
-                        BF_##reg##_##f2(v2) |  \
-                        BF_##reg##_##f3(v3) |  \
-                        BF_##reg##_##f4(v4) |  \
-                        BF_##reg##_##f5(v5) |  \
-                        BF_##reg##_##f6(v6)))
+    (HW_##reg##_CLR(BM_##reg##_##f1 |      \
+                    BM_##reg##_##f2 |      \
+                    BM_##reg##_##f3 |      \
+                    BM_##reg##_##f4 |      \
+                    BM_##reg##_##f5 |      \
+                    BM_##reg##_##f6),      \
+     HW_##reg##_SET(BF_##reg##_##f1(v1) |  \
+                    BF_##reg##_##f2(v2) |  \
+                    BF_##reg##_##f3(v3) |  \
+                    BF_##reg##_##f4(v4) |  \
+                    BF_##reg##_##f5(v5) |  \
+                    BF_##reg##_##f6(v6)))
 
 #define BF_CS7(reg, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5, f6, v6, f7, v7)  \
-        (HW_##reg##_CLR(BM_##reg##_##f1 |      \
-                        BM_##reg##_##f2 |      \
-                        BM_##reg##_##f3 |      \
-                        BM_##reg##_##f4 |      \
-                        BM_##reg##_##f5 |      \
-                        BM_##reg##_##f6 |      \
-                        BM_##reg##_##f7),      \
-         HW_##reg##_SET(BF_##reg##_##f1(v1) |  \
-                        BF_##reg##_##f2(v2) |  \
-                        BF_##reg##_##f3(v3) |  \
-                        BF_##reg##_##f4(v4) |  \
-                        BF_##reg##_##f5(v5) |  \
-                        BF_##reg##_##f6(v6) |  \
-                        BF_##reg##_##f7(v7)))
+    (HW_##reg##_CLR(BM_##reg##_##f1 |      \
+                    BM_##reg##_##f2 |      \
+                    BM_##reg##_##f3 |      \
+                    BM_##reg##_##f4 |      \
+                    BM_##reg##_##f5 |      \
+                    BM_##reg##_##f6 |      \
+                    BM_##reg##_##f7),      \
+     HW_##reg##_SET(BF_##reg##_##f1(v1) |  \
+                    BF_##reg##_##f2(v2) |  \
+                    BF_##reg##_##f3(v3) |  \
+                    BF_##reg##_##f4(v4) |  \
+                    BF_##reg##_##f5(v5) |  \
+                    BF_##reg##_##f6(v6) |  \
+                    BF_##reg##_##f7(v7)))
 
 #define BF_CS8(reg, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5, f6, v6, f7, v7, f8, v8)  \
-        (HW_##reg##_CLR(BM_##reg##_##f1 |      \
-                        BM_##reg##_##f2 |      \
-                        BM_##reg##_##f3 |      \
-                        BM_##reg##_##f4 |      \
-                        BM_##reg##_##f5 |      \
-                        BM_##reg##_##f6 |      \
-                        BM_##reg##_##f7 |      \
-                        BM_##reg##_##f8),      \
-         HW_##reg##_SET(BF_##reg##_##f1(v1) |  \
-                        BF_##reg##_##f2(v2) |  \
-                        BF_##reg##_##f3(v3) |  \
-                        BF_##reg##_##f4(v4) |  \
-                        BF_##reg##_##f5(v5) |  \
-                        BF_##reg##_##f6(v6) |  \
-                        BF_##reg##_##f7(v7) |  \
-                        BF_##reg##_##f8(v8)))
+    (HW_##reg##_CLR(BM_##reg##_##f1 |      \
+                    BM_##reg##_##f2 |      \
+                    BM_##reg##_##f3 |      \
+                    BM_##reg##_##f4 |      \
+                    BM_##reg##_##f5 |      \
+                    BM_##reg##_##f6 |      \
+                    BM_##reg##_##f7 |      \
+                    BM_##reg##_##f8),      \
+     HW_##reg##_SET(BF_##reg##_##f1(v1) |  \
+                    BF_##reg##_##f2(v2) |  \
+                    BF_##reg##_##f3(v3) |  \
+                    BF_##reg##_##f4(v4) |  \
+                    BF_##reg##_##f5(v5) |  \
+                    BF_##reg##_##f6(v6) |  \
+                    BF_##reg##_##f7(v7) |  \
+                    BF_##reg##_##f8(v8)))
 
 /*
  * Macros for multiple instance registers
@@ -229,92 +229,92 @@
 #define BF_WRn(reg, n, field, v)     BW_##reg##_##field(n, v)
 
 #define BF_CS1n(reg, n, f1, v1)  \
-        (HW_##reg##_CLR(n, (BM_##reg##_##f1)),      \
-         HW_##reg##_SET(n, (BF_##reg##_##f1(v1))))
+    (HW_##reg##_CLR(n, (BM_##reg##_##f1)),      \
+     HW_##reg##_SET(n, (BF_##reg##_##f1(v1))))
 
 #define BF_CS2n(reg, n, f1, v1, f2, v2)  \
-        (HW_##reg##_CLR(n, (BM_##reg##_##f1 |       \
-                            BM_##reg##_##f2)),      \
-         HW_##reg##_SET(n, (BF_##reg##_##f1(v1) |   \
-                            BF_##reg##_##f2(v2))))
+    (HW_##reg##_CLR(n, (BM_##reg##_##f1 |       \
+                        BM_##reg##_##f2)),      \
+     HW_##reg##_SET(n, (BF_##reg##_##f1(v1) |   \
+                        BF_##reg##_##f2(v2))))
 
 #define BF_CS3n(reg, n, f1, v1, f2, v2, f3, v3)  \
-        (HW_##reg##_CLR(n, (BM_##reg##_##f1 |       \
-                            BM_##reg##_##f2 |       \
-                            BM_##reg##_##f3)),      \
-         HW_##reg##_SET(n, (BF_##reg##_##f1(v1) |   \
-                            BF_##reg##_##f2(v2) |   \
-                            BF_##reg##_##f3(v3))))
+    (HW_##reg##_CLR(n, (BM_##reg##_##f1 |       \
+                        BM_##reg##_##f2 |       \
+                        BM_##reg##_##f3)),      \
+     HW_##reg##_SET(n, (BF_##reg##_##f1(v1) |   \
+                        BF_##reg##_##f2(v2) |   \
+                        BF_##reg##_##f3(v3))))
 
 #define BF_CS4n(reg, n, f1, v1, f2, v2, f3, v3, f4, v4)  \
-        (HW_##reg##_CLR(n, (BM_##reg##_##f1 |       \
-                            BM_##reg##_##f2 |       \
-                            BM_##reg##_##f3 |       \
-                            BM_##reg##_##f4)),      \
-         HW_##reg##_SET(n, (BF_##reg##_##f1(v1) |   \
-                            BF_##reg##_##f2(v2) |   \
-                            BF_##reg##_##f3(v3) |   \
-                            BF_##reg##_##f4(v4))))
+    (HW_##reg##_CLR(n, (BM_##reg##_##f1 |       \
+                        BM_##reg##_##f2 |       \
+                        BM_##reg##_##f3 |       \
+                        BM_##reg##_##f4)),      \
+     HW_##reg##_SET(n, (BF_##reg##_##f1(v1) |   \
+                        BF_##reg##_##f2(v2) |   \
+                        BF_##reg##_##f3(v3) |   \
+                        BF_##reg##_##f4(v4))))
 
 #define BF_CS5n(reg, n, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5)  \
-        (HW_##reg##_CLR(n, (BM_##reg##_##f1 |       \
-                            BM_##reg##_##f2 |       \
-                            BM_##reg##_##f3 |       \
-                            BM_##reg##_##f4 |       \
-                            BM_##reg##_##f5)),      \
-         HW_##reg##_SET(n, (BF_##reg##_##f1(v1) |   \
-                            BF_##reg##_##f2(v2) |   \
-                            BF_##reg##_##f3(v3) |   \
-                            BF_##reg##_##f4(v4) |   \
-                            BF_##reg##_##f5(v5))))
+    (HW_##reg##_CLR(n, (BM_##reg##_##f1 |       \
+                        BM_##reg##_##f2 |       \
+                        BM_##reg##_##f3 |       \
+                        BM_##reg##_##f4 |       \
+                        BM_##reg##_##f5)),      \
+     HW_##reg##_SET(n, (BF_##reg##_##f1(v1) |   \
+                        BF_##reg##_##f2(v2) |   \
+                        BF_##reg##_##f3(v3) |   \
+                        BF_##reg##_##f4(v4) |   \
+                        BF_##reg##_##f5(v5))))
 
 #define BF_CS6n(reg, n, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5, f6, v6)  \
-        (HW_##reg##_CLR(n, (BM_##reg##_##f1 |       \
-                            BM_##reg##_##f2 |       \
-                            BM_##reg##_##f3 |       \
-                            BM_##reg##_##f4 |       \
-                            BM_##reg##_##f5 |       \
-                            BM_##reg##_##f6)),      \
-         HW_##reg##_SET(n, (BF_##reg##_##f1(v1) |   \
-                            BF_##reg##_##f2(v2) |   \
-                            BF_##reg##_##f3(v3) |   \
-                            BF_##reg##_##f4(v4) |   \
-                            BF_##reg##_##f5(v5) |   \
-                            BF_##reg##_##f6(v6))))
+    (HW_##reg##_CLR(n, (BM_##reg##_##f1 |       \
+                        BM_##reg##_##f2 |       \
+                        BM_##reg##_##f3 |       \
+                        BM_##reg##_##f4 |       \
+                        BM_##reg##_##f5 |       \
+                        BM_##reg##_##f6)),      \
+     HW_##reg##_SET(n, (BF_##reg##_##f1(v1) |   \
+                        BF_##reg##_##f2(v2) |   \
+                        BF_##reg##_##f3(v3) |   \
+                        BF_##reg##_##f4(v4) |   \
+                        BF_##reg##_##f5(v5) |   \
+                        BF_##reg##_##f6(v6))))
 
 #define BF_CS7n(reg, n, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5, f6, v6, f7, v7)  \
-        (HW_##reg##_CLR(n, (BM_##reg##_##f1 |       \
-                            BM_##reg##_##f2 |       \
-                            BM_##reg##_##f3 |       \
-                            BM_##reg##_##f4 |       \
-                            BM_##reg##_##f5 |       \
-                            BM_##reg##_##f6 |       \
-                            BM_##reg##_##f7)),      \
-         HW_##reg##_SET(n, (BF_##reg##_##f1(v1) |   \
-                            BF_##reg##_##f2(v2) |   \
-                            BF_##reg##_##f3(v3) |   \
-                            BF_##reg##_##f4(v4) |   \
-                            BF_##reg##_##f5(v5) |   \
-                            BF_##reg##_##f6(v6) |   \
-                            BF_##reg##_##f7(v7))))
+    (HW_##reg##_CLR(n, (BM_##reg##_##f1 |       \
+                        BM_##reg##_##f2 |       \
+                        BM_##reg##_##f3 |       \
+                        BM_##reg##_##f4 |       \
+                        BM_##reg##_##f5 |       \
+                        BM_##reg##_##f6 |       \
+                        BM_##reg##_##f7)),      \
+     HW_##reg##_SET(n, (BF_##reg##_##f1(v1) |   \
+                        BF_##reg##_##f2(v2) |   \
+                        BF_##reg##_##f3(v3) |   \
+                        BF_##reg##_##f4(v4) |   \
+                        BF_##reg##_##f5(v5) |   \
+                        BF_##reg##_##f6(v6) |   \
+                        BF_##reg##_##f7(v7))))
 
 #define BF_CS8n(reg, n, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5, f6, v6, f7, v7, f8, v8)  \
-        (HW_##reg##_CLR(n, (BM_##reg##_##f1 |       \
-                            BM_##reg##_##f2 |       \
-                            BM_##reg##_##f3 |       \
-                            BM_##reg##_##f4 |       \
-                            BM_##reg##_##f5 |       \
-                            BM_##reg##_##f6 |       \
-                            BM_##reg##_##f7 |       \
-                            BM_##reg##_##f8)),      \
-         HW_##reg##_SET(n, (BF_##reg##_##f1(v1) |   \
-                            BF_##reg##_##f2(v2) |   \
-                            BF_##reg##_##f3(v3) |   \
-                            BF_##reg##_##f4(v4) |   \
-                            BF_##reg##_##f5(v5) |   \
-                            BF_##reg##_##f6(v6) |   \
-                            BF_##reg##_##f7(v7) |   \
-                            BF_##reg##_##f8(v8))))
+    (HW_##reg##_CLR(n, (BM_##reg##_##f1 |       \
+                        BM_##reg##_##f2 |       \
+                        BM_##reg##_##f3 |       \
+                        BM_##reg##_##f4 |       \
+                        BM_##reg##_##f5 |       \
+                        BM_##reg##_##f6 |       \
+                        BM_##reg##_##f7 |       \
+                        BM_##reg##_##f8)),      \
+     HW_##reg##_SET(n, (BF_##reg##_##f1(v1) |   \
+                        BF_##reg##_##f2(v2) |   \
+                        BF_##reg##_##f3(v3) |   \
+                        BF_##reg##_##f4(v4) |   \
+                        BF_##reg##_##f5(v5) |   \
+                        BF_##reg##_##f6(v6) |   \
+                        BF_##reg##_##f7(v7) |   \
+                        BF_##reg##_##f8(v8))))
 
 /*
  * Macros for single instance MULTI-BLOCK registers
@@ -335,92 +335,92 @@
 #define BFn_WR(reg, blk, field, v)     BW_##reg##_##field(blk, v)
 
 #define BFn_CS1(reg, blk, f1, v1)  \
-        (HW_##reg##_CLR(blk, BM_##reg##_##f1),      \
-         HW_##reg##_SET(blk, BF_##reg##_##f1(v1)))
+    (HW_##reg##_CLR(blk, BM_##reg##_##f1),      \
+     HW_##reg##_SET(blk, BF_##reg##_##f1(v1)))
 
 #define BFn_CS2(reg, blk, f1, v1, f2, v2)  \
-        (HW_##reg##_CLR(blk, BM_##reg##_##f1 |      \
-                        BM_##reg##_##f2),      \
-         HW_##reg##_SET(blk, BF_##reg##_##f1(v1) |  \
-                        BF_##reg##_##f2(v2)))
+    (HW_##reg##_CLR(blk, BM_##reg##_##f1 |      \
+                    BM_##reg##_##f2),      \
+     HW_##reg##_SET(blk, BF_##reg##_##f1(v1) |  \
+                    BF_##reg##_##f2(v2)))
 
 #define BFn_CS3(reg, blk, f1, v1, f2, v2, f3, v3)  \
-        (HW_##reg##_CLR(blk, BM_##reg##_##f1 |      \
-                        BM_##reg##_##f2 |      \
-                        BM_##reg##_##f3),      \
-         HW_##reg##_SET(blk, BF_##reg##_##f1(v1) |  \
-                        BF_##reg##_##f2(v2) |  \
-                        BF_##reg##_##f3(v3)))
+    (HW_##reg##_CLR(blk, BM_##reg##_##f1 |      \
+                    BM_##reg##_##f2 |      \
+                    BM_##reg##_##f3),      \
+     HW_##reg##_SET(blk, BF_##reg##_##f1(v1) |  \
+                    BF_##reg##_##f2(v2) |  \
+                    BF_##reg##_##f3(v3)))
 
 #define BFn_CS4(reg, blk, f1, v1, f2, v2, f3, v3, f4, v4)  \
-        (HW_##reg##_CLR(blk, BM_##reg##_##f1 |      \
-                        BM_##reg##_##f2 |      \
-                        BM_##reg##_##f3 |      \
-                        BM_##reg##_##f4),      \
-         HW_##reg##_SET(blk, BF_##reg##_##f1(v1) |  \
-                        BF_##reg##_##f2(v2) |  \
-                        BF_##reg##_##f3(v3) |  \
-                        BF_##reg##_##f4(v4)))
+    (HW_##reg##_CLR(blk, BM_##reg##_##f1 |      \
+                    BM_##reg##_##f2 |      \
+                    BM_##reg##_##f3 |      \
+                    BM_##reg##_##f4),      \
+     HW_##reg##_SET(blk, BF_##reg##_##f1(v1) |  \
+                    BF_##reg##_##f2(v2) |  \
+                    BF_##reg##_##f3(v3) |  \
+                    BF_##reg##_##f4(v4)))
 
 #define BFn_CS5(reg, blk, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5)  \
-        (HW_##reg##_CLR(blk, BM_##reg##_##f1 |      \
-                        BM_##reg##_##f2 |      \
-                        BM_##reg##_##f3 |      \
-                        BM_##reg##_##f4 |      \
-                        BM_##reg##_##f5),      \
-         HW_##reg##_SET(blk, BF_##reg##_##f1(v1) |  \
-                        BF_##reg##_##f2(v2) |  \
-                        BF_##reg##_##f3(v3) |  \
-                        BF_##reg##_##f4(v4) |  \
-                        BF_##reg##_##f5(v5)))
+    (HW_##reg##_CLR(blk, BM_##reg##_##f1 |      \
+                    BM_##reg##_##f2 |      \
+                    BM_##reg##_##f3 |      \
+                    BM_##reg##_##f4 |      \
+                    BM_##reg##_##f5),      \
+     HW_##reg##_SET(blk, BF_##reg##_##f1(v1) |  \
+                    BF_##reg##_##f2(v2) |  \
+                    BF_##reg##_##f3(v3) |  \
+                    BF_##reg##_##f4(v4) |  \
+                    BF_##reg##_##f5(v5)))
 
 #define BFn_CS6(reg, blk, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5, f6, v6)  \
-        (HW_##reg##_CLR(blk, BM_##reg##_##f1 |      \
-                        BM_##reg##_##f2 |      \
-                        BM_##reg##_##f3 |      \
-                        BM_##reg##_##f4 |      \
-                        BM_##reg##_##f5 |      \
-                        BM_##reg##_##f6),      \
-         HW_##reg##_SET(blk, BF_##reg##_##f1(v1) |  \
-                        BF_##reg##_##f2(v2) |  \
-                        BF_##reg##_##f3(v3) |  \
-                        BF_##reg##_##f4(v4) |  \
-                        BF_##reg##_##f5(v5) |  \
-                        BF_##reg##_##f6(v6)))
+    (HW_##reg##_CLR(blk, BM_##reg##_##f1 |      \
+                    BM_##reg##_##f2 |      \
+                    BM_##reg##_##f3 |      \
+                    BM_##reg##_##f4 |      \
+                    BM_##reg##_##f5 |      \
+                    BM_##reg##_##f6),      \
+     HW_##reg##_SET(blk, BF_##reg##_##f1(v1) |  \
+                    BF_##reg##_##f2(v2) |  \
+                    BF_##reg##_##f3(v3) |  \
+                    BF_##reg##_##f4(v4) |  \
+                    BF_##reg##_##f5(v5) |  \
+                    BF_##reg##_##f6(v6)))
 
 #define BFn_CS7(reg, blk, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5, f6, v6, f7, v7)  \
-        (HW_##reg##_CLR(blk, BM_##reg##_##f1 |      \
-                        BM_##reg##_##f2 |      \
-                        BM_##reg##_##f3 |      \
-                        BM_##reg##_##f4 |      \
-                        BM_##reg##_##f5 |      \
-                        BM_##reg##_##f6 |      \
-                        BM_##reg##_##f7),      \
-         HW_##reg##_SET(blk, BF_##reg##_##f1(v1) |  \
-                        BF_##reg##_##f2(v2) |  \
-                        BF_##reg##_##f3(v3) |  \
-                        BF_##reg##_##f4(v4) |  \
-                        BF_##reg##_##f5(v5) |  \
-                        BF_##reg##_##f6(v6) |  \
-                        BF_##reg##_##f7(v7)))
+    (HW_##reg##_CLR(blk, BM_##reg##_##f1 |      \
+                    BM_##reg##_##f2 |      \
+                    BM_##reg##_##f3 |      \
+                    BM_##reg##_##f4 |      \
+                    BM_##reg##_##f5 |      \
+                    BM_##reg##_##f6 |      \
+                    BM_##reg##_##f7),      \
+     HW_##reg##_SET(blk, BF_##reg##_##f1(v1) |  \
+                    BF_##reg##_##f2(v2) |  \
+                    BF_##reg##_##f3(v3) |  \
+                    BF_##reg##_##f4(v4) |  \
+                    BF_##reg##_##f5(v5) |  \
+                    BF_##reg##_##f6(v6) |  \
+                    BF_##reg##_##f7(v7)))
 
 #define BFn_CS8(reg, blk, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5, f6, v6, f7, v7, f8, v8)  \
-        (HW_##reg##_CLR(blk, BM_##reg##_##f1 |      \
-                        BM_##reg##_##f2 |      \
-                        BM_##reg##_##f3 |      \
-                        BM_##reg##_##f4 |      \
-                        BM_##reg##_##f5 |      \
-                        BM_##reg##_##f6 |      \
-                        BM_##reg##_##f7 |      \
-                        BM_##reg##_##f8),      \
-         HW_##reg##_SET(blk, BF_##reg##_##f1(v1) |  \
-                        BF_##reg##_##f2(v2) |  \
-                        BF_##reg##_##f3(v3) |  \
-                        BF_##reg##_##f4(v4) |  \
-                        BF_##reg##_##f5(v5) |  \
-                        BF_##reg##_##f6(v6) |  \
-                        BF_##reg##_##f7(v7) |  \
-                        BF_##reg##_##f8(v8)))
+    (HW_##reg##_CLR(blk, BM_##reg##_##f1 |      \
+                    BM_##reg##_##f2 |      \
+                    BM_##reg##_##f3 |      \
+                    BM_##reg##_##f4 |      \
+                    BM_##reg##_##f5 |      \
+                    BM_##reg##_##f6 |      \
+                    BM_##reg##_##f7 |      \
+                    BM_##reg##_##f8),      \
+     HW_##reg##_SET(blk, BF_##reg##_##f1(v1) |  \
+                    BF_##reg##_##f2(v2) |  \
+                    BF_##reg##_##f3(v3) |  \
+                    BF_##reg##_##f4(v4) |  \
+                    BF_##reg##_##f5(v5) |  \
+                    BF_##reg##_##f6(v6) |  \
+                    BF_##reg##_##f7(v7) |  \
+                    BF_##reg##_##f8(v8)))
 
 /*
  * Macros for MULTI-BLOCK multiple instance registers
@@ -441,92 +441,92 @@
 #define BFn_WRn(reg, blk, n, field, v)     BW_##reg##_##field(n, v)
 
 #define BFn_CS1n(reg, blk, n, f1, v1)  \
-        (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1)),      \
-         HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1))))
+    (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1)),      \
+     HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1))))
 
 #define BFn_CS2n(reg, blk, n, f1, v1, f2, v2)  \
-        (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1 |       \
-                            BM_##reg##_##f2)),      \
-         HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1) |   \
-                            BF_##reg##_##f2(v2))))
+    (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1 |       \
+                             BM_##reg##_##f2)),      \
+     HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1) |   \
+                             BF_##reg##_##f2(v2))))
 
 #define BFn_CS3n(reg, blk, n, f1, v1, f2, v2, f3, v3)  \
-        (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1 |       \
-                            BM_##reg##_##f2 |       \
-                            BM_##reg##_##f3)),      \
-         HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1) |   \
-                            BF_##reg##_##f2(v2) |   \
-                            BF_##reg##_##f3(v3))))
+    (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1 |       \
+                             BM_##reg##_##f2 |       \
+                             BM_##reg##_##f3)),      \
+     HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1) |   \
+                             BF_##reg##_##f2(v2) |   \
+                             BF_##reg##_##f3(v3))))
 
 #define BFn_CS4n(reg, blk, n, f1, v1, f2, v2, f3, v3, f4, v4)  \
-        (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1 |       \
-                            BM_##reg##_##f2 |       \
-                            BM_##reg##_##f3 |       \
-                            BM_##reg##_##f4)),      \
-         HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1) |   \
-                            BF_##reg##_##f2(v2) |   \
-                            BF_##reg##_##f3(v3) |   \
-                            BF_##reg##_##f4(v4))))
+    (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1 |       \
+                             BM_##reg##_##f2 |       \
+                             BM_##reg##_##f3 |       \
+                             BM_##reg##_##f4)),      \
+     HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1) |   \
+                             BF_##reg##_##f2(v2) |   \
+                             BF_##reg##_##f3(v3) |   \
+                             BF_##reg##_##f4(v4))))
 
 #define BFn_CS5n(reg, blk, n, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5)  \
-        (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1 |       \
-                            BM_##reg##_##f2 |       \
-                            BM_##reg##_##f3 |       \
-                            BM_##reg##_##f4 |       \
-                            BM_##reg##_##f5)),      \
-         HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1) |   \
-                            BF_##reg##_##f2(v2) |   \
-                            BF_##reg##_##f3(v3) |   \
-                            BF_##reg##_##f4(v4) |   \
-                            BF_##reg##_##f5(v5))))
+    (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1 |       \
+                             BM_##reg##_##f2 |       \
+                             BM_##reg##_##f3 |       \
+                             BM_##reg##_##f4 |       \
+                             BM_##reg##_##f5)),      \
+     HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1) |   \
+                             BF_##reg##_##f2(v2) |   \
+                             BF_##reg##_##f3(v3) |   \
+                             BF_##reg##_##f4(v4) |   \
+                             BF_##reg##_##f5(v5))))
 
 #define BFn_CS6n(reg, blk, n, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5, f6, v6)  \
-        (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1 |       \
-                            BM_##reg##_##f2 |       \
-                            BM_##reg##_##f3 |       \
-                            BM_##reg##_##f4 |       \
-                            BM_##reg##_##f5 |       \
-                            BM_##reg##_##f6)),      \
-         HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1) |   \
-                            BF_##reg##_##f2(v2) |   \
-                            BF_##reg##_##f3(v3) |   \
-                            BF_##reg##_##f4(v4) |   \
-                            BF_##reg##_##f5(v5) |   \
-                            BF_##reg##_##f6(v6))))
+    (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1 |       \
+                             BM_##reg##_##f2 |       \
+                             BM_##reg##_##f3 |       \
+                             BM_##reg##_##f4 |       \
+                             BM_##reg##_##f5 |       \
+                             BM_##reg##_##f6)),      \
+     HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1) |   \
+                             BF_##reg##_##f2(v2) |   \
+                             BF_##reg##_##f3(v3) |   \
+                             BF_##reg##_##f4(v4) |   \
+                             BF_##reg##_##f5(v5) |   \
+                             BF_##reg##_##f6(v6))))
 
 #define BFn_CS7n(reg, blk, n, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5, f6, v6, f7, v7)  \
-        (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1 |       \
-                            BM_##reg##_##f2 |       \
-                            BM_##reg##_##f3 |       \
-                            BM_##reg##_##f4 |       \
-                            BM_##reg##_##f5 |       \
-                            BM_##reg##_##f6 |       \
-                            BM_##reg##_##f7)),      \
-         HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1) |   \
-                            BF_##reg##_##f2(v2) |   \
-                            BF_##reg##_##f3(v3) |   \
-                            BF_##reg##_##f4(v4) |   \
-                            BF_##reg##_##f5(v5) |   \
-                            BF_##reg##_##f6(v6) |   \
-                            BF_##reg##_##f7(v7))))
+    (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1 |       \
+                             BM_##reg##_##f2 |       \
+                             BM_##reg##_##f3 |       \
+                             BM_##reg##_##f4 |       \
+                             BM_##reg##_##f5 |       \
+                             BM_##reg##_##f6 |       \
+                             BM_##reg##_##f7)),      \
+     HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1) |   \
+                             BF_##reg##_##f2(v2) |   \
+                             BF_##reg##_##f3(v3) |   \
+                             BF_##reg##_##f4(v4) |   \
+                             BF_##reg##_##f5(v5) |   \
+                             BF_##reg##_##f6(v6) |   \
+                             BF_##reg##_##f7(v7))))
 
 #define BFn_CS8n(reg, blk, n, f1, v1, f2, v2, f3, v3, f4, v4, f5, v5, f6, v6, f7, v7, f8, v8)  \
-        (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1 |       \
-                            BM_##reg##_##f2 |       \
-                            BM_##reg##_##f3 |       \
-                            BM_##reg##_##f4 |       \
-                            BM_##reg##_##f5 |       \
-                            BM_##reg##_##f6 |       \
-                            BM_##reg##_##f7 |       \
-                            BM_##reg##_##f8)),      \
-         HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1) |   \
-                            BF_##reg##_##f2(v2) |   \
-                            BF_##reg##_##f3(v3) |   \
-                            BF_##reg##_##f4(v4) |   \
-                            BF_##reg##_##f5(v5) |   \
-                            BF_##reg##_##f6(v6) |   \
-                            BF_##reg##_##f7(v7) |   \
-                            BF_##reg##_##f8(v8))))
+    (HW_##reg##_CLR(blk, n, (BM_##reg##_##f1 |       \
+                             BM_##reg##_##f2 |       \
+                             BM_##reg##_##f3 |       \
+                             BM_##reg##_##f4 |       \
+                             BM_##reg##_##f5 |       \
+                             BM_##reg##_##f6 |       \
+                             BM_##reg##_##f7 |       \
+                             BM_##reg##_##f8)),      \
+     HW_##reg##_SET(blk, n, (BF_##reg##_##f1(v1) |   \
+                             BF_##reg##_##f2(v2) |   \
+                             BF_##reg##_##f3(v3) |   \
+                             BF_##reg##_##f4(v4) |   \
+                             BF_##reg##_##f5(v5) |   \
+                             BF_##reg##_##f6(v6) |   \
+                             BF_##reg##_##f7(v7) |   \
+                             BF_##reg##_##f8(v8))))
 
 #endif /* _FSL_BITACCESS_H */
 

@@ -2,7 +2,7 @@
  * File:    m52259evb_sysinit.c
  * Purpose: Reset configuration of the M52259EVB
  *
- * Notes:   
+ * Notes:
  */
 
 #include "support_common.h"
@@ -16,65 +16,66 @@
 static void pll_init(void)
 {
 
-/*Required if booting with internal relaxation oscillator & pll off, clkmod[1:0]=00 & xtal=1 */
+    /*Required if booting with internal relaxation oscillator & pll off, clkmod[1:0]=00 & xtal=1 */
 
-	MCF_CLOCK_OCLR = 0xC0;   //turn on crystal
-	MCF_CLOCK_CCLR = 0x00;    //switch to crystal 
+    MCF_CLOCK_OCLR = 0xC0;   //turn on crystal
+    MCF_CLOCK_CCLR = 0x00;    //switch to crystal
     MCF_CLOCK_OCHR = 0x00; //turn off relaxation osc
 
-/*---------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------*/
 
 
-	/* The PLL pre divider - 48MHz / 6 = 8MHz */
-	MCF_CLOCK_CCHR =0x05;
-	 
-	 
-	/* The PLL pre-divider affects this!!! 
-	 * Multiply 48Mhz reference crystal /CCHR by 10 to acheive system clock of 80Mhz
-	 */
+    /* The PLL pre divider - 48MHz / 6 = 8MHz */
+    MCF_CLOCK_CCHR = 0x05;
 
-	MCF_CLOCK_SYNCR &= ~(MCF_CLOCK_SYNCR_PLLEN);
+
+    /* The PLL pre-divider affects this!!!
+     * Multiply 48Mhz reference crystal /CCHR by 10 to acheive system clock of 80Mhz
+     */
+
+    MCF_CLOCK_SYNCR &= ~(MCF_CLOCK_SYNCR_PLLEN);
 
     MCF_CLOCK_SYNCR |= MCF_CLOCK_SYNCR_CLKSRC | MCF_CLOCK_SYNCR_PLLMODE;
-	
-	MCF_CLOCK_SYNCR |= MCF_CLOCK_SYNCR_MFD(3) | MCF_CLOCK_SYNCR_RFD(0);
-	
-	MCF_CLOCK_SYNCR |= MCF_CLOCK_SYNCR_PLLEN;
 
-	
-	while (!(MCF_CLOCK_SYNSR & MCF_CLOCK_SYNSR_LOCK))
-	{
-	}
+    MCF_CLOCK_SYNCR |= MCF_CLOCK_SYNCR_MFD(3) | MCF_CLOCK_SYNCR_RFD(0);
+
+    MCF_CLOCK_SYNCR |= MCF_CLOCK_SYNCR_PLLEN;
+
+
+    while (!(MCF_CLOCK_SYNSR & MCF_CLOCK_SYNSR_LOCK))
+    {
+    }
 }
 
 /********************************************************************/
 
-static void gpio_init(void) {
+static void gpio_init(void)
+{
 
     /* Enable the proper UART pins */
     switch (TERMINAL_PORT)
     {
         case 2:
             MCF_GPIO_PUCPAR = 0
-                | MCF_GPIO_PUCPAR_URXD2_URXD2
-                | MCF_GPIO_PUCPAR_UTXD2_UTXD2;
+                              | MCF_GPIO_PUCPAR_URXD2_URXD2
+                              | MCF_GPIO_PUCPAR_UTXD2_UTXD2;
             break;
         case 1:
             MCF_GPIO_PUBPAR = 0
-                | MCF_GPIO_PUBPAR_URXD1_URXD1
-                | MCF_GPIO_PUBPAR_UTXD1_UTXD1;
+                              | MCF_GPIO_PUBPAR_URXD1_URXD1
+                              | MCF_GPIO_PUBPAR_UTXD1_UTXD1;
             break;
         case 0:
         default:
             MCF_GPIO_PUAPAR = 0
-                | MCF_GPIO_PUAPAR_URXD0_URXD0
-                | MCF_GPIO_PUAPAR_UTXD0_UTXD0;
+                              | MCF_GPIO_PUAPAR_URXD0_URXD0
+                              | MCF_GPIO_PUAPAR_UTXD0_UTXD0;
     }
-  
+
 }
 
 /********************************************************************/
-/* 
+/*
  * PLL min/max specifications
  */
 #define MAX_FVCO    80000   /* KHz */
@@ -92,7 +93,7 @@ static void gpio_init(void) {
 #define MIN_LPD     (1 << 0)    /* Divider (not encoded) */
 #define MAX_LPD     (1 << 15)   /* Divider (not encoded) */
 
-/* 
+/*
  * Operating Parameters
  * Pass to clock_pll() the 'flags' argument
  */
@@ -121,7 +122,7 @@ clock_lpd (int);
 /********************************************************************/
 /*
  * Initialize the Low Power Divider circuit
- * 
+ *
  * Parameters:
  *  div     Desired system frequency divider
  *
@@ -140,9 +141,9 @@ clock_lpd (int div)
         return (1 << (MCF_CLOCK_LPDR & 0x0F));
 
     /* Round divider down to nearest power of two */
-    for (i = 0, j = div; j != 1; j >>= 1, i++) 
+    for (i = 0, j = div; j != 1; j >>= 1, i++)
     {};
-    
+
     /* Apply the divider to the system clock */
     MCF_CLOCK_LPDR = (uint8)MCF_CLOCK_LPDR_LPD(i);
 
@@ -153,7 +154,7 @@ clock_lpd (int div)
 
 /********************************************************************/
 /* Initialize the PLL
- * 
+ *
  * Parameters:
  *  fref    PLL reference clock frequency in KHz
  *  fsys    Desired PLL output frequency in KHz
@@ -167,18 +168,18 @@ clock_pll (int fref, int fsys, int flags)
 {
     int syncr, mfd_max, mfd_min, rfd_max;
     int i, temp, fout, mfd, rfd, done;
-    
+
     /* Check for the disable flag */
     if (flags & PLL_DISABLE)
     {
         MCF_CLOCK_SYNCR &= ~MCF_CLOCK_SYNCR_PLLEN;
         return fref;
     }
-    
+
     /* Check bounds of reference clock */
     if((fref >= MAX_FREF) || (fref <= MIN_FREF))
         return fref;
-        
+
     if (fsys == 0)
     {
         /* Return current PLL output */
@@ -192,9 +193,9 @@ clock_pll (int fref, int fsys, int flags)
             return (fref * mfd / rfd);
         }
         else
-            return fref;            
+            return fref;
     }
-    
+
     /* Check bounds of requested system clock */
     if (fsys > MAX_FSYS)
         fsys = MAX_FSYS;
@@ -204,20 +205,20 @@ clock_pll (int fref, int fsys, int flags)
     mfd_max &= ~1;
     if (mfd_max > MAX_MFD)
         mfd_max = MAX_MFD;
-    
+
     /* Determine maximum possible output based on max multiplier */
     fout = fref * mfd_max;
 
-    /* Determine target output based on fsys and max possible */ 
+    /* Determine target output based on fsys and max possible */
     if (fout > fsys)
         fout = fsys;
-    
+
     /* Determine the minimum multiplier */
-    for (mfd_min = mfd_max; 
+    for (mfd_min = mfd_max;
          mfd_min > MIN_MFD && fout < (fref * mfd_min);)
-         mfd_min-=2;
-         
-    /* Set preliminary divider maximum */         
+        mfd_min -= 2;
+
+    /* Set preliminary divider maximum */
     rfd_max = MAX_RFD;
 
     /*
@@ -226,12 +227,12 @@ clock_pll (int fref, int fsys, int flags)
      * or equal-to the desired output frequency
      */
     done = FALSE;
-    for (mfd = mfd_max; mfd >= mfd_min; mfd-=2)
+    for (mfd = mfd_max; mfd >= mfd_min; mfd -= 2)
     {
         for (rfd = MIN_RFD; rfd < rfd_max; rfd <<= 1)
         {
             temp = fref * mfd / rfd;
-            
+
             if (fout == temp)
             {
                 /* exact match */
@@ -243,23 +244,23 @@ clock_pll (int fref, int fsys, int flags)
                 /* new upper bound for the rfd */
                 rfd_max = rfd;
                 /* is this the nearest match? */
-                if ((rfd != 1) && ((fout - temp) < (fref / (rfd>>1))))
+                if ((rfd != 1) && ((fout - temp) < (fref / (rfd >> 1))))
                     done = TRUE;
                 break;
             }
         }
         if (done)
             break;
-     }
+    }
     if (!done)
     {
-        /* 
-         * Fell out of loop before finding an exact match or getting 
+        /*
+         * Fell out of loop before finding an exact match or getting
          * as close as possible. Adjust mfd to nearest match.
          */
         mfd += 2;
     }
-    
+
     fout = fref * mfd / rfd;
 
     /* Encode MFD and RFD settings */
@@ -272,45 +273,45 @@ clock_pll (int fref, int fsys, int flags)
      */
     (*(vuint8 *)(&__IPSBAR[0x120006])) |= 0x04;
 
-    /* 
-     * Initialize the PLL to generate the new system clock frequency 
-     * A higher divider is used first with the desired MFD.  Once 
+    /*
+     * Initialize the PLL to generate the new system clock frequency
+     * A higher divider is used first with the desired MFD.  Once
      * locked, the desired RFD is applied
      */
     syncr = MCF_CLOCK_SYNCR & ~(0x7700);
     temp = (MCF_CLOCK_SYNCR & 0x7000) >> 12;
-    MCF_CLOCK_SYNCR = (uint16)(syncr 
-        | MCF_CLOCK_SYNCR_RFD(rfd + 1)
-        | MCF_CLOCK_SYNCR_MFD(temp)
-        | MCF_CLOCK_SYNCR_PLLEN);
-    MCF_CLOCK_SYNCR = (uint16)(syncr 
-        | MCF_CLOCK_SYNCR_RFD(rfd + 1)
-        | MCF_CLOCK_SYNCR_MFD(mfd)
-        | MCF_CLOCK_SYNCR_PLLEN);
-        
-   	/* Wait for the PLL to lock */	
-	while (!(MCF_CLOCK_SYNSR & MCF_CLOCK_SYNSR_LOCK)) {};
+    MCF_CLOCK_SYNCR = (uint16)(syncr
+                               | MCF_CLOCK_SYNCR_RFD(rfd + 1)
+                               | MCF_CLOCK_SYNCR_MFD(temp)
+                               | MCF_CLOCK_SYNCR_PLLEN);
+    MCF_CLOCK_SYNCR = (uint16)(syncr
+                               | MCF_CLOCK_SYNCR_RFD(rfd + 1)
+                               | MCF_CLOCK_SYNCR_MFD(mfd)
+                               | MCF_CLOCK_SYNCR_PLLEN);
+
+    /* Wait for the PLL to lock */
+    while (!(MCF_CLOCK_SYNSR & MCF_CLOCK_SYNSR_LOCK)) {};
 
     /* Finish off the initialization */
     MCF_CLOCK_SYNCR = (uint16)(syncr
-        | MCF_CLOCK_SYNCR_RFD(rfd)
-        | MCF_CLOCK_SYNCR_MFD(mfd)
-        | MCF_CLOCK_SYNCR_CLKSRC
-        | MCF_CLOCK_SYNCR_PLLEN);
+                               | MCF_CLOCK_SYNCR_RFD(rfd)
+                               | MCF_CLOCK_SYNCR_MFD(mfd)
+                               | MCF_CLOCK_SYNCR_CLKSRC
+                               | MCF_CLOCK_SYNCR_PLLEN);
 
     return fout;
 }
 
 /********************************************************************/
-static void 
+static void
 scm_init(void)
 {
-	/*
-	 * Enable on-chip modules to access internal SRAM
-	 */
-	MCF_SCM_RAMBAR = (0
-		| MCF_SCM_RAMBAR_BA(RAMBAR_ADDRESS)
-		| MCF_SCM_RAMBAR_BDE);
+    /*
+     * Enable on-chip modules to access internal SRAM
+     */
+    MCF_SCM_RAMBAR = (0
+                      | MCF_SCM_RAMBAR_BA(RAMBAR_ADDRESS)
+                      | MCF_SCM_RAMBAR_BDE);
 
 }
 
@@ -321,11 +322,11 @@ scm_init(void)
 void __initialize_hardware(void)
 {
 
-	pll_init();
+    pll_init();
 
-	gpio_init();
-	scm_init(); //Added AB
-	
-	initialize_exceptions();
+    gpio_init();
+    scm_init(); //Added AB
+
+    initialize_exceptions();
 
 }

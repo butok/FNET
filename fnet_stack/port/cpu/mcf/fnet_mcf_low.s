@@ -53,7 +53,7 @@
 
 
 /* Set VBR */
-/* void fnet_mcf_vbr_wr(fnet_uint32) */
+/* void fnet_mcf_vbr_wr(fnet_uint32_t) */
 FNET_COMP_ASM_PREFIX(fnet_mcf_vbr_wr):
 #if FNET_CFG_COMP_GNUC
 	move.l  4(sp), d0	/* get parameter from stack */
@@ -64,7 +64,7 @@ FNET_COMP_ASM_PREFIX(fnet_mcf_vbr_wr):
 
 #if FNET_CFG_CPU_CACHE
 /* Set CACR */
-/* void fnet_mcf_cacr_wr(fnet_uint32) */
+/* void fnet_mcf_cacr_wr(fnet_uint32_t) */
 FNET_COMP_ASM_PREFIX(fnet_mcf_cacr_wr):
 #if FNET_CFG_COMP_GNUC
 	move.l  4(sp), d0	/* get parameter from stack */
@@ -75,20 +75,20 @@ FNET_COMP_ASM_PREFIX(fnet_mcf_cacr_wr):
 #endif	
 
 /* Read SP */
-/* fnet_uint32 fnet_mcf_sp_rd() */
+/* fnet_uint32_t fnet_mcf_sp_rd() */
 FNET_COMP_ASM_PREFIX(fnet_mcf_sp_rd):
 	move.l     sp,d0
     rts  
 
 
 /* Read SR */
-/* fnet_uint16 fnet_mcf_sr_rd() */
+/* fnet_uint16_t fnet_mcf_sr_rd() */
 FNET_COMP_ASM_PREFIX(fnet_mcf_sr_rd):
 	move.w     sr,d0
 	rts    
 
 /* Write SR */
-/* void fnet_mcf_sr_wr(fnet_uint16) */
+/* void fnet_mcf_sr_wr(fnet_uint16_t) */
 FNET_COMP_ASM_PREFIX(fnet_mcf_sr_wr):
 #if FNET_CFG_COMP_GNUC
 	move.l  4(sp), d0	/* get parameter from stack */

@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_poll.c
@@ -53,7 +53,7 @@ static struct
 /************************************************************************
 * NAME: fnet_poll_services
 *
-* DESCRIPTION: This function calls all registered service routines in 
+* DESCRIPTION: This function calls all registered service routines in
 *              the polling list.
 *************************************************************************/
 void fnet_poll_services( void )
@@ -64,7 +64,7 @@ void fnet_poll_services( void )
     {
         if(fnet_poll_if.list[i].service)
         {
-            fnet_poll_if.list[i].service(fnet_poll_if.list[i].service_param);   
+            fnet_poll_if.list[i].service(fnet_poll_if.list[i].service_param);
         }
     }
 }
@@ -72,7 +72,7 @@ void fnet_poll_services( void )
 /************************************************************************
 * NAME: fnet_poll_services_release
 *
-* DESCRIPTION: This function calls all registered service routines in 
+* DESCRIPTION: This function calls all registered service routines in
 *              the polling list.
 *************************************************************************/
 void fnet_poll_services_release( void )

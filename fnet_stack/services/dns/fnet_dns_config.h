@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_dns_config.h
@@ -51,13 +51,13 @@
 /**************************************************************************/ /*!
  * @def     FNET_CFG_DNS_PORT
  * @brief   Default DNS port number (in network byte order).@n
- *          The DNS client uses this port for sending and receiving of DNS 
+ *          The DNS client uses this port for sending and receiving of DNS
  *          messages. @n
- *          It can be changed during the DNS Resolver initialization by the 
+ *          It can be changed during the DNS Resolver initialization by the
  *          @ref fnet_dns_init() function.@n
  *          Default value is FNET_HTONS(53).
- * @showinitializer 
- ******************************************************************************/  
+ * @showinitializer
+ ******************************************************************************/
 #ifndef FNET_CFG_DNS_PORT
     #define FNET_CFG_DNS_PORT                       (FNET_HTONS(53U))
 #endif
@@ -67,8 +67,8 @@
  * @brief   The maximum number of times the DNS client/resolver will retransmit
  *          the request message to a DNS server.@n
  *          Default value is @b @c 5.
- * @showinitializer 
- ******************************************************************************/  
+ * @showinitializer
+ ******************************************************************************/
 #ifndef FNET_CFG_DNS_RETRANSMISSION_MAX
     #define FNET_CFG_DNS_RETRANSMISSION_MAX         (5U)
 #endif
@@ -76,9 +76,9 @@
 /**************************************************************************/ /*!
  * @def     FNET_CFG_DNS_RETRANSMISSION_TIMEOUT
  * @brief   Timeout for the response from the remote DNS server (in seconds).@n
- *          @n 
+ *          @n
  *          The recommended value is @c 1 second.@n
- *          If the DNS client does not receive any response from a DNS server, 
+ *          If the DNS client does not receive any response from a DNS server,
  *          it sends new request message.@n
  *          Default value is @b @c 1.
  * @showinitializer

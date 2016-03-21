@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2014 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fapp_llmnr.c
@@ -44,7 +44,7 @@ static fnet_llmnr_desc_t fapp_llmnr_desc = 0; /* LLMNR service descriptor. */
 void fapp_llmnr_release(void)
 {
     fnet_llmnr_release(fapp_llmnr_desc);
-    fapp_llmnr_desc = 0;    
+    fapp_llmnr_desc = 0;
 }
 
 /************************************************************************
@@ -52,7 +52,7 @@ void fapp_llmnr_release(void)
 *
 * DESCRIPTION: Run LLMNR server.
 *************************************************************************/
-void fapp_llmnr_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** argv )
+void fapp_llmnr_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
     struct fnet_llmnr_params    params;
     fnet_llmnr_desc_t           llmnr_desc;
@@ -61,7 +61,7 @@ void fapp_llmnr_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** a
     {
         /* Init parameters.*/
         fnet_memset_zero(&params, sizeof(params));
-        params.netif_desc = fnet_netif_get_default();   
+        params.netif_desc = fnet_netif_get_default();
         params.host_name = fapp_params_host_name;
 
         /* Start LLMNR server */
@@ -70,9 +70,9 @@ void fapp_llmnr_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t ** a
         {
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             fnet_shell_println(desc, " LLMNR server started.");
-            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Host Name", params.host_name ); 
+            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Host Name", params.host_name );
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
-            
+
             fapp_llmnr_desc = llmnr_desc;
         }
         else

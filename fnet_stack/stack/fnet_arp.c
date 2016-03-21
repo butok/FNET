@@ -18,7 +18,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_arp.c
@@ -50,7 +50,7 @@
 *     Function Prototypes
 *************************************************************************/
 #if FNET_CFG_ARP_EXPIRE_TIMEOUT
-static void fnet_arp_timer(fnet_uint32_t cookie);
+    static void fnet_arp_timer(fnet_uint32_t cookie);
 #endif
 
 static fnet_arp_entry_t *fnet_arp_add_entry(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, const fnet_mac_addr_t ethaddr);
@@ -85,9 +85,9 @@ fnet_return_t fnet_arp_init(fnet_netif_t *netif, fnet_arp_if_t *arpif)
             fnet_memset_zero(&(arpif->arp_table[i]), sizeof(fnet_arp_entry_t));
         }
 
-    #if FNET_CFG_ARP_EXPIRE_TIMEOUT
+#if FNET_CFG_ARP_EXPIRE_TIMEOUT
         arpif->arp_tmr = fnet_timer_new((FNET_ARP_TIMER_PERIOD / FNET_TIMER_PERIOD_MS), fnet_arp_timer, (fnet_uint32_t)arpif);
-    #endif
+#endif
 
         if (arpif->arp_tmr)
         {
@@ -263,9 +263,9 @@ fnet_bool_t fnet_arp_get_mac( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ip_a
             fnet_isr_lock();
 
             macaddr_p = fnet_arp_lookup(netif, ip_addr);
-            
+
             if(macaddr_p)
-            {   
+            {
                 if(mac_addr)
                 {
                     fnet_memcpy (mac_addr, *macaddr_p, sizeof(fnet_mac_addr_t));
@@ -317,7 +317,7 @@ fnet_mac_addr_t *fnet_arp_lookup(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr)
 *************************************************************************/
 void fnet_arp_resolve(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_netbuf_t *nb)
 {
-    fnet_arp_if_t       *arpif = netif->arp_if_ptr; 
+    fnet_arp_if_t       *arpif = netif->arp_if_ptr;
     fnet_index_t        i;
     fnet_arp_entry_t    *entry;
 
@@ -369,11 +369,11 @@ void fnet_arp_input(fnet_netif_t *netif, fnet_netbuf_t *nb)
     fnet_arp_entry_t    *entry;
 
     if (!((nb == 0) /* The packet is wrong. */
-            || (nb->total_length < sizeof(fnet_arp_header_t)) 
-            || (arp_hdr->hard_type != FNET_HTONS(FNET_ARP_HARD_TYPE)) 
-            || (arp_hdr->hard_size != FNET_ARP_HARD_SIZE) 
-            || (arp_hdr->prot_type != FNET_HTONS(FNET_ETH_TYPE_IP4)) 
-            || (arp_hdr->prot_size != FNET_ARP_PROT_SIZE)))
+          || (nb->total_length < sizeof(fnet_arp_header_t))
+          || (arp_hdr->hard_type != FNET_HTONS(FNET_ARP_HARD_TYPE))
+          || (arp_hdr->hard_size != FNET_ARP_HARD_SIZE)
+          || (arp_hdr->prot_type != FNET_HTONS(FNET_ETH_TYPE_IP4))
+          || (arp_hdr->prot_size != FNET_ARP_PROT_SIZE)))
     {
         if (nb->total_length > sizeof(fnet_arp_header_t))
         {
@@ -387,7 +387,7 @@ void fnet_arp_input(fnet_netif_t *netif, fnet_netbuf_t *nb)
 
         if (!((!fnet_memcmp(arp_hdr->sender_hard_addr, local_addr, sizeof(fnet_mac_addr_t)))             /* It's from me => ignore it.*/
               || (!fnet_memcmp(arp_hdr->sender_hard_addr, fnet_eth_broadcast, sizeof(fnet_mac_addr_t)))) /* It's broadcast=> error. */
-            )
+           )
         {
             fnet_ip4_addr_t sender_prot_addr = arp_hdr->sender_prot_addr;
             fnet_ip4_addr_t targer_prot_addr = arp_hdr->targer_prot_addr;
@@ -456,7 +456,7 @@ void fnet_arp_send_request( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ip_add
         if(arpif)
         {
             fnet_isr_lock();
-            
+
             fnet_arp_request(netif, ip_addr);
 
             fnet_isr_unlock();
@@ -544,7 +544,7 @@ void fnet_arp_drain(fnet_netif_t *netif)
 /************************************************************************
 * NAME: fnet_arp_get_entry
 *
-* DESCRIPTION: This function Retrieves ARP cache entry of 
+* DESCRIPTION: This function Retrieves ARP cache entry of
 *             the specified network interface.
 *************************************************************************/
 fnet_bool_t fnet_arp_get_entry ( fnet_netif_desc_t netif_desc, fnet_index_t n, fnet_arp_entry_info_t *entry_info )
@@ -574,7 +574,7 @@ fnet_bool_t fnet_arp_get_entry ( fnet_netif_desc_t netif_desc, fnet_index_t n, f
                         fnet_isr_unlock();
 
                         result = FNET_TRUE;
-                        break;     
+                        break;
                     }
                     n--;
                 }

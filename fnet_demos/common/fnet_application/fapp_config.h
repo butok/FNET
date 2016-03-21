@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fapp_config.h
@@ -35,33 +35,33 @@
 
 /**************************************************************************/ /*!
  * @def      FAPP_CFG_NAME
- * @brief    Name of the application. 
+ * @brief    Name of the application.
  * @showinitializer
  ******************************************************************************/
 #ifndef FAPP_CFG_NAME
-    #define FAPP_CFG_NAME                       "FNET Application"       
+    #define FAPP_CFG_NAME                       "FNET Application"
 #endif
 
 /**************************************************************************/ /*!
  * @def      FAPP_CFG_SHELL_PROMPT
- * @brief    Prompt message used by the application shell. 
+ * @brief    Prompt message used by the application shell.
  * @showinitializer
  ******************************************************************************/
 #ifndef FAPP_CFG_SHELL_PROMPT
     #define FAPP_CFG_SHELL_PROMPT   "FNET> "
-#endif    
+#endif
 
 /**************************************************************************/ /*!
  * @def      FAPP_CFG_PARAMS_READ_FLASH
  * @brief    Reading of the configuration parameters from the Flash memory during
  *           the application bootup:
  *               - @c 1 = is enabled. @n
- *                        During bootup, the application read 
- *                        and use the most recently stored customer 
+ *                        During bootup, the application read
+ *                        and use the most recently stored customer
  *                        configuration data from the flash.
  *               - @c 0 = is disabled. @n
- *                        During bootup, the application uses 
- *                        compile-time parameters by default. 
+ *                        During bootup, the application uses
+ *                        compile-time parameters by default.
  * @showinitializer
  ******************************************************************************/
 #ifndef FAPP_CFG_PARAMS_READ_FLASH
@@ -70,16 +70,16 @@
 
 /**************************************************************************/ /*!
  * @def      FAPP_CFG_PARAMS_REWRITE_FLASH
- * @brief    Rewriting of the configuration parameters in the Flash memory 
+ * @brief    Rewriting of the configuration parameters in the Flash memory
  *           duiring flashing of the application:
  *               - @c 1 = is enabled. @n
- *                        It will allocated the default parameter structure 
- *                        which  will rewrite the configurated parameters 
- *                        present in the Flash memory during flashing of 
+ *                        It will allocated the default parameter structure
+ *                        which  will rewrite the configurated parameters
+ *                        present in the Flash memory during flashing of
  *                        the application.
  *               - @c 0 = is disabled. @n
- *                        The configuration parameters that present in the 
- *                        flash memory will stay untouchable during flashing. 
+ *                        The configuration parameters that present in the
+ *                        flash memory will stay untouchable during flashing.
  * @showinitializer
  ******************************************************************************/
 #ifndef FAPP_CFG_PARAMS_REWRITE_FLASH
@@ -102,7 +102,7 @@
  * @def      FAPP_CFG_BOOTLOADER
  * @brief    Bootloader:
  *               - @c 1 = is enabled. @n
- *                        The application startup behaviour is defined 
+ *                        The application startup behaviour is defined
  *                        by the @ref fapp_params_boot_mode_t mode.
  *               - @c 0 = is disabled. @n
  * @showinitializer
@@ -138,15 +138,15 @@
 /* FNET-Application TCP/IP stack default parameters. */
 
 #ifndef FAPP_CFG_PARAMS_NETIF_NAME
-	#if FNET_CFG_CPU_ETH0
-		#define FAPP_CFG_PARAMS_NETIF_NAME             FNET_CFG_CPU_ETH0_NAME
-	#elif FNET_CFG_CPU_ETH1
-		#define FAPP_CFG_PARAMS_NETIF_NAME             FNET_CFG_CPU_ETH1_NAME
-	#elif FNET_CFG_LOOPBACK
-		#define FAPP_CFG_PARAMS_NETIF_NAME             FNET_CFG_LOOPBACK_NAME
-	#else
-		#define FAPP_CFG_PARAMS_NETIF_NAME             ""
-	#endif
+    #if FNET_CFG_CPU_ETH0
+        #define FAPP_CFG_PARAMS_NETIF_NAME             FNET_CFG_CPU_ETH0_NAME
+    #elif FNET_CFG_CPU_ETH1
+        #define FAPP_CFG_PARAMS_NETIF_NAME             FNET_CFG_CPU_ETH1_NAME
+    #elif FNET_CFG_LOOPBACK
+        #define FAPP_CFG_PARAMS_NETIF_NAME             FNET_CFG_LOOPBACK_NAME
+    #else
+        #define FAPP_CFG_PARAMS_NETIF_NAME             ""
+    #endif
 #endif
 
 
@@ -176,7 +176,7 @@
 
 /* Bootloader parameters. */
 #ifndef FAPP_CFG_PARAMS_BOOT_MODE
-    #define FAPP_CFG_PARAMS_BOOT_MODE           FAPP_PARAMS_BOOT_MODE_STOP 
+    #define FAPP_CFG_PARAMS_BOOT_MODE           FAPP_PARAMS_BOOT_MODE_STOP
 #endif
 
 #ifndef FAPP_CFG_PARAMS_BOOT_DELAY
@@ -184,7 +184,7 @@
 #endif
 
 #ifndef FAPP_CFG_PARAMS_BOOT_GO_ADDRESS
-    #define FAPP_CFG_PARAMS_BOOT_GO_ADDRESS     (0) 
+    #define FAPP_CFG_PARAMS_BOOT_GO_ADDRESS     (0)
 #endif
 
 #ifndef FAPP_CFG_PARAMS_BOOT_SCRIPT
@@ -205,7 +205,7 @@
 #endif
 
 #ifndef FAPP_CFG_PARAMS_TFTP_FILE_RAW_ADDRESS
-    #define FAPP_CFG_PARAMS_TFTP_FILE_RAW_ADDRESS    (0) 
+    #define FAPP_CFG_PARAMS_TFTP_FILE_RAW_ADDRESS    (0)
 #endif
 
 
@@ -229,11 +229,11 @@
 *************************************************************************/
 #ifndef FAPP_CFG_DHCP_CMD
     #define FAPP_CFG_DHCP_CMD           (0)
-    
+
     #ifndef FAPP_CFG_DHCP_CMD_DISCOVER_MAX
         #define FAPP_CFG_DHCP_CMD_DISCOVER_MAX  (-1) /* -1 means infinite. */
     #endif
-    
+
 #endif
 
 /************************************************************************
@@ -283,63 +283,63 @@
 *************************************************************************/
 #ifndef FAPP_CFG_MEM_CMD
     #define FAPP_CFG_MEM_CMD            (0)
-#endif  
+#endif
 
 /************************************************************************
 *    "erase" command.
 *************************************************************************/
 #ifndef FAPP_CFG_ERASE_CMD
     #define FAPP_CFG_ERASE_CMD          (0)
-#endif 
+#endif
 
 /************************************************************************
 *    "save" command.
 *************************************************************************/
 #ifndef FAPP_CFG_SAVE_CMD
     #define FAPP_CFG_SAVE_CMD           (0)
-#endif 
+#endif
 
 /************************************************************************
 *    "go" command.
 *************************************************************************/
 #ifndef FAPP_CFG_GO_CMD
     #define FAPP_CFG_GO_CMD             (0)
-#endif 
+#endif
 
 /************************************************************************
 *    "reset" command.
 *************************************************************************/
 #ifndef FAPP_CFG_RESET_CMD
     #define FAPP_CFG_RESET_CMD          (0)
-#endif 
+#endif
 
 /************************************************************************
 *    "reboot" command.
 *************************************************************************/
 #ifndef FAPP_CFG_REBOOT_CMD
     #define FAPP_CFG_REBOOT_CMD         (0)
-#endif 
+#endif
 
 /************************************************************************
 *    "bench" command.
 *************************************************************************/
 #ifndef FAPP_CFG_BENCH_CMD
     #define FAPP_CFG_BENCH_CMD          (0)
-#endif 
+#endif
 
 /************************************************************************
 *    "reinit" command. Used to test FNET release/init only.
 *************************************************************************/
 #ifndef FAPP_CFG_REINIT_CMD
     #define FAPP_CFG_REINIT_CMD         (0)
-#endif 
+#endif
 
 /************************************************************************
 *    "test" command. Used to test Telnet sending. For debug needs only
 *************************************************************************/
 #ifndef FAPP_CFG_TELNET_TEST_CMD
     #define FAPP_CFG_TELNET_TEST_CMD    (0)
-#endif 
+#endif
 
 /************************************************************************
 *    "dns" command.
@@ -389,7 +389,7 @@
 *************************************************************************/
 #ifndef FAPP_CFG_DEBUG_CMD
     #define FAPP_CFG_DEBUG_CMD          (0)
-#endif 
+#endif
 
 
 
@@ -451,25 +451,25 @@
 
 #ifndef FAPP_CFG_SETGET_CMD
 #define FAPP_CFG_SETGET_CMD             (FAPP_CFG_SETGET_CMD_IP|FAPP_CFG_SETGET_CMD_GATEWAY|\
-                                         FAPP_CFG_SETGET_CMD_NETMASK|FAPP_CFG_SETGET_CMD_MAC|\
-                                         FAPP_CFG_SETGET_CMD_BOOT|FAPP_CFG_SETGET_CMD_DELAY|\
-                                         FAPP_CFG_SETGET_CMD_SCRIPT|FAPP_CFG_SETGET_CMD_RAW|\
-                                         FAPP_CFG_SETGET_CMD_TFTP|FAPP_CFG_SETGET_CMD_IMAGE|\
-                                         FAPP_CFG_SETGET_CMD_TYPE|FAPP_CFG_SETGET_CMD_GO|\
-                                         FAPP_CFG_SETGET_CMD_DNS|FAPP_CFG_SETGET_CMD_HOSTNAME)
+        FAPP_CFG_SETGET_CMD_NETMASK|FAPP_CFG_SETGET_CMD_MAC|\
+        FAPP_CFG_SETGET_CMD_BOOT|FAPP_CFG_SETGET_CMD_DELAY|\
+        FAPP_CFG_SETGET_CMD_SCRIPT|FAPP_CFG_SETGET_CMD_RAW|\
+        FAPP_CFG_SETGET_CMD_TFTP|FAPP_CFG_SETGET_CMD_IMAGE|\
+        FAPP_CFG_SETGET_CMD_TYPE|FAPP_CFG_SETGET_CMD_GO|\
+        FAPP_CFG_SETGET_CMD_DNS|FAPP_CFG_SETGET_CMD_HOSTNAME)
 #endif
 
 
 #ifndef FAPP_CFG_PARAMS_BOOT
 #define FAPP_CFG_PARAMS_BOOT            (FAPP_CFG_SETGET_CMD_BOOT|FAPP_CFG_SETGET_CMD_DELAY|\
-                                         FAPP_CFG_SETGET_CMD_SCRIPT|FAPP_CFG_SETGET_CMD_RAW|\
-                                         FAPP_CFG_SETGET_CMD_GO|FAPP_CFG_BOOTLOADER )
+        FAPP_CFG_SETGET_CMD_SCRIPT|FAPP_CFG_SETGET_CMD_RAW|\
+        FAPP_CFG_SETGET_CMD_GO|FAPP_CFG_BOOTLOADER )
 #endif
 
 #ifndef FAPP_CFG_PARAMS_TFTP
 #define FAPP_CFG_PARAMS_TFTP            (FAPP_CFG_SETGET_CMD_TFTP|FAPP_CFG_SETGET_CMD_IMAGE|\
-                                         FAPP_CFG_SETGET_CMD_TYPE|FAPP_CFG_SETGET_CMD_GO|\
-                                         FAPP_CFG_TFTP_CMD|FAPP_CFG_TFTPUP_CMD|FAPP_CFG_TFTPS_CMD)
+        FAPP_CFG_SETGET_CMD_TYPE|FAPP_CFG_SETGET_CMD_GO|\
+        FAPP_CFG_TFTP_CMD|FAPP_CFG_TFTPUP_CMD|FAPP_CFG_TFTPS_CMD)
 #endif
 
 
@@ -477,7 +477,7 @@
     #define FAPP_CFG_TFTPS_ON_WRITE_REQUEST_SCRIPT      ""
 #endif
 
-#ifndef FAPP_CFG_TFTPS_AFTER_WRITE_REQUEST_SCRIPT    
+#ifndef FAPP_CFG_TFTPS_AFTER_WRITE_REQUEST_SCRIPT
     #define FAPP_CFG_TFTPS_AFTER_WRITE_REQUEST_SCRIPT   ""
 #endif
 
@@ -520,19 +520,19 @@
 /************************************************************************/
 #ifndef FAPP_CFG_SHELL_MAX_LINE_LENGTH
     #define FAPP_CFG_SHELL_MAX_LINE_LENGTH  (60)
-#endif 
+#endif
 
 /************************************************************************
 *    Memory parameters
 *************************************************************************/
 /* Start address of the ROM memory, reserved/protected for the application. Used by the bootloader application.*/
 #ifndef FAPP_CFG_APPLICATION_ADDRESS
-#define FAPP_CFG_APPLICATION_ADDRESS      FNET_CFG_CPU_FLASH_ADDRESS
+    #define FAPP_CFG_APPLICATION_ADDRESS      FNET_CFG_CPU_FLASH_ADDRESS
 #endif
 
 /* ROM memory size, reserved/protected for the application. Used by the bootloader application.*/
-#ifndef FAPP_CFG_APPLICATION_SIZE 
-#define FAPP_CFG_APPLICATION_SIZE         (48*1024) /* 48 KB */
+#ifndef FAPP_CFG_APPLICATION_SIZE
+    #define FAPP_CFG_APPLICATION_SIZE         (48*1024) /* 48 KB */
 #endif
 
 #endif

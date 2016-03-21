@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_mk64FN1_config.h
@@ -48,7 +48,7 @@
 /* The platform does not have second Ethernet Module.*/
 #define FNET_CFG_CPU_ETH1        		        (0)
 
-/* Defines the maximum number of incoming frames that may 
+/* Defines the maximum number of incoming frames that may
  *           be buffered by the Ethernet module.*/
 #ifndef FNET_CFG_CPU_ETH_RX_BUFS_MAX
     #define FNET_CFG_CPU_ETH_RX_BUFS_MAX        (4u)
@@ -66,14 +66,14 @@
 #define FNET_CFG_CPU_FLASH_PROGRAM_SIZE         (8U) /*Bytes.*/
 
 /* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE                  (1024U * 256U)    /* 256 KB */  
+#define FNET_CFG_CPU_SRAM_SIZE                  (1024U * 256U)    /* 256 KB */
 /* SRAM address.*/
 #ifndef FNET_CFG_CPU_SERIAL_PORT_DEFAULT
-    #define FNET_CFG_CPU_SRAM_ADDRESS           (0x1FFF0000U)      
+    #define FNET_CFG_CPU_SRAM_ADDRESS           (0x1FFF0000U)
 #endif
 
 #ifndef FNET_CFG_CPU_SERIAL_PORT_DEFAULT
     #define FNET_CFG_CPU_SERIAL_PORT_DEFAULT    (0U) /* FRDMK64F board uses the default port number 0.*/
 #endif
 
-#endif 
+#endif

@@ -1498,6 +1498,13 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.1.1:
+	- Improved Flash driver. Now it copies its execution code to RAM by itself, so no need to define an additional FNET_RAM section in linker file.
+	- Fixed IPv4 input function, to accept all broadcast Ethernet frames for an interface without a bound IPv4 address. It is used by DHCPv4 client. Reported by Sergej Ruzin.
+	- Added MPC5566(Viper) configuration. Thanks to NanoZera.
+	- The all source files (*.c, *.h) were formatted by the Artistic Style 2.05 tool (http://astyle.sourceforge.net/).  
+	- Other minor changes.
+
 - Version 3.1.0:
 	- HTTP server improvements:
 		- Added fnet_http_set_response_status_code(), sets status code in HTTP-response status-line. Can be used by CGI and POST handlers.
@@ -1515,8 +1522,8 @@ FNET public releases:
 	- Added fnet_netif_[get|set]_ip4_addr_type(), replacing fnet_netif_[get|set]_ip4_addr_automatic().
 	- Changed the default value of the FNET_CFG_CPU_VECTOR_TABLE parameter, for Kinetis platform, to NVIC vector table register (VTOR). Before it was set to a symbol defined in a linker file. 
 	- Removed obsolete MCF uCOS port.
-    - Removed obsolete MCF CodeWarrior 7.2 support.
-    - Removed obsolete fnet_<cpu>_stdlib.c.
+	- Removed obsolete MCF CodeWarrior 7.2 support.
+	- Removed obsolete fnet_<cpu>_stdlib.c.
 	- Other minor changes.
 
 - Version 3.0.0:

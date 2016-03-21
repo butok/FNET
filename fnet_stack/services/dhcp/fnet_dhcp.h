@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_dhcp.h
@@ -36,18 +36,18 @@
 
 #if FNET_CFG_DHCP || defined(__DOXYGEN__)
 
-/*! @addtogroup fnet_dhcp 
-* The user application can use the DHCP-client service to retrieve various network 
+/*! @addtogroup fnet_dhcp
+* The user application can use the DHCP-client service to retrieve various network
 * parameters (IP address, gateway address, subnet mask) from a DHCP server.@n
-* The DHCP client code keeps the IP address parameters updated by renewing it 
+* The DHCP client code keeps the IP address parameters updated by renewing it
 * automatically, without user application intervention.@n
 * @n
 * After the DHCP client is initialized by calling the fnet_dhcp_init() function,
-* the user application should call the main service-polling function  
+* the user application should call the main service-polling function
 * @ref fnet_poll_services() periodically in background. @n
 * @n
-* The DHCP client will be released automatically if an application sets 
-* any of the IP-related parameters directly by the @ref fnet_netif_set_ip4_addr(), 
+* The DHCP client will be released automatically if an application sets
+* any of the IP-related parameters directly by the @ref fnet_netif_set_ip4_addr(),
 * @ref fnet_netif_set_ip4_subnet_mask(), or @ref fnet_netif_set_ip4_gateway() calls. @n
 * @n
 * For example:
@@ -86,7 +86,7 @@
 * - @ref FNET_CFG_DHCP_BOOTP
 * - @ref FNET_CFG_DHCP_PORT_CLIENT
 * - @ref FNET_CFG_DHCP_PORT_SERVER
-* - @ref FNET_CFG_DHCP_RESPONSE_TIMEOUT 
+* - @ref FNET_CFG_DHCP_RESPONSE_TIMEOUT
 * - @ref FNET_CFG_DNS
 * - @ref FNET_CFG_DHCP_BROADCAST
 * - @ref FNET_CFG_DHCP_OVERLOAD
@@ -97,7 +97,7 @@
 /**************************************************************************/ /*!
  * @def FNET_DHCP_LEASE_INFINITY
  * @brief Infinite lease time.@n
- * The lease-option value, when a client acquires a lease for a network 
+ * The lease-option value, when a client acquires a lease for a network
  * address for infinite time.
  * @showinitializer
  ******************************************************************************/
@@ -105,7 +105,7 @@
 
 /**************************************************************************/ /*!
  * @brief Minimum lease-time value in seconds.@n
- * If a client-acquired lease time is less than the @ref FNET_DHCP_LEASE_MIN, 
+ * If a client-acquired lease time is less than the @ref FNET_DHCP_LEASE_MIN,
  * the lease time will be pushed to the @ref FNET_DHCP_LEASE_MIN value.
  ******************************************************************************/
 #define FNET_DHCP_LEASE_MIN         (180U)
@@ -113,20 +113,20 @@
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_dhcp_init() function.
  *
- * The user application may use this structure to suggest a network address and/or 
+ * The user application may use this structure to suggest a network address and/or
  * the lease time to the DHCP client service.@n
  ******************************************************************************/
 struct fnet_dhcp_params
 {
     struct in_addr  requested_ip_address;    /**< @brief Suggested IP address.@n
                                              * The client can suggest to the DHCP server
-                                             * that a particular IP address value should be 
+                                             * that a particular IP address value should be
                                              * assigned to the client.@n
                                              * This parameter is optional and can be set to @c 0.
                                              */
     fnet_uint32_t   requested_lease_time;   /**< @brief Suggested Lease time in seconds.@n
                                              * The client can suggest to the DHCP server
-                                             * that a particular lease time should be 
+                                             * that a particular lease time should be
                                              * assigned to the client IP address.@n
                                              * This parameter is optional and can be set to @c 0.
                                              */
@@ -139,7 +139,7 @@ struct fnet_dhcp_params
  * @brief DHCP options are retrieved from a DHCP server.
  *
  * This structure is used by the @ref fnet_dhcp_get_options() function.@n
- * User application should never assign retrieved IP parameters directly 
+ * User application should never assign retrieved IP parameters directly
  * to network interface. The DHCP client service does it automatically.
  ******************************************************************************/
 struct fnet_dhcp_options
@@ -148,33 +148,33 @@ struct fnet_dhcp_options
     struct in_addr netmask;     /**< @brief Subnet Mask (in network byte order).*/
     struct in_addr gateway;     /**< @brief The IP address of a router on the client's subnet (in network byte order).*/
     struct in_addr dhcp_server; /**< @brief The DHCP server IP address (in network byte order).*/
-#if FNET_CFG_DHCP_BROADCAST                                     
+#if FNET_CFG_DHCP_BROADCAST
     struct in_addr broadcast;   /**< @brief Broadcast address in use on the client's subnet (in network byte order).@n
                                 * This option is present only if @ref FNET_CFG_DHCP_BROADCAST is set.*/
 #endif
-#if FNET_CFG_DNS                                     
+#if FNET_CFG_DNS
     struct in_addr dns;         /**< @brief DNS (Domain Name System) server address (in network byte order).@n
-                                * The DHCP client stores only the first DNS address, even if the DHCP server has 
+                                * The DHCP client stores only the first DNS address, even if the DHCP server has
                                 * provided several DNS addresses.@n
                                 * This option is present only if @ref FNET_CFG_DNS is set.*/
 #endif
     /* For debug needs: */
     fnet_uint32_t t1;           /**< @brief Renewal (T1) Time Value in seconds (in network byte order).@n
-                                * This option specifies the time interval from 
-                                * address assignment, until the client transitions 
+                                * This option specifies the time interval from
+                                * address assignment, until the client transitions
                                 * to the RENEWING state.@n
-                                * A user application may ignore this option value. 
+                                * A user application may ignore this option value.
                                 * It is used for internal and debug purposes only.*/
     fnet_uint32_t t2;           /**< @brief Rebinding (T2) Time Value in seconds (in network byte order).@n
-                                * This option specifies the time interval from 
-                                * address assignment until the client transitions 
+                                * This option specifies the time interval from
+                                * address assignment until the client transitions
                                 * to the REBINDING state.@n
-                                * A user application may ignore this option value. 
+                                * A user application may ignore this option value.
                                 * It is used for internal and debug purposes only.*/
     fnet_uint32_t lease_time;   /**< @brief The IP Address Lease Time in seconds (in network byte order).@n
                                 * @c t1 < @c t2 < @c lease_time.@n
                                 * By default, @c t1=0.5*lease_time; @c t2=0.875*lease_time.@n
-                                * A user application may ignore this option value. 
+                                * A user application may ignore this option value.
                                 * It is used for internal and debug purposes only.*/
 };
 
@@ -206,8 +206,8 @@ typedef fnet_int32_t fnet_dhcp_desc_t;
  *
  * This function initializes the DHCP client service. It allocates all
  * resources needed and registers the DHCP service in the polling list.@n
- * After the initialization, the user application should call the main polling 
- * function @ref fnet_poll_services() periodically to run the DHCP service routine 
+ * After the initialization, the user application should call the main polling
+ * function @ref fnet_poll_services() periodically to run the DHCP service routine
  * in the background.
  *
  ******************************************************************************/
@@ -223,7 +223,7 @@ fnet_dhcp_desc_t fnet_dhcp_init( fnet_netif_desc_t netif, struct fnet_dhcp_param
  *
  ******************************************************************************
  *
- * This function releases the DHCP client service. It releases all resources 
+ * This function releases the DHCP client service. It releases all resources
  * used by the service, and unregisters it from the polling list.
  *
  ******************************************************************************/
@@ -231,7 +231,7 @@ void fnet_dhcp_release(fnet_dhcp_desc_t desc);
 
 /***************************************************************************/ /*!
  *
- * @brief    Retrieves the current DHCP client options retrieved from a 
+ * @brief    Retrieves the current DHCP client options retrieved from a
  *           DHCP server.
  *
  * @param desc      DHCP client descriptor.
@@ -239,7 +239,7 @@ void fnet_dhcp_release(fnet_dhcp_desc_t desc);
  *
  ******************************************************************************
  *
- * This function returns the DHCP @c options that were retrieved 
+ * This function returns the DHCP @c options that were retrieved
  * by the DHCP client service from a DHCP server.@n
  * These options are valid after the DHCP client reaches the BOUND state, or
  * after the @ref fnet_dhcp_handler_updated_t event.
@@ -248,49 +248,49 @@ void fnet_dhcp_release(fnet_dhcp_desc_t desc);
 void fnet_dhcp_get_options(fnet_dhcp_desc_t desc, struct fnet_dhcp_options *options );
 
 /**************************************************************************/ /*!
- * @brief DHCP event handler callback function prototype, that is 
+ * @brief DHCP event handler callback function prototype, that is
  * called when the DHCP client has updated the IP parameters (in BOUND state).
  *
  * @param desc      DHCP client descriptor.
  * @param netif     Network interface descriptor which IP parameters were updated.
- * @param param     User-application specific parameter. It's set during 
- *                  the DHCP service initialization as part of the 
+ * @param param     User-application specific parameter. It's set during
+ *                  the DHCP service initialization as part of the
  *                  @ref fnet_dhcp_params.
  *
  * @see fnet_dhcp_params
  ******************************************************************************/
- typedef void(*fnet_dhcp_handler_updated_t)(fnet_dhcp_desc_t desc, fnet_netif_desc_t netif, void *param);
- 
- /**************************************************************************/ /*!
- * @brief DHCP event handler callback function prototype, that is 
- * called when the DHCP client send the DHCP discover message. @n
- * A user interface program may use it for indication of retransmission attempts.
- *
- * @param desc      DHCP client descriptor.
- * @param netif     Network interface descriptor.
- * @param param     User-application specific parameter. It's set during 
- *                  the DHCP service initialization as part of the 
- *                  @ref fnet_dhcp_params.
- *
- * @see fnet_dhcp_handler_updated_set
- ******************************************************************************/
- typedef void(*fnet_dhcp_handler_discover_t)(fnet_dhcp_desc_t desc, fnet_netif_desc_t netif, void *param);
+typedef void(*fnet_dhcp_handler_updated_t)(fnet_dhcp_desc_t desc, fnet_netif_desc_t netif, void *param);
+
+/**************************************************************************/ /*!
+* @brief DHCP event handler callback function prototype, that is
+* called when the DHCP client send the DHCP discover message. @n
+* A user interface program may use it for indication of retransmission attempts.
+*
+* @param desc      DHCP client descriptor.
+* @param netif     Network interface descriptor.
+* @param param     User-application specific parameter. It's set during
+*                  the DHCP service initialization as part of the
+*                  @ref fnet_dhcp_params.
+*
+* @see fnet_dhcp_handler_updated_set
+******************************************************************************/
+typedef void(*fnet_dhcp_handler_discover_t)(fnet_dhcp_desc_t desc, fnet_netif_desc_t netif, void *param);
 
 /***************************************************************************/ /*!
  *
  * @brief    Registers the "IP parameters updated" DHCP event handler.
  *
  * @param desc      DHCP client descriptor.
- * @param handler_updated Pointer to the callback function defined by 
+ * @param handler_updated Pointer to the callback function defined by
  *                      @ref fnet_dhcp_handler_updated_t.
- * @param param         Optional application-specific parameter. @n 
- *                      It's passed to the @c handler_updated callback 
+ * @param param         Optional application-specific parameter. @n
+ *                      It's passed to the @c handler_updated callback
  *                      function as input parameter.
  *
  ******************************************************************************
  *
- * This function registers the @c handler callback function for 
- * the "IP parameters updated" event. This event occurs when 
+ * This function registers the @c handler callback function for
+ * the "IP parameters updated" event. This event occurs when
  * the DHCP client has updated the IP parameters. @n
  * To stop the event handling, set the @c handler_updated parameter to zero value.
  *
@@ -302,19 +302,19 @@ void fnet_dhcp_handler_updated_set (fnet_dhcp_desc_t desc, fnet_dhcp_handler_upd
  * @brief    Registers the "Discover message sent" DHCP event handler.
  *
  * @param desc      DHCP client descriptor.
- * @param handler_discover  Pointer to the callback function defined by 
+ * @param handler_discover  Pointer to the callback function defined by
  *                          @ref fnet_dhcp_handler_discover_t.
- * @param param             Optional application-specific parameter. @n 
- *                          It's passed to the @c handler_discover callback 
+ * @param param             Optional application-specific parameter. @n
+ *                          It's passed to the @c handler_discover callback
  *                          function as input parameter.
  *
- * @see FNET_CFG_DHCP_RESPONSE_TIMEOUT 
+ * @see FNET_CFG_DHCP_RESPONSE_TIMEOUT
  *
  ******************************************************************************
  *
- * This function registers the @c handler callback function for 
- * the "Discover message sent" event. This event occurs when 
- * the DHCP client send the DHCP discover message. A user interface program 
+ * This function registers the @c handler callback function for
+ * the "Discover message sent" event. This event occurs when
+ * the DHCP client send the DHCP discover message. A user interface program
  * may use it for indication of retransmission attempts. @n
  * To stop the event handling, set the @c handler_discover parameter to zero value.
  *

@@ -9,14 +9,16 @@
 /* more complete examples.                                  */
 
 
-int main_p1(void) {
-  volatile int i = 0;
- 
-  
-  /* Loop forever */
-  for (;;) {
-    i++;
-  }
+int main_p1(void)
+{
+    volatile int i = 0;
+
+
+    /* Loop forever */
+    for (;;)
+    {
+        i++;
+    }
 }
 
 

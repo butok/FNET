@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_tftp_config.h
@@ -59,7 +59,7 @@
     #define FNET_CFG_TFTP_SRV   (0)
 #endif
 
-/****************************************************************************** 
+/******************************************************************************
  *              TFTP-client service config parameters
  ******************************************************************************/
 
@@ -68,8 +68,8 @@
  * @brief   TFTP server port number (in network byte order) used by TFTP-client
  *          service. @n
  *          Default value is FNET_HTONS(69).
- * @showinitializer 
- ******************************************************************************/ 
+ * @showinitializer
+ ******************************************************************************/
 #ifndef FNET_CFG_TFTP_CLN_PORT
     #define FNET_CFG_TFTP_CLN_PORT              (FNET_HTONS(69u))
 #endif
@@ -80,24 +80,24 @@
  *          If no response from a TFTP server is received during this timeout,
  *          the TFTP-client service is released automatically.@n
  *          Default value is @b @c 10.
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_TFTP_CLN_TIMEOUT
     #define FNET_CFG_TFTP_CLN_TIMEOUT           (10u) /*sec*/
 #endif
 
-/****************************************************************************** 
+/******************************************************************************
  *              TFTP-server service config parameters
  ******************************************************************************/
 
 /**************************************************************************/ /*!
  * @def     FNET_CFG_TFTP_SRV_PORT
  * @brief   Default TFTP server port number (in network byte order) used by TFTP-server service.@n
- *          It can be changed during the TFTP server initialization by the 
+ *          It can be changed during the TFTP server initialization by the
  *          @ref fnet_tftp_srv_init() function. @n
  *          Default value is FNET_HTONS(69).
- * @showinitializer 
- ******************************************************************************/ 
+ * @showinitializer
+ ******************************************************************************/
 
 #ifndef FNET_CFG_TFTP_SRV_PORT
     #define FNET_CFG_TFTP_SRV_PORT              (FNET_HTONS(69u))
@@ -106,7 +106,7 @@
 /**************************************************************************/ /*!
  * @def     FNET_CFG_TFTP_SRV_MAX
  * @brief   Maximum number of the TFTP Servers that can be run simultaneously. @n
- *          Default value is @b @c 1. 
+ *          Default value is @b @c 1.
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_TFTP_SRV_MAX
@@ -118,10 +118,10 @@
  * @brief   Default timeout for TFTP client response in seconds. @n
  *          If no response from a TFTP client is received during this timeout,
  *          the last packet is retransmitted to the TFTP client automatically.@n
- *          It can be changed during the TFTP server initialization by the 
+ *          It can be changed during the TFTP server initialization by the
  *          @ref fnet_tftp_srv_init() function. @n
- *          Default value is @b @c 3.  
- * @showinitializer 
+ *          Default value is @b @c 3.
+ * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_TFTP_SRV_TIMEOUT
     #define FNET_CFG_TFTP_SRV_TIMEOUT           (3u) /*sec*/
@@ -131,15 +131,15 @@
  * @def     FNET_CFG_TFTP_SRV_RETRANSMIT_MAX
  * @brief   Default maximum number of retransmissions. @n
  *          If no response from a TFTP client is received
- *          till maximum retransmission number is reached, 
+ *          till maximum retransmission number is reached,
  *          the TFTP server cancels the data transfer.@n
- *          It can be changed during the TFTP server initialization by the 
+ *          It can be changed during the TFTP server initialization by the
  *          @ref fnet_tftp_srv_init() function. @n
- *          Default value is @b @c 4. 
- * @showinitializer 
+ *          Default value is @b @c 4.
+ * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_TFTP_SRV_RETRANSMIT_MAX
-    #define FNET_CFG_TFTP_SRV_RETRANSMIT_MAX    (4u) 
+    #define FNET_CFG_TFTP_SRV_RETRANSMIT_MAX    (4u)
 #endif
 
 

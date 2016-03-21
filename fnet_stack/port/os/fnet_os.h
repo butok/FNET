@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_os.h
@@ -38,31 +38,31 @@ extern "C" {
 #endif
 
 #if FNET_CFG_OS_MUTEX
-    fnet_return_t fnet_os_mutex_init(void);
-    void fnet_os_mutex_lock(void);
-    void fnet_os_mutex_unlock(void);
-    void fnet_os_mutex_release(void);
+fnet_return_t fnet_os_mutex_init(void);
+void fnet_os_mutex_lock(void);
+void fnet_os_mutex_unlock(void);
+void fnet_os_mutex_release(void);
 #else
-    #define fnet_os_mutex_init()        FNET_OK
-    #define fnet_os_mutex_lock()        do{}while(0)  
-    #define fnet_os_mutex_unlock()      do{}while(0)
-    #define fnet_os_mutex_release()     do{}while(0)
+#define fnet_os_mutex_init()        FNET_OK
+#define fnet_os_mutex_lock()        do{}while(0)
+#define fnet_os_mutex_unlock()      do{}while(0)
+#define fnet_os_mutex_release()     do{}while(0)
 #endif
 
 #if FNET_CFG_OS_ISR
-    void fnet_os_isr(void);
+void fnet_os_isr(void);
 #else
-    #define fnet_os_isr(void)           do{}while(0)
+#define fnet_os_isr(void)           do{}while(0)
 #endif
 
 #if FNET_CFG_OS_EVENT
-    fnet_return_t fnet_os_event_init(void);
-    void fnet_os_event_wait(void);
-    void fnet_os_event_raise(void);
+fnet_return_t fnet_os_event_init(void);
+void fnet_os_event_wait(void);
+void fnet_os_event_raise(void);
 #else
-    #define fnet_os_event_init()        FNET_OK
-    #define fnet_os_event_wait()        do{}while(0)
-    #define fnet_os_event_raise()       do{}while(0)
+#define fnet_os_event_init()        FNET_OK
+#define fnet_os_event_wait()        do{}while(0)
+#define fnet_os_event_raise()       do{}while(0)
 #endif
 
 fnet_return_t fnet_os_timer_init(fnet_time_t period_ms);

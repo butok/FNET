@@ -1,6 +1,6 @@
 /**************************************************************************
-* 
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+*
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_netbuf.h
@@ -40,11 +40,11 @@
  ******************************************************************************/
 typedef enum
 {
-    FNET_NETBUF_FLAG_NONE                   = 0x00,     /* None. */
-    FNET_NETBUF_FLAG_BROADCAST              = 0x02,     /* Send/received as link-level broadcast. */
-    FNET_NETBUF_FLAG_MULTICAST              = 0x04,     /* Send/received as link-level multicast. */
-    FNET_NETBUF_FLAG_HW_IP_CHECKSUM         = 0x10,     /* IPv4 header checksum is calculated/checked by HW.*/
-    FNET_NETBUF_FLAG_HW_PROTOCOL_CHECKSUM   = 0x20      /* Protocol (UDP, TCP, ICMP) checksum is calculated/checked by HW.*/
+    FNET_NETBUF_FLAG_NONE                   = 0x00u,     /* None. */
+    FNET_NETBUF_FLAG_BROADCAST              = 0x02u,     /* Send/received as link-level broadcast. */
+    FNET_NETBUF_FLAG_MULTICAST              = 0x04u,     /* Send/received as link-level multicast. */
+    FNET_NETBUF_FLAG_HW_IP_CHECKSUM         = 0x10u,     /* IPv4 header checksum is calculated/checked by HW.*/
+    FNET_NETBUF_FLAG_HW_PROTOCOL_CHECKSUM   = 0x20u      /* Protocol (UDP, TCP, ICMP) checksum is calculated/checked by HW.*/
 } fnet_netbuf_flag_t;
 
 /**************************************************************************/ /*!
@@ -103,22 +103,22 @@ fnet_netbuf_t *fnet_netbuf_from_buf( void *data_ptr, fnet_size_t len, fnet_bool_
 fnet_netbuf_t *fnet_netbuf_concat( fnet_netbuf_t *nb1, fnet_netbuf_t *nb2 );
 void fnet_netbuf_to_buf( fnet_netbuf_t *nb, fnet_size_t offset, fnet_size_t len, void *data_ptr );
 fnet_return_t fnet_netbuf_pullup( fnet_netbuf_t **nb_ptr, fnet_size_t len);
-void fnet_netbuf_trim( fnet_netbuf_t ** nb_ptr, fnet_int32_t len );
-fnet_netbuf_t *fnet_netbuf_cut_center( fnet_netbuf_t ** nb_ptr, fnet_size_t offset, fnet_size_t len);
-void fnet_netbuf_add_chain( fnet_netbuf_t ** nb_ptr, fnet_netbuf_t *nb_chain );
-void fnet_netbuf_del_chain( fnet_netbuf_t ** nb_ptr, fnet_netbuf_t *nb_chain );
+void fnet_netbuf_trim( fnet_netbuf_t **nb_ptr, fnet_int32_t len );
+fnet_netbuf_t *fnet_netbuf_cut_center( fnet_netbuf_t **nb_ptr, fnet_size_t offset, fnet_size_t len);
+void fnet_netbuf_add_chain( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain );
+void fnet_netbuf_del_chain( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain );
 void fnet_netbuf_free_chain( fnet_netbuf_t *nb );
-                                             
-#if 0 /* For Debug needs.*/                                            
-fnet_return_t fnet_netbuf_mempool_check( void ); 
-void FNET_DEBUG_NETBUF_print_chain( fnet_netbuf_t *nb, fnet_uint8_t *str, fnrt_index_t max);                                       
+
+#if 0 /* For Debug needs.*/
+fnet_return_t fnet_netbuf_mempool_check( void );
+void FNET_DEBUG_NETBUF_print_chain( fnet_netbuf_t *nb, fnet_uint8_t *str, fnrt_index_t max);
 #endif
 
 #if 0 /* For Debug needs.*/
-    void fnet_free_netbuf_low( void *ap );
-    #define fnet_free_netbuf(ap )   do{ fnet_free_netbuf_low( ap ); \
-                                                ap = (void *)0x0; \
-                                            } while(0)
+void fnet_free_netbuf_low( void *ap );
+#define fnet_free_netbuf(ap )   do{ fnet_free_netbuf_low( ap ); \
+        ap = (void *)0x0; \
+    } while(0)
 #endif
 
 #if defined(__cplusplus)

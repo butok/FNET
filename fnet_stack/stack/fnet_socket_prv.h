@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_socket_prv.h
@@ -37,7 +37,7 @@
 
 #if FNET_CFG_TCP
 
-#include "fnet_tcp.h"
+    #include "fnet_tcp.h"
 
 #endif
 
@@ -68,12 +68,12 @@ typedef struct
     fnet_size_t     count;              /**< Aactual chars in buffer.*/
     fnet_size_t     count_max;          /**< Max actual char count (9*1024).*/
     fnet_netbuf_t   *net_buf_chain;     /**< The net_buf chain.*/
-    fnet_bool_t     is_shutdown;        /**< The socket has been shut down for read/write.*/    
+    fnet_bool_t     is_shutdown;        /**< The socket has been shut down for read/write.*/
 } fnet_socket_buffer_t;
 
 /**************************************************************************/ /*!
  * @internal
- * @brief    Structure contains parameter of receive datagram 
+ * @brief    Structure contains parameter of receive datagram
  * (only for SOCK_DGRAM).
  ******************************************************************************/
 typedef struct
@@ -89,10 +89,10 @@ typedef struct
 {
 #if FNET_CFG_IP4
     fnet_ip_sockopt_t   ip_opt;         /**< IP options.*/
-#endif    
+#endif
 #if FNET_CFG_IP6
     fnet_ip6_sockopt_t  ip6_opt;        /**< IP options.*/
-#endif 
+#endif
 #if FNET_CFG_TCP
     fnet_tcp_sockopt_t  tcp_opt;        /**< TCP options.*/
 #endif
@@ -136,17 +136,17 @@ typedef struct _fnet_socket_if_t
     struct sockaddr         foreign_addr;           /**< Foreign socket address.*/
     struct sockaddr         local_addr;             /**< Lockal socket address.*/
     fnet_socket_option_t    options;                /**< Collection of socket options.*/
-    
-#if FNET_CFG_MULTICAST 
+
+#if FNET_CFG_MULTICAST
     /* Multicast params.*/
-#if FNET_CFG_IP4    
+#if FNET_CFG_IP4
     fnet_ip4_multicast_list_entry_t *ip4_multicast_entry[FNET_CFG_MULTICAST_SOCKET_MAX];
-#endif 
-#if FNET_CFG_IP6    
+#endif
+#if FNET_CFG_IP6
     fnet_ip6_multicast_list_entry_t *ip6_multicast_entry[FNET_CFG_MULTICAST_SOCKET_MAX];
-#endif    
-#endif /* FNET_CFG_MULTICAST */    
-    
+#endif
+#endif /* FNET_CFG_MULTICAST */
+
 } fnet_socket_if_t;
 
 /**************************************************************************/ /*!
@@ -159,7 +159,7 @@ typedef struct fnet_socket_prot_if
     fnet_return_t  (*prot_attach)(fnet_socket_if_t *sk);                                                           /* Protocol "attach" function. */
     fnet_return_t  (*prot_detach)(fnet_socket_if_t *sk);                                                           /* Protocol "detach" function. */
     fnet_return_t  (*prot_connect)(fnet_socket_if_t *sk, struct sockaddr *foreign_addr);                           /* Protocol "connect" function. */
-    fnet_socket_if_t *( *prot_accept)(fnet_socket_if_t * sk);                                                         /* Protocol "accept" function. */
+    fnet_socket_if_t *( *prot_accept)(fnet_socket_if_t *sk);                                                          /* Protocol "accept" function. */
     fnet_int32_t  (*prot_rcv)(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct sockaddr *foreign_addr );        /* Protocol "receive" function. */
     fnet_int32_t  (*prot_snd)(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct sockaddr *foreign_addr );  /* Protocol "send" function. */
     fnet_return_t  (*prot_shutdown)(fnet_socket_if_t *sk, fnet_sd_flags_t how);                                                        /* Protocol "shutdown" function. */
@@ -176,14 +176,14 @@ extern "C" {
 #endif
 
 void fnet_socket_init( void );
-void fnet_socket_list_add( fnet_socket_if_t ** head, fnet_socket_if_t *s );
-void fnet_socket_list_del( fnet_socket_if_t ** head, fnet_socket_if_t *s );
+void fnet_socket_list_add( fnet_socket_if_t **head, fnet_socket_if_t *s );
+void fnet_socket_list_del( fnet_socket_if_t **head, fnet_socket_if_t *s );
 void fnet_socket_set_error( fnet_socket_if_t *sock, fnet_error_t error );
 fnet_socket_if_t *fnet_socket_lookup( fnet_socket_if_t *head,  struct sockaddr *local_addr, struct sockaddr *foreign_addr, fnet_uint32_t protocol_number);
 fnet_uint16_t  fnet_socket_get_uniqueport(fnet_socket_if_t *head, struct sockaddr *local_addr);
 fnet_bool_t fnet_socket_conflict( fnet_socket_if_t *head,  const struct sockaddr *local_addr, const struct sockaddr *foreign_addr /*optional*/, fnet_bool_t wildcard );
 fnet_socket_if_t *fnet_socket_copy( fnet_socket_if_t *sock );
-void fnet_socket_release( fnet_socket_if_t ** head, fnet_socket_if_t *sock );
+void fnet_socket_release( fnet_socket_if_t **head, fnet_socket_if_t *sock );
 fnet_return_t fnet_socket_buffer_append_address( fnet_socket_buffer_t *sb, fnet_netbuf_t *nb, struct sockaddr *addr);
 fnet_return_t fnet_socket_buffer_append_record( fnet_socket_buffer_t *sb, fnet_netbuf_t *nb );
 fnet_int32_t fnet_socket_buffer_read_address( fnet_socket_buffer_t *sb, fnet_uint8_t *buf, fnet_size_t len, struct sockaddr *foreign_addr, fnet_bool_t remove );

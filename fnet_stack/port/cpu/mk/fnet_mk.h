@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_mk.h
@@ -35,7 +35,7 @@
 
 #include "fnet.h"
 
-#if FNET_MK 
+#if FNET_MK
 
 /*********************************************************************
 *
@@ -63,10 +63,10 @@ typedef volatile fnet_uint32_t fnet_vuint32_t;   /* 32 bits */
 /************************************************************************
 * Kinetis peripheral clock in KHZ.
 *************************************************************************/
-fnet_uint32_t fnet_mk_periph_clk_khz(void); 
+fnet_uint32_t fnet_mk_periph_clk_khz(void);
 
-#define FNET_MK_PERIPH_CLOCK_KHZ       fnet_mk_periph_clk_khz()     
-#define FNET_MK_PERIPH_CLOCK_MHZ       (fnet_mk_periph_clk_khz()/1000)  
+#define FNET_MK_PERIPH_CLOCK_KHZ       fnet_mk_periph_clk_khz()
+#define FNET_MK_PERIPH_CLOCK_MHZ       (fnet_mk_periph_clk_khz()/1000)
 
 
 /* ----------------------------------------------------------------------------
@@ -74,42 +74,44 @@ fnet_uint32_t fnet_mk_periph_clk_khz(void);
    ---------------------------------------------------------------------------- */
 
 /* UART - Peripheral register structure */
-typedef struct FNET_MK_UART_MemMap {
-  fnet_uint8_t BDH;                                     /* UART Baud Rate Registers:High, offset: 0x0 */
-  fnet_uint8_t BDL;                                     /* UART Baud Rate Registers: Low, offset: 0x1 */
-  fnet_uint8_t C1;                                      /* UART Control Register 1, offset: 0x2 */
-  fnet_uint8_t C2;                                      /* UART Control Register 2, offset: 0x3 */
-  fnet_uint8_t S1;                                      /* UART Status Register 1, offset: 0x4 */
-  fnet_uint8_t S2;                                      /* UART Status Register 2, offset: 0x5 */
-  fnet_uint8_t C3;                                      /* UART Control Register 3, offset: 0x6 */
-  fnet_uint8_t D;                                       /* UART Data Register, offset: 0x7 */
-  fnet_uint8_t MA1;                                     /* UART Match Address Registers 1, offset: 0x8 */
-  fnet_uint8_t MA2;                                     /* UART Match Address Registers 2, offset: 0x9 */
-  fnet_uint8_t C4;                                      /* UART Control Register 4, offset: 0xA */
-  fnet_uint8_t C5;                                      /* UART Control Register 5, offset: 0xB */
-  fnet_uint8_t ED;                                      /* UART Extended Data Register, offset: 0xC */
-  fnet_uint8_t MODEM;                                   /* UART Modem Register, offset: 0xD */
-  fnet_uint8_t IR;                                      /* UART Infrared Register, offset: 0xE */
-  fnet_uint8_t RESERVED_0[1];
-  fnet_uint8_t PFIFO;                                   /* UART FIFO Parameters, offset: 0x10 */
-  fnet_uint8_t CFIFO;                                   /* UART FIFO Control Register, offset: 0x11 */
-  fnet_uint8_t SFIFO;                                   /* UART FIFO Status Register, offset: 0x12 */
-  fnet_uint8_t TWFIFO;                                  /* UART FIFO Transmit Watermark, offset: 0x13 */
-  fnet_uint8_t TCFIFO;                                  /* UART FIFO Transmit Count, offset: 0x14 */
-  fnet_uint8_t RWFIFO;                                  /* UART FIFO Receive Watermark, offset: 0x15 */
-  fnet_uint8_t RCFIFO;                                  /* UART FIFO Receive Count, offset: 0x16 */
-  fnet_uint8_t RESERVED_1[1];
-  fnet_uint8_t C7816;                                   /* UART 7816 Control Register, offset: 0x18 */
-  fnet_uint8_t IE7816;                                  /* UART 7816 Interrupt Enable Register, offset: 0x19 */
-  fnet_uint8_t IS7816;                                  /* UART 7816 Interrupt Status Register, offset: 0x1A */
-  union {                                             /* offset: 0x1B */
-    fnet_uint8_t WP7816_T_TYPE0;                          /* UART 7816 Wait Parameter Register, offset: 0x1B */
-    fnet_uint8_t WP7816_T_TYPE1;                          /* UART 7816 Wait Parameter Register, offset: 0x1B */
-  };
-  fnet_uint8_t WN7816;                                  /* UART 7816 Wait N Register, offset: 0x1C */
-  fnet_uint8_t WF7816;                                  /* UART 7816 Wait FD Register, offset: 0x1D */
-  fnet_uint8_t ET7816;                                  /* UART 7816 Error Threshold Register, offset: 0x1E */
-  fnet_uint8_t TL7816;                                  /* UART 7816 Transmit Length Register, offset: 0x1F */
+typedef struct FNET_MK_UART_MemMap
+{
+    fnet_uint8_t BDH;                                     /* UART Baud Rate Registers:High, offset: 0x0 */
+    fnet_uint8_t BDL;                                     /* UART Baud Rate Registers: Low, offset: 0x1 */
+    fnet_uint8_t C1;                                      /* UART Control Register 1, offset: 0x2 */
+    fnet_uint8_t C2;                                      /* UART Control Register 2, offset: 0x3 */
+    fnet_uint8_t S1;                                      /* UART Status Register 1, offset: 0x4 */
+    fnet_uint8_t S2;                                      /* UART Status Register 2, offset: 0x5 */
+    fnet_uint8_t C3;                                      /* UART Control Register 3, offset: 0x6 */
+    fnet_uint8_t D;                                       /* UART Data Register, offset: 0x7 */
+    fnet_uint8_t MA1;                                     /* UART Match Address Registers 1, offset: 0x8 */
+    fnet_uint8_t MA2;                                     /* UART Match Address Registers 2, offset: 0x9 */
+    fnet_uint8_t C4;                                      /* UART Control Register 4, offset: 0xA */
+    fnet_uint8_t C5;                                      /* UART Control Register 5, offset: 0xB */
+    fnet_uint8_t ED;                                      /* UART Extended Data Register, offset: 0xC */
+    fnet_uint8_t MODEM;                                   /* UART Modem Register, offset: 0xD */
+    fnet_uint8_t IR;                                      /* UART Infrared Register, offset: 0xE */
+    fnet_uint8_t RESERVED_0[1];
+    fnet_uint8_t PFIFO;                                   /* UART FIFO Parameters, offset: 0x10 */
+    fnet_uint8_t CFIFO;                                   /* UART FIFO Control Register, offset: 0x11 */
+    fnet_uint8_t SFIFO;                                   /* UART FIFO Status Register, offset: 0x12 */
+    fnet_uint8_t TWFIFO;                                  /* UART FIFO Transmit Watermark, offset: 0x13 */
+    fnet_uint8_t TCFIFO;                                  /* UART FIFO Transmit Count, offset: 0x14 */
+    fnet_uint8_t RWFIFO;                                  /* UART FIFO Receive Watermark, offset: 0x15 */
+    fnet_uint8_t RCFIFO;                                  /* UART FIFO Receive Count, offset: 0x16 */
+    fnet_uint8_t RESERVED_1[1];
+    fnet_uint8_t C7816;                                   /* UART 7816 Control Register, offset: 0x18 */
+    fnet_uint8_t IE7816;                                  /* UART 7816 Interrupt Enable Register, offset: 0x19 */
+    fnet_uint8_t IS7816;                                  /* UART 7816 Interrupt Status Register, offset: 0x1A */
+    union                                               /* offset: 0x1B */
+    {
+        fnet_uint8_t WP7816_T_TYPE0;                          /* UART 7816 Wait Parameter Register, offset: 0x1B */
+        fnet_uint8_t WP7816_T_TYPE1;                          /* UART 7816 Wait Parameter Register, offset: 0x1B */
+    } WP7816;
+    fnet_uint8_t WN7816;                                  /* UART 7816 Wait N Register, offset: 0x1C */
+    fnet_uint8_t WF7816;                                  /* UART 7816 Wait FD Register, offset: 0x1D */
+    fnet_uint8_t ET7816;                                  /* UART 7816 Error Threshold Register, offset: 0x1E */
+    fnet_uint8_t TL7816;                                  /* UART 7816 Transmit Length Register, offset: 0x1F */
 } volatile *FNET_MK_UART_MemMapPtr;
 
 /* ----------------------------------------------------------------------------
@@ -587,32 +589,33 @@ typedef struct FNET_MK_UART_MemMap {
    ---------------------------------------------------------------------------- */
 
 /* SIM - Peripheral register structure */
-typedef struct FNET_MK_SIM_MemMap {
-  fnet_uint32_t SOPT1;                                  /* System Options Register 1, offset: 0x0 */
-  fnet_uint8_t RESERVED_0[4096];
-  fnet_uint32_t SOPT2;                                  /* System Options Register 2, offset: 0x1004 */
-  fnet_uint8_t RESERVED_1[4];
-  fnet_uint32_t SOPT4;                                  /* System Options Register 4, offset: 0x100C */
-  fnet_uint32_t SOPT5;                                  /* System Options Register 5, offset: 0x1010 */
-  fnet_uint32_t SOPT6;                                  /* System Options Register 6, offset: 0x1014 */
-  fnet_uint32_t SOPT7;                                  /* System Options Register 7, offset: 0x1018 */
-  fnet_uint8_t RESERVED_2[8];
-  fnet_uint32_t SDID;                                   /* System Device Identification Register, offset: 0x1024 */
-  fnet_uint32_t SCGC1;                                  /* System Clock Gating Control Register 1, offset: 0x1028 */
-  fnet_uint32_t SCGC2;                                  /* System Clock Gating Control Register 2, offset: 0x102C */
-  fnet_uint32_t SCGC3;                                  /* System Clock Gating Control Register 3, offset: 0x1030 */
-  fnet_uint32_t SCGC4;                                  /* System Clock Gating Control Register 4, offset: 0x1034 */
-  fnet_uint32_t SCGC5;                                  /* System Clock Gating Control Register 5, offset: 0x1038 */
-  fnet_uint32_t SCGC6;                                  /* System Clock Gating Control Register 6, offset: 0x103C */
-  fnet_uint32_t SCGC7;                                  /* System Clock Gating Control Register 7, offset: 0x1040 */
-  fnet_uint32_t CLKDIV1;                                /* System Clock Divider Register 1, offset: 0x1044 */
-  fnet_uint32_t CLKDIV2;                                /* System Clock Divider Register 2, offset: 0x1048 */
-  fnet_uint32_t FCFG1;                                  /* Flash Configuration Register 1, offset: 0x104C */
-  fnet_uint32_t FCFG2;                                  /* Flash Configuration Register 2, offset: 0x1050 */
-  fnet_uint32_t UIDH;                                   /* Unique Identification Register High, offset: 0x1054 */
-  fnet_uint32_t UIDMH;                                  /* Unique Identification Register Mid-High, offset: 0x1058 */
-  fnet_uint32_t UIDML;                                  /* Unique Identification Register Mid Low, offset: 0x105C */
-  fnet_uint32_t UIDL;                                   /* Unique Identification Register Low, offset: 0x1060 */
+typedef struct FNET_MK_SIM_MemMap
+{
+    fnet_uint32_t SOPT1;                                  /* System Options Register 1, offset: 0x0 */
+    fnet_uint8_t RESERVED_0[4096];
+    fnet_uint32_t SOPT2;                                  /* System Options Register 2, offset: 0x1004 */
+    fnet_uint8_t RESERVED_1[4];
+    fnet_uint32_t SOPT4;                                  /* System Options Register 4, offset: 0x100C */
+    fnet_uint32_t SOPT5;                                  /* System Options Register 5, offset: 0x1010 */
+    fnet_uint32_t SOPT6;                                  /* System Options Register 6, offset: 0x1014 */
+    fnet_uint32_t SOPT7;                                  /* System Options Register 7, offset: 0x1018 */
+    fnet_uint8_t RESERVED_2[8];
+    fnet_uint32_t SDID;                                   /* System Device Identification Register, offset: 0x1024 */
+    fnet_uint32_t SCGC1;                                  /* System Clock Gating Control Register 1, offset: 0x1028 */
+    fnet_uint32_t SCGC2;                                  /* System Clock Gating Control Register 2, offset: 0x102C */
+    fnet_uint32_t SCGC3;                                  /* System Clock Gating Control Register 3, offset: 0x1030 */
+    fnet_uint32_t SCGC4;                                  /* System Clock Gating Control Register 4, offset: 0x1034 */
+    fnet_uint32_t SCGC5;                                  /* System Clock Gating Control Register 5, offset: 0x1038 */
+    fnet_uint32_t SCGC6;                                  /* System Clock Gating Control Register 6, offset: 0x103C */
+    fnet_uint32_t SCGC7;                                  /* System Clock Gating Control Register 7, offset: 0x1040 */
+    fnet_uint32_t CLKDIV1;                                /* System Clock Divider Register 1, offset: 0x1044 */
+    fnet_uint32_t CLKDIV2;                                /* System Clock Divider Register 2, offset: 0x1048 */
+    fnet_uint32_t FCFG1;                                  /* Flash Configuration Register 1, offset: 0x104C */
+    fnet_uint32_t FCFG2;                                  /* Flash Configuration Register 2, offset: 0x1050 */
+    fnet_uint32_t UIDH;                                   /* Unique Identification Register High, offset: 0x1054 */
+    fnet_uint32_t UIDMH;                                  /* Unique Identification Register Mid-High, offset: 0x1058 */
+    fnet_uint32_t UIDML;                                  /* Unique Identification Register Mid Low, offset: 0x105C */
+    fnet_uint32_t UIDL;                                   /* Unique Identification Register Low, offset: 0x1060 */
 } volatile *FNET_MK_SIM_MemMapPtr;
 
 /* ----------------------------------------------------------------------------
@@ -958,16 +961,17 @@ typedef struct FNET_MK_SIM_MemMap {
    ---------------------------------------------------------------------------- */
 
 /* PORT - Peripheral register structure */
-typedef struct FNET_MK_PORT_MemMap {
-  fnet_uint32_t PCR[32];                                /* Pin Control Register n, array offset: 0x0, array step: 0x4 */
-  fnet_uint32_t GPCLR;                                  /* Global Pin Control Low Register, offset: 0x80 */
-  fnet_uint32_t GPCHR;                                  /* Global Pin Control High Register, offset: 0x84 */
-  fnet_uint8_t RESERVED_0[24];
-  fnet_uint32_t ISFR;                                   /* Interrupt Status Flag Register, offset: 0xA0 */
-  fnet_uint8_t RESERVED_1[28];
-  fnet_uint32_t DFER;                                   /* Digital Filter Enable Register, offset: 0xC0 */
-  fnet_uint32_t DFCR;                                   /* Digital Filter Clock Register, offset: 0xC4 */
-  fnet_uint32_t DFWR;                                   /* Digital Filter Width Register, offset: 0xC8 */
+typedef struct FNET_MK_PORT_MemMap
+{
+    fnet_uint32_t PCR[32];                                /* Pin Control Register n, array offset: 0x0, array step: 0x4 */
+    fnet_uint32_t GPCLR;                                  /* Global Pin Control Low Register, offset: 0x80 */
+    fnet_uint32_t GPCHR;                                  /* Global Pin Control High Register, offset: 0x84 */
+    fnet_uint8_t RESERVED_0[24];
+    fnet_uint32_t ISFR;                                   /* Interrupt Status Flag Register, offset: 0xA0 */
+    fnet_uint8_t RESERVED_1[28];
+    fnet_uint32_t DFER;                                   /* Digital Filter Enable Register, offset: 0xC0 */
+    fnet_uint32_t DFCR;                                   /* Digital Filter Clock Register, offset: 0xC4 */
+    fnet_uint32_t DFWR;                                   /* Digital Filter Width Register, offset: 0xC8 */
 } volatile *FNET_MK_PORT_MemMapPtr;
 
 /* ----------------------------------------------------------------------------
@@ -1306,20 +1310,21 @@ typedef struct FNET_MK_PORT_MemMap {
    ---------------------------------------------------------------------------- */
 
 /* NVIC - Peripheral register structure */
-typedef struct FNET_MK_NVIC_MemMap {
-  fnet_uint32_t ISER[4];                                /* Interrupt Set Enable Register n, array offset: 0x0, array step: 0x4 */
-  fnet_uint8_t RESERVED_0[112];
-  fnet_uint32_t ICER[4];                                /* Interrupt Clear Enable Register n, array offset: 0x80, array step: 0x4 */
-  fnet_uint8_t RESERVED_1[112];
-  fnet_uint32_t ISPR[4];                                /* Interrupt Set Pending Register n, array offset: 0x100, array step: 0x4 */
-  fnet_uint8_t RESERVED_2[112];
-  fnet_uint32_t ICPR[4];                                /* Interrupt Clear Pending Register n, array offset: 0x180, array step: 0x4 */
-  fnet_uint8_t RESERVED_3[112];
-  fnet_uint32_t IABR[4];                                /* Interrupt Active bit Register n, array offset: 0x200, array step: 0x4 */
-  fnet_uint8_t RESERVED_4[240];
-  fnet_uint8_t IP[104];                                 /* Interrupt Priority Register n, array offset: 0x300, array step: 0x1 */
-  fnet_uint8_t RESERVED_5[2712];
-  fnet_uint32_t STIR[1];                                /* Software Trigger Interrupt Register, array offset: 0xE00, array step: 0x4 */
+typedef struct FNET_MK_NVIC_MemMap
+{
+    fnet_uint32_t ISER[4];                                /* Interrupt Set Enable Register n, array offset: 0x0, array step: 0x4 */
+    fnet_uint8_t RESERVED_0[112];
+    fnet_uint32_t ICER[4];                                /* Interrupt Clear Enable Register n, array offset: 0x80, array step: 0x4 */
+    fnet_uint8_t RESERVED_1[112];
+    fnet_uint32_t ISPR[4];                                /* Interrupt Set Pending Register n, array offset: 0x100, array step: 0x4 */
+    fnet_uint8_t RESERVED_2[112];
+    fnet_uint32_t ICPR[4];                                /* Interrupt Clear Pending Register n, array offset: 0x180, array step: 0x4 */
+    fnet_uint8_t RESERVED_3[112];
+    fnet_uint32_t IABR[4];                                /* Interrupt Active bit Register n, array offset: 0x200, array step: 0x4 */
+    fnet_uint8_t RESERVED_4[240];
+    fnet_uint8_t IP[104];                                 /* Interrupt Priority Register n, array offset: 0x300, array step: 0x1 */
+    fnet_uint8_t RESERVED_5[2712];
+    fnet_uint32_t STIR[1];                                /* Software Trigger Interrupt Register, array offset: 0xE00, array step: 0x4 */
 } volatile *FNET_MK_NVIC_MemMapPtr;
 
 /* ----------------------------------------------------------------------------
@@ -1829,15 +1834,17 @@ typedef struct FNET_MK_NVIC_MemMap {
    ---------------------------------------------------------------------------- */
 
 /* PIT - Peripheral register structure */
-typedef struct FNET_MK_PIT_MemMap {
-  fnet_uint32_t MCR;                                      /* PIT Module Control Register, offset: 0x0 */
-  fnet_uint8_t RESERVED_0[252];
-  struct {                                              /* offset: 0x100, array step: 0x10 */
-    fnet_uint32_t LDVAL;                                  /* Timer Load Value Register, array offset: 0x100, array step: 0x10 */
-    fnet_uint32_t CVAL;                                   /* Current Timer Value Register, array offset: 0x104, array step: 0x10 */
-    fnet_uint32_t TCTRL;                                  /* Timer Control Register, array offset: 0x108, array step: 0x10 */
-    fnet_uint32_t TFLG;                                   /* Timer Flag Register, array offset: 0x10C, array step: 0x10 */
-  } CHANNEL[4];
+typedef struct FNET_MK_PIT_MemMap
+{
+    fnet_uint32_t MCR;                                      /* PIT Module Control Register, offset: 0x0 */
+    fnet_uint8_t RESERVED_0[252];
+    struct                                                /* offset: 0x100, array step: 0x10 */
+    {
+        fnet_uint32_t LDVAL;                                  /* Timer Load Value Register, array offset: 0x100, array step: 0x10 */
+        fnet_uint32_t CVAL;                                   /* Current Timer Value Register, array offset: 0x104, array step: 0x10 */
+        fnet_uint32_t TCTRL;                                  /* Timer Control Register, array offset: 0x108, array step: 0x10 */
+        fnet_uint32_t TFLG;                                   /* Timer Flag Register, array offset: 0x10C, array step: 0x10 */
+    } CHANNEL[4];
 } volatile *FNET_MK_PIT_MemMapPtr;
 
 /* ----------------------------------------------------------------------------
@@ -1916,17 +1923,19 @@ typedef struct FNET_MK_PIT_MemMap {
    ---------------------------------------------------------------------------- */
 
 /* MPU - Peripheral register structure */
-typedef struct FNET_MK_MPU_MemMap {
-  fnet_uint32_t CESR;                                     /* Control/Error Status Register, offset: 0x0 */
-  fnet_uint8_t RESERVED_0[12];
-  struct {                                              /* offset: 0x10, array step: 0x8 */
-    fnet_uint32_t EAR;                                    /* Error Address Register, Slave Port n, array offset: 0x10, array step: 0x8 */
-    fnet_uint32_t EDR;                                    /* Error Detail Register, Slave Port n, array offset: 0x14, array step: 0x8 */
-  } SP[5];
-  fnet_uint8_t RESERVED_1[968];
-  fnet_uint32_t WORD[12][4];                              /* Region Descriptor n, Word 0..Region Descriptor n, Word 3, array offset: 0x400, array step: index*0x10, index2*0x4 */
-  fnet_uint8_t RESERVED_2[832];
-  fnet_uint32_t RGDAAC[12];                               /* Region Descriptor Alternate Access Control n, array offset: 0x800, array step: 0x4 */
+typedef struct FNET_MK_MPU_MemMap
+{
+    fnet_uint32_t CESR;                                     /* Control/Error Status Register, offset: 0x0 */
+    fnet_uint8_t RESERVED_0[12];
+    struct                                                /* offset: 0x10, array step: 0x8 */
+    {
+        fnet_uint32_t EAR;                                    /* Error Address Register, Slave Port n, array offset: 0x10, array step: 0x8 */
+        fnet_uint32_t EDR;                                    /* Error Detail Register, Slave Port n, array offset: 0x14, array step: 0x8 */
+    } SP[5];
+    fnet_uint8_t RESERVED_1[968];
+    fnet_uint32_t WORD[12][4];                              /* Region Descriptor n, Word 0..Region Descriptor n, Word 3, array offset: 0x400, array step: index*0x10, index2*0x4 */
+    fnet_uint8_t RESERVED_2[832];
+    fnet_uint32_t RGDAAC[12];                               /* Region Descriptor Alternate Access Control n, array offset: 0x800, array step: 0x4 */
 } volatile *FNET_MK_MPU_MemMapPtr;
 
 /* ----------------------------------------------------------------------------
@@ -2160,17 +2169,19 @@ typedef struct FNET_MK_MPU_MemMap {
    ---------------------------------------------------------------------------- */
 
 /* FMC - Peripheral register structure */
-typedef struct FNET_MK_FMC_MemMap {
-  fnet_uint32_t PFAPR;                                    /* Flash Access Protection Register, offset: 0x0 */
-  fnet_uint32_t PFB0CR;                                   /* Flash Bank 0 Control Register, offset: 0x4 */
-  fnet_uint32_t PFB1CR;                                   /* Flash Bank 1 Control Register, offset: 0x8 */
-  fnet_uint8_t RESERVED_0[244];
-  fnet_uint32_t TAGVD[4][8];                              /* Cache Directory Storage, array offset: 0x100, array step: index*0x20, index2*0x4 */
-  fnet_uint8_t RESERVED_1[128];
-  struct {                                              /* offset: 0x200, array step: index*0x40, index2*0x8 */
-    fnet_uint32_t DATA_U;                                 /* Cache Data Storage (upper word), array offset: 0x200, array step: index*0x40, index2*0x8 */
-    fnet_uint32_t DATA_L;                                 /* Cache Data Storage (lower word), array offset: 0x204, array step: index*0x40, index2*0x8 */
-  } SET[4][8];
+typedef struct FNET_MK_FMC_MemMap
+{
+    fnet_uint32_t PFAPR;                                    /* Flash Access Protection Register, offset: 0x0 */
+    fnet_uint32_t PFB0CR;                                   /* Flash Bank 0 Control Register, offset: 0x4 */
+    fnet_uint32_t PFB1CR;                                   /* Flash Bank 1 Control Register, offset: 0x8 */
+    fnet_uint8_t RESERVED_0[244];
+    fnet_uint32_t TAGVD[4][8];                              /* Cache Directory Storage, array offset: 0x100, array step: index*0x20, index2*0x4 */
+    fnet_uint8_t RESERVED_1[128];
+    struct                                                /* offset: 0x200, array step: index*0x40, index2*0x8 */
+    {
+        fnet_uint32_t DATA_U;                                 /* Cache Data Storage (upper word), array offset: 0x200, array step: index*0x40, index2*0x8 */
+        fnet_uint32_t DATA_L;                                 /* Cache Data Storage (lower word), array offset: 0x204, array step: index*0x40, index2*0x8 */
+    } SET[4][8];
 } volatile *FNET_MK_FMC_MemMapPtr;
 
 /* ----------------------------------------------------------------------------
@@ -2411,30 +2422,31 @@ typedef struct FNET_MK_FMC_MemMap {
    ---------------------------------------------------------------------------- */
 
 /* FTFL - Peripheral register structure */
-typedef struct FNET_MK_FTFL_MemMap {
-  fnet_vuint8_t FSTAT;                                   /* Flash Status Register, offset: 0x0 */
-  fnet_vuint8_t FCNFG;                                   /* Flash Configuration Register, offset: 0x1 */
-  fnet_vuint8_t FSEC;                                    /* Flash Security Register, offset: 0x2 */
-  fnet_vuint8_t FOPT;                                    /* Flash Option Register, offset: 0x3 */
-  fnet_vuint8_t FCCOB3;                                  /* Flash Common Command Object Registers, offset: 0x4 */
-  fnet_vuint8_t FCCOB2;                                  /* Flash Common Command Object Registers, offset: 0x5 */
-  fnet_vuint8_t FCCOB1;                                  /* Flash Common Command Object Registers, offset: 0x6 */
-  fnet_vuint8_t FCCOB0;                                  /* Flash Common Command Object Registers, offset: 0x7 */
-  fnet_vuint8_t FCCOB7;                                  /* Flash Common Command Object Registers, offset: 0x8 */
-  fnet_vuint8_t FCCOB6;                                  /* Flash Common Command Object Registers, offset: 0x9 */
-  fnet_vuint8_t FCCOB5;                                  /* Flash Common Command Object Registers, offset: 0xA */
-  fnet_vuint8_t FCCOB4;                                  /* Flash Common Command Object Registers, offset: 0xB */
-  fnet_vuint8_t FCCOBB;                                  /* Flash Common Command Object Registers, offset: 0xC */
-  fnet_vuint8_t FCCOBA;                                  /* Flash Common Command Object Registers, offset: 0xD */
-  fnet_vuint8_t FCCOB9;                                  /* Flash Common Command Object Registers, offset: 0xE */
-  fnet_vuint8_t FCCOB8;                                  /* Flash Common Command Object Registers, offset: 0xF */
-  fnet_vuint8_t FPROT3;                                  /* Program Flash Protection Registers, offset: 0x10 */
-  fnet_vuint8_t FPROT2;                                  /* Program Flash Protection Registers, offset: 0x11 */
-  fnet_vuint8_t FPROT1;                                  /* Program Flash Protection Registers, offset: 0x12 */
-  fnet_vuint8_t FPROT0;                                  /* Program Flash Protection Registers, offset: 0x13 */
-  fnet_vuint8_t RESERVED_0[2];
-  fnet_vuint8_t FEPROT;                                  /* EEPROM Protection Register, offset: 0x16 */
-  fnet_vuint8_t FDPROT;                                  /* Data Flash Protection Register, offset: 0x17 */
+typedef struct FNET_MK_FTFL_MemMap
+{
+    fnet_vuint8_t FSTAT;                                   /* Flash Status Register, offset: 0x0 */
+    fnet_vuint8_t FCNFG;                                   /* Flash Configuration Register, offset: 0x1 */
+    fnet_vuint8_t FSEC;                                    /* Flash Security Register, offset: 0x2 */
+    fnet_vuint8_t FOPT;                                    /* Flash Option Register, offset: 0x3 */
+    fnet_vuint8_t FCCOB3;                                  /* Flash Common Command Object Registers, offset: 0x4 */
+    fnet_vuint8_t FCCOB2;                                  /* Flash Common Command Object Registers, offset: 0x5 */
+    fnet_vuint8_t FCCOB1;                                  /* Flash Common Command Object Registers, offset: 0x6 */
+    fnet_vuint8_t FCCOB0;                                  /* Flash Common Command Object Registers, offset: 0x7 */
+    fnet_vuint8_t FCCOB7;                                  /* Flash Common Command Object Registers, offset: 0x8 */
+    fnet_vuint8_t FCCOB6;                                  /* Flash Common Command Object Registers, offset: 0x9 */
+    fnet_vuint8_t FCCOB5;                                  /* Flash Common Command Object Registers, offset: 0xA */
+    fnet_vuint8_t FCCOB4;                                  /* Flash Common Command Object Registers, offset: 0xB */
+    fnet_vuint8_t FCCOBB;                                  /* Flash Common Command Object Registers, offset: 0xC */
+    fnet_vuint8_t FCCOBA;                                  /* Flash Common Command Object Registers, offset: 0xD */
+    fnet_vuint8_t FCCOB9;                                  /* Flash Common Command Object Registers, offset: 0xE */
+    fnet_vuint8_t FCCOB8;                                  /* Flash Common Command Object Registers, offset: 0xF */
+    fnet_vuint8_t FPROT3;                                  /* Program Flash Protection Registers, offset: 0x10 */
+    fnet_vuint8_t FPROT2;                                  /* Program Flash Protection Registers, offset: 0x11 */
+    fnet_vuint8_t FPROT1;                                  /* Program Flash Protection Registers, offset: 0x12 */
+    fnet_vuint8_t FPROT0;                                  /* Program Flash Protection Registers, offset: 0x13 */
+    fnet_vuint8_t RESERVED_0[2];
+    fnet_vuint8_t FEPROT;                                  /* EEPROM Protection Register, offset: 0x16 */
+    fnet_vuint8_t FDPROT;                                  /* Data Flash Protection Register, offset: 0x17 */
 } volatile *FNET_MK_FTFL_MemMapPtr;
 
 /* ----------------------------------------------------------------------------
@@ -2628,8 +2640,8 @@ typedef struct FNET_MK_FTFL_MemMap {
 #define FNET_MK_FNET_FTFL_FCCOB0_CMD_READ_SECTION           (0x01u)
 #define FNET_MK_FNET_FTFL_FCCOB0_CMD_PROGRAM_CHECK          (0x02u)
 #define FNET_MK_FNET_FTFL_FCCOB0_CMD_READ_RESOURCE          (0x03u)
-#define FNET_MK_FNET_FTFL_FCCOB0_CMD_PROGRAM_LONGWORD       (0x06u) 
-#define FNET_MK_FNET_FTFL_FCCOB0_CMD_PROGRAM_PHRASE         (0x07u) /*Program 8 bytes in a program flash block or a data flash block. FTFE K70 */ 
+#define FNET_MK_FNET_FTFL_FCCOB0_CMD_PROGRAM_LONGWORD       (0x06u)
+#define FNET_MK_FNET_FTFL_FCCOB0_CMD_PROGRAM_PHRASE         (0x07u) /*Program 8 bytes in a program flash block or a data flash block. FTFE K70 */
 #define FNET_MK_FNET_FTFL_FCCOB0_CMD_ERASE_BLOCK            (0x08u)
 #define FNET_MK_FNET_FTFL_FCCOB0_CMD_ERASE_SECTOR           (0x09u)
 #define FNET_MK_FNET_FTFL_FCCOB0_CMD_PROGRAM_SECTION        (0x0Bu)
@@ -2645,26 +2657,27 @@ typedef struct FNET_MK_FTFL_MemMap {
    ---------------------------------------------------------------------------- */
 
 /* SCB - Peripheral register structure */
-typedef struct FNET_MK_SCB_MemMap {
-  fnet_vuint8_t RESERVED_0[8];
-  fnet_vuint32_t ACTLR;                                  /* Auxiliary Control Register,, offset: 0x8 */
-  fnet_vuint8_t RESERVED_1[3316];
-  fnet_vuint32_t CPUID;                                  /* CPUID Base Register, offset: 0xD00 */
-  fnet_vuint32_t ICSR;                                   /* Interrupt Control and State Register, offset: 0xD04 */
-  fnet_vuint32_t VTOR;                                   /* Vector Table Offset Register, offset: 0xD08 */
-  fnet_vuint32_t AIRCR;                                  /* Application Interrupt and Reset Control Register, offset: 0xD0C */
-  fnet_vuint32_t SCR;                                    /* System Control Register, offset: 0xD10 */
-  fnet_vuint32_t CCR;                                    /* Configuration and Control Register, offset: 0xD14 */
-  fnet_vuint32_t SHPR1;                                  /* System Handler Priority Register 1, offset: 0xD18 */
-  fnet_vuint32_t SHPR2;                                  /* System Handler Priority Register 2, offset: 0xD1C */
-  fnet_vuint32_t SHPR3;                                  /* System Handler Priority Register 3, offset: 0xD20 */
-  fnet_vuint32_t SHCSR;                                  /* System Handler Control and State Register, offset: 0xD24 */
-  fnet_vuint32_t CFSR;                                   /* Configurable Fault Status Registers, offset: 0xD28 */
-  fnet_vuint32_t HFSR;                                   /* HardFault Status register, offset: 0xD2C */
-  fnet_vuint32_t DFSR;                                   /* Debug Fault Status Register, offset: 0xD30 */
-  fnet_vuint32_t MMFAR;                                  /* MemManage Address Register, offset: 0xD34 */
-  fnet_vuint32_t BFAR;                                   /* BusFault Address Register, offset: 0xD38 */
-  fnet_vuint32_t AFSR;                                   /* Auxiliary Fault Status Register, offset: 0xD3C */
+typedef struct FNET_MK_SCB_MemMap
+{
+    fnet_vuint8_t RESERVED_0[8];
+    fnet_vuint32_t ACTLR;                                  /* Auxiliary Control Register,, offset: 0x8 */
+    fnet_vuint8_t RESERVED_1[3316];
+    fnet_vuint32_t CPUID;                                  /* CPUID Base Register, offset: 0xD00 */
+    fnet_vuint32_t ICSR;                                   /* Interrupt Control and State Register, offset: 0xD04 */
+    fnet_vuint32_t VTOR;                                   /* Vector Table Offset Register, offset: 0xD08 */
+    fnet_vuint32_t AIRCR;                                  /* Application Interrupt and Reset Control Register, offset: 0xD0C */
+    fnet_vuint32_t SCR;                                    /* System Control Register, offset: 0xD10 */
+    fnet_vuint32_t CCR;                                    /* Configuration and Control Register, offset: 0xD14 */
+    fnet_vuint32_t SHPR1;                                  /* System Handler Priority Register 1, offset: 0xD18 */
+    fnet_vuint32_t SHPR2;                                  /* System Handler Priority Register 2, offset: 0xD1C */
+    fnet_vuint32_t SHPR3;                                  /* System Handler Priority Register 3, offset: 0xD20 */
+    fnet_vuint32_t SHCSR;                                  /* System Handler Control and State Register, offset: 0xD24 */
+    fnet_vuint32_t CFSR;                                   /* Configurable Fault Status Registers, offset: 0xD28 */
+    fnet_vuint32_t HFSR;                                   /* HardFault Status register, offset: 0xD2C */
+    fnet_vuint32_t DFSR;                                   /* Debug Fault Status Register, offset: 0xD30 */
+    fnet_vuint32_t MMFAR;                                  /* MemManage Address Register, offset: 0xD34 */
+    fnet_vuint32_t BFAR;                                   /* BusFault Address Register, offset: 0xD38 */
+    fnet_vuint32_t AFSR;                                   /* Auxiliary Fault Status Register, offset: 0xD3C */
 } volatile *FNET_MK_SCB_MemMapPtr;
 
 /* ----------------------------------------------------------------------------

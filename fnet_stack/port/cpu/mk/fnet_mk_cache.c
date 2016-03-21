@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_mk_cache.c
@@ -27,16 +27,11 @@
 *
 ***************************************************************************/
 
-#include "fnet.h" 
+#include "fnet.h"
 
 #if FNET_MK
 
 /************************************************************************
-* NAME: fnet_cpu_cache_invalidate
-*
-* DESCRIPTION: Invalidate cache.
+* Define here fnet_cpu_cache_invalidate() if needed.
 *************************************************************************/
-void fnet_cpu_cache_invalidate(void)
-{}   
-
 #endif /* FNET_MK */

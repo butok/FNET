@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -38,13 +38,13 @@
 
 
 /*! @addtogroup fnet_telnet
-* The Telnet server provides a simple command-line interface for a 
+* The Telnet server provides a simple command-line interface for a
 * remote host via a virtual terminal connection. @n
-* Current version of the Telnet server supports maximum of one simultaneously 
+* Current version of the Telnet server supports maximum of one simultaneously
 * connected Telnet client.@n
 * @n
-* After the FNET Telnet server is initialized by calling the @ref fnet_telnet_init() 
-* function, the user application should call the main service polling function  
+* After the FNET Telnet server is initialized by calling the @ref fnet_telnet_init()
+* function, the user application should call the main service polling function
 * @ref fnet_poll_services() periodically in background. @n
 *
 * For example:
@@ -54,10 +54,10 @@
 *
 * const struct fnet_shell fapp_telnet_shell =
 * {
-*    fapp_telnet_cmd_table,                                 
-*    (sizeof(fapp_telnet_cmd_table) / sizeof(struct fnet_shell_command)), 
-*    "TELNET>",                                
-*    fapp_shell_init,                                      
+*    fapp_telnet_cmd_table,
+*    (sizeof(fapp_telnet_cmd_table) / sizeof(struct fnet_shell_command)),
+*    "TELNET>",
+*    fapp_shell_init,
 * };
 *
 *...
@@ -65,10 +65,10 @@
 * void main()
 * {
 *    struct fnet_telnet_params params;
-* 
+*
 *    ...
-*    
-*    params.ip_address = FNET_HTONL(INADDR_ANY);             
+*
+*    params.ip_address = FNET_HTONL(INADDR_ANY);
 *    params.port = FNET_HTONS(0);       //Default port number.
 *    params.shell= &fapp_telnet_shell;
 *    params.cmd_line_buffer = fapp_telnet_cmd_line_buffer;
@@ -99,9 +99,9 @@
 * - @ref FNET_CFG_TELNET
 * - @ref FNET_CFG_TELNET_MAX
 * - @ref FNET_CFG_TELNET_SESSION_MAX
-* - @ref FNET_CFG_TELNET_PORT 
+* - @ref FNET_CFG_TELNET_PORT
 * - @ref FNET_CFG_TELNET_SHELL_ECHO
-* - @ref FNET_CFG_TELNET_SOCKET_BUF_SIZE 
+* - @ref FNET_CFG_TELNET_SOCKET_BUF_SIZE
 */
 /*! @{ */
 
@@ -143,14 +143,14 @@ extern "C" {
  *
  * This function initializes the Telnet server service. It allocates all
  * resources needed, and registers the Telnet server service in the polling list.@n
- * After the initialization, the user application should call the main polling 
+ * After the initialization, the user application should call the main polling
  * function  @ref fnet_poll_services() periodically to run the Telnet server in background.@n
- * The Telnet service executes parsing of user-entered commands received via 
- * the Telnet protocol, and calls user-defined command functions, 
+ * The Telnet service executes parsing of user-entered commands received via
+ * the Telnet protocol, and calls user-defined command functions,
  * if the parsing was successful.
  *
  ******************************************************************************/
-fnet_telnet_desc_t fnet_telnet_init( struct fnet_telnet_params * params);
+fnet_telnet_desc_t fnet_telnet_init( struct fnet_telnet_params *params);
 
 /***************************************************************************/ /*!
  *
@@ -162,9 +162,9 @@ fnet_telnet_desc_t fnet_telnet_init( struct fnet_telnet_params * params);
  *
  ******************************************************************************
  *
- * This function releases the Telnet Server assigned to the @c desc 
- * descriptor.@n 
- * It releases all occupied resources, and unregisters the Telnet service from 
+ * This function releases the Telnet Server assigned to the @c desc
+ * descriptor.@n
+ * It releases all occupied resources, and unregisters the Telnet service from
  * the polling list.
  *
  ******************************************************************************/
@@ -179,7 +179,7 @@ void fnet_telnet_release(fnet_telnet_desc_t desc);
  ******************************************************************************
  *
  * This function closes the current Telnet session.@n
- * It can be used in a Telnet user-command to close the current 
+ * It can be used in a Telnet user-command to close the current
  * session. This is the alternative to closure of the Telnet-client terminal applicatioin.
  *
  ******************************************************************************/

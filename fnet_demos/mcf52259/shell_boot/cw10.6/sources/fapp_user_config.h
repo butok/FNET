@@ -11,7 +11,7 @@
 
 #define _FAPP_USER_CONFIG_H_
 
-#define FAPP_CFG_NAME                   "FNET Shell Demo (bootloader aware)" 
+#define FAPP_CFG_NAME                   "FNET Shell Demo (bootloader aware)"
 #define FAPP_CFG_SHELL_PROMPT           "SHELLB> "
 
 /*  "dhcp" command.*/
@@ -56,9 +56,9 @@
 #define FAPP_CFG_DNS_CMD                (1)
 
 /*  "ping" command.*/
-#define FAPP_CFG_PING_CMD               (1) 
+#define FAPP_CFG_PING_CMD               (1)
 
-/* Reading of the configuration parameters from the Flash 
+/* Reading of the configuration parameters from the Flash
  * memory during the application bootup.*/
 #define FAPP_CFG_PARAMS_READ_FLASH      (1)
 

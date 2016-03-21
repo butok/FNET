@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet.h
@@ -56,32 +56,32 @@
 /**************************************************************************/ /*!
  * @def FNET_LICENSE
  * @brief License string of the FNET TCP/IP stack.
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
 #define FNET_LICENSE            "APACHEv2"
 
 /**************************************************************************/ /*!
  * @def FNET_COPYRIGHT
  * @brief Copyright string of the FNET TCP/IP stack.
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
 #define FNET_COPYRIGHT          "Copyright by FNET Community"
 
 /**************************************************************************/ /*!
  * @def FNET_BUILD_DATE
  * @brief Build date and time of the project as a string.
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
 #define FNET_BUILD_DATE         __DATE__ " at " __TIME__
 
 /**************************************************************************/ /*!
  * @def FNET_VERSION
  * @brief Current version number of the FNET TCP/IP stack.
- *        The resulting value format is xx.xx.xx = major.minor.revision, as a 
+ *        The resulting value format is xx.xx.xx = major.minor.revision, as a
  *        string.
- * @showinitializer 
+ * @showinitializer
  ******************************************************************************/
-#define FNET_VERSION            "3.1.0"
+#define FNET_VERSION            "3.1.1"
 
 /*! @} */
 

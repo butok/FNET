@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
@@ -18,7 +18,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_inet.c
@@ -38,14 +38,14 @@ static fnet_char_t *fnet_inet_ntop_ip4 ( const fnet_ip4_addr_t *addr, fnet_char_
 static fnet_return_t fnet_inet_pton_ip4(const fnet_char_t *str, fnet_ip4_addr_t *addr);
 
 #if FNET_CFG_IP6
-static fnet_char_t *fnet_inet_ntop_ip6 (const fnet_ip6_addr_t *addr, fnet_char_t *str, fnet_size_t str_len);
-static fnet_return_t fnet_inet_pton_ip6(const fnet_char_t *str, fnet_ip6_addr_t *addr);
+    static fnet_char_t *fnet_inet_ntop_ip6 (const fnet_ip6_addr_t *addr, fnet_char_t *str, fnet_size_t str_len);
+    static fnet_return_t fnet_inet_pton_ip6(const fnet_char_t *str, fnet_ip6_addr_t *addr);
 #endif
 
 /************************************************************************
 * NAME: fnet_inet_ntoa
 *
-* DESCRIPTION:The function converts an (IPv4) Internet network address 
+* DESCRIPTION:The function converts an (IPv4) Internet network address
 *             into a string in Internet standard dotted format.
 *************************************************************************/
 fnet_char_t *fnet_inet_ntoa( struct in_addr addr, fnet_char_t *res_str )
@@ -56,8 +56,8 @@ fnet_char_t *fnet_inet_ntoa( struct in_addr addr, fnet_char_t *res_str )
 /************************************************************************
 * NAME: fnet_inet_aton
 *
-* DESCRIPTION:The function converts a string containing an (IPv4) 
-*             Internet Protocol dotted address into a suitable binary 
+* DESCRIPTION:The function converts a string containing an (IPv4)
+*             Internet Protocol dotted address into a suitable binary
 *             representation of the Internet address.
 *************************************************************************/
 fnet_return_t fnet_inet_aton( fnet_char_t *cp, struct in_addr *addr )
@@ -68,31 +68,31 @@ fnet_return_t fnet_inet_aton( fnet_char_t *cp, struct in_addr *addr )
 /************************************************************************
 * NAME: fnet_inet_ntop
 *
-* DESCRIPTION:The function converts network format IPv4 and IPv6 address 
+* DESCRIPTION:The function converts network format IPv4 and IPv6 address
 *               to presentation/text format (string).
-*************************************************************************/ 
+*************************************************************************/
 fnet_char_t *fnet_inet_ntop(fnet_address_family_t family, const void *addr, fnet_char_t *str, fnet_size_t str_len)
 {
     fnet_char_t *result;
-	
-	  switch (family)
-	  {
-    #if FNET_CFG_IP4         
+
+    switch (family)
+    {
+#if FNET_CFG_IP4
         case AF_INET:
-    		    result = fnet_inet_ntop_ip4((const fnet_ip4_addr_t *)addr, str, str_len);
+            result = fnet_inet_ntop_ip4((const fnet_ip4_addr_t *)addr, str, str_len);
             break;
-    #endif  
-    #if FNET_CFG_IP6 
+#endif
+#if FNET_CFG_IP6
         case AF_INET6:
             result = fnet_inet_ntop_ip6((const fnet_ip6_addr_t *)addr, str, str_len);
             break;
-    #endif 
+#endif
         default:
-    		    result = FNET_NULL;
-			      break;
-	  }
-		
-		return result;
+            result = FNET_NULL;
+            break;
+    }
+
+    return result;
 }
 
 /************************************************************************
@@ -104,38 +104,38 @@ fnet_char_t *fnet_inet_ntop(fnet_address_family_t family, const void *addr, fnet
 fnet_return_t fnet_inet_pton(fnet_address_family_t family, const fnet_char_t *str, void *addr, fnet_size_t addr_len)
 {
     fnet_return_t result;
-	
+
     switch (family)
     {
-#if FNET_CFG_IP4 
+#if FNET_CFG_IP4
         case AF_INET:
             if(addr_len < sizeof(fnet_ip4_addr_t))
             {
                 result = FNET_ERR;
             }
-						else
-					  {		
+            else
+            {
                 result = fnet_inet_pton_ip4(str, (fnet_ip4_addr_t *)addr);
-						}	
+            }
             break;
-#endif /* FNET_CFG_IP4 */ 
-#if FNET_CFG_IP6            
+#endif /* FNET_CFG_IP4 */
+#if FNET_CFG_IP6
         case AF_INET6:
             if(addr_len < sizeof(fnet_ip6_addr_t))
             {
-                result = FNET_ERR;   	
+                result = FNET_ERR;
             }
-						else
-						{
+            else
+            {
                 result = fnet_inet_pton_ip6(str, (fnet_ip6_addr_t *)addr);
-						}
+            }
             break;
-#endif /* FNET_CFG_IP6 */             
+#endif /* FNET_CFG_IP6 */
         default:
             result = FNET_ERR;
-				    break;
+            break;
     }
-		return result;
+    return result;
 }
 
 /************************************************************************
@@ -145,45 +145,45 @@ fnet_return_t fnet_inet_pton(fnet_address_family_t family, const fnet_char_t *st
 *	        to struct sockaddr.
 *************************************************************************/
 fnet_return_t fnet_inet_ptos (const fnet_char_t *str, struct sockaddr *addr)
-{   
-#if FNET_CFG_IP4    
+{
+#if FNET_CFG_IP4
     if(fnet_inet_pton(AF_INET, str, addr->sa_data, sizeof(addr->sa_data)) == FNET_OK)
     {
         addr->sa_family = AF_INET;
     }
-    else 
+    else
 #endif /* FNET_CFG_IP4 */
-#if FNET_CFG_IP6 
-    if(fnet_inet_pton(AF_INET6, str, addr->sa_data, sizeof(addr->sa_data)) == FNET_OK)
-    {
-        addr->sa_family = AF_INET6;
-    }
-    else    
+#if FNET_CFG_IP6
+        if(fnet_inet_pton(AF_INET6, str, addr->sa_data, sizeof(addr->sa_data)) == FNET_OK)
+        {
+            addr->sa_family = AF_INET6;
+        }
+        else
 #endif /* FNET_CFG_IP6 */
-    {
-        return FNET_ERR;
-    }
+        {
+            return FNET_ERR;
+        }
 
     /* Scope ID.*/
     {
         fnet_scope_id_t     scope_id;
         const fnet_char_t   *p = fnet_strrchr(str, '%'); /* Find "%<scope id>".*/
-            
+
         if(p != FNET_NULL)
         {
-            scope_id = fnet_strtoul((p+1), 0, 10u);
+            scope_id = fnet_strtoul((p + 1), 0, 10u);
         }
         else
         {
             scope_id = 0u; /* Default interface.*/
         }
-            
+
         addr->sa_scope_id = scope_id;
     }
 
     addr->sa_port = 0u;
-        
-    return FNET_OK;    
+
+    return FNET_OK;
 }
 
 /************************************************************************
@@ -191,72 +191,72 @@ fnet_return_t fnet_inet_ptos (const fnet_char_t *str, struct sockaddr *addr)
 *
 * DESCRIPTION:The function converts from presentation format (string)
 *	        to IPv4 address.
-*************************************************************************/ 
+*************************************************************************/
 static fnet_return_t fnet_inet_pton_ip4( const fnet_char_t *str, fnet_ip4_addr_t *addr)
 {
-	fnet_bool_t         is_digit = FNET_FALSE;
-	fnet_size_t         octets = 0u;
-	fnet_char_t         ch;
-	fnet_uint8_t        tmp[sizeof(*addr)];
-	fnet_uint8_t        *tp;
-	fnet_uint32_t       val;
+    fnet_bool_t         is_digit = FNET_FALSE;
+    fnet_size_t         octets = 0u;
+    fnet_char_t         ch;
+    fnet_uint8_t        tmp[sizeof(*addr)];
+    fnet_uint8_t        *tp;
+    fnet_uint32_t       val;
 
-	*(tp = tmp) = 0u;
-	
-	while ((ch = *str++) != '\0')
-	{
-	    /* If "c" is digit. */
+    *(tp = tmp) = 0u;
+
+    while ((ch = *str++) != '\0')
+    {
+        /* If "c" is digit. */
         if((ch >= '0') && (ch <= '9'))
-		{
-	        val = (fnet_uint32_t)((fnet_uint32_t)*tp * 10u + ((fnet_uint32_t)ch - '0'));		    
+        {
+            val = (fnet_uint32_t)((fnet_uint32_t) * tp * 10u + ((fnet_uint32_t)ch - '0'));
 
-			if ((is_digit == FNET_TRUE) && (*tp == 0u))
+            if ((is_digit == FNET_TRUE) && (*tp == 0u))
             {
                 goto ERROR;
             }
-				
-			if (val > 255u)
+
+            if (val > 255u)
             {
                 goto ERROR;
             }
-				
-			*tp = (fnet_uint8_t)val;
-			
-			if (is_digit == FNET_FALSE)
-			{
-				if (++octets > 4u)
+
+            *tp = (fnet_uint8_t)val;
+
+            if (is_digit == FNET_FALSE)
+            {
+                if (++octets > 4u)
                 {
                     goto ERROR;
                 }
-					
-				is_digit = FNET_TRUE;
-			}
-		} 
-		else if ((ch == '.') && (is_digit == FNET_TRUE))
-		{
-			if (octets == 4u)
+
+                is_digit = FNET_TRUE;
+            }
+        }
+        else if ((ch == '.') && (is_digit == FNET_TRUE))
+        {
+            if (octets == 4u)
             {
                 goto ERROR;
             }
-				
-			*++tp = 0u;
-			is_digit = FNET_FALSE;
-		} 
-		else
-        {
-		    goto ERROR;
+
+            *++tp = 0u;
+            is_digit = FNET_FALSE;
         }
-	}
-	if (octets < 4u)
-    {    
-		goto ERROR;
+        else
+        {
+            goto ERROR;
+        }
     }
-		
-	fnet_memcpy(addr, tmp, sizeof(*addr));
-	
-	return (FNET_OK);
-ERROR:	
-    return (FNET_ERR);	
+    if (octets < 4u)
+    {
+        goto ERROR;
+    }
+
+    fnet_memcpy(addr, tmp, sizeof(*addr));
+
+    return (FNET_OK);
+ERROR:
+    return (FNET_ERR);
 }
 
 /************************************************************************
@@ -264,13 +264,13 @@ ERROR:
 *
 * DESCRIPTION:The function converts from presentation format (string)
 *	        to IPv6 address.
-*************************************************************************/  
-#if FNET_CFG_IP6 
+*************************************************************************/
+#if FNET_CFG_IP6
 static fnet_return_t fnet_inet_pton_ip6( const fnet_char_t *str, fnet_ip6_addr_t *addr )
 {
     const fnet_char_t   xdigits_l[] = "0123456789abcdef";
     const fnet_char_t   xdigits_u[] = "0123456789ABCDEF";
-    fnet_uint8_t        tmp[sizeof(*addr)]; 
+    fnet_uint8_t        tmp[sizeof(*addr)];
     fnet_uint8_t        *tp;
     fnet_uint8_t        *endp;
     fnet_uint8_t        *colonp;
@@ -282,16 +282,16 @@ static fnet_return_t fnet_inet_pton_ip6( const fnet_char_t *str, fnet_ip6_addr_t
     fnet_memset_zero((tp = tmp), sizeof(*addr));
     endp = tp + sizeof(*addr);
     colonp = FNET_NULL;
-	
+
     /* Leading :: */
     if ((*str == ':') && (*++str != ':'))
     {
         goto ERROR;
     }
-            
+
     seen_xdigits = 0u;
     val = 0u;
-    
+
     while (((ch = *str++) != '\0') && (ch != '%'))
     {
         const fnet_char_t *pch;
@@ -300,16 +300,16 @@ static fnet_return_t fnet_inet_pton_ip6( const fnet_char_t *str, fnet_ip6_addr_t
         {
             pch = fnet_strchr((xdigits = xdigits_u), ch);
         }
-			
+
         if (pch != FNET_NULL)
         {
             val <<= 4;
             val |= (fnet_uint32_t)(pch - xdigits);
-			if (++seen_xdigits > 4u)
+            if (++seen_xdigits > 4u)
             {
                 goto ERROR;
             }
-                
+
             continue;
         }
         if (ch == ':')
@@ -320,42 +320,42 @@ static fnet_return_t fnet_inet_pton_ip6( const fnet_char_t *str, fnet_ip6_addr_t
                 {
                     goto ERROR;
                 }
-                    
+
                 colonp = tp;
                 continue;
-            } 
+            }
             else if (*str == '\0')
             {
                 goto ERROR;
-			}
+            }
             else
             {}
-			
+
             if (tp + 2 > endp)
             {
                 goto ERROR;
             }
-                
+
             *tp++ = (fnet_uint8_t) ((val >> 8) & 0xffu);
             *tp++ = (fnet_uint8_t) (val & 0xffu);
             seen_xdigits = 0u;
             val = 0u;
             continue;
         }
-		goto ERROR;
+        goto ERROR;
     }
-    
+
     if (seen_xdigits)
     {
         if (tp + 2 > endp)
         {
             goto ERROR;
         }
-            
+
         *tp++ = (fnet_uint8_t) ((val >> 8) & 0xffu);
         *tp++ = (fnet_uint8_t) (val & 0xffu);
     }
-    
+
     if (colonp != FNET_NULL)
     {
         /*
@@ -379,11 +379,11 @@ static fnet_return_t fnet_inet_pton_ip6( const fnet_char_t *str, fnet_ip6_addr_t
     {
         goto ERROR;
     }
-		
+
     fnet_memcpy(addr, tmp, sizeof(*addr));
     return (FNET_OK);
-ERROR:	
-    return (FNET_ERR);    
+ERROR:
+    return (FNET_ERR);
 }
 
 #endif /* FNET_CFG_IP6 */
@@ -391,41 +391,44 @@ ERROR:
 /************************************************************************
 * NAME: fnet_inet_ntop_ip4
 *
-* DESCRIPTION:The function converts IPv4 address 
+* DESCRIPTION:The function converts IPv4 address
 *               to presentation format (string).
-*************************************************************************/  
+*************************************************************************/
 static fnet_char_t *fnet_inet_ntop_ip4 ( const fnet_ip4_addr_t *addr, fnet_char_t *str, fnet_size_t str_len)
 {
-	fnet_char_t            tmp[FNET_IP4_ADDR_STR_SIZE];
-	fnet_size_t            length;
-	const fnet_uint8_t     *ptr = (const fnet_uint8_t *) addr;
+    fnet_char_t            tmp[FNET_IP4_ADDR_STR_SIZE];
+    fnet_size_t            length;
+    const fnet_uint8_t     *ptr = (const fnet_uint8_t *) addr;
 
     length = fnet_snprintf(tmp, sizeof(tmp), "%d.%d.%d.%d", ptr[0], ptr[1], ptr[2], ptr[3]);
-    
-	if ((length == 0u) || (length >= str_len))
-	{
-		return (FNET_NULL);
-	}
-	else
-	{
-	    fnet_strncpy(str, tmp, str_len);
 
-	    return (str);
-	}
+    if ((length == 0u) || (length >= str_len))
+    {
+        return (FNET_NULL);
+    }
+    else
+    {
+        fnet_strncpy(str, tmp, str_len);
+
+        return (str);
+    }
 }
 
 /************************************************************************
 * NAME: fnet_inet_ntop_ip6
 *
-* DESCRIPTION:The function converts IPv6 binary address into 
+* DESCRIPTION:The function converts IPv6 binary address into
 *               presentation (printable) format.
-*************************************************************************/  
-#if FNET_CFG_IP6 
+*************************************************************************/
+#if FNET_CFG_IP6
 static fnet_char_t *fnet_inet_ntop_ip6 (const fnet_ip6_addr_t *addr, fnet_char_t *str, fnet_size_t str_len)
 {
     fnet_char_t                         tmp[FNET_IP6_ADDR_STR_SIZE];
     fnet_char_t                         *tp;
-    struct { fnet_int32_t base, len; }  best, cur;
+    struct
+    {
+        fnet_int32_t base, len;
+    }  best, cur;
     fnet_uint32_t                       words[16 / 2];
     fnet_index_t                        i;
 
@@ -438,7 +441,7 @@ static fnet_char_t *fnet_inet_ntop_ip6 (const fnet_ip6_addr_t *addr, fnet_char_t
     {
         words[i / 2u] |= ((fnet_uint32_t)addr->addr[i] << ((1u - (i % 2u)) << 3u));
     }
-        
+
     best.base = -1;
     best.len = 0;
     cur.base = -1;
@@ -457,7 +460,7 @@ static fnet_char_t *fnet_inet_ntop_ip6 (const fnet_ip6_addr_t *addr, fnet_char_t
             {
                 cur.len++;
             }
-        } 
+        }
         else
         {
             if (cur.base != -1)
@@ -501,18 +504,18 @@ static fnet_char_t *fnet_inet_ntop_ip6 (const fnet_ip6_addr_t *addr, fnet_char_t
         {
             *tp++ = ':';
         }
-		
+
         tp += fnet_sprintf(tp, "%x", words[i]);
     }
     /* Was it a trailing run of 0x00's? */
     if ((best.base != -1) && ((best.base + best.len) ==  (16 / 2)))
     {
-		*tp++ = ':';
+        *tp++ = ':';
     }
-    
+
     *tp++ = '\0';
 
-	/* Check for overflow, copy, and we're done. */
+    /* Check for overflow, copy, and we're done. */
     if ((tp - tmp) > (fnet_int32_t)str_len)
     {
         return (FNET_NULL);

@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -120,7 +120,7 @@ FNET_COMP_PACKED_END
 FNET_COMP_PACKED_BEGIN
 typedef struct
 {
-    fnet_uint8_t   version__tclass     FNET_COMP_PACKED;   /* 4-bit Internet Protocol version number = 6, 8-bit traffic class field. */    
+    fnet_uint8_t   version__tclass     FNET_COMP_PACKED;   /* 4-bit Internet Protocol version number = 6, 8-bit traffic class field. */
     fnet_uint8_t   tclass__flowl       FNET_COMP_PACKED;   /* 20-bit flow label. */
     fnet_uint16_t   flowl               FNET_COMP_PACKED;
     fnet_uint16_t   length              FNET_COMP_PACKED;   /* Length of the IPv6
@@ -137,7 +137,7 @@ typedef struct
     fnet_ip6_addr_t source_addr         FNET_COMP_PACKED;   /* 128-bit address of the originator of the packet. */
     fnet_ip6_addr_t destination_addr    FNET_COMP_PACKED;   /* 128-bit address of the intended recipient of the
 								                             * packet (possibly not the ultimate recipient, if
-								                             * a Routing header is present). */    
+								                             * a Routing header is present). */
 } fnet_ip6_header_t;
 FNET_COMP_PACKED_END
 
@@ -196,7 +196,7 @@ typedef struct fnet_ip6_options_header
 FNET_COMP_PACKED_END
 
 /***********************************************************************
- * Options (used in op-by-Hop Options Header & Destination Options Header) 
+ * Options (used in op-by-Hop Options Header & Destination Options Header)
  ***********************************************************************
  * RFC 2460 4.2:
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+- - - - - - - - -
@@ -274,11 +274,11 @@ typedef struct fnet_ip6_routing_header
                                                          * Hop Options header in 8-octet units, not
                                                          * including the first 8 octets. */
     fnet_uint8_t   routing_type    FNET_COMP_PACKED;   /* 8-bit identifier of a particular Routing header
-                                                         * variant.*/ 
+                                                         * variant.*/
     fnet_uint8_t   segments_left   FNET_COMP_PACKED;   /* 8-bit unsigned integer. Number of route
                                                          * segments remaining, i.e., number of explicitly
                                                          * listed intermediate nodes still to be visited
-                                                         * before reaching the final destination.*/                                                                
+                                                         * before reaching the final destination.*/
     fnet_uint8_t    data[4]         FNET_COMP_PACKED;   /* Variable-length field, of format determined by
                                                          * the Routing Type, and of length such that the
                                                          * complete Routing header is an integer multiple
@@ -321,7 +321,7 @@ typedef struct fnet_ip6_fragment_header
                                                          * of the original packet.
                                                          * @ 2-bit reserved field.  Initialized to zero for
                                                          * transmission; ignored on reception.
-                                                         * @ 1 = more fragments; 0 = last fragment.*/       
+                                                         * @ 1 = more fragments; 0 = last fragment.*/
     fnet_uint32_t    id             FNET_COMP_PACKED;   /* Identification. */
 } fnet_ip6_fragment_header_t;
 FNET_COMP_PACKED_END
@@ -362,8 +362,8 @@ typedef struct fnet_ip6_frag_list
     fnet_ip6_addr_t             source_addr         FNET_COMP_PACKED;   /**< source address.*/
     fnet_ip6_addr_t             destination_addr    FNET_COMP_PACKED;   /**< destination address.*/
     fnet_uint16_t               hdr_length          FNET_COMP_PACKED;   /* Length of the IPv6 payload of first packet (for ICMPv6 error). //PFI*/
-	fnet_uint8_t                hdr_hop_limit       FNET_COMP_PACKED;							                            
-	fnet_netif_t                *netif              FNET_COMP_PACKED;
+    fnet_uint8_t                hdr_hop_limit       FNET_COMP_PACKED;
+    fnet_netif_t                *netif              FNET_COMP_PACKED;
     fnet_ip6_frag_header_t      *frag_ptr           FNET_COMP_PACKED;   /**< Pointer to the first fragment of the list.*/
 } fnet_ip6_frag_list_t;
 FNET_COMP_PACKED_END
@@ -377,7 +377,7 @@ typedef struct fnet_ip6_multicast_list_entry
 {
     fnet_netif_t    *netif;         /* Interface to join on. */
     fnet_ip6_addr_t group_addr;     /* IPv6 address of joined multicast group. */
-    fnet_index_t    user_counter;   /* User counter. Keeps a reference count of the number 
+    fnet_index_t    user_counter;   /* User counter. Keeps a reference count of the number
                                      * of requests to join a particular host group. */
 } fnet_ip6_multicast_list_entry_t;
 
@@ -399,19 +399,19 @@ void fnet_ip6_get_solicited_multicast_addr(const fnet_ip6_addr_t *ip_addr, fnet_
 fnet_int32_t fnet_ip6_addr_scope(const fnet_ip6_addr_t *ip_addr);
 fnet_bool_t fnet_ip6_addr_pefix_cmp(const fnet_ip6_addr_t *addr_1, const fnet_ip6_addr_t *addr_2, fnet_size_t prefix_length);
 fnet_size_t fnet_ip6_common_prefix_length(const fnet_ip6_addr_t *ip_addr_1, const fnet_ip6_addr_t *ip_addr_2);
-const fnet_ip6_addr_t *fnet_ip6_select_src_addr(fnet_netif_t *netif /* Optional.*/, const fnet_ip6_addr_t *dest_addr); 
+const fnet_ip6_addr_t *fnet_ip6_select_src_addr(fnet_netif_t *netif /* Optional.*/, const fnet_ip6_addr_t *dest_addr);
 fnet_error_t fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_addr_t *src_ip /*optional*/, const fnet_ip6_addr_t *dest_ip,
-                    fnet_uint8_t protocol, fnet_uint8_t hop_limit /*optional*/, fnet_netbuf_t *nb, FNET_COMP_PACKED_VAR fnet_uint16_t *checksum); 
+                             fnet_uint8_t protocol, fnet_uint8_t hop_limit /*optional*/, fnet_netbuf_t *nb, FNET_COMP_PACKED_VAR fnet_uint16_t *checksum);
 void fnet_ip6_drain(void);
-fnet_size_t fnet_ip6_mtu(fnet_netif_t *netif);      
-fnet_netif_t *fnet_ip6_route(const fnet_ip6_addr_t *src_ip /*optional*/, const fnet_ip6_addr_t *dest_ip);    
+fnet_size_t fnet_ip6_mtu(fnet_netif_t *netif);
+fnet_netif_t *fnet_ip6_route(const fnet_ip6_addr_t *src_ip /*optional*/, const fnet_ip6_addr_t *dest_ip);
 fnet_bool_t fnet_ip6_will_fragment( fnet_netif_t *netif, fnet_size_t protocol_message_size);
 struct _fnet_socket_if_t; /* Forward declaration.*/
-fnet_error_t fnet_ip6_getsockopt(struct _fnet_socket_if_t *sock, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen); 
-fnet_error_t fnet_ip6_setsockopt(struct _fnet_socket_if_t *sock, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen );      
+fnet_error_t fnet_ip6_getsockopt(struct _fnet_socket_if_t *sock, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen);
+fnet_error_t fnet_ip6_setsockopt(struct _fnet_socket_if_t *sock, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen );
 fnet_ip6_multicast_list_entry_t *fnet_ip6_multicast_join(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr);
-void fnet_ip6_multicast_leave_entry(fnet_ip6_multicast_list_entry_t *multicastentry); 
-void fnet_ip6_multicast_leave(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr); 
+void fnet_ip6_multicast_leave_entry(fnet_ip6_multicast_list_entry_t *multicastentry);
+void fnet_ip6_multicast_leave(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr);
 fnet_ip6_multicast_list_entry_t *fnet_ip6_multicast_find_entry(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr);
 void fnet_ip6_multicast_leave_all(fnet_netif_t *netif);
 void fnet_ip6_set_socket_addr(fnet_netif_t *netif, fnet_ip6_header_t *ip_hdr, struct sockaddr *src_addr,  struct sockaddr *dest_addr );

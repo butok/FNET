@@ -17,15 +17,15 @@
 
 void write_vtor (unsigned long vtor)
 {
-        /* Write the VTOR with the new value */
-        SCB_VTOR = vtor;	
+    /* Write the VTOR with the new value */
+    SCB_VTOR = vtor;
 }
 /***********************************************************************/
 /*
  * Initialize the NVIC to enable the specified IRQ.
- * 
- * NOTE: The function only initializes the NVIC to enable a single IRQ. 
- * Interrupts will also need to be enabled in the ARM core. This can be 
+ *
+ * NOTE: The function only initializes the NVIC to enable a single IRQ.
+ * Interrupts will also need to be enabled in the ARM core. This can be
  * done using the EnableInterrupts macro.
  *
  * Parameters:
@@ -35,39 +35,39 @@ void write_vtor (unsigned long vtor)
 void enable_irq (int irq)
 {
     int div;
-    
-    /* Make sure that the IRQ is an allowable number. Right now up to 91 is 
+
+    /* Make sure that the IRQ is an allowable number. Right now up to 91 is
      * used.
      */
     if (irq > 91)
         fnet_printf("\nERR! Invalid IRQ value passed to enable irq function!\n");
-    
+
     /* Determine which of the NVICISERs corresponds to the irq */
-    div = irq/32;
-    
+    div = irq / 32;
+
     switch (div)
     {
-    	case 0x0:
-              NVICICPR0 |= 1 << (irq%32);
-              NVICISER0 |= 1 << (irq%32);
-              break;
-    	case 0x1:
-              NVICICPR1 |= 1 << (irq%32);
-              NVICISER1 |= 1 << (irq%32);
-              break;
-    	case 0x2:
-              NVICICPR2 |= 1 << (irq%32);
-              NVICISER2 |= 1 << (irq%32);
-              break;
-    }              
+        case 0x0:
+            NVICICPR0 |= 1 << (irq % 32);
+            NVICISER0 |= 1 << (irq % 32);
+            break;
+        case 0x1:
+            NVICICPR1 |= 1 << (irq % 32);
+            NVICISER1 |= 1 << (irq % 32);
+            break;
+        case 0x2:
+            NVICICPR2 |= 1 << (irq % 32);
+            NVICISER2 |= 1 << (irq % 32);
+            break;
+    }
 }
 /***********************************************************************/
 /*
  * Initialize the NVIC to disable the specified IRQ.
- * 
- * NOTE: The function only initializes the NVIC to disable a single IRQ. 
+ *
+ * NOTE: The function only initializes the NVIC to disable a single IRQ.
  * If you want to disable all interrupts, then use the DisableInterrupts
- * macro instead. 
+ * macro instead.
  *
  * Parameters:
  * irq    irq number to be disabled (the irq number NOT the vector number)
@@ -76,35 +76,35 @@ void enable_irq (int irq)
 void disable_irq (int irq)
 {
     int div;
-    
-    /* Make sure that the IRQ is an allowable number. Right now up to 91 is 
+
+    /* Make sure that the IRQ is an allowable number. Right now up to 91 is
      * used.
      */
     if (irq > 91)
         fnet_printf("\nERR! Invalid IRQ value passed to disable irq function!\n");
-    
+
     /* Determine which of the NVICICERs corresponds to the irq */
-    div = irq/32;
-    
+    div = irq / 32;
+
     switch (div)
     {
-    	case 0x0:
-               NVICICER0 |= 1 << (irq%32);
-              break;
-    	case 0x1:
-              NVICICER1 |= 1 << (irq%32);
-              break;
-    	case 0x2:
-              NVICICER2 |= 1 << (irq%32);
-              break;
-    }              
+        case 0x0:
+            NVICICER0 |= 1 << (irq % 32);
+            break;
+        case 0x1:
+            NVICICER1 |= 1 << (irq % 32);
+            break;
+        case 0x2:
+            NVICICER2 |= 1 << (irq % 32);
+            break;
+    }
 }
 /***********************************************************************/
 /*
  * Initialize the NVIC to set specified IRQ priority.
- * 
- * NOTE: The function only initializes the NVIC to set a single IRQ priority. 
- * Interrupts will also need to be enabled in the ARM core. This can be 
+ *
+ * NOTE: The function only initializes the NVIC to set a single IRQ priority.
+ * Interrupts will also need to be enabled in the ARM core. This can be
  * done using the EnableInterrupts macro.
  *
  * Parameters:
@@ -116,8 +116,8 @@ void set_irq_priority (int irq, int prio)
 {
     /*irq priority pointer*/
     uint8 *prio_reg;
-    
-    /* Make sure that the IRQ is an allowable number. Right now up to 91 is 
+
+    /* Make sure that the IRQ is an allowable number. Right now up to 91 is
      * used.
      */
     if (irq > 91)
@@ -125,11 +125,11 @@ void set_irq_priority (int irq, int prio)
 
     if (prio > 15)
         fnet_printf("\nERR! Invalid priority value passed to priority irq function!\n");
-    
+
     /* Determine which of the NVICIPx corresponds to the irq */
     prio_reg = (uint8 *)(((uint32)&NVICIP0) + irq);
     /* Assign priority to IRQ */
-    *prio_reg = ( (prio&0xF) << (8 - ARM_INTERRUPT_LEVEL_BITS) );             
+    *prio_reg = ( (prio & 0xF) << (8 - ARM_INTERRUPT_LEVEL_BITS) );
 }
 /***********************************************************************/
 

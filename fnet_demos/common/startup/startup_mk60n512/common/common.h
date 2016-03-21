@@ -16,37 +16,37 @@
 #define DEBUG
 #define DEBUG_PRINT
 
-/* 
- * Include the generic CPU header file 
+/*
+ * Include the generic CPU header file
  */
 #include "arm_cm4.h"
 
 #include "fnet.h"
 
-/* 
- * Include the platform specific header file 
+/*
+ * Include the platform specific header file
  */
 #include "k60_tower.h"
 
-/* 
- * Include the cpu specific header file 
+/*
+ * Include the cpu specific header file
  */
 #if (defined(CPU_MK40N512VMD100))
-  #include "MK40N512VMD100.h"
+    #include "MK40N512VMD100.h"
 #elif (defined(CPU_MK60N512VMD100))
-  #include "MK60N512VMD100.h"
+    #include "MK60N512VMD100.h"
 #else
-  #error "No valid CPU defined"
+    #error "No valid CPU defined"
 #endif
 
 
-/* 
+/*
  * Include common utilities
  */
 #include "startup.h"
 
 #if FNET_CFG_COMP_IAR
-  #include "intrinsics.h"
+    #include "intrinsics.h"
 #endif /*FNET_CFG_COMP_IAR*/
 /********************************************************************/
 

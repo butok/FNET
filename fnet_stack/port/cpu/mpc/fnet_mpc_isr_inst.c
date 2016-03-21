@@ -1,6 +1,6 @@
 /**************************************************************************
-* 
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+*
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2011 by Andrey Butok,Gordon Jahn. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -30,34 +30,29 @@
 * @brief Interrupt service dispatcher implementation.
 *
 ***************************************************************************/
-#include "fnet.h" 
+#include "fnet.h"
+
 #if FNET_MPC
 #if !FNET_OS
-
-#include "fnet.h"
-#include "fnet_isr.h"
-#include "fnet_timer.h"
-#include "fnet_netbuf.h"
-#include "fnet_mpc.h"
 
 /* Vector table address. Defined in linker file.*/
 extern fnet_uint32_t FNET_CFG_CPU_VECTOR_TABLE [];
 
-
 /************************************************************************
 * NAME: fnet_cpu_isr_install
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t priority)
 {
     fnet_return_t result;
     fnet_uint32_t *irq_vec;
 
-	irq_vec = (unsigned long *) (FNET_CFG_CPU_VECTOR_TABLE)+vector_number;
-	
-	if(*irq_vec != (unsigned long)fnet_cpu_isr)
-    { /* It's not installed yet.*/
+    irq_vec = (unsigned long *) (FNET_CFG_CPU_VECTOR_TABLE) + vector_number;
+
+    if(*irq_vec != (unsigned long)fnet_cpu_isr)
+    {
+        /* It's not installed yet.*/
         *irq_vec = (unsigned long)fnet_cpu_isr;
     }
 
@@ -65,25 +60,25 @@ fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t pr
     {
         priority = FNET_CFG_CPU_VECTOR_PRIORITY_MAX;
     }
-	
+
     if(*irq_vec == (unsigned long)fnet_cpu_isr)
-    {    
-    #if FNET_CFG_CPU_INDEX==0
-       #if FNET_CFG_CPU_MPC5744P
-            FNET_MPC_INTC_PSR(vector_number) = (unsigned short int)(0x8000 | priority);
-      #else
-            FNET_MPC_INTC_PSR(vector_number) = (unsigned char)(0xF & priority);
-      #endif
-    #else
-            FNET_MPC_INTC_PSR(vector_number) = (unsigned char)(0xC0 | & priority);
-    #endif
+    {
+#if FNET_CFG_CPU_INDEX==0
+#if FNET_CFG_CPU_MPC5744P
+        FNET_MPC_INTC_PSR(vector_number) = (unsigned short int)(0x8000 | priority);
+#else
+        FNET_MPC_INTC_PSR(vector_number) = (unsigned char)(0xF & priority);
+#endif
+#else
+        FNET_MPC_INTC_PSR(vector_number) = (unsigned char)(0xC0 | & priority);
+#endif
 
         result = FNET_OK;
     }
     else
         result = FNET_ERR;
-        
-   return result;     
+
+    return result;
 }
 
 #endif

@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_igmp.c
@@ -43,11 +43,12 @@
 #define FNET_MLD_HOP_LIMIT                   (1)             /* IPv6 Hop Limit for MLD is 1.*/
 
 /* IPv6 Router Alert option in a Hop-by_Hop Options header.*/
-static const fnet_mld_ra_option_header_t mld_ra_option ={FNET_IP_PROTOCOL_ICMP6 /* Next Header */
-                                                        ,0                      /* Length-8 */ 
-                                                        ,{FNET_IP6_OPTION_TYPE_ROUTER_ALERT,2}  /* Router Alert Option. */
-                                                        , FNET_IP6_OPTION_TYPE_ROUTER_ALERT_VALUE_MLD   /* Router Alert Option value. */   
-                                                        ,{FNET_IP6_OPTION_TYPE_PADN, 0}};       /* Padding. */                                                 
+static const fnet_mld_ra_option_header_t mld_ra_option = {FNET_IP_PROTOCOL_ICMP6 /* Next Header */
+                                                          , 0                     /* Length-8 */
+                                                          , {FNET_IP6_OPTION_TYPE_ROUTER_ALERT, 2} /* Router Alert Option. */
+                                                          , FNET_IP6_OPTION_TYPE_ROUTER_ALERT_VALUE_MLD   /* Router Alert Option value. */
+                                                          , {FNET_IP6_OPTION_TYPE_PADN, 0}
+                                                         };       /* Padding. */
 
 
 static void fnet_mld_send( fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet_uint8_t type);
@@ -69,24 +70,24 @@ void fnet_mld_join(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr)
 *************************************************************************/
 void fnet_mld_leave(fnet_netif_t *netif, fnet_ip6_addr_t  *group_addr)
 {
-    fnet_mld_send(netif, group_addr, FNET_ICMP6_TYPE_MULTICAST_LISTENER_DONE);    
+    fnet_mld_send(netif, group_addr, FNET_ICMP6_TYPE_MULTICAST_LISTENER_DONE);
 }
 
 /************************************************************************
 * NAME: fnet_mld_report_all
 *
-* DESCRIPTION: Generates new MLD Report messages for all multicast 
+* DESCRIPTION: Generates new MLD Report messages for all multicast
 *              addresses joined on the interface.
 *************************************************************************/
 void fnet_mld_report_all(fnet_netif_t *netif)
 {
     fnet_index_t i;
-    
+
     /* Find existing entries for the interface.*/
-    for(i=0; i < FNET_CFG_MULTICAST_MAX; i++)
+    for(i = 0; i < FNET_CFG_MULTICAST_MAX; i++)
     {
-        if((fnet_ip6_multicast_list[i].user_counter > 0u) 
-            && (fnet_ip6_multicast_list[i].netif == netif))
+        if((fnet_ip6_multicast_list[i].user_counter > 0u)
+           && (fnet_ip6_multicast_list[i].netif == netif))
         {
             /* Send report.*/
             fnet_mld_send(netif, &fnet_ip6_multicast_list[i].group_addr, FNET_ICMP6_TYPE_MULTICAST_LISTENER_REPORT);
@@ -98,10 +99,10 @@ void fnet_mld_report_all(fnet_netif_t *netif)
 * NAME: fnet_mld_send
 *
 * DESCRIPTION: Sends MLD message defined by type:
-*        FNET_ICMP6_TYPE_MULTICAST_LISTENER_REPORT or FNET_ICMP6_TYPE_MULTICAST_LISTENER_DONE 
+*        FNET_ICMP6_TYPE_MULTICAST_LISTENER_REPORT or FNET_ICMP6_TYPE_MULTICAST_LISTENER_DONE
 *************************************************************************/
 static void fnet_mld_send(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet_uint8_t type)
-{ 
+{
     fnet_netbuf_t                       *nb;
     fnet_netbuf_t                       *nb_option;
     fnet_mld_header_t                   *mld_header;
@@ -109,41 +110,41 @@ static void fnet_mld_send(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet
     FNET_COMP_PACKED_VAR fnet_uint16_t  *checksum_p;
     fnet_ip6_addr_t                     *ip_src;
     fnet_ip6_addr_t                     *ip_dst;
-    
-    /* [RFC2710] EXCLUDING the link-scope all-nodes address and any multicast 
+
+    /* [RFC2710] EXCLUDING the link-scope all-nodes address and any multicast
      * addresses of scope 0 (reserved) or 1(node-local).*/
-    if((FNET_IP6_ADDR_MULTICAST_SCOPE(group_addr) > FNET_IP6_ADDR_SCOPE_INTERFACELOCAL) 
-        && !FNET_IP6_ADDR_EQUAL(&fnet_ip6_addr_linklocal_allnodes, group_addr))
-    {    
+    if((FNET_IP6_ADDR_MULTICAST_SCOPE(group_addr) > FNET_IP6_ADDR_SCOPE_INTERFACELOCAL)
+       && !FNET_IP6_ADDR_EQUAL(&fnet_ip6_addr_linklocal_allnodes, group_addr))
+    {
         /* Construct Router Alert option + MLD meassage */
         if((nb = fnet_netbuf_new(sizeof(fnet_mld_header_t), FNET_FALSE)) != 0)
         {
             if((nb_option = fnet_netbuf_new(sizeof(fnet_mld_ra_option_header_t), FNET_FALSE)) != 0)
             {
                 /* Fill Hop-by_Hop Options header.*/
-                ra_option_header = (fnet_mld_ra_option_header_t  *)(nb_option->data_ptr);
+                ra_option_header = (fnet_mld_ra_option_header_t *)(nb_option->data_ptr);
                 fnet_memcpy ((void *)ra_option_header, (void *)(&mld_ra_option), sizeof(mld_ra_option));
-                
+
                 /* Fill MLD message. */
-                mld_header = (fnet_mld_header_t  *)(nb->data_ptr);
+                mld_header = (fnet_mld_header_t *)(nb->data_ptr);
                 fnet_memset_zero(mld_header, sizeof(fnet_mld_header_t));
                 mld_header->icmp6_header.type = type;
                 FNET_IP6_ADDR_COPY(group_addr, &mld_header->multicast_addr);
-                     
+
                 /* Checksum calculation.*/
                 mld_header->icmp6_header.checksum = 0;
                 mld_header->icmp6_header.checksum = fnet_checksum_pseudo_start(nb, FNET_HTONS((fnet_uint16_t)FNET_IP_PROTOCOL_ICMP6), (fnet_uint16_t)nb->total_length);
                 checksum_p = &mld_header->icmp6_header.checksum;
-                
+
                 /* Concatanate Hop-by_Hop Options with MLD header. */
                 nb = fnet_netbuf_concat(nb_option, nb);
-                
+
                 /* Source Address Selection for MLD, by RFC3590.*/
-                
+
                 /* [RFC3590] MLD Report and Done messages are sent with a link-local address as
                  * the IPv6 source address, if a valid address is available on the interface.*/
                 ip_src = fnet_netif_get_ip6_addr_valid_link_local(netif);
-                
+
                 /* [RFC3590] If a valid link-local address is not available (e.g., one has not been configured),
                  * the message is sent with the unspecified address. */
                 if(ip_src == FNET_NULL)
@@ -155,19 +156,19 @@ static void fnet_mld_send(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet
                 {
                     netif->mld_invalid = FNET_FALSE;
                 }
-                
+
                 /* When a node ceases to listen to a multicast address on an interface,
                  * it SHOULD send a single Done message to the link-scope all-routers
                  * multicast address (FF02::2)*/
                 if(type == FNET_ICMP6_TYPE_MULTICAST_LISTENER_DONE)
                 {
-                    ip_dst =(fnet_ip6_addr_t *)&fnet_ip6_addr_linklocal_allrouters;
+                    ip_dst = (fnet_ip6_addr_t *)&fnet_ip6_addr_linklocal_allrouters;
                 }
                 else
                 {
                     ip_dst = group_addr;
                 }
-                
+
                 /* Send via IPv6*/
                 fnet_ip6_output(netif, ip_src, ip_dst, FNET_IP6_TYPE_HOP_BY_HOP_OPTIONS, FNET_MLD_HOP_LIMIT, nb, checksum_p);
             }
@@ -190,22 +191,22 @@ void fnet_mld_query_receive(fnet_netif_t *netif, fnet_ip6_addr_t *src_ip, fnet_i
     fnet_mld_header_t               *mld_packet = nb->data_ptr;
     fnet_size_t                     mld_packet_size = nb->total_length;
     fnet_ip6_header_t               *ip6_packet = (fnet_ip6_header_t *)ip6_nb->data_ptr;
-    
+
     FNET_COMP_UNUSED_ARG(dest_ip);
-	
+
     /************************************************************
     * Validation of MLD Query Message.
-    *************************************************************/	
+    *************************************************************/
     if(
-        (mld_packet_size < sizeof(fnet_mld_header_t))  
+        (mld_packet_size < sizeof(fnet_mld_header_t))
         /* Validation RFC2710.*/
-        ||(ip6_packet->hop_limit != FNET_MLD_HOP_LIMIT)     /* The IP Hop Limit field has a value of 1.*/
-        || !FNET_IP6_ADDR_IS_LINKLOCAL(src_ip)              /* MUST be the link-local address.*/  
-        )
-    { 		
+        || (ip6_packet->hop_limit != FNET_MLD_HOP_LIMIT)    /* The IP Hop Limit field has a value of 1.*/
+        || !FNET_IP6_ADDR_IS_LINKLOCAL(src_ip)              /* MUST be the link-local address.*/
+    )
+    {
         goto DROP;
     }
-    
+
     /* [RFC2710] The Multicast Address field in the MLD
      * message must contain either zero (a General Query) or a valid
      * multicast address (a Multicast- Address-Specific Query).*/
@@ -226,9 +227,9 @@ void fnet_mld_query_receive(fnet_netif_t *netif, fnet_ip6_addr_t *src_ip, fnet_i
     else
     {}
 
-DROP:    
+DROP:
     fnet_netbuf_free_chain(ip6_nb);
-    fnet_netbuf_free_chain(nb); 
+    fnet_netbuf_free_chain(nb);
 }
 
 

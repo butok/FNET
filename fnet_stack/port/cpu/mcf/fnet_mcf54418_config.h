@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2012-2013 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -42,7 +42,7 @@
  *  Default Size of the internal static heap buffer.
  **************************************************************************/
 #ifndef FNET_CFG_HEAP_SIZE
-	#define FNET_CFG_HEAP_SIZE      		(30 * 1024)
+    #define FNET_CFG_HEAP_SIZE      		(30 * 1024)
 #endif
 
 /**************************************************************************
@@ -59,45 +59,45 @@
  *  Default system bus frequency in Hz.
  **************************************************************************/
 #ifndef FNET_CFG_CPU_CLOCK_HZ
-	#define FNET_CFG_CPU_CLOCK_HZ  			(125000000) /* CPU is 250MHz */ 
+    #define FNET_CFG_CPU_CLOCK_HZ  			(125000000) /* CPU is 250MHz */
 #endif
 
 /**************************************************************************
  *  Reduced Media Independent Interface (RMII) support.
- *  NOTE: The processor contains two Ethernet controllers. 
+ *  NOTE: The processor contains two Ethernet controllers.
  *        However, due to external pin limitations, if MII mode is
- *        used, only FEC0 can be used. In RMII mode, 
+ *        used, only FEC0 can be used. In RMII mode,
  *        both Ethernet controllers are available.
  **************************************************************************/
 #ifndef FNET_CFG_CPU_ETH_RMII
     #define FNET_CFG_CPU_ETH_RMII   		(1)
-#endif 
+#endif
 
 /**************************************************************************
- *  Default maximum number of incoming frames that may 
+ *  Default maximum number of incoming frames that may
  *           be buffered by the Ethernet module.
  **************************************************************************/
 #ifndef FNET_CFG_CPU_ETH_RX_BUFS_MAX
-	#define FNET_CFG_CPU_ETH_RX_BUFS_MAX    (4)
+    #define FNET_CFG_CPU_ETH_RX_BUFS_MAX    (4)
 #endif
 
 /* To improve the TX performance.*/
-#ifndef FNET_CFG_CPU_ETH_HW_TX_IP_CHECKSUM 
+#ifndef FNET_CFG_CPU_ETH_HW_TX_IP_CHECKSUM
     #define FNET_CFG_CPU_ETH_HW_TX_IP_CHECKSUM          (1)
 #endif
 
 /* To improve the TX performance.*/
-#ifndef FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM 
+#ifndef FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM
     #define FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM    (1)
 #endif
 
 /* To improve the RX performance.*/
-#ifndef FNET_CFG_CPU_ETH_HW_RX_IP_CHECKSUM 
+#ifndef FNET_CFG_CPU_ETH_HW_RX_IP_CHECKSUM
     #define FNET_CFG_CPU_ETH_HW_RX_IP_CHECKSUM          (1)
 #endif
 
 /* To improve the RX performance.*/
-#ifndef FNET_CFG_CPU_ETH_HW_RX_PROTOCOL_CHECKSUM 
+#ifndef FNET_CFG_CPU_ETH_HW_RX_PROTOCOL_CHECKSUM
     #define FNET_CFG_CPU_ETH_HW_RX_PROTOCOL_CHECKSUM    (1)
 #endif
 
@@ -110,13 +110,13 @@
 /**************************************************************************
  *  ENET0
  **************************************************************************/
-#define FNET_FEC0_BASE_ADDR                 ((fnet_vuint32_t*)(0xFC0D4004)) 
+#define FNET_FEC0_BASE_ADDR                 ((fnet_vuint32_t*)(0xFC0D4004))
 #define FNET_CFG_CPU_ETH0_VECTOR_NUMBER     (40+0x40)
 
 /**************************************************************************
  *  ENET1
  **************************************************************************/
-#define FNET_FEC1_BASE_ADDR                 ((fnet_vuint32_t*)(0xFC0D8004)) 
+#define FNET_FEC1_BASE_ADDR                 ((fnet_vuint32_t*)(0xFC0D8004))
 #define FNET_CFG_CPU_ETH1_VECTOR_NUMBER     (53+0x40)
 
 /**************************************************************************
@@ -127,7 +127,7 @@
 /**************************************************************************
  *  SRAM size.
  **************************************************************************/
-#define FNET_CFG_CPU_SRAM_SIZE          	(1024 * 64)     /* 64 KB */  
+#define FNET_CFG_CPU_SRAM_SIZE          	(1024 * 64)     /* 64 KB */
 
 /**************************************************************************
  *  It used DTIM Timer

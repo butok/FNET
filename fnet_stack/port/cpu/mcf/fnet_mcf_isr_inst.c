@@ -1,6 +1,6 @@
 /**************************************************************************
-* 
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+*
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -27,7 +27,7 @@
 *
 ***************************************************************************/
 
-#include "fnet.h" 
+#include "fnet.h"
 #if FNET_MCF
 #if !FNET_OS
 
@@ -44,19 +44,20 @@ extern fnet_uint32_t FNET_CFG_CPU_VECTOR_TABLE [1];
 /************************************************************************
 * NAME: fnet_cpu_isr_install
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 *************************************************************************/
 fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t priority)
 {
-	fnet_return_t result;
-	fnet_uint32_t *irq_vec;
+    fnet_return_t result;
+    fnet_uint32_t *irq_vec;
 
 
-    irq_vec = (unsigned long *)(FNET_CFG_CPU_VECTOR_TABLE)+vector_number;
-    	
-    if(*irq_vec != (unsigned long)FNET_ISR_HANDLER)
-    { /* It's not installed yet.*/
-        *irq_vec = (unsigned long) FNET_ISR_HANDLER;
+    irq_vec = (fnet_uint32_t *)(FNET_CFG_CPU_VECTOR_TABLE) + vector_number;
+
+    if(*irq_vec != (fnet_uint32_t)FNET_ISR_HANDLER)
+    {
+        /* It's not installed yet.*/
+        *irq_vec = (fnet_uint32_t) FNET_ISR_HANDLER;
     }
 
     if(priority > FNET_CFG_CPU_VECTOR_PRIORITY_MAX)
@@ -64,17 +65,17 @@ fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t pr
         priority = FNET_CFG_CPU_VECTOR_PRIORITY_MAX;
     }
 
-    if(*irq_vec == (unsigned long) FNET_ISR_HANDLER)
+    if(*irq_vec == (fnet_uint32_t) FNET_ISR_HANDLER)
     {
 #if !FNET_CFG_MCF_V1 /* No for MCF Ver.1 */
         /* Set priority. */
         {
             /* Enable interrupt at ColdFire SIM */
-            int irq_number; /* The irq number NOT the vector number.*/
-            int div;
-            
-            irq_number = (int) (vector_number - 0x40); 
-            div = irq_number/32;
+            fnet_int32_t irq_number; /* The irq number NOT the vector number.*/
+            fnet_int32_t div;
+
+            irq_number = (fnet_int32_t) (vector_number - 0x40);
+            div = irq_number / 32;
             if((div >= 0) && (div < 2)) /* So far only upto 64 irq_number (INTC0). TBD*/
             {
                 /* Set interrupt level.*/
@@ -86,14 +87,14 @@ fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t pr
             }
         }
 #else
-    FNET_COMP_UNUSED_ARG(priority);        
+        FNET_COMP_UNUSED_ARG(priority);
 #endif /* !FNET_CFG_MCF_V1 */
         result = FNET_OK;
     }
     else
         result = FNET_ERR;
-   
-   return result;     
+
+    return result;
 }
 
 

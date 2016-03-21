@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_http_ssi.c
@@ -41,34 +41,34 @@
 static fnet_size_t fnet_http_ssi_send (struct fnet_http_if *http);
 
 #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
-static fnet_return_t fnet_http_ssi_handle (struct fnet_http_if *http, struct fnet_http_uri *uri);
+    static fnet_return_t fnet_http_ssi_handle (struct fnet_http_if *http, struct fnet_http_uri *uri);
 #endif
 
-static const fnet_uint8_t fnet_http_ssi_head[] = {'<','!','-','-','#'};
-static const fnet_uint8_t fnet_http_ssi_tail[] = {'-','-','>'};
+static const fnet_uint8_t fnet_http_ssi_head[] = {'<', '!', '-', '-', '#'};
+static const fnet_uint8_t fnet_http_ssi_tail[] = {'-', '-', '>'};
 
 const struct fnet_http_file_handler fnet_http_ssi_handler =
 {
     FNET_HTTP_SSI_EXTENSION,
 #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
-    fnet_http_ssi_handle, 
+    fnet_http_ssi_handle,
 #else
-    fnet_http_default_handle, 
-#endif    
-    fnet_http_ssi_send, 
-    fnet_http_default_close            
+    fnet_http_default_handle,
+#endif
+    fnet_http_ssi_send,
+    fnet_http_default_close
 };
 
 #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
 /************************************************************************
 * NAME: fnet_http_ssi_handle
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 ************************************************************************/
 static fnet_return_t fnet_http_ssi_handle (struct fnet_http_if *http, struct fnet_http_uri *uri)
 {
     fnet_return_t     result = fnet_http_default_handle (http, uri);
-    http->session_active->response.content_length = -1; /* No content length.*/ 
+    http->session_active->response.content_length = -1; /* No content length.*/
     return result;
 }
 #endif
@@ -76,26 +76,26 @@ static fnet_return_t fnet_http_ssi_handle (struct fnet_http_if *http, struct fne
 /************************************************************************
 * NAME: fnet_http_ssi_send
 *
-* DESCRIPTION: 
+* DESCRIPTION:
 ************************************************************************/
-static fnet_size_t fnet_http_ssi_send (struct fnet_http_if * http)
+static fnet_size_t fnet_http_ssi_send (struct fnet_http_if *http)
 {
     fnet_size_t                 result = 0u;
     fnet_size_t                 read_result = 0u;
     fnet_index_t                ssi_head_index = 0u;
     fnet_index_t                ssi_tail_index = 0u;
-    struct fnet_http_session_if *session =  http->session_active; 
+    struct fnet_http_session_if *session =  http->session_active;
     fnet_uint8_t                *buffer = session->buffer;
     fnet_bool_t                 next = FNET_FALSE;
-    
+
     while ((result < sizeof(session->buffer)) && (next == FNET_FALSE))
     {
         if((http->ssi.state != FNET_HTTP_SSI_INCLUDING) /* Read from file if not in including. */
-           &&((read_result = fnet_fs_fread(buffer, 1u, session->send_param.file_desc)) == 0u) )
+           && ((read_result = fnet_fs_fread(buffer, 1u, session->send_param.file_desc)) == 0u) )
         {
             break; /*EOF*/
         }
-        
+
         switch (http->ssi.state)
         {
             case FNET_HTTP_SSI_WAIT_HEAD:
@@ -103,10 +103,12 @@ static fnet_size_t fnet_http_ssi_send (struct fnet_http_if * http)
                 {
                     ssi_head_index++;
                     if(ssi_head_index == sizeof(fnet_http_ssi_head))
-                    { /* Head is found */
-                        
-                        if(result >= sizeof(fnet_http_ssi_head)) 
-                        { /* Found in the middle */
+                    {
+                        /* Head is found */
+
+                        if(result >= sizeof(fnet_http_ssi_head))
+                        {
+                            /* Found in the middle */
                             fnet_fs_fseek (session->send_param.file_desc, -((fnet_int32_t)sizeof(fnet_http_ssi_head)), FNET_FS_SEEK_CUR);
                             next = FNET_TRUE; /* break */
                             result -= sizeof(fnet_http_ssi_head); /* Correct result */
@@ -122,51 +124,53 @@ static fnet_size_t fnet_http_ssi_send (struct fnet_http_if * http)
                     ssi_head_index = 0u;
                 }
                 break;
-                
+
             case FNET_HTTP_SSI_WAIT_TAIL:
                 if(*buffer == fnet_http_ssi_tail[ssi_tail_index])
                 {
                     ssi_tail_index++;
                     if(ssi_tail_index == sizeof(fnet_http_ssi_tail))
-                    { /* Tail is found */
+                    {
+                        /* Tail is found */
                         const struct fnet_http_ssi  *ssi_ptr = 0;
-                        fnet_char_t                *ssi_name = (fnet_char_t*)&session->buffer[sizeof(fnet_http_ssi_head)];
+                        fnet_char_t                *ssi_name = (fnet_char_t *)&session->buffer[sizeof(fnet_http_ssi_head)];
                         fnet_char_t                *ssi_param;
 
                         http->ssi.send = 0;
-                        
+
                         session->buffer[buffer + 1 - session->buffer - sizeof(fnet_http_ssi_tail)] = '\0'; /* Mark end of the SSI. */
 
                         /* Find SSI parameters. */
-                        if((ssi_param = fnet_strchr( (fnet_char_t*)session->buffer, ' ' )) !=0)
+                        if((ssi_param = fnet_strchr( (fnet_char_t *)session->buffer, ' ' )) != 0)
                         {
                             *ssi_param = '\0';  /* Mark end of the SSI name. */
                             ssi_param ++;       /* Point to the begining of params. */
                         }
-                        
+
                         if(http->ssi.ssi_table)
-                        /* SSI table is initialized.*/
+                            /* SSI table is initialized.*/
                         {
                             /* Find SSI handler */
-    	                    for(ssi_ptr = http->ssi.ssi_table; (ssi_ptr->name) && (ssi_ptr->send); ssi_ptr++)
-    	                    {
-    		                    if (!fnet_strcmp( ssi_name, 
-    		                                        ssi_ptr->name))                    
-    		                    {				 
-    		                        http->ssi.send = ssi_ptr->send;
-    		                        break;
-    	                        }
-    	                    }
-	                    }
-                       
+                            for(ssi_ptr = http->ssi.ssi_table; (ssi_ptr->name) && (ssi_ptr->send); ssi_ptr++)
+                            {
+                                if (!fnet_strcmp( ssi_name,
+                                                  ssi_ptr->name))
+                                {
+                                    http->ssi.send = ssi_ptr->send;
+                                    break;
+                                }
+                            }
+                        }
+
                         read_result = 0u; /* Eliminate the include. */
                         if(http->ssi.send)
-                        { /* SSI Handler is found. */
+                        {
+                            /* SSI Handler is found. */
                             if((ssi_ptr->handle == 0) || (ssi_ptr->handle(ssi_param, &session->response.cookie) == FNET_OK))
                             {
                                 buffer = session->buffer; /* Reset */
                                 result = 0u;
-                                
+
                                 http->ssi.state = FNET_HTTP_SSI_INCLUDING;
                             }
                             else
@@ -186,30 +190,31 @@ static fnet_size_t fnet_http_ssi_send (struct fnet_http_if * http)
                 }
                 break;
             case FNET_HTTP_SSI_INCLUDING:
+            {
+                fnet_bool_t eof;
+                read_result = http->ssi.send(session->buffer, sizeof(session->buffer), &eof, &session->response.cookie);
+                if((read_result == 0u) || (eof == FNET_TRUE))
                 {
-                    fnet_bool_t eof;
-                    read_result = http->ssi.send(session->buffer, sizeof(session->buffer), &eof, &session->response.cookie);
-                    if((read_result == 0u) || (eof == FNET_TRUE))
-                    {
-                        http->ssi.state = FNET_HTTP_SSI_WAIT_HEAD;
-                    }
-                    
-                    next = FNET_TRUE; /* break */
+                    http->ssi.state = FNET_HTTP_SSI_WAIT_HEAD;
                 }
-                break;
+
+                next = FNET_TRUE; /* break */
+            }
+            break;
             default:
                 break;
         }
-        buffer+=read_result;
-        result+=read_result;
+        buffer += read_result;
+        result += read_result;
     }
-    
+
     if(read_result && (next == FNET_FALSE) && ssi_head_index && (http->ssi.state == FNET_HTTP_SSI_WAIT_HEAD) )
-    { /* Potential SSI is splitted => parse in the next itteration */
-        result-=ssi_head_index; /* adjust result */
+    {
+        /* Potential SSI is splitted => parse in the next itteration */
+        result -= ssi_head_index; /* adjust result */
         fnet_fs_fseek(session->send_param.file_desc, -(fnet_int32_t)ssi_head_index, FNET_FS_SEEK_CUR);
     }
-    
+
     return result;
 }
 

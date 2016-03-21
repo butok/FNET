@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_mk_timer.c
@@ -29,13 +29,13 @@
 
 #include "fnet_config.h"
 
-#if FNET_MK 
+#if FNET_MK
 #include "fnet.h"
 #include "stack/fnet_timer_prv.h"
 
 /******************************************************************************
  *  Vector number of the timer interrupt.
- *  NOTE: User application should not change this parameter. 
+ *  NOTE: User application should not change this parameter.
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_TIMER_VECTOR_NUMBER
     #if FNET_CFG_CPU_MK64FN1
@@ -50,8 +50,8 @@ static void fnet_cpu_timer_handler_top(fnet_uint32_t cookie);
 /************************************************************************
 * NAME: fnet_timer_handler_top
 *
-* DESCRIPTION: Top interrupt handler. Increment fnet_current_time 
-*              and interrupt flag. 
+* DESCRIPTION: Top interrupt handler. Increment fnet_current_time
+*              and interrupt flag.
 *************************************************************************/
 static void fnet_cpu_timer_handler_top(fnet_uint32_t cookie )
 {
@@ -59,11 +59,11 @@ static void fnet_cpu_timer_handler_top(fnet_uint32_t cookie )
     FNET_MK_PIT_TFLG(FNET_CFG_CPU_TIMER_NUMBER) |= FNET_MK_PIT_TFLG_TIF_MASK;
 
     /* Read the load value to restart the timer. */
-    (void)FNET_MK_PIT_LDVAL(FNET_CFG_CPU_TIMER_NUMBER);  
-    
-    /* Update RTC counter. 
+    (void)FNET_MK_PIT_LDVAL(FNET_CFG_CPU_TIMER_NUMBER);
+
+    /* Update RTC counter.
      */
-    fnet_timer_ticks_inc(); 
+    fnet_timer_ticks_inc();
 }
 
 /************************************************************************
@@ -76,29 +76,29 @@ fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms )
 {
     fnet_return_t result;
     fnet_uint32_t timeout;
-    
+
     /* Imstall interrupt handler and enable interrupt in NVIC.
     */
     result = fnet_isr_vector_init(FNET_CFG_CPU_TIMER_VECTOR_NUMBER, fnet_cpu_timer_handler_top,
-                                              fnet_timer_handler_bottom, FNET_CFG_CPU_TIMER_VECTOR_PRIORITY, 0u);
+                                  fnet_timer_handler_bottom, FNET_CFG_CPU_TIMER_VECTOR_PRIORITY, 0u);
     if(result == FNET_OK)
-    {  
+    {
         /* Initialize the PIT timer to generate an interrupt every period_ms */
-    
+
         /* Enable the clock to the PIT module. Clock for PIT Timers to be enabled */
         FNET_MK_SIM_SCGC6 |= FNET_MK_SIM_SCGC6_PIT_MASK;
-    
+
         /* Enable the PIT timer module. */
         FNET_MK_PIT_MCR &= ~FNET_MK_PIT_MCR_MDIS_MASK;
-            
+
         /* Calculate the timeout value. */
         timeout = period_ms * FNET_MK_PERIPH_CLOCK_KHZ;
         FNET_MK_PIT_LDVAL(FNET_CFG_CPU_TIMER_NUMBER) = timeout;
-    
+
         /* Enable the timer and enable interrupts */
         FNET_MK_PIT_TCTRL(FNET_CFG_CPU_TIMER_NUMBER) |= FNET_MK_PIT_TCTRL_TEN_MASK | FNET_MK_PIT_TCTRL_TIE_MASK;
     }
-    
+
     return result;
 }
 
@@ -106,13 +106,13 @@ fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms )
 * NAME: fnet_cpu_timer_release
 *
 * DESCRIPTION: Relaeses TCP/IP hardware timer.
-*              
+*
 *************************************************************************/
 void fnet_cpu_timer_release( void )
 {
     /* Disable the timer and disable interrupts */
     FNET_MK_PIT_TCTRL(FNET_CFG_CPU_TIMER_NUMBER) &= ~(FNET_MK_PIT_TCTRL_TEN_MASK | FNET_MK_PIT_TCTRL_TIE_MASK);
-  
+
     /* Uninstall interrupt handler.
      */
     fnet_isr_vector_release(FNET_CFG_CPU_TIMER_VECTOR_NUMBER);

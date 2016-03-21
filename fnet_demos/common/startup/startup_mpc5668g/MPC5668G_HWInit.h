@@ -4,9 +4,9 @@
  * FILE : MPC5668G_HWInit.h
  *
  * DESCRIPTION:
- *  This file contains all MPC5668G derivative needed initializations, 
+ *  This file contains all MPC5668G derivative needed initializations,
  *  and all initializations for the MPC5668G boards which are supported.
- *  This includes setting up the External Bus Interface to allow access to 
+ *  This includes setting up the External Bus Interface to allow access to
  *  memory on the external bus, and ensuring there is a valid entry in the
  *  MMU for the external memory access.
  */
@@ -24,9 +24,9 @@ extern "C" {
 
 /*******************************************************/
 /* MPC5668G derivative specific hardware initialization */
-/*******************************************************/ 
+/*******************************************************/
 
-__asm void INIT_Derivative(void); 
+__asm void INIT_Derivative(void);
 
 /*******************************************************/
 /* MPC5668G boards specific hardware initializations    */
@@ -51,7 +51,7 @@ __asm void INIT_Derivative(void);
 /* Function declarations                                                      */
 /*----------------------------------------------------------------------------*/
 
-/* call this function to setup the external bus, 
+/* call this function to setup the external bus,
    chip selects and MMU entries for the selected board
 */
 __asm void INIT_ExternalBusAndMemory(void);
@@ -62,13 +62,13 @@ __asm void INIT_ExternalBusAndMemory(void);
 
 /**
  * Generate MMU Assist 0 value from the parameters provided.
- * In accordance with the PowerPC Zen core specification the TLBSEL value 
+ * In accordance with the PowerPC Zen core specification the TLBSEL value
  * is always set to 01b to maintain future compatibility.
  *
  */
 #define MAS0_VALUE(eselcam) ((unsigned long)(0x10000000 | (eselcam << 16)))
 
-/** 
+/**
  * Generate MMU Assist 1 value from the parameters provided
  *
  * parameter valid:   1 if the MMU entry is valid, otherwise \c 0 (invalid).
@@ -78,7 +78,7 @@ __asm void INIT_ExternalBusAndMemory(void);
  * parameter tsize:   the translation size
  */
 #define MAS1_VALUE(valid, iprot, tid, ts, tsize) \
-          ((unsigned long)((valid << 31) | (iprot << 30) | (tid << 16) | (ts << 12) | (tsize << 8)))
+    ((unsigned long)((valid << 31) | (iprot << 30) | (tid << 16) | (ts << 12) | (tsize << 8)))
 
 /** V TLB valid bit */
 #define V_INVALID 0
@@ -88,7 +88,7 @@ __asm void INIT_ExternalBusAndMemory(void);
 #define IPROT_NOTPROTECTED 0
 #define IPROT_PROTECTED    1
 
- /** Translation ID defines the TID as global and matches all process IDs */
+/** Translation ID defines the TID as global and matches all process IDs */
 #define TID_GLOBAL          0
 
 /** Translation size */
@@ -105,9 +105,9 @@ __asm void INIT_ExternalBusAndMemory(void);
 /**
  * Generate MMU Assist 2 value from the parameters provided
  *
- * Effective Page Number (start address of logical memory region) 
+ * Effective Page Number (start address of logical memory region)
  * must be computed directely in the assembly code.
- * 
+ *
  * parameter   w:   Write-through Required
  * parameter   i:   Cache Inhibited
  * parameter   m:   Memory Coherency Required
@@ -115,7 +115,7 @@ __asm void INIT_ExternalBusAndMemory(void);
  * parameter   e:   Endianness
  */
 #define MAS2_FLAGS(sharen, w, i, m, g, e) \
-  ((unsigned long)((sharen << 9)| (w << 4)| (i << 3)| (m << 2)| (g << 1)| (e)))
+    ((unsigned long)((sharen << 9)| (w << 4)| (i << 3)| (m << 2)| (g << 1)| (e)))
 
 /** MAS2[SHAREN]: Cache fills do not use the shared cache state for this page. */
 #define SHARED_CACHE_STATE_NOT_USED   0
@@ -146,11 +146,11 @@ __asm void INIT_ExternalBusAndMemory(void);
 #define BIG_ENDIAN          0
 /** MAS2[E]: Page is accessed in little-endian order */
 #define LITTLE_ENDIAN       1
- 
+
 /**
  * Generate MMU Assist 3 flags from the parameters provided
  *
- * Real Page Number (start address of physical memory region) 
+ * Real Page Number (start address of physical memory region)
  * must be computed directely in the assembly code
  *
  * parameter permissions:  Permission bits

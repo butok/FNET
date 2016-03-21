@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2011 by Andrey Butok,Gordon Jahn. Freescale Semiconductor, Inc.
 *
@@ -58,22 +58,22 @@ fnet_cpu_irq_desc_t fnet_cpu_irq_disable(void)
 
 
 #if 0 /* Not the best way to do this... SWT might depend upon it */
-	asm("wrteei 0");
-	return 0;
+    asm("wrteei 0");
+    return 0;
 #endif
 
 
 
 #if FNET_CFG_CPU_INDEX==0
-	oldlevel = FNET_MPC_INTC_CPR_PRC0;
-	FNET_MPC_INTC_CPR_PRC0 = 15;
+    oldlevel = FNET_MPC_INTC_CPR_PRC0;
+    FNET_MPC_INTC_CPR_PRC0 = 15;
 #else
-	oldlevel = FNET_MPC_INTC_CPR_PRC1;
-	FNET_MPC_INTC_CPR_PRC1 = 15;
+    oldlevel = FNET_MPC_INTC_CPR_PRC1;
+    FNET_MPC_INTC_CPR_PRC1 = 15;
 #endif
 
     return oldlevel;
-}   
+}
 
 /************************************************************************
 * NAME: fnet_cpu_disable_irq
@@ -81,16 +81,16 @@ fnet_cpu_irq_desc_t fnet_cpu_irq_disable(void)
 * DESCRIPTION: Enables IRQs at interrupt level mask value.
 *************************************************************************/
 void fnet_cpu_irq_enable(fnet_cpu_irq_desc_t irq_desc)
-{	
-	/* Enable processor recognition of interrupts. Just in case */
+{
+    /* Enable processor recognition of interrupts. Just in case */
     asm("wrteei 1");                 /* Set MSR[EE]=1  */
-    
+
 #if FNET_CFG_CPU_INDEX==0
-	FNET_MPC_INTC_CPR_PRC0 = irq_desc;
+    FNET_MPC_INTC_CPR_PRC0 = irq_desc;
 #else
-	FNET_MPC_INTC_CPR_PRC1 = irq_desc;
+    FNET_MPC_INTC_CPR_PRC1 = irq_desc;
 #endif
-	
+
 }
 
 #endif /*FNET_MPC*/

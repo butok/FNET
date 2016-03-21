@@ -1,7 +1,6 @@
-
 /**************************************************************************
-* 
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+*
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2011 by Andrey Butok,Gordon Jahn. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -36,27 +35,24 @@
 
 #if FNET_MPC
 
-#include "stack/fnet_isr.h"
-#include "cpu/mpc/fnet_mpc.h"
-
 /************************************************************************
 * NAME: void fnet_cpu_isr(void);
 *
-* DESCRIPTION: This handler is executed on every FNET interrupt 
+* DESCRIPTION: This handler is executed on every FNET interrupt
 *              (from ethernet and timer module).
 *              Extructs vector number and calls fnet_isr_handler().
 *************************************************************************/
 void fnet_cpu_isr(void)
 {
 #if FNET_CFG_CPU_INDEX==0
-    /* ICSR register [VECTACTIVE].*/ 
-   #if FNET_CFG_CPU_MPC5744P
-      fnet_uint16_t vector_number = (fnet_uint16_t) ((FNET_MPC_INTC_IACKR_PRC0 & 0xFFC) >> 2);
-   #else
-      fnet_uint16_t vector_number = (fnet_uint16_t) ((FNET_MPC_INTC_IACKR_PRC0 & 0x7FC) >> 2);
-   #endif
+    /* ICSR register [VECTACTIVE].*/
+#if FNET_CFG_CPU_MPC5744P
+    fnet_uint16_t vector_number = (fnet_uint16_t) ((FNET_MPC_INTC_IACKR_PRC0 & 0xFFC) >> 2);
 #else
-    /* ICSR register [VECTACTIVE].*/ 
+    fnet_uint16_t vector_number = (fnet_uint16_t) ((FNET_MPC_INTC_IACKR_PRC0 & 0x7FC) >> 2);
+#endif
+#else
+    /* ICSR register [VECTACTIVE].*/
     fnet_uint16_t vector_number = (fnet_uint16_t) ((FNET_MPC_INTC_IACKR_PRC1 & 0x7FC) >> 2);
 #endif
 
@@ -64,10 +60,10 @@ void fnet_cpu_isr(void)
     fnet_isr_handler( vector_number );
 
 #if FNET_CFG_CPU_INDEX==0
-	FNET_MPC_INTC_EOIR_PRC0 = 0;
+    FNET_MPC_INTC_EOIR_PRC0 = 0;
 #else
-	FNET_MPC_INTC_EOIR_PRC1 = 0;
+    FNET_MPC_INTC_EOIR_PRC1 = 0;
 #endif
 }
 
-#endif /*FNET_MPC*/ 
+#endif /*FNET_MPC*/

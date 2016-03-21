@@ -1,7 +1,7 @@
 /**************************************************************************
-* 
+*
 * Copyright 2012-2013 by Andrey Butok. FNET Community.
-* Copyright 2005-2009 by Andrey Butok. Freescale Semiconductor, Inc. 
+* Copyright 2005-2009 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
 * This program is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@
 /* The platform does not have second Ethernet Module.*/
 #define FNET_CFG_CPU_ETH1        		(0)
 
-/* Defines the maximum number of incoming frames that may 
+/* Defines the maximum number of incoming frames that may
  *           be buffered by the Ethernet module.*/
 #ifndef FNET_CFG_CPU_ETH_RX_BUFS_MAX
     #define FNET_CFG_CPU_ETH_RX_BUFS_MAX    (3)
@@ -62,11 +62,11 @@
 /* The platform has ColdFire Flash Module.*/
 #define FNET_CFG_CPU_FLASH              (1)
 
-#undef FNET_CFG_CPU_FLASH_PAGE_SIZE 
+#undef FNET_CFG_CPU_FLASH_PAGE_SIZE
 #define FNET_CFG_CPU_FLASH_PAGE_SIZE    (2*1024)
 
 /* No cache. */
-#define FNET_CFG_CPU_CACHE              (0) 
+#define FNET_CFG_CPU_CACHE              (0)
 
 /* It has On-chip Ethernet Physical Transceiver. */
 #undef FNET_CFG_MCF_ETH_PHY
@@ -80,9 +80,9 @@
 #define FNET_CFG_CPU_FLASH_SIZE         (1024 * 256)    /* 256 KB */
 
 /* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE          (1024 * 32)     /* 32 KB */  
+#define FNET_CFG_CPU_SRAM_SIZE          (1024 * 32)     /* 32 KB */
 
 /* Based on Errata */
 #define FNET_CFG_CPU_ETH_TX_BUFS_MAX    (3)
 
-#endif 
+#endif

@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
@@ -18,7 +18,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_prot.c
@@ -48,30 +48,30 @@
 /************************************************************************
 *     List of Transport Layer Protocols.
 *************************************************************************/
-static fnet_prot_if_t * const fnet_prot_if_list[] =
+static fnet_prot_if_t *const fnet_prot_if_list[] =
 {
 #if FNET_CFG_IP4
     &fnet_icmp_prot_if      /* ICMP */
-#endif    
+#endif
 #if FNET_CFG_IP6
-    #if FNET_CFG_IP4
+#if FNET_CFG_IP4
     ,
-    #endif
+#endif
     &fnet_icmp6_prot_if    /* ICMPv6 */
-#endif    
+#endif
 #if FNET_CFG_TCP
-    ,&fnet_tcp_prot_if      /* TCP */
+    , &fnet_tcp_prot_if     /* TCP */
 #endif
 #if FNET_CFG_UDP
-    ,&fnet_udp_prot_if      /* UDP */
-#endif    
+    , &fnet_udp_prot_if     /* UDP */
+#endif
 #if FNET_CFG_IGMP && FNET_CFG_IP4
-    ,&fnet_igmp_prot_if     /* IGMP */
-#endif  
+    , &fnet_igmp_prot_if    /* IGMP */
+#endif
 #if FNET_CFG_RAW
-    ,&fnet_raw_prot_if     /* IGMP */
-#endif  
-    
+    , &fnet_raw_prot_if    /* IGMP */
+#endif
+
     /* ADD HERE YOUR TRANSPORT LAYER PROTOCOL */
 };
 
@@ -80,15 +80,15 @@ static fnet_prot_if_t * const fnet_prot_if_list[] =
 /************************************************************************
 * NAME: fnet_prot_init
 *
-* DESCRIPTION: Transport and IP layers initialization. 
+* DESCRIPTION: Transport and IP layers initialization.
 *************************************************************************/
 fnet_return_t fnet_prot_init( void )
 {
     fnet_index_t    i;
     fnet_return_t   result = FNET_OK;
- 
+
     fnet_isr_lock();
-    
+
     for(i = 0u; i < FNET_PROT_TRANSPORT_IF_LIST_SIZE; i++)
     {
         fnet_prot_if_list[i]->head = 0;
@@ -102,23 +102,23 @@ fnet_return_t fnet_prot_init( void )
         }
     }
 
-#if FNET_CFG_IP4 
+#if FNET_CFG_IP4
     if(fnet_ip_init() == FNET_ERR)
     {
         result = FNET_ERR;
         goto ERROR;
     }
-#endif /* FNET_CFG_IP6 */    
+#endif /* FNET_CFG_IP6 */
 
-#if FNET_CFG_IP6    
+#if FNET_CFG_IP6
     if(fnet_ip6_init() == FNET_ERR)
     {
         result = FNET_ERR;
         goto ERROR;
-    }    
+    }
 #endif /* FNET_CFG_IP6 */
 
-ERROR:    
+ERROR:
     fnet_isr_unlock();
     return result;
 }
@@ -131,7 +131,7 @@ ERROR:
 void fnet_prot_release( void )
 {
     fnet_index_t i;
-    
+
     fnet_isr_lock();
 
     for(i = 0u; i < FNET_PROT_TRANSPORT_IF_LIST_SIZE; i++)
@@ -142,32 +142,32 @@ void fnet_prot_release( void )
         }
     }
 
-#if FNET_CFG_IP4 
+#if FNET_CFG_IP4
     fnet_ip_release();
 #endif
-    
-#if FNET_CFG_IP6 
-    fnet_ip6_release();    
+
+#if FNET_CFG_IP6
+    fnet_ip6_release();
 #endif
-    
+
     fnet_isr_unlock();
 }
 
 /************************************************************************
 * NAME: fnet_prot_find
 *
-* DESCRIPTION: This function looks up a protocol by domain family name, 
+* DESCRIPTION: This function looks up a protocol by domain family name,
 *              by type and by protocol number.
 *************************************************************************/
 fnet_prot_if_t *fnet_prot_find( fnet_address_family_t family, fnet_socket_type_t type, fnet_uint32_t protocol )
 {
     fnet_index_t i;
-    
-    for(i=0u; i < FNET_PROT_TRANSPORT_IF_LIST_SIZE; i++)
+
+    for(i = 0u; i < FNET_PROT_TRANSPORT_IF_LIST_SIZE; i++)
     {
-        if( ((fnet_prot_if_list[i]->family & family) != 0) && 
-            ( ((fnet_prot_if_list[i]->type == type) && (((protocol == 0u)||(fnet_prot_if_list[i]->protocol == 0u)) ? 1: (fnet_prot_if_list[i]->protocol == protocol)))
-            || ((type == SOCK_UNSPEC) && (fnet_prot_if_list[i]->protocol == protocol)) ) )
+        if( ((fnet_prot_if_list[i]->family & family) != 0) &&
+            ( ((fnet_prot_if_list[i]->type == type) && (((protocol == 0u) || (fnet_prot_if_list[i]->protocol == 0u)) ? 1 : (fnet_prot_if_list[i]->protocol == protocol)))
+              || ((type == SOCK_UNSPEC) && (fnet_prot_if_list[i]->protocol == protocol)) ) )
         {
             return (fnet_prot_if_list[i]);
         }
@@ -179,7 +179,7 @@ fnet_prot_if_t *fnet_prot_find( fnet_address_family_t family, fnet_socket_type_t
 /************************************************************************
 * NAME: fnet_prot_drain
 *
-* DESCRIPTION: Tries to free not critical parts of 
+* DESCRIPTION: Tries to free not critical parts of
 *              dynamic allocated memory in the stack, if possible.
 *************************************************************************/
 void fnet_prot_drain( void )
@@ -200,11 +200,11 @@ void fnet_prot_drain( void )
 
 #if FNET_CFG_IP4
     fnet_ip_drain();
-#endif    
+#endif
 
 #if FNET_CFG_IP6
     fnet_ip6_drain();
 #endif
-    
+
     fnet_netif_drain();
 }

@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_dhcp_config.h
@@ -52,9 +52,9 @@
 /**************************************************************************/ /*!
  * @def     FNET_CFG_DHCP_MAX
  * @brief   Maximum number of the DHCP Servers that can be run simultaneously.@n
- *          Default value is @b @c 1. @n 
+ *          Default value is @b @c 1. @n
  *          @note It is not posible to run several DHCP servers on the same networking interface.
- *    
+ *
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_DHCP_MAX
@@ -67,11 +67,11 @@
  *               - @c 1 = BOOTP (Bootstrap) protocol, defined by RFC951.
  *               - @b @c 0 = DHCP protocol (extension of BOOTP), defined by RFC2131 (Default value).@n
  *          @n
- *          BOOTP typically provides fixed allocation of a single IP address 
- *          for each client, permanently reserving this address in the BOOTP 
+ *          BOOTP typically provides fixed allocation of a single IP address
+ *          for each client, permanently reserving this address in the BOOTP
  *          server database.@n
- *          DHCP typically provides dynamic, leased allocation of available 
- *          IP addresses, reserving each DHCP client address temporarily 
+ *          DHCP typically provides dynamic, leased allocation of available
+ *          IP addresses, reserving each DHCP client address temporarily
  *          in the DHCP server database.@n
  *          DHCP can automatically rebind or renew their leases while BOOTP requires a system restart.@n
  *          Code size of BOOTP is less than DHCP by about 1.5KB.
@@ -102,19 +102,19 @@
 #ifndef FNET_CFG_DHCP_PORT_SERVER
     #define FNET_CFG_DHCP_PORT_SERVER           (FNET_HTONS(67U))
 #endif
-    
+
 /**************************************************************************/ /*!
  * @def     FNET_CFG_DHCP_RESPONSE_TIMEOUT
  * @brief   Timeout for the response from the remote DHCP server (in seconds).@n
- *           @n 
+ *           @n
  *          The recommended value is from @c 1 till @c 10 seconds.@n
- *          If the DHCP client does not receive any response from a DHCP server during this time, 
+ *          If the DHCP client does not receive any response from a DHCP server during this time,
  *          it sends new discover message. @n
  *          Default value is @b @c 4.
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_DHCP_RESPONSE_TIMEOUT
-    #define FNET_CFG_DHCP_RESPONSE_TIMEOUT      (4U) 
+    #define FNET_CFG_DHCP_RESPONSE_TIMEOUT      (4U)
 #endif
 
 /**************************************************************************/ /*!
@@ -130,7 +130,7 @@
  *          exceed the usual space allotted for options.@n
  *          If this option is present, the client interprets the specified
  *          additional fields after it concludes interpretation of the standard
- *          option fields." 
+ *          option fields."
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_DHCP_OVERLOAD
@@ -143,8 +143,8 @@
  *               - @c 1 = is enabled.
  *               - @b @c 0 = is disabled (Default value).@n
  *          @n
- *          [RFC 2132 9.3]: "This option specifies the broadcast address 
- *          in use on the client's subnet." 
+ *          [RFC 2132 9.3]: "This option specifies the broadcast address
+ *          in use on the client's subnet."
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_DHCP_BROADCAST

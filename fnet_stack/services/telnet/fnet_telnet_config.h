@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_telnet_config.h
@@ -62,7 +62,7 @@
 
 /**************************************************************************/ /*!
  * @def     FNET_CFG_TELNET_SESSION_MAX
- * @brief   Maximum number of simultaneous user-session that can be handled 
+ * @brief   Maximum number of simultaneous user-session that can be handled
  *          by the Telnet server.@n
  *          Default value is @b @c 1.
  * @showinitializer
@@ -74,11 +74,11 @@
 /**************************************************************************/ /*!
  * @def     FNET_CFG_TELNET_PORT
  * @brief   Default Telnet port number (in network byte order).@n
- *          It can be changed during the Telnet server initialization by the 
+ *          It can be changed during the Telnet server initialization by the
  *          @ref fnet_telnet_init() function. @n
  *          Default value is FNET_HTONS(23).
- * @showinitializer 
- ******************************************************************************/  
+ * @showinitializer
+ ******************************************************************************/
 #ifndef FNET_CFG_TELNET_PORT
     #define FNET_CFG_TELNET_PORT                (FNET_HTONS(23u))
 #endif
@@ -88,8 +88,8 @@
  * @brief   Echo in the Tenet shell:
  *               - @c 1 = is enabled.
  *               - @b @c 0 = is disabled (Default value).
- * @showinitializer 
- ******************************************************************************/  
+ * @showinitializer
+ ******************************************************************************/
 #ifndef FNET_CFG_TELNET_SHELL_ECHO
     #define FNET_CFG_TELNET_SHELL_ECHO          (0)
 #endif
@@ -98,8 +98,8 @@
  * @def     FNET_CFG_TELNET_SOCKET_BUF_SIZE
  * @brief   Size of the socket RX & TX buffer used by the Telnet server. @n
  *          Default value is @b @c 60.
- * @showinitializer 
- ******************************************************************************/  
+ * @showinitializer
+ ******************************************************************************/
 #ifndef FNET_CFG_TELNET_SOCKET_BUF_SIZE
     #define FNET_CFG_TELNET_SOCKET_BUF_SIZE     (60u)
 #endif
@@ -109,8 +109,8 @@
  * @brief   Size of the command-line buffer used by the Telnet Shell. @n
  8          It defines the maximum length of the entered input-command line.
  *          Default value is @b @c 60.
- * @showinitializer 
- ******************************************************************************/  
+ * @showinitializer
+ ******************************************************************************/
 #ifndef FNET_CFG_TELNET_CMD_LINE_BUF_SIZE
     #define FNET_CFG_TELNET_CMD_LINE_BUF_SIZE   (60u)
 #endif

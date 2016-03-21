@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_error.h
@@ -34,7 +34,7 @@
 /*! @addtogroup fnet_error
 * When a socket call indicates a failure, it is possible to call the @ref
 * fnet_error_get() function to determine the error value.@n
-* Another way to determine the error value for a socket is to examine its 
+* Another way to determine the error value for a socket is to examine its
 * @ref SO_ERROR option.@n
 * Possible values for socket errors are defined by the @ref fnet_error_t.
 */
@@ -178,16 +178,16 @@ typedef enum
                                      *   The stack is not initialized.
                                      */
     FNET_ERR_CONNCLOSED     = (-26), /**< @brief Connection closed by peer. @n
-                                     * The final (FIN) segment arrived and there is no data 
-                                     * in the socket receive buffer.  
-                                     * The remote host closed connection and will 
+                                     * The final (FIN) segment arrived and there is no data
+                                     * in the socket receive buffer.
+                                     * The remote host closed connection and will
                                      * not send any data in the current connection. @n
-                                     * The application should close the socket as it 
+                                     * The application should close the socket as it
                                      * is no longer usable.
                                      */
     FNET_ERR_IPDISABLED    = (-27),   /**< @brief IP operation is disabled. @n
-                                     * It happens when Duplicate Address Detection 
-                                     * fails for interface link-local address, 
+                                     * It happens when Duplicate Address Detection
+                                     * fails for interface link-local address,
                                      * formed from an interface identifier based on the hardware address.
                                      */
     FNET_ERR_BAD_DESC       = (-28)  /**< @brief Bad socket descriptor.@n

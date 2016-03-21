@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2014 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_dns_prv.h
@@ -40,10 +40,10 @@
 #define FNET_DNS_MESSAGE_SIZE   (512U)     /* Messages carried by UDP are restricted to 512 bytes (not counting the IP
                                            * or UDP headers).  
                                            * Longer messages (not supported) are truncated and the TC bit is set in
-                                           * the header.*/    
+                                           * the header.*/
 
 /********************************************************************/ /*!
-* @brief DNS Resorce Record Types 
+* @brief DNS Resorce Record Types
 *************************************************************************/
 #define    FNET_DNS_TYPE_A      (0x0001U)   /**< @brief IPv4 address. */
 #define    FNET_DNS_TYPE_AAAA   (0x001CU)    /**< @brief IPv6 address. */
@@ -66,8 +66,8 @@
     +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
     |                    ARCOUNT                    |
     +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-*/  
-    
+*/
+
 FNET_COMP_PACKED_BEGIN
 typedef struct
 {
@@ -108,8 +108,8 @@ FNET_COMP_PACKED_END
     +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
     |                     QCLASS                    |
     +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-*/  
-    
+*/
+
 FNET_COMP_PACKED_BEGIN
 typedef struct
 {
@@ -144,27 +144,28 @@ FNET_COMP_PACKED_END
     /                     RDATA                     /
     /                                               /
     +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-*/  
-    
+*/
+
 FNET_COMP_PACKED_BEGIN
 typedef struct
 {
-    union {
+    union
+    {
         fnet_uint8_t   name_ptr_c[2] FNET_COMP_PACKED; /* A domain name to which this resource record pertains.
                                                         * For compression, it is replaced with a pointer to a prior occurance
                                                         * of the same name */
         fnet_uint16_t  name_ptr FNET_COMP_PACKED;
-    };
+    } name;
     fnet_uint16_t   type FNET_COMP_PACKED;          /* This field specifies the meaning of the data in the RDATA
                                                     * field.*/
     fnet_uint16_t   rr_class FNET_COMP_PACKED;     /* An unsigned 16 bit integer specifying the number of
                                                     * entries in the question section.*/
-    fnet_uint32_t   ttl FNET_COMP_PACKED;           /* Specifies the time interval (in seconds) that the 
+    fnet_uint32_t   ttl FNET_COMP_PACKED;           /* Specifies the time interval (in seconds) that the
                                                     * resource record may be
                                                     * cached before it should be discarded.*/
     fnet_uint16_t   rdlength FNET_COMP_PACKED;      /* Length in octets of the RDATA field.*/
     fnet_uint32_t   rdata FNET_COMP_PACKED;         /* The format of this information varies
-                                                    * according to the TYPE and CLASS of the resource record. 
+                                                    * according to the TYPE and CLASS of the resource record.
                                                     * If the TYPE is A and the CLASS is IN,
                                                     * the RDATA field is a 4 octet ARPA Internet address.*/
 

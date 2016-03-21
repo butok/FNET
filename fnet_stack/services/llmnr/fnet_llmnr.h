@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2014 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
@@ -16,7 +16,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_llmnr.h
@@ -38,7 +38,7 @@
 
 
 
-/*! @addtogroup fnet_llmnr 
+/*! @addtogroup fnet_llmnr
 *
 * Link-Local Multicast Name Resolution (LLMNR) is used to enable
 * name resolution in scenarios in which conventional DNS name resolution is not possible.
@@ -47,17 +47,17 @@
 * It is natively supported by Windows OSs.@n
 * @n
 * After the LLMNR server is initialized by calling the @ref fnet_llmnr_init() function,
-* the user application should call the main service-polling function  
+* the user application should call the main service-polling function
 * @ref fnet_poll_services() periodically in background. @n
 * @n
 * For the LLMNR-server service example, refer to the FNET Shell demo source code.@n
-* 
+*
 * Configuration parameters:
-* - @ref FNET_CFG_LLMNR 
+* - @ref FNET_CFG_LLMNR
 * - @ref FNET_CFG_LLMNR_MAX
-* - @ref FNET_CFG_LLMNR_PORT  
+* - @ref FNET_CFG_LLMNR_PORT
 * - @ref FNET_CFG_LLMNR_HOSTNAME_TTL
-*  
+*
 */
 
 /*! @{ */
@@ -100,11 +100,11 @@ extern "C" {
  *
  ******************************************************************************
  *
- * This function initializes the Link-Local Multicast Name Resolution (LLMNR) 
+ * This function initializes the Link-Local Multicast Name Resolution (LLMNR)
  * server/responder service.@n
  * It allocates all needed resources and registers the LLMNR service in the polling list.@n
- * After the initialization, the user application should call the main polling 
- * function @ref fnet_poll_services() periodically to run the LLMNR service routine 
+ * After the initialization, the user application should call the main polling
+ * function @ref fnet_poll_services() periodically to run the LLMNR service routine
  * in the background.
  *
  ******************************************************************************/
@@ -120,9 +120,9 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params );
  *
  ******************************************************************************
  *
- * This function releases the LLMNR Server assigned to the @c desc 
- * descriptor.@n 
- * It releases all occupied resources, and unregisters the LLMNR service from 
+ * This function releases the LLMNR Server assigned to the @c desc
+ * descriptor.@n
+ * It releases all occupied resources, and unregisters the LLMNR service from
  * the polling list.
  *
  ******************************************************************************/

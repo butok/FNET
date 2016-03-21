@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
@@ -17,7 +17,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
+**********************************************************************/
 /*!
 *
 * @file fnet_igmp.h
@@ -68,11 +68,11 @@ typedef struct
 {
     fnet_uint8_t      type FNET_COMP_PACKED;           /* Type.*/
     fnet_uint8_t      max_resp_time FNET_COMP_PACKED;  /* IGMPv1 Unused field, zeroed when sent, ignored when received.*/
-                                                     /* IGMPv2 Max Response Time (is meaningful only in Membership Query).*/
-                                                     /* NOTE: Current version of FNET ignores this parameter.*/
+    /* IGMPv2 Max Response Time (is meaningful only in Membership Query).*/
+    /* NOTE: Current version of FNET ignores this parameter.*/
     fnet_uint16_t     checksum FNET_COMP_PACKED;       /* The checksum is the 16-bit one’s complement of the one’s
                                                       * complement sum of the 8-octet IGMP message.*/
-    fnet_ip4_addr_t group_addr FNET_COMP_PACKED;     /* Group address field.*/                             
+    fnet_ip4_addr_t group_addr FNET_COMP_PACKED;     /* Group address field.*/
 } fnet_igmp_header_t;
 FNET_COMP_PACKED_END
 
