@@ -654,7 +654,7 @@ typedef struct FNET_MK_SIM_MemMap
 /* SOPT1 Bit Fields */
 #define FNET_MK_SIM_SOPT1_RAMSIZE_MASK                   0xF000u
 #define FNET_MK_SIM_SOPT1_RAMSIZE_SHIFT                  12
-#define FNET_MK_SIM_SOPT1_RAMSIZE(x)                     (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SOPT1_RAMSIZE_SHIFT))&FNET_MK_SIM_SOPT1_RAMSIZE_MASK)
+#define FNET_MK_SIM_SOPT1_RAMSIZE(x)                     (((fnet_uint32_t)(((fnet_uint32_t)(x))<<FNET_MK_SIM_SOPT1_RAMSIZE_SHIFT))&FNET_MK_SIM_SOPT1_RAMSIZE_MASK)
 #define FNET_MK_SIM_SOPT1_OSC32KSEL_MASK                 0x80000u
 #define FNET_MK_SIM_SOPT1_OSC32KSEL_SHIFT                19
 #define FNET_MK_SIM_SOPT1_MS_MASK                        0x800000u
@@ -668,7 +668,7 @@ typedef struct FNET_MK_SIM_MemMap
 #define FNET_MK_SIM_SOPT2_MCGCLKSEL_SHIFT                0
 #define FNET_MK_SIM_SOPT2_FBSL_MASK                      0x300u
 #define FNET_MK_SIM_SOPT2_FBSL_SHIFT                     8
-#define FNET_MK_SIM_SOPT2_FBSL(x)                        (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SOPT2_FBSL_SHIFT))&FNET_MK_SIM_SOPT2_FBSL_MASK)
+#define FNET_MK_SIM_SOPT2_FBSL(x)                        (((fnet_uint32_t)(((fnet_uint32_t)(x))<<FNET_MK_SIM_SOPT2_FBSL_SHIFT))&FNET_MK_SIM_SOPT2_FBSL_MASK)
 #define FNET_MK_SIM_SOPT2_CMTUARTPAD_MASK                0x800u
 #define FNET_MK_SIM_SOPT2_CMTUARTPAD_SHIFT               11
 #define FNET_MK_SIM_SOPT2_TRACECLKSEL_MASK               0x1000u
@@ -677,15 +677,18 @@ typedef struct FNET_MK_SIM_MemMap
 #define FNET_MK_SIM_SOPT2_PLLFLLSEL_SHIFT                16
 #define FNET_MK_SIM_SOPT2_USBSRC_MASK                    0x40000u
 #define FNET_MK_SIM_SOPT2_USBSRC_SHIFT                   18
+#define FNET_MK_SIM_SOPT2_RMIISRC_MASK                   (0x80000U)
+#define FNET_MK_SIM_SOPT2_RMIISRC_SHIFT                  (19U)
+#define FNET_MK_SIM_SOPT2_RMIISRC(x)                     (((fnet_uint32_t)(((fnet_uint32_t)(x)) << FNET_MK_SIM_SOPT2_RMIISRC_SHIFT)) & FNET_MK_SIM_SOPT2_RMIISRC_MASK)
 #define FNET_MK_SIM_SOPT2_TIMESRC_MASK                   0x300000u
 #define FNET_MK_SIM_SOPT2_TIMESRC_SHIFT                  20
-#define FNET_MK_SIM_SOPT2_TIMESRC(x)                     (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SOPT2_TIMESRC_SHIFT))&FNET_MK_SIM_SOPT2_TIMESRC_MASK)
+#define FNET_MK_SIM_SOPT2_TIMESRC(x)                     (((fnet_uint32_t)(((fnet_uint32_t)(x))<<FNET_MK_SIM_SOPT2_TIMESRC_SHIFT))&FNET_MK_SIM_SOPT2_TIMESRC_MASK)
 #define FNET_MK_SIM_SOPT2_I2SSRC_MASK                    0x3000000u
 #define FNET_MK_SIM_SOPT2_I2SSRC_SHIFT                   24
-#define FNET_MK_SIM_SOPT2_I2SSRC(x)                      (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SOPT2_I2SSRC_SHIFT))&FNET_MK_SIM_SOPT2_I2SSRC_MASK)
+#define FNET_MK_SIM_SOPT2_I2SSRC(x)                      (((fnet_uint32_t)(((v)(x))<<FNET_MK_SIM_SOPT2_I2SSRC_SHIFT))&FNET_MK_SIM_SOPT2_I2SSRC_MASK)
 #define FNET_MK_SIM_SOPT2_SDHCSRC_MASK                   0x30000000u
 #define FNET_MK_SIM_SOPT2_SDHCSRC_SHIFT                  28
-#define FNET_MK_SIM_SOPT2_SDHCSRC(x)                     (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SOPT2_SDHCSRC_SHIFT))&FNET_MK_SIM_SOPT2_SDHCSRC_MASK)
+#define FNET_MK_SIM_SOPT2_SDHCSRC(x)                     (((fnet_uint32_t)(((fnet_uint32_t)(x))<<FNET_MK_SIM_SOPT2_SDHCSRC_SHIFT))&FNET_MK_SIM_SOPT2_SDHCSRC_MASK)
 /* SOPT4 Bit Fields */
 #define FNET_MK_SIM_SOPT4_FTM0FLT0_MASK                  0x1u
 #define FNET_MK_SIM_SOPT4_FTM0FLT0_SHIFT                 0
@@ -699,10 +702,10 @@ typedef struct FNET_MK_SIM_MemMap
 #define FNET_MK_SIM_SOPT4_FTM2FLT0_SHIFT                 8
 #define FNET_MK_SIM_SOPT4_FTM1CH0SRC_MASK                0xC0000u
 #define FNET_MK_SIM_SOPT4_FTM1CH0SRC_SHIFT               18
-#define FNET_MK_SIM_SOPT4_FTM1CH0SRC(x)                  (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SOPT4_FTM1CH0SRC_SHIFT))&FNET_MK_SIM_SOPT4_FTM1CH0SRC_MASK)
+#define FNET_MK_SIM_SOPT4_FTM1CH0SRC(x)                  (((fnet_uint32_t)(((fnet_uint32_t)(x))<<FNET_MK_SIM_SOPT4_FTM1CH0SRC_SHIFT))&FNET_MK_SIM_SOPT4_FTM1CH0SRC_MASK)
 #define FNET_MK_SIM_SOPT4_FTM2CH0SRC_MASK                0x300000u
 #define FNET_MK_SIM_SOPT4_FTM2CH0SRC_SHIFT               20
-#define FNET_MK_SIM_SOPT4_FTM2CH0SRC(x)                  (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SOPT4_FTM2CH0SRC_SHIFT))&FNET_MK_SIM_SOPT4_FTM2CH0SRC_MASK)
+#define FNET_MK_SIM_SOPT4_FTM2CH0SRC(x)                  (((fnet_uint32_t)(((fnet_uint32_t)(x))<<FNET_MK_SIM_SOPT4_FTM2CH0SRC_SHIFT))&FNET_MK_SIM_SOPT4_FTM2CH0SRC_MASK)
 #define FNET_MK_SIM_SOPT4_FTM0CLKSEL_MASK                0x1000000u
 #define FNET_MK_SIM_SOPT4_FTM0CLKSEL_SHIFT               24
 #define FNET_MK_SIM_SOPT4_FTM1CLKSEL_MASK                0x2000000u
@@ -712,34 +715,34 @@ typedef struct FNET_MK_SIM_MemMap
 /* SOPT5 Bit Fields */
 #define FNET_MK_SIM_SOPT5_UART0TXSRC_MASK                0x3u
 #define FNET_MK_SIM_SOPT5_UART0TXSRC_SHIFT               0
-#define FNET_MK_SIM_SOPT5_UART0TXSRC(x)                  (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SOPT5_UART0TXSRC_SHIFT))&FNET_MK_SIM_SOPT5_UART0TXSRC_MASK)
+#define FNET_MK_SIM_SOPT5_UART0TXSRC(x)                  (((fnet_uint32_t)(((fnet_uint32_t)(x))<<FNET_MK_SIM_SOPT5_UART0TXSRC_SHIFT))&FNET_MK_SIM_SOPT5_UART0TXSRC_MASK)
 #define FNET_MK_SIM_SOPT5_UART0RXSRC_MASK                0xCu
 #define FNET_MK_SIM_SOPT5_UART0RXSRC_SHIFT               2
-#define FNET_MK_SIM_SOPT5_UART0RXSRC(x)                  (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SOPT5_UART0RXSRC_SHIFT))&FNET_MK_SIM_SOPT5_UART0RXSRC_MASK)
+#define FNET_MK_SIM_SOPT5_UART0RXSRC(x)                  (((fnet_uint32_t)(((fnet_uint32_t)(x))<<FNET_MK_SIM_SOPT5_UART0RXSRC_SHIFT))&FNET_MK_SIM_SOPT5_UART0RXSRC_MASK)
 #define FNET_MK_SIM_SOPT5_UARTTXSRC_MASK                 0x30u
 #define FNET_MK_SIM_SOPT5_UARTTXSRC_SHIFT                4
-#define FNET_MK_SIM_SOPT5_UARTTXSRC(x)                   (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SOPT5_UARTTXSRC_SHIFT))&FNET_MK_SIM_SOPT5_UARTTXSRC_MASK)
+#define FNET_MK_SIM_SOPT5_UARTTXSRC(x)                   (((fnet_uint32_t)(((fnet_uint32_t)(x))<<FNET_MK_SIM_SOPT5_UARTTXSRC_SHIFT))&FNET_MK_SIM_SOPT5_UARTTXSRC_MASK)
 #define FNET_MK_SIM_SOPT5_UART1RXSRC_MASK                0xC0u
 #define FNET_MK_SIM_SOPT5_UART1RXSRC_SHIFT               6
-#define FNET_MK_SIM_SOPT5_UART1RXSRC(x)                  (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SOPT5_UART1RXSRC_SHIFT))&FNET_MK_SIM_SOPT5_UART1RXSRC_MASK)
+#define FNET_MK_SIM_SOPT5_UART1RXSRC(x)                  (((fnet_uint32_t)(((fnet_uint32_t)(x))<<FNET_MK_SIM_SOPT5_UART1RXSRC_SHIFT))&FNET_MK_SIM_SOPT5_UART1RXSRC_MASK)
 /* SOPT6 Bit Fields */
 #define FNET_MK_SIM_SOPT6_RSTFLTSEL_MASK                 0x1F000000u
 #define FNET_MK_SIM_SOPT6_RSTFLTSEL_SHIFT                24
-#define FNET_MK_SIM_SOPT6_RSTFLTSEL(x)                   (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SOPT6_RSTFLTSEL_SHIFT))&FNET_MK_SIM_SOPT6_RSTFLTSEL_MASK)
+#define FNET_MK_SIM_SOPT6_RSTFLTSEL(x)                   (((fnet_uint32_t)(((fnet_uint32_t)(x))<<FNET_MK_SIM_SOPT6_RSTFLTSEL_SHIFT))&FNET_MK_SIM_SOPT6_RSTFLTSEL_MASK)
 #define FNET_MK_SIM_SOPT6_RSTFLTEN_MASK                  0xE0000000u
 #define FNET_MK_SIM_SOPT6_RSTFLTEN_SHIFT                 29
 #define FNET_MK_SIM_SOPT6_RSTFLTEN(x)                    (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SOPT6_RSTFLTEN_SHIFT))&FNET_MK_SIM_SOPT6_RSTFLTEN_MASK)
 /* SOPT7 Bit Fields */
 #define FNET_MK_SIM_SOPT7_ADC0TRGSEL_MASK                0xFu
 #define FNET_MK_SIM_SOPT7_ADC0TRGSEL_SHIFT               0
-#define FNET_MK_SIM_SOPT7_ADC0TRGSEL(x)                  (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SOPT7_ADC0TRGSEL_SHIFT))&FNET_MK_SIM_SOPT7_ADC0TRGSEL_MASK)
+#define FNET_MK_SIM_SOPT7_ADC0TRGSEL(x)                  (((fnet_uint32_t)(((fnet_uint32_t)(x))<<FNET_MK_SIM_SOPT7_ADC0TRGSEL_SHIFT))&FNET_MK_SIM_SOPT7_ADC0TRGSEL_MASK)
 #define FNET_MK_SIM_SOPT7_ADC0PRETRGSEL_MASK             0x10u
 #define FNET_MK_SIM_SOPT7_ADC0PRETRGSEL_SHIFT            4
 #define FNET_MK_SIM_SOPT7_ADC0ALTTRGEN_MASK              0x80u
 #define FNET_MK_SIM_SOPT7_ADC0ALTTRGEN_SHIFT             7
 #define FNET_MK_SIM_SOPT7_ADC1TRGSEL_MASK                0xF00u
 #define FNET_MK_SIM_SOPT7_ADC1TRGSEL_SHIFT               8
-#define FNET_MK_SIM_SOPT7_ADC1TRGSEL(x)                  (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SOPT7_ADC1TRGSEL_SHIFT))&FNET_MK_SIM_SOPT7_ADC1TRGSEL_MASK)
+#define FNET_MK_SIM_SOPT7_ADC1TRGSEL(x)                  (((fnet_uint32_t)(((fnet_uint32_t)(x))<<FNET_MK_SIM_SOPT7_ADC1TRGSEL_SHIFT))&FNET_MK_SIM_SOPT7_ADC1TRGSEL_MASK)
 #define FNET_MK_SIM_SOPT7_ADC1PRETRGSEL_MASK             0x1000u
 #define FNET_MK_SIM_SOPT7_ADC1PRETRGSEL_SHIFT            12
 #define FNET_MK_SIM_SOPT7_ADC1ALTTRGEN_MASK              0x8000u
@@ -747,13 +750,13 @@ typedef struct FNET_MK_SIM_MemMap
 /* SDID Bit Fields */
 #define FNET_MK_SIM_SDID_PINID_MASK                      0xFu
 #define FNET_MK_SIM_SDID_PINID_SHIFT                     0
-#define FNET_MK_SIM_SDID_PINID(x)                        (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SDID_PINID_SHIFT))&FNET_MK_SIM_SDID_PINID_MASK)
+#define FNET_MK_SIM_SDID_PINID(x)                        (((fnet_uint32_t)(((v)(x))<<FNET_MK_SIM_SDID_PINID_SHIFT))&FNET_MK_SIM_SDID_PINID_MASK)
 #define FNET_MK_SIM_SDID_FAMID_MASK                      0x70u
 #define FNET_MK_SIM_SDID_FAMID_SHIFT                     4
-#define FNET_MK_SIM_SDID_FAMID(x)                        (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SDID_FAMID_SHIFT))&FNET_MK_SIM_SDID_FAMID_MASK)
+#define FNET_MK_SIM_SDID_FAMID(x)                        (((fnet_uint32_t)(((fnet_uint32_t)(x))<<FNET_MK_SIM_SDID_FAMID_SHIFT))&FNET_MK_SIM_SDID_FAMID_MASK)
 #define FNET_MK_SIM_SDID_REVID_MASK                      0xF000u
 #define FNET_MK_SIM_SDID_REVID_SHIFT                     12
-#define FNET_MK_SIM_SDID_REVID(x)                        (((uint32_t)(((uint32_t)(x))<<FNET_MK_SIM_SDID_REVID_SHIFT))&FNET_MK_SIM_SDID_REVID_MASK)
+#define FNET_MK_SIM_SDID_REVID(x)                        (((fnet_uint32_t)(((fnet_uint32_t)(x))<<FNET_MK_SIM_SDID_REVID_SHIFT))&FNET_MK_SIM_SDID_REVID_MASK)
 /* SCGC1 Bit Fields */
 #define FNET_MK_SIM_SCGC1_UART4_MASK                     0x400u
 #define FNET_MK_SIM_SCGC1_UART4_SHIFT                    10

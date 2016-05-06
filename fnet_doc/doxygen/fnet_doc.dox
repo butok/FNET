@@ -52,28 +52,21 @@ preferred way to configure stack features). @n
 - Supported Platforms:
 	- @b ARM Cortex-M4, Kinetis:
 		- @b MK64FN1M (FRDM-K64F board)
-		- @b MK60N512 (TWR-K60N512 board)
-		- @b MK70FN1M (TWR-K70F120M board)
-		- @b MK60FN1M (TWR-K60F120M board)
-	- @b ColdFire: 
-		- Modelo - MCF54418 (TWR-MCF5441x board).
-		- @b Kirin3 - MCF52259 (M52259EVB, M52259DEMO and TWR-MCF52259 boards).
-	- @b Qorivva Power Architecture: 
+		- @b MK66FN2M (FRDM-K66F board)
+		- @b MK6DN512 (TWR-K60D100M board)
+	- Older Platforms:
+		- Lasko - MCF51CN128 (TWR-MCF51CN board)
+		- Reindeer - MCF5282 (M5282EVB board) 
+		- Kirin2 - MCF52235 (M52235EVB board)
+		- Modelo - MCF54418 (TWR-MCF5441x board)
+		- Kirin3 - MCF52259 (M52259EVB, M52259DEMO and TWR-MCF52259 boards)
 		- Fado - MPC5668G (MPC5668GKIT board).
-	- Obsolete Platforms, available in older FNET releases:
-		- Lasko - MCF51CN128 (TWR-MCF51CN board).
-		- Reindeer - MCF5282 (M5282EVB board). 
-		- Kirin2 - MCF52235 (M52235EVB board). 
-
+		- Kinetis MK70FN1M (TWR-K70F120M board)
+		- Kinetis MK60FN1M (TWR-K60F120M board)
+ 
 - Supported Compilers:
-	- @b IAR:
-		- Embedded Workbench for ARM, version 7.2 (Kinetis).
-	- @b ARM:
-		- Keil uVision, version 4.7 (MK60N512).
-	- @b Freescale:
-		- Kinetis Design Studio, version 2.0 (MK64F)
-		- CodeWarrior Development Studio for Microcontrollers, version 10.6 (MCF52259, MCF54418).
-		- CodeWarrior Development Studio for MPC55xx/MPC56xx, version 2.10  (MPC5668G).
+	- IAR: Embedded Workbench for ARM, version 7.6
+	- GCC: Kinetis Design Studio, version 3.0 
 	
 - Bare-metal TCP/IP stack. No underlying RTOS is required, although it can be used with it.
 - Non-blocking Socket API (DGRAM, STREAM, RAW).
@@ -161,18 +154,19 @@ fnet                      - FNET root directory.
 |    |    |-- fnet_application    - Demo application source code.
 |    |    |-- fnet_webpage        - Demo web page source code.
 |    |    |-- startup             - Platform-specific startup source code.
-|    |-- <cpu_name>           - Demos for a <cpu_name> platform.
-|         |-- boot              - FNET TFTP Bootloader.
-|         |-- benchmark         - TCP/UDP Throughput Benchmark application. 
-|         |-- shell             - "Shell" demo is a fully featured shell. It allows
-|         |                       view/change various parameters (e.g. IP address,
-|         |                       subnet mask), explore mounted file systems, run 
-|         |                       DHCP client, HTTP and Telnet servers.
-|         |-- shell_boot        - Example application used for the FNET TFTP Bootloader
-|                                 demonstration. This demo has the same features as 
-|                                 the "Shell" demo, but it`s modified to be able to
-|                                 work with the FNET Bootloader.
-|-- fnet_tools                - FNET tools.
+|    |-- boards               - Demo projects 
+|         |-- <board_name>           - Demo projects for a <board_name> board.
+|              |-- boot              - FNET TFTP Bootloader.
+|              |-- benchmark         - TCP/UDP Throughput Benchmark application. 
+|              |-- shell             - "Shell" demo is a fully featured shell. It allows
+|              |                       view/change various parameters (e.g. IP address,
+|              |                       subnet mask), explore mounted file systems, run 
+|              |                       DHCP client, HTTP and Telnet servers.
+|              |-- shell_boot        - Example application used for the FNET TFTP Bootloader
+|                                      demonstration. This demo has the same features as 
+|                                      the "Shell" demo, but it`s modified to be able to
+|                                      work with the FNET Bootloader.
+|-- fnet_tools             - FNET tools.
               
 @endverbatim
 */
@@ -186,7 +180,7 @@ fnet                      - FNET root directory.
 
 The FNET project supplied with several demo applications. They can be used for demonstration of FNET features or as an example of FNET User-API usage. @n
 It is recommended to use them as starting point for your new applications.@n 
-Project files are placed in @verbatim fnet\fnet_demos\<cpu_name>\<demo_name>\<compiler><version>\ @endverbatim
+Project files are placed in @verbatim fnet\fnet_demos\boards\<board_name>\<demo_name>\<compiler_name>\ @endverbatim
 There are four types of demo projects:
 - @c shell - This is the main demo application. @n 
 The "Shell" demo allows to view/change various system parameters (e.g. IP address, subnet mask), to explore mounted file systems, to run DHCP and DNS clients, HTTP and Telnet servers, via a serial-terminal application. @n
@@ -210,46 +204,22 @@ The following table summarizes the supported demo applications, platforms and co
  <th ALIGN=CENTER>Benchmark</th>
  </tr>
 <tr>
- <td class="fnet_td_grey">MCF52259 (Kirin3)</td>
- <td ALIGN=CENTER>CW10.6</td>
- <td ALIGN=CENTER>CW10.6</td>
- <td ALIGN=CENTER>CW10.6</td>
- </tr>
-<tr>
- <td class="fnet_td_grey">MCF54418 (Modelo)</td>
- <td ALIGN=CENTER>CW10.6</td>
- <td ALIGN=CENTER>x</td>
- <td ALIGN=CENTER>x</td>
-</tr>
-<tr>
  <td class="fnet_td_grey">MK64FN1M (Kinetis)</td>
- <td ALIGN=CENTER>IAR7.5<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.5<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.5</td>
+ <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
  </tr>
 <tr>
- <td class="fnet_td_grey">MK60N512 (Kinetis)</td>
- <td ALIGN=CENTER>IAR7.5<br/>uV4.7</td>
- <td ALIGN=CENTER>x<br/>uV4.7</td>
- <td ALIGN=CENTER>IAR7.5<br/>uV4.7</td>
+ <td class="fnet_td_grey">MK66FN2M (Kinetis)</td>
+ <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
  </tr>
 <tr>
- <td class="fnet_td_grey">MK70FN1M (Kinetis)</td>
- <td ALIGN=CENTER>IAR7.5</td>
- <td ALIGN=CENTER>x</td>
- <td ALIGN=CENTER>x</td>
- </tr>
-<tr>
- <td class="fnet_td_grey">MK60FN1M (Kinetis)</td>
- <td ALIGN=CENTER>IAR7.5</td>
- <td ALIGN=CENTER>x</td>
- <td ALIGN=CENTER>x</td>
- </tr>
-<tr>
- <td class="fnet_td_grey">MPC5668G (Qorriva)</td>
- <td ALIGN=CENTER>CW2.10</td>
- <td ALIGN=CENTER>x</td>
- <td ALIGN=CENTER>CW2.10</td>
+ <td class="fnet_td_grey">MK60DN512 (Kinetis)</td>
+ <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
  </tr>
 </table>
 
@@ -294,20 +264,13 @@ Follow these steps to run the FNET Shell demo application:
 	@n @n
       @image html fnet_serial_setup.jpg "Serial port setup"
 
-- Launch the Freescale CodeWarrior IDE.
+- Launch IDE.
 - Open the project:
-@verbatim CWCF7.2:fnet\fnet_demos\<cpu_name>\shell\cwcf7.2\<evb_name>_shell.mcp
-CWMPC2.10:fnet\fnet_demos\<cpu_name>\shell\cwmpcf2.10\<evb_name>_shell.mcp 
-CW10.x:fnet\fnet_demos\<cpu_name>\shell\cw10.x\<evb_name>_shell\.project
-IAR: fnet\fnet_demos\<cpu_name>\shell\iar<x>\<evb_name>_shell.ewp
-UV: fnet\fnet_demos\<cpu_name>\shell\uv<x>\<evb_name>_shell.uvproj
+@verbatim fnet\fnet_demos\boards\<board_name>\shell\<compiler_name>\
 @endverbatim 
 
 - In the IDE, choose a project target you want to compile.
-      - RAM-based targets are easy to load and debug but do not enable standalone operation after board is powered down.
-      - Flash-based targets need to be loaded using the Flash Programmer tool before debugging. Application should be ready for standalone operation.
 - Compile, load (or flash) the application to the board and run the project.
-      - Be aware that you may need to use Flash Programmer tool if you use Flash-based build targets.
 - In your terminal program window you should see the FNET application Shell welcome message:
 @verbatim
 Parameters loaded from Flash.
@@ -573,35 +536,21 @@ Follow these steps to run the FNET Bootloader:
 @par Prepare the example-application image file that is to be downloaded by the TFTP Bootloader:
 
 - Open the project:
-@verbatim CW7.2:fnet\fnet_demos\<cpu_name>\shell_boot\cw7.2\<evb_name>shell_boot.mcp
-CW10.x:fnet\fnet_demos\<cpu_name>\shell_boot\cw10.<x>\<evb_name>shell_boot\.project
-IAR: fnet\fnet_demos\<cpu_name>\shell_boot\iar<x>\<evb_name>shell_boot.ewp
-UV: fnet\fnet_demos\<cpu_name>\shell_boot\uv<x>\<evb_name>shell_boot.uvproj
+@verbatim fnet\fnet_demos\boards\<board_name>\shell_boot\<compiler_name>\
 @endverbatim 
-- In the IDE choose the @a Int. @a Flash @a Release target.
+- In the IDE choose the @a Release target.
 - Compile the project.
-- The @a shell_boot_intflash.elf.S19 file should appear in directory with binaries. @n Copy this S-record file to the TFTP Server Base Directory (by default, it is @c C:@\TFTP-Root).
+- The @a fnet_firmware.srec file should appear in directory with binaries. @n Copy this S-record file to the TFTP Server Base Directory (by default, it is @c C:@\TFTP-Root).
 - Close the project.
        
 @par Prepare the FNET TFTP Bootloader:
 
 - Open the project:
-@verbatim CW7.2:fnet\fnet_demos\<cpu_name>\boot\cw7.2\<evb_name>_boot.mcp
-CW10.2:fnet\fnet_demos\<cpu_name>\boot\cw10.2\<evb_name>_boot\.project
-IAR: fnet\fnet_demos\<cpu_name>\boot\iar<x>\<evb_name>_boot.ewp
-UV: fnet\fnet_demos\<cpu_name>\boot\uv<x>\<evb_name>_boot.uvproj
+@verbatim fnet\fnet_demos\boards\<board_name>\boot\<compiler_name>\
 @endverbatim 
-- In the IDE choose @a Int. @a Flash @a Release target.
+- In the IDE choose @a Release target.
 - Compile the project.
 - Flash the program to the board. 
-- In case you are using CW7.2:
-	- Start the Flash Programmer. 
-	- In the CW main menu select [Tools]->[Flash Programmer].
-	- Load the Flash Programmer settings for your board. Press the [Load Settings...] button and open the @verbatim fnet\fnet_demos\<cpu_name>\shell_boot\cw<x>\cfg\<cpu_name>_INTFLASH.xml @endverbatim file.
-@n @n
-@image html fnet_flashing.jpg "Flash Programmer"
-       - Erase internal Flash memory. Go to the [Erase/Blank Check] page and press the @c [Erase] button.
-       - Flash the program to the board. Go to the [Program/Verify] page and press the @c [Program] button.
 - Now the TFTP Bootloader is ready to be used. @n You may update or backup the firmware with help of @ref fnet_stepbystep_tftp_client or @ref fnet_stepbystep_tftp_server.
 
 @subsection fnet_stepbystep_tftp_client TFTP firmware client
@@ -673,7 +622,7 @@ get
  script  : dhcp; erase all; tftp; set boot go; save; go
  raw     : 0x0
  tftp    : 192.168.0.5
- image   : shell_boot_intflash.elf.S19
+ image   : fnet_firmware.srec
  type    : srec
  go      : 0x0
 BOOT>
@@ -821,7 +770,7 @@ Erasing...
  0x0000c000 to 0x0007efff erased
  0x0007f000 to 0x0007ffff skipped
 Press [Ctr+C] to cancel.
-TFTP downloading 'shell_boot_intflash.elf.S19'c) from 192.168.0.5 : -
+TFTP downloading 'fnet_firmware.srec'c) from 192.168.0.5 : -
 Entry point set to 0x00019d14
 
 TFTP completed (270204 bytes)
@@ -915,7 +864,7 @@ BOOT> tftps
       @image html fnet_tftp_cln_put.jpg "Tftpd32 TFTP client"
 	- The TFTP server receives the write request, checks if the requested file name corresponds to the value of the @c image parameter, starts the erasing of the flash memory, downloads and writes image file to the flash memory, updates the @c go parameter to the new entry point, sets the @c boot parameter to the @c go value, saves changed parameters to the flash, and finally starts application. In the terminal window you should see:
 @verbatim
-BOOT> TFTP downloading 'shell_boot_intflash.elf.S19' (srec) from 192.168.0.5:
+BOOT> TFTP downloading 'fnet_firmware.srec' (srec) from 192.168.0.5:
 Erasing...
  0x00000000 to 0x0000BFFF skipped
  0x0000C000 to 0x0007EFFF erased
@@ -980,7 +929,7 @@ BOOT>
 	- Set parameters of the TFTP Client:
 		- @b Host : the IP address of your evaluation board.
 		- @b Port : should be set to the standard TFTP server port number @c 69.
-		- @b Local File : the file that is used for firmware backup (for example backup.S19).
+		- @b Local File : the file that is used for firmware backup (for example backup.srec).
 		- @b Remote File : set to the value of the bootloader-parameter @c image. By default it is set to the @a shell_boot_intflash.elf.S19 value.
 		- @b Block @b size : set to @c Default or @c 512.
 	- Start firmware download by pressing the [Get] button.
@@ -989,7 +938,7 @@ BOOT>
 
 	- The TFTP server receives the read request, checks if the requested file name corresponds to the value of the @c image parameter, generates image file and uploads it to the remote TFTP client. In the terminal window you should see:
 @verbatim
-BOOT> TFTP uploading 'shell_boot_intflash.elf.S19' (srec) to 10.198.0.5:
+BOOT> TFTP uploading 'fnet_firmware.srec' (srec) to 10.198.0.5:
 
 TFTP completed (1211274 bytes)
 @endverbatim
@@ -1069,12 +1018,9 @@ or on http://fbench.sf.net
 @par Prepare the FNET Throughput Benchmark application:
 
 - Open the project:
-@verbatim CW7.2:fnet\fnet_demos\<cpu_name>\benchmark\cw7.2\<evb_name>_bench.mcp
-CW10.x:fnet\fnet_demos\<cpu_name>\benchmark\cw10.<x>\<evb_name>_bench\.project
-IAR: fnet\fnet_demos\<cpu_name>\benchmark\iar<x>\<evb_name>_bench.ewp
-UV: fnet\fnet_demos\<cpu_name>\benchmark\uv<x>\<evb_name>_bench.uvproj
+@verbatim fnet\fnet_demos\boards\<board_name>\bench\<compiler_name>\
 @endverbatim 
-- In the IDE choose the @a Int. @a Flash @a Release target.
+- In the IDE choose the @a Release target.
 - Compile the project.
 - Flash the program to the board. 
 - Now the Benchmark application is ready to be used. 
@@ -1280,18 +1226,14 @@ The amount of data, received by the remote side, is putted to square brackets. I
 /*! 
 @page how_to_add_fnet Add FNET Stack to an existing project
 
-The FNET Stack is self-sufficient. It does not use any external software library or any third-party code. That is why adding the FNET TCP/IP stack 
-to an existing project is a trivial task. @n
+The FNET Stack is self-sufficient. It does not use any external software library. That is why adding the FNET TCP/IP stack 
+to an existing project is a simple task. @n
 @n
-If you are using classical CodeWarrior, to add the FNET TCP/IP stack code to your project, follow the steps below:
--# Start Freescale CodeWarrior IDE.
--# Open your existing project [File]=>[Open] or create a new one [File]=>[New project].
--# Add the whole @a fnet\\fnet_stack directory to the project. The easiest way is to drag and drop the @a \\fnet\\fnet_stack directory from the file explorer into the CodeWarrior project explorer:
-@n
-@n
-@image html fnet_adding_1.jpg
-@n
--# Anywhere in your project-directory structure, create the FNET user-configuration file @a fnet_user_config.h and add it to the project. As an example you can use the @ref fnet_user_config.template.h file ("fnet\fnet_demos\common\fnet_user_config.template.h").
+To add the FNET TCP/IP stack code to your project, follow the steps below:
+-# Start IDE.
+-# Open your existing project or create a new one.
+-# Add the whole @a fnet\\fnet_stack directory to the project. 
+-# Anywhere in your project-directory structure, create the FNET user-configuration file @a fnet_user_config.h and add it to the project. As a reference you can use any fnet_user_config.h file from existing demo applications.
 @n
 @n
 @image html fnet_adding_2.jpg
@@ -1300,7 +1242,6 @@ If you are using classical CodeWarrior, to add the FNET TCP/IP stack code to you
 -# Add initialization sequence of FNET TCP/IP stack into your application code (see the @ref fnet_stack_init chapter). For example in your main function:
 @code
 #include "fnet.h" /* FNET API */ 
-#include "fnet_cpu.h"
 
 /* main entry point*/
 int main(void)
@@ -1329,7 +1270,7 @@ int main(void)
 }
 @endcode
 -# Now you should be able to start using the FNET TCP/IP stack and services. See @ref stack_api and @ref services_api chapters for a detailed description of the programmer's interface. @n
-Also it's highly recommended to look at the included @c fnet_demos examples, especially the @c shell demo.
+Also it's highly recommended to look at provided @c fnet_demos examples, especially the @c shell demo. You may use them as a reference.
 
 @note 
 - It is important to enable hardware interrupts in your project, because the FNET TCP/IP stack uses Ethernet module and Timer module interrupts for its own activity. @n
@@ -1498,11 +1439,25 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+
+- Version 3.2.0:
+	- Added support of Kinetis K60DN512 (TWR-K60D100M board).
+	- Added support of Kinetis K66FN2M (FRDM-K66F board).
+	- Changed demo application structure:
+		- Demo projects moved to "\fnet\fnet_demos\boards\<board_name>\<demo_name>"
+		- Port-specific configuration parameters, like a compiler support FNET_CFG_COMP_<name>, a processor type FNET_CFG_CPU_<name>, a default serial port number FNET_CFG_CPU_SERIAL_PORT_DEFAULT and others are defined in example project options. This approach allows to have the same fnet_user_config.h per one type of example for all platforms.
+		- Use platform linker files and start up code from Kinetis SDK 2.0, with additional changes required by FNET applications
+	- Fixed memory allocation, that could cause data corruption when the memory pool is fool. Reported by Paul.
+	- Fixed TCP receive. Reported by Eclectice.
+	- Fixed ARP resolving, that could cause data corruption. Thanks to Michal Hanak.
+	- Fixed ENET register map for MPC5744P. Thanks to Patrice Cavin.
+	- Removed examples for old MPC5668G, MK70FN1M, MK60FN1M, MK60N512 and obsolete ColdFire (MCF) platform.
+
 - Version 3.1.1:
 	- Improved Flash driver. Now it copies its execution code to RAM by itself, so no need to define an additional FNET_RAM section in linker file.
 	- Fixed IPv4 input function, to accept all broadcast Ethernet frames for an interface without a bound IPv4 address. It is used by DHCPv4 client. Reported by Sergej Ruzin.
 	- Added MPC5566(Viper) configuration. Thanks to NanoZera.
-	- The all source files (*.c, *.h) were formatted by the Artistic Style 2.05 tool (http://astyle.sourceforge.net/).  
+	- The all source code files (*.c, *.h) were formatted by the Artistic Style 2.05 tool (http://astyle.sourceforge.net/).  
 	- Other minor changes.
 
 - Version 3.1.0:
@@ -2076,18 +2031,13 @@ FNET public releases:
 * configuration parameters have a default value provided in the FNET stack 
 * code. @n
 * @n
-* To simplify the creation of the application-specific configuration
-* file, you can 
-* copy the @ref fnet_user_config.template.h
-* into the project area and rename it to @c fnet_user_config.h.
 * Typical use of application-specific configuration is disabling the features that 
 * are not needed in application and reducing target system-memory 
 * requirements. @n
 * @n
 * The FNET configuration parameters are prefixed @c FNET_CFG_ for coherence and are defined in the following files:
 * - @b fnet_user_config.h = The user configuration file used to set 
-* or change any of the FNET configuration parameters. Use the template file
-*         @ref fnet_user_config.template.h as a starting point.
+* or change any of the FNET configuration parameters. 
 * - @ref fnet_config.h = The main FNET configuration file that is included by all
 *   C files in the stack, and which in turn includes all other configuration files.
 *   The user's configuration file @c fnet_user_config.h has the highest priority.

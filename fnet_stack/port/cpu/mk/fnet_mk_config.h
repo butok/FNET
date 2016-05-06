@@ -79,7 +79,7 @@
     *  NOTE: User application should not change this parameter.
     ******************************************************************************/
     #ifndef FNET_CFG_CPU_TIMER_VECTOR_NUMBER
-        #if FNET_CFG_CPU_MK64FN1
+        #if FNET_CFG_CPU_MK64FN1 || FNET_CFG_CPU_MK66FN2
             #define FNET_CFG_CPU_TIMER_VECTOR_NUMBER        (64U  + FNET_CFG_CPU_TIMER_NUMBER)
         #else
             #define FNET_CFG_CPU_TIMER_VECTOR_NUMBER        (84U  + FNET_CFG_CPU_TIMER_NUMBER)
@@ -91,7 +91,7 @@
     *  NOTE: User application should not change this parameter.
     ******************************************************************************/
     #ifndef FNET_CFG_CPU_ETH0_VECTOR_NUMBER
-        #if FNET_CFG_CPU_MK64FN1
+        #if FNET_CFG_CPU_MK64FN1 || FNET_CFG_CPU_MK66FN2
             #define FNET_CFG_CPU_ETH0_VECTOR_NUMBER        (100U)
         #else
             #define FNET_CFG_CPU_ETH0_VECTOR_NUMBER        (93U)

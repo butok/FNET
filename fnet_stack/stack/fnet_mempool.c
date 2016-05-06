@@ -238,7 +238,8 @@ void *fnet_mempool_malloc(fnet_mempool_desc_t mpool, fnet_size_t nbytes )
         p = p->ptr;
     }
 
-    if(best_p)
+    if(best_p 
+        && !((best_p_prev->ptr == best_p->ptr) && (best_p->size == nunits)) /* Whole lst free block*/ )
     {
         if(best_p->size == nunits)
         {
@@ -357,7 +358,7 @@ fnet_size_t fnet_mempool_free_mem_status( fnet_mempool_desc_t mpool)
 
     if(t_mem)
     {
-        total_size += t_mem->size;
+        total_size += t_mem->size - 1/* header correction*/;
 #if 0
         FNET_DEBUG("%d,", t_mem->size * sizeof(FNET_ALLOC_HDR_T));
 #endif
@@ -365,13 +366,16 @@ fnet_size_t fnet_mempool_free_mem_status( fnet_mempool_desc_t mpool)
         while(t_mem->ptr != mempool->free_ptr)
         {
             t_mem = t_mem->ptr;
-            total_size += t_mem->size;
+            total_size += t_mem->size - 1/* header correction*/;
 #if 0
             FNET_DEBUG("%d,", t_mem->size * sizeof(FNET_ALLOC_HDR_T));
             * /
 #endif
         }
     }
+    
+    if(total_size)
+        total_size --; /* Last block correction.*/
 
     fnet_isr_unlock();
 
@@ -397,7 +401,7 @@ fnet_size_t fnet_mempool_malloc_max( fnet_mempool_desc_t mpool )
     if(t_mem)
     {
 
-        max = t_mem->size;
+        max = t_mem->size - 1 /* header correction*/;
 #if 0
         FNET_DEBUG("%d,", t_mem->size * sizeof(FNET_ALLOC_HDR_T));
 #endif
@@ -408,7 +412,7 @@ fnet_size_t fnet_mempool_malloc_max( fnet_mempool_desc_t mpool )
 
             if(t_mem->size > max)
             {
-                max = t_mem->size;
+                max = t_mem->size - 1 /* header correction*/;
             }
 #if 0
             FNET_DEBUG("%d,", t_mem->size * sizeof(FNET_ALLOC_HDR_T));
@@ -417,6 +421,12 @@ fnet_size_t fnet_mempool_malloc_max( fnet_mempool_desc_t mpool )
 #if 0
         FNET_DEBUG("");
 #endif
+    }
+    
+    if(mempool->free_ptr == mempool->free_ptr->ptr) /* Last free block correction.*/
+    {
+        if(max!=0)
+            max--;
     }
 
     fnet_isr_unlock();

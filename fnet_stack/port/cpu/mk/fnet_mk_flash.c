@@ -115,7 +115,7 @@ static void fnet_ftfl_command( fnet_uint8_t command, fnet_uint32_t *address, con
 {
     fnet_cpu_irq_desc_t irq_desc;
 
-#if FNET_CFG_CPU_MK60N512 /* This problem exists in first-released-version product (mask set: 0M33Z). */
+#if FNET_CFG_CPU_MK60N512 || FNET_CFG_CPU_MK60DN512 /* This problem exists in first-released-version product (mask set: 0M33Z). */
 
 #if 0  /* For restoring.*/
     fnet_uint32_t fmc_pfb0cr_reg = FNET_MK_FMC_PFB0CR;

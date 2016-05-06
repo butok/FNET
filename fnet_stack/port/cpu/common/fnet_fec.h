@@ -257,20 +257,14 @@ typedef struct
     volatile fnet_uint32_t reserved13[3];
     volatile fnet_uint32_t TACC;               /* Transmit Accelerator Function Configuration, offset: 0x1C0 */
     volatile fnet_uint32_t RACC;               /* Receive Accelerator Function Configuration, offset: 0x1C4 */
-#if FNET_CFG_CPU_MPC5744P
-    volatile fnet_uint32_t reserved14[15];
-#else
     volatile fnet_uint32_t reserved14[14];
-#endif
 #else /* MCF || MPC */
     volatile fnet_uint32_t reserved14[29];
 #endif
 
 #if FNET_CFG_CPU_ETH_MIB
     /* Ethernet Management Information Base (MIB) Block Counters:*/
-#if !FNET_CFG_CPU_MPC5744P
     volatile fnet_uint32_t RMON_T_DROP;
-#endif
     volatile fnet_uint32_t RMON_T_PACKETS;
     volatile fnet_uint32_t RMON_T_BC_PKT;
     volatile fnet_uint32_t RMON_T_MC_PKT;
@@ -288,11 +282,7 @@ typedef struct
     volatile fnet_uint32_t RMON_T_P1024TO2047;
     volatile fnet_uint32_t RMON_T_P_GTE2048;
     volatile fnet_uint32_t RMON_T_OCTETS;
-#if FNET_CFG_CPU_MPC5744P
-    volatile fnet_uint32_t reserved15[1];
-#else
     volatile fnet_uint32_t IEEE_T_DROP;
-#endif
     volatile fnet_uint32_t IEEE_T_FRAME_OK;
     volatile fnet_uint32_t IEEE_T_1COL;
     volatile fnet_uint32_t IEEE_T_MCOL;
@@ -301,11 +291,7 @@ typedef struct
     volatile fnet_uint32_t IEEE_T_EXCOL;
     volatile fnet_uint32_t IEEE_T_MACERR;
     volatile fnet_uint32_t IEEE_T_CSERR;
-#if FNET_CFG_CPU_MPC5744P
-    volatile fnet_uint32_t reserved16[1];
-#else
     volatile fnet_uint32_t IEEE_T_SQE;
-#endif
     volatile fnet_uint32_t IEEE_T_FDXFC;
     volatile fnet_uint32_t IEEE_T_OCTETS_OK;
     volatile fnet_uint32_t reserved17[3];
@@ -464,9 +450,6 @@ fnet_fec_reg_t;
     /* Bit definitions and macros for FNET_MPC_FEC_ETDSR */
     #define FNET_FEC_ETDSR_X_DES_START(x)   (((x)&0x1FFFFFFFU)<<3U)
 
-    /* Bit definitions and macros for FNET_MPC_FEC_EMRBR */
-    #define FNET_FEC_EMRBR_R_BUF_SIZE(x)    (((x)&0x000003FFU)<<4U)
-
 #else
     /* Bit definitions and macros for FNET_MCF_FEC_TFWR */
     #define FNET_FEC_TFWR_X_WMRK(x)         (((x)&0x00000003U)<<0U)
@@ -483,10 +466,10 @@ fnet_fec_reg_t;
     /* Bit definitions and macros for FNET_MCF_FEC_ETDSR */
     #define FNET_FEC_ETDSR_X_DES_START(x)   (((x)&0x3FFFFFFFU)<<2U)
 
-    /* Bit definitions and macros for FNET_MCF_FEC_EMRBR */
-    #define FNET_FEC_EMRBR_R_BUF_SIZE(x)    (((x)&0x0000007FU)<<4U)
-
 #endif
+
+/* Bit definitions and macros for FNET_MCF_FEC_EMRBR */
+#define FNET_FEC_EMRBR_R_BUF_SIZE(x)    (((x)&0x0000007FU)<<4U)
 
 /*  Bit definitions and macros for TACC */
 #define FNET_FEC_TACC_SHIFT16           (0x00000001U)

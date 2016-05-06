@@ -94,7 +94,7 @@ void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
             FNET_MK_PORTF_PCR18 = FNET_MK_PORT_PCR_MUX(0x4); /* UART is alt4 function for this pin.*/
             /* Enable the UART0_RXD function on PTF17 */
             FNET_MK_PORTF_PCR17 = FNET_MK_PORT_PCR_MUX(0x4); /* UART is alt4 function for this pin.*/
-#elif FNET_CFG_CPU_MK64FN1
+#elif FNET_CFG_CPU_MK64FN1 || FNET_CFG_CPU_MK66FN2
             /* Enable clock */
             FNET_MK_SIM_SCGC5 |= FNET_MK_SIM_SCGC5_PORTB_MASK;
             /* Enable the UART0_TXD  */
@@ -170,7 +170,7 @@ void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
             FNET_MK_SIM_SCGC4 |= FNET_MK_SIM_SCGC4_UART3_MASK;
             break;
         case 4:
-#if FNET_CFG_CPU_MK64FN1
+#if FNET_CFG_CPU_MK64FN1 || FNET_CFG_CPU_MK66FN2
             /* Enable clock */
             FNET_MK_SIM_SCGC5 |= FNET_MK_SIM_SCGC5_PORTC_MASK;
             /* Enable the UART4_TXD function on PTC14 */

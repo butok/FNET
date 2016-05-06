@@ -410,6 +410,8 @@ static fnet_int32_t fnet_raw_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_
     const struct sockaddr   *foreign_addr;
     fnet_bool_t             flags_save = FNET_FALSE;
 
+    fnet_isr_lock();
+
     if(len > sk->send_buffer.count_max)
     {
         error = FNET_ERR_MSGSIZE;   /* Message too long. */
@@ -446,11 +448,13 @@ static fnet_int32_t fnet_raw_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_
 
     if((error == FNET_ERR_OK) && (sk->options.local_error == FNET_ERR_OK)) /* We get RAW or ICMP error.*/
     {
+        fnet_isr_unlock();
         return (fnet_int32_t)(len);
     }
 
 ERROR:
     fnet_socket_set_error(sk, error);
+    fnet_isr_unlock();
     return (FNET_ERR);
 }
 

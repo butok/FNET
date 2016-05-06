@@ -33,17 +33,18 @@ FNET project directory structure:
 	|    |    |-- fnet_application    - Demo application source code.
 	|    |    |-- fnet_webpage        - Demo web page source code.
 	|    |    |-- startup             - Platform-specific startup source code.
-	|    |-- <cpu_name>           - Demos for a <cpu_name> platform.
-	|         |-- boot              - FNET TFTP Bootloader.
-	|         |-- benchmark         - TCP/UDP Throughput Benchmark application. 
-	|         |-- shell             - "Shell" demo is a fully featured shell. It allows
-	|         |                       view/change various parameters (e.g. IP address,
-	|         |                       subnet mask), explore mounted file systems, run 
-	|         |                       DHCP client, HTTP and Telnet server.
-	|         |-- shell_boot        - Example application used for the FNET TFTP Bootloader
-	|                                 demonstration. This demo has the same features as 
-	|                                 the "Shell" demo, but it`s modified to be able to
-	|                                 work with the FNET Bootloader.
+	|    |-- boards               - Demo projects 
+	|         |-- <board_name>           - Demo projects for a <board_name> board.
+	|              |-- boot              - FNET TFTP Bootloader.
+	|              |-- benchmark         - TCP/UDP Throughput Benchmark application. 
+	|              |-- shell             - "Shell" demo is a fully featured shell. It allows
+	|              |                       view/change various parameters (e.g. IP address,
+	|              |                       subnet mask), explore mounted file systems, run 
+	|              |                       DHCP client, HTTP and Telnet servers.
+	|              |-- shell_boot        - Example application used for the FNET TFTP Bootloader
+	|                                      demonstration. This demo has the same features as 
+	|                                      the "Shell" demo, but it`s modified to be able to
+	|                                      work with the FNET Bootloader.
 	|-- fnet_tools                - FNET tools.
 
 

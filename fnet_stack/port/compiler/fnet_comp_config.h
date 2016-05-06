@@ -48,6 +48,7 @@
  *           Current version of the FNET supports the following compiler definitions:
  *            - @c FNET_CFG_COMP_CW  = Used compiler is CodeWarrior.
  *            - @c FNET_CFG_COMP_IAR = Used compiler is IAR.
+ *            - @c FNET_CFG_COMP_GNUC = Used compiler is GCC.
  *            - @c FNET_CFG_COMP_UV  = Used compiler is Keil uVision.
  *            - @c FNET_CFG_COMP_GHS = Used compiler is Green Hills.
  *            - @c FNET_CFG_COMP_DCC = Used compiler is Diab.
@@ -97,7 +98,7 @@
 #elif FNET_CFG_COMP_UV
     #define FNET_COMP_STR    "UV"
 #elif FNET_CFG_COMP_GNUC
-    #define FNET_COMP_STR     "GCC"
+    #define FNET_COMP_STR    "GCC"
 #elif FNET_CFG_COMP_GHS
     #define FNET_COMP_STR    "GHS"
 #elif FNET_CFG_COMP_DCC

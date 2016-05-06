@@ -33,8 +33,8 @@
 #include "fnet.h"
 
 #if FNET_MPC
-#include "stack\fnet_timer_prv.h"
-#include "stack\fnet_isr.h"
+#include "stack/fnet_timer_prv.h"
+#include "stack/fnet_isr.h"
 #include "fnet_mpc.h"
 
 #define FNET_TIMER_VECTOR_NUMBER (FNET_CFG_CPU_TIMER_VECTOR_NUMBER)     /* Number of timer interrupt vector.*/

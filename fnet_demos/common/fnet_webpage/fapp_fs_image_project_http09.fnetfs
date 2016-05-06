@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<FnetFS version="1">
+  <ProjectSettings>
+    <OutputFullPath>..\fnet_application\fapp_fs_image_http09.c</OutputFullPath>
+    <ImageName>fnet_fs_image</ImageName>
+    <ConditionIf>FNET_CFG_FS &amp;&amp; FNET_CFG_FS_ROM &amp;&amp; !FNET_CFG_HTTP_VERSION_MAJOR</ConditionIf>
+  </ProjectSettings>
+  <FileTree>
+    <Node Type="File" Name="favicon.ico">.\src\favicon.ico</Node>
+    <Node Type="File" Name="fnet.css">.\src\fnet.css</Node>
+    <Node Type="File" Name="fnet.js">.\src\fnet_http09.js</Node>
+    <Node Type="File" Name="fnet_graph.html">.\src\fnet_graph.html</Node>
+    <Node Type="File" Name="fnet_set.shtml">.\src\fnet_set.shtml</Node>
+    <Node Type="File" Name="fnet_stat.html">.\src\fnet_stat.html</Node>
+    <Node Type="File" Name="fnet_sup.html">.\src\fnet_sup.html</Node>
+    <Node Type="File" Name="fnet_logo.gif">.\src\fnet_logo.gif</Node>
+    <Node Type="File" Name="index.html">.\src\index.html</Node>
+  </FileTree>
+</FnetFS>

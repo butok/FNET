@@ -323,8 +323,12 @@ static fnet_return_t fnet_fec_init(fnet_netif_t *netif)
         /*The MII_SPEED field must be programmed with a value to provide
         * an EMDC frequency of less than or equal to 2.5 MHz to be compliant
         * with the IEEE 802.3 MII specification.*/
+        /* HALFSYS_CLK x (1 / ((MII_SPEED +1) x 2)) = MDC */
+#if FNET_CFG_CPU_MPC564xBC || FNET_CFG_CPU_MPC5668G || FNET_CFG_CPU_MPC5566 || FNET_CFG_CPU_MCF /* Older platforms.*/
         ethif->reg_phy->MSCR = FNET_FEC_MSCR_MII_SPEED((FNET_FEC_CLOCK_KHZ / FNET_FEC_MII_CLOCK_KHZ) + (fnet_uint32_t)(((FNET_FEC_CLOCK_KHZ % FNET_FEC_MII_CLOCK_KHZ) != 0U) ? 1U : 0U));
-
+#else  /* FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_MCF54418 || FNET_CFG_CPU_MK60N512 || FNET_CFG_CPU_MK60DN512 || FNET_CFG_CPU_MK64FN1 || FNET_CFG_CPU_MK66FN2 || FNET_CFG_CPU_MK70FN1 || FNET_CFG_CPU_MK60FN1 */
+        ethif->reg_phy->MSCR = FNET_FEC_MSCR_MII_SPEED((FNET_FEC_CLOCK_KHZ / FNET_FEC_MII_CLOCK_KHZ) - (fnet_uint32_t)(((FNET_FEC_CLOCK_KHZ % FNET_FEC_MII_CLOCK_KHZ) != 0U) ? 0U : 1U));
+#endif
         /* Enable interrupts (Receive frame interrupt).*/
 #if FNET_FEC_INTERRUPT_ENABLE
         ethif->reg->EIMR = FNET_FEC_EIMR_RXF;
@@ -705,7 +709,7 @@ void fnet_fec_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_add
         fnet_cpu_cache_invalidate();
 
         while((ethif->tx_buf_desc_cur->status & FNET_HTONS(FNET_FEC_TX_BD_R)) != 0u)
-        {}
+        {} /* If you are blocked here forever, there is communication issue between ENET and PHY.*/
 
         ethheader = (fnet_eth_header_t *)fnet_ntohl((fnet_uint32_t)ethif->tx_buf_desc_cur->buf_ptr);
 
@@ -791,6 +795,9 @@ void fnet_fec_output_frame(fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t
 
     if((frame != 0U) && (frame_size <= netif->mtu))
     {
+        /* ethif->tx_buf_desc_cur->status will be updated by FEC-DMA so we need to invalidate cache */
+        fnet_cpu_cache_invalidate();
+
         while((ethif->tx_buf_desc_cur->status & FNET_HTONS(FNET_FEC_TX_BD_R)) != 0u)
         {}
 

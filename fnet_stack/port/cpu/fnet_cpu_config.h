@@ -50,7 +50,9 @@
  *            - @c FNET_CFG_CPU_MCF5282  = Used platform is the MCF5282.
  *            - @c FNET_CFG_CPU_MCF51CN128  = Used platform is the MCF51CN128.
  *            - @c FNET_CFG_CPU_MCF54418  = Used platform is the MCF54418.
+ *            - @c FNET_CFG_CPU_MK60DN512  = Used platform is the MK60DN512.
  *            - @c FNET_CFG_CPU_MK60N512  = Used platform is the MK60N512.
+ *            - @c FNET_CFG_CPU_MK66FN2  = Used platform is the MK66FN2.
  *            - @c FNET_CFG_CPU_MK64FN1  = Used platform is the MK64FN1.
  *            - @c FNET_CFG_CPU_MK70FN1  = Used platform is the MK70FN1.
  *            - @c FNET_CFG_CPU_MK60FN1  = Used platform is the MK60FN1.
@@ -86,8 +88,14 @@
 #ifndef FNET_CFG_CPU_MK60N512
     #define FNET_CFG_CPU_MK60N512   (0)
 #endif
+#ifndef FNET_CFG_CPU_MK60DN512
+    #define FNET_CFG_CPU_MK60DN512   (0)
+#endif
 #ifndef FNET_CFG_CPU_MK64FN1
     #define FNET_CFG_CPU_MK64FN1    (0)
+#endif
+#ifndef FNET_CFG_CPU_MK66FN2
+    #define FNET_CFG_CPU_MK66FN2    (0)
 #endif
 #ifndef FNET_CFG_CPU_MK70FN1
     #define FNET_CFG_CPU_MK70FN1   	(0)
@@ -181,6 +189,15 @@
     #define FNET_CPU_STR    "MK60N512"
 #endif
 
+#if FNET_CFG_CPU_MK60DN512 /* Kinetis */
+    #ifdef FNET_CPU_STR
+        #error "More than one CPU selected FNET_CPU_XXXX"
+    #endif
+
+    #include "port/cpu/mk/fnet_mk60dn512_config.h"
+    #define FNET_CPU_STR    "MK60DN512"
+#endif
+
 #if FNET_CFG_CPU_MK64FN1 /* Kinetis */
     #ifdef FNET_CPU_STR
         #error "More than one CPU selected FNET_CPU_XXXX"
@@ -188,6 +205,15 @@
 
     #include "port/cpu/mk/fnet_mk64fn1_config.h"
     #define FNET_CPU_STR    "MK64FN1"
+#endif
+
+#if FNET_CFG_CPU_MK66FN2 /* Kinetis */
+    #ifdef FNET_CPU_STR
+        #error "More than one CPU selected FNET_CPU_XXXX"
+    #endif
+
+    #include "port/cpu/mk/fnet_mk66fn2_config.h"
+    #define FNET_CPU_STR    "MK66FN2"
 #endif
 
 #if FNET_CFG_CPU_MK70FN1 /* Kinetis */

@@ -321,6 +321,7 @@ void fnet_arp_resolve(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_netbuf_t
     fnet_index_t        i;
     fnet_arp_entry_t    *entry;
 
+    fnet_isr_lock();
     for (i = 0U; i < FNET_CFG_ARP_TABLE_SIZE; i++)
     {
         if (ipaddr == arpif->arp_table[i].prot_addr)
@@ -342,6 +343,7 @@ void fnet_arp_resolve(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_netbuf_t
     if (entry->hold)
     {
         fnet_netbuf_free_chain(entry->hold);
+        entry->hold = NULL;
     }
 
     if ((i == FNET_CFG_ARP_TABLE_SIZE) || ((entry->hold) && (((fnet_timer_ticks() - entry->hold_time) * FNET_TIMER_PERIOD_MS) > 1000U)) || (!entry->hold))
@@ -354,6 +356,7 @@ void fnet_arp_resolve(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_netbuf_t
     {
         entry->hold = nb;
     }
+    fnet_isr_unlock();
 }
 
 /************************************************************************

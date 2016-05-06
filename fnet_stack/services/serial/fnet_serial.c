@@ -321,29 +321,6 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
 
         while(done == FNET_FALSE)
         {
-#if 0
-            switch(c = *++p)
-            {
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                    field_width = (field_width * 10) + (c - '0');
-                    break;
-
-                default:
-                    /* we've gone one char too far */
-                    --p;
-                    done = FNET_TRUE;
-                    break;
-            }
-#else
             c = *++p;
             if((c >= '0') && (c <= '9'))
             {
@@ -355,9 +332,6 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                 --p;
                 done = FNET_TRUE;
             }
-#endif
-
-
         }
 
         /*
@@ -365,54 +339,16 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
          */
         if( /* (c = *++p) */*++p == '.')
         {
-#if 0
-            precision_used = FNET_TRUE;
-#endif
-
             /*
              * Must get precision field width, if present.
              */
-#if 0
-            precision_width = 0;
-            * /
-#endif
             done = FNET_FALSE;
 
             while(done == FNET_FALSE)
             {
-#if 0
-                switch( /* c = uncomment if used below */*++p)
-                {
-                    case '0':
-                    case '1':
-                    case '2':
-                    case '3':
-                    case '4':
-                    case '5':
-                    case '6':
-                    case '7':
-                    case '8':
-                    case '9':
-
-#if 0
-                        precision_width = (precision_width * 10) + (c - '0');
-#endif
-
-                        break;
-
-                    default:
-                        /* we've gone one char too far */
-                        --p;
-                        done = FNET_TRUE;
-                        break;
-                }
-#else
                 c = (*++p);
                 if((c >= '0') && (c <= '9'))
                 {
-#if 0
-                    precision_width = (precision_width * 10) + (c - '0');
-#endif
                 }
                 else
                 {
@@ -420,43 +356,24 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                     --p;
                     done = FNET_TRUE;
                 }
-#endif
             }
         }
         else
         {
             /* we've gone one char too far */
             --p;
-
-#if 0
-            precision_used = FNET_FALSE;
-            precision_width = 0;
-#endif
-
         }
 
         /*
          * Check for the length modifier.
          */
-#if 0
-        length_modifier = 0;
-#endif
         switch( *++p)
         {
             case 'h':
-#if 0
-                length_modifier |= LENMOD_h;
-#endif
                 break;
             case 'l':
-#if 0
-                length_modifier |= LENMOD_l;
-#endif
                 break;
             case 'L':
-#if 0
-                length_modifier |= LENMOD_L;
-#endif
                 break;
             default:
                 /* we've gone one char too far */
