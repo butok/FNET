@@ -1401,7 +1401,7 @@ void fapp_tftps_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
 
         /* Enable TFTP server */
         tftp_srv_desc = fnet_tftp_srv_init(&params);
-        if(tftp_srv_desc != FNET_ERR)
+        if(tftp_srv_desc)
         {
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             fnet_shell_println(desc, " TFTP Server started.");
@@ -1413,7 +1413,6 @@ void fapp_tftps_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
         {
             fnet_shell_println(desc, FAPP_INIT_ERR, "TFTP Server");
         }
-
     }
     else if((argc == 2u) && (fnet_strcasecmp(&FAPP_COMMAND_RELEASE[0], argv[1]) == 0)) /* [release] */
     {
@@ -1432,7 +1431,7 @@ void fapp_tftps_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
 *************************************************************************/
 void fapp_tftps_info(fnet_shell_desc_t desc)
 {
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "TFTP Server", fapp_enabled_str[fnet_tftp_srv_enabled(fapp_tftp_srv_desc)]);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "TFTP Server", fapp_enabled_str[fnet_tftp_srv_is_enabled(fapp_tftp_srv_desc)]);
 }
 
 #endif /* FAPP_CFG_TFTPS_CMD */

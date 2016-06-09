@@ -95,6 +95,7 @@ preferred way to configure stack features). @n
 		- Basic access authentication.
 	- @b TELNET server. 
 	- @b DHCP/BOOTP client.
+	- @b Auto-IP service.
 	- @b DNS client/resolver.
 	- @b LLMNR Server/Responder.
 	- @b PING service.
@@ -128,6 +129,7 @@ fnet                      - FNET root directory.
 |-- fnet_stack              - FNET TCP/IP stack.
 |    |-- stack                - FNET TCP/IP stack platform-independent source code.
 |    |-- services             - FNET Services.
+|    |    |-- autoip            - Auto-IP service.
 |    |    |-- dns               - DNS client/resolver service.
 |    |    |-- dhcp              - DHCP/BOOTP client service.
 |    |    |-- flash             - Flash  Memory driver.
@@ -294,6 +296,7 @@ Parameters loaded from Flash.
  Free Heap        : 30288
  HTTP Server      : disabled
  DHCP Client      : disabled
+ AUTOIP Service   : disabled
  TELNET Server    : disabled
  LLMNR Server     : disabled
 
@@ -318,9 +321,12 @@ SHELL> help
 >   help                                 - Display this help message
 >    set [<parameter> <value>]           - Set parameter
 >    get [<parameter>]                   - Get parameters
+>   bind <IP6 address>                   - Bind IPv6 Address
+> unbind <IP6 address>                   - Unbind IPv6 Address
 >   info                                 - Show interface info
 >   stat                                 - Show network statistics
->   dhcp [release]                       - Start DHCP client
+>   dhcp [release|autoip]                - Start DHCP client
+> autoip [release]                       - Start Auto-IP service
 >   http [release]                       - Start HTTP Server
 >    exp                                 - File Explorer submenu...
 > telnet [release]                       - Start Telnet Server
@@ -329,7 +335,8 @@ SHELL> help
 >   save                                 - Save parameters to the FLASH
 >  reset                                 - Reset the board
 >   ping [-c <count>][-i <seconds>]
-        [-p <pattern>][-s <size>][-h <hoplimit/ttl>] <ip>- Send ECHO requests
+        [-p <pattern>][-s <size>]
+        [-h <hoplimit/ttl>] <ip>        - Send ICMP ECHO requests
 SHELL>
 @endverbatim
 - All computers, connected to an Ethernet network running the IPv4 protocol, need several network-specific parameters:
@@ -347,7 +354,7 @@ set mac <ethernet MAC address>
 	- By changing the default values in the @a fnet_user_config.h source file. @n
 	  Your local system administrator is able to assign a unique IPv4 address for the board, and also provide you with the IPv4 addresses 
 	  of the gateway and the netmask.
-- You can also start the DHCP IPv4 client to obtain the address parameters automatically from your network DHCP server:
+- You may start the DHCP IPv4 client to obtain the address parameters automatically from your network DHCP server:
 @verbatim
 SHELL> dhcp
 Press [Ctr+C] to cancel.
@@ -362,6 +369,28 @@ Sending DHCP discover...
  Gateway          : 10.171.88.254
  DNS              : 10.171.88.254
 SHELL>
+@endverbatim
+- You may also also start the Auto-IP service to obtain automatically the IPv4 link-local address within the
+ 169.254/16 prefix that is valid for communication with other devices
+  connected to the same physical (or logical) link:
+@verbatim
+SHELL> autoip
+************************************************
+ Auto-IP service started.
+************************************************
+Press [Ctr+C] to cancel.
+Probing...
+Probing...
+Probing...
+
+************************************************
+ IPv4 parameters updated :
+************************************************
+ Interface        : eth0
+ IPv4 Address     : 169.254.53.98 <autoconfigurable>
+ IPv4 Subnet mask : 255.255.0.0
+ IPv4 Gateway     : 0.0.0.0
+ IPv4 DNS         : 0.0.0.0
 @endverbatim
 - You may enter the @c save command to save the all run-time parameters to non-volatile memory (it is located in the last erase page of the on-chip flash memory).
 @verbatim
@@ -446,7 +475,7 @@ http:// [fe80::204:9fff:fe12:4938]
 - You should see a Web page served by the FNET HTTP server: @n 
 @n
 @n
-@image html fnet_quick_start_web.jpg "Demo Web Page"
+@image html fnet_quick_start_web.png "Demo Web Page"
 
 - Also you can run the Telnet Server on the board, by typing the command @c telnet into your terminal program window. @n
 In your terminal program window you should see: 
@@ -467,7 +496,7 @@ SHELL>
 @n
 @n
 @image html fnet_telnet_session.jpg "Telnet session"
-- If you need to get know an IP address of the domain/host name (like www.google.com, www.freescale.com or others), you can use DNS client/resolver, by typing the command @c dns @c \<host_name\> into your command shell window. @n
+- If you need to get know an IP address of the domain/host name (like www.google.com or others), you can use DNS client/resolver, by typing the command @c dns @c \<host_name\> into your command shell window. @n
 For example, if you want to get know the IPv4 address of www.google.com, enter @c dns @c www.google.com in your terminal program window:
 @verbatim
 SHELL> dns www.google.com
@@ -900,7 +929,9 @@ Parameters loaded from Flash.
  Free Heap        : 30320
  HTTP Server      : disabled
  DHCP Client      : disabled
+ AUTOIP Service   : disabled
  TELNET Server    : disabled
+ LLMNR Server     : disabled
 
  Enter 'help' for command list.
 ************************************************
@@ -1439,6 +1470,14 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.3.0:
+	- Added basic Auto-IP service, according to RFC3927 "Dynamic Configuration of IPv4 Link-Local Addresses".
+	- Added optional "autoip" parameter to the "dhcp" shell command, which means to start the Auto-IP service automatically if a DHCP server is not found.
+	- Added fnet_netif_is_ip4_addr_conflict() to determine if there is IPv4 address conflict. Just one more possibility in addition to fnet_netif_set_callback_ip4_addr_conflict(). 
+	- Application protocol initialization functions returns 0 (wrong zero descriptor) if an error occurs (instead of FNET_ERR, in previous versions).
+	- Updated Demo WEB pages.
+	- Fixed broken HTTP Authentication, that sent data even if the authentication was cancelled.
+	- Renaming/cleaning in User-API.
 
 - Version 3.2.0:
 	- Added support of Kinetis K60DN512 (TWR-K60D100M board).
@@ -1447,7 +1486,7 @@ FNET public releases:
 		- Demo projects moved to "\fnet\fnet_demos\boards\<board_name>\<demo_name>"
 		- Port-specific configuration parameters, like a compiler support FNET_CFG_COMP_<name>, a processor type FNET_CFG_CPU_<name>, a default serial port number FNET_CFG_CPU_SERIAL_PORT_DEFAULT and others are defined in example project options. This approach allows to have the same fnet_user_config.h per one type of example for all platforms.
 		- Use platform linker files and start up code from Kinetis SDK 2.0, with additional changes required by FNET applications
-	- Fixed memory allocation, that could cause data corruption when the memory pool is fool. Reported by Paul.
+	- Fixed memory allocation, that could cause data corruption when the memory pool is full. Reported by Paul.
 	- Fixed TCP receive. Reported by Eclectice.
 	- Fixed ARP resolving, that could cause data corruption. Thanks to Michal Hanak.
 	- Fixed ENET register map for MPC5744P. Thanks to Patrice Cavin.
@@ -2292,6 +2331,14 @@ which includes all service-specific configuration files.
 *   configuration file @c fnet_user_config.h.
 */
 /*! 
+*	@defgroup fnet_autoip_config Auto-IP Service Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the Auto-IP Service.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+/*! 
 *	@defgroup fnet_dns_config DNS Client Configuration Parameters
 *	@ingroup fnet_services_config 
 *	This section describes the parameters specific to the DNS client.
@@ -2475,6 +2522,10 @@ which includes all service-specific configuration files.
 
 /*! 
 *	@defgroup fnet_dns DNS client/resolver API
+*	@ingroup services_api 
+*/
+/*! 
+*	@defgroup fnet_autoip AUTOIP service API
 *	@ingroup services_api 
 */
 

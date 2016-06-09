@@ -44,6 +44,12 @@
 
 #endif
 
+#if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP && FNET_CFG_IP4
+
+    #include "fapp_autoip.h"
+
+#endif
+
 #if (FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP)|| (FAPP_CFG_EXP_CMD && FNET_CFG_FS)
 
     #include "fapp_http.h"
@@ -94,6 +100,7 @@
 const fnet_char_t FAPP_DELIMITER_STR[] = "************************************************";
 const fnet_char_t FAPP_CANCELLED_STR[] = "\nCancelled";
 const fnet_char_t FAPP_TOCANCEL_STR[] = "Press [Ctr+C] to cancel.";
+const fnet_char_t FAPP_UPDATED_IP_STR[] = " IPv4 parameters updated :";
 
 /* Error mesages */
 const fnet_char_t FAPP_PARAM_ERR[] = "Error: Invalid paremeter \'%s\'";
@@ -135,7 +142,7 @@ void fapp_shell_init(fnet_shell_desc_t desc);
 #endif
 static void fapp_boot(fnet_shell_desc_t desc);
 #if FNET_CFG_IP4
-    static void fapp_dup_ip_handler( fnet_netif_desc_t netif );
+    static void fapp_dup_ip_callback( fnet_netif_desc_t netif );
 #endif
 
 #if FAPP_CFG_BIND_CMD && FNET_CFG_IP6
@@ -184,7 +191,10 @@ const struct fnet_shell_command fapp_cmd_table [] =
     { "stat",       0u, 0u, fapp_stat_cmd,    "Show network statistics", ""},
 #endif
 #if FAPP_CFG_DHCP_CMD && FNET_CFG_DHCP && FNET_CFG_IP4
-    { "dhcp",       0u, 1u, fapp_dhcp_cmd,    "Start DHCP client", "[release]"},
+    { "dhcp",       0u, 1u, fapp_dhcp_cmd,    "Start DHCP client", "[release|autoip]"},
+#endif
+#if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP && FNET_CFG_IP4
+    { "autoip",     0u, 1u, fapp_autoip_cmd,  "Start Auto-IP service", "[release]"},
 #endif
 #if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
     { "http",       0u, 1u, fapp_http_cmd,    "Start HTTP Server", "[release]"},
@@ -236,10 +246,10 @@ const struct fnet_shell_command fapp_cmd_table [] =
     { "reinit",     0u, 0u, fapp_reinit_cmd,  "Reinit application", ""},
 #endif
 #if FNET_CFG_PING && FAPP_CFG_PING_CMD
-    { "ping",       1u, 14u, fapp_ping_cmd,   "Send ECHO requests", "[-c <count>][-i <seconds>]\n\r\t[-p <pattern>][-s <size>][-h <hoplimit/ttl>] <ip>"}, /* -s -n should be ignored.*/
+    { "ping",       1u, 14u, fapp_ping_cmd,   "Send ICMP ECHO requests", "[-c <count>][-i <seconds>]\n\r\t[-p <pattern>][-s <size>]\n\r\t[-h <hoplimit/ttl>] <ip>\t"}, /* -s -n should be ignored.*/
 #endif
 #if FNET_CFG_PING && FAPP_CFG_PING6_CMD
-    { "ping6",      1u, 14u, fapp_ping_cmd,   "Send ECHO requests", "[-c <count>][-i <seconds>]\n\r\t[-p <pattern>][-s <size>][-h <hoplimit/ttl>] <ip>"}, /* -s -n should be ignored.*/
+    { "ping6",      1u, 14u, fapp_ping_cmd,   "Send ICMP ECHO requests", "[-c <count>][-i <seconds>]\n\r\t[-p <pattern>][-s <size>]\n\r\t[-h <hoplimit/ttl>] <ip>\t"}, /* -s -n should be ignored.*/
 #endif
 
 #if FAPP_CFG_DEBUG_CMD   /* Used for DEBUGING needs only. */
@@ -523,12 +533,12 @@ void fapp_debug_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
 #endif
 
 /************************************************************************
-* NAME: fapp_dup_ip_handler
+* NAME: fapp_dup_ip_callback
 *
 * DESCRIPTION: IP address is duplicated.
 ************************************************************************/
 #if FNET_CFG_IP4
-static void fapp_dup_ip_handler( fnet_netif_desc_t netif )
+static void fapp_dup_ip_callback( fnet_netif_desc_t netif )
 {
     fnet_char_t     name[FNET_NETIF_NAMELEN];
     fnet_char_t     ip_str[FNET_IP4_ADDR_STR_SIZE];
@@ -559,7 +569,7 @@ static void fapp_init(void)
 
     /* Add event handler on duplicated IP address */
 #if FNET_CFG_IP4
-    fnet_netif_dupip_handler_init (fapp_dup_ip_handler);
+    fnet_netif_set_callback_ip4_addr_conflict(fapp_dup_ip_callback);
 #endif
 
     /* Init FNET stack */
@@ -589,7 +599,7 @@ static void fapp_init(void)
         shell_params.stream = FNET_SERIAL_STREAM_DEFAULT;
         shell_params.echo = FNET_TRUE;
 
-        if((fapp_shell_desc = fnet_shell_init(&shell_params)) != FNET_ERR)
+        if((fapp_shell_desc = fnet_shell_init(&shell_params)) != 0)
         {
             fapp_boot(fapp_shell_desc);
         }
@@ -618,7 +628,11 @@ static void fapp_release(fnet_shell_desc_t desc)
 #endif
 
 #if FAPP_CFG_DHCP_CMD && FNET_CFG_DHCP && FNET_CFG_IP4
-    fapp_dhcp_release();                            /* Release DHCP client. */
+    fapp_dhcp_release();                        /* Release DHCP client. */
+#endif
+
+#if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP && FNET_CFG_IP4
+    fapp_autoip_release();                      /* Release Auto-IP service. */
 #endif
 
 #if FAPP_CFG_TELNET_CMD && FNET_CFG_TELNET      /* Release TELNET server. */
@@ -634,12 +648,12 @@ static void fapp_release(fnet_shell_desc_t desc)
 #endif
 
 #if (FAPP_CFG_EXP_CMD && FNET_CFG_FS) || (FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP)
-    fapp_fs_unmount();                              /* Unmount and release FS. */
+    fapp_fs_unmount();                          /* Unmount and release FS. */
 #endif
 
-    fnet_shell_release(desc);                       /* Release shell. */
+    fnet_shell_release(desc);                   /* Release shell. */
 
-    fnet_release();                                 /* Release the FNET stack.*/
+    fnet_release();                             /* Release the FNET stack.*/
 }
 #endif /* FAPP_CFG_REINIT_CMD */
 
@@ -655,7 +669,7 @@ void fapp_main(void)
     /* Polling services.*/
     while(1)
     {
-        fnet_poll_services();
+        fnet_poll_service();
     }
 }
 
@@ -787,6 +801,10 @@ static void fapp_print_info( fnet_shell_desc_t desc )
 
 #if FAPP_CFG_DHCP_CMD && FNET_CFG_DHCP && FNET_CFG_IP4
     fapp_dhcp_info(desc);
+#endif
+
+#if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP && FNET_CFG_IP4
+    fapp_autoip_info(desc);
 #endif
 
 #if FAPP_CFG_TELNET_CMD && FNET_CFG_TELNET

@@ -52,7 +52,7 @@ typedef fnet_uint32_t fnet_ip4_addr_t;
  * @brief Converts the standard dotted-decimal notation @c a.b.c.d
  *        to an integer value, suitable for use as an Internet address (in network byte order).
  ******************************************************************************/
-#define FNET_IP4_ADDR_INIT(a, b, c, d)   (fnet_ip4_addr_t)(FNET_NTOHL((((fnet_uint32_t)(a)&0xFFUL)<< 24U) + (((fnet_uint32_t)(b)&0xFFUL)<< 16U) + (((fnet_uint32_t)(c)&0xFFUL)<< 8U ) + ((fnet_uint32_t)(d)&0xFFUL)))
+#define FNET_IP4_ADDR_INIT(a, b, c, d)   ((fnet_ip4_addr_t)(FNET_NTOHL((((fnet_uint32_t)(a)&0xFFUL)<< 24U) + (((fnet_uint32_t)(b)&0xFFUL)<< 16U) + (((fnet_uint32_t)(c)&0xFFUL)<< 8U ) + ((fnet_uint32_t)(d)&0xFFUL))))
 
 /**************************************************************************/ /*!
  * @def     FNET_IP4_ADDR_STR_SIZE

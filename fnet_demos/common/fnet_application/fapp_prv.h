@@ -42,6 +42,7 @@
 extern const fnet_char_t FAPP_HELP_STR[];
 extern const fnet_char_t FAPP_DELIMITER_STR[];
 extern const fnet_char_t FAPP_CANCELLED_STR[];
+extern const fnet_char_t FAPP_UPDATED_IP_STR[]; 
 extern const fnet_char_t FAPP_TOCANCEL_STR[];
 extern const fnet_char_t FAPP_COMMAND_RELEASE[]; /* Service release command */
 extern const fnet_char_t FAPP_PARAM_ERR[];

@@ -348,7 +348,7 @@ fnet_shell_desc_t fnet_shell_init( struct fnet_shell_params *params)
     }
 
     shell_if->service_descriptor = fnet_poll_service_register(fnet_shell_state_machine, (void *) shell_if);
-    if(shell_if->service_descriptor == (fnet_poll_desc_t)FNET_ERR)
+    if(shell_if->service_descriptor == 0)
     {
         FNET_DEBUG_SHELL("Shell: Service registration error.");
         goto ERROR;
@@ -366,7 +366,7 @@ fnet_shell_desc_t fnet_shell_init( struct fnet_shell_params *params)
 
     return (fnet_shell_desc_t)shell_if;
 ERROR:
-    return FNET_ERR;
+    return 0;
 }
 
 /************************************************************************

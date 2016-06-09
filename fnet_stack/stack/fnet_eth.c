@@ -385,7 +385,7 @@ void fnet_eth_change_addr_notify(fnet_netif_t *netif)
 #if FNET_CFG_IP4
     if(netif->ip4_addr.address)
     {
-        fnet_arp_request(netif, netif->ip4_addr.address); /* Gratuitous ARP request.*/
+        fnet_arp_send_request( (fnet_netif_desc_t) netif, netif->ip4_addr.address ); /* Gratuitous ARP request.*/
         /* When talking about gratuitous ARP, the packets are actually special ARP request packets,
            not ARP reply packets as one would perhaps expect. Some reasons for this are explained in RFC 5227.*/
     }

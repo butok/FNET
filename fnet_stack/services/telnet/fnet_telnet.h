@@ -45,7 +45,7 @@
 * @n
 * After the FNET Telnet server is initialized by calling the @ref fnet_telnet_init()
 * function, the user application should call the main service polling function
-* @ref fnet_poll_services() periodically in background. @n
+* @ref fnet_poll_service() periodically in background. @n
 *
 * For example:
 * @code
@@ -75,15 +75,15 @@
 *    params.cmd_line_buffer_size = sizeof(fapp_telnet_cmd_line_buffer)
 *
 *    // Init Telnet server.
-*    fapp_telnet_desc = fnet_http_init(&params);
-*    if(fapp_telnet_desc != FNET_ERR)
+*    fapp_telnet_desc = fnet_telnet_init(&params);
+*    if(fapp_telnet_desc)
 *    {
 *        fnet_printf("\n FNET Telnet server started.\n");
 *        while(1)
 *        {
 *           // Do something.
 *           ...
-*           fnet_poll_services();
+*           fnet_poll_service();
 *        }
 *    }
 *    else
@@ -135,7 +135,7 @@ extern "C" {
  *
  * @return This function returns:
  *   - Telnet server descriptor if no error occurs.
- *   - @ref FNET_ERR if an error occurs.
+ *   - @c 0 if an error occurs.
  *
  * @see fnet_telnet_release()
  *
@@ -144,7 +144,7 @@ extern "C" {
  * This function initializes the Telnet server service. It allocates all
  * resources needed, and registers the Telnet server service in the polling list.@n
  * After the initialization, the user application should call the main polling
- * function  @ref fnet_poll_services() periodically to run the Telnet server in background.@n
+ * function  @ref fnet_poll_service() periodically to run the Telnet server in background.@n
  * The Telnet service executes parsing of user-entered commands received via
  * the Telnet protocol, and calls user-defined command functions,
  * if the parsing was successful.
@@ -200,7 +200,7 @@ void fnet_telnet_close_session(fnet_telnet_desc_t desc);
  * This function detects if the Telnet Server service is initialized or is released.
  *
  ******************************************************************************/
-fnet_bool_t fnet_telnet_enabled(fnet_telnet_desc_t desc);
+fnet_bool_t fnet_telnet_is_enabled(fnet_telnet_desc_t desc);
 
 #if defined(__cplusplus)
 }

@@ -99,15 +99,15 @@
                 #endif
             #endif
         #endif
-       /*! @endcond */
+        /*! @endcond */
 
-    /*****************************************************************************
-    *  On-chip SRAM memory start address.
-    ******************************************************************************/
-    #ifndef FNET_CFG_CPU_SRAM_ADDRESS
-        #define FNET_CFG_CPU_SRAM_ADDRESS   (0x40000000)
-    #endif
+        /*****************************************************************************
+        *  On-chip SRAM memory start address.
+        ******************************************************************************/
+        #ifndef FNET_CFG_CPU_SRAM_ADDRESS
+            #define FNET_CFG_CPU_SRAM_ADDRESS   (0x40000000)
+        #endif
 
     #endif /* FNET_MPC */
 
-#endif /* FNET_MPC */
+#endif /* _FNET_MPC_CONFIG_H_ */

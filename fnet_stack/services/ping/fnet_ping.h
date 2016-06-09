@@ -46,9 +46,9 @@
 * @n
 * After the PING service is initialized the @ref fnet_ping_request() function,
 * the user application should call the main service-polling function
-* @ref fnet_poll_services() periodically in background. @n
+* @ref fnet_poll_service() periodically in background. @n
 * When correct echo response is received, the PING service passes an
-* echo-reply socket address to the @ref fnet_ping_handler_t callback function. @n
+* echo-reply socket address to the @ref fnet_ping_callback_t callback function. @n
 * For the PING service usage example, refer to the FNET Shell demo source code.@n
 *
 * @note The PING service uses the RAW sockets.
@@ -97,37 +97,28 @@ typedef enum
  *
  * @see fnet_ping_request(), fnet_ping_params
  ******************************************************************************/
-typedef void(*fnet_ping_handler_t)(fnet_error_t result, fnet_size_t packet_count, struct sockaddr *target_addr, fnet_uint32_t cookie);
-
+typedef void(*fnet_ping_callback_t)(fnet_error_t result, fnet_size_t packet_count, struct sockaddr *target_addr, fnet_uint32_t cookie);
 
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_ping_request() function.
  ******************************************************************************/
 struct fnet_ping_params
 {
-    struct sockaddr     target_addr;    /**< @brief Socket address of the destination to ping.
-                                         */
+    struct sockaddr     target_addr;    /**< @brief Socket address of the destination to ping.*/
     fnet_size_t         packet_size;    /**< @brief The size of the echo request, in bytes (without ICMP header). @n
-                                         *  The maximum value is limited by @ref FNET_CFG_PING_PACKET_MAX value.
-                                         */
-    fnet_size_t         packet_count;   /**< @brief Number of packets to be sent.
-                                         */
-    fnet_time_t       timeout;        /**< @brief Timeout value in milliseconds, that service
-                                         * waits for reply on ping request.
-                                         */
-    fnet_uint8_t        ttl;            /**< @brief IPv4 Time To Live (TTL) or IPv6 Hop Limit value. @n
-                                         */
+                                         *  The maximum value is limited by @ref FNET_CFG_PING_PACKET_MAX value.*/
+    fnet_size_t         packet_count;   /**< @brief Number of packets to be sent.*/
+    fnet_time_t         timeout;        /**< @brief Timeout value in milliseconds, that service
+                                         * waits for reply on ping request.*/
+    fnet_uint8_t        ttl;            /**< @brief IPv4 Time To Live (TTL) or IPv6 Hop Limit value. @n*/
     fnet_uint8_t        pattern;        /**< @brief  Pattern byte to fill out the packet.@n
-                                         *   This is useful for diagnosing data-dependent problems in a network.
-                                         */
-    fnet_ping_handler_t handler;        /**< @brief Pointer to the callback function defined by
-                                         * @ref fnet_ping_handler_t. It is called when the
-                                         * correct echo response is receved or timeout is occured.
-                                         */
+                                         *   This is useful for diagnosing data-dependent problems in a network.*/
+    fnet_ping_callback_t callback;      /**< @brief Pointer to the callback function defined by
+                                         * @ref fnet_ping_callback_t. It is called when the
+                                         * correct echo response is receved or timeout is occured.*/
     fnet_uint32_t       cookie;         /**< @brief Optional application-specific parameter. @n
-                                         * It's passed to the @c handler callback
-                                         * function as input parameter.
-                                         */
+                                         * It's passed to the @c callback
+                                         * function as input parameter.*/
 };
 
 #if defined(__cplusplus)
@@ -144,7 +135,7 @@ extern "C" {
  *   - @ref FNET_OK if no error occurs.
  *   - @ref FNET_ERR if an error occurs.
  *
- * @see fnet_ping_params, fnet_ping_handler_t, fnet_ping_release()
+ * @see fnet_ping_params, fnet_ping_callback_t, fnet_ping_release()
  *
  ******************************************************************************
  *
@@ -152,9 +143,9 @@ extern "C" {
  * It allocates all resources needed and registers the PING service in
  * the polling list.@n
  * After the initialization, the user application should call the main polling
- * function @ref fnet_poll_services() periodically to run the PING service routine
+ * function @ref fnet_poll_service() periodically to run the PING service routine
  * in the background.@n
- * The @ref fnet_ping_handler_t callback function,
+ * The @ref fnet_ping_callback_t callback function,
  * which is set in @c params, will be called when correct echo-reply is
  * received or timeout is occurred. @n
  * The PING service is released automatically.@n

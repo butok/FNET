@@ -52,7 +52,7 @@
 * @n
 * After the FNET HTTP server is initialized by calling the @ref fnet_http_init()
 * function, the user application should call the main service polling function
-* @ref fnet_poll_services() periodically in background. @n
+* @ref fnet_poll_service() periodically in background. @n
 * @n
 * For HTTP server usage example, refer to FNET demo application source code.@n
 * @n
@@ -246,7 +246,7 @@ extern "C" {
  *
  * @return This function returns:
  *   - HTTP server descriptor if no error occurs.
- *   - @ref FNET_ERR if an error occurs.
+ *   - @c 0 if an error occurs.
  *
  * @see fnet_http_release()
  *
@@ -255,7 +255,7 @@ extern "C" {
  * This function initializes the HTTP server service. It allocates all
  * resources needed, and registers the HTTP server service in the polling list.@n
  * After the initialization, the user application should call the main polling
- * function  @ref fnet_poll_services() periodically to run the HTTP server in background.
+ * function  @ref fnet_poll_service() periodically to run the HTTP server in background.
  *
  ******************************************************************************/
 fnet_http_desc_t fnet_http_init( struct fnet_http_params *params);
@@ -293,7 +293,7 @@ void fnet_http_release(fnet_http_desc_t desc);
  * This function detects if the HTTP Server service is initialized or is released.
  *
  ******************************************************************************/
-fnet_bool_t fnet_http_enabled(fnet_http_desc_t desc);
+fnet_bool_t fnet_http_is_enabled(fnet_http_desc_t desc);
 
 /***************************************************************************/ /*!
  *

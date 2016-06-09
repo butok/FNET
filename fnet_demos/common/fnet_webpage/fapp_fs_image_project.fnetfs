@@ -8,16 +8,15 @@
   <FileTree>
     <Node Type="Directory" Name="auth">
       <Node Type="File" Name="fnet_auth.html">.\src\auth\fnet_auth.html</Node>
+      <Node Type="File" Name="fnet.css">.\src\auth\fnet.css</Node>
     </Node>
     <Node Type="File" Name="favicon.ico">.\src\favicon.ico</Node>
     <Node Type="File" Name="fnet.css">.\src\fnet.css</Node>
-    <Node Type="File" Name="fnet.js">.\src\fnet.js</Node>
     <Node Type="File" Name="fnet_graph.html">.\src\fnet_graph.html</Node>
+    <Node Type="File" Name="fnet_overview.html">.\src\fnet_overview.html</Node>
     <Node Type="File" Name="fnet_post.html">.\src\fnet_post.html</Node>
     <Node Type="File" Name="fnet_set.shtml">.\src\fnet_set.shtml</Node>
     <Node Type="File" Name="fnet_stat.html">.\src\fnet_stat.html</Node>
-    <Node Type="File" Name="fnet_sup.html">.\src\fnet_sup.html</Node>
-    <Node Type="File" Name="fnet_logo.gif">.\src\fnet_logo.gif</Node>
     <Node Type="File" Name="index.html">.\src\index.html</Node>
   </FileTree>
 </FnetFS>

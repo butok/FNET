@@ -43,15 +43,15 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fapp_dns_handler_resolved (const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, fnet_uint32_t cookie);
+static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, fnet_uint32_t cookie);
 static void fapp_dns_on_ctrlc(fnet_shell_desc_t desc);
 
 /************************************************************************
-* NAME: fapp_dhcp_handler_updated
+* NAME: fapp_dhcp_callback_resolved
 *
-* DESCRIPTION: Event handler on new IP from DHCP client.
+* DESCRIPTION: Event handler callback on new IP from DHCP client.
 ************************************************************************/
-static void fapp_dns_handler_resolved (const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, fnet_uint32_t cookie)
+static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, fnet_uint32_t cookie)
 {
     fnet_char_t                ip_str[FNET_IP_ADDR_STR_SIZE_MAX];
     fnet_shell_desc_t   desc = (fnet_shell_desc_t) cookie;
@@ -154,10 +154,10 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
             }
     }
 
-    dns_params.host_name = argv[1];                 /* Host name to resolve.*/
-    dns_params.handler = fapp_dns_handler_resolved; /* Callback function.*/
-    dns_params.cookie = (fnet_uint32_t)desc;                 /* Application-specific parameter
-                                                       which will be passed to fapp_dns_handler_resolved().*/
+    dns_params.host_name = argv[1];                     /* Host name to resolve.*/
+    dns_params.callback = fapp_dns_callback_resolved;   /* Callback function.*/
+    dns_params.cookie = (fnet_uint32_t)desc;            /* Application-specific parameter
+                                                        which will be passed to fapp_dns_callback_resolved().*/
 
     /* Run DNS cliebt/resolver. */
     if(fnet_dns_init(&dns_params) != FNET_ERR)

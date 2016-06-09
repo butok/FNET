@@ -46,13 +46,13 @@
 * @n
 * After the DNS client is initialized by calling the @ref fnet_dns_init() function,
 * the user application should call the main service-polling function
-* @ref fnet_poll_services() periodically in background. @n
-* The resolved IP-address will be passed to the @ref fnet_dns_handler_resolved_t callback function,
+* @ref fnet_poll_service() periodically in background. @n
+* The resolved IP-address will be passed to the @ref fnet_dns_callback_resolved_t callback function,
 * which is set during the DNS-client service initialization.
 * @n
 * The DNS client service is released automatically as soon as the requested host name is
 * fully resolved or an error occurs. Your application code may still continue
-* to call @ref fnet_poll_services() to handle other services, but this will not have any
+* to call @ref fnet_poll_service() to handle other services, but this will not have any
 * impact on the DNS client communication until you initialize the next IP address resolving by calling
 * @ref fnet_dns_init() again. @n
 * @n
@@ -117,23 +117,23 @@ struct fnet_dns_resolved_addr
  *
  * @see fnet_dns_resolve(), fnet_dns_params
  ******************************************************************************/
-typedef void(*fnet_dns_handler_resolved_t)(const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, fnet_uint32_t cookie);
+typedef void(*fnet_dns_callback_resolved_t)(const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, fnet_uint32_t cookie);
 
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_dns_init() function.
  ******************************************************************************/
 struct fnet_dns_params
 {
-    struct sockaddr             dns_server_addr;    /**< @brief Socket address of the remote DNS server to
-                                                    * connect to. */
-    fnet_char_t                       *host_name;         /**< @brief Host name to resolve (null-terminated string). */
-    fnet_address_family_t       addr_family;        /**< @brief Family of the IP Address which is queried.*/
-    fnet_dns_handler_resolved_t handler;            /**< @brief Pointer to the callback function defined by
-                                                    * @ref fnet_dns_handler_resolved_t. It is called when the
-                                                    * DNS-client resolving is finished or an error is occurred. */
-    fnet_uint32_t               cookie;             /**< @brief Optional application-specific parameter. @n
-                                                    * It's passed to the @c handler callback
-                                                    * function as input parameter. */
+    struct sockaddr                 dns_server_addr;    /**< @brief Socket address of the remote DNS server to
+                                                        * connect to. */
+    fnet_char_t                     *host_name;         /**< @brief Host name to resolve (null-terminated string). */
+    fnet_address_family_t           addr_family;        /**< @brief Family of the IP Address which is queried.*/
+    fnet_dns_callback_resolved_t    callback;            /**< @brief Pointer to the callback function defined by
+                                                        * @ref fnet_dns_callback_resolved_t. It is called when the
+                                                        * DNS-client resolving is finished or an error is occurred. */
+    fnet_uint32_t                   cookie;             /**< @brief Optional application-specific parameter. @n
+                                                        * It's passed to the @c callback 
+                                                        * function as input parameter. */
 };
 
 #if defined(__cplusplus)
@@ -150,7 +150,7 @@ extern "C" {
  *   - @ref FNET_OK if no error occurs.
  *   - @ref FNET_ERR if an error occurs.
  *
- * @see fnet_dns_params, fnet_dns_handler_resolved_t, fnet_dns_release()
+ * @see fnet_dns_params, fnet_dns_callback_resolved_t, fnet_dns_release()
  *
  ******************************************************************************
  *
@@ -158,9 +158,9 @@ extern "C" {
  * host name resolving. It allocates all needed
  * resources and registers the DNS service in the polling list.@n
  * After the initialization, the user application should call the main polling
- * function @ref fnet_poll_services() periodically to run the DNS service routine
+ * function @ref fnet_poll_service() periodically to run the DNS service routine
  * in the background.@n
- * The resolved IP-address will be passed to the @ref fnet_dns_handler_resolved_t callback function,
+ * The resolved IP-address will be passed to the @ref fnet_dns_callback_resolved_t callback function,
  * which is set in @c params. @n
  * The DNS service is released automatically as soon as the
  * resolving is finished or an error is occurred.

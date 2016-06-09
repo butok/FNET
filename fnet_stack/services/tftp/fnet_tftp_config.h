@@ -98,7 +98,6 @@
  *          Default value is FNET_HTONS(69).
  * @showinitializer
  ******************************************************************************/
-
 #ifndef FNET_CFG_TFTP_SRV_PORT
     #define FNET_CFG_TFTP_SRV_PORT              (FNET_HTONS(69u))
 #endif
@@ -142,8 +141,6 @@
     #define FNET_CFG_TFTP_SRV_RETRANSMIT_MAX    (4u)
 #endif
 
-
 /*! @} */
-
 
 #endif /* _FNET_TFTP_CONFIG_H_ */

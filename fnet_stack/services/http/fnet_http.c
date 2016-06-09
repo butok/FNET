@@ -709,7 +709,7 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
     }
 
     http_if->service_descriptor = fnet_poll_service_register(fnet_http_state_machine, (void *) http_if);
-    if(http_if->service_descriptor == (fnet_poll_desc_t)FNET_ERR)
+    if(http_if->service_descriptor == 0)
     {
         FNET_DEBUG_HTTP("HTTP: Service registration error.");
         goto ERROR_4;
@@ -730,7 +730,7 @@ ERROR_2:
     fnet_socket_close(http_if->socket_listen);
 
 ERROR_1:
-    return FNET_ERR;
+    return 0;
 }
 
 /************************************************************************
@@ -767,12 +767,12 @@ void fnet_http_release(fnet_http_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_http_enabled
+* NAME: fnet_http_is_enabled
 *
 * DESCRIPTION: This function returns FNET_TRUE if the HTTP server
 *              is enabled/initialised.
 ************************************************************************/
-fnet_bool_t fnet_http_enabled(fnet_http_desc_t desc)
+fnet_bool_t fnet_http_is_enabled(fnet_http_desc_t desc)
 {
     struct fnet_http_if     *http_if = (struct fnet_http_if *) desc;
     fnet_bool_t             result;
@@ -868,6 +868,17 @@ static fnet_return_t fnet_http_tx_status_line (struct fnet_http_if *http)
             case 4:
                 /*Final CRLF.*/
                 result_state = (fnet_size_t)fnet_snprintf((fnet_char_t *)&session->buffer[result], (FNET_HTTP_BUF_SIZE - result), "%s", "\r\n");
+    #if 0 /* On any error code.*/
+                if(session->response.status.code != FNET_HTTP_STATUS_CODE_OK)
+                {
+                    session->response.send_eof = FNET_TRUE; /* Only sataus (without data).*/
+                }
+    #else
+                if(session->response.status.code == FNET_HTTP_STATUS_CODE_UNAUTHORIZED) /* UNAUTHORIZED */
+                {
+                    session->response.send_eof = FNET_TRUE; /* Only sataus (without data).*/
+                } 
+    #endif
 
                 session->response.tx_data = session->request.method->send;
                 break;

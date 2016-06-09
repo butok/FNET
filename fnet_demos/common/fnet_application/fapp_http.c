@@ -115,8 +115,8 @@ static fnet_uint8_t fapp_http_cgi_buffer[CGI_MAX]; /* CGI Temporary buffer. */
 #if FNET_CFG_HTTP_AUTHENTICATION_BASIC && FNET_CFG_HTTP_VERSION_MAJOR
 static const struct fnet_http_auth fapp_auth_table[] =
 {
-    {"auth", "fnet", "freescale", FNET_HTTP_AUTH_SCHEME_BASIC},
-    {0, 0, 0, FNET_HTTP_AUTH_SCHEME_NONE}
+    {"Please use User Name:fnet Password:fnet to login", "auth", "fnet", "fnet", FNET_HTTP_AUTH_SCHEME_BASIC},
+    {0, 0, 0, 0, FNET_HTTP_AUTH_SCHEME_NONE}
 };
 #endif
 
@@ -425,7 +425,7 @@ void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 
         /* Enable HTTP server */
         http_desc = fnet_http_init(&params);
-        if(http_desc != FNET_ERR)
+        if(http_desc)
         {
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             fnet_shell_println(desc, " HTTP server started.");
@@ -456,7 +456,7 @@ void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 *************************************************************************/
 void fapp_http_info(fnet_shell_desc_t desc)
 {
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "HTTP Server", fapp_enabled_str[fnet_http_enabled(fapp_http_desc)]);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "HTTP Server", fapp_enabled_str[fnet_http_is_enabled(fapp_http_desc)]);
 }
 
 

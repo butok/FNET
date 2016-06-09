@@ -40,7 +40,7 @@
 * initialization (for example the @ref fnet_http_init() or other service initialization
 * function).
 * In order to make the polling mechanism work, the user application should
-* call the @ref fnet_poll_services() API function periodically, during the idle time.@n
+* call the @ref fnet_poll_service() API function periodically, during the idle time.@n
 * @n
 * Configuration parameters:
 * - @ref FNET_CFG_POLL_MAX
@@ -79,8 +79,7 @@ extern "C" {
  * initialization.
  *
  ******************************************************************************/
-void fnet_poll_services(void);
-
+void fnet_poll_service(void);
 
 /***************************************************************************/ /*!
  *
@@ -94,7 +93,7 @@ void fnet_poll_services(void);
  * the polling list.
  *
  ******************************************************************************/
-void fnet_poll_services_release(void);
+void fnet_poll_service_release(void);
 
 /***************************************************************************/ /*!
  *
@@ -106,7 +105,7 @@ void fnet_poll_services_release(void);
  *
  * @return This function returns:
  *   - Service descriptor, if no error occurs.
- *   - @ref FNET_ERR, if an error occurs.
+ *   - @c 0 if an error occurs.
  *
  * @see fnet_poll_service_unregister()
  *
@@ -125,10 +124,6 @@ fnet_poll_desc_t fnet_poll_service_register( fnet_poll_service_t service, void *
  *
  * @param desc       Service descriptor to be unregistered.
  *
- * @return This function returns:
- *   - @ref FNET_OK, if no error occurs.
- *   - @ref FNET_ERR, if an error occurs.
- *
  * @see fnet_poll_service_register()
  *
  ******************************************************************************
@@ -139,7 +134,7 @@ fnet_poll_desc_t fnet_poll_service_register( fnet_poll_service_t service, void *
  * User application should not call this function directly.
  *
  ******************************************************************************/
-fnet_return_t fnet_poll_service_unregister( fnet_poll_desc_t desc );
+void fnet_poll_service_unregister( fnet_poll_desc_t desc );
 
 #if defined(__cplusplus)
 }

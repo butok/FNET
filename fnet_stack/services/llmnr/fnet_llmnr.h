@@ -48,7 +48,7 @@
 * @n
 * After the LLMNR server is initialized by calling the @ref fnet_llmnr_init() function,
 * the user application should call the main service-polling function
-* @ref fnet_poll_services() periodically in background. @n
+* @ref fnet_poll_service() periodically in background. @n
 * @n
 * For the LLMNR-server service example, refer to the FNET Shell demo source code.@n
 *
@@ -94,7 +94,7 @@ extern "C" {
  *
  * @return This function returns:
  *   - LLMNR server descriptor if no error occurs.
- *   - @ref FNET_ERR if an error occurs.
+ *   - @c 0 if an error occurs.
  *
  * @see fnet_llmnr_release(), fnet_llmnr_params
  *
@@ -104,7 +104,7 @@ extern "C" {
  * server/responder service.@n
  * It allocates all needed resources and registers the LLMNR service in the polling list.@n
  * After the initialization, the user application should call the main polling
- * function @ref fnet_poll_services() periodically to run the LLMNR service routine
+ * function @ref fnet_poll_service() periodically to run the LLMNR service routine
  * in the background.
  *
  ******************************************************************************/
@@ -143,7 +143,7 @@ void fnet_llmnr_release(fnet_llmnr_desc_t desc);
  * This function detects if the LLMNR Server service is initialized or is released.
  *
  ******************************************************************************/
-fnet_bool_t fnet_llmnr_enabled(fnet_llmnr_desc_t desc);
+fnet_bool_t fnet_llmnr_is_enabled(fnet_llmnr_desc_t desc);
 
 #if defined(__cplusplus)
 }

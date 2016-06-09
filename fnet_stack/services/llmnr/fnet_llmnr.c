@@ -373,7 +373,7 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
     /* Register service. */
     llmnr_if->service_descriptor = fnet_poll_service_register(fnet_llmnr_state_machine, (void *) llmnr_if);
 
-    if(llmnr_if->service_descriptor == (fnet_poll_desc_t)FNET_ERR)
+    if(llmnr_if->service_descriptor == 0)
     {
         FNET_DEBUG_LLMNR(FNET_LLMNR_ERR_SERVICE);
         goto ERROR_2;
@@ -386,7 +386,7 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
 ERROR_2:
     fnet_socket_close(llmnr_if->socket_listen);
 ERROR_1:
-    return FNET_ERR;
+    return 0;
 }
 
 /************************************************************************
@@ -536,12 +536,12 @@ void fnet_llmnr_release(fnet_llmnr_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_llmnr_enabled
+* NAME: fnet_llmnr_is_enabled
 *
 * DESCRIPTION: This function returns FNET_TRUE if the LLMNR server
 *              is enabled/initialised.
 ************************************************************************/
-fnet_bool_t fnet_llmnr_enabled(fnet_llmnr_desc_t desc)
+fnet_bool_t fnet_llmnr_is_enabled(fnet_llmnr_desc_t desc)
 {
     struct fnet_llmnr_if    *llmnr_if = (struct fnet_llmnr_if *) desc;
     fnet_bool_t             result;
@@ -557,6 +557,5 @@ fnet_bool_t fnet_llmnr_enabled(fnet_llmnr_desc_t desc)
 
     return result;
 }
-
 
 #endif /* FNET_CFG_LLMNR*/

@@ -371,19 +371,17 @@ static void fnet_telnet_state_machine( void *telnet_if_p )
                         /* Init Shell. */
                         session->shell_descriptor = fnet_shell_init(&session->shell_params);
 
-                        if(session->shell_descriptor == FNET_ERR)
-                        {
-                            session->shell_descriptor = 0;
-
-                            FNET_DEBUG_TELNET("TELNET: Shell Service registration error.");
-                            session->state = FNET_TELNET_STATE_CLOSING;   /*=> CLOSING */
-                        }
-                        else
+                        if(session->shell_descriptor)
                         {
                             fnet_socket_listen(telnet->socket_listen, --telnet->backlog); /* Ignor other connections.*/
 
                             /* Reset TX timeout. */
                             session->state = FNET_TELNET_STATE_RECEIVING; /* => WAITING data */
+                        }
+                        else
+                        {
+                            FNET_DEBUG_TELNET("TELNET: Shell Service registration error.");
+                            session->state = FNET_TELNET_STATE_CLOSING;   /*=> CLOSING */
                         }
                     }
                     break;
@@ -633,7 +631,7 @@ fnet_telnet_desc_t fnet_telnet_init( struct fnet_telnet_params *params )
     /* Register service. */
     telnet_if->service_descriptor = fnet_poll_service_register(fnet_telnet_state_machine, (void *) telnet_if);
 
-    if(telnet_if->service_descriptor == (fnet_poll_desc_t)FNET_ERR)
+    if(telnet_if->service_descriptor == 0)
     {
         FNET_DEBUG_TELNET("TELNET: Service registration error.");
         goto ERROR_2;
@@ -677,7 +675,7 @@ ERROR_2:
     fnet_socket_close(telnet_if->socket_listen);
 
 ERROR_1:
-    return (fnet_telnet_desc_t)FNET_ERR;
+    return 0;
 }
 
 /************************************************************************
@@ -709,7 +707,6 @@ void fnet_telnet_release(fnet_telnet_desc_t desc)
         fnet_socket_close(telnet_if->socket_listen);
         fnet_poll_service_unregister(telnet_if->service_descriptor); /* Delete service.*/
 
-
         telnet_if->enabled = FNET_FALSE;
     }
 }
@@ -730,12 +727,12 @@ void fnet_telnet_close_session(fnet_telnet_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_telnet_enabled
+* NAME: fnet_telnet_is_enabled
 *
 * DESCRIPTION: This function returns FNET_TRUE if the Telnet server
 *              is enabled/initialised.
 ************************************************************************/
-fnet_bool_t fnet_telnet_enabled(fnet_telnet_desc_t desc)
+fnet_bool_t fnet_telnet_is_enabled(fnet_telnet_desc_t desc)
 {
     struct fnet_telnet_if   *telnet_if = (struct fnet_telnet_if *) desc;
     fnet_bool_t             result;

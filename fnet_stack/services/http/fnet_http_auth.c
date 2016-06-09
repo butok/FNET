@@ -270,8 +270,21 @@ static void fnet_http_auth_decode_base64(fnet_char_t *src)
 static fnet_size_t fnet_http_auth_scheme_basic_generate(struct fnet_http_if *http, fnet_uint8_t *buffer, fnet_size_t buffer_size)
 {
     fnet_size_t result = 0u;
+    char *realm;
+    
+    if(http->session_active->response.auth_entry->realm)
+    {
+        /* User defined realm.*/
+        realm = http->session_active->response.auth_entry->realm;
+    }
+    else
+    {
+        /* User directory name as realm.*/
+        realm = http->session_active->response.auth_entry->dir_name;
+    }
+        
 
-    result += (fnet_size_t)fnet_snprintf((fnet_char_t *)buffer, buffer_size, "realm=\"%s\"%s", http->session_active->response.auth_entry->dir_name, "\r\n" );
+    result += (fnet_size_t)fnet_snprintf((fnet_char_t *)buffer, buffer_size, "realm=\"%s\"\r\n", realm);
 
     return result;
 }

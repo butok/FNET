@@ -23,7 +23,7 @@
 *
 * @author Andrey Butok
 *
-* @brief FNET Shell Demo (HTTP Server Shell interface).
+* @brief FNET Shell Demo (LLMNR).
 *
 ***************************************************************************/
 
@@ -39,7 +39,7 @@ static fnet_llmnr_desc_t fapp_llmnr_desc = 0; /* LLMNR service descriptor. */
 /************************************************************************
 * NAME: fapp_llmnr_release
 *
-* DESCRIPTION: Releases HTTP server.
+* DESCRIPTION: Releases LLMNR server.
 *************************************************************************/
 void fapp_llmnr_release(void)
 {
@@ -66,7 +66,7 @@ void fapp_llmnr_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
 
         /* Start LLMNR server */
         llmnr_desc = fnet_llmnr_init(&params);
-        if(llmnr_desc != FNET_ERR)
+        if(llmnr_desc)
         {
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             fnet_shell_println(desc, " LLMNR server started.");
@@ -97,8 +97,8 @@ void fapp_llmnr_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
 *************************************************************************/
 void fapp_llmnr_info(fnet_shell_desc_t desc)
 {
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "LLMNR Server", fapp_enabled_str[fnet_llmnr_enabled(fapp_llmnr_desc)]);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "LLMNR Server", fapp_enabled_str[fnet_llmnr_is_enabled(fapp_llmnr_desc)]);
 }
 
 
-#endif /* FAPP_CFG_HTTP_CMD */
+#endif /* FAPP_CFG_LLMNR_CMD && FNET_CFG_LLMNR */

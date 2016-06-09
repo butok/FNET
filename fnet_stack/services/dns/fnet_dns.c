@@ -83,13 +83,13 @@ fnet_dns_if_resolved_ip6_t;
 *************************************************************************/
 typedef struct
 {
-    fnet_socket_t                      socket_cln;
-    fnet_poll_desc_t            service_descriptor;
-    fnet_dns_state_t            state;                          /* Current state. */
-    fnet_dns_handler_resolved_t handler;                        /* Callback function. */
-    fnet_uint32_t               handler_cookie;                 /* Callback-handler specific parameter. */
-    fnet_time_t                 last_time;                      /* Last receive time, used for timeout detection. */
-    fnet_index_t                iteration;                      /* Current iteration number.*/
+    fnet_socket_t                   socket_cln;
+    fnet_poll_desc_t                service_descriptor;
+    fnet_dns_state_t                state;                          /* Current state. */
+    fnet_dns_callback_resolved_t    callback;                       /* Callback function. */
+    fnet_uint32_t                   callback_cookie;                /* Callback-handler specific parameter. */
+    fnet_time_t                     last_time;                      /* Last receive time, used for timeout detection. */
+    fnet_index_t                    iteration;                      /* Current iteration number.*/
     /* Internal buffer used for Message buffer and Resolved addresses.*/
     union
     {
@@ -200,7 +200,7 @@ fnet_return_t fnet_dns_init( struct fnet_dns_params *params )
     if((params == 0)
        || (params->dns_server_addr.sa_family == AF_UNSPEC)
        || (fnet_socket_addr_is_unspecified(&params->dns_server_addr))
-       || (params->handler == 0)
+       || (params->callback == 0)
        /* Check length of host_name.*/
        || ((host_name_length = fnet_strlen(params->host_name)) == 0U) || (host_name_length >= FNET_DNS_MAME_SIZE))
     {
@@ -216,8 +216,8 @@ fnet_return_t fnet_dns_init( struct fnet_dns_params *params )
     }
 
     /* Save input parmeters.*/
-    fnet_dns_if.handler = params->handler;
-    fnet_dns_if.handler_cookie = params->cookie;
+    fnet_dns_if.callback = params->callback;
+    fnet_dns_if.callback_cookie = params->cookie;
     fnet_dns_if.addr_family = params->addr_family;
     fnet_dns_if.addr_number = 0u;
 
@@ -301,7 +301,7 @@ fnet_return_t fnet_dns_init( struct fnet_dns_params *params )
 
     /* Register DNS service. */
     fnet_dns_if.service_descriptor = fnet_poll_service_register(fnet_dns_state_machine, (void *) &fnet_dns_if);
-    if(fnet_dns_if.service_descriptor == (fnet_poll_desc_t)FNET_ERR)
+    if(fnet_dns_if.service_descriptor == 0)
     {
         FNET_DEBUG_DNS(FNET_DNS_ERR_SERVICE);
         goto ERROR_1;
@@ -464,7 +464,7 @@ static void fnet_dns_state_machine( void *fnet_dns_if_p )
                 {}
             }
 
-            dns_if->handler(addr_list, dns_if->addr_number, dns_if->handler_cookie); /* User Callback.*/
+            dns_if->callback(addr_list, dns_if->addr_number, dns_if->callback_cookie); /* User Callback.*/
         }
         break;
         default:

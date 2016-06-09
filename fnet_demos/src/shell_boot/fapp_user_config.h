@@ -18,6 +18,9 @@
 #define FAPP_CFG_DHCP_CMD               (1)
 #define FAPP_CFG_DHCP_CMD_DISCOVER_MAX  (5)
 
+/*  "autoip" command.*/
+#define FAPP_CFG_AUTOIP_CMD             (1)
+
 /*  "set/get" command.*/
 #define FAPP_CFG_SETGET_CMD_IP          (1)
 #define FAPP_CFG_SETGET_CMD_GATEWAY     (1)

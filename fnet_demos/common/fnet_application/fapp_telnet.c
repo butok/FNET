@@ -31,37 +31,15 @@
 #include "fapp.h"
 #include "fapp_prv.h"
 #include "fapp_telnet.h"
-#include "fapp_mem.h"
 
 #if FAPP_CFG_SETGET_CMD
     #include "fapp_setget.h"
 #endif
-#if FAPP_CFG_DHCP_CMD
 
-    #include "fapp_dhcp.h"
-
-#endif
-#if FAPP_CFG_HTTP_CMD || FAPP_CFG_EXP_CMD
-
-    #include "fapp_http.h"
-    #include "fapp_fs.h"
-
-#endif
-
-#if FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD
-
-    #include "fapp_tftp.h"
-
-#endif
 
 #if FAPP_CFG_TELNET_CMD && FNET_CFG_TELNET
 
 #define FAPP_TELNET_PROMPT_STR     FAPP_CFG_SHELL_PROMPT
-
-#if FAPP_CFG_TELNET_TEST_CMD
-    void fapp_telnet_test_cmd( fnet_shell_desc_t desc );
-#endif
-
 
 
 /************************************************************************
@@ -106,7 +84,7 @@ void fapp_telnet_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **a
 
         /* Init Telnet server */
         telnet_desc = fnet_telnet_init(&params);
-        if(telnet_desc != FNET_ERR)
+        if(telnet_desc)
         {
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             fnet_shell_println(desc, " Telnet Server started.");
@@ -119,7 +97,6 @@ void fapp_telnet_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **a
         {
             fnet_shell_println(desc, FAPP_INIT_ERR, "Telnet");
         }
-
     }
     else if((argc == 2u) && (fnet_strcasecmp(&FAPP_COMMAND_RELEASE[0], argv[1]) == 0)) /* [release] */
     {
@@ -154,7 +131,7 @@ static void fapp_telnet_exit_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fn
 *************************************************************************/
 void fapp_telnet_info(fnet_shell_desc_t desc)
 {
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "TELNET Server", fapp_enabled_str[fnet_telnet_enabled(fapp_telnet_desc)]);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "TELNET Server", fapp_enabled_str[fnet_telnet_is_enabled(fapp_telnet_desc)]);
 }
 
 #if FAPP_CFG_TELNET_TEST_CMD

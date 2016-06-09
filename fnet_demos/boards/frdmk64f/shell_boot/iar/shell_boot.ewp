@@ -2054,6 +2054,9 @@
             <name>$PROJ_DIR$/../../../../../fnet_stack/port/cpu/mk/fnet_mk64fn1_config.h</name>
           </file>
           <file>
+            <name>$PROJ_DIR$/../../../../../fnet_stack/port/cpu/mk/fnet_mk66fn2_config.h</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$/../../../../../fnet_stack/port/cpu/mk/fnet_mk70fn1_config.h</name>
           </file>
         </group>
@@ -2112,6 +2115,18 @@
       <file>
         <name>$PROJ_DIR$/../../../../../fnet_stack/services/fnet_services_config.h</name>
       </file>
+      <group>
+        <name>autoip</name>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/autoip/fnet_autoip.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/autoip/fnet_autoip.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/autoip/fnet_autoip_config.h</name>
+        </file>
+      </group>
       <group>
         <name>dhcp</name>
         <file>
@@ -2504,6 +2519,12 @@
       <name>$PROJ_DIR$/../../../../common/fnet_application/fapp.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_autoip.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_autoip.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_bench.c</name>
     </file>
     <file>
@@ -2532,9 +2553,6 @@
     </file>
     <file>
       <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_fs_image.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_fs_image_http09.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_http.c</name>

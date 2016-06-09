@@ -56,7 +56,7 @@ fnet_netif_t *fnet_netif_list;           /* The list of network interfaces. */
 static fnet_netif_t *fnet_netif_default; /* Default net_if. */
 
 /* Duplicated IP event handler.*/
-static fnet_netif_dupip_handler_t fnet_netif_dupip_handler;
+static fnet_netif_callback_ip4_addr_conflict_t         fnet_netif_callback_ip4_addr_conflict;
 
 
 /************************************************************************
@@ -170,7 +170,7 @@ void fnet_netif_release_all( void )
 {
     fnet_netif_t *net_if_ptr;
 
-    fnet_netif_dupip_handler_init(0); /* Reset dupip handler.*/
+    fnet_netif_set_callback_ip4_addr_conflict(0); /* Reset dupip handler.*/
 
     for (net_if_ptr = fnet_netif_list; net_if_ptr; net_if_ptr = net_if_ptr->next)
     {
@@ -500,7 +500,7 @@ void fnet_netif_set_default( fnet_netif_desc_t netif_desc )
 /************************************************************************
 * NAME: fnet_netif_set_ip4_addr
 *
-* DESCRIPTION: This function sets the IP address.
+* DESCRIPTION: This function sets the IPv4 address.
 *************************************************************************/
 #if FNET_CFG_IP4
 void fnet_netif_set_ip4_addr( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipaddr )
@@ -511,8 +511,11 @@ void fnet_netif_set_ip4_addr( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipad
 
     if(netif_desc)
     {
+        fnet_isr_lock();
+
         netif->ip4_addr.address = ipaddr; /* IP address */
         netif->ip4_addr.address_type = FNET_NETIF_IP_ADDR_TYPE_MANUAL; /* Adress is set manually. */
+        netif->ip4_addr_conflict = FNET_FALSE; /* Clear IPv4 address duplication flag.*/
 
         if(FNET_IP4_CLASS_A(netif->ip4_addr.address))
         {
@@ -560,6 +563,8 @@ void fnet_netif_set_ip4_addr( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipad
         {
             netif->api->set_addr_notify(netif);
         }
+
+        fnet_isr_unlock();
     }
 
     fnet_os_mutex_unlock();
@@ -579,6 +584,7 @@ void fnet_netif_set_ip4_subnet_mask( fnet_netif_desc_t netif_desc, fnet_ip4_addr
     if(netif)
     {
         fnet_os_mutex_lock();
+
         netif->ip4_addr.subnetmask = subnet_mask;
         netif->ip4_addr.address_type = FNET_NETIF_IP_ADDR_TYPE_MANUAL;
 
@@ -1056,13 +1062,31 @@ fnet_return_t fnet_netif_get_statistics( fnet_netif_desc_t netif_desc, struct fn
 }
 
 /************************************************************************
-* NAME: fnet_netif_dupip_handler_init
+* NAME: fnet_netif_set_callback_ip4_addr_conflict
 *
-* DESCRIPTION:
+* DESCRIPTION: Registers the "duplicated IP address" event handler.
 ************************************************************************/
-void fnet_netif_dupip_handler_init(fnet_netif_dupip_handler_t handler)
+void fnet_netif_set_callback_ip4_addr_conflict(fnet_netif_callback_ip4_addr_conflict_t callback)
 {
-    fnet_netif_dupip_handler = handler;
+    fnet_netif_callback_ip4_addr_conflict = callback;
+}
+
+/************************************************************************
+* NAME: fnet_netif_is_ip4_addr_conflict
+*
+* DESCRIPTION: This function detects if there is IPv4 adress conflict on network.
+*************************************************************************/
+fnet_bool_t fnet_netif_is_ip4_addr_conflict( fnet_netif_desc_t netif_desc )
+{
+    fnet_bool_t     result = FNET_FALSE;
+    fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
+
+    if(netif)
+    {
+        result = netif->ip4_addr_conflict;
+    }
+
+    return result;
 }
 
 /************************************************************************
@@ -1070,13 +1094,12 @@ void fnet_netif_dupip_handler_init(fnet_netif_dupip_handler_t handler)
 *
 * DESCRIPTION:
 ************************************************************************/
-void fnet_netif_dupip_handler_signal(fnet_netif_desc_t netif )
+void fnet_netif_signal_p4_addr_conflict(fnet_netif_desc_t netif )
 {
-    if(fnet_netif_dupip_handler)
+    if(fnet_netif_callback_ip4_addr_conflict)
     {
-        fnet_netif_dupip_handler(netif);
+        fnet_netif_callback_ip4_addr_conflict(netif);
     }
-
 }
 
 /************************************************************************

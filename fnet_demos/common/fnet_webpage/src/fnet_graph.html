@@ -1,11 +1,13 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE HTML SYSTEM>
+<html>
+
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
-	<link rel="Stylesheet" href="fnet.css" type="text/css" media="screen"/>
-	<title>FNET Graph/AJAX Demo</title>
-	<script type="text/javascript" src="fnet.js"> </script>
-	<link rel="shortcut icon" href="favicon.ico"/>    
+<title>FNET Graph Demo</title>
+    <style type="text/css">
+    <!--
+    @import"fnet.css";
+    -->
+    </style>
 	<style type="text/css">
 		#graph {
 			width: 380px; height: 340px; position: relative; background: #E0E6E6;
@@ -28,6 +30,16 @@
 	</style>
 	<script type="text/javascript">
 		var fnetDataReceived = 0;
+		function fnetXMLHttpRequest(){
+			var xmlHTTP = false;
+			if (window.ActiveXObject)
+				xmlHTTP = new ActiveXObject("Microsoft.XMLHTTP");
+			else if (window.XMLHttpRequest)
+				xmlHTTP = new XMLHttpRequest();
+			if (!xmlHTTP)
+				alert("Cannot create an XMLHTTP instance!");
+			return xmlHTTP;
+		}
 		function fnetRequest(){
 			if (!fnetDataReceived){
 		        var xmlHTTP = fnetXMLHttpRequest();
@@ -63,9 +75,8 @@
 	</script>
 </head>
 <body>
-	<script type="text/javascript">
-		fnetPrintHeader("Graph/AJAX Demo");
-	</script>
+
+	<h2>FNET Graph/AJAX Demo</h2>
  	<div id="graph">
 		<ul>
 			<li id="q1"></li>
@@ -78,9 +89,6 @@
 	<br/>
 	<br/>
 	<i>NOTE: This page gets the data from the server periodically with help 
-	of AJAX. It’s used JavaScript, CGI and JSON data format.</i>	
- 	<script type="text/javascript">
-			fnetPrintFooter();
-	</script>
+	of AJAX. <br/> It is used JavaScript, CGI and JSON data format.</i>	
 </body>
 </html>		

@@ -129,7 +129,7 @@ typedef enum
 typedef enum
 {
     FNET_NETIF_IP_ADDR_TYPE_MANUAL = 0,            /**< @brief The address is set manually.*/
-    FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE = 1,  /**< @brief The address is set using link-local autoconfiguration. */
+    FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE = 1,  /**< @brief The address is set using "Auto-IP" link-local autoconfiguration. */
     FNET_NETIF_IP_ADDR_TYPE_DHCP = 2               /**< @brief The address is set using DHCP. */
 } fnet_netif_ip_addr_type_t;
 
@@ -622,24 +622,50 @@ fnet_return_t fnet_netif_get_statistics( fnet_netif_desc_t netif_desc, struct fn
  *
  * @see fnet_socket_rx_handler_init()
  ******************************************************************************/
-typedef void(*fnet_netif_dupip_handler_t)( fnet_netif_desc_t netif );
+typedef void(*fnet_netif_callback_ip4_addr_conflict_t)( fnet_netif_desc_t netif );
 
 /***************************************************************************/ /*!
  *
- * @brief    Registers the "duplicated IP address" event handler.
+ * @brief    Registers the "IPv4 address conflict" event handler.
  *
- * @param handler    Pointer to the event-handler function defined by
- *                   @ref fnet_netif_dupip_handler_t.
+ * @param callback    Pointer to the event-handler callback function defined by
+ *                   @ref fnet_netif_callback_ip4_addr_conflict_t.
+ *
+ * @see fnet_netif_is_ip4_addr_conflict()
  *
  ******************************************************************************
  *
  * This function registers the @c handler callback function for
- * the "duplicated IP address" event. This event occurs when there is
- * an IP address conflict with another system on the network. @n
+ * the "IP4 address conflict" event. This event occurs when there is
+ * an IPv4 address conflict with another system on the network. It is detected by ARP protocol. @n
  * To stop the event handling, set @c handler parameter to zero value.
  *
  ******************************************************************************/
-void fnet_netif_dupip_handler_init (fnet_netif_dupip_handler_t handler);
+void fnet_netif_set_callback_ip4_addr_conflict (fnet_netif_callback_ip4_addr_conflict_t callback);
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Determines if there is IPv4 address conflict.
+ *
+ * @param netif_desc  Network interface descriptor.
+ *
+ * @return       This function returns:
+ *   - @c FNET_FALSE if the IPv4 address conflict is not detected.
+ *   - @c FNET_TRUE if the IPv4 address conflict is detected.
+ *
+ * @see fnet_netif_set_callback_ip4_addr_conflict()
+ *
+ ******************************************************************************
+ *
+ * This function determines if there is the @c netif interface IPv4 address conflict 
+ * with another system on the network.@n
+ * The address conflict is detected by ARP protocol.@n
+ * The conflict flag is cleared on changing of the interface IPv4 address, 
+ * using fnet_netif_set_ip4_addr().
+ *
+ ******************************************************************************/
+fnet_bool_t fnet_netif_is_ip4_addr_conflict(fnet_netif_desc_t netif_desc);
+
 
 #if (FNET_CFG_MULTICAST & FNET_CFG_IP4) || defined(__DOXYGEN__)
 

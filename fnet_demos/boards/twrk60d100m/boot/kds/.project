@@ -347,6 +347,16 @@
       <locationURI>virtual:/virtual</locationURI>
     </link>
     <link>
+      <name>fnet_stack/port/cpu/mk/fnet_mk66fn2_config.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk66fn2_config.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/port/cpu/mk</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
       <name>fnet_stack/port/cpu/mk/fnet_mk70fn1_config.h</name>
       <type>1</type>
       <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/mk/fnet_mk70fn1_config.h</locationURI>
@@ -490,6 +500,36 @@
       <name>fnet_stack/services/fnet_services_config.h</name>
       <type>1</type>
       <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/fnet_services_config.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/autoip</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/autoip/fnet_autoip.c</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/autoip/fnet_autoip.c</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/autoip</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/autoip/fnet_autoip.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/autoip/fnet_autoip.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/autoip</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/autoip/fnet_autoip_config.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/autoip/fnet_autoip_config.h</locationURI>
     </link>
     <link>
       <name>fnet_stack/services/dhcp</name>
@@ -1657,6 +1697,26 @@
       <locationURI>virtual:/virtual</locationURI>
     </link>
     <link>
+      <name>fnet_application/fapp_autoip.c</name>
+      <type>1</type>
+      <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_autoip.c</locationURI>
+    </link>
+    <link>
+      <name>fnet_application</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_application/fapp_autoip.h</name>
+      <type>1</type>
+      <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_autoip.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_application</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
       <name>fnet_application/fapp_bench.c</name>
       <type>1</type>
       <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_bench.c</locationURI>
@@ -1750,16 +1810,6 @@
       <name>fnet_application/fapp_fs_image.c</name>
       <type>1</type>
       <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_fs_image.c</locationURI>
-    </link>
-    <link>
-      <name>fnet_application</name>
-      <type>2</type>
-      <locationURI>virtual:/virtual</locationURI>
-    </link>
-    <link>
-      <name>fnet_application/fapp_fs_image_http09.c</name>
-      <type>1</type>
-      <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_fs_image_http09.c</locationURI>
     </link>
     <link>
       <name>fnet_application</name>

@@ -37,7 +37,7 @@
 *     Global Data Structures
 *************************************************************************/
 
-fnet_bool_t _fnet_enabled = FNET_FALSE;   /* Flag that the stack is initialized. */
+fnet_bool_t _fnet_is_enabled = FNET_FALSE;   /* Flag that the stack is initialized. */
 
 static fnet_uint16_t fnet_port_last = FNET_SOCKET_PORT_RESERVED + 1u;
 
@@ -185,7 +185,7 @@ static fnet_socket_if_t *fnet_socket_desc_find( fnet_socket_t desc )
 {
     fnet_socket_if_t *s = 0;
 
-    if(_fnet_enabled && (desc >= 0) && (desc != FNET_ERR))
+    if(_fnet_is_enabled && (desc >= 0) && (desc != FNET_ERR))
     {
         if((desc < (fnet_socket_t)FNET_CFG_SOCKET_MAX))
         {
@@ -419,7 +419,7 @@ fnet_socket_t fnet_socket( fnet_address_family_t family, fnet_socket_type_t type
 
     fnet_os_mutex_lock();
 
-    if(_fnet_enabled == FNET_FALSE) /* Stack is disabled */
+    if(_fnet_is_enabled == FNET_FALSE) /* Stack is disabled */
     {
         error = FNET_ERR_SYSNOTREADY;
         goto ERROR_1;

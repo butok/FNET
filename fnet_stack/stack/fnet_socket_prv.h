@@ -57,7 +57,7 @@
 
 #define FNET_SOCKET_DESC_RESERVED       (-1)    /* The descriptor is reserved.*/
 
-extern fnet_bool_t _fnet_enabled;
+extern fnet_bool_t _fnet_is_enabled;
 
 /**************************************************************************/ /*!
  * @internal

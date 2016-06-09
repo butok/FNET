@@ -782,7 +782,6 @@ static fnet_int32_t fnet_tcp_rcv( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_
         /* Set the foreign address and port.*/
         if(foreign_addr)
         {
-            //DM *foreign_addr = sk->foreign_addr;
             fnet_memcpy(foreign_addr, &sk->foreign_addr, sizeof(foreign_addr));
         }
 

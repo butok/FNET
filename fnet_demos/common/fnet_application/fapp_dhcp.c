@@ -37,19 +37,20 @@
 *     Definitions.
 *************************************************************************/
 #define FAPP_DHCP_DISCOVER_STR      "Sending DHCP discover..."
-#define FAPP_DHCP_NEWIP_STR         " DHCP has updated/renewed parameters:"
 #define FAPP_DHCP_COMMAND_REBOOT    "reboot"
+#define FAPP_DHCP_COMMAND_AUTOIP    "autoip"
 
 static fnet_int32_t     fapp_dhcp_discover_counter;
 static fnet_ip4_addr_t  fapp_dhcp_ip_old;
-static fnet_dhcp_desc_t fapp_dhcp_desc = 0; /* Telnet descriptor. */
+static fnet_dhcp_desc_t fapp_dhcp_desc = 0; /* DHCP descriptor. */
+static fnet_bool_t      fapp_dhcp_autoip = FNET_FALSE; /* Flag that means to start the Auto-IP service automatically if a DHCP server is not found. */
 
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
 static void fapp_dhcp_on_ctrlc(fnet_shell_desc_t desc);
-static void fapp_dhcp_handler_updated(fnet_dhcp_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
-static void fapp_dhcp_handler_discover(fnet_dhcp_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
+static void fapp_dhcp_callback_updated(fnet_dhcp_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
+static void fapp_dhcp_callback_discover(fnet_dhcp_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
 
 /************************************************************************
 * NAME: fapp_dhcp_on_ctrlc
@@ -66,37 +67,37 @@ static void fapp_dhcp_on_ctrlc(fnet_shell_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fapp_dhcp_handler_updated
+* NAME: fapp_dhcp_callback_updated
 *
-* DESCRIPTION: Event handler on new IP from DHCP client.
+* DESCRIPTION: Event handler callback on new IP from DHCP client.
 ************************************************************************/
-static void fapp_dhcp_handler_updated(fnet_dhcp_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc )
+static void fapp_dhcp_callback_updated(fnet_dhcp_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc )
 {
     fnet_shell_desc_t desc = (fnet_shell_desc_t) shl_desc;
 
     fapp_dhcp_discover_counter = -1; /* Infinite for future. */
 
-    /* Optionally, unregister DHCP event handlers, just to do not
+    /* Optionally, unregister DHCP event handler callbacks, just to do not
      * disturb a user. */
-    fnet_dhcp_handler_updated_set(dhcp_desc, 0, 0);
-    fnet_dhcp_handler_discover_set(dhcp_desc, 0, 0);
+    fnet_dhcp_set_callback_updated(dhcp_desc, 0, 0);
+    fnet_dhcp_set_callback_discover(dhcp_desc, 0, 0);
 
     fnet_shell_unblock((fnet_shell_desc_t)shl_desc); /* Unblock the shell. */
 
     /* Print updated parameters info. */
     fnet_shell_println( desc, "\n%s", FAPP_DELIMITER_STR);
-    fnet_shell_println( desc, FAPP_DHCP_NEWIP_STR);
+    fnet_shell_println( desc, FAPP_UPDATED_IP_STR);
     fnet_shell_println( desc, FAPP_DELIMITER_STR);
 
     fapp_print_netif_info( desc, netif );
 }
 
 /************************************************************************
-* NAME: fapp_dhcp_handler_discover
+* NAME: fapp_dhcp_callback_discover
 *
-* DESCRIPTION: Event handler on new IP from DHCP client.
+* DESCRIPTION: Event handler callback on new IP from DHCP client.
 ************************************************************************/
-static void fapp_dhcp_handler_discover(fnet_dhcp_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc )
+static void fapp_dhcp_callback_discover(fnet_dhcp_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc )
 {
     fnet_shell_desc_t desc = (fnet_shell_desc_t) shl_desc;
 
@@ -107,6 +108,11 @@ static void fapp_dhcp_handler_discover(fnet_dhcp_desc_t dhcp_desc, fnet_netif_de
     {
         fnet_shell_unblock((fnet_shell_desc_t)shl_desc);
         fapp_dhcp_on_ctrlc((fnet_shell_desc_t)shl_desc); /* Cancel DHCP.*/
+        
+        if(fapp_dhcp_autoip == FNET_TRUE)
+        {
+            fnet_shell_script(desc, "autoip");
+        }
     }
     else
     {
@@ -139,9 +145,10 @@ void fapp_dhcp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 
     if(argc == 1u    /* By default is "init".*/
 #if 0 /* DHCP reboot feature not used too much. */
-       || fnet_strcasecmp(&FAPP_DHCP_COMMAND_REBOOT[0], argv[1]) == 0
+        ||((argc == 2u) && (fnet_strcasecmp(&FAPP_DHCP_COMMAND_REBOOT[0], argv[1]) == 0))  /* [reboot] */
 #endif
-      ) /* [reboot] */
+        ||((argc == 2u) && (fnet_strcasecmp(&FAPP_DHCP_COMMAND_AUTOIP[0], argv[1]) == 0)) /* [autoip] */
+      ) 
     {
 
         fnet_memset_zero(&dhcp_params, sizeof(struct fnet_dhcp_params));
@@ -152,19 +159,41 @@ void fapp_dhcp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
         if(fnet_strcasecmp(&FAPP_DHCP_COMMAND_REBOOT[0], argv[1]) == 0) /* [reboot] */
             dhcp_params.requested_ip_address.s_addr = fnet_netif_get_ip4_addr(netif);
 #endif
+        /* Check Auto-IP flag.*/
+        if((argc == 2u) && (fnet_strcasecmp(&FAPP_DHCP_COMMAND_AUTOIP[0], argv[1]) == 0)) 
+        {
+            fapp_dhcp_autoip = FNET_TRUE;
+        }
+        else
+        {
+            fapp_dhcp_autoip = FNET_FALSE;
+        }
 
         dhcp_params.probe_addr = FNET_TRUE; /* Enable probing of the newly received address.*/
-        fapp_dhcp_ip_old = fnet_netif_get_ip4_addr(netif); /* Save ip to restore if cancelled. */
 
-        /* Enable DHCP client */
+        /* Save current IP address only if it was allocated manually/statically. */
+        if(fnet_netif_get_ip4_addr_type(netif) == FNET_NETIF_IP_ADDR_TYPE_MANUAL)
+        {
+            fapp_dhcp_ip_old = fnet_netif_get_ip4_addr(netif); /* Save ip to restore if cancelled. */
+        }
+        else
+        {
+            fapp_dhcp_ip_old = 0;
+        }
+
+        /* Start DHCP client */
         dhcp_desc = fnet_dhcp_init(netif, &dhcp_params);
-        if(dhcp_desc != FNET_ERR)
+        if(dhcp_desc)
         {
             fapp_dhcp_desc = dhcp_desc;
 
-            /* Register DHCP event handlers. */
-            fnet_dhcp_handler_updated_set(fapp_dhcp_desc, fapp_dhcp_handler_updated, (void *)desc);
-            fnet_dhcp_handler_discover_set(fapp_dhcp_desc, fapp_dhcp_handler_discover, (void *)desc);
+            /* Register DHCP event handler callbacks. */
+            fnet_dhcp_set_callback_updated(fapp_dhcp_desc, fapp_dhcp_callback_updated, (void *)desc);
+            fnet_dhcp_set_callback_discover(fapp_dhcp_desc, fapp_dhcp_callback_discover, (void *)desc);
+
+            fnet_shell_println(desc, FAPP_DELIMITER_STR);
+            fnet_shell_println(desc, " DHCPv4 Client started.");
+            fnet_shell_println(desc, FAPP_DELIMITER_STR);
 
             fnet_shell_println(desc, FAPP_TOCANCEL_STR);
             fnet_shell_block(desc, fapp_dhcp_on_ctrlc); /* Block shell. */
@@ -192,11 +221,11 @@ void fapp_dhcp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 void fapp_dhcp_info(fnet_shell_desc_t desc)
 {
     fnet_char_t     ip_str[FNET_IP4_ADDR_STR_SIZE];
-    fnet_bool_t     dhcp_enabled = fnet_dhcp_enabled(fapp_dhcp_desc);
+    fnet_bool_t     dhcp_is_enabled = fnet_dhcp_is_enabled(fapp_dhcp_desc);
 
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "DHCP Client", fapp_enabled_str[dhcp_enabled]);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "DHCP Client", fapp_enabled_str[dhcp_is_enabled]);
 
-    if(dhcp_enabled && (fnet_netif_get_ip4_addr_type(fnet_netif_get_default()) == FNET_NETIF_IP_ADDR_TYPE_DHCP))
+    if(dhcp_is_enabled && (fnet_netif_get_ip4_addr_type(fnet_netif_get_default()) == FNET_NETIF_IP_ADDR_TYPE_DHCP))
     {
         struct fnet_dhcp_options options;
 

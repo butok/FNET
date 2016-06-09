@@ -44,11 +44,11 @@
 /**************************************************************************/ /*!
  * @def     FNET_CFG_POLL_MAX
  * @brief   Maximum number of registered services in the service-polling list.@n
- *          Default value is @b @c 7.
+ *          Default value is @b @c 8.
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_POLL_MAX
-    #define FNET_CFG_POLL_MAX   (7u)
+    #define FNET_CFG_POLL_MAX   (8u)
 #endif
 
 /**************************************************************************/ /*!
@@ -62,6 +62,7 @@
 #endif
 
 #include "services/dhcp/fnet_dhcp_config.h"
+#include "services/autoip/fnet_autoip_config.h"
 #include "services/ssl/fnet_ssl_config.h"
 #include "services/http/fnet_http_config.h"
 #include "services/fs/fnet_fs_config.h"

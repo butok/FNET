@@ -323,10 +323,7 @@ static void fapp_fs_exit_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_ch
     fnet_shell_switch(desc, FNET_NULL);
 }
 
-
 #endif /* FAPP_CFG_EXP_CMD */
-
-
 
 #if (FAPP_CFG_EXP_CMD || FAPP_CFG_HTTP_CMD) && FNET_CFG_FS
 /************************************************************************

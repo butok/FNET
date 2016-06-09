@@ -51,13 +51,13 @@ fnet_return_t fnet_init( struct fnet_init_params *init_params )
     {
         fnet_os_mutex_lock();
 
-        if(_fnet_enabled == FNET_FALSE) /* Is enabled already?. */
+        if(_fnet_is_enabled == FNET_FALSE) /* Is enabled already?. */
         {
             if((result = fnet_heap_init(init_params->netheap_ptr, init_params->netheap_size)) == FNET_OK )
             {
                 if((result = fnet_stack_init()) == FNET_OK)
                 {
-                    _fnet_enabled = FNET_TRUE; /* Mark the stack is enabled. */
+                    _fnet_is_enabled = FNET_TRUE; /* Mark the stack is enabled. */
                 }
             }
         }
@@ -93,10 +93,10 @@ void fnet_release(void)
 {
     fnet_os_mutex_lock();
 
-    if(_fnet_enabled)
+    if(_fnet_is_enabled)
     {
         fnet_stack_release();
-        _fnet_enabled = FNET_FALSE;
+        _fnet_is_enabled = FNET_FALSE;
     }
 
     fnet_os_mutex_unlock();

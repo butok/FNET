@@ -237,10 +237,9 @@ fnet_return_t fnet_tftp_cln_init( struct fnet_tftp_cln_params *params )
 
     fnet_tftp_if.packet_size = sizeof(fnet_tftp_if.packet_request.opcode) + fnet_strlen(params->file_name) + 1u + sizeof(FNET_TFTP_MODE);
 
-
     /* Register TFTP service. */
     fnet_tftp_if.service_descriptor = fnet_poll_service_register(fnet_tftp_cln_state_machine, (void *) &fnet_tftp_if);
-    if(fnet_tftp_if.service_descriptor == (fnet_poll_desc_t)FNET_ERR)
+    if(fnet_tftp_if.service_descriptor == 0)
     {
         FNET_DEBUG_TFTP(FNET_TFTP_ERR_SERVICE);
         goto ERROR_1;
@@ -248,16 +247,12 @@ fnet_return_t fnet_tftp_cln_init( struct fnet_tftp_cln_params *params )
 
     fnet_tftp_if.state = FNET_TFTP_CLN_STATE_SEND_REQUEST; /* => Send REQUEST */
 
-
     return FNET_OK;
 ERROR_1:
     fnet_socket_close(fnet_tftp_if.socket_client);
 
 ERROR:
     return FNET_ERR;
-
-
-
 }
 
 /************************************************************************
@@ -457,8 +452,5 @@ fnet_tftp_cln_state_t fnet_tftp_cln_state(void)
 {
     return fnet_tftp_if.state;
 }
-
-
-
 
 #endif

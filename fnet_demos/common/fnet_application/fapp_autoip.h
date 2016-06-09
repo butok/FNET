@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -20,36 +19,36 @@
 **********************************************************************/
 /*!
 *
-* @file fnet_services.h
+* @file fapp_autoip.h
 *
 * @author Andrey Butok
 *
-* @brief General services-header file.
+* @brief FNET Application Demo (Auto-IP).
 *
 ***************************************************************************/
 
 
-#ifndef _FNET_SERVICES_H_
+/************************************************************************
+*     Private Definitions.
+*************************************************************************/
+#ifndef _FAPP_AUTOIP_H_
 
-#define _FNET_SERVICES_H_
+#define _FAPP_AUTOIP_H_
 
-#include "fnet.h"
-#include "serial/fnet_serial.h"
-#include "shell/fnet_shell.h"
-#include "telnet/fnet_telnet.h"
-#include "poll/fnet_poll.h"
-#include "tftp/fnet_tftp_cln.h"
-#include "tftp/fnet_tftp_srv.h"
-#include "dhcp/fnet_dhcp.h"
-#include "flash/fnet_flash.h"
-#include "fs/fnet_fs.h"
-#include "fs/fnet_fs_rom.h"
-#include "ssl/fnet_ssl.h"
-#include "http/fnet_http.h"
-#include "dns/fnet_dns.h"
-#include "ping/fnet_ping.h"
-#include "llmnr/fnet_llmnr.h"
-#include "autoip/fnet_autoip.h"
+#if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP && FNET_CFG_IP4
 
+#if defined(__cplusplus)
+extern "C" {
 #endif
 
+void fapp_autoip_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
+void fapp_autoip_info(fnet_shell_desc_t desc);
+void fapp_autoip_release(void);
+
+#if defined(__cplusplus)
+}
+#endif
+
+#endif /* FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP && FNET_CFG_IP4 */
+
+#endif /* _FAPP_AUTOIP_H_ */

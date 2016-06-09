@@ -55,7 +55,7 @@
 
 static fnet_arp_entry_t *fnet_arp_add_entry(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, const fnet_mac_addr_t ethaddr);
 static fnet_arp_entry_t *fnet_arp_update_entry(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_mac_addr_t ethaddr);
-static void fnet_arp_ip_duplicated(fnet_uint32_t cookie);
+static void fnet_arp_ip4_addr_conflict(fnet_uint32_t cookie);
 
 #if FNET_CFG_DEBUG_TRACE_ARP && FNET_CFG_DEBUG_TRACE
 static void fnet_arp_trace(fnet_uint8_t *str, fnet_arp_header_t *arp_hdr);
@@ -92,7 +92,7 @@ fnet_return_t fnet_arp_init(fnet_netif_t *netif, fnet_arp_if_t *arpif)
         if (arpif->arp_tmr)
         {
             /* Install event Handler. */
-            arpif->arp_event = fnet_event_init(fnet_arp_ip_duplicated, (fnet_uint32_t)netif);
+            arpif->arp_event = fnet_event_init(fnet_arp_ip4_addr_conflict, (fnet_uint32_t)netif);
             if (arpif->arp_event != FNET_ERR)
             {
                 result = FNET_OK;
@@ -418,6 +418,8 @@ void fnet_arp_input(fnet_netif_t *netif, fnet_netbuf_t *nb)
             else
             {
                 /* IP is duplicated. */
+                netif->ip4_addr_conflict = FNET_TRUE; /* Set "duplicated" flag. */
+
                 fnet_event_raise(arpif->arp_event);
             }
 
@@ -505,16 +507,16 @@ void fnet_arp_request(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr)
 }
 
 /************************************************************************
-* NAME: fnet_arp_ip_duplicated
+* NAME: fnet_arp_ip4_addr_conflict
 *
 * DESCRIPTION: This function is called on the IP address
 *              duplication event.
 *************************************************************************/
-static void fnet_arp_ip_duplicated(fnet_uint32_t cookie)
+static void fnet_arp_ip4_addr_conflict(fnet_uint32_t cookie)
 {
     FNET_DEBUG_ARP("");
     FNET_DEBUG_ARP("ARP: Duplicate IP address.");
-    fnet_netif_dupip_handler_signal((fnet_netif_t *)cookie);
+    fnet_netif_signal_p4_addr_conflict((fnet_netif_t *)cookie);
 }
 
 /************************************************************************

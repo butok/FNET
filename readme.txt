@@ -7,6 +7,7 @@ FNET project directory structure:
 	|-- fnet_stack              - FNET TCP/IP stack.
 	|    |-- stack                - FNET TCP/IP stack platform-independent source code.
 	|    |-- services             - FNET Services.
+	|    |    |-- autoip            - Auto-IP service.
 	|    |    |-- dns               - DNS client/resolver service.
 	|    |    |-- dhcp              - DHCP/BOOTP client service.
 	|    |    |-- flash             - Flash  Memory driver.
@@ -34,7 +35,7 @@ FNET project directory structure:
 	|    |    |-- fnet_webpage        - Demo web page source code.
 	|    |    |-- startup             - Platform-specific startup source code.
 	|    |-- boards               - Demo projects 
-	|         |-- <board_name>           - Demo projects for a <board_name> board.
+	|         |-- <board_name>        - Demo projects for a <board_name> board.
 	|              |-- boot              - FNET TFTP Bootloader.
 	|              |-- benchmark         - TCP/UDP Throughput Benchmark application. 
 	|              |-- shell             - "Shell" demo is a fully featured shell. It allows

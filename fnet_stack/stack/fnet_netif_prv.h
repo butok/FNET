@@ -155,6 +155,7 @@ typedef struct fnet_netif
     fnet_uint32_t           features;                           /* Supported features. Bitwise of fnet_netif_feature_t.*/
 #if FNET_CFG_IP4
     fnet_netif_ip4_addr_t   ip4_addr;                           /* The interface IPv4 address structure. */
+    fnet_bool_t             ip4_addr_conflict  ;                /* Flag if the ip4_addr is duplicated.*/
     struct fnet_arp_if      *arp_if_ptr;                        /* Pointer to the ARP structure, if the interface supports ARP. */
 #endif
 #if FNET_CFG_IP6
@@ -192,7 +193,7 @@ void fnet_netif_release_all( void );
 fnet_return_t fnet_netif_init(fnet_netif_t *netif, fnet_uint8_t *hw_addr, fnet_size_t hw_addr_size);
 void fnet_netif_release( fnet_netif_t *netif );
 void fnet_netif_drain( void );
-void fnet_netif_dupip_handler_signal( fnet_netif_desc_t netif );
+void fnet_netif_signal_p4_addr_conflict( fnet_netif_desc_t netif );
 
 #if FNET_CFG_IP6
 fnet_netif_ip6_addr_t *fnet_netif_get_ip6_addr_info(fnet_netif_t *netif, const fnet_ip6_addr_t *ip_addr);

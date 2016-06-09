@@ -48,15 +48,15 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fapp_ping_handler(fnet_error_t result, fnet_size_t packet_count, struct sockaddr *target_addr, fnet_uint32_t cookie);
+static void fapp_ping_callback(fnet_error_t result, fnet_size_t packet_count, struct sockaddr *target_addr, fnet_uint32_t cookie);
 static void fapp_ping_on_ctrlc(fnet_shell_desc_t desc);
 
 /************************************************************************
-* NAME: fapp_ping_handler
+* NAME: fapp_ping_callback
 *
 * DESCRIPTION:
 ************************************************************************/
-static void fapp_ping_handler (fnet_error_t result, fnet_size_t packet_count, struct sockaddr *target_addr, fnet_uint32_t cookie)
+static void fapp_ping_callback (fnet_error_t result, fnet_size_t packet_count, struct sockaddr *target_addr, fnet_uint32_t cookie)
 {
     fnet_char_t                ip_str[FNET_IP_ADDR_STR_SIZE];
     fnet_shell_desc_t   desc = (fnet_shell_desc_t)cookie;
@@ -109,7 +109,7 @@ void fapp_ping_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
     fnet_memset_zero(&ping_params, sizeof(ping_params));
 
     ping_params.cookie = (fnet_uint32_t)desc;
-    ping_params.handler = fapp_ping_handler;
+    ping_params.callback = fapp_ping_callback;
     ping_params.packet_size = FAPP_PING_DEFAULT_SIZE;
     ping_params.timeout = FAPP_PING_DEFAULT_TIMEOUT;
     ping_params.pattern = FAPP_PING_DEFAULT_PATTERN;

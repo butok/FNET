@@ -257,12 +257,11 @@ fnet_tftp_srv_desc_t fnet_tftp_srv_init( struct fnet_tftp_srv_params *params )
     /* Register service. */
     tftp_srv_if->service_descriptor = fnet_poll_service_register(fnet_tftp_srv_state_machine, (void *) tftp_srv_if);
 
-    if(tftp_srv_if->service_descriptor == (fnet_poll_desc_t)FNET_ERR)
+    if(tftp_srv_if->service_descriptor == 0)
     {
         FNET_DEBUG_TFTP_SRV("TFTP_SRV: Service registration error.");
         goto ERROR_2;
     }
-
 
     tftp_srv_if->state = FNET_TFTP_SRV_STATE_WAITING_REQUEST; /* => Send WAITING_REQUEST */
 
@@ -270,7 +269,7 @@ fnet_tftp_srv_desc_t fnet_tftp_srv_init( struct fnet_tftp_srv_params *params )
 ERROR_2:
     fnet_socket_close(tftp_srv_if->socket_listen);
 ERROR_1:
-    return FNET_ERR;
+    return 0;
 }
 
 /************************************************************************
@@ -681,14 +680,13 @@ void fnet_tftp_srv_release(fnet_tftp_srv_desc_t desc)
     }
 }
 
-
 /************************************************************************
-* NAME: fnet_tftp_srv_enabled
+* NAME: fnet_tftp_srv_is_enabled
 *
 * DESCRIPTION: This function returns FNET_TRUE if the TFTP server
 *              is enabled/initialised.
 ************************************************************************/
-fnet_bool_t fnet_tftp_srv_enabled(fnet_tftp_srv_desc_t desc)
+fnet_bool_t fnet_tftp_srv_is_enabled(fnet_tftp_srv_desc_t desc)
 {
     struct fnet_tftp_srv_if *tftp_srv_if = (struct fnet_tftp_srv_if *) desc;
     fnet_bool_t             result;
@@ -704,6 +702,5 @@ fnet_bool_t fnet_tftp_srv_enabled(fnet_tftp_srv_desc_t desc)
 
     return result;
 }
-
 
 #endif

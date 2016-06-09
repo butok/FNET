@@ -44,10 +44,10 @@
 * a remote TFTP server. @n
 * After the TFTP client is initialized by calling the @ref fnet_tftp_cln_init() function,
 * the user application should call the main service-polling function
-* @ref fnet_poll_services() periodically in the background. @n
+* @ref fnet_poll_service() periodically in the background. @n
 * The TFP client service is released automatically as soon as the requested file is
 * fully received/sent or an error occurs. Your application code may still continue
-* to call @ref fnet_poll_services() to handle other services, but this will not have any
+* to call @ref fnet_poll_service() to handle other services, but this will not have any
 * impact on the TFTP client communication until you initialize the next file transfer by calling
 * @ref fnet_tftp_cln_init() again. @n
 * @n
@@ -197,7 +197,7 @@ extern "C" {
  * This function initializes the TFTP-client service. It allocates all
  * resources needed and registers the TFTP service in the polling list.@n
  * After the initialization, the user application should call the main polling
- * function @ref fnet_poll_services() periodically to run the TFTP service routine
+ * function @ref fnet_poll_service() periodically to run the TFTP service routine
  * in the background.
  *
  ******************************************************************************/

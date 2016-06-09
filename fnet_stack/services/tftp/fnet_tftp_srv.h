@@ -46,7 +46,7 @@
 * connected TFTP clients. @n
 * After the TFTP server is initialized by calling the @ref fnet_tftp_srv_init() function,
 * the user application should call the main service-polling function
-* @ref fnet_poll_services() periodically in the background.
+* @ref fnet_poll_service() periodically in the background.
 * @n
 * For the TFTP-server service example, refer to the FNET Bootloader source code.@n
 * @n
@@ -255,7 +255,7 @@ extern "C" {
  *
  * @return This function returns:
  *   - TFTP-server descriptor if no error occurs.
- *   - @ref FNET_ERR if an error occurs.
+ *   - @c 0 if an error occurs.
  *
  * @see fnet_tftp_srv_release()
  *
@@ -264,7 +264,7 @@ extern "C" {
  * This function initializes the TFTP-server service. It allocates all
  * resources needed, and registers the TFTP-server service in the polling list.@n
  * After the initialization, the user application should call the main polling
- * function  @ref fnet_poll_services() periodically to run the TFTP server in background.
+ * function  @ref fnet_poll_service() periodically to run the TFTP server in background.
  *
  ******************************************************************************/
 fnet_tftp_srv_desc_t fnet_tftp_srv_init( struct fnet_tftp_srv_params *params );
@@ -302,7 +302,7 @@ void fnet_tftp_srv_release(fnet_tftp_srv_desc_t desc);
  * This function detects if the TFTP Server service is initialized or is released.
  *
  ******************************************************************************/
-fnet_bool_t fnet_tftp_srv_enabled(fnet_tftp_srv_desc_t desc);
+fnet_bool_t fnet_tftp_srv_is_enabled(fnet_tftp_srv_desc_t desc);
 
 #if defined(__cplusplus)
 }

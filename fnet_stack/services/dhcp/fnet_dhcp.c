@@ -18,17 +18,6 @@
 *  limitations under the License.
 *
 **********************************************************************/
-/*!
-*
-* @file fnet_dhcp.c
-*
-* @author Andrey Butok
-*
-* @brief DHCP/BOOTP Client implementation.
-*
-*  BOOTP is based on Peter Baertschi contribution (Siemens Building Technologies).
-*
-***************************************************************************/
 
 /*
 * Boot file name (or two-step bootstrap procedure) is not suported.
@@ -154,7 +143,7 @@ typedef enum
                                      * initialized.*/
     FNET_DHCP_STATE_INIT,           /**< @brief The DHCP client service is initialized.
                                      * Sends DHCPDISCOVER message.@n
-                                     * Signals the @ref fnet_dhcp_handler_discover_t event.*/
+                                     * Signals the Discover callback event.*/
     FNET_DHCP_STATE_SELECTING,      /**< @brief Waits for the DHCPOFFER message.*/
     FNET_DHCP_STATE_REQUESTING,     /**< @brief Sends the DHCPREQUEST message.
                                      * Waits for the DHCPACK.*/
@@ -163,13 +152,13 @@ typedef enum
     FNET_DHCP_STATE_BOUND,          /**< @brief The DHCPACK message from
                                      * the DHCP server arrived.
                                      * The client parameters are set.@n
-                                     * Signals the @ref fnet_dhcp_handler_updated_t event.*/
+                                     * Signals the Updated callback event.*/
     FNET_DHCP_STATE_RENEWING,       /**< @brief T1 expired. Send the DHCPREQUEST
                                      * to a leasing server.*/
     FNET_DHCP_STATE_REBINDING,      /**< @brief T2 expired. Broadcast the DHCPREQUEST.*/
     FNET_DHCP_STATE_INIT_REBOOT,    /**< @brief The DHCP client service is initialized.
                                      * Sends the DHCPREQUEST message.@n
-                                     * Signals the @ref fnet_dhcp_handler_discover_t event.*/
+                                     * Signals the Discover callback event.*/
     FNET_DHCP_STATE_REBOOTING,      /**< @brief Sends the DHCPREQUEST message.
                                      * Waits for the DHCPACK.*/
     FNET_DHCP_STATE_RELEASE         /**< @brief Sends the RELEASE message.
@@ -320,19 +309,19 @@ typedef struct fnet_dhcp_if
     struct fnet_dhcp_options_in offered_options;            /* Parsed options */
     fnet_netif_desc_t           netif;
     fnet_poll_desc_t            service_descriptor;
-    fnet_dhcp_handler_updated_t handler_updated;            /* Optional ponter to the handler
+    fnet_dhcp_callback_t        callback_updated;           /* Optional ponter to the handler
                                                             * callback function, that is
                                                             * called when the DHCP client has
                                                             * updated the IP parameters.*/
-    fnet_dhcp_handler_discover_t handler_discover;          /* Optional pointer to the handler
+    fnet_dhcp_callback_t        callback_discover;          /* Optional pointer to the handler
                                                             * callback function, that is
                                                             * called when the DHCP client send
                                                             * the DHCP discover message.*/
-    void                        *handler_discover_param;    /* Optional user-application specific parameter.
-                                                            * It's passed to @ref fnet_dhcp_handler_discover_t.*/
-    void                        *handler_updated_param;     /* Optional user-application specific parameter.
-                                                            * It's passed to @ref fnet_dhcp_handler_updated_t
-                                                            * event handler.*/
+    void                        *callback_discover_param;   /* Optional user-application specific parameter.
+                                                            * It's passed to the callback_discover event handler callback..*/
+    void                        *callback_updated_param;    /* Optional user-application specific parameter.
+                                                            * It's passed to the callback_updated
+                                                            * event handler callback.*/
 } fnet_dhcp_if_t;
 
 
@@ -976,9 +965,9 @@ static void fnet_dhcp_apply_params(fnet_dhcp_if_t *dhcp)
 
     fnet_dhcp_change_state(dhcp, FNET_DHCP_STATE_BOUND); /* => BOUND */
     /* Rise event. */
-    if(dhcp->handler_updated)
+    if(dhcp->callback_updated)
     {
-        dhcp->handler_updated((fnet_dhcp_desc_t)dhcp, dhcp->netif, dhcp->handler_updated_param);
+        dhcp->callback_updated((fnet_dhcp_desc_t)dhcp, dhcp->netif, dhcp->callback_updated_param);
     }
 }
 
@@ -1064,9 +1053,9 @@ static void fnet_dhcp_state_machine( void *fnet_dhcp_if_p )
             /* Todo: The client SHOULD wait a random time between one and ten seconds to
             * desynchronize the use of DHCP at startup. */
             fnet_dhcp_change_state(dhcp, FNET_DHCP_STATE_SELECTING); /* => SELECTING */
-            if(dhcp->handler_discover)
+            if(dhcp->callback_discover)
             {
-                dhcp->handler_discover((fnet_dhcp_desc_t)dhcp, dhcp->netif, dhcp->handler_discover_param);
+                dhcp->callback_discover((fnet_dhcp_desc_t)dhcp, dhcp->netif, dhcp->callback_discover_param);
             }
             break;
         /*---- SELECTING --------------------------------------------*/
@@ -1123,7 +1112,7 @@ static void fnet_dhcp_state_machine( void *fnet_dhcp_if_p )
             }
             else
             {
-                fnet_dhcp_release((fnet_dhcp_desc_t)dhcp); /* Desable DHCP, on user manual parameters change */
+                fnet_dhcp_release((fnet_dhcp_desc_t)dhcp); /* address parameters changed outside => Disable DHCP*/
             }
 #endif
             break;
@@ -1132,9 +1121,9 @@ static void fnet_dhcp_state_machine( void *fnet_dhcp_if_p )
         /*---- FNET_DHCP_STATE_INIT_REBOOT -----------------------------*/
         case FNET_DHCP_STATE_INIT_REBOOT:
             fnet_dhcp_change_state(dhcp, FNET_DHCP_STATE_REBOOTING); /* => REBOOTING */
-            if(dhcp->handler_discover)
+            if(dhcp->callback_discover)
             {
-                dhcp->handler_discover((fnet_dhcp_desc_t)dhcp, dhcp->netif, dhcp->handler_discover_param);
+                dhcp->callback_discover((fnet_dhcp_desc_t)dhcp, dhcp->netif, dhcp->callback_discover_param);
             }
             break;
         /*---- RENEWING -------------------------------------------------*/
@@ -1284,7 +1273,7 @@ fnet_dhcp_desc_t fnet_dhcp_init( fnet_netif_desc_t netif, struct fnet_dhcp_param
 {
     struct sockaddr     addr_client;
     fnet_dhcp_state_t   state = FNET_DHCP_STATE_INIT;
-    fnet_dhcp_if_t      *dhcp_if;
+    fnet_dhcp_if_t      *dhcp_if = 0;
     fnet_index_t        i;
 
     if(netif == 0)
@@ -1339,7 +1328,7 @@ fnet_dhcp_desc_t fnet_dhcp_init( fnet_netif_desc_t netif, struct fnet_dhcp_param
 
     dhcp_if->service_descriptor = fnet_poll_service_register(fnet_dhcp_state_machine, (void *) dhcp_if);
 
-    if(dhcp_if->service_descriptor == (fnet_poll_desc_t)FNET_ERR)
+    if(dhcp_if->service_descriptor == 0)
     {
         FNET_DEBUG_DHCP(FNET_DHCP_ERR_SERVICE);
         goto ERROR_1;
@@ -1378,7 +1367,7 @@ ERROR_1:
     fnet_socket_close(dhcp_if->socket_client);
 
 ERROR:
-    return FNET_ERR;
+    return 0;
 }
 
 /************************************************************************
@@ -1405,12 +1394,12 @@ void fnet_dhcp_release(fnet_dhcp_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_enabled
+* NAME: fnet_dhcp_is_enabled
 *
 * DESCRIPTION: This function returns FNET_TRUE if the DHCP client
 *              is enabled/initialised.
 ************************************************************************/
-fnet_bool_t fnet_dhcp_enabled(fnet_dhcp_desc_t desc)
+fnet_bool_t fnet_dhcp_is_enabled(fnet_dhcp_desc_t desc)
 {
     struct fnet_dhcp_if     *dhcp_if = (struct fnet_dhcp_if *) desc;
     fnet_bool_t             result;
@@ -1444,34 +1433,34 @@ void fnet_dhcp_get_options(fnet_dhcp_desc_t desc, struct fnet_dhcp_options *opti
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_handler_updated_set
+* NAME: fnet_dhcp_set_callback_updated
 *
-* DESCRIPTION:
+* DESCRIPTION: Registers the "IP parameters updated" DHCP event handler callback.
 ************************************************************************/
-void fnet_dhcp_handler_updated_set (fnet_dhcp_desc_t desc, fnet_dhcp_handler_updated_t handler_updated, void *param)
+void fnet_dhcp_set_callback_updated(fnet_dhcp_desc_t desc, fnet_dhcp_callback_t callback_updated, void *param)
 {
     struct fnet_dhcp_if   *dhcp_if = (struct fnet_dhcp_if *) desc;
 
     if(dhcp_if)
     {
-        dhcp_if->handler_updated = handler_updated;
-        dhcp_if->handler_updated_param = param;
+        dhcp_if->callback_updated = callback_updated;
+        dhcp_if->callback_updated_param = param;
     }
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_handler_discover_set
+* NAME: fnet_dhcp_set_callback_discover
 *
-* DESCRIPTION:
+* DESCRIPTION: Registers the "Discover message sent" DHCP event handler callback.
 ************************************************************************/
-void fnet_dhcp_handler_discover_set (fnet_dhcp_desc_t desc, fnet_dhcp_handler_discover_t handler_discover, void *param)
+void fnet_dhcp_set_callback_discover(fnet_dhcp_desc_t desc, fnet_dhcp_callback_t callback_discover, void *param)
 {
     struct fnet_dhcp_if   *dhcp_if = (struct fnet_dhcp_if *) desc;
 
     if(dhcp_if)
     {
-        dhcp_if->handler_discover = handler_discover;
-        dhcp_if->handler_discover_param = param;
+        dhcp_if->callback_discover = callback_discover;
+        dhcp_if->callback_discover_param = param;
     }
 }
 

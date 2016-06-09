@@ -41,7 +41,7 @@
 * @n
 * After the Shell service is initialized by calling the @ref fnet_shell_init()
 * function, the user application should call the main service polling function
-* @ref fnet_poll_services() periodically in background. @n
+* @ref fnet_poll_service() periodically in background. @n
 * @n
 * For example:
 * @code
@@ -81,14 +81,14 @@
 *   shell_params.stream = FNET_SERIAL_STREAM_DEFAULT; // Use default stream.
 *   shell_params.echo = FNET_TRUE; // Enable echo.
 *   ...
-*   if((fapp_shell_desc = fnet_shell_init(&shell_params)) != FNET_ERR)
+*   if((fapp_shell_desc = fnet_shell_init(&shell_params)) != 0)
 *   {
 *       fnet_printf("\n Shell started.\n");
 *       while(1)
 *       {
 *           // Do something.
 *           ...
-*           fnet_poll_services();
+*           fnet_poll_service();
 *       }
 *    }
 *    else
@@ -280,7 +280,7 @@ extern "C" {
  *
  * @return This function returns:
  *   - Shell service descriptor if no error occurs.
- *   - @ref FNET_ERR if an error occurs.
+ *   - @c 0 if an error occurs.
  *
  * @see fnet_shell_release()
  *
@@ -290,7 +290,7 @@ extern "C" {
  * settings pointed to by @c params parameters. It allocates all
  * resources needed, and registers the shell service in the polling list.@n
  * After the initialization, the user application should call the main polling
- * function  @ref fnet_poll_services() periodically to run the Shell service in background.@n
+ * function  @ref fnet_poll_service() periodically to run the Shell service in background.@n
  * The shell service runs on asigned serial stream, executes parsing of
  * the user-entered commands, and calls user-defined command functions,
  * if the parsing was successful.
