@@ -55,17 +55,6 @@
 /*! @addtogroup fnet_socket */
 /*! @{ */
 
-/* native Flash controller align */
-#if FNET_CFG_CPU_FLASH
-    #if (FNET_CFG_CPU_FLASH_PROGRAM_SIZE == 8U)
-        #define FNET_COMP_PACKED_NATIVE         FNET_COMP_PACKED_8
-    #elif (FNET_CFG_CPU_FLASH_PROGRAM_SIZE == 4U)
-        #define FNET_COMP_PACKED_NATIVE         FNET_COMP_PACKED_4
-    #else
-        #error The macro FNET_CFG_CPU_FLASH_PROGRAM_SIZE must be set to correct value.
-    #endif
-#endif
-
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -351,19 +340,27 @@ void fnet_cpu_cache_invalidate(void);
 
 /***************************************************************************/ /*!
  *
- * @brief    Erases the specified page of the on-chip Flash memory.
+ * @brief    Erases the specified range of the Flash memory.
  *
- * @param flash_page_addr      Address of the page in the Flash to erase.
+ * @param flash_addr      Address in the Flash to erase from.
+ *
+ * @param bytes           Number of bytes to erase in the Flash memory.
  *
  * @see fnet_cpu_flash_write()
  *
  ******************************************************************************
  *
- * This function erases the  whole Flash page pointed by @c flash_page_addr.@n
- * Erase page size is defined by @ref FNET_CFG_CPU_FLASH_PAGE_SIZE.
+ * This function attempt to erase the number of @c bytes bytes beginning
+ * at @c flash_addr.@n
+ * It should be noted that the Flash is block oriented when erasing.
+ * It is not possible to erase a few bytes within a page, the whole page will
+ * be erased.
+ * The @c flash_addr parameter may be anywhere within the first page to be
+ * erased and @c flash_addr+ @c bytes may be anywhere in the last block to
+ * be erased. @n
  *
  ******************************************************************************/
-void fnet_cpu_flash_erase(void *flash_page_addr);
+void fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes);
 
 /***************************************************************************/ /*!
  *

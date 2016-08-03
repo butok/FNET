@@ -36,8 +36,6 @@
 
 #define _FNET_CPU_CONFIG_H_
 
-#include "fnet_config.h"
-
 /*! @addtogroup fnet_platform_config  */
 /*! @{ */
 /**************************************************************************/ /*!
@@ -633,7 +631,11 @@
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_ETH0_MTU
-    #define FNET_CFG_CPU_ETH0_MTU            (1500u)
+    #if FNET_CFG_CPU_ETH0
+        #define FNET_CFG_CPU_ETH0_MTU            (1500u)
+    #else
+        #define FNET_CFG_CPU_ETH0_MTU            (0u)
+    #endif
 #endif
 
 /**************************************************************************/ /*!
@@ -643,7 +645,11 @@
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_ETH1_MTU
-    #define FNET_CFG_CPU_ETH1_MTU            (1500u)
+    #if FNET_CFG_CPU_ETH1
+        #define FNET_CFG_CPU_ETH1_MTU            (1500u)
+    #else
+        #define FNET_CFG_CPU_ETH1_MTU            (0u)
+    #endif
 #endif
 
 /**************************************************************************/ /*!
@@ -855,6 +861,18 @@
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_ETH_HW_RX_MAC_ERR
     #define FNET_CFG_CPU_ETH_HW_RX_MAC_ERR              (0)
+#endif
+
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT
+ * @brief    Your own alternate implementation for fnet_eth_io_init():
+ *               - @c 1 = is enabled.
+ *               - @b @c 0 = is disabled (Default value).@n
+ *           This function is called during Ethernet driver initalization, used for pin initialization and clock enabling.
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT
+    #define FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT            (0)
 #endif
 
 

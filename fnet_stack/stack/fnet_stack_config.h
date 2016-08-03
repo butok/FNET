@@ -555,8 +555,8 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_RAW
  * @brief    RAW socket support:
- *               - @c 1 = is enabled.
- *               - @b @c 0 = is disabled (Default value).@n
+ *               - @c 1 = is enabled (Default value).
+ *               - @b @c 0 = is disabled .@n
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_RAW
@@ -570,13 +570,26 @@
 
 /**************************************************************************/ /*!
  * @def      FNET_CFG_HEAP_SIZE
- * @brief    Size of the internal static heap buffer.
- *           It is used only if @ref fnet_init_static() was
- *           called for FNET initialization.
+ * @brief    Recomended Size of the internal static heap buffer, that should be passed to 
+ *           @ref fnet_init().
  * @hideinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_HEAP_SIZE
     #define FNET_CFG_HEAP_SIZE                  (50U * 1024U)
+#endif
+
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_MULTITHREADING
+ * @brief    Multi-threading support:
+ *               - @c 1 = is enabled (experimental feature). @n 
+ *                 If the FNET User API may be called simultaneously from different RTOS threads, this parameter must be enabled to avoid race conditions.
+ *                 This feature is under development. User application must implement Mutex API defined fnet_mutex_api_t.
+ *               - @b @c 0 = is disabled (Default value).@n 
+ *                 This is default state for bare-metal applications or if the FNET User API is called simultaneously only from one RTOS thread.
+ * @see fnet_mutex_api_t
+ ******************************************************************************/
+#ifndef FNET_CFG_MULTITHREADING
+    #define FNET_CFG_MULTITHREADING             (0)
 #endif
 
 /**************************************************************************/ /*!
@@ -591,13 +604,28 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_SOCKET_BSD_NAMES
  * @brief    BSD Socket API names:
- *               - @c 1 = are suported (Default value).
- *               - @b @c 0 = are not suported.@n
+ *               - @c 1 = are supported  (Default value).
+ *               - @b @c 0 = are not supported.@n
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_SOCKET_BSD_NAMES
     #define FNET_CFG_SOCKET_BSD_NAMES           (1)
 #endif
+   
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_SOCKET_CALLBACK_ON_RX
+ * @brief    "Socket Rx" event handler callback:
+ *               - @c 1 = is supported (Default value).
+ *               - @b @c 0 = is not supported.@n
+ * This event occurs when the socket layer receives any packet for any existing socket. 
+ * It can be a packet with or without data-payload including ACK, FIN and SYN.@n
+ * The user callback is registered by fnet_socket_set_callback_on_rx().
+ * @see fnet_socket_set_callback_on_rx()
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_SOCKET_CALLBACK_ON_RX
+    #define FNET_CFG_SOCKET_CALLBACK_ON_RX         (0U)
+#endif   
 
 /**************************************************************************/ /*!
  * @def      FNET_CFG_SOCKET_TCP_MSS

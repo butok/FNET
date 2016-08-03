@@ -32,10 +32,8 @@
 
 #define _FNET_IP_H_
 
-
 /*! @addtogroup fnet_socket */
 /*! @{ */
-
 
 /**************************************************************************/ /*!
  * @brief 32-bit IPv4 address type.
@@ -140,9 +138,6 @@ typedef fnet_uint32_t fnet_ip4_addr_t;
 #define FNET_IP4_ADDR2(ipaddr)   ((fnet_uint8_t)(fnet_ntohl(ipaddr) >> 16U) & 0xffU)
 #define FNET_IP4_ADDR3(ipaddr)   ((fnet_uint8_t)(fnet_ntohl(ipaddr) >> 8U) & 0xffU)
 #define FNET_IP4_ADDR4(ipaddr)   ((fnet_uint8_t)(fnet_ntohl(ipaddr)) & 0xffU)
-
-
-
 
 /*! @} */
 

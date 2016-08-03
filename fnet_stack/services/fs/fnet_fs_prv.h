@@ -50,7 +50,6 @@ typedef enum
 }
 fnet_fs_open_mode_t;
 
-
 /* Mount point. */
 struct fnet_fs_mount_point
 {
@@ -93,7 +92,7 @@ struct fnet_fs_operations
 /* FS control structure (for every fs).*/
 struct fnet_fs
 {
-    const fnet_char_t *name;                                           /* FS uniqe name.*/
+    const fnet_char_t *name;                                    /* FS uniqe name.*/
     const struct fnet_fs_operations          *operations;       /* FS operations.*/
     const struct fnet_fs_file_operations     *file_operations;  /* FS file operations.*/
     const struct fnet_fs_dir_operations      *dir_operations;   /* FS directory operations.*/

@@ -32,10 +32,7 @@
 
 #define _FNET_TELNET_H_
 
-#include "fnet.h"
-
 #if FNET_CFG_TELNET || defined(__DOXYGEN__)
-
 
 /*! @addtogroup fnet_telnet
 * The Telnet server provides a simple command-line interface for a

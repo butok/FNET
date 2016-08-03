@@ -22,8 +22,6 @@
 *
 * @file fnet_flash.h
 *
-* @author Andrey Butok
-*
 * @brief On-chip Flash Module driver API.
 *
 ***************************************************************************/
@@ -31,9 +29,7 @@
 
 #define _FNET_FLASH_H_
 
-#include "fnet.h"
-
-#if FNET_CFG_FLASH || defined(__DOXYGEN__)
+#if (FNET_CFG_FLASH && FNET_CFG_CPU_FLASH) || defined(__DOXYGEN__)
 
 /*! @addtogroup fnet_cfm
 *
@@ -42,7 +38,7 @@
 * in normal operational mode.@n
 * @n
 * The on-chip Flash module is a non-volatile memory (NVM) module
-* integrated  with a CPU. The Flash memory is ideal for program and
+* integrated with a CPU. The Flash memory is ideal for program and
 * data storage for single-chip applications, allowing field
 * reprogramming without requiring external programming voltage sources.@n
 * @n
@@ -51,15 +47,12 @@
 * @n
 * Configuration parameters:
 * - @ref FNET_CFG_FLASH
+* - @ref FNET_CFG_CPU_FLASH
 * - @ref FNET_CFG_CPU_FLASH_ADDRESS
 * - @ref FNET_CFG_CPU_FLASH_SIZE
 * - @ref FNET_CFG_CPU_FLASH_PAGE_SIZE
 */
 /*! @{ */
-
-#if !FNET_CFG_CPU_FLASH
-    #error "Flash Module Driver is not implemented/tested for your platform!"
-#endif
 
 #if defined(__cplusplus)
 extern "C" {

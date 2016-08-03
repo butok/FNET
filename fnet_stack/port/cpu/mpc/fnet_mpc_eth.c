@@ -67,6 +67,7 @@ fnet_netif_t fnet_eth0_if =
 *
 * DESCRIPTION: Ethernet IO initialization.
 *************************************************************************/
+#if !FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT
 void fnet_eth_io_init()
 {
 #if FNET_CFG_CPU_MPC5566  /* Viper */
@@ -111,44 +112,42 @@ void fnet_eth_io_init()
 #endif
 
 #if FNET_CFG_CPU_MPC5744P /* Panther */
-
-    /*
-    PH[5]    MSCR[117]   COL      FEC I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
-    PH[4]    MSCR[116]   CRS      FEC I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
+/*
+    PH[5]    MSCR[117]   COL      FEC I      SRC[1:0]=00    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
+    PH[4]    MSCR[116]   CRS      FEC I      SRC[1:0]=00    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
     PF[0]    MSCR[80]    MDC      FEC O      SRC[1:0]=11    OBE=1    ODE=0    SMC=0    APC=0    IBE=0    HYS=0    PUS=0    PUE=1    INV=0    SSS=0011
     PH[7]    MSCR[119]   MDIO     FEC I/O    SRC[1:0]=11    OBE=1    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=0    INV=0    SSS=0011
-    PD[8]    MSCR[56]    RX_CLK   FEC I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
-    PD[6]    MSCR[54]    RX_D0    FEC I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
-    PD[5]    MSCR[53]    RX_D1    FEC I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
-    PH[8]    MSCR[120]   RX_D2    FEC I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
-    PJ[9]    MSCR[153]   RX_D3    FEC I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
-    PD[7]    MSCR[55]    RX_DV    FEC I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
-    PI[1]    MSCR[129]   RX_ER    FEC I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
-    PG[8]    MSCR[104]   TX_CLK   FEC I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
+    PD[8]    MSCR[56]    RX_CLK   FEC I      SRC[1:0]=00    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
+    PD[6]    MSCR[54]    RX_D0    FEC I      SRC[1:0]=00    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
+    PD[5]    MSCR[53]    RX_D1    FEC I      SRC[1:0]=00    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
+    PH[8]    MSCR[120]   RX_D2    FEC I      SRC[1:0]=00    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
+    PJ[9]    MSCR[153]   RX_D3    FEC I      SRC[1:0]=00    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
+    PD[7]    MSCR[55]    RX_DV    FEC I      SRC[1:0]=00    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
+    PI[1]    MSCR[129]   RX_ER    FEC I      SRC[1:0]=00    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
+    PG[8]    MSCR[104]   TX_CLK   FEC I      SRC[1:0]=00    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
     PG[9]    MSCR[105]   TX_D0    FEC O      SRC[1:0]=11    OBE=1    ODE=0    SMC=0    APC=0    IBE=0    HYS=0    PUS=0    PUE=0    INV=0    SSS=0011
     PG[10]   MSCR[106]   TX_D1    FEC O      SRC[1:0]=11    OBE=1    ODE=0    SMC=0    APC=0    IBE=0    HYS=0    PUS=0    PUE=0    INV=0    SSS=0011
     PD[10]   MSCR[58]    TX_D2    FEC O      SRC[1:0]=11    OBE=1    ODE=0    SMC=0    APC=0    IBE=0    HYS=0    PUS=0    PUE=0    INV=0    SSS=0011
     PG[11]   MSCR[107]   TX_D3    FEC O      SRC[1:0]=11    OBE=1    ODE=0    SMC=0    APC=0    IBE=0    HYS=0    PUS=0    PUE=0    INV=0    SSS=0011
     PG[4]    MSCR[101]   TX_EN    FEC O      SRC[1:0]=11    OBE=1    ODE=0    SMC=0    APC=0    IBE=0    HYS=0    PUS=0    PUE=0    INV=0    SSS=0011
     */
-    FNET_MPC5744_GPIO_MSCR(117) = 0x30090000;    /* Set to FEC_COL    */
-    FNET_MPC5744_GPIO_MSCR(116) = 0x30090000;    /* Set to FEC_CRS    */
+    FNET_MPC5744_GPIO_MSCR(117) = 0x00090000;    /* Set to FEC_COL    */
+    FNET_MPC5744_GPIO_MSCR(116) = 0x00090000;    /* Set to FEC_CRS    */
     FNET_MPC5744_GPIO_MSCR(80)  = 0x32010003;    /* Set to FEC_MDC    */
     FNET_MPC5744_GPIO_MSCR(119) = 0x32080003;    /* Set to FEC_MDIO   */
-    FNET_MPC5744_GPIO_MSCR(56)  = 0x30090000;    /* Set to FEC_RX_CLK */
-    FNET_MPC5744_GPIO_MSCR(54)  = 0x30090000;    /* Set to FEC_RX_D0  */
-    FNET_MPC5744_GPIO_MSCR(53)  = 0x30090000;    /* Set to FEC_RX_D1  */
-    FNET_MPC5744_GPIO_MSCR(120) = 0x30090000;    /* Set to FEC_RX_D2  */
-    FNET_MPC5744_GPIO_MSCR(153) = 0x30090000;    /* Set to FEC_RX_D3  */
-    FNET_MPC5744_GPIO_MSCR(55)  = 0x30090000;    /* Set to FEC_RX_DV  */
-    FNET_MPC5744_GPIO_MSCR(129) = 0x30090000;    /* Set to FEC_RX_ER  */
-    FNET_MPC5744_GPIO_MSCR(104) = 0x30090000;    /* Set to FEC_TX_CLK */
+    FNET_MPC5744_GPIO_MSCR(56)  = 0x00090000;    /* Set to FEC_RX_CLK */
+    FNET_MPC5744_GPIO_MSCR(54)  = 0x00090000;    /* Set to FEC_RX_D0  */
+    FNET_MPC5744_GPIO_MSCR(53)  = 0x00090000;    /* Set to FEC_RX_D1  */
+    FNET_MPC5744_GPIO_MSCR(120) = 0x00090000;    /* Set to FEC_RX_D2  */
+    FNET_MPC5744_GPIO_MSCR(153) = 0x00090000;    /* Set to FEC_RX_D3  */
+    FNET_MPC5744_GPIO_MSCR(55)  = 0x00090000;    /* Set to FEC_RX_DV  */
+    FNET_MPC5744_GPIO_MSCR(129) = 0x00090000;    /* Set to FEC_RX_ER  */
+    FNET_MPC5744_GPIO_MSCR(104) = 0x00090000;    /* Set to FEC_TX_CLK */
     FNET_MPC5744_GPIO_MSCR(105) = 0x32000003;    /* Set to FEC_TX_D0  */
     FNET_MPC5744_GPIO_MSCR(106) = 0x32000003;    /* Set to FEC_TX_D1  */
     FNET_MPC5744_GPIO_MSCR(58)  = 0x32000003;    /* Set to FEC_TX_D2  */
     FNET_MPC5744_GPIO_MSCR(107) = 0x32000003;    /* Set to FEC_TX_D3  */
     FNET_MPC5744_GPIO_MSCR(101) = 0x32000003;    /* Set to FEC_TX_EN  */
-
 
     FNET_MPC5744_GPIO_IMCR(230) = 0x00000001;
     FNET_MPC5744_GPIO_IMCR(231) = 0x00000001;
@@ -161,7 +160,6 @@ void fnet_eth_io_init()
     FNET_MPC5744_GPIO_IMCR(232) = 0x00000001;
     FNET_MPC5744_GPIO_IMCR(233) = 0x00000001;
 #endif
-
 
 #if FNET_CFG_CPU_MPC5668G /* FADO */
     /*
@@ -246,6 +244,7 @@ void fnet_eth_io_init()
     FNET_MPC_GPIO_PCR(11) = 0x106;      /* Set to FEC_RX_ER  */
 #endif
 }
+#endif /*!FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT*/
 
 /************************************************************************
 * NAME: fnet_eth_phy_init

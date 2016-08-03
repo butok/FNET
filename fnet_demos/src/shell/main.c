@@ -3,7 +3,7 @@
 
 /********************************************************************/
 
-fnet_int32_t main (void)
+int main (void)
 {
     /* Init UART. */
     fnet_cpu_serial_init(FNET_CFG_CPU_SERIAL_PORT_DEFAULT, 115200u);

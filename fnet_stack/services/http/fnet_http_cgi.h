@@ -32,11 +32,7 @@
 
 #define _FNET_HTTP_CGI_H_
 
-#include "fnet.h"
-
 #if (FNET_CFG_HTTP && FNET_CFG_HTTP_CGI) || defined(__DOXYGEN__)
-
-#include "fnet_http.h"
 
 /*! @addtogroup fnet_http
  @{ */

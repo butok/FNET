@@ -38,7 +38,6 @@
 
 #include <stdarg.h> /* For va_list etc.*/
 #include <string.h> /* In case of alternative functions */
-#include "fnet.h"
 
 /**************************************************************************/ /*!
  * @def FNET_NULL
@@ -525,7 +524,6 @@ fnet_char_t fnet_tolower( fnet_char_t to_lower );
  ******************************************************************************/
 fnet_uint32_t fnet_rand( void );
 
-
 /***************************************************************************/ /*!
  *
  * @brief           Initializes the pseudo-random number generator
@@ -539,11 +537,9 @@ fnet_uint32_t fnet_rand( void );
  ******************************************************************************/
 void fnet_srand( fnet_uint32_t seed );
 
-
 #if defined(__cplusplus)
 }
 #endif
-
 
 /*! @} */
 

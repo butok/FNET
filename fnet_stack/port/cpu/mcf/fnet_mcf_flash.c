@@ -142,17 +142,33 @@ static void cfm_command( unsigned char command, unsigned long *address, unsigned
 /************************************************************************
 * NAME: fnet_cpu_flash_erase
 *
-* DESCRIPTION:
+* DESCRIPTION: Erases the specified range of the Flash memory.
 ************************************************************************/
-void fnet_cpu_flash_erase( void *flash_page_addr)
+void fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes)
 {
-    cfm_command( FNET_MCF_CFM_CFMCMD_PAGE_ERASE, flash_page_addr, 0);
+    fnet_index_t    n_pages;
+    fnet_uint32_t   page_shift = (fnet_uint32_t)flash_addr & (FNET_CFG_CPU_FLASH_PAGE_SIZE - 1U);
+
+    flash_addr = (fnet_uint8_t *)flash_addr - page_shift;
+
+    bytes += page_shift;
+
+    n_pages = (fnet_uint32_t)( bytes / FNET_CFG_CPU_FLASH_PAGE_SIZE + ((bytes % FNET_CFG_CPU_FLASH_PAGE_SIZE) ? 1ul : 0ul));
+
+    while (n_pages)
+    {
+        /* Erase sector/page.*/;
+        cfm_command( FNET_MCF_CFM_CFMCMD_PAGE_ERASE, flash_addr, 0);
+        
+        flash_addr = ((fnet_uint8_t *)flash_addr + FNET_CFG_CPU_FLASH_PAGE_SIZE);
+        n_pages --;
+    }
 }
 
 /************************************************************************
 * NAME: fnet_cpu_flash_write
 *
-* DESCRIPTION:
+* DESCRIPTION: Writes the specified data to the Flash memory.
 ************************************************************************/
 void fnet_cpu_flash_write(unsigned char *dest, const unsigned char *data)
 {

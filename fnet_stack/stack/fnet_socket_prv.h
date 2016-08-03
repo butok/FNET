@@ -57,8 +57,6 @@
 
 #define FNET_SOCKET_DESC_RESERVED       (-1)    /* The descriptor is reserved.*/
 
-extern fnet_bool_t _fnet_is_enabled;
-
 /**************************************************************************/ /*!
  * @internal
  * @brief    Structure of socket buffer.
@@ -168,6 +166,10 @@ typedef struct fnet_socket_prot_if
     fnet_return_t  (*prot_listen)(fnet_socket_if_t *sk, fnet_size_t backlog);                                                      /* Protocol "listen" function.*/
 } fnet_socket_prot_if_t;
 
+#if FNET_CFG_SOCKET_CALLBACK_ON_RX
+extern fnet_event_desc_t fnet_socket_event_rx;
+#endif
+
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
@@ -175,7 +177,7 @@ typedef struct fnet_socket_prot_if
 extern "C" {
 #endif
 
-void fnet_socket_init( void );
+fnet_return_t fnet_socket_init( void );
 void fnet_socket_list_add( fnet_socket_if_t **head, fnet_socket_if_t *s );
 void fnet_socket_list_del( fnet_socket_if_t **head, fnet_socket_if_t *s );
 void fnet_socket_set_error( fnet_socket_if_t *sock, fnet_error_t error );

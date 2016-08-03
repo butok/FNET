@@ -33,7 +33,6 @@
 
 #define _FNET_NETIF_H_
 
-#include "fnet.h"
 #include "fnet_ip.h"
 #include "fnet_ip6.h"
 #include "fnet_eth.h"
@@ -638,10 +637,10 @@ typedef void(*fnet_netif_callback_ip4_addr_conflict_t)( fnet_netif_desc_t netif 
  * This function registers the @c handler callback function for
  * the "IP4 address conflict" event. This event occurs when there is
  * an IPv4 address conflict with another system on the network. It is detected by ARP protocol. @n
- * To stop the event handling, set @c handler parameter to zero value.
+ * To stop the event handling, set @c callback parameter to zero value.
  *
  ******************************************************************************/
-void fnet_netif_set_callback_ip4_addr_conflict (fnet_netif_callback_ip4_addr_conflict_t callback);
+void fnet_netif_set_callback_on_ip4_addr_conflict (fnet_netif_callback_ip4_addr_conflict_t callback);
 
 /***************************************************************************/ /*!
  *
@@ -653,7 +652,7 @@ void fnet_netif_set_callback_ip4_addr_conflict (fnet_netif_callback_ip4_addr_con
  *   - @c FNET_FALSE if the IPv4 address conflict is not detected.
  *   - @c FNET_TRUE if the IPv4 address conflict is detected.
  *
- * @see fnet_netif_set_callback_ip4_addr_conflict()
+ * @see fnet_netif_set_callback_on_ip4_addr_conflict()
  *
  ******************************************************************************
  *

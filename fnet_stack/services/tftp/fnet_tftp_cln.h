@@ -32,12 +32,9 @@
 
 #define _FNET_TFTP_CLN_H_
 
-#include "fnet.h"
-
 #if FNET_CFG_TFTP_CLN || defined(__DOXYGEN__)
 
 #include "fnet_tftp.h"
-
 
 /*! @addtogroup fnet_tftp_cln
 * The user application can use the TFTP-client service to download and upload files from/to

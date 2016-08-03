@@ -33,7 +33,7 @@
 
 #define _FNET_COMP_H_
 
-#include "fnet_comp_config.h"
+#include "fnet_config.h"
 
 #if FNET_CFG_COMP_CW
     /* To use _Pragma(), enable C99 Extensions. */

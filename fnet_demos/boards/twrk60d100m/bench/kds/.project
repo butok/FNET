@@ -462,26 +462,6 @@
       <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/cpu/common/fnet_fec.h</locationURI>
     </link>
     <link>
-      <name>fnet_stack/port/os</name>
-      <type>2</type>
-      <locationURI>virtual:/virtual</locationURI>
-    </link>
-    <link>
-      <name>fnet_stack/port/os/fnet_os.h</name>
-      <type>1</type>
-      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/os/fnet_os.h</locationURI>
-    </link>
-    <link>
-      <name>fnet_stack/port/os</name>
-      <type>2</type>
-      <locationURI>virtual:/virtual</locationURI>
-    </link>
-    <link>
-      <name>fnet_stack/port/os/fnet_os_config.h</name>
-      <type>1</type>
-      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/port/os/fnet_os_config.h</locationURI>
-    </link>
-    <link>
       <name>fnet_stack/services</name>
       <type>2</type>
       <locationURI>virtual:/virtual</locationURI>
@@ -620,6 +600,16 @@
       <name>fnet_stack/services/flash/fnet_flash.h</name>
       <type>1</type>
       <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/flash/fnet_flash.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/flash</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/flash/fnet_flash_config.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/flash/fnet_flash_config.h</locationURI>
     </link>
     <link>
       <name>fnet_stack/services/fs</name>
@@ -1570,6 +1560,16 @@
       <name>fnet_stack/stack/fnet_stack.h</name>
       <type>1</type>
       <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_stack.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/stack</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/stack/fnet_stack_prv.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_stack_prv.h</locationURI>
     </link>
     <link>
       <name>fnet_stack/stack</name>

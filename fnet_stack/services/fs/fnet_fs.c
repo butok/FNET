@@ -89,7 +89,6 @@ void fnet_fs_register( struct fnet_fs *fs )
 {
     if(fs)
     {
-        fnet_os_mutex_lock();
         fs->_next = fnet_fs_list;
 
         if(fs->_next != 0)
@@ -99,7 +98,6 @@ void fnet_fs_register( struct fnet_fs *fs )
 
         fs->_prev = 0;
         fnet_fs_list = fs;
-        fnet_os_mutex_unlock();
     }
 }
 
@@ -112,8 +110,6 @@ void fnet_fs_unregister( struct fnet_fs *fs )
 {
     if(fs)
     {
-        fnet_os_mutex_lock();
-
         if(fs->_prev == 0)
         {
             fnet_fs_list = fs->_next;
@@ -127,8 +123,6 @@ void fnet_fs_unregister( struct fnet_fs *fs )
         {
             fs->_next->_prev = fs->_prev;
         }
-
-        fnet_os_mutex_unlock();
     }
 }
 
@@ -142,8 +136,6 @@ struct fnet_fs *fnet_fs_find_name( fnet_char_t *name )
     struct fnet_fs *fs;
     struct fnet_fs *result = 0;
 
-    fnet_os_mutex_lock();
-
     if(name)
     {
         for (fs = fnet_fs_list; fs != 0; fs = fs->_next)
@@ -155,8 +147,6 @@ struct fnet_fs *fnet_fs_find_name( fnet_char_t *name )
             }
         }
     }
-
-    fnet_os_mutex_unlock();
     return result;
 }
 
@@ -174,7 +164,6 @@ fnet_return_t fnet_fs_mount( fnet_char_t *fs_name, const fnet_char_t *mount_name
 
     if(fs_name && mount_name)
     {
-        fnet_os_mutex_lock();
         fs = fnet_fs_find_name(fs_name);
         if(fs)
         {
@@ -206,7 +195,6 @@ fnet_return_t fnet_fs_mount( fnet_char_t *fs_name, const fnet_char_t *mount_name
                 }
             }
         }
-        fnet_os_mutex_unlock();
     }
 
     return result;
@@ -299,7 +287,6 @@ fnet_return_t fnet_fs_unmount( const fnet_char_t *mount_name )
 
     if(mount_name)
     {
-        fnet_os_mutex_lock();
         mount_point = fnet_fs_find_mount(&mount_name);
         if(mount_point)
         {
@@ -313,7 +300,6 @@ fnet_return_t fnet_fs_unmount( const fnet_char_t *mount_name )
             fnet_memset_zero( mount_point, sizeof(struct fnet_fs_mount_point) );
             result = FNET_OK;
         }
-        fnet_os_mutex_unlock();
     }
 
     return result;
@@ -333,7 +319,6 @@ fnet_fs_dir_t fnet_fs_opendir( const fnet_char_t *dirname)
 
     if(dirname)
     {
-        fnet_os_mutex_lock();
         for(i = 0U; i < FNET_CFG_FS_DESC_MAX; i++) /* Free descriptor? */
         {
             if(fnet_fs_desc_list[i].id == 0u)
@@ -360,8 +345,6 @@ fnet_fs_dir_t fnet_fs_opendir( const fnet_char_t *dirname)
                 }
             }
         }
-        fnet_os_mutex_unlock();
-
     }
     return result;
 }
@@ -378,14 +361,12 @@ fnet_return_t fnet_fs_closedir( fnet_fs_dir_t dir)
 
     if(dirp)
     {
-        fnet_os_mutex_lock();
         fnet_memset_zero( dirp, sizeof(struct fnet_fs_desc) ); /* clear dir structure */
-        fnet_os_mutex_unlock();
+
         result = FNET_OK;
     }
     return result;
 }
-
 
 /************************************************************************
 * NAME: fnet_fs_readdir
@@ -400,14 +381,12 @@ fnet_return_t fnet_fs_readdir(fnet_fs_dir_t dir, struct fnet_fs_dirent *dirent)
 
     if(dirp)
     {
-        fnet_os_mutex_lock();
         if((dirp->mount) && (dirp->mount->fs)
            && (dirp->mount->fs->dir_operations)
            && (dirp->mount->fs->dir_operations->readdir))
         {
             result = dirp->mount->fs->dir_operations->readdir(dirp, dirent);
         }
-        fnet_os_mutex_unlock();
     }
     return result;
 }
@@ -423,10 +402,8 @@ void fnet_fs_rewinddir( fnet_fs_dir_t dir )
 
     if(dirp)
     {
-        fnet_os_mutex_lock();
         /* Reset current index. */
         dirp->pos = 0U;
-        fnet_os_mutex_unlock();
     }
 }
 
@@ -487,7 +464,6 @@ fnet_fs_file_t fnet_fs_fopen_re(const fnet_char_t *filename, const fnet_char_t *
                 mode_in |= FNET_FS_MODE_READ | FNET_FS_MODE_WRITE;
             }
 
-            fnet_os_mutex_lock();
             for(i = 0u; i < FNET_CFG_FS_DESC_MAX; i++) /* Free descriptor? */
             {
                 if(fnet_fs_desc_list[i].id == 0u)
@@ -523,7 +499,6 @@ fnet_fs_file_t fnet_fs_fopen_re(const fnet_char_t *filename, const fnet_char_t *
                     }
                 }
             }
-            fnet_os_mutex_unlock();
         }
     }
 
@@ -531,7 +506,7 @@ fnet_fs_file_t fnet_fs_fopen_re(const fnet_char_t *filename, const fnet_char_t *
 }
 
 /************************************************************************
-* NAME: fnet_fs_closedir
+* NAME: fnet_fs_fclose
 *
 * DESCRIPTION: Close DIR stream.
 *************************************************************************/
@@ -542,9 +517,8 @@ fnet_return_t fnet_fs_fclose( fnet_fs_file_t file)
 
     if(filep)
     {
-        fnet_os_mutex_lock();
         fnet_memset_zero( filep, sizeof(struct fnet_fs_desc) ); /* clear file structure */
-        fnet_os_mutex_unlock();
+
         result = FNET_OK;
     }
     return result;
@@ -561,10 +535,8 @@ void fnet_fs_rewind(fnet_fs_file_t file)
 
     if(filep)
     {
-        fnet_os_mutex_lock();
         /* Reset current pos. */
         filep->pos = 0u;
-        fnet_os_mutex_unlock();
     }
 }
 
@@ -581,14 +553,12 @@ fnet_size_t fnet_fs_fread(void *buf, fnet_size_t size, fnet_fs_file_t file)
 
     if(filep && bytes && buf)
     {
-        fnet_os_mutex_lock();
         if((filep->mount) && (filep->mount->fs)
            && (filep->mount->fs->file_operations)
            && (filep->mount->fs->file_operations->fread))
         {
             result = filep->mount->fs->file_operations->fread(filep, buf, bytes);
         }
-        fnet_os_mutex_unlock();
     }
     return result;
 }
@@ -629,7 +599,6 @@ fnet_int32_t fnet_fs_fgetc(fnet_fs_file_t file)
 
     if(filep)
     {
-        fnet_os_mutex_lock();
         if((filep->mount) && (filep->mount->fs)
            && (filep->mount->fs->file_operations)
            && (filep->mount->fs->file_operations->fread))
@@ -639,7 +608,6 @@ fnet_int32_t fnet_fs_fgetc(fnet_fs_file_t file)
                 result = (fnet_int32_t)buf;
             }
         }
-        fnet_os_mutex_unlock();
     }
     return result;
 }
@@ -656,14 +624,12 @@ fnet_return_t fnet_fs_fseek (fnet_fs_file_t file, fnet_int32_t offset, fnet_fs_s
 
     if(filep)
     {
-        fnet_os_mutex_lock();
         if((filep->mount) && (filep->mount->fs)
            && (filep->mount->fs->file_operations)
            && (filep->mount->fs->file_operations->fseek))
         {
             result = filep->mount->fs->file_operations->fseek(filep, offset, origin);
         }
-        fnet_os_mutex_unlock();
     }
     return result;
 }
@@ -697,14 +663,12 @@ fnet_return_t fnet_fs_finfo (fnet_fs_file_t file, struct fnet_fs_dirent *dirent)
 
     if(filep)
     {
-        fnet_os_mutex_lock();
         if((filep->mount) && (filep->mount->fs)
            && (filep->mount->fs->file_operations)
            && (filep->mount->fs->file_operations->finfo))
         {
             result = filep->mount->fs->file_operations->finfo(filep, dirent);
         }
-        fnet_os_mutex_unlock();
     }
     return result;
 }

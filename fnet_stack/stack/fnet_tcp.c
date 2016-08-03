@@ -300,6 +300,8 @@ static void fnet_tcp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  stru
 
     if(sk)
     {
+        fnet_bool_t drop_flag;
+
         if(sk->state == SS_LISTENING)
         {
             fnet_memcpy(&sk->foreign_addr, src_addr, sizeof(sk->foreign_addr));
@@ -308,7 +310,14 @@ static void fnet_tcp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  stru
         nb->next_chain = 0;
 
         /* Process  the segment.*/
-        if(fnet_tcp_inputsk(sk, nb, src_addr, dest_addr) == FNET_TRUE)
+        drop_flag = fnet_tcp_inputsk(sk, nb, src_addr, dest_addr);
+
+        /* Wake-up user application.*/
+    #if FNET_CFG_SOCKET_CALLBACK_ON_RX
+        fnet_event_raise(fnet_socket_event_rx);
+    #endif
+
+        if(drop_flag == FNET_TRUE)
         {
             goto DROP;
         }
@@ -323,14 +332,9 @@ static void fnet_tcp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  stru
         goto DROP;
     }
 
-    /* Wake-up user application.*/
-    fnet_os_event_raise();
-
     return;
 
 DROP:
-    /* Wake-up user application.*/
-    fnet_os_event_raise();
 
     /* Delete the segment.*/
     fnet_netbuf_free_chain(nb);
@@ -782,7 +786,7 @@ static fnet_int32_t fnet_tcp_rcv( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_
         /* Set the foreign address and port.*/
         if(foreign_addr)
         {
-            fnet_memcpy(foreign_addr, &sk->foreign_addr, sizeof(foreign_addr));
+            fnet_memcpy(foreign_addr, &sk->foreign_addr, sizeof(*foreign_addr));
         }
 
         /* If the socket is closed by peer and no data.*/
@@ -1090,9 +1094,7 @@ static fnet_return_t fnet_tcp_setsockopt( fnet_socket_if_t *sk, fnet_protocol_t 
                 }
                 break;
             default:
-                /* The option is not supported.*/
-                error_code = FNET_ERR_NOPROTOOPT;
-                goto ERROR;
+                break;
         }
 
         /* Process the option.*/
@@ -1163,7 +1165,9 @@ static fnet_return_t fnet_tcp_setsockopt( fnet_socket_if_t *sk, fnet_protocol_t 
                 }
                 break;
             default:
-                break;
+                /* The option is not supported.*/
+                error_code = FNET_ERR_NOPROTOOPT;
+                goto ERROR;
         }
 
         return FNET_OK;
@@ -1569,7 +1573,6 @@ static fnet_bool_t fnet_tcp_inputsk( fnet_socket_if_t *sk, fnet_netbuf_t *insegm
         return FNET_TRUE;
     }
 
-
     /* Process the SYN segment.*/
     if((sgmtype & FNET_TCP_SGT_SYN) != 0u)
     {
@@ -1621,8 +1624,6 @@ static fnet_bool_t fnet_tcp_inputsk( fnet_socket_if_t *sk, fnet_netbuf_t *insegm
     {
         return FNET_TRUE;
     }
-
-
 
     /* Process the segment with acknowledgment.*/
     if((sgmtype & FNET_TCP_SGT_ACK) != 0u)

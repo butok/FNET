@@ -32,8 +32,6 @@
 
 #define _FNET_IP6_H_
 
-#include "fnet.h"
-
 /*! @addtogroup fnet_socket */
 /*! @{ */
 

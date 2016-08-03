@@ -32,8 +32,6 @@
 
 #define _FNET_FS_H_
 
-#include "fnet.h"
-
 #if FNET_CFG_FS || defined(__DOXYGEN__)
 
 /*! @addtogroup fnet_fs

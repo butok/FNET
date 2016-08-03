@@ -1470,11 +1470,21 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.4.0:
+	- Added fnet_socket_set_callback_on_rx(), which registers the "Socket RX" event handler callback. This event occurs when the socket layer receives any packet for any existing socket, which is enabled by FNET_CFG_SOCKET_CALLBACK_ON_RX.
+	- Added Multi-Threading Mutex API, defined by fnet_mutex_api_t. This optional functionality is enabled by FNET_CFG_MULTITHREADING. 
+	- Removed OS folder. Its functionality was replaced by fnet_mutex_api_t and fnet_socket_set_callback_on_rx().
+	- Removed redundant fnet_init_static().
+	- Improved compiler auto-detection.
+	- Fixed many potential issues found by source code static-analysis. 
+	- Added FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT that allows alternative Ethernet module pin initialization.
+	- Added MPC5744P Flash driver. Thanks to Cavine Patrice. 
+
 - Version 3.3.0:
 	- Added basic Auto-IP service, according to RFC3927 "Dynamic Configuration of IPv4 Link-Local Addresses".
 	- Added optional "autoip" parameter to the "dhcp" shell command, which means to start the Auto-IP service automatically if a DHCP server is not found.
 	- Added fnet_netif_is_ip4_addr_conflict() to determine if there is IPv4 address conflict. Just one more possibility in addition to fnet_netif_set_callback_ip4_addr_conflict(). 
-	- Application protocol initialization functions returns 0 (wrong zero descriptor) if an error occurs (instead of FNET_ERR, in previous versions).
+	- Application protocol initialization functions return 0 (wrong zero descriptor) if an error occurs (instead of FNET_ERR, in previous versions).
 	- Updated Demo WEB pages.
 	- Fixed broken HTTP Authentication, that sent data even if the authentication was cancelled.
 	- Renaming/cleaning in User-API.
@@ -1693,7 +1703,7 @@ FNET public releases:
 		- FNET_CFG_CPU_ETHx_PHY_ADDR defines default PHY address used by Ethernet-x module.
 		- @ref FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER enables/disables PHY addresses discover.
 		- @ref FNET_CFG_DEFAULT_IF defines default interface.
-		- @ref FNET_CFG_OS_TIMER enables/disables OS-specific timer initialization/release.
+		- FNET_CFG_OS_TIMER enables/disables OS-specific timer initialization/release.
 		- Others.
 	- Other internal changes. 
 
@@ -1759,8 +1769,8 @@ FNET public releases:
 	- Added events (rebranded SW interrupts).
 	- New configuration parameters:
 		- @ref FNET_CFG_CPU_ETH_ATONEGOTIATION_TIMEOUT defines Ethernet Autonegotiation Timeout.
-		- @ref FNET_CFG_OS_ISR allows usage of an OS-specific ISR handler.
-		- @ref FNET_CFG_OS_EVENT enables generation OS-specific event.
+		- FNET_CFG_OS_ISR allows usage of an OS-specific ISR handler.
+		- FNET_CFG_OS_EVENT enables generation OS-specific event.
 		- @ref FNET_CFG_IP6 enables/disables IPv6. 
 		- @ref FNET_CFG_IP4 enables/disables IPv4. 
 		- @ref FNET_CFG_ND6_NEIGHBOR_CACHE_SIZE defines the maximum number of entries in neighbor cache.
@@ -1879,7 +1889,7 @@ FNET public releases:
 	- Added the @ref FNET_CFG_TELNET_SOCKET_BUF_SIZE user-configuration option that defines size of the socket RX & TX buffer used by the Telnet server.
 	- Added OS folder where it will be placed all OS-specific code.
 	- Added uCOS-II specific ISR handler.
-	- Added @ref FNET_CFG_OS and @ref FNET_CFG_OS_operation_system_type set of user-configuration options that define a currently used OS. For this moment there is FNET_CFG_OS_UCOSII only.
+	- Added FNET_CFG_OS and FNET_CFG_OS_operation_system_type set of user-configuration options that define a currently used OS. For this moment there is FNET_CFG_OS_UCOSII only.
 	- Added "Free heap" information to the Shell-example "info" command.
 	- Other minor changes/fixes.
 
@@ -2084,23 +2094,13 @@ FNET public releases:
 * 	- @ref fnet_comp_config.h = Compiler-specific configuration.
 * 	- @ref fnet_cpu_config.h = The main platform configuration file, 
 which includes all platform-specific configuration files.
-* 		- @ref fnet_mcf_config.h = Coldfire-specific default
-*        configuration parameters.
-*			- @ref fnet_mcf5282_config.h = MCF5282-specific configuration.
-* 			- @ref fnet_mcf52235_config.h = MCF52235-specific configuration.
-* 			- @ref fnet_mcf52259_config.h = MCF52259-specific configuration.
-* 			- @ref fnet_mcf51cn128_config.h = MCF51CN128-specific configuration.
-* 		- @ref fnet_mk_config.h = Kinetis-specific default
-*        configuration parameters.
-*			- @ref fnet_mk60n512_config.h = MK60N512-specific configuration parameters.
-* 	- @ref fnet_os_config.h = The OS-specific default configuration parameters.
-*		- @ref fnet_brtos_config.h = BRTOS configuration (not supported just for reference)
-* 		- @ref fnet_freertos_config.h = FreeRTOS configuration (not supported just for reference).
+* 		- fnet_<platform>_config.h = Platform-specific default configuration parameters.
 * 	- @ref fnet_services_config.h = Service-specific configuration file 
 which includes all service-specific configuration files. 
 *		- @ref fnet_http_config.h = HTTP-Server-specific configuration.
 *		- @ref fnet_dhcp_config.h = DHCP-Client-specific configuration.
 *		- @ref fnet_tftp_config.h = TFTP-Client-specific configuration.
+*		- @ref fnet_flash_config.h = Flash-Driver-specific configuration.
 *		- @ref fnet_fs_config.h = File-System-Interface-specific configuration.
 *		- @ref fnet_ping_config.h = PING-service-specific configuration.
 *		- @ref fnet_serial_config.h = Serial library configuration.
@@ -2307,13 +2307,6 @@ which includes all service-specific configuration files.
 */
 
 /*! 
-*	@defgroup fnet_os_config OS Configuration Parameters
-*	@ingroup fnet_platform_config 
-*	This section describes parameters that are specific for used
-*     Operation System.
-*/
-
-/*! 
 *	@defgroup fnet_services_config Service-Specific Configuration Parameters
 *	@ingroup fnet_config
 *	This section describes the parameters specific to the FNET TCP/IP services.
@@ -2355,7 +2348,14 @@ which includes all service-specific configuration files.
 *   The user may override and change the default values in the application-specific 
 *   configuration file @c fnet_user_config.h.
 */
-
+/*! 
+*	@defgroup fnet_flash_config Flash Driver Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the Flash driver.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
 /*! 
 *	@defgroup fnet_fs_config File System Configuration Parameters
 *	@ingroup fnet_services_config 

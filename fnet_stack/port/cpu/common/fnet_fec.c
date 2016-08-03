@@ -33,7 +33,6 @@
 
 #include "fnet_fec.h"
 
-
 /* The checksum field MUST be cleared. If NOT => the packet will have wrong checksum.
  * This is workaround, in case the checksum is not cleared.
  * You can set it to 0 if you use only one ENET interface. */
@@ -44,7 +43,6 @@
     #include "stack/fnet_udp.h"
     #include "stack/fnet_tcp.h"
 #endif
-
 
 #define FNET_FEC_ALIGN_DIV(div, x)     ((fnet_uint32_t)((fnet_uint8_t *)(x) + ((div)-1U)) & (~((div)-1U)))
 
@@ -79,7 +77,6 @@ void fnet_fec_debug_mii_print_regs(fnet_netif_t *netif) ;
 /************************************************************************
 *     Global Data Structures
 *************************************************************************/
-
 /* Ethernet specific control data structures.*/
 #if FNET_CFG_CPU_ETH0
     fnet_fec_if_t fnet_fec0_if;  /*eth0*/
@@ -87,7 +84,6 @@ void fnet_fec_debug_mii_print_regs(fnet_netif_t *netif) ;
 #if FNET_CFG_CPU_ETH1
     fnet_fec_if_t fnet_fec1_if;  /*eth1*/
 #endif
-
 
 /*****************************************************************************
  * FEC general API structure.
@@ -922,11 +918,12 @@ static void fnet_fec_get_mac_addr(fnet_fec_if_t *ethif, fnet_mac_addr_t *mac_add
 *************************************************************************/
 static fnet_return_t fnet_fec_get_statistics(fnet_netif_t *netif, struct fnet_netif_statistics *statistics)
 {
-    fnet_fec_if_t *ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr;
+    fnet_fec_if_t *ethif;
     fnet_return_t result;
 
     if(netif && (netif->api->type == FNET_NETIF_TYPE_ETHERNET))
     {
+        ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr;
 #if FNET_CFG_CPU_ETH_MIB
         statistics->tx_packet = ethif->reg->RMON_T_PACKETS;
         statistics->rx_packet = ethif->reg->RMON_R_PACKETS;

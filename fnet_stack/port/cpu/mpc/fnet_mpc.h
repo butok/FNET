@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2011 by Andrey Butok,Gordon Jahn. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -21,12 +21,6 @@
 *
 * @file fnet_mpc.h
 *
-* @author Andrey Butok
-*
-* @date Dec-17-2012
-*
-* @version 0.1.1.0
-*
 * @brief MPC Registers definitions.
 *
 ***************************************************************************/
@@ -38,15 +32,6 @@
 #include "fnet.h"
 
 #if FNET_MPC
-
-
-    /*****************************************************************************
-    *  Flash driver check - not available on PPC
-    ******************************************************************************/
-
-    #if FNET_CFG_FLASH
-        #error PPC Flash drivers are not included in this release - drivers are available from Freescale.com
-    #endif /* FNET_CFG_CPU_FLASH */
 
     /*********************************************************************
     *
@@ -61,7 +46,7 @@
     typedef signed short           fnet_int16_t;     /* 16 bits */
     typedef signed long            fnet_int32_t;     /* 32 bits */
 
-    typedef volatile fnet_uint8_t fnet_vuint8_t;     /*  8 bits */
+    typedef volatile fnet_uint8_t  fnet_vuint8_t;    /*  8 bits */
     typedef volatile fnet_uint16_t fnet_vuint16_t;   /* 16 bits */
     typedef volatile fnet_uint32_t fnet_vuint32_t;   /* 32 bits */
 

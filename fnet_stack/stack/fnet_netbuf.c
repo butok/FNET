@@ -423,12 +423,7 @@ fnet_return_t fnet_netbuf_pullup( fnet_netbuf_t **nb_ptr, fnet_size_t len)
     void            *new_buf;
 
     /* Check length*/
-    if(nb->total_length < len)
-    {
-        return FNET_OK;
-    }
-
-    if((nb->length >= len) || (len == 0u) || (nb == 0))
+    if((nb == 0) || (len == 0u) || (nb->length >= len) || (nb->total_length < len))
     {
         /* if function shouldn't do anything*/
         return FNET_OK;
@@ -540,7 +535,7 @@ void fnet_netbuf_trim( fnet_netbuf_t **nb_ptr, fnet_int32_t len )
     head_nb = nb;
 
     /* If the quantity of trimmed bytes is greater than net_buf size - do nothing.*/
-    if((nb->total_length < (fnet_size_t)(len > 0 ? len : -len)) || (nb == 0))
+    if((nb == 0) || (nb->total_length < (fnet_size_t)(len > 0 ? len : -len)))
     {
         return;
     }
@@ -627,7 +622,7 @@ fnet_netbuf_t *fnet_netbuf_cut_center( fnet_netbuf_t **nb_ptr, fnet_size_t offse
 
     nb = (fnet_netbuf_t *) *nb_ptr;
 
-    if((nb->total_length < (len + offset)) || (nb == 0))
+    if((nb == 0) || (nb->total_length < (len + offset)) )
     {
         return (0);
     }
@@ -648,12 +643,20 @@ fnet_netbuf_t *fnet_netbuf_cut_center( fnet_netbuf_t **nb_ptr, fnet_size_t offse
     while((nb != 0) && (offset >= tot_len))
     {
         nb = nb->next;                             /* Run up th the first net_buf, which points */
-        tot_len += nb->length;                     /* to the data, which should be erased.*/
-
-        if((nb != 0) && (offset >= tot_len))
+        if(nb)
         {
-            tmp_nb = nb;                          /* To store previous pointer. */
+            tot_len += nb->length;                     /* to the data, which should be erased.*/
+
+            if(offset >= tot_len)
+            {
+                tmp_nb = nb;                          /* To store previous pointer. */
+            }
         }
+    }
+
+    if(nb == 0)
+    {
+        return 0; /* Should never happen - assert? */
     }
 
     if(tot_len - nb->length == offset)            /* If we start cut from the begin of buffer. */
@@ -810,23 +813,26 @@ void fnet_netbuf_del_chain( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain )
             nb = nb_current->next_chain;
             fnet_netbuf_free_chain(nb_current);
             *nb_ptr = nb;
-            return;
         }
-
-        while((nb_current->next_chain != nb_chain) && (nb_current != 0))
+        else
         {
-            nb_current = nb_current->next_chain;
+            while(nb_current && (nb_current->next_chain != nb_chain))
+            {
+                nb_current = nb_current->next_chain;
+            }
+            
+            if(nb_current)
+            { 
+                nb = nb_current->next_chain->next_chain;
+
+                fnet_netbuf_free_chain(nb_current->next_chain);
+
+                nb_current->next_chain = nb;
+            }
+            /* else not found -> assert?*/
         }
-
-        nb = nb_current->next_chain->next_chain;
-
-        fnet_netbuf_free_chain(nb_current->next_chain);
-
-        nb_current->next_chain = nb;
     }
 }
-
-
 
 /************************************************************************
 * NAME: fnet_heap_init

@@ -631,7 +631,6 @@ fnet_size_t fnet_serial_printf(fnet_serial_stream_t stream, const fnet_char_t *f
      */
     va_start(ap, format);
     return fnet_serial_vprintf(stream, format, ap);
-
 }
 
 /********************************************************************/

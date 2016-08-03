@@ -32,8 +32,6 @@
 
 #define _FNET_MEMPOOL_H_
 
-#include "fnet.h"
-
 /**************************************************************************/ /*!
  * @internal
  * @brief Memory pool descriptor.

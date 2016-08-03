@@ -31,11 +31,8 @@
 
 #define _FNET_PING_H_
 
-#include "fnet.h"
-
 
 #if FNET_CFG_PING || defined(__DOXYGEN__)
-
 
 /*! @addtogroup fnet_ping
 *

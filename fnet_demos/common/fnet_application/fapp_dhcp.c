@@ -150,7 +150,6 @@ void fapp_dhcp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
         ||((argc == 2u) && (fnet_strcasecmp(&FAPP_DHCP_COMMAND_AUTOIP[0], argv[1]) == 0)) /* [autoip] */
       ) 
     {
-
         fnet_memset_zero(&dhcp_params, sizeof(struct fnet_dhcp_params));
 
         fapp_dhcp_discover_counter = FAPP_CFG_DHCP_CMD_DISCOVER_MAX; /* reset counter.*/

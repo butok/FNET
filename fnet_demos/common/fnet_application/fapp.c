@@ -154,7 +154,7 @@ static void fapp_boot(fnet_shell_desc_t desc);
 #if FAPP_CFG_RESET_CMD || FAPP_CFG_REBOOT_CMD
     static void fapp_reset_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 #endif
-#if FAPP_CFG_SAVE_CMD && FNET_CFG_FLASH
+#if FAPP_CFG_SAVE_CMD && FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
     static void fapp_save_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 #endif
 #if FAPP_CFG_STAT_CMD
@@ -226,7 +226,7 @@ const struct fnet_shell_command fapp_cmd_table [] =
 #if FAPP_CFG_ERASE_CMD
     { "erase",      1u, 2u, fapp_mem_erase_cmd,   "Erase flash memory", "all|[0x<erase address> <bytes>]"},
 #endif
-#if FAPP_CFG_SAVE_CMD && FNET_CFG_FLASH
+#if FAPP_CFG_SAVE_CMD && FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
     { "save",       0u, 0u, fapp_save_cmd,    "Save parameters to the FLASH", ""},
 #endif
 #if FAPP_CFG_GO_CMD
@@ -569,7 +569,7 @@ static void fapp_init(void)
 
     /* Add event handler on duplicated IP address */
 #if FNET_CFG_IP4
-    fnet_netif_set_callback_ip4_addr_conflict(fapp_dup_ip_callback);
+    fnet_netif_set_callback_on_ip4_addr_conflict(fapp_dup_ip_callback);
 #endif
 
     /* Init FNET stack */
@@ -583,6 +583,7 @@ static void fapp_init(void)
         }
 #endif
 
+        /* Check if we have atleast one initoalized networking interface.*/
         if(fnet_netif_get_default() == FNET_NULL)
         {
             fnet_printf(FAPP_NET_ERR);
@@ -1004,7 +1005,7 @@ static void fapp_go ( fnet_shell_desc_t desc, fnet_uint32_t address )
 *
 * DESCRIPTION: Save environment variables to persistent storage.
 ************************************************************************/
-#if FAPP_CFG_SAVE_CMD && FNET_CFG_FLASH
+#if FAPP_CFG_SAVE_CMD && FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
 static void fapp_save_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
     (void)argc;

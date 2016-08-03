@@ -36,8 +36,6 @@
 
 #define _FNET_SERVICES_CONFIG_H_
 
-#include "fnet_config.h"
-
 /*! @addtogroup fnet_services_config */
 /*! @{ */
 
@@ -49,16 +47,6 @@
  ******************************************************************************/
 #ifndef FNET_CFG_POLL_MAX
     #define FNET_CFG_POLL_MAX   (8u)
-#endif
-
-/**************************************************************************/ /*!
- * @def      FNET_CFG_FLASH
- * @brief    On-chip Flash driver support:
- *               - @c 1 = is enabled.
- *               - @b @c 0 = is disabled (Default value).
- ******************************************************************************/
-#ifndef FNET_CFG_FLASH
-    #define FNET_CFG_FLASH      (0)
 #endif
 
 #include "services/dhcp/fnet_dhcp_config.h"
@@ -73,6 +61,7 @@
 #include "services/serial/fnet_serial_config.h"
 #include "services/shell/fnet_shell_config.h"
 #include "services/llmnr/fnet_llmnr_config.h"
+#include "services/flash/fnet_flash_config.h"
 
 /*! @} */
 

@@ -2091,15 +2091,6 @@
           <name>$PROJ_DIR$/../../../../../fnet_stack/port/compiler/fnet_comp_config.h</name>
         </file>
       </group>
-      <group>
-        <name>os</name>
-        <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/port/os/fnet_os.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/port/os/fnet_os_config.h</name>
-        </file>
-      </group>
     </group>
     <file>
       <name>$PROJ_DIR$/../../../../../fnet_stack/fnet.h</name>
@@ -2161,6 +2152,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$/../../../../../fnet_stack/services/flash/fnet_flash.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/flash/fnet_flash_config.h</name>
         </file>
       </group>
       <group>
@@ -2477,6 +2471,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_stack.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_stack_prv.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_stack_config.h</name>

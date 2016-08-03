@@ -32,8 +32,6 @@
 
 #define _FNET_HTTP_POST_H_
 
-#include "fnet.h"
-
 #if (FNET_CFG_HTTP && FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR)|| defined(__DOXYGEN__)
 
 /*! @addtogroup fnet_http
@@ -151,14 +149,14 @@ typedef fnet_size_t (*fnet_http_post_send_t)(fnet_uint8_t *buffer, fnet_size_t b
  ******************************************************************************/
 struct fnet_http_post
 {
-    fnet_char_t *name;		                 /**< @brief File name associated with the POST-request. */
-    fnet_http_post_handle_t post_handle;     /**< @brief Pointer to the POST query handler. It's optional. */
-    fnet_http_post_receive_t post_receive;   /**< @brief Pointer to the POST receive function. It's optional.@n
-	                                     * This function can be invoked multiple times to process
-	                                     * all received data.*/
-    fnet_http_post_send_t post_send;         /**< @brief Pointer to the POST response function. It's optional.@n
-                                         * This function actually creates dynamic content of
-                                         * the POST response.  */
+    fnet_char_t *name;		                /**< @brief File name associated with the POST-request. */
+    fnet_http_post_handle_t post_handle;    /**< @brief Pointer to the POST query handler. It's optional. */
+    fnet_http_post_receive_t post_receive;  /**< @brief Pointer to the POST receive function. It's optional.@n
+                                            * This function can be invoked multiple times to process
+                                            * all received data.*/
+    fnet_http_post_send_t post_send;        /**< @brief Pointer to the POST response function. It's optional.@n
+                                            * This function actually creates dynamic content of
+                                            * the POST response.  */
 
 };
 

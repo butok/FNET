@@ -45,7 +45,6 @@
 
 #include "port/compiler/fnet_comp_config.h"      /* Default compiler specific configuration. */
 #include "port/cpu/fnet_cpu_config.h"            /* Default platform configuration. */
-#include "port/os/fnet_os_config.h"              /* Default OS-specific configuration. */
 #include "stack/fnet_stack_config.h"        /* Default TCP/IP stack configuration. */
 #include "services/fnet_services_config.h"  /* Default services configuration. */
 

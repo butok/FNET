@@ -32,8 +32,6 @@
 
 #define _FNET_TFTP_H_
 
-#include "fnet.h"
-
 #if FNET_CFG_TFTP_CLN || FNET_CFG_TFTP_SRV || defined(__DOXYGEN__)
 
 /*! @addtogroup fnet_tftp

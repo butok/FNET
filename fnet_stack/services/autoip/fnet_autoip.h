@@ -21,8 +21,6 @@
 #ifndef _FNET_AUTOIP_H_
 #define _FNET_AUTOIP_H_
 
-#include "fnet.h"
-
 #if FNET_CFG_AUTOIP || defined(__DOXYGEN__)
 
 /*! @addtogroup fnet_autoip

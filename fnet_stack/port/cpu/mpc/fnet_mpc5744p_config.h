@@ -72,8 +72,18 @@
     #define FNET_CFG_CPU_ETH_RX_BUFS_MAX                (4)
 #endif
 
+/* MPC Flash Module supported.*/
+#define FNET_CFG_CPU_FLASH                      (1)
+
+/* Smallest logical block which can be erased independently.*/
+#define FNET_CFG_CPU_FLASH_PAGE_SIZE            (4U*1024U)        /* 4KB sector.*/
+
 /* On-chip Flash size.*/
-#define FNET_CFG_CPU_FLASH_SIZE                         (1024 * 1024 * 5 / 2)   /* 2.5 MB*/
+#define FNET_CFG_CPU_FLASH_SIZE                 ((1024U * 1024U * 5U) / 2U)   /* 2.5 MB*/
+
+/*The Flash Driver require that the destination must be aligned on double word (64-bit) boundary.*/
+/*must be compliant with 8 * 2^n = FNET_CFG_CPU_FLASH_PROGRAM_SIZE */
+#define FNET_CFG_CPU_FLASH_PROGRAM_SIZE         (16U) /*Bytes.*/
 
 /* SRAM size.*/
 #define FNET_CFG_CPU_SRAM_SIZE                          (1024 * 384)   /* 384 KB */

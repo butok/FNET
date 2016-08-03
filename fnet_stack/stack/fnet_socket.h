@@ -33,7 +33,6 @@
 
 #define _FNET_SOCKET_H_
 
-#include "fnet.h"
 #include "fnet_ip.h"
 #include "fnet_ip6.h"
 
@@ -121,6 +120,7 @@
 * - @ref FNET_CFG_SOCKET_TCP_MSS
 * - @ref FNET_CFG_RAW
 * - @ref FNET_CFG_SOCKET_BSD_NAMES
+* - @ref FNET_CFG_SOCKET_CALLBACK_ON_RX
 */
 /*! @{ */
 
@@ -1411,6 +1411,26 @@ fnet_bool_t fnet_socket_addr_is_unspecified(const struct sockaddr *addr);
  *
  ******************************************************************************/
 fnet_bool_t fnet_socket_addr_is_multicast(const struct sockaddr *addr);
+
+#if FNET_CFG_SOCKET_CALLBACK_ON_RX || defined(__DOXYGEN__)
+/***************************************************************************/ /*!
+ *
+ * @brief    Registers the "Socket Rx" event handler callback.
+ *
+ * @param callback    Pointer to the event-handler callback function.
+ *
+ ******************************************************************************
+ *
+ * This function registers the @c handler callback function for
+ * the "Socket Rx" event.@n
+ * This event occurs when the socket layer receives any packet for any existing socket. 
+ * It can be a packet with or without data-payload including ACK, FIN and SYN.@n
+ * For example, it can be used to wake-up a sleeping RTOS application waiting for a network activity.
+ * To stop the event handling, set @c callback parameter to zero value.
+ *
+ ******************************************************************************/
+void fnet_socket_set_callback_on_rx( void(*callback)(void));
+#endif
 
 /*  BSD Socket API names */
 #if FNET_CFG_SOCKET_BSD_NAMES

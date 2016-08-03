@@ -29,6 +29,16 @@
 #include "fnet.h"
 #include "fnet_socket_prv.h"
 #include "fnet_prot.h"
+#include "fnet_stack_prv.h"
+
+/************************************************************************
+*     Global Data Structures
+*************************************************************************/
+fnet_bool_t _fnet_is_enabled = FNET_FALSE;   /* Flag that the stack is initialized. */
+#if FNET_CFG_MULTITHREADING
+const fnet_mutex_api_t  *fnet_mutex_api = FNET_NULL;
+static fnet_mutex_t fnet_stack_mutex = FNET_NULL;
+#endif
 
 /************************************************************************
 *     Function Prototypes
@@ -45,43 +55,29 @@ fnet_return_t fnet_init( struct fnet_init_params *init_params )
 {
     fnet_return_t result = FNET_ERR;
 
-    if(init_params
-       && (fnet_os_mutex_init() == FNET_OK)
-       && (fnet_os_event_init() == FNET_OK))
+    if(init_params && init_params->netheap_size)
     {
-        fnet_os_mutex_lock();
-
-        if(_fnet_is_enabled == FNET_FALSE) /* Is enabled already?. */
+        if(fnet_stack_mutex_init() == FNET_OK)
         {
-            if((result = fnet_heap_init(init_params->netheap_ptr, init_params->netheap_size)) == FNET_OK )
+            fnet_stack_mutex_lock();
+
+            if(_fnet_is_enabled == FNET_FALSE) /* Is enabled already?. */
             {
-                if((result = fnet_stack_init()) == FNET_OK)
+                if((result = fnet_heap_init(init_params->netheap_ptr, init_params->netheap_size)) == FNET_OK )
                 {
-                    _fnet_is_enabled = FNET_TRUE; /* Mark the stack is enabled. */
+                    if((result = fnet_stack_init()) == FNET_OK)
+                    {
+                            _fnet_is_enabled = FNET_TRUE; /* Mark the stack is enabled. */
+                    }
                 }
             }
-        }
 
-        fnet_os_mutex_unlock();
+            fnet_stack_mutex_unlock();
+        }
+        
     }
 
     return result;
-}
-
-/************************************************************************
-* NAME: fnet_init_static
-*
-* DESCRIPTION:
-*************************************************************************/
-fnet_return_t fnet_init_static(void)
-{
-    static fnet_uint8_t heap[FNET_CFG_HEAP_SIZE];
-    struct fnet_init_params init_params;
-
-    init_params.netheap_ptr = heap;
-    init_params.netheap_size = FNET_CFG_HEAP_SIZE;
-
-    return fnet_init(&init_params);
 }
 
 /************************************************************************
@@ -91,7 +87,7 @@ fnet_return_t fnet_init_static(void)
 *************************************************************************/
 void fnet_release(void)
 {
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if(_fnet_is_enabled)
     {
@@ -99,9 +95,9 @@ void fnet_release(void)
         _fnet_is_enabled = FNET_FALSE;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
 
-    fnet_os_mutex_release();
+    fnet_stack_mutex_release();
 }
 
 /************************************************************************
@@ -127,7 +123,11 @@ static fnet_return_t fnet_stack_init( void )
     {
         goto ERROR;
     }
-    fnet_socket_init();
+
+    if(fnet_socket_init()== FNET_ERR)
+    {
+        goto ERROR;
+    }
 
     if(fnet_netif_init_all() == FNET_ERR)
     {
@@ -153,3 +153,61 @@ static void fnet_stack_release( void )
     fnet_timer_release();
     fnet_mem_release();
 }
+
+#if FNET_CFG_MULTITHREADING
+fnet_return_t fnet_stack_mutex_init(void)
+{
+    fnet_return_t result;
+    if(fnet_mutex_api) /* Check if multithreading is enabled.*/
+    {
+        if(fnet_mutex_api->mutex_init)
+        {
+            result = fnet_mutex_api->mutex_init(&fnet_stack_mutex);
+        }
+        else
+        {
+            result = FNET_ERR;
+        }
+    }
+    else
+    {
+        result = FNET_OK; /* OK - it is just disabled.*/
+    }
+
+    return result;
+}
+
+void fnet_stack_mutex_lock(void)
+{
+    if(fnet_mutex_api) /* Check if multithreading is enabled.*/
+    {
+        if(fnet_mutex_api->mutex_lock)
+        {
+            result = fnet_mutex_api->mutex_lock(&fnet_stack_mutex);
+        }
+    }
+}
+
+void fnet_stack_mutex_unlock(void)
+{
+    if(fnet_mutex_api) /* Check if multithreading is enabled.*/
+    {
+        if(fnet_mutex_api->mutex_unlock)
+        {
+            result = fnet_mutex_api->mutex_unlock(&fnet_stack_mutex);
+        }
+    }
+}
+
+void fnet_stack_mutex_release(void)
+{
+    if(fnet_mutex_api) /* Check if multithreading is enabled.*/
+    {
+        if(fnet_mutex_api->mutex_release)
+        {
+            result = fnet_mutex_api->mutex_release(&fnet_stack_mutex);
+        }
+    }
+}
+#endif
+

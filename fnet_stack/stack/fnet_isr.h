@@ -32,13 +32,9 @@
 
 #define _FNET_ISR_H_
 
-#include "fnet.h"
-
-#if FNET_CFG_OS_ISR
-    #define FNET_ISR_HANDLER    fnet_os_isr
-#else /* By default */
+#ifndef FNET_ISR_HANDLER
     #define FNET_ISR_HANDLER    fnet_cpu_isr
-#endif /* FNET_CFG_OS_ISR */
+#endif
 
 /* Defines number of the first event handler. MUST be higher than any HW-vector number. */
 #define FNET_EVENT_VECTOR_NUMBER (1025)

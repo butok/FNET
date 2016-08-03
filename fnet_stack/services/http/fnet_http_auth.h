@@ -32,9 +32,6 @@
 
 #define _FNET_HTTP_AUTH_H_
 
-#include "fnet.h"
-
-
 #if (FNET_CFG_HTTP && FNET_CFG_HTTP_AUTHENTICATION_BASIC && FNET_CFG_HTTP_VERSION_MAJOR) || defined(__DOXYGEN__)
 
 /*! @addtogroup fnet_http

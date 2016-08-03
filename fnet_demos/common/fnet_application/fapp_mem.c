@@ -51,7 +51,7 @@ struct fapp_mem_region_reserved
 
 const struct fapp_mem_region fapp_mem_regions[] =
 {
-#if FNET_CFG_FLASH
+#if FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
     {"FLASH", FAPP_FLASH_ADDRESS, FAPP_FLASH_SIZE, fnet_flash_memcpy, fnet_flash_erase, FNET_CFG_CPU_FLASH_PAGE_SIZE},
 #endif
     {"SRAM", FAPP_SRAM_ADDRESS, FAPP_SRAM_SIZE, fnet_memcpy, 0, 0},
@@ -149,8 +149,8 @@ fnet_return_t fapp_mem_memcpy (fnet_shell_desc_t desc, void *dest, const void *s
 
         if(region && (region->memcpy))
         {
-#if FAPP_CFG_CHECK_FLASH_BEFORE_WRITE
-            if(region->erase)
+        #if FAPP_CFG_CHECK_FLASH_BEFORE_WRITE
+            if(region->erase) /* Check if it is FLASH memory
             {
                 /* Check if memory is erased.*/
                 for(i = 0u; i < n; i++)
@@ -162,7 +162,7 @@ fnet_return_t fapp_mem_memcpy (fnet_shell_desc_t desc, void *dest, const void *s
                     }
                 }
             }
-#endif
+        #endif
 
             /* Write. */
             region->memcpy(dest, src, n);

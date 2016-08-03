@@ -30,8 +30,6 @@
 
 #define _FNET_DEBUG_H_
 
-#include "fnet.h"
-
 #if defined(__cplusplus)
 extern "C" {
 #endif

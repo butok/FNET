@@ -143,20 +143,13 @@ static fnet_uint32_t fnet_checksum_nb(fnet_netbuf_t *nb, fnet_size_t length)
 
             if(((fnet_size_t)current_length & 1u) != 0u)
             {
-                if(len)
-                {
-                    /* If previous fragment was odd, add in first byte in lower 8 bits. */
-                    p_byte2 = fnet_ntohs(((fnet_uint16_t)(*((fnet_uint8_t *)d_ptr)) & 0x00FFU));
-                    d_ptr = (fnet_uint16_t *)((fnet_uint8_t *)d_ptr + 1);
+                /* If previous fragment was odd, add in first byte in lower 8 bits. */
+                p_byte2 = fnet_ntohs(((fnet_uint16_t)(*((fnet_uint8_t *)d_ptr)) & 0x00FFU));
+                d_ptr = (fnet_uint16_t *)((fnet_uint8_t *)d_ptr + 1);
 
-                    sum += (fnet_uint16_t)p_byte2;
-                    len--;
-                    current_length = -1;
-                }
-                else
-                {
-                    current_length = 0;
-                }
+                sum += (fnet_uint16_t)p_byte2;
+                len--; /* len still > 0, no check is needed */
+                current_length = -1;
             }
             else
             {

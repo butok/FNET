@@ -154,7 +154,7 @@ void fnet_raw_input(fnet_netif_t *netif, struct sockaddr *foreign_addr,  struct 
     fnet_netbuf_t       *nb_tmp;
     fnet_uint32_t       protocol_number;
 
-    if(netif && nb && (nb->total_length))
+    if(netif && nb && ip_nb && (nb->total_length))
     {
 #if FNET_CFG_IP4
         if(foreign_addr->sa_family == AF_INET)

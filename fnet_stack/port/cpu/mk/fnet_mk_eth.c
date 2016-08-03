@@ -62,6 +62,7 @@ fnet_netif_t fnet_eth0_if =
 *
 * DESCRIPTION: Ethernet IO initialization.
 *************************************************************************/
+#if !FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT
 void fnet_eth_io_init(void)
 {
     FNET_MK_PORT_MemMapPtr pctl;
@@ -142,6 +143,7 @@ void fnet_eth_io_init(void)
     /*Allow concurrent access to MPU controller. Example: ENET uDMA to SRAM, otherwise bus error*/
     FNET_MK_MPU_CESR = 0u;  /* MPU is disabled. All accesses from all bus masters are allowed.*/
 }
+#endif /*!FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT*/
 
 /************************************************************************
 * NAME: fnet_eth_phy_init

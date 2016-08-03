@@ -174,7 +174,7 @@ static void fapp_fs_cd_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char
     if (*path != FNET_FS_SPLITTER) /* Realative path.*/
     {
         /* Add splitter if not yet.*/
-        if(fapp_fs_current_path[size_cd - 1U] != FNET_FS_SPLITTER)
+        if((size_cd == 0) || (fapp_fs_current_path[size_cd - 1U] != FNET_FS_SPLITTER))
         {
             fnet_strncat( &fapp_fs_current_path[0], splitter, FAPP_FS_DIR_PATH_MAX);
         }
@@ -239,12 +239,12 @@ static void fapp_fs_cd_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char
 *************************************************************************/
 static void fapp_fs_view_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
-    fnet_fs_file_t file;
-    fnet_char_t    *path = argv[1];
-    fnet_char_t    *path_end;
+    fnet_fs_file_t  file;
+    fnet_char_t     *path = argv[1];
+    fnet_char_t     *path_end;
     fnet_size_t     size_cd = fnet_strlen (fapp_fs_current_path);
     fnet_size_t     size_path;
-    fnet_char_t    splitter[] = {FNET_FS_SPLITTER, '\0'};
+    fnet_char_t     splitter[] = {FNET_FS_SPLITTER, '\0'};
     fnet_uint8_t    data;
     struct          fnet_fs_dirent dirent;
 
@@ -254,7 +254,7 @@ static void fapp_fs_view_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_ch
     if (*path != FNET_FS_SPLITTER) /* Realative path.*/
     {
         /* Add splitter if not yet.*/
-        if(fapp_fs_current_path[size_cd - 1U] != FNET_FS_SPLITTER)
+        if((size_cd == 0) || (fapp_fs_current_path[size_cd - 1U] != FNET_FS_SPLITTER))
         {
             fnet_strncat( &fapp_fs_current_path[0], splitter, FAPP_FS_DIR_PATH_MAX);
         }

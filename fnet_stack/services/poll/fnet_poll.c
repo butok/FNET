@@ -92,7 +92,7 @@ fnet_poll_desc_t fnet_poll_service_register( fnet_poll_service_t service, void *
 
     if(service)
     {
-        while((fnet_poll_if.list[i].service) && (i < FNET_CFG_POLL_MAX))
+        while((i < FNET_CFG_POLL_MAX) && (fnet_poll_if.list[i].service))
         {
             i++;
         }

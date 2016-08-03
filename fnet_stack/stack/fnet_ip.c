@@ -40,6 +40,7 @@
 #include "fnet_loop.h"
 #include "fnet_igmp.h"
 #include "fnet_raw.h"
+#include "fnet_stack_prv.h"
 
 /* Check max/min. values.*/
 #if (FNET_IP_MAX_PACKET > 65535U)
@@ -731,6 +732,8 @@ static fnet_netbuf_t *fnet_ip_reassembly( fnet_netbuf_t **nb_ptr )
 
         cur_frag_ptr->offset = (fnet_uint16_t)(fnet_ntohs(cur_frag_ptr->offset) << 3); /* Convert offset to bytes (Host endian).*/
         cur_frag_ptr->nb = nb;
+
+        fnet_ip_frag_add(&frag_list_ptr->frag_ptr, cur_frag_ptr, FNET_NULL);
     }
     else
     {
@@ -787,12 +790,12 @@ static fnet_netbuf_t *fnet_ip_reassembly( fnet_netbuf_t **nb_ptr )
 
             frag_ptr = frag_ptr->next;
             fnet_netbuf_free_chain(frag_ptr->prev->nb);
-            fnet_ip_frag_del((fnet_ip_frag_header_t **)&frag_list_ptr->frag_ptr, frag_ptr->prev);
+            fnet_ip_frag_del(&frag_list_ptr->frag_ptr, frag_ptr->prev);
         }
-    }
 
-    /* Insert fragment to the list.*/
-    fnet_ip_frag_add((fnet_ip_frag_header_t **)(&frag_list_ptr->frag_ptr), cur_frag_ptr, frag_ptr->prev);
+        /* Insert fragment to the list.*/
+        fnet_ip_frag_add(&frag_list_ptr->frag_ptr, cur_frag_ptr, frag_ptr->prev);
+    }
 
     offset = 0u;
     frag_ptr = frag_list_ptr->frag_ptr;
@@ -1153,7 +1156,7 @@ fnet_bool_t fnet_ip_addr_is_broadcast( fnet_ip4_addr_t addr, fnet_netif_t *netif
     }
     else if(netif == FNET_NULL)
     {
-        fnet_os_mutex_lock();
+        fnet_stack_mutex_lock();
         for (netif = fnet_netif_list; netif != 0; netif = netif->next)
         {
             netif_addr = &(netif->ip4_addr);
@@ -1166,7 +1169,7 @@ fnet_bool_t fnet_ip_addr_is_broadcast( fnet_ip4_addr_t addr, fnet_netif_t *netif
                 break;
             }
         }
-        fnet_os_mutex_unlock();
+        fnet_stack_mutex_unlock();
     }
     else
     {

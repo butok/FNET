@@ -31,9 +31,6 @@
 
 #define _FNET_DNS_H_
 
-#include "fnet.h"
-
-
 #if FNET_CFG_DNS_RESOLVER || defined(__DOXYGEN__)
 
 /*! @addtogroup fnet_dns

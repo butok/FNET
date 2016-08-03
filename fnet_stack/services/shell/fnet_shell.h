@@ -31,8 +31,6 @@
 
 #define _FNET_SHELL_H_
 
-#include "fnet.h"
-
 /*! @addtogroup fnet_shell
 * The shell service provides application-specific command-line interface.@n
 * It runs on asigned serial stream, parses the input text, decodes the command

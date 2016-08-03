@@ -401,14 +401,14 @@ void fnet_icmp_error( fnet_netif_t *netif, fnet_uint8_t type, fnet_uint8_t code,
         icmpheader = (fnet_icmp_err_header_t *)nb_header->data_ptr;
         icmpheader->fields.unused = 0u;
 
-        if(type == FNET_ICMP_PARAMPROB)
+        if((type == FNET_ICMP_PARAMPROB) && (code == FNET_ICMP_UNREACHABLE_NEEDFRAG) && netif)
+        {
+            icmpheader->fields.mtu = fnet_htons((fnet_uint16_t)netif->mtu);
+        }
+        else if(type == FNET_ICMP_PARAMPROB)
         {
             icmpheader->fields.ptr = fnet_htons((fnet_uint16_t)code);
             code = 0u;
-        }
-        else if((type == FNET_ICMP_PARAMPROB) && (code == FNET_ICMP_UNREACHABLE_NEEDFRAG) && netif)
-        {
-            icmpheader->fields.mtu = fnet_htons((fnet_uint16_t)netif->mtu);
         }
         else
         {}

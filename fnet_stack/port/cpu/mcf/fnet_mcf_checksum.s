@@ -26,7 +26,7 @@
 *
 ***************************************************************************/
 
-#include "compiler/fnet_comp_asm.h"
+#include "port/compiler/fnet_comp_asm.h"
 
 #if FNET_MCF
 

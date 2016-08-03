@@ -20,7 +20,7 @@
 **********************************************************************/
 
 /*
-* Boot file name (or two-step bootstrap procedure) is not suported.
+* Boot file name (or two-step bootstrap procedure) is not supported.
 */
 
 #include "fnet.h"
@@ -414,14 +414,12 @@ static void fnet_dhcp_print_state( fnet_dhcp_if_t *dhcp )
         case FNET_DHCP_STATE_BOUND:
             FNET_DEBUG_DHCP("BOUND");
             break;
-
 #if !FNET_CFG_DHCP_BOOTP
-
         case FNET_DHCP_STATE_REQUESTING:
             FNET_DEBUG_DHCP("REQUESTING");
             break;
         case FNET_DHCP_STATE_PROBING:
-            FNET_DEBUG_DHCP("BROBING");
+            FNET_DEBUG_DHCP("PROBING");
             break;
         case FNET_DHCP_STATE_RENEWING:
             FNET_DEBUG_DHCP("RENEWING");

@@ -37,6 +37,7 @@
 #include "fnet_loop.h"
 #include "fnet_nd6.h"
 #include "fnet_ip6_prv.h"
+#include "fnet_stack_prv.h"
 
 
 #if FNET_CFG_NETIF_IP6_ADDR_MAX < 2u
@@ -170,7 +171,7 @@ void fnet_netif_release_all( void )
 {
     fnet_netif_t *net_if_ptr;
 
-    fnet_netif_set_callback_ip4_addr_conflict(0); /* Reset dupip handler.*/
+    fnet_netif_set_callback_on_ip4_addr_conflict(0); /* Reset dupip handler.*/
 
     for (net_if_ptr = fnet_netif_list; net_if_ptr; net_if_ptr = net_if_ptr->next)
     {
@@ -213,7 +214,7 @@ fnet_netif_desc_t fnet_netif_get_by_name( fnet_char_t *name )
     fnet_netif_t        *netif;
     fnet_netif_desc_t   result = (fnet_netif_desc_t)FNET_NULL;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if(name)
     {
@@ -227,7 +228,8 @@ fnet_netif_desc_t fnet_netif_get_by_name( fnet_char_t *name )
         }
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return result;
 }
 
@@ -269,7 +271,7 @@ fnet_netif_desc_t fnet_netif_get_by_ip4_addr( fnet_ip4_addr_t addr )
 #if FNET_CFG_IP4
     fnet_netif_t *netif;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
     for (netif = fnet_netif_list; netif != 0; netif = netif->next)
     {
         if(addr == netif->ip4_addr.address)
@@ -278,7 +280,7 @@ fnet_netif_desc_t fnet_netif_get_by_ip4_addr( fnet_ip4_addr_t addr )
             break;
         }
     }
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
 #else
     FNET_COMP_UNUSED_ARG(addr);
 #endif /* FNET_CFG_IP4 */
@@ -386,7 +388,7 @@ fnet_return_t fnet_netif_init( fnet_netif_t *netif, fnet_uint8_t *hw_addr, fnet_
 
     if(netif && (netif->api))
     {
-        fnet_os_mutex_lock();
+        fnet_stack_mutex_lock();
 
         fnet_isr_lock();
 
@@ -442,7 +444,7 @@ fnet_return_t fnet_netif_init( fnet_netif_t *netif, fnet_uint8_t *hw_addr, fnet_
 
         fnet_isr_unlock();
 
-        fnet_os_mutex_unlock();
+        fnet_stack_mutex_unlock();
     }
 
     return result;
@@ -462,7 +464,7 @@ void fnet_netif_release( fnet_netif_t *netif )
             netif->api->release(netif);
         }
 
-        fnet_os_mutex_lock();
+        fnet_stack_mutex_lock();
 
         if(netif->prev == 0)
         {
@@ -478,7 +480,7 @@ void fnet_netif_release( fnet_netif_t *netif )
             netif->next->prev = netif->prev;
         }
 
-        fnet_os_mutex_unlock();
+        fnet_stack_mutex_unlock();
     }
 }
 
@@ -491,9 +493,9 @@ void fnet_netif_set_default( fnet_netif_desc_t netif_desc )
 {
     if(netif_desc)
     {
-        fnet_os_mutex_lock();
+        fnet_stack_mutex_lock();
         fnet_netif_default = (fnet_netif_t *)netif_desc;
-        fnet_os_mutex_unlock();
+        fnet_stack_mutex_unlock();
     }
 }
 
@@ -507,7 +509,7 @@ void fnet_netif_set_ip4_addr( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipad
 {
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if(netif_desc)
     {
@@ -567,7 +569,7 @@ void fnet_netif_set_ip4_addr( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipad
         fnet_isr_unlock();
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
 }
 #endif /* FNET_CFG_IP4 */
 
@@ -583,7 +585,7 @@ void fnet_netif_set_ip4_subnet_mask( fnet_netif_desc_t netif_desc, fnet_ip4_addr
 
     if(netif)
     {
-        fnet_os_mutex_lock();
+        fnet_stack_mutex_lock();
 
         netif->ip4_addr.subnetmask = subnet_mask;
         netif->ip4_addr.address_type = FNET_NETIF_IP_ADDR_TYPE_MANUAL;
@@ -591,7 +593,7 @@ void fnet_netif_set_ip4_subnet_mask( fnet_netif_desc_t netif_desc, fnet_ip4_addr
         netif->ip4_addr.subnet = netif->ip4_addr.address & netif->ip4_addr.subnetmask; /* network and subnet address*/
         netif->ip4_addr.subnetbroadcast = netif->ip4_addr.address
                                           | (~netif->ip4_addr.subnetmask);     /* subnet broadcast address*/
-        fnet_os_mutex_unlock();
+        fnet_stack_mutex_unlock();
     }
 }
 #endif /* FNET_CFG_IP4 */
@@ -608,10 +610,10 @@ void fnet_netif_set_ip4_gateway( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t g
 
     if(netif)
     {
-        fnet_os_mutex_lock();
+        fnet_stack_mutex_lock();
         netif->ip4_addr.gateway = gw;
         netif->ip4_addr.address_type = FNET_NETIF_IP_ADDR_TYPE_MANUAL;
-        fnet_os_mutex_unlock();
+        fnet_stack_mutex_unlock();
     }
 }
 #endif /* FNET_CFG_IP4 */
@@ -628,10 +630,10 @@ void fnet_netif_set_ip4_dns( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t dns )
 
     if(netif)
     {
-        fnet_os_mutex_lock();
+        fnet_stack_mutex_lock();
         netif->ip4_addr.dns = dns;
         netif->ip4_addr.address_type = FNET_NETIF_IP_ADDR_TYPE_MANUAL;
-        fnet_os_mutex_unlock();
+        fnet_stack_mutex_unlock();
     }
 }
 #endif /* FNET_CFG_DNS && FNET_CFG_IP4*/
@@ -895,7 +897,7 @@ fnet_return_t fnet_netif_get_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
     fnet_return_t result;
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if(netif && hw_addr && hw_addr_size && (netif->api)
        && (hw_addr_size >= netif->api->hw_addr_size)
@@ -908,7 +910,7 @@ fnet_return_t fnet_netif_get_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
         result = FNET_ERR;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
 
     return result;
 }
@@ -930,7 +932,7 @@ fnet_return_t fnet_netif_set_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
         fnet_srand(((fnet_uint32_t)hw_addr[0] << 24u) | ((fnet_uint32_t)hw_addr[1] << 16u) | ((fnet_uint32_t)hw_addr[2] << 8u) | hw_addr[3]);
     }
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if(netif && hw_addr
        && (netif->api)
@@ -945,7 +947,7 @@ fnet_return_t fnet_netif_set_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
         result = FNET_ERR;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
 
     return result;
 }
@@ -964,14 +966,14 @@ void fnet_netif_join_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_addr
 {
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if(netif && (netif->api->multicast_join_ip4))
     {
         netif->api->multicast_join_ip4(netif, multicast_addr);
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
 }
 #endif /* FNET_CFG_MULTICAST & FNET_CFG_IP4 */
 /************************************************************************
@@ -984,14 +986,14 @@ void fnet_netif_leave_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_add
 {
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if(netif && (netif->api->multicast_leave_ip4))
     {
         netif->api->multicast_leave_ip4(netif, multicast_addr);
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
 }
 #endif /* FNET_CFG_MULTICAST & FNET_CFG_IP4*/
 
@@ -1062,11 +1064,11 @@ fnet_return_t fnet_netif_get_statistics( fnet_netif_desc_t netif_desc, struct fn
 }
 
 /************************************************************************
-* NAME: fnet_netif_set_callback_ip4_addr_conflict
+* NAME: fnet_netif_set_callback_on_ip4_addr_conflict
 *
 * DESCRIPTION: Registers the "duplicated IP address" event handler.
 ************************************************************************/
-void fnet_netif_set_callback_ip4_addr_conflict(fnet_netif_callback_ip4_addr_conflict_t callback)
+void fnet_netif_set_callback_on_ip4_addr_conflict(fnet_netif_callback_ip4_addr_conflict_t callback)
 {
     fnet_netif_callback_ip4_addr_conflict = callback;
 }
@@ -1262,14 +1264,14 @@ void fnet_netif_join_ip6_multicast ( fnet_netif_desc_t netif_desc, const fnet_ip
 {
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if(netif && (netif->api->multicast_join_ip6))
     {
         netif->api->multicast_join_ip6(netif, multicast_addr);
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
 }
 
 /************************************************************************
@@ -1281,14 +1283,14 @@ void fnet_netif_leave_ip6_multicast ( fnet_netif_desc_t netif_desc, fnet_ip6_add
 {
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if(netif && (netif->api->multicast_leave_ip6))
     {
         netif->api->multicast_leave_ip6(netif, multicast_addr);
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
 }
 
 /************************************************************************
@@ -1410,7 +1412,7 @@ fnet_netif_desc_t fnet_netif_get_by_ip6_addr(const fnet_ip6_addr_t *ip_addr )
     fnet_netif_t        *netif;
     fnet_netif_desc_t   result = (fnet_netif_desc_t)FNET_NULL;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     /* If the source address is explicitly specified by the user the
      * specified address is used.*/
@@ -1426,7 +1428,7 @@ fnet_netif_desc_t fnet_netif_get_by_ip6_addr(const fnet_ip6_addr_t *ip_addr )
         }
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
     return result;
 }
 
@@ -1496,7 +1498,7 @@ fnet_return_t fnet_netif_bind_ip6_addr_prv(fnet_netif_t *netif, const fnet_ip6_a
     fnet_netif_ip6_addr_t   *if_addr_ptr = FNET_NULL;
     fnet_index_t            i;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     /* Check input parameters. */
     if(netif && addr && (!FNET_IP6_ADDR_IS_MULTICAST(addr)))
@@ -1589,7 +1591,7 @@ fnet_return_t fnet_netif_bind_ip6_addr_prv(fnet_netif_t *netif, const fnet_ip6_a
     }
 
 COMPLETE:
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
 
     return result;
 }

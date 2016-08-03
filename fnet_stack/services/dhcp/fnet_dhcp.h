@@ -23,8 +23,6 @@
 
 #define _FNET_DHCP_H_
 
-#include "fnet.h"
-
 #if FNET_CFG_DHCP || defined(__DOXYGEN__)
 
 /*! @addtogroup fnet_dhcp

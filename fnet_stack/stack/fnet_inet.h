@@ -33,8 +33,6 @@
 
 #define _FNET_INET_H_
 
-#include "fnet.h"
-
 /*! @addtogroup fnet_socket
 */
 /*! @{ */

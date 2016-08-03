@@ -96,6 +96,7 @@ fnet_netif_t fnet_eth1_if =
 *
 * DESCRIPTION: Ethernet IO initialization.
 *************************************************************************/
+#if !FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT
 void fnet_eth_io_init()
 {
 
@@ -177,7 +178,7 @@ void fnet_eth_io_init()
 #endif /* FNET_CFG_CPU_MCF54418 */
 
 }
-
+#endif /*!FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT*/
 
 /************************************************************************
 * NAME: fnet_eth_phy_init

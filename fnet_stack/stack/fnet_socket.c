@@ -29,6 +29,7 @@
 ***************************************************************************/
 
 #include "fnet.h"
+#include "fnet_stack_prv.h"
 #include "fnet_socket_prv.h"
 #include "fnet_timer_prv.h"
 #include "fnet_prot.h"
@@ -36,13 +37,16 @@
 /************************************************************************
 *     Global Data Structures
 *************************************************************************/
-
-fnet_bool_t _fnet_is_enabled = FNET_FALSE;   /* Flag that the stack is initialized. */
-
 static fnet_uint16_t fnet_port_last = FNET_SOCKET_PORT_RESERVED + 1u;
 
 /* Array of sockets descriptors. */
 static fnet_socket_if_t *fnet_socket_desc[FNET_CFG_SOCKET_MAX];
+
+#if FNET_CFG_SOCKET_CALLBACK_ON_RX
+/* Socket activity event handler.*/
+static void (*fnet_socket_callback_on_rx)(void) ;
+fnet_event_desc_t fnet_socket_event_rx;
+#endif
 
 /************************************************************************
 *     Function Prototypes
@@ -52,16 +56,55 @@ static void fnet_socket_desc_set(fnet_socket_t desc, fnet_socket_if_t *sock);
 static void fnet_socket_desc_free(fnet_socket_t desc);
 static fnet_socket_if_t *fnet_socket_desc_find(fnet_socket_t desc);
 static fnet_error_t fnet_socket_addr_check_len(const struct sockaddr *addr, fnet_size_t addr_len);
+static void fnet_socket_is_activity(fnet_uint32_t cookie);
 
 /************************************************************************
 * NAME: fnet_socket_init
 *
 * DESCRIPTION: Initialization of the socket layer.
 *************************************************************************/
-void fnet_socket_init( void )
+fnet_return_t fnet_socket_init( void )
 {
     fnet_memset_zero(fnet_socket_desc, sizeof(fnet_socket_desc));
+
+#if FNET_CFG_SOCKET_CALLBACK_ON_RX
+    /* Install event Handler. */
+    fnet_socket_event_rx = fnet_event_init(fnet_socket_is_activity, 0);
+    if (fnet_socket_event_rx == FNET_ERR)
+    {
+        return FNET_ERR;
+    }
+#endif
+    return FNET_OK;
 }
+
+/************************************************************************
+* NAME: fnet_socket_is_activity
+*
+* DESCRIPTION: This function is called on the socket activity event.
+*************************************************************************/
+#if FNET_CFG_SOCKET_CALLBACK_ON_RX
+static void fnet_socket_is_activity(fnet_uint32_t cookie)
+{
+    FNET_COMP_UNUSED_ARG(cookie);
+
+    if(fnet_socket_callback_on_rx)
+    {
+        fnet_socket_callback_on_rx();
+    }
+}
+
+/************************************************************************
+* NAME: fnet_socket_set_callback_on_rx
+*
+* DESCRIPTION: Registers the "socket layer activity" event handler.
+*************************************************************************/
+void fnet_socket_set_callback_on_rx( void(*callback)(void))
+{
+    fnet_socket_callback_on_rx = callback;
+}
+
+#endif /* FNET_CFG_SOCKET_CALLBACK_ON_RX */
 
 /************************************************************************
 * NAME: fnet_socket_set_error
@@ -417,7 +460,7 @@ fnet_socket_t fnet_socket( fnet_address_family_t family, fnet_socket_type_t type
     fnet_socket_t          res;
     fnet_error_t    error = FNET_ERR_OK;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if(_fnet_is_enabled == FNET_FALSE) /* Stack is disabled */
     {
@@ -468,7 +511,8 @@ fnet_socket_t fnet_socket( fnet_address_family_t family, fnet_socket_type_t type
         goto ERROR_2;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (res);
 
 ERROR_2:
@@ -477,7 +521,8 @@ ERROR_2:
 ERROR_1:
     fnet_error_set(error);
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_ERR);
 }
 
@@ -495,7 +540,7 @@ fnet_return_t fnet_socket_connect( fnet_socket_t s, struct sockaddr *name, fnet_
     struct sockaddr     local_addr_tmp;
     fnet_return_t       result;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if((sock = fnet_socket_desc_find(s)) != 0)
     {
@@ -616,7 +661,8 @@ fnet_return_t fnet_socket_connect( fnet_socket_t s, struct sockaddr *name, fnet_
         goto ERROR;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (result);
 
 ERROR_SOCK:
@@ -625,7 +671,8 @@ ERROR_SOCK:
 ERROR:
     fnet_error_set(error);
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_ERR);
 }
 
@@ -639,7 +686,7 @@ fnet_return_t fnet_socket_bind( fnet_socket_t s, const struct sockaddr *name, fn
     fnet_socket_if_t   *sock;
     fnet_error_t    error = FNET_ERR_OK;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if((sock = fnet_socket_desc_find(s)) != 0)
     {
@@ -695,14 +742,16 @@ fnet_return_t fnet_socket_bind( fnet_socket_t s, const struct sockaddr *name, fn
         goto ERROR;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_OK);
 
 ERROR_SOCK:
     fnet_socket_set_error(sock, error);
 
 ERROR:
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_ERR);
 }
 
@@ -717,7 +766,7 @@ fnet_return_t fnet_socket_close( fnet_socket_t s )
     fnet_return_t   result = FNET_OK;
     fnet_error_t    error;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if((sock = fnet_socket_desc_find(s)) != 0)
     {
@@ -766,12 +815,14 @@ fnet_return_t fnet_socket_close( fnet_socket_t s )
         goto ERROR;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (result);
 ERROR:
     fnet_error_set(error);
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_ERR);
 }
 
@@ -786,7 +837,7 @@ fnet_return_t fnet_socket_shutdown( fnet_socket_t s, fnet_sd_flags_t how )
     fnet_return_t   result = FNET_OK;
     fnet_error_t    error;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if((sock = fnet_socket_desc_find(s)) != 0)
     {
@@ -801,12 +852,14 @@ fnet_return_t fnet_socket_shutdown( fnet_socket_t s, fnet_sd_flags_t how )
         goto ERROR;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (result);
 ERROR:
     fnet_error_set(error);
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_ERR);
 }
 
@@ -822,7 +875,7 @@ fnet_return_t fnet_socket_listen( fnet_socket_t s, fnet_size_t backlog )
     fnet_error_t    error;
     fnet_return_t   result = FNET_OK;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if((sock = fnet_socket_desc_find(s)) != 0)
     {
@@ -854,14 +907,16 @@ fnet_return_t fnet_socket_listen( fnet_socket_t s, fnet_size_t backlog )
         goto ERROR;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (result);
 
 ERROR_SOCK:
     fnet_socket_set_error(sock, error);
 
 ERROR:
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_ERR);
 }
 
@@ -877,7 +932,7 @@ fnet_socket_t fnet_socket_accept( fnet_socket_t s, struct sockaddr *addr, fnet_s
     fnet_socket_t          desc;
     fnet_error_t    error;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if((sock = fnet_socket_desc_find(s)) != 0)
     {
@@ -937,14 +992,16 @@ fnet_socket_t fnet_socket_accept( fnet_socket_t s, struct sockaddr *addr, fnet_s
         goto ERROR;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (desc);
 
 ERROR_SOCK:
     fnet_socket_set_error(sock, error);
 
 ERROR:
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_ERR);
 }
 
@@ -959,7 +1016,7 @@ fnet_int32_t fnet_socket_sendto( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t
     fnet_error_t    error;
     fnet_int32_t    result = 0;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if((sock = fnet_socket_desc_find(s)) != 0)
     {
@@ -1019,14 +1076,16 @@ fnet_int32_t fnet_socket_sendto( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t
         goto ERROR;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (result);
 
 ERROR_SOCK:
     fnet_socket_set_error(sock, error);
 
 ERROR:
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_ERR);
 }
 
@@ -1052,7 +1111,7 @@ fnet_int32_t fnet_socket_recvfrom( fnet_socket_t s, fnet_uint8_t *buf, fnet_size
     fnet_error_t    error;
     fnet_int32_t    result = 0;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if((sock = fnet_socket_desc_find(s)) != 0)
     {
@@ -1103,14 +1162,16 @@ fnet_int32_t fnet_socket_recvfrom( fnet_socket_t s, fnet_uint8_t *buf, fnet_size
         goto ERROR;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (result);
 
 ERROR_SOCK:
     fnet_socket_set_error(sock, error);
 
 ERROR:
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_ERR);
 }
 
@@ -1135,7 +1196,7 @@ fnet_return_t fnet_socket_getname( fnet_socket_t s, struct sockaddr *name, fnet_
     fnet_socket_if_t   *sock;
     fnet_error_t    error;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if((sock = fnet_socket_desc_find(s)) != 0)
     {
@@ -1164,14 +1225,16 @@ fnet_return_t fnet_socket_getname( fnet_socket_t s, struct sockaddr *name, fnet_
         goto ERROR;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_OK);
 
 ERROR_SOCK:
     fnet_socket_set_error(sock, error);
 
 ERROR:
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_ERR);
 }
 
@@ -1186,7 +1249,7 @@ fnet_return_t fnet_socket_getpeername( fnet_socket_t s, struct sockaddr *name, f
     fnet_socket_if_t   *sock;
     fnet_error_t    error;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if((sock = fnet_socket_desc_find(s)) != 0)
     {
@@ -1215,14 +1278,16 @@ fnet_return_t fnet_socket_getpeername( fnet_socket_t s, struct sockaddr *name, f
         goto ERROR;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_OK);
 
 ERROR_SOCK:
     fnet_socket_set_error(sock, error);
 
 ERROR:
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_ERR);
 }
 
@@ -1238,7 +1303,7 @@ fnet_return_t fnet_socket_setopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
     fnet_error_t    error;
     fnet_return_t   result = FNET_OK;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if((sock = fnet_socket_desc_find(s)) != 0)
     {
@@ -1332,14 +1397,16 @@ fnet_return_t fnet_socket_setopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
         goto ERROR;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (result);
 
 ERROR_SOCK:
     fnet_socket_set_error(sock, error);
 
 ERROR:
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_ERR);
 }
 
@@ -1355,7 +1422,7 @@ fnet_return_t fnet_socket_getopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
     fnet_error_t    error;
     fnet_return_t   result = FNET_OK;
 
-    fnet_os_mutex_lock();
+    fnet_stack_mutex_lock();
 
     if((sock = fnet_socket_desc_find(s)) != 0)
     {
@@ -1518,14 +1585,16 @@ fnet_return_t fnet_socket_getopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
         goto ERROR;
     }
 
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (result);
 
 ERROR_SOCK:
     fnet_socket_set_error(sock, error);
 
 ERROR:
-    fnet_os_mutex_unlock();
+    fnet_stack_mutex_unlock();
+
     return (FNET_ERR);
 }
 
@@ -1616,8 +1685,10 @@ fnet_return_t fnet_socket_buffer_append_address( fnet_socket_buffer_t *sb, fnet_
     fnet_netbuf_add_chain(&sb->net_buf_chain, nb);
     fnet_isr_unlock();
 
+#if FNET_CFG_SOCKET_CALLBACK_ON_RX
     /* Wake-up user application.*/
-    fnet_os_event_raise();
+    fnet_event_raise(fnet_socket_event_rx);
+#endif
 
     return FNET_OK;
 
@@ -1975,4 +2046,5 @@ fnet_netif_t *fnet_socket_addr_route(const struct sockaddr *dest_addr)
 
     return result;
 }
+
 

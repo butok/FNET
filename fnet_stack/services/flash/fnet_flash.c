@@ -29,9 +29,15 @@
 ***************************************************************************/
 #include "fnet.h"
 
-#if FNET_CFG_FLASH
+#if FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
 
 #define FNET_CFG_FLASH_WRITE_CACHE 0
+
+/* Check Flash controller align */
+#if (FNET_CFG_CPU_FLASH_PROGRAM_SIZE != 16U) && (FNET_CFG_CPU_FLASH_PROGRAM_SIZE != 8U) && (FNET_CFG_CPU_FLASH_PROGRAM_SIZE != 4U)
+    #error The macro FNET_CFG_CPU_FLASH_PROGRAM_SIZE must be set to correct value.
+#endif
+
 
 #if FNET_CFG_FLASH_WRITE_CACHE /* Just prototype.*/
 /**************************************************************************/ /*!
@@ -94,7 +100,7 @@ static void fnet_flash_cache_write(fnet_uint8_t *dest_addr, fnet_uint8_t *data_p
             entry_next = 0;
         }
 
-        fnet_flash_cache_flush_entry(entry); /* Falsh if something in the cache entry.*/
+        fnet_flash_cache_flush_entry(entry); /* Flash if something in the cache entry.*/
 
         entry->dest_addr = dest_addr; /* Init destination address.*/
     }
@@ -131,21 +137,7 @@ void fnet_flash_flush(void)
 ************************************************************************/
 void fnet_flash_erase( void *flash_addr, fnet_size_t bytes)
 {
-    fnet_index_t    n_pages;
-    fnet_uint32_t   page_shift = (fnet_uint32_t)flash_addr & (FNET_CFG_CPU_FLASH_PAGE_SIZE - 1U);
-
-    flash_addr = (fnet_uint8_t *)flash_addr - page_shift;
-
-    bytes += page_shift;
-
-    n_pages = (fnet_uint32_t)( bytes / FNET_CFG_CPU_FLASH_PAGE_SIZE + ((bytes % FNET_CFG_CPU_FLASH_PAGE_SIZE) ? 1ul : 0ul));
-
-    while (n_pages)
-    {
-        fnet_cpu_flash_erase(flash_addr);
-        flash_addr = ((fnet_uint8_t *)flash_addr + FNET_CFG_CPU_FLASH_PAGE_SIZE);
-        n_pages --;
-    }
+    fnet_cpu_flash_erase(flash_addr, bytes);
 }
 
 /************************************************************************
@@ -233,4 +225,4 @@ void fnet_flash_memcpy( FNET_COMP_PACKED_VAR void *flash_addr, FNET_COMP_PACKED_
     }
 }
 
-#endif /* FNET_CFG_FLASH */
+#endif /* FNET_CFG_FLASH && FNET_CFG_CPU_FLASH */

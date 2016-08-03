@@ -31,8 +31,6 @@
 
 #define _FNET_SERIAL_H_
 
-#include "fnet.h"
-
 /*! @addtogroup fnet_serial
 * The Serial Input/Output (I/O) library provides commonly used I/O functions
 * like printf(), putchar() and getchar().@n

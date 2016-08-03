@@ -28,12 +28,10 @@
 *
 ***************************************************************************/
 
-
 #ifndef _FNET_SERVICES_H_
 
 #define _FNET_SERVICES_H_
 
-#include "fnet.h"
 #include "serial/fnet_serial.h"
 #include "shell/fnet_shell.h"
 #include "telnet/fnet_telnet.h"

@@ -31,8 +31,6 @@
 
 #define _FNET_ARP_H_
 
-#include "fnet.h"
-
 #if FNET_CFG_IP4 || defined(__DOXYGEN__)
 
 

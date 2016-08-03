@@ -32,12 +32,9 @@
 
 #define _FNET_TFTP_SRV_H_
 
-#include "fnet.h"
-
 #if FNET_CFG_TFTP_SRV || defined(__DOXYGEN__)
 
 #include "fnet_tftp.h"
-
 
 /*! @addtogroup fnet_tftp_srv
 * The user application can use the TFTP-server service to download and upload files from/to

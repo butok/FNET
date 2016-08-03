@@ -1203,7 +1203,7 @@ fnet_error_t fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_ad
     ip6_header->next_header = protocol;
 
     /* Set Hop Limit.*/
-    if(hop_limit == 0u)
+    if(netif->nd6_if_ptr && (hop_limit == 0u))
     {
         hop_limit = netif->nd6_if_ptr->cur_hop_limit; /* Defined by ND.*/
     }
@@ -1729,7 +1729,7 @@ static fnet_netbuf_t *fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **n
                 }
 
                 fnet_netbuf_trim(nb_p, (fnet_int32_t)i);
-                nb = *nb_p;
+                /* nb = *nb_p */
                 cur_frag_ptr->total_length -= (fnet_uint16_t)i;
                 cur_frag_ptr->offset += (fnet_uint16_t)i;
             }

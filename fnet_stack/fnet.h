@@ -38,7 +38,6 @@
 #include "port/cpu/fnet_cpu.h"
 #include "stack/fnet_stack.h"
 #include "services/fnet_services.h"
-#include "port/os/fnet_os.h"
 
 /*! @addtogroup fnet_define
 * These definitions are used for reference purposes only.
@@ -81,7 +80,7 @@
  *        string.
  * @showinitializer
  ******************************************************************************/
-#define FNET_VERSION            "3.3.0"
+#define FNET_VERSION            "3.4.0"
 
 /*! @} */
 

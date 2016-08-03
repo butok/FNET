@@ -36,7 +36,6 @@
 #include "fnet_ip6.h"
 #include "fnet_icmp6.h"
 #include "fnet_netbuf.h"
-#include "fnet_netif_prv.h"
 
 /* Neighbor Cache and Default Router List combined to one list.*/
 #define FNET_ND6_NEIGHBOR_CACHE_SIZE         (FNET_CFG_ND6_NEIGHBOR_CACHE_SIZE + FNET_CFG_ND6_ROUTER_LIST_SIZE)

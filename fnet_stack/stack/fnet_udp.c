@@ -224,9 +224,9 @@ static fnet_error_t fnet_udp_output(  struct sockaddr *src_addr, const struct so
 *************************************************************************/
 static void fnet_udp_input(fnet_netif_t *netif, struct sockaddr *foreign_addr,  struct sockaddr *local_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb)
 {
-    fnet_udp_header_t   *udp_header = (fnet_udp_header_t *)nb->data_ptr;
-    fnet_socket_if_t       *sock;
-    fnet_socket_if_t       *last;
+    fnet_udp_header_t   *udp_header;
+    fnet_socket_if_t    *sock;
+    fnet_socket_if_t    *last;
     fnet_size_t         udp_length;
     fnet_netbuf_t       *nb_tmp;
 
@@ -237,6 +237,8 @@ static void fnet_udp_input(fnet_netif_t *netif, struct sockaddr *foreign_addr,  
         {
             goto BAD;
         }
+
+        udp_header = (fnet_udp_header_t *)nb->data_ptr;
 
         udp_length = fnet_ntohs(udp_header->length);
 

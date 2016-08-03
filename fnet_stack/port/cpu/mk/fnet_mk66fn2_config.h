@@ -57,7 +57,7 @@
 /* The platform has Kinetis Flash Memory Module (FTFL).*/
 #define FNET_CFG_CPU_FLASH                      (1)
 
-/*/ Smallest logical block which can be erased independently.*/
+/* Smallest logical block which can be erased independently.*/
 #define FNET_CFG_CPU_FLASH_PAGE_SIZE            (4U*1024U)        /* 4KB sector.*/
 
 /* On-chip Flash size.*/

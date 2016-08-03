@@ -199,7 +199,6 @@ static void fnet_shell_state_machine( void *shell_if_p )
                 if((shell_if->cmd_line_end != 0) && (shell_if->cmd_line_begin != shell_if->cmd_line_end) && (shell_if->cmd_line_end[-1] != FNET_SHELL_ESCAPE_SYMBOL)) /* Found new command symbol.*/
                 {
                     *shell_if->cmd_line_end++ = '\0'; /* Set of end of line */
-
                 }
             }
             while((shell_if->cmd_line_end) && (shell_if->cmd_line_end[-1] != '\0'));

@@ -1,6 +1,7 @@
 /**************************************************************************
 *
 * Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
 *
@@ -19,57 +20,43 @@
 **********************************************************************/
 /*!
 *
-* @file fnet_os.h
+* @file fnet_stack.h
 *
 * @author Andrey Butok
 *
-* @brief FNET OS API.
+* @brief Main including header for the FNET TCP/IP stack.
 *
 ***************************************************************************/
 
-#ifndef _FNET_OS_H_
+#ifndef _FNET_STACK_PRV_H_
 
-#define _FNET_OS_H_
+#define _FNET_STACK_PRV_H_
 
-#include "fnet.h"
+extern fnet_bool_t _fnet_is_enabled;
+
+
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-#if FNET_CFG_OS_MUTEX
-fnet_return_t fnet_os_mutex_init(void);
-void fnet_os_mutex_lock(void);
-void fnet_os_mutex_unlock(void);
-void fnet_os_mutex_release(void);
+#if FNET_CFG_MULTITHREADING
+fnet_return_t fnet_stack_mutex_init(void);
+void fnet_stack_mutex_lock(void);
+void fnet_stack_mutex_unlock(void);
+void fnet_stack_mutex_release(void);
 #else
-#define fnet_os_mutex_init()        FNET_OK
-#define fnet_os_mutex_lock()        do{}while(0)
-#define fnet_os_mutex_unlock()      do{}while(0)
-#define fnet_os_mutex_release()     do{}while(0)
+#define fnet_stack_mutex_init()        FNET_OK
+#define fnet_stack_mutex_lock()        do{}while(0)
+#define fnet_stack_mutex_unlock()      do{}while(0)
+#define fnet_stack_mutex_release()     do{}while(0)
 #endif
-
-#if FNET_CFG_OS_ISR
-void fnet_os_isr(void);
-#else
-#define fnet_os_isr(void)           do{}while(0)
-#endif
-
-#if FNET_CFG_OS_EVENT
-fnet_return_t fnet_os_event_init(void);
-void fnet_os_event_wait(void);
-void fnet_os_event_raise(void);
-#else
-#define fnet_os_event_init()        FNET_OK
-#define fnet_os_event_wait()        do{}while(0)
-#define fnet_os_event_raise()       do{}while(0)
-#endif
-
-fnet_return_t fnet_os_timer_init(fnet_time_t period_ms);
-void fnet_os_timer_release(void);
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif /* _FNET_OS_H_ */
+/*! @} */
+
+#endif /* _FNET_STACK_H_ */
+

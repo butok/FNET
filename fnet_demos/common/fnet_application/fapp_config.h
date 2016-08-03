@@ -111,13 +111,6 @@
     #define FAPP_CFG_BOOTLOADER                (0)
 #endif
 
-/* CFM protection is enabled.
- * cfm.c have to be updated aklso.
- */
-#ifndef FAPP_CFG_CFM_PROTECTION
-    #define FAPP_CFG_CFM_PROTECTION             (0)
-#endif
-
 /* Startup script. */
 #ifndef FAPP_CFG_STARTUP_SCRIPT_ENABLED
     #define FAPP_CFG_STARTUP_SCRIPT_ENABLED     (0)

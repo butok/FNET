@@ -50,11 +50,11 @@
 * - The @ref fnet.h file includes all the other header files needed to use the FNET TCP/IP stack
 *   user interface. This means that it is the only file the application developer needs to include
 *   in the source code using the FNET stack API.
-* - The function @ref fnet_init() or @ref fnet_init_static() must be called
+* - The @ref fnet_init() function must be called
 *   in order to initialize the FNET TCP/IP stack.
-*   The return value from @ref fnet_init()/@ref fnet_init_static() must be verified to indicate the success before
+*   The return value from @ref fnet_init() must be verified to indicate the success before
 *   calling any other TCP/IP functions.
-* - After @ref fnet_init()/@ref fnet_init_static() returns the @ref FNET_OK value, the FNET TCP/IP stack is ready
+* - After @ref fnet_init() returns the @ref FNET_OK value, the FNET TCP/IP stack is ready
 *   for data transmission.
 *
 * For example:
@@ -79,24 +79,50 @@
 */
 /*! @{ */
 
+#if FNET_CFG_MULTITHREADING || defined(__DOXYGEN__)
+
+/**************************************************************************/ /*!
+ * @brief Mutex type.
+ * @see FNET_CFG_MULTITHREADING,  
+ ******************************************************************************/
+typedef void * fnet_mutex_t;
+
+/**************************************************************************/ /*!
+ * @brief Mutex API.
+ * It should be defined by application if @ref FNET_CFG_MULTITHREADING is enabled.
+ * @see FNET_CFG_MULTITHREADING, fnet_init()
+ ******************************************************************************/
+typedef struct 
+{
+    fnet_return_t (*mutex_init)( fnet_mutex_t * ); /**< @brief Create a new mutex. Parameter is pointer to the mutex to create. */
+    void (*mutex_free)( fnet_mutex_t * ); /**< @brief  Delete a mutex. Parameter is pointer to the mutex to delete. */ 
+    void (*mutex_lock)( fnet_mutex_t * ); /**< @brief  Lock a mutex. Parameter is the mutex to lock. */ 
+    void (*mutex_unlock)( fnet_mutex_t * ); /**< @brief Unlock a mutex. Parameter is the mutex to unlock.  */ 
+} fnet_mutex_api_t;
+#endif /* FNET_CFG_MULTITHREADING */
+
+
 /**************************************************************************/ /*!
  * @brief Input parameters structure for @ref fnet_init()
  ******************************************************************************/
 struct fnet_init_params
 {
-    void        *netheap_ptr;   /**< @brief Pointer to the FNET heap buffer. @n
-                                * @n
-                                * The FNET uses this heap buffer for the internal
-                                * dynamic data allocation as:
-                                *  - Ethernet Tx/Rx frame buffers.
-                                *  - Sockets Input/Output buffers.
-                                *  - Protocol headers and service information.
-                                *  - Various control structures.
-                                *  - Temporary data.@n
-                                * @n
-                                * An application can allocate this buffer statically,
-                                * dynamically, or use a special memory region (for example SRAM).*/
-    fnet_size_t netheap_size;   /**< @brief Size of the FNET heap buffer. */
+    void                        *netheap_ptr;   /**< @brief Pointer to the FNET heap buffer. @n
+                                                * @n
+                                                * The FNET uses this heap buffer for the internal
+                                                * dynamic data allocation as:
+                                                *  - Ethernet Tx/Rx frame buffers.
+                                                *  - Sockets Input/Output buffers.
+                                                *  - Protocol headers and service information.
+                                                *  - Various control structures.
+                                                *  - Temporary data.@n
+                                                * @n
+                                                * An application can allocate this buffer statically,
+                                                * dynamically, or use a special memory region (for example SRAM).*/
+    fnet_size_t                 netheap_size;   /**< @brief Size of the FNET heap buffer. */
+#if FNET_CFG_MULTITHREADING || defined(__DOXYGEN__)
+    const fnet_mutex_api_t      *mutex_api;    /**< @brief Mutex API. It is optional and availble only when FNET_CFG_MULTITHREADING is set.*/
+#endif
 };
 
 #if defined(__cplusplus)
@@ -114,7 +140,7 @@ extern "C" {
  *   - @c FNET_ERR = Stack initialization has failed.
  *
  *
- * @see fnet_init_static(), fnet_release()
+ * @see fnet_release()
  *
  ******************************************************************************
  *
@@ -127,32 +153,9 @@ fnet_return_t fnet_init( struct fnet_init_params *init_params );
 
 /***************************************************************************/ /*!
  *
- * @brief    Initializes the FNET TCP/IP stack with an internally pre-allocated
- * static heap buffer.
- *
- * @return   This function returns:
- *   - @c FNET_OK  = Stack initialization is successful.
- *   - @c FNET_ERR = Stack initialization has failed.
- *
- * @see fnet_init(), fnet_release()
- *
- ******************************************************************************
- *
- * This function executes the initialization of the FNET TCP/IP stack.
- * It's has the same functionality as @ref fnet_init().
- * The only difference is that the FNET heap buffer is allocated internally
- * as a static buffer and its size is defined by the @ref FNET_CFG_HEAP_SIZE.@n
- * Only after a successful initialization, the application may use other FNET API
- * functions and services.
- *
- ******************************************************************************/
-fnet_return_t fnet_init_static(void);
-
-/***************************************************************************/ /*!
- *
  * @brief    Releases the FNET TCP/IP stack.
  *
- * @see fnet_init(), fnet_init_static()
+ * @see fnet_init()
  *
  ******************************************************************************
  *

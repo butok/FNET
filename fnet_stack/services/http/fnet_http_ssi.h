@@ -32,8 +32,6 @@
 
 #define _FNET_HTTP_SSI_H_
 
-#include "fnet.h"
-
 #if (FNET_CFG_HTTP && FNET_CFG_HTTP_SSI)|| defined(__DOXYGEN__)
 
 /*! @addtogroup fnet_http

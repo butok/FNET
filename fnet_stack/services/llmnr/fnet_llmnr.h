@@ -31,12 +31,7 @@
 
 #define _FNET_LLMNR_H_
 
-#include "fnet.h"
-
-
 #if FNET_CFG_LLMNR || defined(__DOXYGEN__)
-
-
 
 /*! @addtogroup fnet_llmnr
 *

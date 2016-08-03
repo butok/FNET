@@ -59,9 +59,7 @@
 #define FNET_CFG_ETH0_IP4_DNS       (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
 
 /*****************************************************************************
-* Size of the internal static heap buffer.
-* This definition is used only if the fnet_init_static() was
-* used for the FNET initialization.
+* Size of the internal heap buffer, used by FNET.
 ******************************************************************************/
 #define FNET_CFG_HEAP_SIZE          (30U * 1024U)
 

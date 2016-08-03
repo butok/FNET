@@ -771,7 +771,7 @@ static fnet_int32_t fapp_tftp_tx_handler_srec (fapp_tftp_handler_control_t *tftp
     FNET_COMP_UNUSED_ARG(desc);
 
     /* Define start and end address.*/
-    if((tx_srec->data_start == 0) && (tx_srec->data_end == 0)) /* Only first time. */
+    if(tx_srec->data_start == tx_srec->data_end) /*0==0. Only first time. */
     {
         fapp_tftp_tx_image_begin_end(&tx_srec->data_start, &tx_srec->data_end);
     }
