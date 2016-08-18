@@ -124,7 +124,7 @@
 /*********** MFC ********************/
 #if FNET_CFG_CPU_MCF52235 /* Kirin2 */
     #ifdef FNET_CPU_STR
-        #error "More than one CPU selected FNET_CPU_XXXX"
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
     #include "cpu/mcf/fnet_mcf52235_config.h"
@@ -133,7 +133,7 @@
 
 #if FNET_CFG_CPU_MCF52259 /* Kirin3 */
     #ifdef FNET_CPU_STR
-        #error "More than one CPU selected FNET_CPU_XXXX"
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
     #include "cpu/mcf/fnet_mcf52259_config.h"
@@ -142,7 +142,7 @@
 
 #if FNET_CFG_CPU_MCF5235 /* CPUV2 */
     #ifdef FNET_CPU_STR
-        #error "More than one CPU selected FNET_CPU_XXXX"
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
     #include "cpu/mcf/fnet_mcf5235_config.h"
@@ -151,7 +151,7 @@
 
 #if FNET_CFG_CPU_MCF5282 /* Reindeer */
     #ifdef FNET_CPU_STR
-        #error "More than one CPU selected FNET_CPU_XXXX"
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
     #include "cpu/mcf/fnet_mcf5282_config.h"
@@ -160,7 +160,7 @@
 
 #if FNET_CFG_CPU_MCF51CN128 /* Lasko */
     #ifdef FNET_CPU_STR
-        #error "More than one CPU selected FNET_CPU_XXXX"
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
     #include "cpu/mcf/fnet_mcf51cn128_config.h"
@@ -169,7 +169,7 @@
 
 #if FNET_CFG_CPU_MCF54418 /* Modelo */
     #ifdef FNET_CPU_STR
-        #error "More than one CPU selected FNET_CPU_XXXX"
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
     #include "cpu/mcf/fnet_mcf54418_config.h"
@@ -180,7 +180,7 @@
 
 #if FNET_CFG_CPU_MK60N512 /* Kinetis */
     #ifdef FNET_CPU_STR
-        #error "More than one CPU selected FNET_CPU_XXXX"
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
     #include "port/cpu/mk/fnet_mk60n512_config.h"
@@ -189,7 +189,7 @@
 
 #if FNET_CFG_CPU_MK60DN512 /* Kinetis */
     #ifdef FNET_CPU_STR
-        #error "More than one CPU selected FNET_CPU_XXXX"
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
     #include "port/cpu/mk/fnet_mk60dn512_config.h"
@@ -198,7 +198,7 @@
 
 #if FNET_CFG_CPU_MK64FN1 /* Kinetis */
     #ifdef FNET_CPU_STR
-        #error "More than one CPU selected FNET_CPU_XXXX"
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
     #include "port/cpu/mk/fnet_mk64fn1_config.h"
@@ -207,7 +207,7 @@
 
 #if FNET_CFG_CPU_MK66FN2 /* Kinetis */
     #ifdef FNET_CPU_STR
-        #error "More than one CPU selected FNET_CPU_XXXX"
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
     #include "port/cpu/mk/fnet_mk66fn2_config.h"
@@ -216,7 +216,7 @@
 
 #if FNET_CFG_CPU_MK70FN1 /* Kinetis */
     #ifdef FNET_CPU_STR
-        #error "More than one CPU selected FNET_CPU_XXXX"
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
     #include "port/cpu/mk/fnet_mk70fn1_config.h"
@@ -225,7 +225,7 @@
 
 #if FNET_CFG_CPU_MK60FN1 /* Kinetis*/
     #ifdef FNET_CPU_STR
-        #error "More than one CPU selected FNET_CPU_XXXX"
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
     #include "port/cpu/mk/fnet_mk60fn1_config.h"
@@ -236,7 +236,7 @@
 
 #if FNET_CFG_CPU_MPC5668G /* Fado */
     #ifdef FNET_CPU_STR
-        #error More than one CPU selected FNET_CPU_XXXX
+        #error More than one CPU selected FNET_CFG_CPU_XXXX
     #endif
 
     #include "port/cpu/mpc/fnet_mpc5668g_config.h"
@@ -245,7 +245,7 @@
 
 #if FNET_CFG_CPU_MPC5566  /* Viper */
     #ifdef FNET_CPU_STR
-        #error More than one CPU selected FNET_CPU_XXXX
+        #error More than one CPU selected FNET_CFG_CPU_XXXX
     #endif
 
     #include "port/cpu/mpc/fnet_mpc5566_config.h"
@@ -256,7 +256,7 @@
 
 #if FNET_CFG_CPU_MPC564xBC /* Bolero3M */
     #ifdef FNET_CPU_STR
-        #error "More than one CPU selected FNET_CPU_XXXX"
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
     #include "port/cpu/mpc/fnet_mpc564xbc_config.h"
@@ -265,7 +265,7 @@
 
 #if FNET_CFG_CPU_MPC5744P /* Panther */
     #ifdef FNET_CPU_STR
-        #error "More than one CPU selected FNET_CPU_XXXX"
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
     #include "port/cpu/mpc/fnet_mpc5744p_config.h"
@@ -276,7 +276,7 @@
 /*********** NXP's LPC ********************/
 #if FNET_CFG_CPU_LPC1788 /* NXP's LPC1788 MCU */
     #ifdef FNET_CPU_STR
-        #error "More than one CPU selected FNET_CPU_XXXX"
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
     #include "port/cpu/lpc/fnet_lpc_1788_config.h"
@@ -286,7 +286,7 @@
 
 /*-----------*/
 #ifndef FNET_CPU_STR
-    #error "Select/Define proper CPU FNET_CPU_XXXX !"
+    #error "Select/Define proper CPU FNET_CFG_CPU_XXXX !"
 #endif
 
 /*-----------*/
