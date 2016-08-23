@@ -39,72 +39,58 @@
 #include "fapp_mem.h"
 
 #if FAPP_CFG_DHCP_CMD && FNET_CFG_DHCP && FNET_CFG_IP4
-
     #include "fapp_dhcp.h"
-
 #endif
 
 #if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP && FNET_CFG_IP4
-
     #include "fapp_autoip.h"
-
 #endif
 
 #if (FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP)|| (FAPP_CFG_EXP_CMD && FNET_CFG_FS)
-
     #include "fapp_http.h"
     #include "fapp_fs.h"
-
 #endif
 
 #if FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD
-
     #include "fapp_tftp.h"
-
 #endif
 
 #if FAPP_CFG_TELNET_CMD && FNET_CFG_TELNET
-
     #include "fapp_telnet.h"
-
 #endif
 
 #if FAPP_CFG_DNS_CMD && FNET_CFG_DNS && FNET_CFG_DNS_RESOLVER
-
     #include "fapp_dns.h"
-
 #endif
 
 #if FAPP_CFG_BENCH_CMD
-
     #include "fapp_bench.h"
-
 #endif
 
 #if FNET_CFG_PING && (FAPP_CFG_PING_CMD || FAPP_CFG_PING6_CMD)
-
     #include "fapp_ping.h"
-
 #endif
 
-#if FAPP_CFG_LLMNR_CMD
-
+#if FAPP_CFG_LLMNR_CMD && FNET_CFG_LLMNR
     #include "fapp_llmnr.h"
-
 #endif
 
+#if FNET_CFG_LINK
+    #include "fapp_link.h"
+#endif
 
 /************************************************************************
 *     Definitions.
 *************************************************************************/
 const fnet_char_t FAPP_DELIMITER_STR[] = "************************************************";
-const fnet_char_t FAPP_CANCELLED_STR[] = "\nCancelled";
+const fnet_char_t FAPP_CANCELLED_STR[] = "Cancelled";
 const fnet_char_t FAPP_TOCANCEL_STR[] = "Press [Ctr+C] to cancel.";
 const fnet_char_t FAPP_UPDATED_IP_STR[] = " IPv4 parameters updated :";
 
 /* Error mesages */
 const fnet_char_t FAPP_PARAM_ERR[] = "Error: Invalid paremeter \'%s\'";
 static const fnet_char_t FAPP_NET_ERR[]   = "Error: Network Interface is not configurated!\n";
+static const fnet_char_t FAPP_LINK_ERR[]  = "Error: Network Link-Detection is failed!\n";
 const fnet_char_t FAPP_INIT_ERR[]  = "Error: %s initialization is failed!";
 const fnet_char_t FAPP_SHELL_INFO_FORMAT_S[]  = " %-16s : %s";
 const fnet_char_t FAPP_SHELL_INFO_FORMAT_D[]  = " %-16s : %u";
@@ -144,7 +130,6 @@ static void fapp_boot(fnet_shell_desc_t desc);
 #if FNET_CFG_IP4
     static void fapp_dup_ip_callback( fnet_netif_desc_t netif );
 #endif
-
 #if FAPP_CFG_BIND_CMD && FNET_CFG_IP6
     static void fapp_bind_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 #endif
@@ -166,6 +151,7 @@ static void fapp_boot(fnet_shell_desc_t desc);
 #if FAPP_CFG_EXP_CMD && FNET_CFG_FS
     static void fapp_exp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 #endif
+
 static void fapp_print_info( fnet_shell_desc_t desc );
 
 /************************************************************************
@@ -251,7 +237,6 @@ const struct fnet_shell_command fapp_cmd_table [] =
 #if FNET_CFG_PING && FAPP_CFG_PING6_CMD
     { "ping6",      1u, 14u, fapp_ping_cmd,   "Send ICMP ECHO requests", "[-c <count>][-i <seconds>]\n\r\t[-p <pattern>][-s <size>]\n\r\t[-h <hoplimit/ttl>] <ip>\t"}, /* -s -n should be ignored.*/
 #endif
-
 #if FAPP_CFG_DEBUG_CMD   /* Used for DEBUGING needs only. */
     { "d",          0u, 0u, fapp_debug_cmd,   "Print debug info.", ""},
 #endif
@@ -263,19 +248,19 @@ static fnet_char_t fapp_cmd_line_buffer[FAPP_CFG_SHELL_MAX_LINE_LENGTH];
 
 /* String equivalent to fnet_netif_ip_addr_type_t */
 static const fnet_char_t *const fapp_netif_ip_addr_type_str[] = {"manual",              /* FNET_NETIF_IP_ADDR_TYPE_MANUAL */
-                                                                 "autoconfigurable",   /* FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE */
-                                                                 "dhcp"
-                                                                };              /* FNET_NETIF_IP_ADDR_TYPE_DHCP */
+                                                                 "autoconfigurable",    /* FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE */
+                                                                 "dhcp"                 /* FNET_NETIF_IP_ADDR_TYPE_DHCP */
+                                                                };
 
 /* Connection state string */
-static const fnet_char_t *const fapp_netif_connection_state_str[] = {"unconnected",     /* false */
-                                                                     "connected"
-                                                                    };     /* true */
+const fnet_char_t *const fapp_netif_connection_state_str[] = {"unconnected", /* false */
+                                                              "connected"    /* true */
+                                                             };
 
 /* Connection state string */
-const fnet_char_t *const fapp_enabled_str[] = {"disabled",     /* false */
-                                               "enabled"
-                                              };     /* true */
+const fnet_char_t *const fapp_enabled_str[] = {"disabled",  /* false */
+                                               "enabled"    /* true */
+                                              };
 
 /************************************************************************
 *     The main shell control data structure.
@@ -407,7 +392,7 @@ static void fapp_boot(fnet_shell_desc_t desc)
                 break;
             }
 
-            fnet_timer_delay(FNET_TIMER_TICK_IN_SEC); /* 1 sec. delay. */
+            fnet_timer_delay(FNET_TIMER_TICKS_IN_SEC); /* 1 sec. delay. */
             fnet_shell_printf(desc, "\b\b\b\b %3d", delay);
         }
 
@@ -422,6 +407,12 @@ static void fapp_boot(fnet_shell_desc_t desc)
     else
 #endif
     {
+
+#if FNET_CFG_LINK
+        /* Start Link-Detection. */
+        fapp_link_init(desc);
+#endif
+
         /* Default startup script. */
 #if FAPP_CFG_STARTUP_SCRIPT_ENABLED
         fnet_shell_println(desc, "Startup script: %s", FAPP_CFG_STARTUP_SCRIPT);
@@ -490,11 +481,11 @@ void fapp_debug_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
 
 #if 0 /* test mempool */
 
-{
-    static unsigned char mybuffer[3000];
-    static fnet_mempool_desc_t fnet_mempool_main = 0; /* Main memory pool. */
+    {
+        static unsigned char mybuffer[3000];
+        static fnet_mempool_desc_t fnet_mempool_main = 0; /* Main memory pool. */
 
-        void *p1, *p2,*p3;
+        void *p1, *p2, *p3;
         fnet_mempool_main = fnet_mempool_init(mybuffer, 2048, FNET_MEMPOOL_ALIGN_16);
         fnet_printf("fnet_mempool_free_mem_status %d\n", fnet_mempool_free_mem_status(fnet_mempool_main));
         fnet_printf("fnet_mempool_malloc_max %d\n", fnet_mempool_malloc_max(fnet_mempool_main));
@@ -524,7 +515,7 @@ void fapp_debug_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
         fnet_printf("fnet_mempool_free_mem_status %d\n", fnet_mempool_free_mem_status(fnet_mempool_main));
         fnet_printf("fnet_mempool_malloc_max %d\n", fnet_mempool_malloc_max(fnet_mempool_main));
         fnet_printf("Complete\n");
-}
+    }
 
 
 #endif
@@ -1116,6 +1107,22 @@ static void fapp_exp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t
 }
 #endif
 
+/************************************************************************
+* DESCRIPTION: Print information on new IP from Auto-IP or DHCP service.
+************************************************************************/
+#if FNET_CFG_IP4 &&((FAPP_CFG_DHCP_CMD && FNET_CFG_DHCP) || FNET_CFG_AUTOIP)
+void fapp_addr_callback_updated(fnet_shell_desc_t desc, fnet_netif_desc_t netif)
+{
+    fnet_shell_unblock(desc); /* Unblock the shell. */
+
+    /* Print updated parameters info. */
+    fnet_shell_println( desc, "\n%s", FAPP_DELIMITER_STR);
+    fnet_shell_println( desc, FAPP_UPDATED_IP_STR);
+    fnet_shell_println( desc, FAPP_DELIMITER_STR);
+
+    fapp_print_netif_info( desc, netif );
+}
+#endif
 
 
 

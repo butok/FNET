@@ -1423,7 +1423,7 @@ fnet_bool_t fnet_socket_addr_is_multicast(const struct sockaddr *addr);
  *
  * This function registers the @c handler callback function for
  * the "Socket Rx" event.@n
- * This event occurs when the socket layer receives any packet for any existing socket. 
+ * This event occurs when the socket layer receives any packet for any existing socket.
  * It can be a packet with or without data-payload including ACK, FIN and SYN.@n
  * For example, it can be used to wake-up a sleeping RTOS application waiting for a network activity.
  * To stop the event handling, set @c callback parameter to zero value.

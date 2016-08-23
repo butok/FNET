@@ -820,9 +820,9 @@ void fnet_netbuf_del_chain( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain )
             {
                 nb_current = nb_current->next_chain;
             }
-            
+
             if(nb_current)
-            { 
+            {
                 nb = nb_current->next_chain->next_chain;
 
                 fnet_netbuf_free_chain(nb_current->next_chain);

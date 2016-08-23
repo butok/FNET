@@ -83,21 +83,21 @@
 
 /**************************************************************************/ /*!
  * @brief Mutex type.
- * @see FNET_CFG_MULTITHREADING,  
+ * @see FNET_CFG_MULTITHREADING,
  ******************************************************************************/
-typedef void * fnet_mutex_t;
+typedef void *fnet_mutex_t;
 
 /**************************************************************************/ /*!
  * @brief Mutex API.
  * It should be defined by application if @ref FNET_CFG_MULTITHREADING is enabled.
  * @see FNET_CFG_MULTITHREADING, fnet_init()
  ******************************************************************************/
-typedef struct 
+typedef struct
 {
     fnet_return_t (*mutex_init)( fnet_mutex_t * ); /**< @brief Create a new mutex. Parameter is pointer to the mutex to create. */
-    void (*mutex_free)( fnet_mutex_t * ); /**< @brief  Delete a mutex. Parameter is pointer to the mutex to delete. */ 
-    void (*mutex_lock)( fnet_mutex_t * ); /**< @brief  Lock a mutex. Parameter is the mutex to lock. */ 
-    void (*mutex_unlock)( fnet_mutex_t * ); /**< @brief Unlock a mutex. Parameter is the mutex to unlock.  */ 
+    void (*mutex_free)( fnet_mutex_t * ); /**< @brief  Delete a mutex. Parameter is pointer to the mutex to delete. */
+    void (*mutex_lock)( fnet_mutex_t * ); /**< @brief  Lock a mutex. Parameter is the mutex to lock. */
+    void (*mutex_unlock)( fnet_mutex_t * ); /**< @brief Unlock a mutex. Parameter is the mutex to unlock.  */
 } fnet_mutex_api_t;
 #endif /* FNET_CFG_MULTITHREADING */
 

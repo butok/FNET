@@ -153,9 +153,11 @@ typedef struct fnet_netif
     const fnet_netif_api_t  *api;                               /* Pointer to Interafce API structure.*/
     fnet_scope_id_t         scope_id;                           /* Scope zone index, defining network interface. Used by IPv6 sockets.*/
     fnet_uint32_t           features;                           /* Supported features. Bitwise of fnet_netif_feature_t.*/
+    fnet_bool_t             is_connected;                       /* Connection state, updated by fnet_netif_is_connected() call.*/
+    fnet_time_t             is_connected_timestamp;             /* The timestamp, in milliseconds, when is_connected updated last time.*/
 #if FNET_CFG_IP4
     fnet_netif_ip4_addr_t   ip4_addr;                           /* The interface IPv4 address structure. */
-    fnet_bool_t             ip4_addr_conflict  ;                /* Flag if the ip4_addr is duplicated.*/
+    fnet_bool_t             ip4_addr_conflict;                  /* Flag if the ip4_addr is duplicated.*/
     struct fnet_arp_if      *arp_if_ptr;                        /* Pointer to the ARP structure, if the interface supports ARP. */
 #endif
 #if FNET_CFG_IP6

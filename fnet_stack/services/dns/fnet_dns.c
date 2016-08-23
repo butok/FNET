@@ -74,7 +74,6 @@ typedef struct
 }
 fnet_dns_if_resolved_ip6_t;
 
-
 #define FNET_DNS_RESOLVED_IP4_MAX       (FNET_DNS_MESSAGE_SIZE/(sizeof(fnet_dns_if_resolved_ip4_t)+ sizeof(struct fnet_dns_resolved_addr)))
 #define FNET_DNS_RESOLVED_IP6_MAX       (FNET_DNS_MESSAGE_SIZE/(sizeof(fnet_dns_if_resolved_ip6_t)+ sizeof(struct fnet_dns_resolved_addr)))
 

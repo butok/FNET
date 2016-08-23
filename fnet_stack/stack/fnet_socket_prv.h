@@ -167,7 +167,7 @@ typedef struct fnet_socket_prot_if
 } fnet_socket_prot_if_t;
 
 #if FNET_CFG_SOCKET_CALLBACK_ON_RX
-extern fnet_event_desc_t fnet_socket_event_rx;
+    extern fnet_event_desc_t fnet_socket_event_rx;
 #endif
 
 /************************************************************************

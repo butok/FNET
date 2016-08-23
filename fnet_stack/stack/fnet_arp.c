@@ -417,10 +417,15 @@ void fnet_arp_input(fnet_netif_t *netif, fnet_netbuf_t *nb)
             }
             else
             {
-                /* IP is duplicated. */
-                netif->ip4_addr_conflict = FNET_TRUE; /* Set "duplicated" flag. */
+                if(netif->ip4_addr.address /* If interface has a bind address.*/
+                   ||  (netif->arp_if_ptr->arp_probe_ipaddr == targer_prot_addr)) /* Simultaneous probing. Two (or more) hosts attempt to configure
+                                                                                    the same IPv4 Link-Local address at the same time. */
+                {
+                    /* IP is duplicated. */
+                    netif->ip4_addr_conflict = FNET_TRUE; /* Set "conflict" flag. */
 
-                fnet_event_raise(arpif->arp_event);
+                    fnet_event_raise(arpif->arp_event);
+                }
             }
 
             /* ARP request. If it asked for our address, we send out a reply.*/
@@ -499,6 +504,12 @@ void fnet_arp_request(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr)
 
         arp_hdr->targer_prot_addr = ipaddr;                  /* Protocol address of target of this packet.*/
         arp_hdr->sender_prot_addr = netif->ip4_addr.address; /* Protocol address of sender of this packet.*/
+
+        if(netif->ip4_addr.address == INADDR_ANY) /* Is it probing?*/
+        {
+            /* Save probe IPv4 address, for later conflict detection. */
+            netif->arp_if_ptr->arp_probe_ipaddr = ipaddr;
+        }
 
         fnet_arp_trace("TX", arp_hdr); /* Print ARP header. */
 

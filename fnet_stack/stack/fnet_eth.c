@@ -203,12 +203,11 @@ static const fnet_eth_prot_if_t fnet_eth_prot_if_list[] =
         (mac_addr)[5] = (ip6_addr)->addr[15];  \
     }while(0)
 
-
+#define FNET_ETH_TIMER_PERIOD (500U) /*ms*/
 
 /******************************************************************************
 *     Function Prototypes
 *******************************************************************************/
-#define FNET_ETH_TIMER_PERIOD (4000U) /*ms*/
 static void fnet_eth_timer(fnet_uint32_t cookie );
 
 /************************************************************************
@@ -318,9 +317,6 @@ fnet_return_t fnet_eth_init( fnet_netif_t *netif)
             }
 #endif /* FNET_CFG_IP6 */
 
-            /* Set connection flag. */
-            eth_if->connection_flag = fnet_netif_is_connected(netif);
-
             eth_if->eth_timer = fnet_timer_new((FNET_ETH_TIMER_PERIOD / FNET_TIMER_PERIOD_MS), fnet_eth_timer, (fnet_uint32_t)netif);
 
             fnet_eth_number++;
@@ -403,18 +399,13 @@ static void fnet_eth_timer(fnet_uint32_t cookie )
 {
     fnet_netif_t    *netif = (fnet_netif_t *) cookie;
     fnet_eth_if_t   *eth_if = (fnet_eth_if_t *)(netif->if_ptr);
-    fnet_bool_t     connection_flag = eth_if->connection_flag;
+    fnet_bool_t     connection_flag = netif->is_connected;
 
     if(fnet_netif_is_connected(netif) != connection_flag) /* Is any change in connection. */
     {
-        if(connection_flag == FNET_FALSE)  /* Connected. */
+        if(connection_flag == FNET_FALSE)  /* =>Connected. */
         {
             fnet_eth_change_addr_notify(netif);
-            eth_if->connection_flag = FNET_TRUE;
-        }
-        else
-        {
-            eth_if->connection_flag = FNET_FALSE;
         }
     }
 }

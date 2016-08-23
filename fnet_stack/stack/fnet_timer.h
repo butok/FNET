@@ -48,17 +48,17 @@
 /**************************************************************************/ /*!
  * @brief Number of timer ticks in one hour.
  ******************************************************************************/
-#define FNET_TIMER_TICK_IN_HOUR     ((1000U*60U*60U)/FNET_TIMER_PERIOD_MS)
+#define FNET_TIMER_TICKS_IN_HOUR     ((1000U*60U*60U)/FNET_TIMER_PERIOD_MS)
 
 /**************************************************************************/ /*!
  * @brief Number of timer ticks in one minute.
  ******************************************************************************/
-#define FNET_TIMER_TICK_IN_MIN      ((1000U*60U)/FNET_TIMER_PERIOD_MS)
+#define FNET_TIMER_TICKS_IN_MIN      ((1000U*60U)/FNET_TIMER_PERIOD_MS)
 
 /**************************************************************************/ /*!
  * @brief Number of timer ticks in one second.
  ******************************************************************************/
-#define FNET_TIMER_TICK_IN_SEC      (1000U/FNET_TIMER_PERIOD_MS)
+#define FNET_TIMER_TICKS_IN_SEC      (1000U/FNET_TIMER_PERIOD_MS)
 
 #if defined(__cplusplus)
 extern "C" {
@@ -185,7 +185,7 @@ void fnet_timer_delay( fnet_time_t delay_ticks );
 #endif
 #ifndef  FNET_HW_TIMER_RELEASE
 #define FNET_HW_TIMER_RELEASE fnet_cpu_timer_release
-#endif 
+#endif
 
 #if defined(__cplusplus)
 }

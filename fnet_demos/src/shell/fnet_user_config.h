@@ -19,7 +19,7 @@
 * Processor type FNET_CFG_CPU_<name> is defined in project options.
 ******************************************************************************/
 /*****************************************************************************
-*  Default serial port number FNET_CFG_CPU_SERIAL_PORT_DEFAULT is defined 
+*  Default serial port number FNET_CFG_CPU_SERIAL_PORT_DEFAULT is defined
 *  in project options.
 ******************************************************************************/
 
@@ -29,26 +29,28 @@
 #define FNET_CFG_IP4                (1)
 #define FNET_CFG_IP6                (1)
 
-/*****************************************************************************
-* IP address for the Ethernet interface.
-* At runtime it can be changed by the fnet_netif_set_ip4_addr() or
-* by the DHCP client service.
-******************************************************************************/
-#define FNET_CFG_ETH0_IP4_ADDR      (FNET_IP4_ADDR_INIT(192U, 168U, 0U, 22U))
+#if 0 /* IPv4 address parameters are set automatically by DHCP or AutoIP */
+    /*****************************************************************************
+    * IP address for the Ethernet interface.
+    * At runtime it can be changed by the fnet_netif_set_ip4_addr() or
+    * by the DHCP client service.
+    ******************************************************************************/
+    #define FNET_CFG_ETH0_IP4_ADDR      (FNET_IP4_ADDR_INIT(192U, 168U, 0U, 22U))
 
-/*****************************************************************************
-* IP Subnet mask for the Ethernet interface.
-* At runtime it can be changed by the fnet_netif_set_ip4_subnet_mask() or
-* by the DHCP client service.
-******************************************************************************/
-#define FNET_CFG_ETH0_IP4_MASK      (FNET_IP4_ADDR_INIT(255U, 255U, 255U, 0U))
+    /*****************************************************************************
+    * IP Subnet mask for the Ethernet interface.
+    * At runtime it can be changed by the fnet_netif_set_ip4_subnet_mask() or
+    * by the DHCP client service.
+    ******************************************************************************/
+    #define FNET_CFG_ETH0_IP4_MASK      (FNET_IP4_ADDR_INIT(255U, 255U, 255U, 0U))
 
-/*****************************************************************************
-* Gateway IP address for the Ethernet interface.
-* At runtime it can be changed by the fnet_netif_set_ip4_gateway() or
-* by the DHCP client service.
-******************************************************************************/
-#define FNET_CFG_ETH0_IP4_GW        (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+    /*****************************************************************************
+    * Gateway IP address for the Ethernet interface.
+    * At runtime it can be changed by the fnet_netif_set_ip4_gateway() or
+    * by the DHCP client service.
+    ******************************************************************************/
+    #define FNET_CFG_ETH0_IP4_GW        (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
 
 /*****************************************************************************
 * DNS server IP address for the Ethernet interface.
@@ -137,6 +139,11 @@
 * PING service support.
 ******************************************************************************/
 #define FNET_CFG_PING                       (1)
+
+/*****************************************************************************
+* Link-Detection service support.
+******************************************************************************/
+#define FNET_CFG_LINK                       (1)
 
 #endif /* _FNET_USER_CONFIG_H_ */
 

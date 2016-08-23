@@ -36,8 +36,8 @@
 *************************************************************************/
 fnet_bool_t _fnet_is_enabled = FNET_FALSE;   /* Flag that the stack is initialized. */
 #if FNET_CFG_MULTITHREADING
-const fnet_mutex_api_t  *fnet_mutex_api = FNET_NULL;
-static fnet_mutex_t fnet_stack_mutex = FNET_NULL;
+    const fnet_mutex_api_t  *fnet_mutex_api = FNET_NULL;
+    static fnet_mutex_t fnet_stack_mutex = FNET_NULL;
 #endif
 
 /************************************************************************
@@ -67,14 +67,14 @@ fnet_return_t fnet_init( struct fnet_init_params *init_params )
                 {
                     if((result = fnet_stack_init()) == FNET_OK)
                     {
-                            _fnet_is_enabled = FNET_TRUE; /* Mark the stack is enabled. */
+                        _fnet_is_enabled = FNET_TRUE; /* Mark the stack is enabled. */
                     }
                 }
             }
 
             fnet_stack_mutex_unlock();
         }
-        
+
     }
 
     return result;
@@ -124,7 +124,7 @@ static fnet_return_t fnet_stack_init( void )
         goto ERROR;
     }
 
-    if(fnet_socket_init()== FNET_ERR)
+    if(fnet_socket_init() == FNET_ERR)
     {
         goto ERROR;
     }

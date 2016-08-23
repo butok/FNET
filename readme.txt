@@ -8,14 +8,15 @@ FNET project directory structure:
 	|    |-- stack                - FNET TCP/IP stack platform-independent source code.
 	|    |-- services             - FNET Services.
 	|    |    |-- autoip            - Auto-IP service.
-	|    |    |-- dns               - DNS client/resolver service.
 	|    |    |-- dhcp              - DHCP/BOOTP client service.
+	|    |    |-- dns               - DNS client/resolver service.
 	|    |    |-- flash             - Flash  Memory driver.
 	|    |    |-- fs                - File System driver.
 	|    |    |-- http              - HTTP Server service.
-	|    |    |-- poll              - Polling Mechanism library.
-	|    |    |-- ping              - PING service.
+	|    |    |-- link              - Link-Detection service.
 	|    |    |-- llmnr             - LLMNR Server/Responder.
+	|    |    |-- ping              - PING service.
+	|    |    |-- poll              - Polling Mechanism library.
 	|    |    |-- serial            - Serial Input/Output driver.
 	|    |    |-- shell             - Command Shell service.
 	|    |    |-- telnet            - TELNET server service.
@@ -27,7 +28,6 @@ FNET project directory structure:
 	|         |    |-- mk                - Freescale Kinetis-specific source code.
 	|         |    |-- mpc               - Freescale Power Architecture-specific source code.
 	|         |-- compiler             - Compiler-specific source code.
-	|         |-- os                   - OS-specific source code.
 	|-- fnet_doc                  - FNET documentation.
 	|-- fnet_demos                - FNET demo projects.
 	|    |-- common                 - Common source code used by demos.

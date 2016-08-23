@@ -400,7 +400,7 @@ void fnet_shell_script_release( fnet_shell_desc_t desc);
  * @param desc      Shell service descriptor.
  *
  * @param on_ctrlc  Pointer to the callback function called on the [Ctrl]+[c]
- *                  button pressing.
+ *                  button pressing. This parameter is optional and can be set to @ref FNET_NULL.
  *
  * @return This function returns:
  *   - @ref FNET_OK if no error occurs.
@@ -415,7 +415,7 @@ void fnet_shell_script_release( fnet_shell_desc_t desc);
  * console. @n
  * The shell can be unblocked by the @ref fnet_shell_unblock() function.
  * Also the shell may be unblocked by pressing the [Ctrl]+[c] button combination
- * in a terminal console, after that the callback function,
+ * in a terminal console, after that the optional callback function,
  * pointed by the @c on_ctrlc() parameter, will be called.
  *
  ******************************************************************************/
@@ -621,7 +621,7 @@ fnet_return_t fnet_shell_switch( fnet_shell_desc_t desc, const struct fnet_shell
  * terminate the command activity.
  *
  ******************************************************************************/
-fnet_bool_t fnet_shell_ctrlc (fnet_shell_desc_t desc);
+fnet_bool_t fnet_shell_is_ctrlc (fnet_shell_desc_t desc);
 
 
 #if defined(__cplusplus)

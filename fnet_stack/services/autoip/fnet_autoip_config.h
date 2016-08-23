@@ -36,7 +36,7 @@
 
 /**************************************************************************/ /*!
  * @def     FNET_CFG_AUTOIP_MAX
- * @brief   Maximum number of the Auto-IP services that can be run simultaneously. @n
+ * @brief   Maximum number of the Auto-IP services that can be run simultaneously.@n
  *          Default value is @b @c 1.
  *          @note It is not posible to run several Auto-IP servers on the same networking interface.
  * @showinitializer
@@ -45,6 +45,31 @@
     #define FNET_CFG_AUTOIP_MAX     (1u)
 #endif
 
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_AUTOIP_DEFEND_INTERVAL
+ * @brief    Auto-IP DEFEND_INTERVAL (RFC3927) support:
+ *               - @c @c 1 = is enabled (Default value).@n
+ *                          Upon receiving a conflicting ARP packet, if a host has not seen any
+ *                          other conflicting ARP packets within the last DEFEND_INTERVAL (10)
+ *                          seconds, it attempts to defend its address by
+ *                          recording the time that the conflicting ARP packet was received, and
+ *                          then broadcasting one single ARP announcement, giving its own IP and
+ *                          hardware addresses as the sender addresses of the ARP.  Having done
+ *                          this, the host can then continue to use the address normally without
+ *                          any further special action.  However, if this is not the first
+ *                          conflicting ARP packet the host has seen, and the time recorded for
+ *                          the previous conflicting ARP packet is recent, within DEFEND_INTERVAL
+ *                          seconds, then the host MUST immediately cease using this address and
+ *                          configure a new IPv4 Link-Local address as described above.  This is
+ *                          necessary to ensure that two hosts do not get stuck in an endless
+ *                          loop with both hosts trying to defend the same address.
+ *               - @b @c 0 = is disabled.@n
+ *                          Upon receiving a conflicting ARP packet, a host
+ *                          immediately configure a new IPv4 Link-Local address.
+ ******************************************************************************/
+#ifndef FNET_CFG_AUTOIP_DEFEND_INTERVAL
+    #define FNET_CFG_AUTOIP_DEFEND_INTERVAL       (1)
+#endif
 
 /*! @} */
 

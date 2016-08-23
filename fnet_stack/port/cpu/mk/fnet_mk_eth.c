@@ -96,7 +96,7 @@ void fnet_eth_io_init(void)
 
 #elif FNET_CFG_CPU_MK66FN2
 
-   /* Enable clock */
+    /* Enable clock */
     FNET_MK_SIM_SCGC5 |= FNET_MK_SIM_SCGC5_PORTE_MASK | FNET_MK_SIM_SCGC5_PORTA_MASK | FNET_MK_SIM_SCGC5_PORTB_MASK;
 
     pctl = (FNET_MK_PORT_MemMapPtr)FNET_MK_PORTE_BASE_PTR;

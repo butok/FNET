@@ -17,35 +17,33 @@
 *  limitations under the License.
 *
 **********************************************************************/
-/*!
-*
-* @file fnet_flash_config.h
-*
-* @brief On-chip Flash Module driver configuration file.
-*
-***************************************************************************/
+#ifndef _FNET_LINK_CONFIG_H_
 
-/**************************************************************************
- * !!!DO NOT MODIFY THIS FILE!!!
- **************************************************************************/
+#define _FNET_LINK_CONFIG_H_
 
-#ifndef _FNET_FLASH_CONFIG_H_
-
-#define _FNET_FLASH_CONFIG_H_
-
-/*! @addtogroup fnet_flash_config */
+/*! @addtogroup fnet_link_config */
 /*! @{ */
+
 /**************************************************************************/ /*!
- * @def      FNET_CFG_FLASH
- * @brief    Flash driver support:
- *               - @c 1 = is enabled. It is valid only if a platform-specific
- *                       Flash driver is availble (FNET_CFG_CPU_FLASH).
+ * @def      FNET_CFG_LINK
+ * @brief    Link-detection service support:
+ *               - @c 1 = is enabled.
  *               - @b @c 0 = is disabled (Default value).
  ******************************************************************************/
-#ifndef FNET_CFG_FLASH
-    #define FNET_CFG_FLASH      (0)
+#ifndef FNET_CFG_LINK
+    #define FNET_CFG_LINK           (0)
+#endif
+
+/**************************************************************************/ /*!
+ * @def     FNET_CFG_LINK_MAX
+ * @brief   Maximum number of the Link-Detection services that can be run simultaneously.  @n
+ *          Default value is @b @c 1.
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_LINK_MAX
+    #define FNET_CFG_LINK_MAX      (1u)
 #endif
 
 /*! @} */
 
-#endif /* _FNET_FLASH_CONFIG_H_ */
+#endif /*_FNET_LINK_CONFIG_H_ */

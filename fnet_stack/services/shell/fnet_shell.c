@@ -61,15 +61,11 @@
     #define FNET_DEBUG_STACK(...)   do{}while(0)
 #endif
 
-fnet_bool_t fnet_shell_ctrlc (fnet_shell_desc_t desc);
-
-
 /************************************************************************
 *    Shell interface control structure.
 *************************************************************************/
 struct fnet_shell_if
 {
-
     const struct fnet_shell *shell;
     const struct fnet_shell *top_shell;                             /* Pointer to the top shell. */
     fnet_shell_state_t      state;                                  /* Current state.*/
@@ -191,7 +187,7 @@ static void fnet_shell_state_machine( void *shell_if_p )
             {
                 if(*shell_if->cmd_line_end != '\0')
                 {
-                    shell_if->cmd_line_end ++;
+                    shell_if->cmd_line_end++;
                 }
 
                 shell_if->cmd_line_end = fnet_strchr( shell_if->cmd_line_end, FNET_SHELL_COMMAND_SPLITTER );
@@ -199,9 +195,10 @@ static void fnet_shell_state_machine( void *shell_if_p )
                 if((shell_if->cmd_line_end != 0) && (shell_if->cmd_line_begin != shell_if->cmd_line_end) && (shell_if->cmd_line_end[-1] != FNET_SHELL_ESCAPE_SYMBOL)) /* Found new command symbol.*/
                 {
                     *shell_if->cmd_line_end++ = '\0'; /* Set of end of line */
+                    break;
                 }
             }
-            while((shell_if->cmd_line_end) && (shell_if->cmd_line_end[-1] != '\0'));
+            while(shell_if->cmd_line_end);
 
 
             fnet_strncpy(shell_if->cmd_line, shell_if->cmd_line_begin, shell_if->cmd_line_size);
@@ -270,9 +267,12 @@ static void fnet_shell_state_machine( void *shell_if_p )
         case FNET_SHELL_STATE_BLOCKED:
             if(shell_if->_blocked)
             {
-                if(fnet_shell_ctrlc ((fnet_shell_desc_t)shell_if_p))
+                if(fnet_shell_is_ctrlc ((fnet_shell_desc_t)shell_if_p))
                 {
-                    shell_if->_exit_blocked((fnet_shell_desc_t) shell_if);
+                    if(shell_if->_exit_blocked)
+                    {
+                        shell_if->_exit_blocked((fnet_shell_desc_t) shell_if);
+                    }
                     shell_if->_blocked = FNET_FALSE;
                 }
             }
@@ -568,12 +568,33 @@ fnet_int32_t fnet_shell_getchar(fnet_shell_desc_t desc)
 ************************************************************************/
 void fnet_shell_script(fnet_shell_desc_t desc, fnet_char_t *script )
 {
-    struct fnet_shell_if *shell_if = (struct fnet_shell_if *) desc;
+    struct fnet_shell_if    *shell_if = (struct fnet_shell_if *) desc;
+    fnet_bool_t             previous_script = FNET_FALSE;
+    fnet_size_t             script_size;
 
-    if(shell_if)
+    if(shell_if && script)
     {
+        fnet_shell_unblock(desc);
 
-        fnet_strncpy( shell_if->cmd_line, script, shell_if->cmd_line_size );
+        script_size = fnet_strlen(script);
+
+        if(shell_if->cmd_line_end) /* If previous script is not finished.*/
+        {
+            if(script_size < shell_if->cmd_line_size)
+            {
+                /* Shift previous script */
+                fnet_strncpy( (shell_if->cmd_line + script_size), shell_if->cmd_line_end, (shell_if->cmd_line_size - script_size) );
+                previous_script = FNET_TRUE;
+            }
+        }
+
+        fnet_strncpy( shell_if->cmd_line, script, shell_if->cmd_line_size);
+        if(previous_script == FNET_TRUE)
+        {
+            /* Add splitter between scripts.*/
+            shell_if->cmd_line[script_size] = FNET_SHELL_COMMAND_SPLITTER;
+        }
+
         shell_if->state = FNET_SHELL_STATE_EXEC_CMD;
         /* Reset pointers */
         shell_if->cmd_line_begin = shell_if->cmd_line;
@@ -632,7 +653,7 @@ void fnet_shell_help( fnet_shell_desc_t desc)
  * terminate the command activity.
  *
  ******************************************************************************/
-fnet_bool_t fnet_shell_ctrlc (fnet_shell_desc_t desc)
+fnet_bool_t fnet_shell_is_ctrlc (fnet_shell_desc_t desc)
 {
     fnet_bool_t             res;
     struct fnet_shell_if    *shell_if = (struct fnet_shell_if *) desc;

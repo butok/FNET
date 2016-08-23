@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2014 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -20,35 +19,35 @@
 **********************************************************************/
 /*!
 *
-* @file fnet_services.h
+* @file fapp_link.h
 *
 * @author Andrey Butok
 *
-* @brief General services-header file.
+* @brief FNET Shell Demo (Link).
 *
 ***************************************************************************/
 
-#ifndef _FNET_SERVICES_H_
+/************************************************************************
+*     Private Definitions.
+*************************************************************************/
+#ifndef _FAPP_LINK_H_
 
-#define _FNET_SERVICES_H_
+#define _FAPP_LINK_H_
 
-#include "serial/fnet_serial.h"
-#include "shell/fnet_shell.h"
-#include "telnet/fnet_telnet.h"
-#include "poll/fnet_poll.h"
-#include "tftp/fnet_tftp_cln.h"
-#include "tftp/fnet_tftp_srv.h"
-#include "dhcp/fnet_dhcp.h"
-#include "flash/fnet_flash.h"
-#include "fs/fnet_fs.h"
-#include "fs/fnet_fs_rom.h"
-#include "ssl/fnet_ssl.h"
-#include "http/fnet_http.h"
-#include "dns/fnet_dns.h"
-#include "ping/fnet_ping.h"
-#include "llmnr/fnet_llmnr.h"
-#include "autoip/fnet_autoip.h"
-#include "link/fnet_link.h"
+#if FNET_CFG_LINK
 
+#if defined(__cplusplus)
+extern "C" {
 #endif
 
+void fapp_link_init(fnet_shell_desc_t desc);
+void fapp_link_release(void);
+void fapp_link_info(fnet_shell_desc_t desc);
+
+#if defined(__cplusplus)
+}
+#endif
+
+#endif /* FAPP_CFG_LINK */
+
+#endif /* _FAPP_LINK_H_ */

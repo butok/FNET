@@ -570,7 +570,7 @@
 
 /**************************************************************************/ /*!
  * @def      FNET_CFG_HEAP_SIZE
- * @brief    Recomended Size of the internal static heap buffer, that should be passed to 
+ * @brief    Recomended Size of the internal static heap buffer, that should be passed to
  *           @ref fnet_init().
  * @hideinitializer
  ******************************************************************************/
@@ -581,10 +581,10 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_MULTITHREADING
  * @brief    Multi-threading support:
- *               - @c 1 = is enabled (experimental feature). @n 
+ *               - @c 1 = is enabled (experimental feature). @n
  *                 If the FNET User API may be called simultaneously from different RTOS threads, this parameter must be enabled to avoid race conditions.
  *                 This feature is under development. User application must implement Mutex API defined fnet_mutex_api_t.
- *               - @b @c 0 = is disabled (Default value).@n 
+ *               - @b @c 0 = is disabled (Default value).@n
  *                 This is default state for bare-metal applications or if the FNET User API is called simultaneously only from one RTOS thread.
  * @see fnet_mutex_api_t
  ******************************************************************************/
@@ -611,13 +611,13 @@
 #ifndef FNET_CFG_SOCKET_BSD_NAMES
     #define FNET_CFG_SOCKET_BSD_NAMES           (1)
 #endif
-   
+
 /**************************************************************************/ /*!
  * @def      FNET_CFG_SOCKET_CALLBACK_ON_RX
  * @brief    "Socket Rx" event handler callback:
  *               - @c 1 = is supported (Default value).
  *               - @b @c 0 = is not supported.@n
- * This event occurs when the socket layer receives any packet for any existing socket. 
+ * This event occurs when the socket layer receives any packet for any existing socket.
  * It can be a packet with or without data-payload including ACK, FIN and SYN.@n
  * The user callback is registered by fnet_socket_set_callback_on_rx().
  * @see fnet_socket_set_callback_on_rx()
@@ -625,7 +625,7 @@
  ******************************************************************************/
 #ifndef FNET_CFG_SOCKET_CALLBACK_ON_RX
     #define FNET_CFG_SOCKET_CALLBACK_ON_RX         (0U)
-#endif   
+#endif
 
 /**************************************************************************/ /*!
  * @def      FNET_CFG_SOCKET_TCP_MSS
@@ -778,6 +778,10 @@
     #define FNET_CFG_DEBUG              (0)
 #endif
 
+#ifndef FNET_CFG_DEBUG_AUTOIP
+    #define FNET_CFG_DEBUG_AUTOIP       (0)
+#endif
+
 #ifndef FNET_CFG_DEBUG_TIMER  /* It will be printed to the UART '!' sign every second. */
     #define FNET_CFG_DEBUG_TIMER        (0)
 #endif
@@ -828,6 +832,10 @@
 
 #ifndef FNET_CFG_DEBUG_IP6
     #define FNET_CFG_DEBUG_IP6          (0)
+#endif
+
+#ifndef FNET_CFG_DEBUG_LINK
+    #define FNET_CFG_DEBUG_LINK         (0)
 #endif
 
 #ifndef FNET_CFG_DEBUG_LLMNR

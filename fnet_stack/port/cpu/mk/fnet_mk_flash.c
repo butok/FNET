@@ -251,7 +251,7 @@ void fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes)
     {
         /* Erase sector/page.*/;
         fnet_ftfl_command(FNET_MK_FNET_FTFL_FCCOB0_CMD_ERASE_SECTOR, (fnet_uint32_t *)flash_addr, 0);
-        
+
         flash_addr = ((fnet_uint8_t *)flash_addr + FNET_CFG_CPU_FLASH_PAGE_SIZE);
         n_pages --;
     }

@@ -652,19 +652,36 @@ void fnet_netif_set_callback_on_ip4_addr_conflict (fnet_netif_callback_ip4_addr_
  *   - @c FNET_FALSE if the IPv4 address conflict is not detected.
  *   - @c FNET_TRUE if the IPv4 address conflict is detected.
  *
- * @see fnet_netif_set_callback_on_ip4_addr_conflict()
+ * @see fnet_netif_set_callback_on_ip4_addr_conflict(), fnet_netif_clear_ip4_addr_conflict()
  *
  ******************************************************************************
  *
- * This function determines if there is the @c netif interface IPv4 address conflict 
+ * This function determines if there is the @c netif interface IPv4 address conflict
  * with another system on the network.@n
  * The address conflict is detected by ARP protocol.@n
- * The conflict flag is cleared on changing of the interface IPv4 address, 
- * using fnet_netif_set_ip4_addr().
+ * The conflict flag is cleared on changing of the interface IPv4 address,
+ * using fnet_netif_set_ip4_addr() or on calling fnet_netif_clear_ip4_addr_conflict().
  *
  ******************************************************************************/
 fnet_bool_t fnet_netif_is_ip4_addr_conflict(fnet_netif_desc_t netif_desc);
 
+/***************************************************************************/ /*!
+ *
+ * @brief    Clears IPv4 address conflict flag.
+ *
+ * @param netif_desc  Network interface descriptor.
+ *
+ * @see fnet_netif_set_callback_on_ip4_addr_conflict(), fnet_netif_is_ip4_addr_conflict()
+ *
+ ******************************************************************************
+ *
+ * This function clears the @c netif interface IPv4 address conflict flag.@n
+ * The address conflict is detected by ARP protocol.@n
+ * The conflict flag is also cleared on changing of the interface IPv4 address,
+ * using fnet_netif_set_ip4_addr().
+ *
+ ******************************************************************************/
+void fnet_netif_clear_ip4_addr_conflict( fnet_netif_desc_t netif_desc );
 
 #if (FNET_CFG_MULTICAST & FNET_CFG_IP4) || defined(__DOXYGEN__)
 

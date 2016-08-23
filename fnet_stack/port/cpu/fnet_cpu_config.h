@@ -43,11 +43,6 @@
  * @brief    This is the set of the @c FNET_CFG_CPU_[processor_type] definitions that
  *           define a currently used processor. @n
  *           Current version of the FNET supports the following processor definitions:
- *            - @c FNET_CFG_CPU_MCF52235  = Used platform is the MCF52235.
- *            - @c FNET_CFG_CPU_MCF52259 = Used platform is the MCF52259.
- *            - @c FNET_CFG_CPU_MCF5282  = Used platform is the MCF5282.
- *            - @c FNET_CFG_CPU_MCF51CN128  = Used platform is the MCF51CN128.
- *            - @c FNET_CFG_CPU_MCF54418  = Used platform is the MCF54418.
  *            - @c FNET_CFG_CPU_MK60DN512  = Used platform is the MK60DN512.
  *            - @c FNET_CFG_CPU_MK60N512  = Used platform is the MK60N512.
  *            - @c FNET_CFG_CPU_MK66FN2  = Used platform is the MK66FN2.
@@ -55,6 +50,14 @@
  *            - @c FNET_CFG_CPU_MK70FN1  = Used platform is the MK70FN1.
  *            - @c FNET_CFG_CPU_MK60FN1  = Used platform is the MK60FN1.
  *            - @c FNET_CFG_CPU_MPC5668G  = Used platform is the MPC5668G.
+ *            - @c FNET_CFG_CPU_MPC5566  = Used platform is the MPC5566.
+ *            - @c FNET_CFG_CPU_MPC564xBC  = Used platform is the MPC564xBC.
+ *            - @c FNET_CFG_CPU_MPC5744P  = Used platform is the MPC5744P.
+ *            - @c FNET_CFG_CPU_MCF52235  = Used platform is the MCF52235.
+ *            - @c FNET_CFG_CPU_MCF52259 = Used platform is the MCF52259.
+ *            - @c FNET_CFG_CPU_MCF5282  = Used platform is the MCF5282.
+ *            - @c FNET_CFG_CPU_MCF51CN128  = Used platform is the MCF51CN128.
+ *            - @c FNET_CFG_CPU_MCF54418  = Used platform is the MCF54418.
  *            @n @n
  *            Selected processor definition should be only one and must be defined as 1.
  *            All others may be defined but must have the 0 value.
@@ -87,7 +90,7 @@
     #define FNET_CFG_CPU_MK60N512   (0)
 #endif
 #ifndef FNET_CFG_CPU_MK60DN512
-    #define FNET_CFG_CPU_MK60DN512   (0)
+    #define FNET_CFG_CPU_MK60DN512  (0)
 #endif
 #ifndef FNET_CFG_CPU_MK64FN1
     #define FNET_CFG_CPU_MK64FN1    (0)
@@ -107,7 +110,6 @@
 #ifndef FNET_CFG_CPU_MPC5566
     #define FNET_CFG_CPU_MPC5566    (0)
 #endif
-/* MPC564xBC NOT SUPPORTED/TESTED */
 #ifndef FNET_CFG_CPU_MPC564xBC
     #define FNET_CFG_CPU_MPC564xBC  (0)
 #endif
@@ -689,7 +691,7 @@
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_ETH_VECTOR_PRIORITY
-    #define FNET_CFG_CPU_ETH_VECTOR_PRIORITY          (2u)
+    #define FNET_CFG_CPU_ETH_VECTOR_PRIORITY    (2u)
 #endif
 
 
@@ -793,7 +795,7 @@
  *              @n @n NOTE: User application should not change this parameter.
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_ETH_MIB
-    #define FNET_CFG_CPU_ETH_MIB            (1)
+    #define FNET_CFG_CPU_ETH_MIB                (1)
 #endif
 
 /**************************************************************************/ /*!
@@ -875,8 +877,6 @@
     #define FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT            (0)
 #endif
 
-
 /*! @} */
-
 
 #endif /* _FNET_CPU_CONFIG_H_ */

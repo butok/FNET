@@ -43,9 +43,9 @@ static fnet_uint16_t fnet_port_last = FNET_SOCKET_PORT_RESERVED + 1u;
 static fnet_socket_if_t *fnet_socket_desc[FNET_CFG_SOCKET_MAX];
 
 #if FNET_CFG_SOCKET_CALLBACK_ON_RX
-/* Socket activity event handler.*/
-static void (*fnet_socket_callback_on_rx)(void) ;
-fnet_event_desc_t fnet_socket_event_rx;
+    /* Socket activity event handler.*/
+    static void (*fnet_socket_callback_on_rx)(void) ;
+    fnet_event_desc_t fnet_socket_event_rx;
 #endif
 
 /************************************************************************
@@ -690,7 +690,6 @@ fnet_return_t fnet_socket_bind( fnet_socket_t s, const struct sockaddr *name, fn
 
     if((sock = fnet_socket_desc_find(s)) != 0)
     {
-
         if((error = fnet_socket_addr_check_len(name, namelen)) != FNET_ERR_OK)
         {
             goto ERROR_SOCK;

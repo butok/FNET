@@ -93,7 +93,7 @@ void fapp_llmnr_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
 /************************************************************************
 * NAME: fapp_llmnr_info
 *
-* DESCRIPTION:
+* DESCRIPTION: Print service state.
 *************************************************************************/
 void fapp_llmnr_info(fnet_shell_desc_t desc)
 {

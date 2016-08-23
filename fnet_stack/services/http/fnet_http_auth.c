@@ -271,7 +271,7 @@ static fnet_size_t fnet_http_auth_scheme_basic_generate(struct fnet_http_if *htt
 {
     fnet_size_t result = 0u;
     char *realm;
-    
+
     if(http->session_active->response.auth_entry->realm)
     {
         /* User defined realm.*/
@@ -282,7 +282,7 @@ static fnet_size_t fnet_http_auth_scheme_basic_generate(struct fnet_http_if *htt
         /* User directory name as realm.*/
         realm = http->session_active->response.auth_entry->dir_name;
     }
-        
+
 
     result += (fnet_size_t)fnet_snprintf((fnet_char_t *)buffer, buffer_size, "realm=\"%s\"\r\n", realm);
 

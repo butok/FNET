@@ -1125,7 +1125,7 @@ fnet_return_t fnet_fec_mii_write(fnet_fec_if_t *ethif, fnet_uint32_t reg_addr, f
 *************************************************************************/
 static fnet_bool_t fnet_fec_is_connected(fnet_netif_t *netif)
 {
-    fnet_uint16_t     data;
+    fnet_uint16_t   data;
     fnet_fec_if_t   *ethif;
     fnet_bool_t     res = FNET_FALSE;
 
@@ -1141,6 +1141,10 @@ static fnet_bool_t fnet_fec_is_connected(fnet_netif_t *netif)
     if (fnet_fec_mii_read(ethif, FNET_FEC_MII_REG_SR, &data) == FNET_OK)
     {
         res = (((data & FNET_FEC_MII_REG_SR_LINK_STATUS) != 0u) ? FNET_TRUE : FNET_FALSE);
+    }
+    else /* Return previous value in case read PHY error. */
+    {
+        res = netif->is_connected;
     }
 
     return res;

@@ -50,11 +50,11 @@
 #define FNET_NETIF_PMTU_TIMEOUT          (10u*60u*1000u)   /* ms. RFC1981: The recommended setting for this
                                                            * timer is twice its minimum value (10 minutes).*/
 #define FNET_NETIF_PMTU_PERIOD           (FNET_NETIF_PMTU_TIMEOUT/10u)   /* ms. RFC1981: Once a minute.*/
+#define FNET_NETIF_IS_CONNECTED_PERIOD   (200)  /* ms. Period used to limit netif->api->is_connected() call rate, cause of high amount of time used by PHY register read.*/
 
+fnet_netif_t *fnet_netif_list;                  /* The list of network interfaces. */
 
-fnet_netif_t *fnet_netif_list;           /* The list of network interfaces. */
-
-static fnet_netif_t *fnet_netif_default; /* Default net_if. */
+static fnet_netif_t *fnet_netif_default;        /* Default net_if. */
 
 /* Duplicated IP event handler.*/
 static fnet_netif_callback_ip4_addr_conflict_t         fnet_netif_callback_ip4_addr_conflict;
@@ -897,8 +897,6 @@ fnet_return_t fnet_netif_get_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
     fnet_return_t result;
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
 
-    fnet_stack_mutex_lock();
-
     if(netif && hw_addr && hw_addr_size && (netif->api)
        && (hw_addr_size >= netif->api->hw_addr_size)
        && (netif->api->get_hw_addr))
@@ -909,8 +907,6 @@ fnet_return_t fnet_netif_get_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
     {
         result = FNET_ERR;
     }
-
-    fnet_stack_mutex_unlock();
 
     return result;
 }
@@ -1031,7 +1027,19 @@ fnet_bool_t fnet_netif_is_connected( fnet_netif_desc_t netif_desc )
 
     if(netif && (netif->api->is_connected))
     {
-        result = netif->api->is_connected(netif);
+        fnet_time_t current_time = fnet_timer_ticks();
+
+        if(fnet_timer_get_interval(netif->is_connected_timestamp, current_time) > (FNET_NETIF_IS_CONNECTED_PERIOD / FNET_TIMER_PERIOD_MS))
+        {
+            result = netif->api->is_connected(netif);
+            /* Save last state.*/
+            netif->is_connected = result;
+            netif->is_connected_timestamp = current_time;
+        }
+        else
+        {
+            result = netif->is_connected;
+        }
     }
     else
     {
@@ -1089,6 +1097,22 @@ fnet_bool_t fnet_netif_is_ip4_addr_conflict( fnet_netif_desc_t netif_desc )
     }
 
     return result;
+}
+
+/************************************************************************
+* NAME: fnet_netif_clear_ip4_addr_conflict
+*
+* DESCRIPTION: This function clears IPv4 adress conflict flag.
+*************************************************************************/
+void fnet_netif_clear_ip4_addr_conflict( fnet_netif_desc_t netif_desc )
+{
+    fnet_bool_t     result = FNET_FALSE;
+    fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
+
+    if(netif)
+    {
+        netif->ip4_addr_conflict = FNET_FALSE;
+    }
 }
 
 /************************************************************************

@@ -108,7 +108,7 @@ fnet_time_t fnet_timer_ticks( void )
 *************************************************************************/
 fnet_time_t fnet_timer_seconds( void )
 {
-    return (fnet_current_time / FNET_TIMER_TICK_IN_SEC);
+    return (fnet_current_time / FNET_TIMER_TICKS_IN_SEC);
 }
 
 /************************************************************************

@@ -35,14 +35,13 @@
 #include "fapp.h"
 #include "fapp_params_prv.h"
 
-
 /************************************************************************
 *    Definitions.
 *************************************************************************/
 extern const fnet_char_t FAPP_HELP_STR[];
 extern const fnet_char_t FAPP_DELIMITER_STR[];
 extern const fnet_char_t FAPP_CANCELLED_STR[];
-extern const fnet_char_t FAPP_UPDATED_IP_STR[]; 
+extern const fnet_char_t FAPP_UPDATED_IP_STR[];
 extern const fnet_char_t FAPP_TOCANCEL_STR[];
 extern const fnet_char_t FAPP_COMMAND_RELEASE[]; /* Service release command */
 extern const fnet_char_t FAPP_PARAM_ERR[];
@@ -56,11 +55,12 @@ extern const fnet_char_t *const fapp_enabled_str[];
 struct boot_mode
 {
     fapp_params_boot_mode_t index;
-    fnet_char_t                    *name;
+    fnet_char_t             *name;
     void(* handler)(fnet_shell_desc_t desc);
 };
 
-extern const struct fnet_shell_command fapp_cmd_table [];
+extern const struct fnet_shell_command fapp_cmd_table[];
+extern const fnet_char_t *const fapp_netif_connection_state_str[];
 
 /************************************************************************
 *     Function Prototypes
@@ -77,6 +77,9 @@ void fapp_print_netif_addr(fnet_shell_desc_t desc, fnet_address_family_t family,
 void fapp_go_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 const struct boot_mode *fapp_boot_mode_by_name (fnet_char_t *name);
 const struct boot_mode *fapp_boot_mode_by_index (fapp_params_boot_mode_t index);
+#if FNET_CFG_IP4 &&((FAPP_CFG_DHCP_CMD && FNET_CFG_DHCP) || FNET_CFG_AUTOIP)
+void fapp_addr_callback_updated(fnet_shell_desc_t desc, fnet_netif_desc_t netif);
+#endif
 
 #if defined(__cplusplus)
 }

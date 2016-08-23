@@ -17,7 +17,7 @@
 
 /*  "dhcp" command.*/
 #define FAPP_CFG_DHCP_CMD               (1)
-#define FAPP_CFG_DHCP_CMD_DISCOVER_MAX  (5)
+#define FAPP_CFG_DHCP_CMD_DISCOVER_MAX  (3)
 
 /*  "autoip" command.*/
 #define FAPP_CFG_AUTOIP_CMD             (1)
@@ -73,10 +73,14 @@
  * memory duiring flashing of the application. */
 #define FAPP_CFG_PARAMS_REWRITE_FLASH    (1)
 
-#if 1 /* To run servers on startup set to 1. */
-    #define FAPP_CFG_STARTUP_SCRIPT_ENABLED	(1)
-    #define FAPP_CFG_STARTUP_SCRIPT "llmnr"     /* For example "http; telnet" */
+#if 0 /* On startup script.*/
+    #define FAPP_CFG_STARTUP_SCRIPT_ENABLED	 (1)
+    #define FAPP_CFG_STARTUP_SCRIPT          "http;"     /* For example "http; telnet" */
 #endif
+
+/* On connect/unconnect scripts:*/
+#define FAPP_CFG_LINK_CONNECT_SCRIPT     "dhcp autoip; llmnr;"
+#define FAPP_CFG_LINK_UNCONNECT_SCRIPT   "llmnr release; dhcp release; autoip release;"
 
 #endif /* _FAPP_USER_CONFIG_H_ */
 

@@ -56,12 +56,9 @@
 #define FNET_PING_ERR_IS_INITIALIZED    "ERROR: PING is already initialized."
 #define FNET_PING_ERR_GETSOCKNAME       "ERROR: Socket getsockname error."
 
-
 #define FNET_PING_BUFFER_SIZE   (sizeof(fnet_icmp_echo_header_t) + FNET_CFG_PING_PACKET_MAX)
 
 static void fnet_ping_state_machine(void *fnet_ping_if_p);
-
-
 
 /************************************************************************
 *    PING service interface structure.
@@ -218,15 +215,15 @@ static void fnet_ping_state_machine(void *fnet_ping_if_p)
                 if(ping_if->family == AF_INET6)
                 {
                     const fnet_ip6_addr_t   *src_ip = fnet_ip6_select_src_addr(FNET_NULL, (fnet_ip6_addr_t *)ping_if->target_addr.sa_data); /*TBD  Check result.*/
-                    
+
                     if(src_ip) /* paranoic check.*/
                     {
                         hdr->header.checksum = fnet_checksum_pseudo_buf(&fnet_ping_if.buffer[0],
-                                           (fnet_uint16_t)(sizeof(*hdr) + ping_if->packet_size),
-                                           FNET_HTONS((fnet_uint16_t)IPPROTO_ICMPV6),
-                                           (const fnet_uint8_t *)src_ip,
-                                           ping_if->target_addr.sa_data,
-                                           sizeof(fnet_ip6_addr_t));
+                                               (fnet_uint16_t)(sizeof(*hdr) + ping_if->packet_size),
+                                               FNET_HTONS((fnet_uint16_t)IPPROTO_ICMPV6),
+                                               (const fnet_uint8_t *)src_ip,
+                                               ping_if->target_addr.sa_data,
+                                               sizeof(fnet_ip6_addr_t));
                     }
                 }
                 else

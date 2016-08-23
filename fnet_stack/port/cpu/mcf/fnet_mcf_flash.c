@@ -159,7 +159,7 @@ void fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes)
     {
         /* Erase sector/page.*/;
         cfm_command( FNET_MCF_CFM_CFMCMD_PAGE_ERASE, flash_addr, 0);
-        
+
         flash_addr = ((fnet_uint8_t *)flash_addr + FNET_CFG_CPU_FLASH_PAGE_SIZE);
         n_pages --;
     }

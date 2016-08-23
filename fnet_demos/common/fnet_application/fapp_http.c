@@ -276,9 +276,9 @@ static fnet_return_t fapp_http_cgi_stdata_handle(fnet_http_session_t session, fn
 
     /* Get Time. */
     cur_time = fnet_timer_ticks();
-    t_hour = cur_time / FNET_TIMER_TICK_IN_HOUR;
-    t_min  = (cur_time % FNET_TIMER_TICK_IN_HOUR) / FNET_TIMER_TICK_IN_MIN;
-    t_sec  = (cur_time % FNET_TIMER_TICK_IN_MIN) / FNET_TIMER_TICK_IN_SEC;
+    t_hour = cur_time / FNET_TIMER_TICKS_IN_HOUR;
+    t_min  = (cur_time % FNET_TIMER_TICKS_IN_HOUR) / FNET_TIMER_TICKS_IN_MIN;
+    t_sec  = (cur_time % FNET_TIMER_TICKS_IN_MIN) / FNET_TIMER_TICKS_IN_SEC;
 
     /* Get statistics. */
     fnet_memset_zero( &statistics, sizeof(struct fnet_netif_statistics) );

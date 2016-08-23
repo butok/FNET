@@ -533,11 +533,6 @@ static void fnet_http_state_machine( void *http_if_p )
 
                         send_size = (session->buffer_actual_size - session->response.buffer_sent);
 
-                        if(send_size > http->send_max)
-                        {
-                            send_size = http->send_max;
-                        }
-
                         if((res = fnet_socket_send(session->socket_foreign, session->buffer
                                                    + session->response.buffer_sent, send_size, 0u)) != FNET_ERR)
                         {
@@ -659,14 +654,6 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
     /* Set socket options.*/
     fnet_socket_setopt (http_if->socket_listen, SOL_SOCKET, SO_LINGER,
                         &linger_option, sizeof(linger_option));
-    /* Get size of the socket send buffer */
-    opt_len = sizeof(http_if->send_max);
-    if(fnet_socket_getopt(http_if->socket_listen, SOL_SOCKET, SO_SNDBUF,
-                          (fnet_uint8_t *) &http_if->send_max, &opt_len) == FNET_ERR)
-    {
-        FNET_DEBUG_HTTP("HTTP: Socket getsockopt() error.");
-        goto ERROR_2;
-    }
 
     /* Listen.*/
     if(fnet_socket_listen(http_if->socket_listen, FNET_HTTP_BACKLOG_MAX) == FNET_ERR)
@@ -868,17 +855,17 @@ static fnet_return_t fnet_http_tx_status_line (struct fnet_http_if *http)
             case 4:
                 /*Final CRLF.*/
                 result_state = (fnet_size_t)fnet_snprintf((fnet_char_t *)&session->buffer[result], (FNET_HTTP_BUF_SIZE - result), "%s", "\r\n");
-    #if 0 /* On any error code.*/
+#if 0 /* On any error code.*/
                 if(session->response.status.code != FNET_HTTP_STATUS_CODE_OK)
                 {
                     session->response.send_eof = FNET_TRUE; /* Only sataus (without data).*/
                 }
-    #else
+#else
                 if(session->response.status.code == FNET_HTTP_STATUS_CODE_UNAUTHORIZED) /* UNAUTHORIZED */
                 {
                     session->response.send_eof = FNET_TRUE; /* Only sataus (without data).*/
-                } 
-    #endif
+                }
+#endif
 
                 session->response.tx_data = session->request.method->send;
                 break;

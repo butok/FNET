@@ -19,7 +19,7 @@
 * Processor type FNET_CFG_CPU_<name> is defined in project options.
 ******************************************************************************/
 /*****************************************************************************
-*  Default serial port number FNET_CFG_CPU_SERIAL_PORT_DEFAULT is defined 
+*  Default serial port number FNET_CFG_CPU_SERIAL_PORT_DEFAULT is defined
 *  in project options.
 ******************************************************************************/
 

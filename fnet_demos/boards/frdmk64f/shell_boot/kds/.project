@@ -842,6 +842,36 @@
       <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/http/fnet_http_ssi_prv.h</locationURI>
     </link>
     <link>
+      <name>fnet_stack/services/link</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/link/fnet_link.c</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/link/fnet_link.c</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/link</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/link/fnet_link.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/link/fnet_link.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/link</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/link/fnet_link_config.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/link/fnet_link_config.h</locationURI>
+    </link>
+    <link>
       <name>fnet_stack/services/llmnr</name>
       <type>2</type>
       <locationURI>virtual:/virtual</locationURI>
@@ -1850,6 +1880,26 @@
       <name>fnet_application/fapp_llmnr.h</name>
       <type>1</type>
       <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_llmnr.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_application</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_application/fapp_link.c</name>
+      <type>1</type>
+      <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_link.c</locationURI>
+    </link>
+    <link>
+      <name>fnet_application</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_application/fapp_link.h</name>
+      <type>1</type>
+      <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_link.h</locationURI>
     </link>
     <link>
       <name>fnet_application</name>

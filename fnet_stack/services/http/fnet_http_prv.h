@@ -208,7 +208,6 @@ struct fnet_http_if
     fnet_fs_dir_t                           root_dir;
     fnet_fs_file_t                          index_file;
     const struct fnet_http_file_handler     *index_file_handler;
-    fnet_size_t                             send_max;                 /* Socket maximum tx buffer.*/
     struct fnet_http_session_if             *session_active;
     struct fnet_http_session_if             session[FNET_CFG_HTTP_SESSION_MAX];
 #if FNET_CFG_HTTP_VERSION_MAJOR

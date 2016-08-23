@@ -149,8 +149,8 @@ fnet_return_t fapp_mem_memcpy (fnet_shell_desc_t desc, void *dest, const void *s
 
         if(region && (region->memcpy))
         {
-        #if FAPP_CFG_CHECK_FLASH_BEFORE_WRITE
-            if(region->erase) /* Check if it is FLASH memory
+#if FAPP_CFG_CHECK_FLASH_BEFORE_WRITE
+            if(region->erase) /* Check if it is FLASH memory*/
             {
                 /* Check if memory is erased.*/
                 for(i = 0u; i < n; i++)
@@ -162,7 +162,7 @@ fnet_return_t fapp_mem_memcpy (fnet_shell_desc_t desc, void *dest, const void *s
                     }
                 }
             }
-        #endif
+#endif
 
             /* Write. */
             region->memcpy(dest, src, n);

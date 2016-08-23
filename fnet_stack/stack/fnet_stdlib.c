@@ -278,10 +278,7 @@ fnet_int32_t fnet_strcmp( const fnet_char_t *str1, const fnet_char_t *str2 )
 }
 
 /************************************************************************
-* NAME: fnet_strlen
-*
-* DESCRIPTION:
-*
+* DESCRIPTION: Calculates the length of a string.
 *************************************************************************/
 fnet_size_t fnet_strlen (const fnet_char_t *str)
 {

@@ -69,7 +69,7 @@ typedef enum
 ******************************************************************************/
 struct fnet_http_auth
 {
-    fnet_char_t *realm;	            /**< @brief Name of realm. A realm can be seen as an area for which the credentials are used. 
+    fnet_char_t *realm;	            /**< @brief Name of realm. A realm can be seen as an area for which the credentials are used.
                                          This is also the string that is shown when a WEB browser pops up the login window, for example: "Please enter your username and password for <realm>"
                                          @n It is optional and can be set to zero. In this case the sent realm will be equal to the @c dir_name parameter.*/
     fnet_char_t *dir_name;	        /**< @brief Name of the directory to protect.*/

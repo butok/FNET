@@ -85,7 +85,6 @@ typedef struct fnet_eth_if
     void                ( *multicast_leave)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);
 #endif /* FNET_CFG_MULTICAST */
     /* Internal parameters.*/
-    fnet_bool_t         connection_flag;
     fnet_timer_desc_t   eth_timer;    /* Optional ETH timer.*/
 #if FNET_CFG_IP4
     fnet_arp_if_t       arp_if;

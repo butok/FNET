@@ -313,9 +313,9 @@ static void fnet_tcp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  stru
         drop_flag = fnet_tcp_inputsk(sk, nb, src_addr, dest_addr);
 
         /* Wake-up user application.*/
-    #if FNET_CFG_SOCKET_CALLBACK_ON_RX
+#if FNET_CFG_SOCKET_CALLBACK_ON_RX
         fnet_event_raise(fnet_socket_event_rx);
-    #endif
+#endif
 
         if(drop_flag == FNET_TRUE)
         {

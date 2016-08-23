@@ -60,19 +60,19 @@
 /* CW compiler. */
 #if (defined(FNET_CFG_COMP_CW) && FNET_CFG_COMP_CW)
     #define FNET_COMP_STR       "CW"
-/* IAR compiler. */
+    /* IAR compiler. */
 #elif (defined(FNET_CFG_COMP_IAR) && FNET_CFG_COMP_IAR)
     #define FNET_COMP_STR       "IAR"
-/* GHS compiler. */
+    /* GHS compiler. */
 #elif (defined(FNET_CFG_COMP_GHS) && FNET_CFG_COMP_GHS)
     #define FNET_COMP_STR       "GHS"
-/* Keil uVision compiler. */
+    /* Keil uVision compiler. */
 #elif (defined(FNET_CFG_COMP_UV) && FNET_CFG_COMP_UV)
     #define FNET_COMP_STR       "UV"
-/* GNU GCC */
+    /* GNU GCC */
 #elif (defined(FNET_CFG_COMP_GNUC) && FNET_CFG_COMP_GNUC)
     #define FNET_COMP_STR       "GCC"
-/* Diab DCC */
+    /* Diab DCC */
 #elif (defined(FNET_CFG_COMP_DCC) && FNET_CFG_COMP_DCC)
     #define FNET_COMP_STR       "DCC"
 #endif
@@ -82,23 +82,23 @@
     #if (defined(__MWERKS__) || defined(__CODEWARRIOR__))
         #define FNET_CFG_COMP_CW    (1)
         #define FNET_COMP_STR       "CW"
-    /* IAR compiler. */
+        /* IAR compiler. */
     #elif (defined(__IAR_SYSTEMS_ICC__)) || (defined(__IAR_SYSTEMS_ASM__))
         #define FNET_CFG_COMP_IAR   (1)
         #define FNET_COMP_STR       "IAR"
-    /* GHS compiler. */
+        /* GHS compiler. */
     #elif defined(__ghs__)
         #define FNET_CFG_COMP_GHS   (1)
         #define FNET_COMP_STR       "GHS"
-    /* Keil uVision compiler. */
+        /* Keil uVision compiler. */
     #elif defined(__CC_ARM)
         #define FNET_CFG_COMP_UV    (1)
         #define FNET_COMP_STR       "UV"
-    /* GNU GCC */
+        /* GNU GCC */
     #elif defined(__GNUC__)
         #define FNET_CFG_COMP_GNUC  (1)
         #define FNET_COMP_STR       "GCC"
-    /* Diab DCC */
+        /* Diab DCC */
     #elif defined(__DCC__)
         #define FNET_CFG_COMP_DCC   (1)
         #define FNET_COMP_STR       "DCC"

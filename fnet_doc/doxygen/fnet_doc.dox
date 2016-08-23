@@ -44,11 +44,10 @@ The FNET TCP/IP stack enables to connect an embedded system to a TCP/IP network.
 It is modular, portable, and written in the C programming language with some platform-specific optimization in assembler. It is 
 distributed in the form of source code, so the compile-time optimizations and configuration are possible (actually, it is the 
 preferred way to configure stack features). @n
-@n
+
 @image html fnet_topview.png "FNET Top View"
-@n
+
 @par The stack provides following protocols and services:
-@n 
 - Supported Platforms:
 	- @b ARM Cortex-M4, Kinetis:
 		- @b MK64FN1M (FRDM-K64F board)
@@ -95,8 +94,9 @@ preferred way to configure stack features). @n
 		- Basic access authentication.
 	- @b TELNET server. 
 	- @b DHCP/BOOTP client.
-	- @b Auto-IP service.
+	- @b Auto-IP service. Passed "Phase 1, Link-Local Address Allocation", Bonjour Conformance Test suite Version 1.3.1.
 	- @b DNS client/resolver.
+	- Link-Detection service. 
 	- @b LLMNR Server/Responder.
 	- @b PING service.
 	- @b TFTP server and client. Both Read and Write requests are supported.
@@ -112,6 +112,28 @@ preferred way to configure stack features). @n
 	- @ref quick_start_shell "Shell Application".
 	- @ref quick_start_boot "TCP/UDP Throughput Benchmark Application".
 - Source-code based User documentation, by Doxygen.
+- RFC list supported by the FNET stack: 
+	- RFC 768 - UDP
+	- RFC 791 - IPv4
+	- RFC 792 - ICMPv4
+	- RFC 793 - TCP
+	- RFC 826 - ARP
+	- RFC 854 - Telnet server
+	- RFC 951 - BOOTP client
+	- RFC 1035 - DNS resolver
+	- RFC 1350 - TFTP client and server
+	- RFC 1945 - HTTP v 1.0 server
+	- RFC 1981 - Path MTU Discovery for IPv6
+	- RFC 2131 - DHCP IPv4 client
+	- RFC 2236 - IGMPv2
+	- RFC 2460 - IPv6
+	- RFC 3927 - Dynamic Configuration of IPv4 Link-Local
+	- RFC 4861 - Neighbor Discovery for IPv6
+	- RFC 4862 - IPv6 Stateless Address Autoconfiguration
+	- RFC 4443 - ICMPv6
+	- RFC 4795 - Link-Local Multicast Name Resolution (LLMNR) server
+
+
 
 */
 
@@ -130,14 +152,15 @@ fnet                      - FNET root directory.
 |    |-- stack                - FNET TCP/IP stack platform-independent source code.
 |    |-- services             - FNET Services.
 |    |    |-- autoip            - Auto-IP service.
-|    |    |-- dns               - DNS client/resolver service.
 |    |    |-- dhcp              - DHCP/BOOTP client service.
+|    |    |-- dns               - DNS client/resolver service.
 |    |    |-- flash             - Flash  Memory driver.
 |    |    |-- fs                - File System driver.
 |    |    |-- http              - HTTP Server service.
-|    |    |-- poll              - Polling Mechanism library.
-|    |    |-- ping              - PING service.
+|    |    |-- link              - Link-Detection service.
 |    |    |-- llmnr             - LLMNR Server/Responder.
+|    |    |-- ping              - PING service.
+|    |    |-- poll              - Polling Mechanism library.
 |    |    |-- serial            - Serial Input/Output driver.
 |    |    |-- shell             - Command Shell service.
 |    |    |-- telnet            - TELNET server service.
@@ -149,7 +172,6 @@ fnet                      - FNET root directory.
 |         |    |-- mk                - Freescale Kinetis-specific source code.
 |         |    |-- mpc               - Freescale Power Architecture-specific source code.
 |         |-- compiler             - Compiler-specific source code.
-|         |-- os                   - OS-specific source code.
 |-- fnet_doc                  - FNET documentation.
 |-- fnet_demos                - FNET demo projects.
 |    |-- common                 - Common source code used by demos.
@@ -281,19 +303,19 @@ Parameters loaded from Flash.
  FNET Shell Application
 ************************************************
  FNET TCP/IP Stack for MK64FN1
- Version 2.7.0
- Built Nov 19 2014 at 14:04:02 by IAR
+ Version 3.5.0
+ Built Aug 23 2016 at 13:18:33 by IAR
 ************************************************
  Interface        : eth0
- IPv4 Address     : 192.168.0.22 <manual>
- IPv6 Address     : fe80::204:9fff:fe14:428 <autoconfigurable> ScopeID:1
+ IPv4 Address     : 192.168.0.20 <manual>
+ IPv6 Address     : fe80::204:9fff:fe13:1845 <autoconfigurable> ScopeID:1
  IPv4 Subnet mask : 255.255.255.0
  IPv4 Gateway     : 0.0.0.0
  IPv4 DNS         : 0.0.0.0
- MAC Address      : 00:04:9f:14:04:28
+ MAC Address      : 00:04:9f:13:18:45
  MTU              : 1500
- Link Status      : connected
- Free Heap        : 30288
+ Link Status      : unconnected
+ Free Heap        : 30272
  HTTP Server      : disabled
  DHCP Client      : disabled
  AUTOIP Service   : disabled
@@ -301,13 +323,55 @@ Parameters loaded from Flash.
  LLMNR Server     : disabled
 
  Enter 'help' for command list.
-************************************************ 
+************************************************
 
-SHELL> 
+SHELL>
 @endverbatim
-- There is possibility to start any service automatically by setting the @c FAPP_CFG_STARTUP_SCRIPT_ENABLED parameter to @c 1 and setting the FAPP_CFG_STARTUP_SCRIPT parameter to command line string. For example the demo application start automatically LLMNR server, which allows name resolution for hosts on the same local link. 
+
+- Shell application monitors network interface connection status using Link-Detection service (enabled by @ref FNET_CFG_LINK).
+  Whenever the network interface indicates that it has been connected, application begins the auto-configuration process using DHCPv4.
+  If DHCPv4 server has not been discovered on local network, the application start Auto-IP service. 
+  Whenever the network interface indicates that it has been disconnected, the application disables bound protocols on this interface. @n
+  @note On connect/unconnect scripts are defined by @c FAPP_CFG_LINK_CONNECT_SCRIPT and @c FAPP_CFG_LINK_UNCONNECT_SCRIPT in fapp_user_config.h
+  
+  So if network cable is connected, in your terminal program window you should see:
 @verbatim
-Startup script: llmnr
+eth0: connected => Script: dhcp autoip; llmnr;
+************************************************
+ DHCPv4 Client started.
+************************************************
+Press [Ctr+C] to cancel.
+DHCP: Discovering...
+DHCP: Discovering...
+DHCP: Discovering...
+Cancelled
+************************************************
+ Auto-IP service started.
+************************************************
+Press [Ctr+C] to cancel.
+AutoIP: Probing...
+AutoIP: Probing...
+AutoIP: Probing...
+
+************************************************
+ IPv4 parameters updated :
+************************************************
+ Interface        : eth0
+ IPv4 Address     : 169.254.71.33 <autoconfigurable>
+ IPv6 Address     : fe80::204:9fff:fe13:1845 <autoconfigurable> ScopeID:1
+ IPv4 Subnet mask : 255.255.0.0
+ IPv4 Gateway     : 0.0.0.0
+ IPv4 DNS         : 0.0.0.0
+************************************************
+ LLMNR server started.
+ Host Name        : fnet
+************************************************
+SHELL>
+@endverbatim
+- There is additional possibility to start any other service (http, telnet etc.) automatically during power-up by setting the @c FAPP_CFG_STARTUP_SCRIPT_ENABLED parameter to @c 1 and setting the FAPP_CFG_STARTUP_SCRIPT parameter to command line string.
+- You may start LLMNR server (if not started already during start-up), which allows name resolution for hosts on the same local link. 
+@verbatim
+SHELL> llmnr
 ************************************************
  LLMNR server started.
  Host Name        : fnet
@@ -354,11 +418,11 @@ set mac <ethernet MAC address>
 	- By changing the default values in the @a fnet_user_config.h source file. @n
 	  Your local system administrator is able to assign a unique IPv4 address for the board, and also provide you with the IPv4 addresses 
 	  of the gateway and the netmask.
-- You may start the DHCP IPv4 client to obtain the address parameters automatically from your network DHCP server:
+- You may start the DHCP IPv4 client (if not started already during start-up) to obtain the address parameters automatically from your network DHCPv4 server:
 @verbatim
 SHELL> dhcp
 Press [Ctr+C] to cancel.
-Sending DHCP discover...
+DHCP: Discovering...
 
 ************************************************
  DHCP has updated/renewed parameters:
@@ -370,7 +434,7 @@ Sending DHCP discover...
  DNS              : 10.171.88.254
 SHELL>
 @endverbatim
-- You may also also start the Auto-IP service to obtain automatically the IPv4 link-local address within the
+- You may also also start (if not started during start-up) the Auto-IP service to obtain automatically the IPv4 link-local address within the
  169.254/16 prefix that is valid for communication with other devices
   connected to the same physical (or logical) link:
 @verbatim
@@ -379,9 +443,9 @@ SHELL> autoip
  Auto-IP service started.
 ************************************************
 Press [Ctr+C] to cancel.
-Probing...
-Probing...
-Probing...
+AutoIP: Probing...
+AutoIP: Probing...
+AutoIP: Probing...
 
 ************************************************
  IPv4 parameters updated :
@@ -392,13 +456,15 @@ Probing...
  IPv4 Gateway     : 0.0.0.0
  IPv4 DNS         : 0.0.0.0
 @endverbatim
+@note You may start Auto-IP service automatically, if no DHCPv4 server was discovered, by adding the @c autoip parameter to the @c dhcp command.
+
 - You may enter the @c save command to save the all run-time parameters to non-volatile memory (it is located in the last erase page of the on-chip flash memory).
 @verbatim
 SHELL> save
 Parameters saved
 SHELL>
 @endverbatim
-NOTE: The @c save command does not save the @c ip parameter in case it was allocated by a DHCP server to avoid IPv4 address conflict during the system startup.
+@note The @c save command does not save the @c ip parameter in case it was allocated by a DHCP server to avoid IPv4 address conflict during the system startup.
 - You should now be able to "ping" the board from one of your workstations. The ping program is a very useful diagnostic tool used to check that the board`s IP information is properly configured. 
 - The ping tool can be used from the command-line environment on the host PC: 
 @verbatim ping <your_board_IP_adress> @endverbatim 
@@ -1277,22 +1343,29 @@ To add the FNET TCP/IP stack code to your project, follow the steps below:
 /* main entry point*/
 int main(void)
 {
-    
+	static fnet_uint8_t         stack_heap[FNET_CFG_HEAP_SIZE];
+    struct fnet_init_params     init_params;
+	
     /* Init UART */
     fnet_cpu_serial_init(FNET_CFG_CPU_SERIAL_PORT_DEFAULT, 115200);
 
     /* Enable interrupts */
     fnet_cpu_irq_enable(0);
     
+	/* Input parameters for FNET stack initialization */
+    init_params.netheap_ptr = stack_heap;
+    init_params.netheap_size = FNET_CFG_HEAP_SIZE;
+	
     /* FNET Initialization */
-    if (fnet_init_static() != FNET_ERR) 
+    if (fnet_init(&init_params) != FNET_ERR) 
     {
-        fnet_printf(__TIME__);
-        fnet_printf("\nTCP/IP stack initialization is done.\n");
+        fnet_printf("TCP/IP stack initialization is done.\n");
+		
+		/* You may use FNET stack API */
     }
     else 
     {
-        fnet_printf("\nError:TCP/IP stack initialization is failed.\n");
+        fnet_printf("Error:TCP/IP stack initialization is failed.\n");
     }
 		
     for(;;) 
@@ -1470,6 +1543,17 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.5.0:
+	- Improved Auto-IP service to follow RFC3927. 
+	  It has passed the "Phase 1, Link-Local Address Allocation" test cases of the Bonjour Conformance Test suite Version 1.3.1.
+	- Implemented Link-Detection service, enabled by FNET_CFG_LINK.
+	- Added Link-Detection to the Shell example application. 
+	  Whenever the network interface indicates that it has been disconnected, application disables the bound/discover protocols (DHCP, AutoIP, LLMNR).
+      And the application begins again the auto-configuration process (DHCP, AutoIP, LLMNR) whenever the interface has been connected.
+	- Added fnet_netif_clear_ip4_addr_conflict(), which clears IPv4 address conflict flag.	
+	- Allowed nested calling of shell scripts, using fnet_shell_script().
+	- Other minor changes and fixes.
+
 - Version 3.4.0:
 	- Added fnet_socket_set_callback_on_rx(), which registers the "Socket RX" event handler callback. This event occurs when the socket layer receives any packet for any existing socket, which is enabled by FNET_CFG_SOCKET_CALLBACK_ON_RX.
 	- Added Multi-Threading Mutex API, defined by fnet_mutex_api_t. This optional functionality is enabled by FNET_CFG_MULTITHREADING. 
@@ -1478,7 +1562,7 @@ FNET public releases:
 	- Improved compiler auto-detection.
 	- Fixed many potential issues found by source code static-analysis. 
 	- Added FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT that allows alternative Ethernet module pin initialization.
-	- Added MPC5744P Flash driver. Thanks to Cavine Patrice. 
+	- Added MPC5744P Flash driver. Thanks to Patrice Cavin. 
 
 - Version 3.3.0:
 	- Added basic Auto-IP service, according to RFC3927 "Dynamic Configuration of IPv4 Link-Local Addresses".
@@ -1486,7 +1570,7 @@ FNET public releases:
 	- Added fnet_netif_is_ip4_addr_conflict() to determine if there is IPv4 address conflict. Just one more possibility in addition to fnet_netif_set_callback_ip4_addr_conflict(). 
 	- Application protocol initialization functions return 0 (wrong zero descriptor) if an error occurs (instead of FNET_ERR, in previous versions).
 	- Updated Demo WEB pages.
-	- Fixed broken HTTP Authentication, that sent data even if the authentication was cancelled.
+	- Fixed broken HTTP Authentication, that sent data even if the authentication was canceled.
 	- Renaming/cleaning in User-API.
 
 - Version 3.2.0:
@@ -2115,96 +2199,86 @@ which includes all service-specific configuration files.
 #define _FNET_USER_CONFIG_H_
 
 /*****************************************************************************
-* Enable proper compiler support.
+* Compiler support FNET_CFG_COMP_<name> is defined in project options.
 ******************************************************************************/
-#define FNET_CFG_COMP_CW            (1)  
-
 /*****************************************************************************
-* Processor type.
-* Selected processor definition should be only one and must be defined as 1. 
-* All others may be defined but must have 0 value.
+* Processor type FNET_CFG_CPU_<name> is defined in project options.
 ******************************************************************************/
-#define FNET_CFG_CPU_MCF52259       (1)
+/*****************************************************************************
+*  Default serial port number FNET_CFG_CPU_SERIAL_PORT_DEFAULT is defined 
+*  in project options.
+******************************************************************************/
 
 /*****************************************************************************
 * IPv4 and/or IPv6 protocol support.
 ******************************************************************************/
 #define FNET_CFG_IP4                (1)
-#define FNET_CFG_IP6                (0)
+#define FNET_CFG_IP6                (1)
 
 /*****************************************************************************
-* IP address for the Ethernet interface. 
-* At runtime it can be changed by the fnet_netif_set_address() or 
+* IP address for the Ethernet interface.
+* At runtime it can be changed by the fnet_netif_set_ip4_addr() or
 * by the DHCP client service.
 ******************************************************************************/
-#define FNET_CFG_ETH_IP4_ADDR        (FNET_IP4_ADDR_INIT(10, 171, 88, 22))
+#define FNET_CFG_ETH0_IP4_ADDR      (FNET_IP4_ADDR_INIT(192U, 168U, 0U, 22U))
 
 /*****************************************************************************
-* IP Subnet mask for the Ethernet interface. 
-* At runtime it can be changed by the fnet_netif_set_netmask() or 
+* IP Subnet mask for the Ethernet interface.
+* At runtime it can be changed by the fnet_netif_set_ip4_subnet_mask() or
 * by the DHCP client service.
 ******************************************************************************/
-#define FNET_CFG_ETH_IP4_MASK        (FNET_IP4_ADDR_INIT(255, 255, 255, 0))
+#define FNET_CFG_ETH0_IP4_MASK      (FNET_IP4_ADDR_INIT(255U, 255U, 255U, 0U))
 
 /*****************************************************************************
 * Gateway IP address for the Ethernet interface.
-* At runtime it can be changed by the fnet_netif_set_gateway() or 
+* At runtime it can be changed by the fnet_netif_set_ip4_gateway() or
 * by the DHCP client service.
 ******************************************************************************/
-#define FNET_CFG_ETH_IP4_GW          (FNET_IP4_ADDR_INIT(10, 171, 88, 254))
+#define FNET_CFG_ETH0_IP4_GW        (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
 
 /*****************************************************************************
 * DNS server IP address for the Ethernet interface.
-* At runtime it can be changed by the fnet_netif_set_dns() or 
-* by the DHCP client service. 
+* At runtime it can be changed by the fnet_netif_set_ip4_dns() or
+* by the DHCP client service.
 * It is used only if FNET_CFG_DNS is set to 1.
 ******************************************************************************/
-#define FNET_CFG_ETH_IP4_DNS         (FNET_IP4_ADDR_INIT(192, 168, 1, 5)) 
+#define FNET_CFG_ETH0_IP4_DNS       (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
 
 /*****************************************************************************
-* Size of the internal static heap buffer. 
-* This definition is used only if the fnet_init_static() was 
-* used for the FNET initialization.
+* Size of the internal heap buffer, used by FNET.
 ******************************************************************************/
-#define FNET_CFG_HEAP_SIZE          (30 * 1024)
+#define FNET_CFG_HEAP_SIZE          (30U * 1024U)
 
 /*****************************************************************************
 * TCP protocol support.
-* You can disable it to save a substantial amount of code if 
+* You can disable it to save a substantial amount of code if
 * your application only needs UDP. By default it is enabled.
 ******************************************************************************/
 #define FNET_CFG_TCP                (1)
 
 /*****************************************************************************
 * UDP protocol support.
-* You can disable it to save a some amount of code if your 
+* You can disable it to save a some amount of code if your
 * application only needs TCP. By default it is enabled.
 ******************************************************************************/
 #define FNET_CFG_UDP                (1)
 
 /*****************************************************************************
 * UDP checksum.
-* If enabled, the UDP checksum will be generated for transmitted 
+* If enabled, the UDP checksum will be generated for transmitted
 * datagrams and be verified on received UDP datagrams.
-* You can disable it to speedup UDP applications. 
+* You can disable it to speedup UDP applications.
 * By default it is enabled.
 ******************************************************************************/
 #define FNET_CFG_UDP_CHECKSUM       (1)
 
 /*****************************************************************************
 * IP fragmentation.
-* If the IP fragmentation is enabled, the IP will attempt to reassemble IP 
+* If the IP fragmentation is enabled, the IP will attempt to reassemble IP
 * packet fragments and will able to generate fragmented IP packets.
 * If disabled, the IP will  silently discard fragmented IP packets..
 ******************************************************************************/
 #define FNET_CFG_IP4_FRAGMENTATION  (1)
-
-/*****************************************************************************
-* MTU.
-* Defines the Maximum Transmission Unit for the Ethernet interface.
-* The largest value is 1500. Recommended range is 600 - 1500
-******************************************************************************/
-#define FNET_CFG_ETH_MTU            (1500)
 
 /*****************************************************************************
 * DHCP Client service support.
@@ -2212,9 +2286,9 @@ which includes all service-specific configuration files.
 #define FNET_CFG_DHCP               (1)
 
 /*****************************************************************************
-* PING service support.
+* Auto-IP service support.
 ******************************************************************************/
-#define FNET_CFG_PING               (1)
+#define FNET_CFG_AUTOIP             (1)
 
 /*****************************************************************************
 * HTTP Server service support.
@@ -2229,24 +2303,31 @@ which includes all service-specific configuration files.
 #define FNET_CFG_TELNET                     (1)
 
 /*****************************************************************************
-* DNS support by network interface.
-******************************************************************************/
-#define FNET_CFG_DNS                        (1)
-
-/*****************************************************************************
-* DNS address client/resolver service support.
-******************************************************************************/
-#define FNET_CFG_DNS_RESOLVER               (1)
-
-/*****************************************************************************
 * Flash Module driver support.
 ******************************************************************************/
 #define FNET_CFG_FLASH                      (1)
 
 /*****************************************************************************
+* DNS client/resolver service support.
+******************************************************************************/
+#define FNET_CFG_DNS                        (1)
+#define FNET_CFG_DNS_RESOLVER               (1)
+
+/*****************************************************************************
+* Link-Local Multicast Name Resolution (LLMNR) server/responder support.
+******************************************************************************/
+#define FNET_CFG_LLMNR                      (1)
+#define FNET_CFG_LLMNR_HOSTNAME_TTL         (2u)
+
+/*****************************************************************************
 * PING service support.
 ******************************************************************************/
 #define FNET_CFG_PING                       (1)
+
+/*****************************************************************************
+* Link-Detection service support.
+******************************************************************************/
+#define FNET_CFG_LINK                       (1)
 
 #endif* @endcode
 */
@@ -2335,6 +2416,15 @@ which includes all service-specific configuration files.
 *	@defgroup fnet_dns_config DNS Client Configuration Parameters
 *	@ingroup fnet_services_config 
 *	This section describes the parameters specific to the DNS client.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+
+/*! 
+*	@defgroup fnet_link_config Link-Detection Service Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the Link-Detection Service.
 *	@n
 *   The user may override and change the default values in the application-specific 
 *   configuration file @c fnet_user_config.h.
@@ -2526,6 +2616,11 @@ which includes all service-specific configuration files.
 */
 /*! 
 *	@defgroup fnet_autoip AUTOIP service API
+*	@ingroup services_api 
+*/
+
+/*! 
+*	@defgroup fnet_link Link-Detection service API
 *	@ingroup services_api 
 */
 

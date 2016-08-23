@@ -31,7 +31,7 @@
 * IPv4 Link-Local addresses are not suitable for communication with
 * devices not directly connected to the same physical (or logical)
 * link, and are only used where stable, routable addresses are not
-* available (such as on ad hoc or isolated networks).@n 
+* available (such as on ad hoc or isolated networks).@n
 * Upon receiving a conflicting ARP packet, a Auto-IP service
 * immediately configure a new IPv4 Link-Local address.@n
 * The protocol specification is defined by RFC3927.@n
@@ -48,6 +48,7 @@
 * Configuration parameters:
 * - @ref FNET_CFG_AUTOIP
 * - @ref FNET_CFG_AUTOIP_MAX
+* - @ref FNET_CFG_AUTOIP_DEFEND_INTERVAL
 *
 */
 
@@ -86,24 +87,42 @@ typedef fnet_int32_t fnet_autoip_desc_t;
  ******************************************************************************/
 typedef void(*fnet_autoip_callback_t)(fnet_autoip_desc_t desc, fnet_netif_desc_t netif, void *param);
 
+/**************************************************************************/ /*!
+ * @brief Initialization parameters for the @ref fnet_dhcp_init() function.
+ *
+ * The user application may use this structure to suggest a network address and/or
+ * the lease time to the DHCP client service.@n
+ ******************************************************************************/
+struct fnet_autoip_params
+{
+    fnet_netif_desc_t   netif_desc;    /**< @brief Network interface descriptor to be used by the Link-Local service.*/
+    fnet_ip4_addr_t     ip_address;    /**< @brief Suggested IP address.@n
+                                       * For example, it may be used for the case when the network media indicates that it has been connected, the
+                                       * autoconfiguration process begins again, and attempts to re-use the
+                                       * previously assigned Link-Local address.@n
+                                       * It must have the Link-Local network address 169.254.0.0/16, otherwise it will be ignored. @n
+                                       * This parameter is optional and can be set to @c 0.*/
+};
+
 /***************************************************************************/ /*!
  *
  * @brief    Initializes the Auto-IP service.
  *
- * @param netif      Network interface descriptor to be used by the Link-Local service.
+ * @param params     Initialization parameters defined by @ref fnet_autoip_params.
  *
  * @return This function returns:
  *   - Auto-IP service descriptor if no error occurs.
  *   - @c 0 if an error occurs.
  *
- * @see fnet_autoip_release()
+ * @see fnet_autoip_release(), fnet_autoip_params
  *
  ******************************************************************************
  *
- * This function starts the IPv4 Link-Local address configuration procedure
+ * This function starts the IPv4 Link-Local address configuration procedur
+ * on @c netif interface.
  *
  ******************************************************************************/
-fnet_autoip_desc_t fnet_autoip_init( fnet_netif_desc_t netif );
+fnet_autoip_desc_t fnet_autoip_init( struct fnet_autoip_params *params );
 
 /***************************************************************************/ /*!
  *

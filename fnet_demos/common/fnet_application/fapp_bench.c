@@ -227,7 +227,7 @@ static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
             fapp_bench.socket_foreign = fnet_socket_accept(fapp_bench.socket_listen, &foreign_addr, &addr_len);
 
 
-            exit_flag = fnet_shell_ctrlc (desc);
+            exit_flag = fnet_shell_is_ctrlc (desc);
 
             if(fapp_bench.socket_foreign != FNET_ERR)
             {
@@ -253,7 +253,7 @@ static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
                         fapp_bench.bytes += received;
                     }
 
-                    exit_flag = fnet_shell_ctrlc (desc); /* Check [Ctrl+c]*/
+                    exit_flag = fnet_shell_is_ctrlc (desc); /* Check [Ctrl+c]*/
                 }
             }
         }
@@ -440,7 +440,7 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
                 }
             }
 
-            exit_flag = fnet_shell_ctrlc (desc);
+            exit_flag = fnet_shell_is_ctrlc (desc);
         }
     }
 
@@ -634,7 +634,7 @@ static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
                     buffer_offset = 0;
                 }
 
-                exit_flag = fnet_shell_ctrlc(desc); /* Check [Ctrl+c]*/
+                exit_flag = fnet_shell_is_ctrlc(desc); /* Check [Ctrl+c]*/
 
                 if((cur_packet_number >= params->packet_number) || exit_flag)
                 {
@@ -766,7 +766,7 @@ static void fapp_bench_udp_tx (struct fapp_bench_tx_params *params)
                 fapp_bench.bytes += send_result;
                 cur_packet_number ++;
 
-                exit_flag = fnet_shell_ctrlc (desc); /* Check [Ctrl+c]*/
+                exit_flag = fnet_shell_is_ctrlc (desc); /* Check [Ctrl+c]*/
 
                 if((cur_packet_number >= params->packet_number) || exit_flag)
                 {

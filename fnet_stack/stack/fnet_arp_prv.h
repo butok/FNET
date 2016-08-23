@@ -87,9 +87,10 @@ typedef struct
 
 typedef struct fnet_arp_if
 {
-    fnet_arp_entry_t arp_table[FNET_CFG_ARP_TABLE_SIZE];    /* ARP cache table.*/
-    fnet_timer_desc_t arp_tmr;                              /* ARP timer.*/
-    fnet_event_desc_t arp_event;                            /* ARP event - duplicate address event.*/
+    fnet_arp_entry_t    arp_table[FNET_CFG_ARP_TABLE_SIZE];     /* ARP cache table.*/
+    fnet_timer_desc_t   arp_tmr;                                /* ARP timer.*/
+    fnet_event_desc_t   arp_event;                              /* ARP event - duplicate address event.*/
+    fnet_ip4_addr_t     arp_probe_ipaddr;                       /* ARP probe address.*/
 } fnet_arp_if_t;
 
 /************************************************************************

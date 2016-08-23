@@ -120,9 +120,12 @@
     #define FAPP_CFG_STARTUP_SCRIPT             ""
 #endif
 
-/* Preinstall FNET ISR into vector table.*/
-#ifndef FAPP_CFG_PREINSTALL_INTERRUPTS
-    #define FAPP_CFG_PREINSTALL_INTERRUPTS      (0)
+/* On connect/unconnect scrpts:*/
+#ifndef FAPP_CFG_LINK_CONNECT_SCRIPT
+    #define FAPP_CFG_LINK_CONNECT_SCRIPT ""
+#endif
+#ifndef FAPP_CFG_LINK_UNCONNECT_SCRIPT
+    #define FAPP_CFG_LINK_UNCONNECT_SCRIPT ""
 #endif
 
 /************************************************************************
@@ -383,15 +386,12 @@
     #define FAPP_CFG_LLMNR_CMD          (0)
 #endif
 
-
 /************************************************************************
 *    "d" command. Used for DEBUGGING needs only.
 *************************************************************************/
 #ifndef FAPP_CFG_DEBUG_CMD
     #define FAPP_CFG_DEBUG_CMD          (0)
 #endif
-
-
 
 /************************************************************************
 *    "set/get" command.

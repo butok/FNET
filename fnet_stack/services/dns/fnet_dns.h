@@ -129,7 +129,7 @@ struct fnet_dns_params
                                                         * @ref fnet_dns_callback_resolved_t. It is called when the
                                                         * DNS-client resolving is finished or an error is occurred. */
     fnet_uint32_t                   cookie;             /**< @brief Optional application-specific parameter. @n
-                                                        * It's passed to the @c callback 
+                                                        * It's passed to the @c callback
                                                         * function as input parameter. */
 };
 

@@ -2233,6 +2233,18 @@
         </file>
       </group>
       <group>
+        <name>link</name>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/link/fnet_link.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/link/fnet_link.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/link/fnet_link_config.h</name>
+        </file>
+      </group>
+      <group>
         <name>llmnr</name>
         <file>
           <name>$PROJ_DIR$/../../../../../fnet_stack/services/llmnr/fnet_llmnr.c</name>
@@ -2562,6 +2574,12 @@
     </file>
     <file>
       <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_llmnr.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_link.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_link.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_mem.c</name>

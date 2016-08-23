@@ -130,11 +130,11 @@ struct fapp_params_tftp fapp_params_tftp_config =
 #if FAPP_CFG_SAVE_CMD && FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
 fnet_return_t fapp_params_to_flash(void)
 {
- //   struct fapp_params_fnet     fnet_params ={0};
+    //   struct fapp_params_fnet     fnet_params ={0};
     struct fapp_params_flash    *fapp_params_flash_p = (struct fapp_params_flash *)FAPP_FLASH_PARAMS_ADDRESS;
     fnet_netif_desc_t           netif = fnet_netif_get_default();
     struct fapp_params_flash    fapp_params_ram = {0}; /* Tmp buffer */
-    
+
     /**** Prepare fapp_params_ram, which will be written to Flash.****/
 #if FNET_CFG_IP4
     /* Save IP address only if it was allocated manually/statically. */
@@ -162,10 +162,10 @@ fnet_return_t fapp_params_to_flash(void)
 
     /* Host name.*/
     fnet_strncpy(fapp_params_ram.fnet_params.host_name, fapp_params_host_name, FAPP_PARAMS_HOST_NAME_SIZE);
-    
+
     /* Write Signature.*/
     fnet_memcpy( fapp_params_ram.signature, FAPP_PARAMS_SIGNATURE, sizeof(FAPP_PARAMS_SIGNATURE));
-    
+
     /* BOOT parameters */
 #if FAPP_CFG_PARAMS_BOOT
     fnet_memcpy( &fapp_params_ram.boot_params, &fapp_params_boot_config, sizeof(struct fapp_params_boot)  );
@@ -173,8 +173,8 @@ fnet_return_t fapp_params_to_flash(void)
     /* TFTP parameters*/
 #if FAPP_CFG_PARAMS_TFTP
     fnet_memcpy(&fapp_params_ram.tftp_params, &fapp_params_tftp_config, sizeof(struct fapp_params_tftp)  );
-#endif    
-    
+#endif
+
     /**** Erase one paage allocated for configuration parameters.****/
     fapp_params_erase( (void *)(fapp_params_flash_p), sizeof(struct fapp_params_flash));
 
@@ -183,7 +183,7 @@ fnet_return_t fapp_params_to_flash(void)
     {
         /**** Write all parameters to flash. ****/
         fapp_params_memcpy( fapp_params_flash_p, &fapp_params_ram, sizeof(struct fapp_params_flash));
-        
+
         /* Simple check if it was written. */
         if( fnet_memcmp((void *)(fapp_params_flash_p), FAPP_PARAMS_SIGNATURE, sizeof(FAPP_PARAMS_SIGNATURE)) == 0 )
         {

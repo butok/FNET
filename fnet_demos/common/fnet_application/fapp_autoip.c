@@ -37,7 +37,7 @@
 /************************************************************************
 *     Definitions.
 *************************************************************************/
-#define FAPP_AUTOIP_PROBE_STR      "Probing..."
+#define FAPP_AUTOIP_PROBE_STR      "AutoIP: Probing..."
 
 static fnet_autoip_desc_t   fapp_autoip_desc = 0; /* Auto-IP service descriptor. */
 static fnet_ip4_addr_t      fapp_autoip_ip_old;
@@ -83,19 +83,7 @@ static void fapp_autoip_callback_updated(fnet_autoip_desc_t autoip_desc, fnet_ne
 {
     fnet_shell_desc_t desc = (fnet_shell_desc_t) shl_desc;
 
-    /* Optionally, unregister Auto-IP event handler callbacks, just to do not
-     * disturb a user. */
-    fnet_autoip_set_callback_updated(autoip_desc, 0, 0);
-    fnet_autoip_set_callback_probe(autoip_desc, 0, 0);
-
-    fnet_shell_unblock((fnet_shell_desc_t)shl_desc); /* Unblock the shell. */
-
-    /* Print updated parameters info. */
-    fnet_shell_println( desc, "\n%s", FAPP_DELIMITER_STR);
-    fnet_shell_println( desc, FAPP_UPDATED_IP_STR);
-    fnet_shell_println( desc, FAPP_DELIMITER_STR);
-
-    fapp_print_netif_info( desc, netif );
+    fapp_addr_callback_updated(desc, netif);
 }
 
 /************************************************************************
@@ -120,23 +108,25 @@ static void fapp_autoip_callback_probe(fnet_autoip_desc_t autoip_desc, fnet_neti
 *************************************************************************/
 void fapp_autoip_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
-    fnet_autoip_desc_t  autoip_desc;
-    fnet_netif_desc_t   netif_desc = fnet_netif_get_default();
+    struct fnet_autoip_params   params;
+    fnet_autoip_desc_t          autoip_desc;
+    fnet_netif_desc_t           netif_desc = fnet_netif_get_default();
 
     if(argc == 1u) /* By default is "init".*/
     {
-        /* Save current IP address only if it was allocated manually/statically. */
-        if(fnet_netif_get_ip4_addr_type(netif_desc) == FNET_NETIF_IP_ADDR_TYPE_MANUAL)
-        {
-            fapp_autoip_ip_old = fnet_netif_get_ip4_addr(netif_desc); /* Save ip to restore if cancelled. */
-        }
-        else
-        {
-            fapp_autoip_ip_old = 0;
-        }
+        /* Save current IP address, to restore if cancelled.  */
+        fapp_autoip_ip_old = fnet_netif_get_ip4_addr(netif_desc);
+
+        /* Init parameters.*/
+        fnet_memset_zero(&params, sizeof(params));
+        params.netif_desc = netif_desc;
+        /* RFC: When the network media indicates that it has been connected, the
+           autoconfiguration process begins again, and attempts to re-use the
+           previously assigned Link-Local address. */
+        params.ip_address = fapp_autoip_ip_old;
 
         /* Start Auto-IP service */
-        autoip_desc = fnet_autoip_init(netif_desc);
+        autoip_desc = fnet_autoip_init(&params);
         if(autoip_desc)
         {
             /* Register Auto-IP event handler callbacks. */
