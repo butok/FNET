@@ -1927,6 +1927,26 @@
       <locationURI>virtual:/virtual</locationURI>
     </link>
     <link>
+      <name>fnet_application/fapp_netif.c</name>
+      <type>1</type>
+      <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_netif.c</locationURI>
+    </link>
+    <link>
+      <name>fnet_application</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_application/fapp_netif.h</name>
+      <type>1</type>
+      <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_netif.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_application</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
       <name>fnet_application/fapp_params.c</name>
       <type>1</type>
       <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_params.c</locationURI>

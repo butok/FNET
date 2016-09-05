@@ -15,6 +15,39 @@
 #define FAPP_CFG_NAME                   "FNET Shell Application"
 #define FAPP_CFG_SHELL_PROMPT           "SHELL> "
 
+/*!!! Make sure that the network interface  MAC address has unique value (FAPP_CFG_CPU_ETH0_MAC_ADDR). !!!*/
+
+#if 0 /* IPv4 address parameters are set automatically by DHCP or AutoIP */
+    /*****************************************************************************
+    * IP address for the Ethernet interface.
+    * At runtime it can be changed by the fnet_netif_set_ip4_addr(),
+    * by the DHCP client service, or by the Auto-IP service.
+    ******************************************************************************/
+    #define FAPP_CFG_ETH0_IP4_ADDR      (FNET_IP4_ADDR_INIT(192U, 168U, 0U, 22U))
+
+    /*****************************************************************************
+    * IP Subnet mask for the Ethernet interface.
+    * At runtime it can be changed by the fnet_netif_set_ip4_addr(),
+    * by the DHCP client service, or by the Auto-IP service.
+    ******************************************************************************/
+    #define FAPP_CFG_ETH0_IP4_MASK      (FNET_IP4_ADDR_INIT(255U, 255U, 255U, 0U))
+
+    /*****************************************************************************
+    * Gateway IP address for the Ethernet interface.
+    * At runtime it can be changed by the fnet_netif_set_ip4_gateway(),
+    * by the DHCP client service, or by the Auto-IP service.
+    ******************************************************************************/
+    #define FAPP_CFG_ETH0_IP4_GW        (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+
+    /*****************************************************************************
+    * DNS server IP address for the Ethernet interface.
+    * At runtime it can be changed by the fnet_netif_set_ip4_dns() or
+    * by the DHCP client service.
+    * It is used only if FNET_CFG_DNS is set to 1.
+    ******************************************************************************/
+    #define FAPP_CFG_ETH0_IP4_DNS       (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
 /*  "dhcp" command.*/
 #define FAPP_CFG_DHCP_CMD               (1)
 #define FAPP_CFG_DHCP_CMD_DISCOVER_MAX  (3)

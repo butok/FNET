@@ -211,88 +211,6 @@
 #endif
 
 /**************************************************************************/ /*!
- * @def      FNET_CFG_ETH0_IP4_ADDR
- * @brief    Defines the default IP address for the Ethernet-0 interface.
- *           At runtime, it can be changed by @ref fnet_netif_set_ip4_addr().
- * @showinitializer
- ******************************************************************************/
-#ifndef FNET_CFG_ETH0_IP4_ADDR
-    #define FNET_CFG_ETH0_IP4_ADDR        (FNET_IP4_ADDR_INIT(192, 168, 0, 20))
-#endif
-
-/**************************************************************************/ /*!
- * @def      FNET_CFG_ETH0_IP4_MASK
- * @brief    Defines the default IP Subnetmask for the Ethernet-0 interface.
- *           At runtime, it can be changed by @ref fnet_netif_set_ip4_subnet_mask().
- * @showinitializer
- ******************************************************************************/
-#ifndef FNET_CFG_ETH0_IP4_MASK
-    #define FNET_CFG_ETH0_IP4_MASK        (FNET_IP4_ADDR_INIT(255U, 255U, 255U, 0U))
-#endif
-
-/**************************************************************************/ /*!
- * @def      FNET_CFG_ETH0_IP4_GW
- * @brief    Defines the default Gateway IP address for the Ethernet-0 interface.
- *           At runtime, it can be changed by @ref fnet_netif_set_ip4_gateway().
- * @showinitializer
- ******************************************************************************/
-#ifndef FNET_CFG_ETH0_IP4_GW
-    #define FNET_CFG_ETH0_IP4_GW          (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
-#endif
-
-/**************************************************************************/ /*!
- * @def      FNET_CFG_ETH0_IP4_DNS
- * @brief    Defines the default DNS IP address for the Ethernet-0 interface.
- *           At runtime, it can be changed by @ref fnet_netif_set_ip4_dns().
- * @showinitializer
- ******************************************************************************/
-#ifndef FNET_CFG_ETH0_IP4_DNS
-    #define FNET_CFG_ETH0_IP4_DNS        (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
-#endif
-
-/**************************************************************************/ /*!
- * @def      FNET_CFG_ETH1_IP4_ADDR
- * @brief    Defines the default IP address for the Ethernet-1 interface.
- *           At runtime, it can be changed by @ref fnet_netif_set_ip4_addr().
- * @showinitializer
- ******************************************************************************/
-#ifndef FNET_CFG_ETH1_IP4_ADDR
-    #define FNET_CFG_ETH1_IP4_ADDR        (FNET_IP4_ADDR_INIT(192U, 168U, 0U, 21U))
-#endif
-
-/**************************************************************************/ /*!
- * @def      FNET_CFG_ETH1_IP4_MASK
- * @brief    Defines the default IP Subnetmask for the Ethernet-1 interface.
- *           At runtime, it can be changed by @ref fnet_netif_set_ip4_subnet_mask().
- * @showinitializer
- ******************************************************************************/
-#ifndef FNET_CFG_ETH1_IP4_MASK
-    #define FNET_CFG_ETH1_IP4_MASK        (FNET_IP4_ADDR_INIT(255U, 255U, 255U, 0U))
-#endif
-
-/**************************************************************************/ /*!
- * @def      FNET_CFG_ETH1_IP4_GW
- * @brief    Defines the default Gateway IP address for the Ethernet-1 interface.
- *           At runtime, it can be changed by @ref fnet_netif_set_ip4_gateway().
- * @showinitializer
- ******************************************************************************/
-#ifndef FNET_CFG_ETH1_IP4_GW
-    #define FNET_CFG_ETH1_IP4_GW          (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
-#endif
-
-/**************************************************************************/ /*!
- * @def      FNET_CFG_ETH1_IP4_DNS
- * @brief    Defines the default DNS IP address for the Ethernet-1 interface.
- *           At runtime, it can be changed by @ref fnet_netif_set_ip4_dns().
- * @showinitializer
- ******************************************************************************/
-#ifndef FNET_CFG_ETH1_IP4_DNS
-    #define FNET_CFG_ETH1_IP4_DNS        (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
-#endif
-
-
-
-/**************************************************************************/ /*!
  * @def      FNET_CFG_LOOPBACK_IP4_ADDR
  * @brief    Defines the IP address for the Loopback interface.
  *           By default it is set to 127.0.0.1.
@@ -408,25 +326,6 @@
  ******************************************************************************/
 #ifndef FNET_CFG_LOOPBACK_MTU
     #define FNET_CFG_LOOPBACK_MTU           (1576U)
-#endif
-
-/**************************************************************************/ /*!
- * @def      FNET_CFG_DEFAULT_IF
- * @brief    Descriptor of a default network interface set during stack initialisation.@n
- *           For example, it can be set to FNET_ETH0_IF, FNET_ETH1_IF or FNET_LOOP_IF. @n
- *           During run time it can be changed by ref@ fnet_netif_set_default().
- * @see fnet_netif_get_default(), net_netif_set_default()
- ******************************************************************************/
-#ifndef FNET_CFG_DEFAULT_IF
-    #if FNET_CFG_CPU_ETH0
-        #define FNET_CFG_DEFAULT_IF             (FNET_ETH0_IF)
-    #elif FNET_CFG_CPU_ETH1
-        #define FNET_CFG_DEFAULT_IF             (FNET_ETH1_IF)
-    #elif FNET_CFG_LOOPBACK
-        #define FNET_CFG_DEFAULT_IF             (FNET_LOOP_IF)
-    #else
-        #define FNET_CFG_DEFAULT_IF             ((fnet_netif_desc_t)FNET_NULL)
-    #endif
 #endif
 
 /**************************************************************************/ /*!
@@ -567,16 +466,6 @@
 /*****************************************************************************
 * 	TCP/IP stack parameters.
 ******************************************************************************/
-
-/**************************************************************************/ /*!
- * @def      FNET_CFG_HEAP_SIZE
- * @brief    Recomended Size of the internal static heap buffer, that should be passed to
- *           @ref fnet_init().
- * @hideinitializer
- ******************************************************************************/
-#ifndef FNET_CFG_HEAP_SIZE
-    #define FNET_CFG_HEAP_SIZE                  (50U * 1024U)
-#endif
 
 /**************************************************************************/ /*!
  * @def      FNET_CFG_MULTITHREADING
@@ -761,11 +650,9 @@
     #error "Please enable IPv4 or/and IPv6, by FNET_CFG_IP4 or/and FNET_CFG_IP6."
 #endif
 
-
 /*****************************************************************************
  * DEBUGING INFO OUTPUT
  *****************************************************************************/
-
 
 /**************************************************************************/ /*!
  * @internal
@@ -883,35 +770,60 @@
  * Obsolete configuration parameters
  ******************************************************************************/
 #ifdef FNET_CFG_ETH_IP4_ADDR
-    #error "FNET_CFG_ETH_IP4_ADDR parameter is obsolete, use FNET_CFG_ETH0_IP4_ADDR."
+    #error "FNET_CFG_ETH_IP4_ADDR parameter is obsolete. It is user application parameter now."
 #endif
 #ifdef FNET_CFG_ETH_IP4_MASK
-    #error "FNET_CFG_ETH_IP4_MASK parameter is obsolete, use FNET_CFG_ETH0_IP4_MASK."
+    #error "FNET_CFG_ETH_IP4_MASK parameter is obsolete. It is user application parameter now."
 #endif
 #ifdef FNET_CFG_ETH_IP4_GW
-    #error "FNET_CFG_ETH_IP4_GW parameter is obsolete, use FNET_CFG_ETH0_IP4_GW."
+    #error "FNET_CFG_ETH_IP4_GW parameter is obsolete. It is user application parameter now."
 #endif
 #ifdef FNET_CFG_ETH_IP4_DNS
-    #error "FNET_CFG_ETH_IP4_DNS parameter is obsolete, use FNET_CFG_ETH0_IP4_DNS."
-#endif
-#ifdef FNET_CFG_ETH
-    #error "FNET_CFG_ETH parameter is obsolete, use FNET_CFG_CPU_ETH0."
+    #error "FNET_CFG_ETH_IP4_DNS parameter is obsolete. It is user application parameter now."
 #endif
 #ifdef FNET_CFG_ETH_MAC_ADDR
-    #error "FNET_CFG_ETH_MAC_ADDR parameter is obsolete, use FNET_CFG_CPU_ETH0_MAC_ADDR."
+    #error "FNET_CFG_ETH_MAC_ADDR parameter is obsolete. It is user application parameter now."
+#endif
+#ifdef FNET_CFG_ETH
+    #error "FNET_CFG_ETH parameter is obsolete."
 #endif
 #ifdef FNET_CFG_ETH_MTU
-    #error "FNET_CFG_ETH_MTU parameter is obsolete, use FNET_CFG_CPU_ETH0_MTU ."
+    #error "FNET_CFG_ETH_MTU parameter is obsolete."
 #endif
 
 
 
-/**************************************************************************/ /*!
- * @internal
- ******************************************************************************/
-#ifndef FNET_OS
-    #define FNET_OS                     (0)
+#ifdef FNET_CFG_ETH0_IP4_ADDR
+    #error "FNET_CFG_ETH0_IP4_ADDR parameter is obsolete. It is user application parameter now."
 #endif
+#ifdef FNET_CFG_ETH0_IP4_MASK
+    #error "FNET_CFG_ETH0_IP4_MASK parameter is obsolete. It is user application parameter now."
+#endif
+#ifdef FNET_CFG_ETH0_IP4_GW
+    #error "FNET_CFG_ETH0_IP4_GW parameter is obsolete. It is user application parameter now."
+#endif
+#ifdef FNET_CFG_ETH0_IP4_DNS
+    #error "FNET_CFG_ETH0_IP4_DNS parameter is obsolete. It is user application parameter now."
+#endif
+#ifdef FNET_CFG_ETH1_IP4_ADDR
+    #error "FNET_CFG_ETH1_IP4_ADDR parameter is obsolete. It is user application parameter now."
+#endif
+#ifdef FNET_CFG_ETH1_IP4_MASK
+    #error "FNET_CFG_ETH1_IP4_MASK parameter is obsolete. It is user application parameter now."
+#endif
+#ifdef FNET_CFG_ETH1_IP4_GW
+    #error "FNET_CFG_ETH1_IP4_GW parameter is obsolete. It is user application parameter now."
+#endif
+#ifdef FNET_CFG_ETH1_IP4_DNS
+    #error "FNET_CFG_ETH1_IP4_DNS parameter is obsolete. It is user application parameter now."
+#endif
+#ifdef FNET_CFG_DEFAULT_IF
+    #error "FNET_CFG_DEFAULT_IF parameter is obsolete. It is user application parameter now."
+#endif
+#ifdef FAPP_CFG_HEAP_SIZE
+    #error "FAPP_CFG_HEAP_SIZE parameter is obsolete. It is user application parameter now."
+#endif
+
 
 
 /*! @} */

@@ -99,7 +99,7 @@ fnet_return_t fnet_nd6_init (struct fnet_netif *netif, fnet_nd6_if_t *nd6_if_ptr
 
         /* ---- Initialize interface variables. ----*/
         /* The recommended MTU for the link. */
-        nd6_if_ptr->mtu = netif->mtu;
+        nd6_if_ptr->mtu = netif->netif_mtu;
         if(nd6_if_ptr->mtu < FNET_IP6_DEFAULT_MTU)
         {
             nd6_if_ptr->mtu = FNET_IP6_DEFAULT_MTU;
@@ -264,7 +264,7 @@ fnet_nd6_neighbor_entry_t *fnet_nd6_neighbor_cache_add(struct fnet_netif *netif,
         FNET_IP6_ADDR_COPY(ip_addr, &entry->ip_addr);
         if(ll_addr != FNET_NULL)
         {
-            FNET_NETIF_LL_ADDR_COPY(ll_addr, entry->ll_addr, netif->api->hw_addr_size);
+            FNET_NETIF_LL_ADDR_COPY(ll_addr, entry->ll_addr, netif->netif_api->netif_hw_addr_size);
         }
         entry->creation_time = fnet_timer_seconds();
         entry->is_router = FNET_FALSE;
@@ -458,7 +458,7 @@ void fnet_nd6_neighbor_send_waiting_netbuf(struct fnet_netif *netif, fnet_nd6_ne
     if (neighbor_entry->waiting_netbuf != FNET_NULL)
     {
         /* Send.*/
-        netif->api->output_ip6(netif, FNET_NULL /* not needed.*/,  &neighbor_entry->ip_addr, neighbor_entry->waiting_netbuf); /* IPv6 Transmit function.*/
+        netif->netif_api->netif_output_ip6(netif, FNET_NULL /* not needed.*/,  &neighbor_entry->ip_addr, neighbor_entry->waiting_netbuf); /* IPv6 Transmit function.*/
 
         neighbor_entry->waiting_netbuf = FNET_NULL;
     }
@@ -870,7 +870,7 @@ void fnet_nd6_neighbor_solicitation_send(struct fnet_netif *netif /*MUST*/, cons
      * Duplicate Address Detection sends Neighbor Solicitation
      * messages with an unspecified source address targeting its own
      * "tentative" address and without SLLAO.*/
-    ns_packet_size = sizeof(fnet_nd6_ns_header_t) + ((ipsrc == FNET_NULL /* DAD */) ? 0u : (sizeof(fnet_nd6_option_header_t) + netif->api->hw_addr_size));
+    ns_packet_size = sizeof(fnet_nd6_ns_header_t) + ((ipsrc == FNET_NULL /* DAD */) ? 0u : (sizeof(fnet_nd6_option_header_t) + netif->netif_api->netif_hw_addr_size));
     if((ns_nb = fnet_netbuf_new(ns_packet_size, FNET_TRUE)) != 0u)
     {
         /*
@@ -925,9 +925,9 @@ void fnet_nd6_neighbor_solicitation_send(struct fnet_netif *netif /*MUST*/, cons
             /* Fill Source link-layer address option.*/
             nd_option_slla = (fnet_nd6_option_lla_header_t *)((fnet_uint32_t)ns_packet + sizeof(fnet_nd6_ns_header_t));
             nd_option_slla->option_header.type = FNET_ND6_OPTION_SOURCE_LLA; /* Type. */
-            nd_option_slla->option_header.length = (fnet_uint8_t)((netif->api->hw_addr_size + sizeof(fnet_nd6_option_header_t)) >> 3); /* Option size devided by 8,*/
+            nd_option_slla->option_header.length = (fnet_uint8_t)((netif->netif_api->netif_hw_addr_size + sizeof(fnet_nd6_option_header_t)) >> 3); /* Option size devided by 8,*/
 
-            if( fnet_netif_get_hw_addr(netif, nd_option_slla->addr, netif->api->hw_addr_size) != FNET_OK)
+            if( fnet_netif_get_hw_addr(netif, nd_option_slla->addr, netif->netif_api->netif_hw_addr_size) != FNET_OK)
             {
                 goto DROP;
             }
@@ -1006,7 +1006,7 @@ void fnet_nd6_neighbor_solicitation_receive(struct fnet_netif *netif, fnet_ip6_a
             /* Handle Source link-layer address option only.
              */
             if((nd_option->type == FNET_ND6_OPTION_SOURCE_LLA)
-               && ( (((fnet_size_t)nd_option->length << 3) - sizeof(fnet_nd6_option_header_t)) >= netif->api->hw_addr_size) )
+               && ( (((fnet_size_t)nd_option->length << 3) - sizeof(fnet_nd6_option_header_t)) >= netif->netif_api->netif_hw_addr_size) )
             {
                 nd_option_slla = (fnet_nd6_option_lla_header_t *)nd_option; /* Source Link-layer Address option is found.*/
             }
@@ -1066,9 +1066,9 @@ void fnet_nd6_neighbor_solicitation_receive(struct fnet_netif *netif, fnet_ip6_a
                      * If a Neighbor Cache entry already exists, its
                      * IsRouter flag MUST NOT be modified.
                      */
-                    if(!FNET_NETIF_LL_ADDR_ARE_EQUAL(nd_option_slla->addr, neighbor_cache_entry->ll_addr, netif->api->hw_addr_size))
+                    if(!FNET_NETIF_LL_ADDR_ARE_EQUAL(nd_option_slla->addr, neighbor_cache_entry->ll_addr, netif->netif_api->netif_hw_addr_size))
                     {
-                        FNET_NETIF_LL_ADDR_COPY(nd_option_slla->addr, neighbor_cache_entry->ll_addr, netif->api->hw_addr_size);
+                        FNET_NETIF_LL_ADDR_COPY(nd_option_slla->addr, neighbor_cache_entry->ll_addr, netif->netif_api->netif_hw_addr_size);
                         neighbor_cache_entry->state = FNET_ND6_NEIGHBOR_STATE_STALE;
                     }
                     else
@@ -1161,7 +1161,7 @@ void fnet_nd6_neighbor_advertisement_send(struct fnet_netif *netif, const fnet_i
     fnet_nd6_na_header_t            *na_packet;
     fnet_nd6_option_lla_header_t    *nd_option_tlla;
 
-    na_packet_size = sizeof(fnet_nd6_na_header_t) + sizeof(fnet_nd6_option_header_t) + netif->api->hw_addr_size;
+    na_packet_size = sizeof(fnet_nd6_na_header_t) + sizeof(fnet_nd6_option_header_t) + netif->netif_api->netif_hw_addr_size;
 
     if((na_nb = fnet_netbuf_new(na_packet_size, FNET_TRUE)) != 0)
     {
@@ -1178,9 +1178,9 @@ void fnet_nd6_neighbor_advertisement_send(struct fnet_netif *netif, const fnet_i
         /* Fill Target Link-Layer Address option.*/
         nd_option_tlla = (fnet_nd6_option_lla_header_t *)((fnet_uint32_t)na_packet + sizeof(fnet_nd6_na_header_t));
         nd_option_tlla->option_header.type = FNET_ND6_OPTION_TARGET_LLA; /* Type. */
-        nd_option_tlla->option_header.length = (fnet_uint8_t)((netif->api->hw_addr_size + sizeof(fnet_nd6_option_header_t)) >> 3); /* Option size devided by 8,*/
+        nd_option_tlla->option_header.length = (fnet_uint8_t)((netif->netif_api->netif_hw_addr_size + sizeof(fnet_nd6_option_header_t)) >> 3); /* Option size devided by 8,*/
 
-        if(fnet_netif_get_hw_addr(netif, nd_option_tlla->addr, netif->api->hw_addr_size) != FNET_OK)    /* Link-Layer Target address.*/
+        if(fnet_netif_get_hw_addr(netif, nd_option_tlla->addr, netif->netif_api->netif_hw_addr_size) != FNET_OK)    /* Link-Layer Target address.*/
         {
             goto DROP;
         }
@@ -1216,7 +1216,7 @@ void fnet_nd6_router_solicitation_send(struct fnet_netif *netif)
     /* Choose source address.*/
     ip_src = fnet_ip6_select_src_addr(netif, ip_dest);
 
-    rs_packet_size = sizeof(fnet_nd6_rs_header_t) + ((ip_src == FNET_NULL /* no address */) ? 0u : (sizeof(fnet_nd6_option_header_t) + netif->api->hw_addr_size));
+    rs_packet_size = sizeof(fnet_nd6_rs_header_t) + ((ip_src == FNET_NULL /* no address */) ? 0u : (sizeof(fnet_nd6_option_header_t) + netif->netif_api->netif_hw_addr_size));
 
     if((rs_nb = fnet_netbuf_new(rs_packet_size, FNET_TRUE)) != 0)
     {
@@ -1240,9 +1240,9 @@ void fnet_nd6_router_solicitation_send(struct fnet_netif *netif)
             /* Fill Source link-layer address option.*/
             nd_option_slla = (fnet_nd6_option_lla_header_t *)((fnet_uint32_t)rs_packet + sizeof(fnet_nd6_rs_header_t));
             nd_option_slla->option_header.type = FNET_ND6_OPTION_SOURCE_LLA;    /* Type. */
-            nd_option_slla->option_header.length = (fnet_uint8_t)((netif->api->hw_addr_size + sizeof(fnet_nd6_option_header_t)) >> 3); /* Option size devided by 8,*/
+            nd_option_slla->option_header.length = (fnet_uint8_t)((netif->netif_api->netif_hw_addr_size + sizeof(fnet_nd6_option_header_t)) >> 3); /* Option size devided by 8,*/
 
-            if(fnet_netif_get_hw_addr(netif, nd_option_slla->addr, netif->api->hw_addr_size) != FNET_OK)    /* Link-Layer Target address.*/
+            if(fnet_netif_get_hw_addr(netif, nd_option_slla->addr, netif->netif_api->netif_hw_addr_size) != FNET_OK)    /* Link-Layer Target address.*/
             {
                 goto DROP;
             }
@@ -1326,7 +1326,7 @@ void fnet_nd6_neighbor_advertisement_receive(struct fnet_netif *netif, fnet_ip6_
             /* Handle Target Link-Layer Address option only.
              */
             if((nd_option->type == FNET_ND6_OPTION_TARGET_LLA)
-               && ( (((fnet_size_t)nd_option->length << 3) - sizeof(fnet_nd6_option_header_t)) >= netif->api->hw_addr_size) )
+               && ( (((fnet_size_t)nd_option->length << 3) - sizeof(fnet_nd6_option_header_t)) >= netif->netif_api->netif_hw_addr_size) )
             {
                 nd_option_tlla = (fnet_nd6_option_lla_header_t *)nd_option; /* Target Link-layer Address option is found.*/
             }
@@ -1388,7 +1388,7 @@ void fnet_nd6_neighbor_advertisement_receive(struct fnet_netif *netif, fnet_ip6_
              * steps:
              * - It records the link-layer address in the Neighbor Cache entry.
              */
-            FNET_NETIF_LL_ADDR_COPY(nd_option_tlla->addr, neighbor_cache_entry->ll_addr, netif->api->hw_addr_size);
+            FNET_NETIF_LL_ADDR_COPY(nd_option_tlla->addr, neighbor_cache_entry->ll_addr, netif->netif_api->netif_hw_addr_size);
 
             /* - If the advertisement’s Solicited flag is set, the state of the
              *   entry is set to REACHABLE; otherwise, it is set to STALE.
@@ -1422,7 +1422,7 @@ void fnet_nd6_neighbor_advertisement_receive(struct fnet_netif *netif, fnet_ip6_
             if( nd_option_tlla )
             {
                 /* If supplied link-layer address differs. */
-                is_ll_addr_changed = (!FNET_NETIF_LL_ADDR_ARE_EQUAL(nd_option_tlla->addr, neighbor_cache_entry->ll_addr, netif->api->hw_addr_size)) ? FNET_TRUE : FNET_FALSE;
+                is_ll_addr_changed = (!FNET_NETIF_LL_ADDR_ARE_EQUAL(nd_option_tlla->addr, neighbor_cache_entry->ll_addr, netif->netif_api->netif_hw_addr_size)) ? FNET_TRUE : FNET_FALSE;
             }
             else
             {
@@ -1459,7 +1459,7 @@ void fnet_nd6_neighbor_advertisement_receive(struct fnet_netif *netif, fnet_ip6_
                  */
                 if(nd_option_tlla)
                 {
-                    FNET_NETIF_LL_ADDR_COPY(nd_option_tlla->addr, neighbor_cache_entry->ll_addr, netif->api->hw_addr_size);
+                    FNET_NETIF_LL_ADDR_COPY(nd_option_tlla->addr, neighbor_cache_entry->ll_addr, netif->netif_api->netif_hw_addr_size);
                 }
 
                 /* - If the Solicited flag is set, the state of the entry MUST be
@@ -1567,7 +1567,7 @@ void fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_ad
 
             /* Source Link-Layer Address option.*/
             if( (nd_option->type == FNET_ND6_OPTION_SOURCE_LLA)
-                && ( ((fnet_size_t)nd_option->length << 3) >= (netif->api->hw_addr_size) + sizeof(fnet_nd6_option_header_t)) )
+                && ( ((fnet_size_t)nd_option->length << 3) >= (netif->netif_api->netif_hw_addr_size) + sizeof(fnet_nd6_option_header_t)) )
             {
                 nd_option_slla = (fnet_nd6_option_lla_header_t *)nd_option; /* Target Link-layer Address option is found.*/
             }
@@ -1650,7 +1650,7 @@ void fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_ad
         {
             fnet_size_t mtu = fnet_ntohl(nd_option_mtu->mtu);
 
-            if(mtu < netif->mtu)
+            if(mtu < netif->netif_mtu)
             {
                 if(mtu < FNET_IP6_DEFAULT_MTU)
                 {
@@ -1688,9 +1688,9 @@ void fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_ad
                 /* If a cache entry already exists and is
                  * updated with a different link-layer address, the reachability state
                  * MUST also be set to STALE.*/
-                if( !FNET_NETIF_LL_ADDR_ARE_EQUAL(nd_option_slla->addr, neighbor_cache_entry->ll_addr, netif->api->hw_addr_size) )
+                if( !FNET_NETIF_LL_ADDR_ARE_EQUAL(nd_option_slla->addr, neighbor_cache_entry->ll_addr, netif->netif_api->netif_hw_addr_size) )
                 {
-                    FNET_NETIF_LL_ADDR_COPY(nd_option_slla->addr, neighbor_cache_entry->ll_addr, netif->api->hw_addr_size);
+                    FNET_NETIF_LL_ADDR_COPY(nd_option_slla->addr, neighbor_cache_entry->ll_addr, netif->netif_api->netif_hw_addr_size);
                     neighbor_cache_entry->state = FNET_ND6_NEIGHBOR_STATE_STALE;
                 }
             }
@@ -1945,7 +1945,7 @@ void fnet_nd6_redirect_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip
 
         /* Target Link-Layer Address option.*/
         if( (nd_option->type == FNET_ND6_OPTION_TARGET_LLA)
-            && ( ((fnet_size_t)nd_option->length << 3) >= (netif->api->hw_addr_size + sizeof(fnet_nd6_option_header_t))) )
+            && ( ((fnet_size_t)nd_option->length << 3) >= (netif->netif_api->netif_hw_addr_size + sizeof(fnet_nd6_option_header_t))) )
         {
             nd_option_tlla = (fnet_nd6_option_lla_header_t *)nd_option; /* Target Link-layer Address option is found.*/
         }
@@ -1973,9 +1973,9 @@ void fnet_nd6_redirect_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip
             /* If a cache entry already existed and
              * it is updated with a different link-layer address, its reachability
              * state MUST also be set to STALE. */
-            if( !FNET_NETIF_LL_ADDR_ARE_EQUAL(nd_option_tlla->addr, neighbor_cache_entry->ll_addr, netif->api->hw_addr_size) )
+            if( !FNET_NETIF_LL_ADDR_ARE_EQUAL(nd_option_tlla->addr, neighbor_cache_entry->ll_addr, netif->netif_api->netif_hw_addr_size) )
             {
-                FNET_NETIF_LL_ADDR_COPY(nd_option_tlla->addr, neighbor_cache_entry->ll_addr, netif->api->hw_addr_size);
+                FNET_NETIF_LL_ADDR_COPY(nd_option_tlla->addr, neighbor_cache_entry->ll_addr, netif->netif_api->netif_hw_addr_size);
                 neighbor_cache_entry->state = FNET_ND6_NEIGHBOR_STATE_STALE;
             }
             /* else. If the link-layer address is the

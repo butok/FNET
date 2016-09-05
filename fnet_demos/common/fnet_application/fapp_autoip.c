@@ -41,6 +41,7 @@
 
 static fnet_autoip_desc_t   fapp_autoip_desc = 0; /* Auto-IP service descriptor. */
 static fnet_ip4_addr_t      fapp_autoip_ip_old;
+static fnet_ip4_addr_t      fapp_autoip_subnet_mask_old;
 
 /************************************************************************
 *     Function Prototypes
@@ -59,7 +60,7 @@ static void fapp_autoip_on_ctrlc(fnet_shell_desc_t desc)
     /* Release Auto-IP. */
     fapp_autoip_release();
     /* Restore old ip address, as Auto-IP set it to zero. */
-    fnet_netif_set_ip4_addr( fnet_netif_get_default(), fapp_autoip_ip_old );
+    fnet_netif_set_ip4_addr( fnet_netif_get_default(), fapp_autoip_ip_old, fapp_autoip_subnet_mask_old );
     fnet_shell_println( desc, FAPP_CANCELLED_STR);
 }
 
@@ -116,6 +117,7 @@ void fapp_autoip_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **a
     {
         /* Save current IP address, to restore if cancelled.  */
         fapp_autoip_ip_old = fnet_netif_get_ip4_addr(netif_desc);
+        fapp_autoip_subnet_mask_old = fnet_netif_get_ip4_subnet_mask(netif_desc);
 
         /* Init parameters.*/
         fnet_memset_zero(&params, sizeof(params));

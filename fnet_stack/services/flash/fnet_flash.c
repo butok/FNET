@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_flash.c
-*
-* @author Andrey Butok
-*
 * @brief On-chip Flash Module driver.
 *
 ***************************************************************************/
@@ -31,144 +26,182 @@
 
 #if FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
 
-#define FNET_CFG_FLASH_WRITE_CACHE 0
+#if FNET_CFG_FLASH_CACHE
 
-/* Check Flash controller align */
-#if (FNET_CFG_CPU_FLASH_PROGRAM_SIZE != 16U) && (FNET_CFG_CPU_FLASH_PROGRAM_SIZE != 8U) && (FNET_CFG_CPU_FLASH_PROGRAM_SIZE != 4U)
-    #error The macro FNET_CFG_CPU_FLASH_PROGRAM_SIZE must be set to correct value.
-#endif
-
-
-#if FNET_CFG_FLASH_WRITE_CACHE /* Just prototype.*/
 /**************************************************************************/ /*!
  * Flash cache entry.
  ******************************************************************************/
 struct fnet_flash_cache_entry
 {
-
-    void            *dest_addr; /* Must be aligned to FNET_CFG_CPU_FLASH_PROGRAM_SIZE address.*/
+    void            *dest_addr;
     fnet_uint8_t    data[FNET_CFG_CPU_FLASH_PROGRAM_SIZE];
 };
 
+static  fnet_index_t   entry_next = 0U;
+
 /* Write-cache.*/
-static  struct fnet_flash_cache_entry flash_cache[FNET_CFG_FLASH_WRITE_CACHE_SIZE];
-static  fnet_index_t   entry_next;
+static  struct fnet_flash_cache_entry flash_cache[FNET_CFG_FLASH_CACHE_SIZE] = { {0} };
 
-static void fnet_flash_cache_flush_entry(struct fnet_flash_cache_entry   *entry);
+static void fnet_flash_cache_clear_entry(struct fnet_flash_cache_entry   *entry);
+static fnet_return_t fnet_flash_cache_flush_entry(struct fnet_flash_cache_entry   *entry);
+#endif /* FNET_CFG_FLASH_CACHE */
 
-#endif
+static fnet_return_t fnet_flash_write_low( fnet_uint8_t *dest, const fnet_uint8_t *src, fnet_size_t n_blocks );
 
-static void fnet_flash_write_low( fnet_uint8_t *dest, const fnet_uint8_t *src, fnet_size_t n_blocks );
+#if FNET_CFG_FLASH_CACHE
 
-
-
-#if FNET_CFG_FLASH_WRITE_CACHE
-static void fnet_flash_cache_flush_entry(struct fnet_flash_cache_entry   *entry)
+/************************************************************************
+* DESCRIPTION: Clear cache entry
+************************************************************************/
+static void fnet_flash_cache_clear_entry(struct fnet_flash_cache_entry   *entry)
 {
+    /* Clean up.*/
+    fnet_memset(entry->data, 0xFF, FNET_CFG_CPU_FLASH_PROGRAM_SIZE);
+    entry->dest_addr = 0;
+}
+
+/************************************************************************
+* DESCRIPTION: Flush cacche entries to flash
+************************************************************************/
+static fnet_return_t fnet_flash_cache_flush_entry(struct fnet_flash_cache_entry   *entry)
+{
+    fnet_int32_t result;
+
     if(entry && entry->dest_addr)
     {
         /* Actual write to the flash.*/
-        fnet_flash_write_low( entry->dest_addr, entry->data, 1 );
+        result = fnet_flash_write_low( entry->dest_addr, entry->data, 1 );
         /* Clean up.*/
-        fnet_memset(entry->data, 0xFF, FNET_CFG_CPU_FLASH_PROGRAM_SIZE);
-        entry->dest_addr = 0;
+        fnet_flash_cache_clear_entry(entry);
+
+        if (result == FNET_ERR)
+        {
+            return FNET_ERR;
+        }
     }
+
+    return FNET_OK;
 }
 
-static void fnet_flash_cache_write(fnet_uint8_t *dest_addr, fnet_uint8_t *data_p)
+/************************************************************************
+* DESCRIPTION: Write through cache
+************************************************************************/
+static fnet_return_t fnet_flash_cache_write( FNET_COMP_PACKED_VAR fnet_uint8_t *dest_addr, const FNET_COMP_PACKED_VAR fnet_uint8_t *data_p, fnet_size_t n)
 {
-    fnet_index_t                    i;
     struct fnet_flash_cache_entry   *entry = FNET_NULL;
+    fnet_index_t                    i;
+    fnet_return_t                   err;
 
     /* Find existing entry*/
-    for(i = 0u; i < FNET_CFG_FLASH_WRITE_CACHE_SIZE; i++)
+    for(i = 0u; i < FNET_CFG_FLASH_CACHE_SIZE; i++)
     {
-        if(flash_cache[i].dest_addr == dest_addr);
-        {
-            entry = &flash_cache[i];
-            break;
+        /*search if aligned dest_addr belongs to an existing entry.*/
+        if (flash_cache[i].dest_addr != 0U){
+           if ((fnet_uint32_t)flash_cache[i].dest_addr == ((fnet_uint32_t)dest_addr & ~(FNET_CFG_CPU_FLASH_PROGRAM_SIZE - 1U))){
+                entry = &flash_cache[i];
+                break;
+            }
         }
     }
 
-    if(entry == FNET_NULL) /* No existing, so use the current one.*/
+    while (n)
     {
-        entry = &flash_cache[entry_next];
-
-        entry_next++;
-        if(entry_next == FNET_CFG_FLASH_WRITE_CACHE_SIZE)
+        if(entry == FNET_NULL) /* No existing, so use the current one.*/
         {
-            entry_next = 0;
+            entry = &flash_cache[entry_next];
+
+            entry_next++;
+            if(entry_next == FNET_CFG_FLASH_CACHE_SIZE)
+            {
+                entry_next = 0;
+            }
+
+            err = fnet_flash_cache_flush_entry(entry); /* Flash if something in the cache entry.*/
+            if (err)
+            {
+                return err;
+            }
+
+            entry->dest_addr = (void *)((fnet_uint32_t)dest_addr & ~(FNET_CFG_CPU_FLASH_PROGRAM_SIZE - 1U)); /* Init destination address.*/
+
         }
 
-        fnet_flash_cache_flush_entry(entry); /* Flash if something in the cache entry.*/
+        for( i = ((fnet_uint32_t)dest_addr & (FNET_CFG_CPU_FLASH_PROGRAM_SIZE - 1U)); (i < FNET_CFG_CPU_FLASH_PROGRAM_SIZE) && n; i++)
+        {
+            entry->data[(fnet_uint32_t)dest_addr & (FNET_CFG_CPU_FLASH_PROGRAM_SIZE - 1U)] = *data_p++;
+            dest_addr++;
+            n--;
+        }
 
-        entry->dest_addr = dest_addr; /* Init destination address.*/
+        entry = FNET_NULL; /*add new entry*/
     }
 
-    for(i = 0; i < FNET_CFG_CPU_FLASH_PROGRAM_SIZE; i++)
-    {
-        entry->data[i] &= data_p[i];
-    }
+    return FNET_OK;
 }
+#endif /* FNET_CFG_FLASH_CACHE */
 
 /************************************************************************
-* NAME: fnet_flash_flush
-*
-* DESCRIPTION:
+* DESCRIPTION: Flush write cache.
 ************************************************************************/
-void fnet_flash_flush(void)
+fnet_return_t fnet_flash_flush (void)
 {
+#if FNET_CFG_FLASH_CACHE
     fnet_index_t i;
+    fnet_return_t err;
 
-    for(i = 0u; i < FNET_CFG_FLASH_WRITE_CACHE_SIZE; i++)
+    for(i = 0u; i < FNET_CFG_FLASH_CACHE_SIZE; i++)
     {
-        fnet_flash_cache_flush_entry(&flash_cache[i]);
+        err = fnet_flash_cache_flush_entry(&flash_cache[i]);
+        if (err == FNET_ERR)
+        {
+            return FNET_ERR;
+        }
     }
-}
-
-
 #endif
 
-
-/************************************************************************
-* NAME: fnet_flash_erase
-*
-* DESCRIPTION:
-************************************************************************/
-void fnet_flash_erase( void *flash_addr, fnet_size_t bytes)
-{
-    fnet_cpu_flash_erase(flash_addr, bytes);
+    return FNET_OK;
 }
 
 /************************************************************************
-* NAME: fnet_flash_write_low
-*
-* DESCRIPTION:
+* DESCRIPTION: Flash erase
 ************************************************************************/
-static void fnet_flash_write_low( fnet_uint8_t *dest, const fnet_uint8_t *src, fnet_size_t n_blocks  )
+fnet_return_t fnet_flash_erase( void *flash_addr, fnet_size_t bytes)
 {
-    while (n_blocks)
+    return fnet_cpu_flash_erase((fnet_uint8_t *)flash_addr, bytes);
+}
+
+/************************************************************************
+* DESCRIPTION: Write n blocks
+************************************************************************/
+static fnet_return_t fnet_flash_write_low( fnet_uint8_t *dest, const fnet_uint8_t *src, fnet_size_t n_blocks  )
+{
+    fnet_return_t err = FNET_OK;
+
+    while (n_blocks && !err)
     {
-        fnet_cpu_flash_write(dest, src);
+        err = fnet_cpu_flash_write(dest, src);
         dest += FNET_CFG_CPU_FLASH_PROGRAM_SIZE;
         src += FNET_CFG_CPU_FLASH_PROGRAM_SIZE;
         n_blocks--;
     }
+
+    return err;
 }
 
 /************************************************************************
-* NAME: fnet_flash_memcpy
-*
-* DESCRIPTION:
+* DESCRIPTION: Writes to the Flash memory.
 ************************************************************************/
-
-void fnet_flash_memcpy( FNET_COMP_PACKED_VAR void *flash_addr, FNET_COMP_PACKED_VAR const void *src, fnet_size_t n )
+fnet_return_t fnet_flash_memcpy( FNET_COMP_PACKED_VAR void *flash_addr, FNET_COMP_PACKED_VAR const void *src, fnet_size_t n )
 {
+#if FNET_CFG_FLASH_CACHE
+    return fnet_flash_cache_write( flash_addr, src, n);
+#else /* Without cache */
     fnet_size_t     i;
     fnet_uint8_t    data[FNET_CFG_CPU_FLASH_PROGRAM_SIZE];
     fnet_size_t     bytes;
     fnet_size_t     blocks;
     fnet_uint32_t   count;
+    fnet_return_t   err;
 
     if(n)
     {
@@ -192,7 +225,10 @@ void fnet_flash_memcpy( FNET_COMP_PACKED_VAR void *flash_addr, FNET_COMP_PACKED_
                 src = ((const fnet_uint8_t *)src + 1U);
             }
 
-            fnet_flash_write_low( (fnet_uint8_t *)flash_addr, data, 1U );
+            err = fnet_flash_write_low( (fnet_uint8_t *)flash_addr, data, 1U );
+            if(err){
+               return err;
+            }
 
             flash_addr =  ((fnet_uint8_t *)flash_addr + FNET_CFG_CPU_FLASH_PROGRAM_SIZE);
 
@@ -204,7 +240,10 @@ void fnet_flash_memcpy( FNET_COMP_PACKED_VAR void *flash_addr, FNET_COMP_PACKED_
             bytes = n & (FNET_CFG_CPU_FLASH_PROGRAM_SIZE - 1U);
             blocks = (n - bytes) / FNET_CFG_CPU_FLASH_PROGRAM_SIZE;
 
-            fnet_flash_write_low((fnet_uint8_t *)flash_addr, (const fnet_uint8_t *)src, blocks );
+            err = fnet_flash_write_low((fnet_uint8_t *)flash_addr, (const fnet_uint8_t *)src, blocks );
+            if(err){
+               return err;
+            }
 
             flash_addr =  ((fnet_uint8_t *)flash_addr + (FNET_CFG_CPU_FLASH_PROGRAM_SIZE * blocks));
             src = ((fnet_uint8_t *)src + (FNET_CFG_CPU_FLASH_PROGRAM_SIZE * blocks));
@@ -219,10 +258,16 @@ void fnet_flash_memcpy( FNET_COMP_PACKED_VAR void *flash_addr, FNET_COMP_PACKED_
                     src = ((fnet_uint8_t *)src + 1U);
                 }
 
-                fnet_flash_write_low((fnet_uint8_t *)flash_addr, data, 1U );
+                err = fnet_flash_write_low((fnet_uint8_t *)flash_addr, data, 1U );
+                if(err){
+                    return err;
+                }
             }
         }
     }
+
+    return FNET_OK;
+#endif
 }
 
 #endif /* FNET_CFG_FLASH && FNET_CFG_CPU_FLASH */

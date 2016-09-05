@@ -52,7 +52,7 @@
 
 /* Check max. values.*/
 #if (FNET_IP6_MAX_PACKET > 65535U)
-    #error  "FNET_IP6_MAX_PACKET may not be more than 65553."
+    #error  "FNET_IP6_MAX_PACKET may not be more than 65535."
 #endif
 
 /******************************************************************
@@ -594,7 +594,7 @@ static void fnet_ip6_input_low(fnet_uint32_t cookie )
             && (!FNET_IP6_ADDR_IS_MULTICAST(&hdr->source_addr))             /* Validate source address. */
             && ((fnet_netif_is_my_ip6_addr(netif, &hdr->destination_addr))  /* Validate destination address. */
                 || FNET_IP6_ADDR_IS_MULTICAST(&hdr->destination_addr)        /* Pass multicast destination address.*/
-                || (netif->api->type == FNET_NETIF_TYPE_LOOPBACK) )
+                || (netif->netif_api->netif_type == FNET_NETIF_TYPE_LOOPBACK) )
           )
         {
             fnet_uint8_t    *next_header = &hdr->next_header;
@@ -842,11 +842,12 @@ const fnet_ip6_addr_t *fnet_ip6_select_src_addr(fnet_netif_t *netif /* Optional.
     fnet_uint32_t   new_label;
     fnet_netif_t    *if_dest_cur;
     fnet_netif_t    *if_dest_best = FNET_NULL;
+    fnet_bool_t     terminate_algorithm = FNET_FALSE;
 
     /* Just take the first/last interface.*/
     if(dest_addr)
     {
-        for(if_dest_cur = fnet_netif_list; if_dest_cur != FNET_NULL ; if_dest_cur = if_dest_cur->next)
+        for(if_dest_cur = fnet_netif_list; (if_dest_cur != FNET_NULL) && (terminate_algorithm == FNET_FALSE) ; if_dest_cur = if_dest_cur->next)
         {
             dest_scope = fnet_ip6_addr_scope(dest_addr);
             dest_label = fnet_ip6_policy_label(dest_addr);
@@ -875,6 +876,8 @@ const fnet_ip6_addr_t *fnet_ip6_select_src_addr(fnet_netif_t *netif /* Optional.
                 {
                     best_addr = &if_dest_cur->ip6_addr[i].address;
                     if_dest_best = if_dest_cur;
+                    /* IBM z/OS: If either address is the destination address, choose that address as the source address and terminate the entire algorithm.*/
+                    terminate_algorithm = FNET_TRUE;
                     break;
                 }
 
@@ -906,7 +909,6 @@ const fnet_ip6_addr_t *fnet_ip6_select_src_addr(fnet_netif_t *netif /* Optional.
                 }
                 else
                 {}
-
 
                 /* Rule 3:  Avoid deprecated addresses.
                  * XX: Not implemented - we do not store depricated addresses."*/
@@ -975,7 +977,6 @@ const fnet_ip6_addr_t *fnet_ip6_select_src_addr(fnet_netif_t *netif /* Optional.
                     if_dest_best = if_dest_cur;
                 }
             } /* for(IP6_IF_ADDRESSES_MAX) */
-
         }/* for(if_dest_cur) */
     } /* if(dest_addr) */
 
@@ -1003,7 +1004,7 @@ fnet_size_t fnet_ip6_mtu( fnet_netif_t *netif)
         else
 #endif
         {
-            mtu = netif->nd6_if_ptr  ? netif->nd6_if_ptr->mtu : netif->mtu;
+            mtu = netif->nd6_if_ptr  ? netif->nd6_if_ptr->mtu : netif->netif_mtu;
         }
 
         if(mtu < FNET_IP6_DEFAULT_MTU)
@@ -1120,7 +1121,7 @@ fnet_error_t fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_ad
     fnet_error_t        error_code;
     fnet_netbuf_t       *nb_header;
     fnet_ip6_header_t   *ip6_header;
-    fnet_size_t          mtu;
+    fnet_size_t         mtu;
 
 
     /* Check maximum packet size. */
@@ -1435,10 +1436,8 @@ static void fnet_ip6_netif_output(struct fnet_netif *netif, const fnet_ip6_addr_
         }
 #endif /* FNET_CFG_LOOPBACK && FNET_CFG_LOOPBACK_MULTICAST */
     }
-    netif->api->output_ip6(netif, src_ip,  dest_ip, nb); /* IPv6 Transmit function.*/
+    netif->netif_api->netif_output_ip6(netif, src_ip,  dest_ip, nb); /* IPv6 Transmit function.*/
 }
-
-
 
 /************************************************************************
 * NAME: fnet_ip6_get_solicited_multicast_addr
@@ -1467,7 +1466,6 @@ void fnet_ip6_get_solicited_multicast_addr(const fnet_ip6_addr_t *ip_addr, fnet_
     solicited_multicast_addr->addr[14] = ip_addr->addr[14];
     solicited_multicast_addr->addr[15] = ip_addr->addr[15];
 }
-
 
 /************************************************************************
 * NAME: fnet_ip6_frag_list_free

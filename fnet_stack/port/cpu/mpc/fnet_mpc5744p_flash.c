@@ -418,6 +418,31 @@
 #define OPERATION_PASS                  0x00000000
 #define OPERATION_FAIL                  0xFFFFFFFF
 
+/**************************************************************************/ /*!
+ * @brief Possible flash error codes
+ ******************************************************************************/
+typedef enum
+{
+    FNET_FLASH_ERR_NOTERASED      = (-2),  /**< @brief memory not erased.
+                                           */
+    FNET_FLASH_ERR_WRITEFAILED    = (-3),  /**< @brief 
+                                           */
+
+
+    FNET_FLASH_ERR_DST_UNALIGNED  = (-5),  /**< @brief 
+                                           */
+    FNET_FLASH_ERR_VERIFY         = (-6),  /**< @brief 
+                                           */
+    FNET_FLASH_ERR_NOTBLANK       = (-7),  /**< @brief 
+                                           */
+    FNET_FLASH_ERR_LOCK_OP        = (-8),  /**< @brief error on 
+                                           */
+    FNET_FLASH_ERR_INIT           = (-9),  /**< @brief error on 
+                                           */
+    FNET_FLASH_ERR_ERASE          = (-10),  /**< @brief error on 
+                                           */
+} fnet_flash_error_t;
+
 /********************************************************************************************************************************************/
 /* TYPEDEFS                                                                                                                                 */
 /********************************************************************************************************************************************/
@@ -916,18 +941,21 @@ static IN_RAM_CODE fnet_uint32_t App_BlankCheck(PSSD_CONFIG pSSDConfig,
         fnet_uint32_t  *pFailedData,
         PCONTEXT_DATA  pCtxData
                                                );
-static void ErrorTrap(
-    fnet_uint32_t  returnCode
-);
+
 static fnet_uint8_t fnet_cpu_flash_block_find(
-    fnet_uint8_t  *flash_addr,
-    fnet_size_t    n
+    fnet_uint8_t  *flash_addr
 );
 static void fnet_cpu_flash_setBlockSel(
     PALL_BLOCK_SEL pBlockSel,
     fnet_uint8_t   blockID
 );
-static SSD_CONFIG *fnet_cpu_flash_init(
+static fnet_int32_t fnet_cpu_flash_init(
+    void
+);
+static fnet_int32_t fnet_cpu_flash_unlock(
+    PSSD_CONFIG pSSDConfig
+);
+static  SSD_CONFIG* fnet_cpu_flash_init_SSD(
     void
 );
 
@@ -943,8 +971,7 @@ static PAPPBLANKCHECK            pAppBlankCheck    = (PAPPBLANKCHECK) App_BlankC
 * DESCRIPTION:
 ************************************************************************/
 static fnet_uint8_t fnet_cpu_flash_block_find(
-    fnet_uint8_t  *flash_addr,
-    fnet_size_t    n
+    fnet_uint8_t  *flash_addr
 )
 {
     fnet_uint8_t blockID;
@@ -952,8 +979,8 @@ static fnet_uint8_t fnet_cpu_flash_block_find(
 
     for (i = 0; i < NUM_BLOCK_ALL; i++)
     {
-        if((BLOCK_START_ADDRS[i] <= (fnet_uint32_t)flash_addr) && ( ((fnet_uint32_t)flash_addr + n - 1) <= BLOCK_END_ADDRS[i]))
-        {
+       if((BLOCK_START_ADDRS[i] >= (fnet_uint32_t)flash_addr) )
+       {
             blockID = i;
             break;
         }
@@ -987,68 +1014,99 @@ static void fnet_cpu_flash_setBlockSel(
     if (blockID < NUM_LOW_BLOCK)
     {
         pBlockSel->lowBlockSelect = (1 << blockID);
-
-        //returnCode = pSetLock(pSSDConfig, C55_BLOCK_LOW, 0x0000000FL & ~pBlockSel->lowBlockSelect);
-        //if (C55_OK != returnCode){
-        //   ErrorTrap(returnCode);
-        //}
     }
     else if (blockID < (NUM_LOW_BLOCK + NUM_MID_BLOCK))
     {
-        temp = blockID - NUM_LOW_BLOCK;
-        pBlockSel->midBlockSelect = (1 << temp);
-
-        //returnCode = pSetLock(pSSDConfig, C55_BLOCK_MID, 0x00000003L & ~pBlockSel->midBlockSelect);
-        //if (C55_OK != returnCode){
-        //   ErrorTrap(returnCode);
-        //}
     }
     else if (blockID < (NUM_LOW_BLOCK + NUM_MID_BLOCK + NUM_HIGH_BLOCK))
     {
         temp = blockID - (NUM_LOW_BLOCK + NUM_MID_BLOCK);
         pBlockSel->highBlockSelect = (1 << temp);
-
-        //returnCode = pSetLock(pSSDConfig, C55_BLOCK_HIGH, 0x0000003FL & ~pBlockSel->highBlockSelect);
-        //if (C55_OK != returnCode)
-        //{
-        //   ErrorTrap(returnCode);
-        //}
     }
     else if (blockID < (NUM_LOW_BLOCK + NUM_MID_BLOCK + NUM_HIGH_BLOCK + NUM_256K_BLOCK_FIRST))
     {
 
         temp = blockID - (NUM_LOW_BLOCK + NUM_MID_BLOCK + NUM_HIGH_BLOCK);
         pBlockSel->n256KBlockSelect.first256KBlockSelect = (1 << temp);
-
-        //returnCode = pSetLock(pSSDConfig, C55_BLOCK_256K_FIRST, 0x000000FFL & ~pBlockSel->n256KBlockSelect.first256KBlockSelect);
-        //if (C55_OK != returnCode){
-        //   ErrorTrap(returnCode);
-        //}
     }
     else
     {
         temp = blockID - (NUM_LOW_BLOCK + NUM_MID_BLOCK + NUM_HIGH_BLOCK + NUM_256K_BLOCK_SECOND);
         pBlockSel->n256KBlockSelect.second256KBlockSelect = (1 << temp);
-
-        //returnCode = pSetLock(pSSDConfig, C55_BLOCK_256K_SECOND, pBlockSel->n256KBlockSelect.second256KBlockSelect);
-        //if (C55_OK != returnCode){
-        //   ErrorTrap(returnCode);
-        //}
     }
 }
 
 /************************************************************************
-* NAME: fnet_cpu_flash_init
+* NAME: fnet_cpu_flash_unlock
 *
 * DESCRIPTION:
 ************************************************************************/
-static SSD_CONFIG *fnet_cpu_flash_init(
-    void
+static fnet_int32_t fnet_cpu_flash_unlock(
+    PSSD_CONFIG pSSDConfig
 )
 {
     register fnet_uint32_t  returnCode;           /* Return code from each SSD function. */
     fnet_uint32_t           blkLockState;         /* block lock status to be retrieved */
 
+    /**************************************************************************/
+    /* Unlock all except FNET Bootloader region                               */
+    /**************************************************************************/
+    returnCode = pSetLock(pSSDConfig, C55_BLOCK_LOW, 0x00000000L);
+    if (C55_OK != returnCode)
+    {
+         return FNET_FLASH_ERR_LOCK_OP;
+    }
+
+    returnCode = pSetLock(pSSDConfig, C55_BLOCK_MID, 0x00000000L);
+    if (C55_OK != returnCode)
+    {
+         return FNET_FLASH_ERR_LOCK_OP;
+    }
+
+    returnCode = pSetLock(pSSDConfig, C55_BLOCK_HIGH, 0x00000003L);
+    if (C55_OK != returnCode)
+    {
+         return FNET_FLASH_ERR_LOCK_OP;
+    }
+
+    returnCode = pSetLock(pSSDConfig, C55_BLOCK_256K_FIRST, 0x00000000L);
+    if (C55_OK != returnCode)
+    {
+         return FNET_FLASH_ERR_LOCK_OP;
+    }
+
+
+    /**************************************************************************/
+    /* Lock to Protect UTest Address Space                                    */
+    /**************************************************************************/
+    returnCode = pGetLock(pSSDConfig, C55_BLOCK_UTEST, &blkLockState);
+    if (C55_OK != returnCode)
+    {
+         return FNET_FLASH_ERR_LOCK_OP;
+    }
+
+    if (!(blkLockState & 0x00000001))
+    {
+         returnCode = pSetLock(pSSDConfig, C55_BLOCK_UTEST, 0x1);
+         if (C55_OK != returnCode)
+         {
+             return FNET_FLASH_ERR_LOCK_OP;
+         }
+    }
+
+    return FNET_OK;
+}
+
+
+/************************************************************************
+* NAME: fnet_cpu_flash_init_SSD
+*
+* DESCRIPTION:
+************************************************************************/
+static SSD_CONFIG* fnet_cpu_flash_init_SSD(
+    void
+)
+{
     static SSD_CONFIG ssdConfig =
     {
         C55_REG_BASE,                /* C55 control register base */
@@ -1070,65 +1128,43 @@ static SSD_CONFIG *fnet_cpu_flash_init(
     /*csCtxData.pReqCompletionFn = pCheckSum;*/
     /*exPgmCtxData.pReqCompletionFn = pFlashExpressProgram;*/
 
+    /*set SSD config pointer*/
+    return &ssdConfig;
+}
+
+
+/************************************************************************
+* NAME: fnet_cpu_flash_init
+*
+* DESCRIPTION:
+************************************************************************/
+static fnet_int32_t fnet_cpu_flash_init(
+    void
+)
+{
+    register fnet_uint32_t  returnCode;           /* Return code from each SSD function. */
+
+    /*Init pointer to the SSD struct*/
+    pSSDConfig = fnet_cpu_flash_init_SSD();
 
     /*Data cache must be also disabled, set FNET_CFG_CPU_CACHE for proper operation of the Flash Driver (SSD)*/
     DisableFlashControllerCache(FLASH_PFCR1, FLASH_FMC_BFEN, &pflash_pfcr1);
 
     /* Flash Init */
-    returnCode = pFlashInit(&ssdConfig);
-
+    returnCode = pFlashInit(pSSDConfig);
     if (C55_OK != returnCode)
     {
-        ErrorTrap(returnCode);
+         return FNET_FLASH_ERR_INIT;
     }
 
-    /**************************************************************************/
-    /* Unlock all except FNET Bootloader region                               */
-    /**************************************************************************/
-    returnCode = pSetLock(&ssdConfig, C55_BLOCK_LOW, 0x00000000L);
-    if (C55_OK != returnCode)
+    /* Flash unlock blocks, except reserved*/
+    returnCode = fnet_cpu_flash_unlock(pSSDConfig);
+    if (returnCode)
     {
-        ErrorTrap(returnCode);
+         return FNET_FLASH_ERR_LOCK_OP;
     }
 
-    returnCode = pSetLock(&ssdConfig, C55_BLOCK_MID, 0x00000000L);
-    if (C55_OK != returnCode)
-    {
-        ErrorTrap(returnCode);
-    }
-
-    returnCode = pSetLock(&ssdConfig, C55_BLOCK_HIGH, 0x00000003L);
-    if (C55_OK != returnCode)
-    {
-        ErrorTrap(returnCode);
-    }
-
-    returnCode = pSetLock(&ssdConfig, C55_BLOCK_256K_FIRST, 0x00000000L);
-    if (C55_OK != returnCode)
-    {
-        ErrorTrap(returnCode);
-    }
-
-
-    /**************************************************************************/
-    /* Lock to Protect UTest Address Space                                    */
-    /**************************************************************************/
-    returnCode = pGetLock(&ssdConfig, C55_BLOCK_UTEST, &blkLockState);
-    if (C55_OK != returnCode)
-    {
-        ErrorTrap(returnCode);
-    }
-
-    if (!(blkLockState & 0x00000001))
-    {
-        returnCode = pSetLock(&ssdConfig, C55_BLOCK_UTEST, 0x1);
-        if (C55_OK != returnCode)
-        {
-            ErrorTrap(returnCode);
-        }
-    }
-
-    return (&ssdConfig);
+    return FNET_OK;
 }
 
 
@@ -1137,7 +1173,7 @@ static SSD_CONFIG *fnet_cpu_flash_init(
 *
 * DESCRIPTION:
 ************************************************************************/
-void fnet_cpu_flash_erase(
+fnet_return_t fnet_cpu_flash_erase(
     void *flash_addr,
     fnet_size_t  n
 )
@@ -1145,54 +1181,82 @@ void fnet_cpu_flash_erase(
     register fnet_uint32_t  result;
     fnet_uint8_t            blockID;
     fnet_cpu_irq_desc_t     irq_desc;
-
+    fnet_int32_t            err = FNET_OK;
+    fnet_size_t             bytes;
+    fnet_uint8_t            *addr = flash_addr;
 
     irq_desc = fnet_cpu_irq_disable();
 
     /*Initialize only if pointer is NULL*/
     if (pSSDConfig == NULL)
     {
-        pSSDConfig = fnet_cpu_flash_init();
+        err = fnet_cpu_flash_init();
+        if (err)
+        {
+            goto FAIL;
+        }
     }
 
-    /*Unlock corresponding flash block, if not already done in previous cmd*/
-    blockID = fnet_cpu_flash_block_find((fnet_uint8_t *)flash_addr, n);
-    if (blockID != previousBlockId)
+    /*Erase block(s) loop*/
+    while (n)
     {
+        /*find block index according to the current address*/
+        blockID = fnet_cpu_flash_block_find((fnet_uint8_t *)addr);
+
+        /*set the block selection according to the current block*/
         fnet_cpu_flash_setBlockSel(&blockSel, blockID);
-        previousBlockId = blockID;
+
+        /*get block size*/
+        bytes = (BLOCK_END_ADDRS[blockID] - BLOCK_START_ADDRS[blockID]) + 1U;
+
+        /* erase block individually */
+        result = pAppFlashErase(pSSDConfig,
+                                C55_ERASE_MAIN,
+                                blockSel.lowBlockSelect,
+                                blockSel.midBlockSelect,
+                                blockSel.highBlockSelect,
+                                blockSel.n256KBlockSelect);
+
+        if (result == OPERATION_FAIL)
+        {
+            err = FNET_FLASH_ERR_ERASE;
+            goto FAIL;
+        }
+
+        /* blank check */
+        result = pAppBlankCheck(pSSDConfig,
+                                (fnet_uint32_t)addr,
+                                bytes,
+                                &failedAddress,
+                                &failedData,
+                                &bcCtxData);
+
+        if (result == OPERATION_FAIL)
+        {
+            err = FNET_FLASH_ERR_NOTBLANK;
+            goto FAIL;
+        }
+
+        if(bytes > n)
+        {
+            bytes = n;
+        }
+        n -= bytes;
+
+        /*incr. address for next erase loop*/
+        flash_addr = (fnet_uint8_t*)flash_addr + n;
     }
-
-    /* erase block individually */
-    result = pAppFlashErase(pSSDConfig,
-                            C55_ERASE_MAIN,
-                            blockSel.lowBlockSelect,
-                            blockSel.midBlockSelect,
-                            blockSel.highBlockSelect,
-                            blockSel.n256KBlockSelect);
-
-    if (result == OPERATION_FAIL)
-    {
-        ErrorTrap(result);
-    }
-
-    /* blank check */
-    result = pAppBlankCheck(pSSDConfig,
-                            (fnet_uint32_t)flash_addr,
-                            n,
-                            &failedAddress,
-                            &failedData,
-                            &bcCtxData);
-
-    if (result == OPERATION_FAIL)
-    {
-        ErrorTrap(result);
-    }
-
 
     //RestoreFlashControllerCache(FLASH_PFCR1 ,pflash_pfcr1);
-
+FAIL:
     fnet_cpu_irq_enable(irq_desc);
+
+	if(err != FNET_OK)
+	{
+		err = FNET_ERR
+	}
+	
+    return (fnet_return_t)err;
 }
 
 /************************************************************************
@@ -1200,7 +1264,7 @@ void fnet_cpu_flash_erase(
 *
 * DESCRIPTION:
 ************************************************************************/
-void fnet_cpu_flash_write(
+fnet_return_t fnet_cpu_flash_write(
     fnet_uint8_t         *dest,
     const fnet_uint8_t   *data
 )
@@ -1208,89 +1272,81 @@ void fnet_cpu_flash_write(
     register fnet_uint32_t  result;
     fnet_uint8_t            blockID;
     fnet_cpu_irq_desc_t     irq_desc;
-
+    fnet_int32_t            err = FNET_OK;
 
     irq_desc = fnet_cpu_irq_disable();
 
     /*Initialize only if pointer is NULL*/
     if (pSSDConfig == NULL)
     {
-        pSSDConfig = fnet_cpu_flash_init();
+        err = fnet_cpu_flash_init();
+        if (err)
+        {
+            goto FAIL;
+        }
     }
 
     /* address double-word (64-bit) aligned? */
     if (((fnet_uint32_t)dest & 0x00000007UL) != 0U)
     {
-        ErrorTrap(OPERATION_FAIL);
-    }
-    else
-    {
-        result = pAppFlashProgram(pSSDConfig,
-                                  (fnet_boolean_t)FNET_FALSE,
-                                  (fnet_uint32_t)dest,
-                                  FNET_CFG_CPU_FLASH_PROGRAM_SIZE,
-                                  (fnet_uint32_t)data,
-                                  &pgmCtxData);
-
-        if (result == OPERATION_FAIL)
-        {
-            ErrorTrap(result);
-        }
-
-        /* Program verify */
-        result = pAppProgramVerify(pSSDConfig,
-                                   (fnet_uint32_t)dest,
-                                   FNET_CFG_CPU_FLASH_PROGRAM_SIZE,
-                                   (fnet_uint32_t)data,
-                                   &failedAddress,
-                                   &failedData,
-                                   &failedSource,
-                                   &pvCtxData);
-
-        if (result == OPERATION_FAIL)
-        {
-            ErrorTrap(result);
-        }
+        err = FNET_FLASH_ERR_DST_UNALIGNED;
+        goto FAIL;
     }
 
-    //RestoreFlashControllerCache(FLASH_PFCR1 ,pflash_pfcr1);
-
-    fnet_cpu_irq_enable(irq_desc);
-}
-
-/************************************************************************
-* NAME: fnet_cpu_flash_blankCheck
-*
-* DESCRIPTION:
-************************************************************************/
-fnet_int32_t fnet_cpu_flash_blankCheck(
-    fnet_uint32_t  start,
-    fnet_size_t    n
-)
-{
-    fnet_int32_t   ret = FNET_OK;
-    fnet_uint32_t  result;
-
-    /*Initialize only if pointer is NULL*/
-    if (pSSDConfig == NULL)
-    {
-        pSSDConfig = fnet_cpu_flash_init();
-    }
-
-    /* blank check */
+    /* Blank check */
     result = pAppBlankCheck(pSSDConfig,
-                            start,
-                            n,
+                            (fnet_uint32_t)dest,
+                            FNET_CFG_CPU_FLASH_PROGRAM_SIZE,
                             &failedAddress,
                             &failedData,
                             &bcCtxData);
 
     if (result == OPERATION_FAIL)
     {
-        ret = FNET_ERR;
+        err = FNET_FLASH_ERR_NOTBLANK;
+        goto FAIL;
     }
 
-    return(ret);
+    /* Program */
+    result = pAppFlashProgram(pSSDConfig,
+                              (fnet_boolean_t)FNET_FALSE,
+                              (fnet_uint32_t)dest,
+                              FNET_CFG_CPU_FLASH_PROGRAM_SIZE,
+                              (fnet_uint32_t)data,
+                              &pgmCtxData);
+
+    if (result == OPERATION_FAIL)
+    {
+        err = FNET_FLASH_ERR_WRITEFAILED;
+        goto FAIL;
+    }
+
+    /* Program verify */
+    result = pAppProgramVerify(pSSDConfig,
+                               (fnet_uint32_t)dest,
+                               FNET_CFG_CPU_FLASH_PROGRAM_SIZE,
+                               (fnet_uint32_t)data,
+                               &failedAddress,
+                               &failedData,
+                               &failedSource,
+                               &pvCtxData);
+
+    if (result == OPERATION_FAIL)
+    {
+        err = FNET_FLASH_ERR_VERIFY;
+        goto FAIL;
+    }
+
+    //RestoreFlashControllerCache(FLASH_PFCR1 ,pflash_pfcr1);
+FAIL:
+    fnet_cpu_irq_enable(irq_desc);
+
+	if(err != FNET_OK)
+	{
+		err = FNET_ERR
+	}
+	
+    return (fnet_return_t)err;
 }
 
 /***************************************************************************!
@@ -1350,12 +1406,12 @@ static IN_RAM_CODE fnet_uint32_t WaitOperationFinish(
 
  ****************************************************************************/
 static IN_RAM_CODE fnet_uint32_t App_FlashErase( PSSD_CONFIG pSSDConfig,
-        fnet_uint8_t      eraseOption,
-        fnet_uint32_t     lowBlockSelect,
-        fnet_uint32_t     midBlockSelect,
-        fnet_uint32_t     highBlockSelect,
-        N256K_BLOCK_SEL   n256KBlockSelect
-                                               )
+    fnet_uint8_t      eraseOption,
+    fnet_uint32_t     lowBlockSelect,
+    fnet_uint32_t     midBlockSelect,
+    fnet_uint32_t     highBlockSelect,
+    N256K_BLOCK_SEL   n256KBlockSelect
+)
 {
     fnet_uint32_t returnCode;
     fnet_uint32_t result;
@@ -1535,31 +1591,6 @@ static void RestoreFlashControllerCache(
 )
 {
     WRITE32(FLASH_FMC + flashConfigReg, pflash_pfcr);
-}
-
-/***************************************************************************!
-
-@name:  ErrorTrap
-
-@brief: This function is used to trap the error code in driver
-
-@param: fnet_uint32_t
-
-@return: N/A
-
- ****************************************************************************/
-static void ErrorTrap(
-    fnet_uint32_t returnCode
-)
-{
-    fnet_vuint32_t failedReason;
-
-    failedReason = returnCode;
-
-    while(1)
-    {
-        ; /* wait forever*/
-    }
 }
 
 #endif /* FNET_MPC && FNET_CFG_CPU_FLASH */

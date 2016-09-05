@@ -37,25 +37,23 @@
 *************************************************************************/
 struct fnet_eth_if fnet_mcf_eth0_if =
 {
-    &fnet_fec0_if
-    , 0                            /* MAC module number.*/
-    , fnet_fec_output
+    .eth_prv = &fnet_fec0_if,							/* Points to Ethernet driver-specific control data structure. */
+    .eth_mac_number = 0,                            	/* MAC module number.*/
+    .eth_output = fnet_fec_output,						/* Ethernet driver output.*/
 #if FNET_CFG_MULTICAST
-    , fnet_fec_multicast_join
-    , fnet_fec_multicast_leave
+    .eth_multicast_join = fnet_fec_multicast_join,		/* Ethernet driver join multicast group.*/
+    .eth_multicast_leave = fnet_fec_multicast_leave,	/* Ethernet driver leave multicast group.*/
 #endif
 };
 /************************************************************************
 * eth0 Interface structure.
 *************************************************************************/
-fnet_netif_t fnet_eth0_if =
+fnet_netif_t fnet_cpu_eth0_if =
 {
-    0,                      /* Pointer to the next net_if structure.*/
-    0,                      /* Pointer to the previous net_if structure.*/
-    FNET_CFG_CPU_ETH0_NAME, /* Network interface name.*/
-    FNET_CFG_CPU_ETH0_MTU,  /* Maximum transmission unit.*/
-    &fnet_mcf_eth0_if,      /* Points to interface specific data structure.*/
-    &fnet_fec_api           /* Interface API */
+    .netif_name = FNET_CFG_CPU_ETH0_NAME, /* Network interface name.*/
+    .netif_mtu = FNET_CFG_CPU_ETH0_MTU,   /* Maximum transmission unit.*/
+    .netif_prv = &fnet_mcf_eth0_if,       /* Points to interface specific data structure.*/
+    .netif_api = &fnet_fec_api            /* Interface API */
 };
 #endif /*FNET_CFG_CPU_ETH0*/
 
@@ -65,29 +63,25 @@ fnet_netif_t fnet_eth0_if =
 *************************************************************************/
 struct fnet_eth_if fnet_mcf_eth1_if =
 {
-    &fnet_fec1_if
-    , 1                  	/* MAC module number.*/
-    , fnet_fec_output
+    .eth_prv = &fnet_fec1_if,							/* Points to Ethernet driver-specific control data structure. */
+    .eth_mac_number = 1,                  				/* MAC module number.*/
+    .eth_output = fnet_fec_output,						/* Ethernet driver output.*/
 #if FNET_CFG_MULTICAST
-    , fnet_fec_multicast_join
-    , fnet_fec_multicast_leave
+    .eth_multicast_join = fnet_fec_multicast_join,		/* Ethernet driver join multicast group.*/
+    .eth_multicast_leave = fnet_fec_multicast_leave,	/* Ethernet driver leave multicast group.*/
 #endif
 };
 /************************************************************************
 * eth1 Interface structure.
 *************************************************************************/
-fnet_netif_t fnet_eth1_if =
+fnet_netif_t fnet_cpu_eth1_if =
 {
-    0,                      /* Pointer to the next net_if structure.*/
-    0,                      /* Pointer to the previous net_if structure.*/
-    FNET_CFG_CPU_ETH1_NAME, /* Network interface name.*/
-    FNET_CFG_CPU_ETH1_MTU,  /* Maximum transmission unit.*/
-    &fnet_mcf_eth1_if,      /* Points to interface specific data structure.*/
-    &fnet_fec_api           /* Interface API */
+    .netif_name = FNET_CFG_CPU_ETH1_NAME, /* Network interface name.*/
+    .netif_mtu = FNET_CFG_CPU_ETH1_MTU,   /* Maximum transmission unit.*/
+    .netif_prv = &fnet_mcf_eth1_if,       /* Points to interface specific data structure.*/
+    .netif_api = &fnet_fec_api            /* Interface API */
 };
 #endif /*FNET_CFG_CPU_ETH0*/
-
-
 
 /************************************************************************
 * NAME: fnet_eth_io_init

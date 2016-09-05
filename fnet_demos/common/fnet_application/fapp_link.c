@@ -36,6 +36,9 @@
 
 static fnet_link_desc_t fapp_link_desc = 0; /* Link-Detection service descriptor. */
 
+/************************************************************************
+* DESCRIPTION: Link-Detection event handler callback.
+*************************************************************************/
 static void fapp_link_callback(fnet_netif_desc_t netif, fnet_bool_t connected, void *callback_param)
 {
     fnet_shell_desc_t   desc = (fnet_shell_desc_t)callback_param;

@@ -35,11 +35,6 @@
 
 #define FNET_MCF                        	(1)
 
-/* Size of the internal static heap buffer. */
-#ifndef FNET_CFG_HEAP_SIZE
-    #define FNET_CFG_HEAP_SIZE              (30 * 1024)
-#endif
-
 /* The platform does not have on-chip Flash Module.*/
 #define FNET_CFG_CPU_FLASH              	(0)
 
@@ -61,8 +56,5 @@
 #ifndef FNET_CFG_CPU_CACHE
     #define FNET_CFG_CPU_CACHE            	(1)
 #endif
-
-/* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE          	(1024 * 64)     /* 64 KB */
 
 #endif /* _FNET_MCF5235_CONFIG_H_ */

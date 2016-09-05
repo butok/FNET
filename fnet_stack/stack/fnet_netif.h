@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok, Alexey Shervashidze. Motorola SPS
 *
@@ -20,10 +20,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_netif.h
-*
-* @author Andrey Butok
 *
 * @brief FNET Network interface API.
 *
@@ -50,12 +46,9 @@
  ******************************************************************************/
 typedef enum
 {
-    FNET_NETIF_TYPE_OTHER,      /**< @brief Unspecified interface.
-                                 */
-    FNET_NETIF_TYPE_ETHERNET,   /**< @brief Ethernet interface
-                                 */
-    FNET_NETIF_TYPE_LOOPBACK    /**< @brief Loopback interface.
-                                 */
+    FNET_NETIF_TYPE_OTHER,      /**< @brief Unspecified interface.*/
+    FNET_NETIF_TYPE_ETHERNET,   /**< @brief Ethernet interface.*/
+    FNET_NETIF_TYPE_LOOPBACK    /**< @brief Loopback interface.*/
 } fnet_netif_type_t;
 
 /**************************************************************************/ /*!
@@ -63,10 +56,8 @@ typedef enum
  ******************************************************************************/
 struct fnet_netif_statistics
 {
-    fnet_uint32_t tx_packet; /**< @brief Tx packet count.
-                              */
-    fnet_uint32_t rx_packet; /**< @brief Rx packet count.
-                              */
+    fnet_uint32_t tx_packet; /**< @brief Tx packet count.*/
+    fnet_uint32_t rx_packet; /**< @brief Rx packet count.*/
 };
 
 /**************************************************************************/ /*!
@@ -79,9 +70,7 @@ struct fnet_netif_statistics
  ******************************************************************************/
 typedef void *fnet_netif_desc_t;
 
-
 #define FNET_NETIF_LL_ADDR_MAX          (16)
-
 /**************************************************************************/ /*!
  * @brief Link-layer address.
  * For example, Ethernet interafce uses the address with size set to 6.
@@ -300,21 +289,21 @@ fnet_netif_desc_t fnet_netif_get_default( void );
  *
  * @brief    Sets the IPv4 address of the specified network interface.
  *
- *
  * @param netif_desc     Network interface descriptor.
  *
  * @param ipaddr        The IPv4 address of the network interface.
  *
- * @see fnet_netif_get_ip4_addr()
+ * @param subnet_mask   The subnet mask of the network interface.
+ *
+ * @see fnet_netif_get_ip4_addr(), fnet_netif_get_ip4_subnet_mask
  *
  ******************************************************************************
  *
- * This function sets the IPv4 address of the @c netif interface to the @c ipaddr value.@n
- * Also, it makes a recalculation of the subnet mask of the interface according
- * to the @c ipaddr.
+ * This function sets the IPv4 address and the subnet mask of the @c netif interface.@n
+ * If subnet_mask is @ref INADDR_ANY, the function makes a recalculation of the subnet mask automatically.
  *
  ******************************************************************************/
-void fnet_netif_set_ip4_addr( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipaddr );
+void fnet_netif_set_ip4_addr( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipaddr, fnet_ip4_addr_t subnet_mask);
 
 /***************************************************************************/ /*!
  *
@@ -448,7 +437,6 @@ fnet_ip4_addr_t fnet_netif_get_ip4_dns( fnet_netif_desc_t netif_desc );
 
 #endif /*FNET_CFG_DNS*/
 
-
 /***************************************************************************/ /*!
  *
  * @brief    Sets the hardware address of the specified network interface.
@@ -561,8 +549,8 @@ fnet_netif_ip_addr_type_t fnet_netif_get_ip4_addr_type( fnet_netif_desc_t netif_
  *
  * This function sets type of the interface IPv4 address parameters, if they
  * were set manually, or obtained by the DHCP client or
- * set during link-local autoconfiguartion (AutoIP - TBD). @n
- * fnet_netif_set_ip4_addr(), fnet_netif_set_ip4_subnet_mask(),
+ * set during link-local autoconfiguartion (AutoIP). @n
+ * fnet_netif_set_ip4_addr(),
  * fnet_netif_set_ip4_gateway() and fnet_netif_set_ip4_dns() sets
  * the type to FNET_NETIF_IP_ADDR_TYPE_MANUAL automatically.
  *
@@ -660,7 +648,7 @@ void fnet_netif_set_callback_on_ip4_addr_conflict (fnet_netif_callback_ip4_addr_
  * with another system on the network.@n
  * The address conflict is detected by ARP protocol.@n
  * The conflict flag is cleared on changing of the interface IPv4 address,
- * using fnet_netif_set_ip4_addr() or on calling fnet_netif_clear_ip4_addr_conflict().
+ * using fnet_netif_set_ip4_addr() or calling fnet_netif_clear_ip4_addr_conflict().
  *
  ******************************************************************************/
 fnet_bool_t fnet_netif_is_ip4_addr_conflict(fnet_netif_desc_t netif_desc);
@@ -1006,6 +994,70 @@ fnet_netif_desc_t fnet_netif_get_by_scope_id(fnet_scope_id_t scope_id);
  *
  ******************************************************************************/
 fnet_netif_desc_t fnet_netif_get_by_sockaddr( const struct sockaddr *addr );
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Initializes network interface and adds it to FNET stack
+ *
+ * @param netif_desc    Network interface descriptor to be initialized (FNET_CPU_ETH0_IF,FNET_CPU_ETH1_IF).
+ *
+ * @param hw_addr        Buffer containing the hardware address
+ *                      (for the Ethernet interface, it contains the MAC address).
+ *
+ * @param hw_addr_size   Size of the hardware address in the @c hw_addr (for the Ethernet interface, it
+ *                       equals @c 6).
+ *
+ * @return This function returns:
+ *   - @ref FNET_OK if successful.
+ *   - @ref FNET_ERR if failed.
+ *
+ * @see fnet_init(), fnet_netif_release()
+ *
+ ******************************************************************************
+ *
+ * This function initializes network interface defined by @c netif_desc and 
+ * adds it to the FNET stack.@n
+ * FNET declares descriptors for Ethernet interfaces (FNET_CPU_ETH0_IF, FNET_CPU_ETH1_IF).
+ * @note Loop-back interface (if set FNET_CFG_LOOPBACK) is initialized automatically during stack initialization.
+ *
+ ******************************************************************************/
+fnet_return_t fnet_netif_init(fnet_netif_desc_t netif_desc, fnet_uint8_t *hw_addr, fnet_size_t hw_addr_size );
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Releases network interface and removes it from FNET stack
+ *
+ * @param netif_desc    Network interface descriptor to be released (FNET_CPU_ETH0_IF,FNET_CPU_ETH1_IF).
+ *
+ * @see fnet_init(), fnet_netif_init()
+ *
+ ******************************************************************************
+ *
+ * This function releases network interface defined by @c netif_desc and 
+ * removes it from the FNET stack.@n
+ * FNET declares descriptors for Ethernet interfaces (FNET_CPU_ETH0_IF, FNET_CPU_ETH1_IF).
+ * @note fnet_release() automatically releases all initialized interfaces.
+ *
+ ******************************************************************************/
+void fnet_netif_release(fnet_netif_desc_t netif_desc);
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Determines if the network interface is initialized.
+ *
+ * @param netif_desc  Network interface descriptor.
+ *
+ * @return       This function returns:
+ *   - @c FNET_FALSE if the network link is released or not initialized.
+ *   - @c FNET_TRUE if the network link is initialized.
+ *
+ ******************************************************************************
+ *
+ * This function determines if the @c netif interface is initialized and 
+ * added to the FNET stack using ref fnet_netif_init(). 
+ *
+ ******************************************************************************/
+fnet_bool_t fnet_netif_is_initialized(fnet_netif_desc_t netif_desc);
 
 #if defined(__cplusplus)
 }

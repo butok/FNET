@@ -20,11 +20,7 @@
 **********************************************************************/
 /*!
 *
-* @file fnet_arp_prv.h
-*
-* @author Andrey Butok
-*
-* @brief Private. ARP protocol function definitions, data structures, etc
+* @brief Private. ARP protocol function definitions, data structures, etc.
 *
 ***************************************************************************/
 

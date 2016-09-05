@@ -799,17 +799,16 @@ dhcp; erase all; tftp; set boot go; save; go
 @endverbatim
 This script has the following steps:
     -# @c dhcp = starts DHCP client service and tries to update the IPv4 parameters (@c ip, @c gateway and @c netmask) from DHCP server. If the DHCP service will fail to retrieve the IP parameter from a DHCP server, the bootloder will continue with the old IP settings.
-    -# @c erase @c all = erases all Flash memory blocks. It skips the reserved memory sections, which are the first 48 Kbytes (reserved for the Bootloader) and the last page (reserved for the bootloder parameters). To see the memory map enter the @c mem command: @verbatim
+    -# @c erase @c all = erases all Flash memory blocks. It skips the reserved memory sections, which are the first 52 Kbytes (reserved for the Bootloader) and the last page (reserved for the bootloder parameters). To see the memory map enter the @c mem command: @verbatim
 BOOT> mem
 
    Memory type       Start         End
   ----------------------------------------
   FLASH            0x00000000   0x0007FFFF
-  SRAM             0x20000000   0x2000FFFF
 
       Reserved       Start         End
   ----------------------------------------
-  FNET ROM         0x00000000   0x0000BFFF
+  FNET ROM         0x00000000   0x0000CFFF
   FNET Params      0x0007F000   0x0007FFFF
 
 BOOT>
@@ -1343,7 +1342,7 @@ To add the FNET TCP/IP stack code to your project, follow the steps below:
 /* main entry point*/
 int main(void)
 {
-	static fnet_uint8_t         stack_heap[FNET_CFG_HEAP_SIZE];
+	static fnet_uint8_t         stack_heap[FAPP_CFG_HEAP_SIZE];
     struct fnet_init_params     init_params;
 	
     /* Init UART */
@@ -1354,14 +1353,16 @@ int main(void)
     
 	/* Input parameters for FNET stack initialization */
     init_params.netheap_ptr = stack_heap;
-    init_params.netheap_size = FNET_CFG_HEAP_SIZE;
+    init_params.netheap_size = sizeof(stack_heap);
 	
     /* FNET Initialization */
     if (fnet_init(&init_params) != FNET_ERR) 
     {
-        fnet_printf("TCP/IP stack initialization is done.\n");
-		
+		fnet_printf("TCP/IP stack initialization is done.\n");
+				
 		/* You may use FNET stack API */
+		
+		/* Initialize networking interfaces using fnet_netif_init(). */
     }
     else 
     {
@@ -1431,7 +1432,7 @@ fnet_cpu_isr,                        /****  91 (0x16C) FEC Receive frame interru
 /*! 
 @page how_to_add_boot Add FNET Bootloader support to an existing project
 
-The Bootloader reserves the first 48 Kbytes of the on-chip Flash memory for its own needs (actually it can occupy less space). @n The last page of the on-chip Flash memory is used by the Bootloader for parameter storage and may be modified by a user application to change the Bootloader behaviour.
+The Bootloader reserves the first 52 Kbytes of the on-chip Flash memory for its own needs (actually it can occupy less space). @n The last page of the on-chip Flash memory is used by the Bootloader for parameter storage and may be modified by a user application to change the Bootloader behaviour.
 
 To use an existing application with the FNET Bootloader, the following changes should be applied in the application project:
 -# Add additional sections to the application linker command file and update the already defined memory sections to avoid section overlapping. 
@@ -1442,10 +1443,10 @@ MEMORY
 {
                                                                      # 512KB FLASH
 	
-    fnet_bootloader (RX)  : ORIGIN = 0x00000000, LENGTH = 0x0000C000 # 48KB (Reserved for FNET Bootloader)
+    fnet_bootloader (RX)  : ORIGIN = 0x00000000, LENGTH = 0x0000D000 # 52KB (Reserved for FNET Bootloader)
     
-    vectorrom       (RX)  : ORIGIN = 0x0000C000, LENGTH = 0x00000400 
-    code            (RX)  : ORIGIN = 0x0000C400, LENGTH = 0x0007EC00
+    vectorrom       (RX)  : ORIGIN = 0x0000D000, LENGTH = 0x00000400 
+    code            (RX)  : ORIGIN = 0x0000D400, LENGTH = 0x0007DC00
 
     fnet_params     (RW)  : ORIGIN = 0x0007F000, LENGTH = 0x00001000 # 4Kbytes (Last logical-block reserved for parameters)
    
@@ -1543,6 +1544,19 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.6.0:
+	- Disabled automatic network-interface initialization during fnet_init() call:
+		- Only loop-back interface is initialized automatically, if enabled.
+		- Moved network interface initialization and IP address parameter settings to user application fapp_netif.c
+		- Added fnet_netif_init(), fnet_netif_release() and fnet_netif_is_initialized() to public API.	
+	- Merged fnet_netif_set_ip4_subnet_mask() to fnet_netif_set_ip4_addr().
+	- Obsoleted FNET_CFG_HEAP_SIZE, FNET_CFG_ETH0_IP4_ADDR, FNET_CFG_ETH0_IP4_MASK, FNET_CFG_ETH0_IP4_GW, FNET_CFG_ETH0_IP4_DNS, FNET_CFG_DEFAULT_IF.
+	  They are replaced by FAPP_CFG_ user-application ones.
+	- Deleted obsolete FNET_CFG_CPU_SRAM_ADDRESS and FNET_CFG_CPU_SRAM_SIZE.
+	- Added experimental Write-Caching in Flash driver, enabled by FNET_CFG_FLASH_CACHE. Thanks to Patrice Cavin. 
+	- Started using C99 structure member initialization. Only members that are needed are defined.
+	- Other minor changes and fixes.
+	
 - Version 3.5.0:
 	- Improved Auto-IP service to follow RFC3927. 
 	  It has passed the "Phase 1, Link-Local Address Allocation" test cases of the Bonjour Conformance Test suite Version 1.3.1.
@@ -1786,7 +1800,7 @@ FNET public releases:
 		- FNET_CFG_CPU_ETHx_MTU defines default MTU of Externet-x module.
 		- FNET_CFG_CPU_ETHx_PHY_ADDR defines default PHY address used by Ethernet-x module.
 		- @ref FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER enables/disables PHY addresses discover.
-		- @ref FNET_CFG_DEFAULT_IF defines default interface.
+		- FNET_CFG_DEFAULT_IF defines default interface.
 		- FNET_CFG_OS_TIMER enables/disables OS-specific timer initialization/release.
 		- Others.
 	- Other internal changes. 
@@ -1968,7 +1982,7 @@ FNET public releases:
 	- Fixed stuck issue that may occur during receiving of broadcast UDP datagrams.
 	- Fixed buffer corruption issue that may occur when the internal static heap buffer has relatively small size.
 	- Improved stability of nebuf. management.
-	- FEC Frame buffers and descriptors are allocated statically (before in internal heap). Existing applications should reduce value of the @ref FNET_CFG_HEAP_SIZE in user-configuration file by the value that equals summary size of buffers statically allocated in Ethernet driver. Roughly [NEW_VALUE]=[OLD_VALUE]-(FNET_CFG_MCF_ETH_TX_BUFS_MAX+FNET_CFG_MCF_ETH_RX_BUFS_MAX)* FNET_CFG_ETH_MTU.
+	- FEC Frame buffers and descriptors are allocated statically (before in internal heap). Existing applications should reduce value of the FNET_CFG_HEAP_SIZE in user-configuration file by the value that equals summary size of buffers statically allocated in Ethernet driver. Roughly [NEW_VALUE]=[OLD_VALUE]-(FNET_CFG_MCF_ETH_TX_BUFS_MAX+FNET_CFG_MCF_ETH_RX_BUFS_MAX)* FNET_CFG_ETH_MTU.
 	- Renamed FNET_CFG_MCF_SERIAL_PORT_DEFAULT to @ref FNET_CFG_CPU_SERIAL_PORT_DEFAULT.
 	- Added the @ref FNET_CFG_TELNET_SOCKET_BUF_SIZE user-configuration option that defines size of the socket RX & TX buffer used by the Telnet server.
 	- Added OS folder where it will be placed all OS-specific code.
@@ -2214,40 +2228,6 @@ which includes all service-specific configuration files.
 ******************************************************************************/
 #define FNET_CFG_IP4                (1)
 #define FNET_CFG_IP6                (1)
-
-/*****************************************************************************
-* IP address for the Ethernet interface.
-* At runtime it can be changed by the fnet_netif_set_ip4_addr() or
-* by the DHCP client service.
-******************************************************************************/
-#define FNET_CFG_ETH0_IP4_ADDR      (FNET_IP4_ADDR_INIT(192U, 168U, 0U, 22U))
-
-/*****************************************************************************
-* IP Subnet mask for the Ethernet interface.
-* At runtime it can be changed by the fnet_netif_set_ip4_subnet_mask() or
-* by the DHCP client service.
-******************************************************************************/
-#define FNET_CFG_ETH0_IP4_MASK      (FNET_IP4_ADDR_INIT(255U, 255U, 255U, 0U))
-
-/*****************************************************************************
-* Gateway IP address for the Ethernet interface.
-* At runtime it can be changed by the fnet_netif_set_ip4_gateway() or
-* by the DHCP client service.
-******************************************************************************/
-#define FNET_CFG_ETH0_IP4_GW        (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
-
-/*****************************************************************************
-* DNS server IP address for the Ethernet interface.
-* At runtime it can be changed by the fnet_netif_set_ip4_dns() or
-* by the DHCP client service.
-* It is used only if FNET_CFG_DNS is set to 1.
-******************************************************************************/
-#define FNET_CFG_ETH0_IP4_DNS       (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
-
-/*****************************************************************************
-* Size of the internal heap buffer, used by FNET.
-******************************************************************************/
-#define FNET_CFG_HEAP_SIZE          (30U * 1024U)
 
 /*****************************************************************************
 * TCP protocol support.
@@ -2650,7 +2630,7 @@ which includes all service-specific configuration files.
 */
 
 /*! 
-*	@defgroup fnet_cfm On-chip Flash driver API
+*	@defgroup fnet_cfm Flash driver API
 *	@ingroup services_api 
 */
 

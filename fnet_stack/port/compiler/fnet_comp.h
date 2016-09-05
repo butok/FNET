@@ -57,7 +57,7 @@
 
 #if FNET_CFG_COMP_IAR
     /* Disable some warnings.*/
-    #pragma diag_suppress=Pe009,Pa039,Pe177
+    #pragma diag_suppress=Pa039
 
     /* To use _Pragma(), enable C99 Extensions. */
     #define FNET_COMP_PACKED_BEGIN  _Pragma("pack(1)")

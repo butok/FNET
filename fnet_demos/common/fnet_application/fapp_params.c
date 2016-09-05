@@ -37,6 +37,7 @@
 #if FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
     #define fapp_params_erase   fnet_flash_erase
     #define fapp_params_memcpy  fnet_flash_memcpy
+    #define fapp_params_flush   fnet_flash_flush
 #endif
 
 
@@ -130,10 +131,9 @@ struct fapp_params_tftp fapp_params_tftp_config =
 #if FAPP_CFG_SAVE_CMD && FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
 fnet_return_t fapp_params_to_flash(void)
 {
-    //   struct fapp_params_fnet     fnet_params ={0};
-    struct fapp_params_flash    *fapp_params_flash_p = (struct fapp_params_flash *)FAPP_FLASH_PARAMS_ADDRESS;
+    struct fapp_params_flash    *fapp_params_flash_p = (struct fapp_params_flash *)FAPP_CFG_FLASH_PARAMS_ADDRESS;
     fnet_netif_desc_t           netif = fnet_netif_get_default();
-    struct fapp_params_flash    fapp_params_ram = {0}; /* Tmp buffer */
+    struct fapp_params_flash    fapp_params_ram = {{0}}; /* Tmp buffer */
 
     /**** Prepare fapp_params_ram, which will be written to Flash.****/
 #if FNET_CFG_IP4
@@ -182,7 +182,15 @@ fnet_return_t fapp_params_to_flash(void)
     if( fnet_memcmp((void *)(fapp_params_flash_p), FAPP_PARAMS_SIGNATURE, sizeof(FAPP_PARAMS_SIGNATURE)) != 0 )
     {
         /**** Write all parameters to flash. ****/
-        fapp_params_memcpy( fapp_params_flash_p, &fapp_params_ram, sizeof(struct fapp_params_flash));
+        if(fapp_params_memcpy( fapp_params_flash_p, &fapp_params_ram, sizeof(struct fapp_params_flash)) == FNET_ERR)
+        {
+            return FNET_ERR;
+        }
+
+        if(fapp_params_flush() == FNET_ERR)
+        {
+            return FNET_ERR;
+        }
 
         /* Simple check if it was written. */
         if( fnet_memcmp((void *)(fapp_params_flash_p), FAPP_PARAMS_SIGNATURE, sizeof(FAPP_PARAMS_SIGNATURE)) == 0 )
@@ -203,7 +211,7 @@ fnet_return_t fapp_params_to_flash(void)
 #if FAPP_CFG_PARAMS_READ_FLASH
 fnet_return_t fapp_params_from_flash(void)
 {
-    struct fapp_params_flash    *fnet_params = (struct fapp_params_flash *)FAPP_FLASH_PARAMS_ADDRESS;
+    struct fapp_params_flash    *fnet_params = (struct fapp_params_flash *)FAPP_CFG_FLASH_PARAMS_ADDRESS;
     fnet_return_t               result;
     fnet_netif_desc_t           netif;
 
@@ -217,9 +225,8 @@ fnet_return_t fapp_params_from_flash(void)
         fnet_netif_set_hw_addr(netif, fnet_params->fnet_params.mac, sizeof(fnet_mac_addr_t));
 
 #if FNET_CFG_IP4
-        fnet_netif_set_ip4_addr(netif, fnet_params->fnet_params.address);
+        fnet_netif_set_ip4_addr(netif, fnet_params->fnet_params.address, fnet_params->fnet_params.netmask);
         fnet_netif_set_ip4_gateway(netif, fnet_params->fnet_params.gateway);
-        fnet_netif_set_ip4_subnet_mask(netif, fnet_params->fnet_params.netmask);
 #endif /* FNET_CFG_IP4 */
 
         /* Host name.*/

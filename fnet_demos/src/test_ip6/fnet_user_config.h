@@ -59,13 +59,6 @@
 #define FNET_CFG_ETH0_IP4_DNS       (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
 
 /*****************************************************************************
-* Size of the internal static heap buffer.
-* This definition is used only if the fnet_init_static() was
-* used for the FNET initialization.
-******************************************************************************/
-#define FNET_CFG_HEAP_SIZE          (25 * 1024)  //(30 * 1024)
-
-/*****************************************************************************
 * TCP protocol support.
 * You can disable it to save a substantial amount of code if
 * your application only needs UDP. By default it is enabled.

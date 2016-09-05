@@ -79,6 +79,8 @@
     #include "fapp_link.h"
 #endif
 
+#include "fapp_netif.h"
+
 /************************************************************************
 *     Definitions.
 *************************************************************************/
@@ -90,7 +92,6 @@ const fnet_char_t FAPP_UPDATED_IP_STR[] = " IPv4 parameters updated :";
 /* Error mesages */
 const fnet_char_t FAPP_PARAM_ERR[] = "Error: Invalid paremeter \'%s\'";
 static const fnet_char_t FAPP_NET_ERR[]   = "Error: Network Interface is not configurated!\n";
-static const fnet_char_t FAPP_LINK_ERR[]  = "Error: Network Link-Detection is failed!\n";
 const fnet_char_t FAPP_INIT_ERR[]  = "Error: %s initialization is failed!";
 const fnet_char_t FAPP_SHELL_INFO_FORMAT_S[]  = " %-16s : %s";
 const fnet_char_t FAPP_SHELL_INFO_FORMAT_D[]  = " %-16s : %u";
@@ -273,6 +274,7 @@ static const struct fnet_shell fapp_shell =
 };
 
 static fnet_shell_desc_t fapp_shell_desc = 0; /* Shell descriptor. */
+
 
 #if FAPP_CFG_BOOTLOADER || FAPP_CFG_SETGET_CMD_BOOT
 
@@ -550,13 +552,13 @@ static void fapp_dup_ip_callback( fnet_netif_desc_t netif )
 ************************************************************************/
 static void fapp_init(void)
 {
-    static fnet_uint8_t         stack_heap[FNET_CFG_HEAP_SIZE];
+    static fnet_uint8_t         stack_heap[FAPP_CFG_HEAP_SIZE];
     struct fnet_init_params     init_params;
     struct fnet_shell_params    shell_params;
 
     /* Input parameters for FNET stack initialization */
     init_params.netheap_ptr = stack_heap;
-    init_params.netheap_size = FNET_CFG_HEAP_SIZE;
+    init_params.netheap_size = sizeof(stack_heap);
 
     /* Add event handler on duplicated IP address */
 #if FNET_CFG_IP4
@@ -564,40 +566,48 @@ static void fapp_init(void)
 #endif
 
     /* Init FNET stack */
-    if(fnet_init(&init_params) != FNET_ERR)
+    if(fnet_init(&init_params) == FNET_OK)
     {
-#if FAPP_CFG_PARAMS_READ_FLASH
-        /* During bootup, the most recently stored customer configuration data will be read and used to configure the interfaces.*/
-        if(fapp_params_from_flash() == FNET_OK)
+        /* Initialize network interfaces.*/
+        if(fapp_netif_init() == FNET_OK)
         {
-            fnet_printf(FAPP_PARAMS_LOAD_STR);
-        }
-#endif
+    #if FAPP_CFG_PARAMS_READ_FLASH
+            /* During bootup, the most recently stored customer configuration data will be read and used to configure the interfaces.*/
+            if(fapp_params_from_flash() == FNET_OK)
+            {
+                fnet_printf(FAPP_PARAMS_LOAD_STR);
+            }
+    #endif
 
-        /* Check if we have atleast one initoalized networking interface.*/
-        if(fnet_netif_get_default() == FNET_NULL)
-        {
-            fnet_printf(FAPP_NET_ERR);
-        }
+            /* Check if we have atleast one initoalized networking interface.*/
+            if(fnet_netif_get_default() == FNET_NULL)
+            {
+                fnet_printf(FAPP_NET_ERR);
+            }
 
-#if (FAPP_CFG_EXP_CMD && FNET_CFG_FS) || (FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP)
-        fapp_fs_mount(); /* Init FS and mount FS Image. */
-#endif
+    #if (FAPP_CFG_EXP_CMD && FNET_CFG_FS) || (FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP)
+            fapp_fs_mount(); /* Init FS and mount FS Image. */
+    #endif
 
-        /* Init main shell. */
-        shell_params.shell = &fapp_shell;
-        shell_params.cmd_line_buffer = fapp_cmd_line_buffer;
-        shell_params.cmd_line_buffer_size = sizeof(fapp_cmd_line_buffer);
-        shell_params.stream = FNET_SERIAL_STREAM_DEFAULT;
-        shell_params.echo = FNET_TRUE;
+            /* Init main shell. */
+            shell_params.shell = &fapp_shell;
+            shell_params.cmd_line_buffer = fapp_cmd_line_buffer;
+            shell_params.cmd_line_buffer_size = sizeof(fapp_cmd_line_buffer);
+            shell_params.stream = FNET_SERIAL_STREAM_DEFAULT;
+            shell_params.echo = FNET_TRUE;
 
-        if((fapp_shell_desc = fnet_shell_init(&shell_params)) != 0)
-        {
-            fapp_boot(fapp_shell_desc);
+            if((fapp_shell_desc = fnet_shell_init(&shell_params)) != 0)
+            {
+                fapp_boot(fapp_shell_desc);
+            }
+            else
+            {
+                fnet_printf(FAPP_INIT_ERR, "Shell");
+            }
         }
         else
         {
-            fnet_printf(FAPP_INIT_ERR, "Shell");
+            fnet_printf(FAPP_INIT_ERR, "NETIF");
         }
     }
     else

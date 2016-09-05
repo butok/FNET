@@ -236,7 +236,7 @@ static void fnet_ftfl_command( fnet_uint8_t command, fnet_uint32_t *address, con
 *
 * DESCRIPTION: Erases the specified range of the Flash memory.
 ************************************************************************/
-void fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes)
+fnet_return_t fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes)
 {
     fnet_index_t    n_pages;
     fnet_uint32_t   page_shift = (fnet_uint32_t)flash_addr & (FNET_CFG_CPU_FLASH_PAGE_SIZE - 1U);
@@ -255,20 +255,56 @@ void fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes)
         flash_addr = ((fnet_uint8_t *)flash_addr + FNET_CFG_CPU_FLASH_PAGE_SIZE);
         n_pages --;
     }
+
+    /* TBD check if it was erased */
+
+    return FNET_OK;
 }
 
 /************************************************************************
-* NAME: fnet_cpu_flash_write
-*
 * DESCRIPTION: Writes the specified data to the Flash memory.
 ************************************************************************/
-void fnet_cpu_flash_write( fnet_uint8_t *dest, const fnet_uint8_t *data)
+fnet_return_t fnet_cpu_flash_write( fnet_uint8_t *dest, const fnet_uint8_t *data)
 {
+
 #if FNET_CFG_CPU_FLASH_PROGRAM_SIZE == 4u /* K60 */
     fnet_ftfl_command(FNET_MK_FNET_FTFL_FCCOB0_CMD_PROGRAM_LONGWORD, (fnet_uint32_t *)dest, data);
 #else /* FNET_CFG_CPU_FLASH_PROGRAM_SIZE == 8 K70 */
     fnet_ftfl_command(FNET_MK_FNET_FTFL_FCCOB0_CMD_PROGRAM_PHRASE, (fnet_uint32_t *)dest, data);
 #endif
+
+    /* Verify result. */
+#if FNET_CFG_CPU_FLASH_VERIFY
+    {
+        fnet_size_t      i;
+           
+#if 0 /* Old code.*/
+        for(i = 0; i < FNET_CFG_CPU_FLASH_PROGRAM_SIZE; i++)
+        {
+            if(((volatile fnet_uint8_t *)dest)[i] != ((fnet_uint8_t *)data)[i])
+            {
+                return FNET_ERR;
+            }
+        }
+#else
+        /* Workaround of the Flash cache issue discovered on K60.*/
+        /* Delay.  fnet_timer_delay(1); is too big - 100ms.*/
+        for(i = 0u; i < 100000000u; i++)
+        {
+            if(fnet_memcmp(dest, data, FNET_CFG_CPU_FLASH_PROGRAM_SIZE) == 0)
+            {
+                break;
+            }
+        }
+        if(i == 100000000u)
+        {
+            return FNET_ERR;
+        }
+#endif
+    }
+#endif /*FNET_CFG_CPU_FLASH_VERIFY*/
+
+    return FNET_OK;
 }
 
 #endif /* FNET_MK && FNET_CFG_CPU_FLASH */

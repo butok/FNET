@@ -30,6 +30,7 @@
 #include "fnet_socket_prv.h"
 #include "fnet_prot.h"
 #include "fnet_stack_prv.h"
+#include "fnet_loop.h"
 
 /************************************************************************
 *     Global Data Structures
@@ -109,30 +110,40 @@ static fnet_return_t fnet_stack_init( void )
 {
     fnet_isr_init();
 
+    fnet_netif_list = 0;     /* Reset netif list. */
+    fnet_netif_default = 0;  /* Reset default interface.*/
+
+    /* Initialize Timer Module */
     if (fnet_timer_init(FNET_TIMER_PERIOD_MS) == FNET_ERR)
     {
         goto ERROR;
     }
 
 #if FNET_CFG_DEBUG_STARTUP_MS && FNET_CFG_DEBUG
+    /* Add start-up */
     fnet_println("\n Waiting %d Seconds...", FNET_CFG_DEBUG_STARTUP_MS / 1000);
     fnet_timer_delay(fnet_timer_ms2ticks(FNET_CFG_DEBUG_STARTUP_MS));
 #endif
 
+    /* Initialize protocol layer */
     if(fnet_prot_init() == FNET_ERR)
     {
         goto ERROR;
     }
 
+    /* Initialize socket layer.*/
     if(fnet_socket_init() == FNET_ERR)
     {
         goto ERROR;
     }
 
-    if(fnet_netif_init_all() == FNET_ERR)
+#if FNET_CFG_LOOPBACK
+    /* Initialize Loop-back interface.*/
+    if(fnet_netif_init(FNET_LOOP_IF, FNET_NULL, 0u) == FNET_ERR)
     {
         goto ERROR;
     }
+#endif
 
     return (FNET_OK);
 ERROR:

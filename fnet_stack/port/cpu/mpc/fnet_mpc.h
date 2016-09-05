@@ -57,7 +57,8 @@
     *
     *********************************************************************/
     #if FNET_CFG_CPU_MPC5744P
-        void fnet_mpc5744p_cacr_wr(void);
+        void fnet_mpc5744p_dcache_enable(void);
+        void fnet_mpc5744p_dcache_disable(void);
     #endif
 
     /*********************************************************************

@@ -37,16 +37,10 @@
 *************************************************************************/
 
 /* Null MAC address */
-const fnet_mac_addr_t fnet_eth_null_addr =
-{
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};
+const fnet_mac_addr_t fnet_eth_null_addr = FNET_MAC_ADDR_INIT(0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
 
 /* Broadcast MAC address */
-const fnet_mac_addr_t fnet_eth_broadcast =
-{
-    0xff, 0xff, 0xff, 0xff, 0xff, 0xff
-};
+const fnet_mac_addr_t fnet_eth_broadcast = FNET_MAC_ADDR_INIT(0xff, 0xff, 0xff, 0xff, 0xff, 0xff);
 
 /************************************************************************
 * NAME: fnet_mac_to_str
@@ -247,7 +241,7 @@ void fnet_eth_prot_input( fnet_netif_t *netif, fnet_netbuf_t *nb, fnet_uint16_t 
 *************************************************************************/
 void fnet_eth_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb )
 {
-    ((fnet_eth_if_t *)(netif->if_ptr))->output(netif, type, dest_addr, nb);
+    ((fnet_eth_if_t *)(netif->netif_prv))->eth_output(netif, type, dest_addr, nb);
 }
 
 /************************************************************************
@@ -258,7 +252,7 @@ void fnet_eth_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_add
 fnet_return_t fnet_eth_init( fnet_netif_t *netif)
 {
     fnet_return_t result  = FNET_ERR;
-    fnet_eth_if_t *eth_if = (fnet_eth_if_t *)(netif->if_ptr);
+    fnet_eth_if_t *eth_if = (fnet_eth_if_t *)(netif->netif_prv);
 
     if(eth_if)
     {
@@ -346,7 +340,7 @@ void fnet_eth_release( fnet_netif_t *netif)
 
 #endif /* FNET_CFG_IP6 */
 
-    fnet_timer_free(((fnet_eth_if_t *)(netif->if_ptr))->eth_timer);
+    fnet_timer_free(((fnet_eth_if_t *)(netif->netif_prv))->eth_timer);
 
 #if FNET_CFG_IP4
     fnet_arp_release(netif);
@@ -398,7 +392,6 @@ void fnet_eth_change_addr_notify(fnet_netif_t *netif)
 static void fnet_eth_timer(fnet_uint32_t cookie )
 {
     fnet_netif_t    *netif = (fnet_netif_t *) cookie;
-    fnet_eth_if_t   *eth_if = (fnet_eth_if_t *)(netif->if_ptr);
     fnet_bool_t     connection_flag = netif->is_connected;
 
     if(fnet_netif_is_connected(netif) != connection_flag) /* Is any change in connection. */
@@ -592,7 +585,7 @@ void fnet_eth_multicast_leave_ip4(fnet_netif_t *netif, fnet_ip4_addr_t multicast
 
     FNET_ETH_MULTICAST_IP4_TO_MAC(multicast_addr, mac_addr);
 
-    ((fnet_eth_if_t *)(netif->if_ptr))->multicast_leave(netif, mac_addr);
+    ((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_leave(netif, mac_addr);
 }
 
 /************************************************************************
@@ -606,7 +599,7 @@ void fnet_eth_multicast_join_ip4(fnet_netif_t *netif, fnet_ip4_addr_t  multicast
 
     FNET_ETH_MULTICAST_IP4_TO_MAC(multicast_addr, mac_addr);
 
-    ((fnet_eth_if_t *)(netif->if_ptr))->multicast_join(netif, mac_addr);
+    ((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_join(netif, mac_addr);
 }
 #endif /* FNET_CFG_IP4 */
 
@@ -622,7 +615,7 @@ void fnet_eth_multicast_leave_ip6(fnet_netif_t *netif, fnet_ip6_addr_t *multicas
 
     FNET_ETH_MULTICAST_IP6_TO_MAC(multicast_addr, mac_addr);
 
-    ((fnet_eth_if_t *)(netif->if_ptr))->multicast_leave(netif, mac_addr);
+    ((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_leave(netif, mac_addr);
 }
 
 /************************************************************************
@@ -636,7 +629,7 @@ void fnet_eth_multicast_join_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t  *mu
 
     FNET_ETH_MULTICAST_IP6_TO_MAC(multicast_addr, mac_addr);
 
-    ((fnet_eth_if_t *)(netif->if_ptr))->multicast_join(netif, mac_addr);
+    ((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_join(netif, mac_addr);
 }
 #endif /* FNET_CFG_IP6 */
 

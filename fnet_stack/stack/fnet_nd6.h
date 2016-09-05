@@ -193,7 +193,7 @@ typedef struct fnet_nd6_neighbor_entry
 {
 
     fnet_ip6_addr_t             ip_addr;        /* Neighbor’s on-link unicast IP address. */
-    fnet_netif_ll_addr_t        ll_addr;        /* Its link-layer address. Actual size is defiined by fnet_netif_api_t->hw_addr_size. */
+    fnet_netif_ll_addr_t        ll_addr;        /* Its link-layer address. Actual size is defiined by fnet_netif_api_t->netif_hw_addr_size. */
     fnet_nd6_neighbor_state_t   state;          /* Neighbor’s reachability state.*/
     fnet_time_t                 state_time;     /* Time of last state event.*/
     fnet_netbuf_t               *waiting_netbuf;/* Pointer to any queued packetwaiting for address resolution to complete.*/

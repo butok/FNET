@@ -83,7 +83,7 @@
         #define FNET_CFG_COMP_CW    (1)
         #define FNET_COMP_STR       "CW"
         /* IAR compiler. */
-    #elif (defined(__IAR_SYSTEMS_ICC__)) || (defined(__IAR_SYSTEMS_ASM__))
+    #elif defined(__IAR_SYSTEMS_ICC__) || defined(__IAR_SYSTEMS_ASM__) || defined(__ICCARM__)
         #define FNET_CFG_COMP_IAR   (1)
         #define FNET_COMP_STR       "IAR"
         /* GHS compiler. */

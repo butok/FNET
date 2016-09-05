@@ -870,10 +870,10 @@ static void fnet_dhcp_change_state( fnet_dhcp_if_t *dhcp, fnet_dhcp_state_t stat
         case FNET_DHCP_STATE_INIT_REBOOT:
 #endif
         case FNET_DHCP_STATE_INIT:
-            fnet_netif_set_ip4_addr(dhcp->netif, 0U);   /* Set zero address. DHCP messages broadcast
-                                                        * by a client prior to that client obtaining
-                                                        * its IP address must have the source address
-                                                        * field in IP header set to 0.*/
+            fnet_netif_set_ip4_addr(dhcp->netif, INADDR_ANY, INADDR_ANY);   /* Set zero address. DHCP messages broadcast
+                                                                            * by a client prior to that client obtaining
+                                                                            * its IP address must have the source address
+                                                                            * field in IP header set to 0.*/
             dhcp->xid++; /* Todo must be random.*/
             break;
         case FNET_DHCP_STATE_SELECTING:
@@ -953,8 +953,7 @@ static void fnet_dhcp_change_state( fnet_dhcp_if_t *dhcp, fnet_dhcp_state_t stat
 static void fnet_dhcp_apply_params(fnet_dhcp_if_t *dhcp)
 {
     /* Apply parameters. */
-    fnet_netif_set_ip4_addr(dhcp->netif, dhcp->current_options.public_options.ip_address.s_addr);
-    fnet_netif_set_ip4_subnet_mask(dhcp->netif, dhcp->current_options.public_options.netmask.s_addr);
+    fnet_netif_set_ip4_addr(dhcp->netif, dhcp->current_options.public_options.ip_address.s_addr, dhcp->current_options.public_options.netmask.s_addr);
     fnet_netif_set_ip4_gateway(dhcp->netif, dhcp->current_options.public_options.gateway.s_addr);
 #if FNET_CFG_DNS
     fnet_netif_set_ip4_dns(dhcp->netif, dhcp->current_options.public_options.dns.s_addr);
@@ -1250,7 +1249,7 @@ static void fnet_dhcp_state_machine( void *fnet_dhcp_if_p )
 
             if(fnet_netif_get_ip4_addr_type(dhcp->netif) == FNET_NETIF_IP_ADDR_TYPE_DHCP)   /* If address is DHCP => do not use it. */
             {
-                fnet_netif_set_ip4_addr(dhcp->netif, INADDR_ANY);    /* Set zero address */
+                fnet_netif_set_ip4_addr(dhcp->netif, INADDR_ANY, INADDR_ANY);    /* Set zero address */
             }
 
             fnet_dhcp_change_state(dhcp, FNET_DHCP_STATE_DISABLED); /* => DISABLED */

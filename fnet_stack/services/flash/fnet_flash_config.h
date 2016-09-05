@@ -18,9 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_flash_config.h
-*
 * @brief On-chip Flash Module driver configuration file.
 *
 ***************************************************************************/
@@ -43,7 +40,29 @@
  *               - @b @c 0 = is disabled (Default value).
  ******************************************************************************/
 #ifndef FNET_CFG_FLASH
-    #define FNET_CFG_FLASH      (0)
+    #define FNET_CFG_FLASH              (0)
+#endif
+
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_FLASH_CACHE
+ * @brief    Flash Write Cache support:
+ *               - @c 1 = is enabled.
+ *               - @b @c 0 = is disabled (Default value).
+ *           It is recommended to enable caching when an application may write 
+ *           data to unaligned addresses.
+ ******************************************************************************/
+#ifndef FNET_CFG_FLASH_CACHE
+    #define FNET_CFG_FLASH_CACHE        (0)
+#endif
+
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_FLASH_CACHE
+ * @brief    The number of entries in cache. 
+ *           One entry contains @ref FNET_CFG_CPU_FLASH_PROGRAM_SIZE bytes of data.@n
+ *           Default value is @b @c 2.
+ ******************************************************************************/
+#ifndef FNET_CFG_FLASH_CACHE_SIZE
+    #define FNET_CFG_FLASH_CACHE_SIZE   (2)
 #endif
 
 /*! @} */

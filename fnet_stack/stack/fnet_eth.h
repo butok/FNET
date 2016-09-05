@@ -55,6 +55,19 @@
  ******************************************************************************/
 typedef fnet_uint8_t fnet_mac_addr_t[6]; /* MAC address type.*/
 
+/**************************************************************************/ /*!
+ * @def FNET_MAC_ADDR_INIT
+ * @param a First octet of an MAC address.
+ * @param b Second octet of an MAC address.
+ * @param c Third octet of an MAC address.
+ * @param d Fourth octet of an MAC address.
+ * @param e Fifth  octet of an MAC address.
+ * @param f Sixth octet of an MAC address.
+ * @hideinitializer
+ * @brief Converts the standard notation @c a:b:c:d:e:f to fnet_mac_addr_t value.
+ ******************************************************************************/
+#define FNET_MAC_ADDR_INIT(a, b, c, d, e, f)   { (a), (b), (c), (d), (e), (f) }
+
 /******************************************************************************
 *     Function Prototypes
 *******************************************************************************/

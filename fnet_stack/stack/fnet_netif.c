@@ -20,11 +20,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_netif.c
-*
-* @author Andrey Butok
-*
 * @brief FNET Network interface implementation.
 *
 ***************************************************************************/
@@ -50,121 +45,23 @@
 #define FNET_NETIF_PMTU_TIMEOUT          (10u*60u*1000u)   /* ms. RFC1981: The recommended setting for this
                                                            * timer is twice its minimum value (10 minutes).*/
 #define FNET_NETIF_PMTU_PERIOD           (FNET_NETIF_PMTU_TIMEOUT/10u)   /* ms. RFC1981: Once a minute.*/
-#define FNET_NETIF_IS_CONNECTED_PERIOD   (200)  /* ms. Period used to limit netif->api->is_connected() call rate, cause of high amount of time used by PHY register read.*/
+#define FNET_NETIF_IS_CONNECTED_PERIOD   (200)  /* ms. Period used to limit netif->netif_api->is_connected() call rate, cause of high amount of time used by PHY register read.*/
 
-fnet_netif_t *fnet_netif_list;                  /* The list of network interfaces. */
-
-static fnet_netif_t *fnet_netif_default;        /* Default net_if. */
+fnet_netif_t *fnet_netif_list;          /* The list of network interfaces. */
+fnet_netif_t *fnet_netif_default;       /* Default net_if. */
 
 /* Duplicated IP event handler.*/
 static fnet_netif_callback_ip4_addr_conflict_t         fnet_netif_callback_ip4_addr_conflict;
 
-
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-
 static void fnet_netif_assign_scope_id( fnet_netif_t *netif );
 #if FNET_CFG_IP6 && FNET_CFG_IP6_PMTU_DISCOVERY
     static void fnet_netif_pmtu_timer( fnet_uint32_t cookie);
 #endif
 
 /************************************************************************
-* NAME: fnet_netif_init_all
-*
-* DESCRIPTION: Initialization of all supported interfaces.
-*************************************************************************/
-fnet_return_t fnet_netif_init_all( void )
-{
-    fnet_return_t result = FNET_OK;
-
-    fnet_isr_lock();
-
-    fnet_netif_list = fnet_netif_default = 0;
-
-    /***********************************
-     * Initialize IFs.
-     ************************************/
-#if FNET_CFG_CPU_ETH0
-    /* Initialise eth0 interface.*/
-    {
-        fnet_mac_addr_t macaddr = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55}; /* In case fnet_str_to_mac() will fail.*/
-
-        /* Set MAC Address.*/
-        fnet_str_to_mac(FNET_CFG_CPU_ETH0_MAC_ADDR, macaddr);
-        result = fnet_netif_init((fnet_netif_t *)FNET_ETH0_IF, macaddr, sizeof(fnet_mac_addr_t));
-        if(result == FNET_ERR)
-        {
-            goto INIT_ERR;
-        }
-    }
-#endif
-#if FNET_CFG_CPU_ETH1
-    /* Initialise eth1 interface.*/
-    {
-        fnet_mac_addr_t macaddr = {0x00, 0x11, 0x22, 0x33, 0x33, 0x55}; /* In case fnet_str_to_mac() will fail.*/
-
-        /* Set MAC Address.*/
-        fnet_str_to_mac(FNET_CFG_CPU_ETH1_MAC_ADDR, macaddr);
-        result = fnet_netif_init(FNET_ETH1_IF, macaddr, sizeof(fnet_mac_addr_t));
-        if(result == FNET_ERR)
-            goto INIT_ERR;
-    }
-#endif
-#if FNET_CFG_LOOPBACK
-    /* Initialise Loop-back interface.*/
-    result = fnet_netif_init(FNET_LOOP_IF, FNET_NULL, 0u);
-    if(result == FNET_ERR)
-    {
-        goto INIT_ERR;
-    }
-#endif /* FNET_CFG_LOOPBACK */
-
-    /***********************************
-     * Set default parameters.
-     ************************************/
-    fnet_netif_set_default(FNET_CFG_DEFAULT_IF); /* Default interface.*/
-
-    /* Set address parameters of the Ethernet interface.*/
-#if FNET_CFG_IP4
-#if FNET_CFG_CPU_ETH0
-    {
-        fnet_netif_set_ip4_addr(FNET_ETH0_IF, FNET_CFG_ETH0_IP4_ADDR);
-        fnet_netif_set_ip4_subnet_mask(FNET_ETH0_IF, FNET_CFG_ETH0_IP4_MASK);
-        fnet_netif_set_ip4_gateway(FNET_ETH0_IF, FNET_CFG_ETH0_IP4_GW);
-#if FNET_CFG_DNS
-        fnet_netif_set_ip4_dns(FNET_ETH0_IF, FNET_CFG_ETH0_IP4_DNS);
-#endif
-    }
-#endif /* FNET_CFG_CPU_ETH0 */
-#if FNET_CFG_CPU_ETH1
-    {
-        fnet_netif_set_ip4_addr(FNET_ETH1_IF, FNET_CFG_ETH1_IP4_ADDR);
-        fnet_netif_set_ip4_subnet_mask(FNET_ETH1_IF, FNET_CFG_ETH1_IP4_MASK);
-        fnet_netif_set_ip4_gateway(FNET_ETH1_IF, FNET_CFG_ETH1_IP4_GW);
-#if FNET_CFG_DNS
-        fnet_netif_set_ip4_dns(FNET_ETH1_IF, FNET_CFG_ETH1_IP4_DNS);
-#endif
-    }
-#endif /* FNET_CFG_CPU_ETH0 */
-#endif /* FNET_CFG_ETH */
-
-    /* Set address parameters of the Loopback interface.*/
-#if FNET_CFG_LOOPBACK && FNET_CFG_IP4
-    fnet_netif_set_ip4_addr(FNET_LOOP_IF, FNET_CFG_LOOPBACK_IP4_ADDR);
-#endif /* FNET_CFG_LOOPBACK */
-#if FNET_CFG_LOOPBACK && FNET_CFG_IP6
-    fnet_netif_bind_ip6_addr(FNET_LOOP_IF, &fnet_ip6_addr_loopback, FNET_NETIF_IP_ADDR_TYPE_MANUAL);
-#endif /* FNET_CFG_LOOPBACK */
-
-INIT_ERR:
-    fnet_isr_unlock();
-    return result;
-}
-
-/************************************************************************
-* NAME: fnet_netif_release_all
-*
 * DESCRIPTION: Releases all installed interfaces.
 *************************************************************************/
 void fnet_netif_release_all( void )
@@ -175,15 +72,14 @@ void fnet_netif_release_all( void )
 
     for (net_if_ptr = fnet_netif_list; net_if_ptr; net_if_ptr = net_if_ptr->next)
     {
-        fnet_netif_release(net_if_ptr);
+        fnet_netif_release((fnet_netif_desc_t)net_if_ptr);
     }
 
-    fnet_netif_list = fnet_netif_default = 0;
+    fnet_netif_default = 0;
+    fnet_netif_list = 0;
 }
 
 /************************************************************************
-* NAME: fnet_netif_drain
-*
 * DESCRIPTION: This function calls "drain" functions of all currently
 *              installed network interfaces.
 *************************************************************************/
@@ -195,9 +91,9 @@ void fnet_netif_drain( void )
 
     for (net_if_ptr = fnet_netif_list; net_if_ptr; net_if_ptr = net_if_ptr->next)
     {
-        if(net_if_ptr->api->drain)
+        if(net_if_ptr->netif_api->netif_drain)
         {
-            net_if_ptr->api->drain(net_if_ptr);
+            net_if_ptr->netif_api->netif_drain(net_if_ptr);
         }
     }
 
@@ -205,8 +101,6 @@ void fnet_netif_drain( void )
 }
 
 /************************************************************************
-* NAME: net_if_find
-*
 * DESCRIPTION: Returns a network interface given its name.
 *************************************************************************/
 fnet_netif_desc_t fnet_netif_get_by_name( fnet_char_t *name )
@@ -220,7 +114,7 @@ fnet_netif_desc_t fnet_netif_get_by_name( fnet_char_t *name )
     {
         for (netif = fnet_netif_list; netif != 0; netif = netif->next)
         {
-            if(fnet_strncmp(name, netif->name, FNET_NETIF_NAMELEN) == 0)
+            if(fnet_strncmp(name, netif->netif_name, FNET_NETIF_NAMELEN) == 0)
             {
                 result = (fnet_netif_desc_t)netif;
                 break;
@@ -234,8 +128,6 @@ fnet_netif_desc_t fnet_netif_get_by_name( fnet_char_t *name )
 }
 
 /************************************************************************
-* NAME: fnet_netif_get_by_number
-*
 * DESCRIPTION: This function returns pointer to id-th interafce according
 *              its index (from zero).
 *              It returns NULL if id-th interface is not available.
@@ -260,8 +152,6 @@ fnet_netif_desc_t fnet_netif_get_by_number( fnet_index_t n )
 }
 
 /************************************************************************
-* NAME: fnet_netif_get_by_ip4_addr
-*
 * DESCRIPTION: Returns a network interface given its IPv4 address.
 *************************************************************************/
 fnet_netif_desc_t fnet_netif_get_by_ip4_addr( fnet_ip4_addr_t addr )
@@ -289,8 +179,6 @@ fnet_netif_desc_t fnet_netif_get_by_ip4_addr( fnet_ip4_addr_t addr )
 }
 
 /************************************************************************
-* NAME: fnet_netif_get_by_sockaddr
-*
 * DESCRIPTION: Returns a network interface based on socket address.
 *************************************************************************/
 fnet_netif_desc_t fnet_netif_get_by_sockaddr( const struct sockaddr *addr )
@@ -322,8 +210,6 @@ fnet_netif_desc_t fnet_netif_get_by_sockaddr( const struct sockaddr *addr )
 
 #if FNET_CFG_IP6 && FNET_CFG_IP6_PMTU_DISCOVERY
 /************************************************************************
-* NAME: fnet_netif_set_pmtu
-* RETURS: None.
 * DESCRIPTION: Sets PMTU of the interface.
 *************************************************************************/
 void fnet_netif_set_pmtu(fnet_netif_t *netif, fnet_size_t pmtu)
@@ -335,8 +221,6 @@ void fnet_netif_set_pmtu(fnet_netif_t *netif, fnet_size_t pmtu)
 }
 
 /************************************************************************
-* NAME: fnet_nd6_dad_timer
-* RETURS: None.
 * DESCRIPTION: Timer routine used to detect increase of PMTU
 *************************************************************************/
 static void fnet_netif_pmtu_timer( fnet_uint32_t cookie )
@@ -345,27 +229,23 @@ static void fnet_netif_pmtu_timer( fnet_uint32_t cookie )
 
     if( fnet_timer_get_interval(netif->pmtu_timestamp, fnet_timer_ms()) > FNET_NETIF_PMTU_TIMEOUT)
     {
-        fnet_netif_set_pmtu(netif, netif->mtu);
+        fnet_netif_set_pmtu(netif, netif->netif_mtu);
     }
 }
 
 /************************************************************************
-* NAME: fnet_netif_pmtu_init
-* RETURS: None.
 * DESCRIPTION: Initialize PMTU Discovery for the interface.
 *************************************************************************/
 void fnet_netif_pmtu_init(fnet_netif_t *netif)
 {
     /* Path MTU for the link. */
-    fnet_netif_set_pmtu(netif, netif->mtu);
+    fnet_netif_set_pmtu(netif, netif->netif_mtu);
 
     /* Register timer, to detect increase of PMTU.*/
     netif->pmtu_timer = fnet_timer_new((FNET_NETIF_PMTU_PERIOD / FNET_TIMER_PERIOD_MS), fnet_netif_pmtu_timer, (fnet_uint32_t)netif);
 }
 
 /************************************************************************
-* NAME: fnet_netif_pmtu_release
-* RETURS: None.
 * DESCRIPTION: Release/Disable PMTU Discovery for the interface.
 *************************************************************************/
 void fnet_netif_pmtu_release(fnet_netif_t *netif)
@@ -378,15 +258,14 @@ void fnet_netif_pmtu_release(fnet_netif_t *netif)
 #endif /* FNET_CFG_IP6 && FNET_CFG_IP6_PMTU_DISCOVERY */
 
 /************************************************************************
-* NAME: fnet_netif_init
-*
 * DESCRIPTION: This function installs & inits a network interface.
 *************************************************************************/
-fnet_return_t fnet_netif_init( fnet_netif_t *netif, fnet_uint8_t *hw_addr, fnet_size_t hw_addr_size )
+fnet_return_t fnet_netif_init(fnet_netif_desc_t netif_desc, fnet_uint8_t *hw_addr, fnet_size_t hw_addr_size )
 {
-    fnet_return_t result = FNET_OK;
+    fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
+    fnet_return_t   result = FNET_ERR;
 
-    if(netif && (netif->api))
+    if(netif && (netif->netif_api) && (fnet_netif_is_initialized(netif_desc) == FNET_FALSE))
     {
         fnet_stack_mutex_lock();
 
@@ -406,9 +285,8 @@ fnet_return_t fnet_netif_init( fnet_netif_t *netif, fnet_uint8_t *hw_addr, fnet_
 
         netif->features = FNET_NETIF_FEATURE_NONE;
 
-
         /* Interface HW initialization.*/
-        if((netif->api->init) && ((result = netif->api->init(netif)) == FNET_OK))
+        if((netif->netif_api->netif_init) && ((result = netif->netif_api->netif_init(netif)) == FNET_OK))
         {
 #if FNET_CFG_IGMP && FNET_CFG_IP4
             /**************************************************************
@@ -422,25 +300,41 @@ fnet_return_t fnet_netif_init( fnet_netif_t *netif, fnet_uint8_t *hw_addr, fnet_
              **************************************************************/
             /* Join HW interface. */
             fnet_netif_join_ip4_multicast ( netif, FNET_IP4_ADDR_INIT(224, 0, 0, 1) );
-#endif  /* FNET_CFG_IGMP */
-
+#endif
             /* Set HW Address.*/
-            fnet_netif_set_hw_addr(netif, hw_addr, hw_addr_size);
-
-            /* Interface-Type specific initialisation. */
-            switch(netif->api->type)
+            if(hw_addr && hw_addr_size)
             {
+                result = fnet_netif_set_hw_addr(netif, hw_addr, hw_addr_size);
+            }
+            
+            if(result == FNET_OK)
+            {
+                /* Interface-Type specific initialisation. */
+                switch(netif->netif_api->netif_type)
+                {
 #if (FNET_CFG_CPU_ETH0 ||FNET_CFG_CPU_ETH1)
-                case (FNET_NETIF_TYPE_ETHERNET):
-                    result = fnet_eth_init(netif);
-                    break;
-#endif /* FNET_CFG_ETH */
-                default:
-                    break;
-
+                    case (FNET_NETIF_TYPE_ETHERNET):
+                        result = fnet_eth_init(netif);
+                        break;
+#endif
+                    default:
+                        break;
+                }
             }
         }
-
+        
+        if(result == FNET_OK) 
+        {
+            if(fnet_netif_default == FNET_NULL) 
+            {
+                /* Set default interface, if it is not done yet.*/
+                fnet_netif_default = netif;
+            }
+        }
+        else /* Clear if any error.*/
+        {
+            fnet_netif_release(netif_desc);
+        }
 
         fnet_isr_unlock();
 
@@ -451,19 +345,20 @@ fnet_return_t fnet_netif_init( fnet_netif_t *netif, fnet_uint8_t *hw_addr, fnet_
 }
 
 /************************************************************************
-* NAME: fnet_netif_release
-*
 * DESCRIPTION: This function releases a network interface.
 *************************************************************************/
-void fnet_netif_release( fnet_netif_t *netif )
+void fnet_netif_release(fnet_netif_desc_t netif_desc)
 {
-    if(netif)
-    {
-        if(netif->api->release)
-        {
-            netif->api->release(netif);
-        }
+    fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
 
+    if(netif && (fnet_netif_is_initialized(netif_desc) == FNET_TRUE))
+    {
+        if(netif->netif_api->netif_release)
+        {
+            netif->netif_api->netif_release(netif);
+        }
+       
+        /* Remove from the interface list.*/
         fnet_stack_mutex_lock();
 
         if(netif->prev == 0)
@@ -480,32 +375,53 @@ void fnet_netif_release( fnet_netif_t *netif )
             netif->next->prev = netif->prev;
         }
 
+        /* If this was the default interface.*/
+        if(fnet_netif_default == netif)
+        {
+            /* Switch it to the first one. */
+            fnet_netif_default = fnet_netif_list;
+        }
+
         fnet_stack_mutex_unlock();
     }
 }
 
 /************************************************************************
-* NAME: fnet_netif_set_default
-*
+* DESCRIPTION: This function determines if the network interface is initialized.
+*************************************************************************/
+fnet_bool_t fnet_netif_is_initialized(fnet_netif_desc_t netif_desc)
+{
+    fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
+    fnet_bool_t     result = FNET_FALSE;
+    fnet_netif_t    *current;
+
+    for (current = fnet_netif_list; current; current = current->next)
+    {
+        if(current == netif)
+        {
+            result = FNET_TRUE;
+            break;
+        }
+    }
+
+    return result;
+}
+
+/************************************************************************
 * DESCRIPTION: This function sets the default network interface.
 *************************************************************************/
 void fnet_netif_set_default( fnet_netif_desc_t netif_desc )
 {
-    if(netif_desc)
-    {
-        fnet_stack_mutex_lock();
-        fnet_netif_default = (fnet_netif_t *)netif_desc;
-        fnet_stack_mutex_unlock();
-    }
+    fnet_stack_mutex_lock();
+    fnet_netif_default = (fnet_netif_t *)netif_desc;
+    fnet_stack_mutex_unlock();
 }
 
 /************************************************************************
-* NAME: fnet_netif_set_ip4_addr
-*
 * DESCRIPTION: This function sets the IPv4 address.
 *************************************************************************/
 #if FNET_CFG_IP4
-void fnet_netif_set_ip4_addr( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipaddr )
+void fnet_netif_set_ip4_addr( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipaddr, fnet_ip4_addr_t subnet_mask)
 {
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
 
@@ -519,51 +435,61 @@ void fnet_netif_set_ip4_addr( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipad
         netif->ip4_addr.address_type = FNET_NETIF_IP_ADDR_TYPE_MANUAL; /* Adress is set manually. */
         netif->ip4_addr_conflict = FNET_FALSE; /* Clear IPv4 address duplication flag.*/
 
-        if(FNET_IP4_CLASS_A(netif->ip4_addr.address))
-        {
-            if(netif->ip4_addr.subnetmask == 0u)
-            {
-                netif->ip4_addr.subnetmask = FNET_IP4_CLASS_A_NET;
-            }
-
-            netif->ip4_addr.netmask = FNET_IP4_CLASS_A_NET;
-        }
-        else
-        {
-            if(FNET_IP4_CLASS_B(netif->ip4_addr.address))
+        if(subnet_mask == INADDR_ANY)
+        { 
+            /* No subnet mask assigned, so do it automatically.*/
+            if(FNET_IP4_CLASS_A(netif->ip4_addr.address))
             {
                 if(netif->ip4_addr.subnetmask == 0u)
                 {
-                    netif->ip4_addr.subnetmask = FNET_IP4_CLASS_B_NET;
+                    netif->ip4_addr.subnetmask = FNET_IP4_CLASS_A_NET;
                 }
 
-                netif->ip4_addr.netmask = FNET_IP4_CLASS_B_NET;
+                netif->ip4_addr.netmask = FNET_IP4_CLASS_A_NET;
             }
             else
             {
-                if(FNET_IP4_CLASS_C(netif->ip4_addr.address))
+                if(FNET_IP4_CLASS_B(netif->ip4_addr.address))
                 {
                     if(netif->ip4_addr.subnetmask == 0u)
                     {
-                        netif->ip4_addr.subnetmask = FNET_IP4_CLASS_C_NET;
+                        netif->ip4_addr.subnetmask = FNET_IP4_CLASS_B_NET;
                     }
 
-                    netif->ip4_addr.netmask = FNET_IP4_CLASS_C_NET;
+                    netif->ip4_addr.netmask = FNET_IP4_CLASS_B_NET;
                 }
-                /* else: Is not supported */
+                else
+                {
+                    if(FNET_IP4_CLASS_C(netif->ip4_addr.address))
+                    {
+                        if(netif->ip4_addr.subnetmask == 0u)
+                        {
+                            netif->ip4_addr.subnetmask = FNET_IP4_CLASS_C_NET;
+                        }
+
+                        netif->ip4_addr.netmask = FNET_IP4_CLASS_C_NET;
+                    }
+                    /* else: Is not supported */
+                }
             }
+
+            netif->ip4_addr.net = netif->ip4_addr.address & netif->ip4_addr.netmask;             /* Network address.*/
+            netif->ip4_addr.subnet = netif->ip4_addr.address & netif->ip4_addr.subnetmask;       /* Network and subnet address.*/
+
+            netif->ip4_addr.netbroadcast = netif->ip4_addr.address | (~netif->ip4_addr.netmask); /* Network broadcast address.*/
+            netif->ip4_addr.subnetbroadcast = netif->ip4_addr.address
+                                              | (~netif->ip4_addr.subnetmask);                   /* Subnet broadcast address.*/
+        }
+        else
+        {
+            netif->ip4_addr.subnetmask = subnet_mask;
+            netif->ip4_addr.subnet = netif->ip4_addr.address & netif->ip4_addr.subnetmask; /* network and subnet address*/
+            netif->ip4_addr.subnetbroadcast = netif->ip4_addr.address | (~netif->ip4_addr.subnetmask);     /* subnet broadcast address*/
         }
 
-        netif->ip4_addr.net = netif->ip4_addr.address & netif->ip4_addr.netmask;             /* Network address.*/
-        netif->ip4_addr.subnet = netif->ip4_addr.address & netif->ip4_addr.subnetmask;       /* Network and subnet address.*/
-
-        netif->ip4_addr.netbroadcast = netif->ip4_addr.address | (~netif->ip4_addr.netmask); /* Network broadcast address.*/
-        netif->ip4_addr.subnetbroadcast = netif->ip4_addr.address
-                                          | (~netif->ip4_addr.subnetmask);                   /* Subnet broadcast address.*/
-
-        if(netif->api->set_addr_notify)
+        if(netif->netif_api->netif_set_addr_notify)
         {
-            netif->api->set_addr_notify(netif);
+            netif->netif_api->netif_set_addr_notify(netif);
         }
 
         fnet_isr_unlock();
@@ -574,33 +500,6 @@ void fnet_netif_set_ip4_addr( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipad
 #endif /* FNET_CFG_IP4 */
 
 /************************************************************************
-* NAME: fnet_netif_set_ip4_subnet_mask
-*
-* DESCRIPTION: This function sets the subnet mask.
-*************************************************************************/
-#if FNET_CFG_IP4
-void fnet_netif_set_ip4_subnet_mask( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t subnet_mask )
-{
-    fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
-
-    if(netif)
-    {
-        fnet_stack_mutex_lock();
-
-        netif->ip4_addr.subnetmask = subnet_mask;
-        netif->ip4_addr.address_type = FNET_NETIF_IP_ADDR_TYPE_MANUAL;
-
-        netif->ip4_addr.subnet = netif->ip4_addr.address & netif->ip4_addr.subnetmask; /* network and subnet address*/
-        netif->ip4_addr.subnetbroadcast = netif->ip4_addr.address
-                                          | (~netif->ip4_addr.subnetmask);     /* subnet broadcast address*/
-        fnet_stack_mutex_unlock();
-    }
-}
-#endif /* FNET_CFG_IP4 */
-
-/************************************************************************
-* NAME: fnet_netif_set_ip4_gateway
-*
 * DESCRIPTION: This function sets the gateway IP address.
 *************************************************************************/
 #if FNET_CFG_IP4
@@ -612,7 +511,6 @@ void fnet_netif_set_ip4_gateway( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t g
     {
         fnet_stack_mutex_lock();
         netif->ip4_addr.gateway = gw;
-        netif->ip4_addr.address_type = FNET_NETIF_IP_ADDR_TYPE_MANUAL;
         fnet_stack_mutex_unlock();
     }
 }
@@ -620,8 +518,6 @@ void fnet_netif_set_ip4_gateway( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t g
 
 #if FNET_CFG_DNS && FNET_CFG_IP4
 /************************************************************************
-* NAME: fnet_netif_set_ip4_dns
-*
 * DESCRIPTION: This function sets the DNS IP address.
 *************************************************************************/
 void fnet_netif_set_ip4_dns( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t dns )
@@ -632,15 +528,12 @@ void fnet_netif_set_ip4_dns( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t dns )
     {
         fnet_stack_mutex_lock();
         netif->ip4_addr.dns = dns;
-        netif->ip4_addr.address_type = FNET_NETIF_IP_ADDR_TYPE_MANUAL;
         fnet_stack_mutex_unlock();
     }
 }
 #endif /* FNET_CFG_DNS && FNET_CFG_IP4*/
 
 /************************************************************************
-* NAME: fnet_netif_get_default
-*
 * DESCRIPTION: This function gets the default network interface.
 *************************************************************************/
 fnet_netif_desc_t fnet_netif_get_default( void )
@@ -649,8 +542,6 @@ fnet_netif_desc_t fnet_netif_get_default( void )
 }
 
 /************************************************************************
-* NAME: fnet_netif_get_ip4_addr
-*
 * DESCRIPTION: This function returns the IP address of the net interface.
 *************************************************************************/
 #if FNET_CFG_IP4
@@ -663,8 +554,6 @@ fnet_ip4_addr_t fnet_netif_get_ip4_addr( fnet_netif_desc_t netif_desc )
 #endif /* FNET_CFG_IP4 */
 
 /************************************************************************
-* NAME: fnet_netif_get_ip4_subnet_mask
-*
 * DESCRIPTION: This function returns the netmask of the net interface.
 *************************************************************************/
 #if FNET_CFG_IP4
@@ -677,10 +566,7 @@ fnet_ip4_addr_t fnet_netif_get_ip4_subnet_mask( fnet_netif_desc_t netif_desc )
 #endif /* FNET_CFG_IP4 */
 
 /************************************************************************
-* NAME: fnet_netif_get_ip4_gateway
-*
-* DESCRIPTION: This function returns the gateway IP address of
-*              the net interface.
+* DESCRIPTION: This function returns the gateway IP address of the net interface.
 *************************************************************************/
 #if FNET_CFG_IP4
 fnet_ip4_addr_t fnet_netif_get_ip4_gateway( fnet_netif_desc_t netif_desc )
@@ -693,10 +579,7 @@ fnet_ip4_addr_t fnet_netif_get_ip4_gateway( fnet_netif_desc_t netif_desc )
 
 #if FNET_CFG_DNS && FNET_CFG_IP4
 /************************************************************************
-* NAME: fnet_netif_get_ip4_dns
-*
-* DESCRIPTION: This function returns the DNS address of
-*              the net interface.
+* DESCRIPTION: This function returns the DNS address of the net interface.
 *************************************************************************/
 fnet_ip4_addr_t fnet_netif_get_ip4_dns( fnet_netif_desc_t netif_desc )
 {
@@ -708,8 +591,6 @@ fnet_ip4_addr_t fnet_netif_get_ip4_dns( fnet_netif_desc_t netif_desc )
 
 #if FNET_CFG_DNS && FNET_CFG_IP6
 /************************************************************************
-* NAME: fnet_netif_get_ip6_dns
-*
 * DESCRIPTION: This function returns a DNSv6 Server address.
 *************************************************************************/
 fnet_bool_t fnet_netif_get_ip6_dns( fnet_netif_desc_t netif_desc, fnet_index_t n, fnet_ip6_addr_t *addr_dns )
@@ -732,8 +613,6 @@ fnet_bool_t fnet_netif_get_ip6_dns( fnet_netif_desc_t netif_desc, fnet_index_t n
 
 #if FNET_CFG_IP6
 /************************************************************************
-* NAME: fnet_netif_get_ip6_prefix
-*
 * DESCRIPTION: This function returns an entry from IPv6 ND prefix list.
 *************************************************************************/
 fnet_bool_t fnet_netif_get_ip6_prefix( fnet_netif_desc_t netif_desc, fnet_index_t n, fnet_netif_ip6_prefix_t *ip6_prefix )
@@ -774,8 +653,6 @@ fnet_bool_t fnet_netif_get_ip6_prefix( fnet_netif_desc_t netif_desc, fnet_index_
 
 #if FNET_CFG_IP6
 /************************************************************************
-* NAME: fnet_netif_get_ip6_neighbor_cache
-*
 * DESCRIPTION: This function returns an entry from IPv6 neighbor cache.
 *************************************************************************/
 fnet_bool_t fnet_netif_get_ip6_neighbor_cache(fnet_netif_desc_t netif_desc, fnet_index_t n, fnet_netif_ip6_neighbor_cache_t *ip6_neighbor_cache )
@@ -799,8 +676,8 @@ fnet_bool_t fnet_netif_get_ip6_neighbor_cache(fnet_netif_desc_t netif_desc, fnet
                     if(n == 0u)
                     {
                         FNET_IP6_ADDR_COPY(&nd6_if->neighbor_cache[i].ip_addr, &ip6_neighbor_cache->ip_addr);
-                        FNET_NETIF_LL_ADDR_COPY(nd6_if->neighbor_cache[i].ll_addr, ip6_neighbor_cache->ll_addr, netif->api->hw_addr_size);
-                        ip6_neighbor_cache->ll_addr_size = netif->api->hw_addr_size;
+                        FNET_NETIF_LL_ADDR_COPY(nd6_if->neighbor_cache[i].ll_addr, ip6_neighbor_cache->ll_addr, netif->netif_api->netif_hw_addr_size);
+                        ip6_neighbor_cache->ll_addr_size = netif->netif_api->netif_hw_addr_size;
                         ip6_neighbor_cache->is_router = nd6_if->neighbor_cache[i].is_router;
 
                         result = FNET_TRUE;
@@ -816,11 +693,7 @@ fnet_bool_t fnet_netif_get_ip6_neighbor_cache(fnet_netif_desc_t netif_desc, fnet
 }
 #endif /* FNET_CFG_IP6*/
 
-
-
 /************************************************************************
-* NAME: fnet_netif_get_name
-*
 * DESCRIPTION: This function returns network interface name (e.g. "eth0", "loop").
 *************************************************************************/
 void fnet_netif_get_name( fnet_netif_desc_t netif_desc, fnet_char_t *name, fnet_size_t name_size )
@@ -829,13 +702,11 @@ void fnet_netif_get_name( fnet_netif_desc_t netif_desc, fnet_char_t *name, fnet_
 
     if(netif && name)
     {
-        fnet_strncpy(name, netif->name, name_size);
+        fnet_strncpy(name, netif->netif_name, name_size);
     }
 }
 
 /************************************************************************
-* NAME: fnet_netif_get_ip4_addr_type
-*
 * DESCRIPTION: This function determines if the IPv4 parameters of the @c netif interface
 *           were set manually, or obtained by the DHCP client or
 *           set during link-local autoconfiguartion (AutoIP - TBD)
@@ -848,27 +719,7 @@ fnet_netif_ip_addr_type_t fnet_netif_get_ip4_addr_type( fnet_netif_desc_t netif_
 }
 #endif
 
-/***************************************************************************/ /*!
- *
- * @brief    Sets the way IPv4 address parameters were obtained.
- *
- * @param netif_desc  Network interface descriptor.
- *
- * @see fnet_netif_get_ip4_addr_type()
- *
- ******************************************************************************
- *
- * This function sets type of the interface IPv4 address parameters, if they
- * were set manually, or obtained by the DHCP client or
- * set during link-local autoconfiguartion (AutoIP - TBD). @n
- * fnet_netif_set_ip4_addr() sets the type to FNET_NETIF_IP_ADDR_TYPE_MANUAL automatically.
- *
- ******************************************************************************/
-void fnet_netif_set_ip4_addr_type( fnet_netif_desc_t netif_desc, fnet_netif_ip_addr_type_t ipaddr_type );
-
 /************************************************************************
-* NAME: fnet_netif_set_ip4_addr_type
-*
 * DESCRIPTION: This function sets type of the interface IPv4 address parameters, if they
 *       were set manually, or obtained by the DHCP client or
 *       set during link-local autoconfiguartion (AutoIP - TBD). @n
@@ -887,8 +738,6 @@ void fnet_netif_set_ip4_addr_type( fnet_netif_desc_t netif_desc, fnet_netif_ip_a
 #endif /* FNET_CFG_IP4 */
 
 /************************************************************************
-* NAME: fnet_netif_get_hw_addr
-*
 * DESCRIPTION: This function reads HW interface address.
 *              (MAC address in case of Ethernet interface)
 *************************************************************************/
@@ -897,11 +746,11 @@ fnet_return_t fnet_netif_get_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
     fnet_return_t result;
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
 
-    if(netif && hw_addr && hw_addr_size && (netif->api)
-       && (hw_addr_size >= netif->api->hw_addr_size)
-       && (netif->api->get_hw_addr))
+    if(netif && hw_addr && hw_addr_size && (netif->netif_api)
+       && (hw_addr_size >= netif->netif_api->netif_hw_addr_size)
+       && (netif->netif_api->netif_get_hw_addr))
     {
-        result = netif->api->get_hw_addr(netif, hw_addr);
+        result = netif->netif_api->netif_get_hw_addr(netif, hw_addr);
     }
     else
     {
@@ -912,8 +761,6 @@ fnet_return_t fnet_netif_get_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
 }
 
 /************************************************************************
-* NAME: fnet_netif_set_hw_addr
-*
 * DESCRIPTION: This function sets HW interface address.
 *              (MAC address in case of Ethernet interface)
 *************************************************************************/
@@ -931,12 +778,11 @@ fnet_return_t fnet_netif_set_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
     fnet_stack_mutex_lock();
 
     if(netif && hw_addr
-       && (netif->api)
-       && (hw_addr_size == netif->api->hw_addr_size)
-       && (netif->api->set_hw_addr))
+       && (netif->netif_api)
+       && (hw_addr_size == netif->netif_api->netif_hw_addr_size)
+       && (netif->netif_api->netif_set_hw_addr))
     {
-
-        result = netif->api->set_hw_addr(netif, hw_addr);
+        result = netif->netif_api->netif_set_hw_addr(netif, hw_addr);
     }
     else
     {
@@ -949,8 +795,6 @@ fnet_return_t fnet_netif_set_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
 }
 
 /************************************************************************
-* NAME: fnet_netif_join_ip4_multicast
-*
 * DESCRIPTION: This function configures the HW interface to receive
 * particular multicast MAC addresses.
 * When the network interface picks up a packet which has a destination MAC
@@ -964,17 +808,15 @@ void fnet_netif_join_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_addr
 
     fnet_stack_mutex_lock();
 
-    if(netif && (netif->api->multicast_join_ip4))
+    if(netif && (netif->netif_api->netif_multicast_join_ip4))
     {
-        netif->api->multicast_join_ip4(netif, multicast_addr);
+        netif->netif_api->netif_multicast_join_ip4(netif, multicast_addr);
     }
 
     fnet_stack_mutex_unlock();
 }
 #endif /* FNET_CFG_MULTICAST & FNET_CFG_IP4 */
 /************************************************************************
-* NAME: fnet_netif_leave_ip4_multicast
-*
 * DESCRIPTION:
 *************************************************************************/
 #if FNET_CFG_MULTICAST & FNET_CFG_IP4
@@ -984,9 +826,9 @@ void fnet_netif_leave_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_add
 
     fnet_stack_mutex_lock();
 
-    if(netif && (netif->api->multicast_leave_ip4))
+    if(netif && (netif->netif_api->netif_multicast_leave_ip4))
     {
-        netif->api->multicast_leave_ip4(netif, multicast_addr);
+        netif->netif_api->netif_multicast_leave_ip4(netif, multicast_addr);
     }
 
     fnet_stack_mutex_unlock();
@@ -994,8 +836,6 @@ void fnet_netif_leave_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_add
 #endif /* FNET_CFG_MULTICAST & FNET_CFG_IP4*/
 
 /************************************************************************
-* NAME: fnet_netif_get_type
-*
 * DESCRIPTION: This function returns type of the network interface.
 *************************************************************************/
 fnet_netif_type_t fnet_netif_get_type( fnet_netif_desc_t netif_desc )
@@ -1005,7 +845,7 @@ fnet_netif_type_t fnet_netif_get_type( fnet_netif_desc_t netif_desc )
 
     if(netif)
     {
-        result = netif->api->type;
+        result = netif->netif_api->netif_type;
     }
     else
     {
@@ -1016,8 +856,6 @@ fnet_netif_type_t fnet_netif_get_type( fnet_netif_desc_t netif_desc )
 }
 
 /************************************************************************
-* NAME: fnet_netif_is_connected
-*
 * DESCRIPTION: This function gets physical link status.
 *************************************************************************/
 fnet_bool_t fnet_netif_is_connected( fnet_netif_desc_t netif_desc )
@@ -1025,13 +863,13 @@ fnet_bool_t fnet_netif_is_connected( fnet_netif_desc_t netif_desc )
     fnet_bool_t     result;
     fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
 
-    if(netif && (netif->api->is_connected))
+    if(netif && (netif->netif_api->netif_is_connected))
     {
         fnet_time_t current_time = fnet_timer_ticks();
 
         if(fnet_timer_get_interval(netif->is_connected_timestamp, current_time) > (FNET_NETIF_IS_CONNECTED_PERIOD / FNET_TIMER_PERIOD_MS))
         {
-            result = netif->api->is_connected(netif);
+            result = netif->netif_api->netif_is_connected(netif);
             /* Save last state.*/
             netif->is_connected = result;
             netif->is_connected_timestamp = current_time;
@@ -1050,8 +888,6 @@ fnet_bool_t fnet_netif_is_connected( fnet_netif_desc_t netif_desc )
 }
 
 /************************************************************************
-* NAME: fnet_get_statistics
-*
 * DESCRIPTION: This function returns network interface statistics.
 *************************************************************************/
 fnet_return_t fnet_netif_get_statistics( fnet_netif_desc_t netif_desc, struct fnet_netif_statistics *statistics )
@@ -1059,9 +895,9 @@ fnet_return_t fnet_netif_get_statistics( fnet_netif_desc_t netif_desc, struct fn
     fnet_return_t   result;
     fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
 
-    if(netif && statistics && (netif->api->get_statistics))
+    if(netif && statistics && (netif->netif_api->netif_get_statistics))
     {
-        result = netif->api->get_statistics(netif, statistics);
+        result = netif->netif_api->netif_get_statistics(netif, statistics);
     }
     else
     {
@@ -1072,8 +908,6 @@ fnet_return_t fnet_netif_get_statistics( fnet_netif_desc_t netif_desc, struct fn
 }
 
 /************************************************************************
-* NAME: fnet_netif_set_callback_on_ip4_addr_conflict
-*
 * DESCRIPTION: Registers the "duplicated IP address" event handler.
 ************************************************************************/
 void fnet_netif_set_callback_on_ip4_addr_conflict(fnet_netif_callback_ip4_addr_conflict_t callback)
@@ -1082,8 +916,6 @@ void fnet_netif_set_callback_on_ip4_addr_conflict(fnet_netif_callback_ip4_addr_c
 }
 
 /************************************************************************
-* NAME: fnet_netif_is_ip4_addr_conflict
-*
 * DESCRIPTION: This function detects if there is IPv4 adress conflict on network.
 *************************************************************************/
 fnet_bool_t fnet_netif_is_ip4_addr_conflict( fnet_netif_desc_t netif_desc )
@@ -1100,13 +932,10 @@ fnet_bool_t fnet_netif_is_ip4_addr_conflict( fnet_netif_desc_t netif_desc )
 }
 
 /************************************************************************
-* NAME: fnet_netif_clear_ip4_addr_conflict
-*
 * DESCRIPTION: This function clears IPv4 adress conflict flag.
 *************************************************************************/
 void fnet_netif_clear_ip4_addr_conflict( fnet_netif_desc_t netif_desc )
 {
-    fnet_bool_t     result = FNET_FALSE;
     fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
 
     if(netif)
@@ -1116,8 +945,6 @@ void fnet_netif_clear_ip4_addr_conflict( fnet_netif_desc_t netif_desc )
 }
 
 /************************************************************************
-* NAME: fnet_netif_dupip_handler_signal
-*
 * DESCRIPTION:
 ************************************************************************/
 void fnet_netif_signal_p4_addr_conflict(fnet_netif_desc_t netif )
@@ -1133,8 +960,6 @@ void fnet_netif_signal_p4_addr_conflict(fnet_netif_desc_t netif )
 *************************************************************************/
 
 /************************************************************************
-* NAME: fnet_netif_assign_scope_id
-*
 * DESCRIPTION: This function assign unique Scope ID to the interface.
 *************************************************************************/
 static void fnet_netif_assign_scope_id( fnet_netif_t *netif )
@@ -1165,8 +990,6 @@ static void fnet_netif_assign_scope_id( fnet_netif_t *netif )
 }
 
 /************************************************************************
-* NAME: fnet_netif_get_scope_id
-*
 * DESCRIPTION: Gets Scope ID assigned to the interface.
 *************************************************************************/
 fnet_scope_id_t fnet_netif_get_scope_id(fnet_netif_desc_t netif_desc)
@@ -1187,8 +1010,6 @@ fnet_scope_id_t fnet_netif_get_scope_id(fnet_netif_desc_t netif_desc)
 }
 
 /************************************************************************
-* NAME: fnet_netif_get_mtu
-*
 * DESCRIPTION: Gets Maximum Transmission Unit (MTU) of the interface.
 *************************************************************************/
 fnet_size_t fnet_netif_get_mtu(fnet_netif_desc_t netif_desc)
@@ -1198,7 +1019,7 @@ fnet_size_t fnet_netif_get_mtu(fnet_netif_desc_t netif_desc)
 
     if(netif)
     {
-        mtu = netif->mtu;
+        mtu = netif->netif_mtu;
     }
     else
     {
@@ -1209,8 +1030,6 @@ fnet_size_t fnet_netif_get_mtu(fnet_netif_desc_t netif_desc)
 }
 
 /************************************************************************
-* NAME: fnet_netif_get_by_scope_id
-*
 * DESCRIPTION: This function returns interafce decriptor according
 *              its Scope ID.
 *              It returns FNET_NULL if the interface with passed Scope ID
@@ -1241,8 +1060,6 @@ fnet_netif_desc_t fnet_netif_get_by_scope_id( fnet_scope_id_t scope_id )
 #if FNET_CFG_IP6
 
 /************************************************************************
-* NAME: fnet_netif_get_ip6_addr
-*
 * DESCRIPTION: This function is used to retrieve all IP addresses registerred
 *              with the given interface.
 *              Returns FNET_TRUE if successful and data structure filled
@@ -1280,8 +1097,6 @@ fnet_bool_t fnet_netif_get_ip6_addr (fnet_netif_desc_t netif_desc, fnet_index_t 
 }
 
 /************************************************************************
-* NAME: fnet_netif_join_ip6_multicast
-*
 * DESCRIPTION:
 *************************************************************************/
 void fnet_netif_join_ip6_multicast ( fnet_netif_desc_t netif_desc, const fnet_ip6_addr_t *multicast_addr )
@@ -1290,17 +1105,15 @@ void fnet_netif_join_ip6_multicast ( fnet_netif_desc_t netif_desc, const fnet_ip
 
     fnet_stack_mutex_lock();
 
-    if(netif && (netif->api->multicast_join_ip6))
+    if(netif && (netif->netif_api->netif_multicast_join_ip6))
     {
-        netif->api->multicast_join_ip6(netif, multicast_addr);
+        netif->netif_api->netif_multicast_join_ip6(netif, multicast_addr);
     }
 
     fnet_stack_mutex_unlock();
 }
 
 /************************************************************************
-* NAME: fnet_netif_leave_ip6_multicast
-*
 * DESCRIPTION:
 *************************************************************************/
 void fnet_netif_leave_ip6_multicast ( fnet_netif_desc_t netif_desc, fnet_ip6_addr_t *multicast_addr )
@@ -1309,17 +1122,15 @@ void fnet_netif_leave_ip6_multicast ( fnet_netif_desc_t netif_desc, fnet_ip6_add
 
     fnet_stack_mutex_lock();
 
-    if(netif && (netif->api->multicast_leave_ip6))
+    if(netif && (netif->netif_api->netif_multicast_leave_ip6))
     {
-        netif->api->multicast_leave_ip6(netif, multicast_addr);
+        netif->netif_api->netif_multicast_leave_ip6(netif, multicast_addr);
     }
 
     fnet_stack_mutex_unlock();
 }
 
 /************************************************************************
-* NAME: fnet_netif_get_ip6_addr_info
-*
 * DESCRIPTION: Gets address information structure that corresponds to the ip_addr.
 *************************************************************************/
 fnet_netif_ip6_addr_t *fnet_netif_get_ip6_addr_info(fnet_netif_t *netif, const fnet_ip6_addr_t *ip_addr)
@@ -1345,8 +1156,6 @@ fnet_netif_ip6_addr_t *fnet_netif_get_ip6_addr_info(fnet_netif_t *netif, const f
 }
 
 /************************************************************************
-* NAME: fnet_netif_get_ip6_addr_valid_link_local
-*
 * DESCRIPTION: This function returns valid link-local address,
 *  if there is no vlaid address(DAD is in progress) it returns FNET_NULL.
 *************************************************************************/
@@ -1375,8 +1184,6 @@ fnet_ip6_addr_t *fnet_netif_get_ip6_addr_valid_link_local (fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_netif_is_my_ip6_addr
-*
 * DESCRIPTION: Checks if an unicast address is attached/bound to the interface.
 *              Returns FNET_TRUE if the address is attached/bound, otherwise FNET_FALSE.
 *************************************************************************/
@@ -1397,8 +1204,6 @@ fnet_bool_t fnet_netif_is_my_ip6_addr(fnet_netif_t *netif, const fnet_ip6_addr_t
 }
 
 /************************************************************************
-* NAME: fnet_netif_is_my_ip6_solicited_multicast_addr
-*
 * DESCRIPTION: Checks if a solicited multicast address is attached/bound
 *              to the interface.
 *              Returns FNET_TRUE if the solicited multicast address
@@ -1427,8 +1232,6 @@ fnet_bool_t fnet_netif_is_my_ip6_solicited_multicast_addr(fnet_netif_t *netif, f
 }
 
 /************************************************************************
-* NAME: fnet_netif_get_by_ip6_addr
-*
 * DESCRIPTION: Returns a network interface given its IPv6 address.
 *************************************************************************/
 fnet_netif_desc_t fnet_netif_get_by_ip6_addr(const fnet_ip6_addr_t *ip_addr )
@@ -1457,8 +1260,6 @@ fnet_netif_desc_t fnet_netif_get_by_ip6_addr(const fnet_ip6_addr_t *ip_addr )
 }
 
 /************************************************************************
-* NAME: fnet_netif_ip6_addr_autoconf_set
-*
 * DESCRIPTION: Overwrite the last 64 bits with the interface ID.
 *              "addr" contains prefix to form an address
 *************************************************************************/
@@ -1473,7 +1274,7 @@ fnet_return_t fnet_netif_set_ip6_addr_autoconf(fnet_netif_t *netif, fnet_ip6_add
     {
         /* Build Interface identifier.*/
         /* Set the 8 last bytes of the IP address based on the Layer 2 identifier.*/
-        switch(netif->api->hw_addr_size)
+        switch(netif->netif_api->netif_hw_addr_size)
         {
             case 6: /* IEEE 48-bit MAC addresses. */
                 fnet_memcpy(&(ip_addr->addr[8]), hw_addr,  3u);
@@ -1497,8 +1298,6 @@ fnet_return_t fnet_netif_set_ip6_addr_autoconf(fnet_netif_t *netif, fnet_ip6_add
 }
 
 /************************************************************************
-* NAME: fnet_netif_bind_ip6_addr
-*
 * DESCRIPTION: This is USER API function binds the IPv6 address to a hardware interface.
 *************************************************************************/
 fnet_return_t fnet_netif_bind_ip6_addr(fnet_netif_desc_t netif_desc, const fnet_ip6_addr_t *addr, fnet_netif_ip_addr_type_t addr_type)
@@ -1511,8 +1310,6 @@ fnet_return_t fnet_netif_bind_ip6_addr(fnet_netif_desc_t netif_desc, const fnet_
 }
 
 /************************************************************************
-* NAME: fnet_netif_bind_ip6_addr_prv
-*
 * DESCRIPTION: This function binds the IPv6 address to a hardware interface.
 *************************************************************************/
 fnet_return_t fnet_netif_bind_ip6_addr_prv(fnet_netif_t *netif, const fnet_ip6_addr_t *addr, fnet_netif_ip_addr_type_t addr_type,
@@ -1621,8 +1418,6 @@ COMPLETE:
 }
 
 /************************************************************************
-* NAME: fnet_netif_unbind_ip6_addr
-*
 * DESCRIPTION: Unbinds an IPV6 address from a hardware interface.
 *************************************************************************/
 fnet_return_t fnet_netif_unbind_ip6_addr(fnet_netif_desc_t netif_desc, const fnet_ip6_addr_t *addr )
@@ -1638,8 +1433,6 @@ fnet_return_t fnet_netif_unbind_ip6_addr(fnet_netif_desc_t netif_desc, const fne
 }
 
 /************************************************************************
-* NAME: fnet_netif_unbind_ip6_addr_prv
-*
 * DESCRIPTION: Unbinds an IP address from a hardware interface. Internal.
 *************************************************************************/
 fnet_return_t fnet_netif_unbind_ip6_addr_prv ( fnet_netif_t *netif, fnet_netif_ip6_addr_t *if_addr )
@@ -1664,8 +1457,6 @@ fnet_return_t fnet_netif_unbind_ip6_addr_prv ( fnet_netif_t *netif, fnet_netif_i
 }
 
 /************************************************************************
-* NAME: ip6_if_addr_timer
-*
 * DESCRIPTION: Timer that checks expiring of bound addresses.
 *************************************************************************/
 void fnet_netif_ip6_addr_timer ( fnet_netif_t *netif)

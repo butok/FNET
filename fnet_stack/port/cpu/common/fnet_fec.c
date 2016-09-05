@@ -77,6 +77,11 @@ void fnet_fec_debug_mii_print_regs(fnet_netif_t *netif) ;
 /************************************************************************
 *     Global Data Structures
 *************************************************************************/
+
+#if FNET_CFG_COMP_GHS
+#pragma ghs section bss=".uncacheable"
+#endif
+
 /* Ethernet specific control data structures.*/
 #if FNET_CFG_CPU_ETH0
     fnet_fec_if_t fnet_fec0_if;  /*eth0*/
@@ -85,6 +90,9 @@ void fnet_fec_debug_mii_print_regs(fnet_netif_t *netif) ;
     fnet_fec_if_t fnet_fec1_if;  /*eth1*/
 #endif
 
+#if FNET_CFG_COMP_GHS
+#pragma ghs section bss=default
+#endif
 /*****************************************************************************
  * FEC general API structure.
  ******************************************************************************/
@@ -134,10 +142,10 @@ static fnet_return_t fnet_fec_init(fnet_netif_t *netif)
     fnet_index_t    i;
     fnet_return_t   result;
 
-    ethif = (fnet_fec_if_t *)(((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr);
+    ethif = (fnet_fec_if_t *)(((fnet_eth_if_t *)(netif->netif_prv))->eth_prv);
 
     /* Set the base address of FEC registers and other parameters, based on MAC number.*/
-    switch (((fnet_eth_if_t *)(netif->if_ptr))->mac_number)
+    switch (((fnet_eth_if_t *)(netif->netif_prv))->eth_mac_number)
     {
 #if FNET_CFG_CPU_ETH0
         case 0:
@@ -401,7 +409,7 @@ ERROR:
 *************************************************************************/
 static void fnet_fec_release(fnet_netif_t *netif)
 {
-    fnet_fec_if_t *ethif = (fnet_fec_if_t *)(((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr);
+    fnet_fec_if_t *ethif = (fnet_fec_if_t *)(((fnet_eth_if_t *)(netif->netif_prv))->eth_prv);
 
     /* Note: Sometimes it is not possible communicate with the Ethernet PHY,
      * all reads come back as 0xFFFF. It appears that the problem is
@@ -428,7 +436,7 @@ static void fnet_fec_release(fnet_netif_t *netif)
 *************************************************************************/
 void fnet_fec_stop(fnet_netif_t *netif)
 {
-    fnet_fec_if_t *ethif = (fnet_fec_if_t *)(((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr);
+    fnet_fec_if_t *ethif = (fnet_fec_if_t *)(((fnet_eth_if_t *)(netif->netif_prv))->eth_prv);
 
     ethif->reg->EIMR = 0x0U;  /* Disable FEC interrupts. */
 }
@@ -441,7 +449,7 @@ void fnet_fec_stop(fnet_netif_t *netif)
 *************************************************************************/
 void fnet_fec_resume(fnet_netif_t *netif)
 {
-    fnet_fec_if_t *ethif = (fnet_fec_if_t *)(((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr);
+    fnet_fec_if_t *ethif = (fnet_fec_if_t *)(((fnet_eth_if_t *)(netif->netif_prv))->eth_prv);
 
     ethif->reg->EIMR = FNET_FEC_EIMR_RXF;
 }
@@ -453,7 +461,7 @@ void fnet_fec_resume(fnet_netif_t *netif)
 *************************************************************************/
 static void fnet_fec_input(fnet_netif_t *netif)
 {
-    fnet_fec_if_t *ethif = (fnet_fec_if_t *)(((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr);
+    fnet_fec_if_t *ethif = (fnet_fec_if_t *)(((fnet_eth_if_t *)(netif->netif_prv))->eth_prv);
     fnet_eth_header_t *ethheader;
     fnet_netbuf_t *nb = 0;
 
@@ -466,7 +474,7 @@ static void fnet_fec_input(fnet_netif_t *netif)
     {
 
 #if !FNET_CFG_CPU_ETH_MIB
-        ((fnet_eth_if_t *)(netif->if_ptr))->statistics.rx_packet++;
+        ((fnet_eth_if_t *)(netif->netif_prv))->eth_statistics.rx_packet++;
 #endif
 
         /* If !(buffer is last in the frame) */
@@ -538,7 +546,7 @@ static void fnet_fec_input(fnet_netif_t *netif)
 *************************************************************************/
 fnet_size_t fnet_fec_input_frame(fnet_netif_t *netif, fnet_uint8_t *buf, fnet_size_t buf_size)
 {
-    fnet_fec_if_t       *ethif = (fnet_fec_if_t *)(((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr);
+    fnet_fec_if_t       *ethif = (fnet_fec_if_t *)(((fnet_eth_if_t *)(netif->netif_prv))->eth_prv);
     fnet_eth_header_t   *ethheader;
     fnet_size_t         result = 0u;
 
@@ -551,7 +559,7 @@ fnet_size_t fnet_fec_input_frame(fnet_netif_t *netif, fnet_uint8_t *buf, fnet_si
     {
 
 #if !FNET_CFG_CPU_ETH_MIB
-        ((fnet_eth_if_t *)(netif->if_ptr))->statistics.rx_packet++;
+        ((fnet_eth_if_t *)(netif->netif_prv))->eth_statistics.rx_packet++;
 #endif
         /* If !(buffer last in frame) */
         if ((ethif->rx_buf_desc_cur->status & FNET_HTONS(FNET_FEC_RX_BD_L)) == 0u)
@@ -698,10 +706,10 @@ static void fnet_fec_checksum_clear(fnet_uint16_t type, fnet_uint8_t *datagram, 
 *************************************************************************/
 void fnet_fec_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb)
 {
-    fnet_fec_if_t *ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr;
+    fnet_fec_if_t *ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->netif_prv))->eth_prv;
     fnet_eth_header_t *ethheader;
 
-    if((nb != 0) && (nb->total_length <= netif->mtu))
+    if((nb != 0) && (nb->total_length <= netif->netif_mtu))
     {
         /* ethif->tx_buf_desc_cur->status will be updated by FEC-DMA so we need to invalidate cache */
         fnet_cpu_cache_invalidate();
@@ -769,7 +777,7 @@ void fnet_fec_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_add
         ethif->reg->TDAR = FNET_FEC_TDAR_X_DES_ACTIVE; /* Indicate that there has been a transmit buffer produced.*/
 
 #if !FNET_CFG_CPU_ETH_MIB
-        ((fnet_eth_if_t *)(netif->if_ptr))->statistics.tx_packet++;
+        ((fnet_eth_if_t *)(netif->netif_prv))->eth_statistics.tx_packet++;
 #endif
     }
 
@@ -788,10 +796,10 @@ void fnet_fec_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_add
 *************************************************************************/
 void fnet_fec_output_frame(fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t frame_size)
 {
-    fnet_fec_if_t       *ethif =  (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr;
+    fnet_fec_if_t       *ethif =  (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->netif_prv))->eth_prv;
     fnet_eth_header_t   *ethheader;
 
-    if((frame != 0U) && (frame_size <= netif->mtu))
+    if((frame != 0U) && (frame_size <= netif->netif_mtu))
     {
         /* ethif->tx_buf_desc_cur->status will be updated by FEC-DMA so we need to invalidate cache */
         fnet_cpu_cache_invalidate();
@@ -825,7 +833,7 @@ void fnet_fec_output_frame(fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t
         ethif->reg->TDAR = FNET_FEC_TDAR_X_DES_ACTIVE; /* Indicate that there has been a transmit buffer produced.*/
 
 #if !FNET_CFG_CPU_ETH_MIB
-        ((fnet_eth_if_t *)(netif->if_ptr))->statistics.tx_packet++;
+        ((fnet_eth_if_t *)(netif->netif_prv))->eth_statistics.tx_packet++;
 #endif
     }
 
@@ -843,8 +851,8 @@ static fnet_return_t fnet_fec_set_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_
 
     /* Set the source address for the controller. */
     if(netif
-       && (netif->api->type == FNET_NETIF_TYPE_ETHERNET)
-       && ((ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr) != 0)
+       && (netif->netif_api->netif_type == FNET_NETIF_TYPE_ETHERNET)
+       && ((ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->netif_prv))->eth_prv) != 0)
        && hw_addr
        && (fnet_memcmp(hw_addr, fnet_eth_null_addr, sizeof(fnet_mac_addr_t)))
        && (fnet_memcmp(hw_addr, fnet_eth_broadcast, sizeof(fnet_mac_addr_t)))
@@ -876,8 +884,8 @@ static fnet_return_t fnet_fec_get_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_
     fnet_fec_if_t *ethif ;
     fnet_return_t result;
 
-    if(netif && (netif->api->type == FNET_NETIF_TYPE_ETHERNET)
-       && ((ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr) != FNET_NULL)
+    if(netif && (netif->netif_api->netif_type == FNET_NETIF_TYPE_ETHERNET)
+       && ((ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->netif_prv))->eth_prv) != FNET_NULL)
        && (hw_addr) )
     {
         fnet_fec_get_mac_addr(ethif, (fnet_mac_addr_t *) hw_addr);
@@ -921,14 +929,14 @@ static fnet_return_t fnet_fec_get_statistics(fnet_netif_t *netif, struct fnet_ne
     fnet_fec_if_t *ethif;
     fnet_return_t result;
 
-    if(netif && (netif->api->type == FNET_NETIF_TYPE_ETHERNET))
+    if(netif && (netif->netif_api->netif_type == FNET_NETIF_TYPE_ETHERNET))
     {
-        ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr;
+        ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->netif_prv))->eth_prv;
 #if FNET_CFG_CPU_ETH_MIB
         statistics->tx_packet = ethif->reg->RMON_T_PACKETS;
         statistics->rx_packet = ethif->reg->RMON_R_PACKETS;
 #else
-        *statistics = ((fnet_eth_if_t *)(netif->if_ptr))->statistics;
+        *statistics = ((fnet_eth_if_t *)(netif->netif_prv))->eth_statistics;
 #endif
         result = FNET_OK;
     }
@@ -948,7 +956,7 @@ static fnet_return_t fnet_fec_get_statistics(fnet_netif_t *netif, struct fnet_ne
 *************************************************************************/
 static void fnet_fec_isr_rx_handler_top (fnet_uint32_t cookie)
 {
-    fnet_fec_if_t *ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(((fnet_netif_t *)cookie)->if_ptr))->if_cpu_ptr;
+    fnet_fec_if_t *ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(((fnet_netif_t *)cookie)->netif_prv))->eth_prv;
 
     /* Clear FEC RX Event from the Event Register (by writing 1).*/
     ethif->reg->EIR = FNET_FEC_EIR_RXF;
@@ -1129,7 +1137,7 @@ static fnet_bool_t fnet_fec_is_connected(fnet_netif_t *netif)
     fnet_fec_if_t   *ethif;
     fnet_bool_t     res = FNET_FALSE;
 
-    ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr;
+    ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->netif_prv))->eth_prv;
 
     /* Some PHY (e.g.DP8340) returns "unconnected" and than "connected" state
      *  just to show that was transition event from one state to another.
@@ -1190,7 +1198,7 @@ static fnet_uint32_t fnet_fec_crc_hash(fnet_mac_addr_t multicast_addr )
 *************************************************************************/
 void fnet_fec_multicast_join(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr )
 {
-    fnet_fec_if_t   *ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr;
+    fnet_fec_if_t   *ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->netif_prv))->eth_prv;
     fnet_uint32_t     reg_value;
     fnet_uint32_t     crc;
 
@@ -1233,7 +1241,7 @@ void fnet_fec_multicast_join(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr
 *************************************************************************/
 void fnet_fec_multicast_leave(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr )
 {
-    fnet_fec_if_t   *ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr;
+    fnet_fec_if_t   *ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->netif_prv))->eth_prv;
     fnet_uint32_t     reg_value;
     fnet_uint32_t     crc;
 
@@ -1269,9 +1277,9 @@ void fnet_fec_debug_mii_print_regs(fnet_netif_t *netif)
 
     fnet_uint16_t reg_value;
 
-    if(netif->api->type == FNET_NETIF_TYPE_ETHERNET)
+    if(netif->netif_api->netif_type == FNET_NETIF_TYPE_ETHERNET)
     {
-        ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->if_ptr))->if_cpu_ptr;
+        ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->netif_prv))->eth_prv;
 
         fnet_printf(" === MII registers ===\r\n");
         fnet_fec_mii_read(ethif, FNET_FEC_MII_REG_CR, &reg_value);

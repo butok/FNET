@@ -55,21 +55,24 @@
 *   The return value from @ref fnet_init() must be verified to indicate the success before
 *   calling any other TCP/IP functions.
 * - After @ref fnet_init() returns the @ref FNET_OK value, the FNET TCP/IP stack is ready
-*   for data transmission.
+*   for use.
+* - Initialize required networking interfaces using @ref fnet_netif_init().
 *
 * For example:
 * @code
 * ...
-*    static fnet_uint8_t stack_heap[FNET_CFG_HEAP_SIZE];
+*    static fnet_uint8_t stack_heap[FAPP_CFG_HEAP_SIZE];
 *    struct fnet_init_params init_params;
 *
 *    // Input parameters for FNET stack initialization.
 *    init_params.netheap_ptr = stack_heap;
-*    init_params.netheap_size = FNET_CFG_HEAP_SIZE;
+*    init_params.netheap_size = sizeof(stack_heap);
 *
 *    // Init FNET stack.
 *    if(fnet_init(&init_params) != FNET_ERR)
 *    {
+*        // Initialize Network Interfaces.
+	     ,,,
 *        // Place your code here.
 *    }
 *    else

@@ -195,24 +195,6 @@
         #endif /* FNET_CFG_CPU_FLASH */
     #endif /* __FNET_ASM_CODE */
 
-    /*****************************************************************************
-    *  On-chip SRAM memory start address.
-    ******************************************************************************/
-
-    #ifndef __FNET_ASM_CODE
-        #ifndef FNET_CFG_CPU_SRAM_ADDRESS
-            /* The following symbol should be defined in the linker file.*/
-
-            #if FNET_CFG_MCF_V1
-                #define FNET_CFG_CPU_SRAM_ADDRESS   (0x00800000)
-            #else
-                extern fnet_uint8_t __RAMBAR [];
-                #define FNET_CFG_CPU_SRAM_ADDRESS   ((fnet_uint32_t)__RAMBAR)
-            #endif
-
-        #endif
-    #endif
-
     /**************************************************************************/ /*!
     * @def      FNET_CFG_MCF_RCM
     * @brief    Reset Controller Module (RCM):

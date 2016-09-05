@@ -36,11 +36,6 @@
 /* MCF */
 #define FNET_MCF                        	(1)
 
-/* Size of the internal static heap buffer. */
-#ifndef FNET_CFG_HEAP_SIZE
-    #define FNET_CFG_HEAP_SIZE     			(30 * 1024)
-#endif
-
 /* System frequency in Hz */
 #ifndef FNET_CFG_CPU_CLOCK_HZ
     #define FNET_CFG_CPU_CLOCK_HZ    		(80000000)
@@ -65,8 +60,5 @@
 
 /* Flash size.*/
 #define FNET_CFG_CPU_FLASH_SIZE         	(1024 * 512)    /* 512 KB */
-
-/* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE          	(1024 * 64)     /* 64 KB */
 
 #endif

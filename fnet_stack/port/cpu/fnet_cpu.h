@@ -346,6 +346,10 @@ void fnet_cpu_cache_invalidate(void);
  *
  * @param bytes           Number of bytes to erase in the Flash memory.
  *
+ * @return This function returns:
+ *   - @ref FNET_OK if successful.
+ *   - @ref FNET_ERR if failed.
+ *
  * @see fnet_cpu_flash_write()
  *
  ******************************************************************************
@@ -360,7 +364,7 @@ void fnet_cpu_cache_invalidate(void);
  * be erased. @n
  *
  ******************************************************************************/
-void fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes);
+fnet_return_t  fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes);
 
 /***************************************************************************/ /*!
  *
@@ -372,6 +376,10 @@ void fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes);
  *                        Size of the data block must be equal to
  *                        @ref FNET_CFG_CPU_FLASH_PROGRAM_SIZE.
  *
+ * @return This function returns:
+ *   - @ref FNET_OK if successful.
+ *   - @ref FNET_ERR if failed.
+ *
  * @see fnet_cpu_flash_erase()
  *
  ******************************************************************************
@@ -380,7 +388,7 @@ void fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes);
  * to the Flash memory pointed by @c dest.
  *
  ******************************************************************************/
-void fnet_cpu_flash_write(fnet_uint8_t *dest, const fnet_uint8_t *data);
+fnet_return_t  fnet_cpu_flash_write(fnet_uint8_t *dest, const fnet_uint8_t *data);
 
 /***************************************************************************/ /*!
  *
@@ -417,6 +425,17 @@ void fnet_cpu_isr(void);
 #ifndef FNET_CPU_INSTRUCTION_TO_ADDR
 #define FNET_CPU_INSTRUCTION_TO_ADDR(addr)    (addr)
 #endif
+
+struct fnet_netif; /* Forward declaration.*/
+#if FNET_CFG_CPU_ETH0
+    extern struct fnet_netif fnet_cpu_eth0_if;
+    #define FNET_CPU_ETH0_IF ((fnet_netif_desc_t)(&fnet_cpu_eth0_if))
+#endif
+#if FNET_CFG_CPU_ETH1
+    extern struct fnet_netif  fnet_cpu_eth1_if;
+    #define FNET_CPU_ETH1_IF ((fnet_netif_desc_t)(&fnet_cpu_eth1_if))
+#endif
+
 
 #if defined(__cplusplus)
 }

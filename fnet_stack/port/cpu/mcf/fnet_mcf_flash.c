@@ -144,7 +144,7 @@ static void cfm_command( unsigned char command, unsigned long *address, unsigned
 *
 * DESCRIPTION: Erases the specified range of the Flash memory.
 ************************************************************************/
-void fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes)
+fnet_return_t (void *flash_addr, fnet_size_t bytes)
 {
     fnet_index_t    n_pages;
     fnet_uint32_t   page_shift = (fnet_uint32_t)flash_addr & (FNET_CFG_CPU_FLASH_PAGE_SIZE - 1U);
@@ -163,16 +163,32 @@ void fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes)
         flash_addr = ((fnet_uint8_t *)flash_addr + FNET_CFG_CPU_FLASH_PAGE_SIZE);
         n_pages --;
     }
+	
+	/* TBD check if it was erased */
+
+    return FNET_OK;
 }
 
 /************************************************************************
-* NAME: fnet_cpu_flash_write
-*
 * DESCRIPTION: Writes the specified data to the Flash memory.
 ************************************************************************/
-void fnet_cpu_flash_write(unsigned char *dest, const unsigned char *data)
+fnet_return_t fnet_cpu_flash_write(unsigned char *dest, const unsigned char *data)
 {
     cfm_command(FNET_MCF_CFM_CFMCMD_WORD_PROGRAM, (unsigned long *)dest, *((unsigned long *)data));
+
+#if FNET_CFG_CPU_FLASH_VERIFY
+    {
+        fnet_size_t      i;
+
+        for(i = 0; i < FNET_CFG_CPU_FLASH_PROGRAM_SIZE; i++)
+        {
+            if(((volatile fnet_uint8_t *)dest)[i] != ((fnet_uint8_t *)data)[i])
+            {
+                return FNET_ERR;
+            }
+        }
+    }
+#endif /*FNET_CFG_CPU_FLASH_VERIFY*/
 }
 
 #endif /* FNET_MCF && FNET_CFG_CPU_FLASH */

@@ -47,7 +47,7 @@
 ** ###################################################################
 */
 
-define symbol __flash_offset__ =  0x0000C000; //48KB reserved for FNET bootloader.
+define symbol __flash_offset__ =  0x0000D000; //52KB reserved for FNET bootloader.
 
 define symbol __ram_vector_table_size__ =  isdefinedsymbol(__ram_vector_table__) ? 0x00000400 : 0;
 define symbol __ram_vector_table_offset__ =  isdefinedsymbol(__ram_vector_table__) ? 0x000003FF : 0;

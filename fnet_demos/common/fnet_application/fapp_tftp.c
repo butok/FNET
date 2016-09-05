@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp_tftp.c
-*
-* @author Andrey Butok
-*
 * @brief TFTP file loader implementation.
 *
 ***************************************************************************/
@@ -272,19 +267,18 @@ static void fapp_tftp_tx_image_begin_end(fnet_uint8_t *FNET_COMP_PACKED_VAR *dat
 
     /* Find image start. */
     data_cur = (fnet_uint8_t *)FAPP_TFTP_TX_MEM_REGION->address;
-    while((data_cur < data_end) && (fapp_mem_region_is_protected((fnet_uint32_t)data_cur, step) == FNET_TRUE) )
+    while((data_cur < data_end) && (fapp_mem_region_is_reserved((fnet_uint32_t)data_cur, step) == FNET_TRUE) )
     {
         data_cur += step;
     }
     *data_begin_p = data_cur;
 
     /* Find image end. */
-    while((data_cur < data_end) && (fapp_mem_region_is_protected((fnet_uint32_t)data_cur, step) == FNET_FALSE) )
+    while((data_cur < data_end) && (fapp_mem_region_is_reserved((fnet_uint32_t)data_cur, step) == FNET_FALSE) )
     {
         data_cur += step;
     }
     *data_end_p = data_cur;
-
 }
 
 /*======================== BIN ========================================*/
@@ -628,14 +622,12 @@ static fnet_return_t fapp_tftp_rx_handler_srec (fapp_tftp_handler_control_t *tft
                     if((type == 1u) || (type == 9u))
                     {
                         addr = (fnet_uint8_t *)( ((fnet_uint32_t)((srec->record.data[0]) & 0xFFLU) << 8 ) + (fnet_uint32_t)((srec->record.data[1]) & 0xFFLU));
-
                     }
 
                     if((type == 2u) || (type == 8u))
                     {
                         addr = (fnet_uint8_t *)( ((fnet_uint32_t)((srec->record.data[0]) & 0xFFLU) << 16) +
                                                  ((fnet_uint32_t)((srec->record.data[1]) & 0xFFLU) << 8 ) + (fnet_uint32_t)((srec->record.data[2]) & 0xFFLU));
-
                     }
 
                     if((type == 3u) || (type == 7u))
@@ -1120,6 +1112,7 @@ static fnet_int32_t fapp_tftp_handler (fnet_tftp_request_t request_type, fnet_ui
             /* Check EOF. */
             if(data_size < FNET_TFTP_DATA_SIZE_MAX)
             {
+                fapp_mem_flush();
                 fnet_shell_println(desc, FAPP_TFTP_COMPLETED_STR, fapp_tftp_handler_control.image_size);
                 fnet_shell_unblock(desc); /* Unblock shell. */
             }
@@ -1128,6 +1121,7 @@ static fnet_int32_t fapp_tftp_handler (fnet_tftp_request_t request_type, fnet_ui
     else
     {
     ERROR:
+        fapp_mem_flush();
         fnet_shell_println(desc, FAPP_TFTP_ERR, data_size, data_ptr );
         fnet_shell_unblock(desc);           /* Unblock shell. */
         fnet_shell_script_release(desc);    /* Clear script. */
@@ -1138,17 +1132,16 @@ static fnet_int32_t fapp_tftp_handler (fnet_tftp_request_t request_type, fnet_ui
 }
 
 /************************************************************************
-* NAME: fapp_tftp_on_ctrlc
-*
-* DESCRIPTION:
+* DESCRIPTION: Callback function called on the [Ctrl]+[c]
 ************************************************************************/
 static void fapp_tftp_on_ctrlc(fnet_shell_desc_t desc)
 {
+    fapp_mem_flush();
     /* Release TFTP. */
     fnet_tftp_cln_release();
-    fnet_shell_putchar(desc, '\b'); /* Clear progress. */
+    fnet_shell_putchar(desc, '\b');     /* Clear progress. */
     fnet_shell_println(desc, FAPP_CANCELLED_STR);
-    fnet_shell_script_release(desc);   /* Clear script. */
+    fnet_shell_script_release(desc);    /* Clear script. */
 }
 
 /************************************************************************
@@ -1230,11 +1223,7 @@ void fapp_tftp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
     }
 }
 
-
 #endif /*FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD*/
-
-
-
 
 /********************* TFTP firmware server *****************************************/
 #if FAPP_CFG_TFTPS_CMD

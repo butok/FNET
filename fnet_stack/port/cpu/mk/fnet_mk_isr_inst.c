@@ -30,11 +30,8 @@
 #include "fnet.h"
 
 #if FNET_MK
-#if !FNET_OS
 
 /************************************************************************
-* NAME: fnet_cpu_isr_install
-*
 * DESCRIPTION:
 *************************************************************************/
 fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t priority)
@@ -79,7 +76,5 @@ fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t pr
 
     return result;
 }
-
-#endif /* !FNET_OS */
 
 #endif /*FNET_MK*/

@@ -2588,6 +2588,12 @@
       <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_mem.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_netif.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_netif.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_params.c</name>
     </file>
     <file>

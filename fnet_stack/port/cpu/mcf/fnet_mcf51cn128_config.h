@@ -43,16 +43,9 @@
     #define FNET_CFG_CPU_ETH0_MTU           (800)
 #endif
 
-
-/* Size of the internal static heap buffer. */
-#ifndef FNET_CFG_HEAP_SIZE
-    #define FNET_CFG_HEAP_SIZE                  (15 * 1024)
-#endif
-
-
 /* System frequency in Hz. */
 #ifndef FNET_CFG_CPU_CLOCK_HZ
-    #define FNET_CFG_CPU_CLOCK_HZ               (50331648)
+    #define FNET_CFG_CPU_CLOCK_HZ        	(50331648)
 #endif
 
 /* Timer IRQ number */
@@ -105,10 +98,5 @@
 
 /* Flash size.*/
 #define FNET_CFG_CPU_FLASH_SIZE         	(1024 * 128)    /* 128 KB */
-
-/* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE          	(1024 * 24)     /* 24 KB */
-
-
 
 #endif

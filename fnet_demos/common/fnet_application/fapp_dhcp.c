@@ -43,6 +43,7 @@
 
 static fnet_int32_t     fapp_dhcp_discover_counter;
 static fnet_ip4_addr_t  fapp_dhcp_ip_old;
+static fnet_ip4_addr_t  fapp_dhcp_subnet_mask_old;
 static fnet_dhcp_desc_t fapp_dhcp_desc = 0; /* DHCP descriptor. */
 #if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP
     static fnet_bool_t      fapp_dhcp_autoip = FNET_FALSE; /* Flag that means to start the Auto-IP service automatically if a DHCP server is not found. */
@@ -65,7 +66,7 @@ static void fapp_dhcp_on_ctrlc(fnet_shell_desc_t desc)
     /* Release DHCP. */
     fapp_dhcp_release();
     /* Restore old ip address, as DHCP set it to zero. */
-    fnet_netif_set_ip4_addr( fnet_netif_get_default(), fapp_dhcp_ip_old );
+    fnet_netif_set_ip4_addr( fnet_netif_get_default(), fapp_dhcp_ip_old, fapp_dhcp_subnet_mask_old );
     fnet_shell_println( desc, FAPP_CANCELLED_STR);
 }
 
@@ -169,6 +170,7 @@ void fapp_dhcp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 
         /* Save current IP address, to restore if cancelled.  */
         fapp_dhcp_ip_old = fnet_netif_get_ip4_addr(netif);
+        fapp_dhcp_subnet_mask_old = fnet_netif_get_ip4_subnet_mask(netif);
 
         /* Start DHCP client */
         dhcp_desc = fnet_dhcp_init(netif, &dhcp_params);

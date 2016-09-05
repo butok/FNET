@@ -63,7 +63,6 @@
     ******************************************************************************/
     #define  FNET_CFG_CPU_TIMER_NUMBER_MAX              (3u)
 
-
     /**************************************************************************/ /*!
     *   Vector table address.@n
     *           By default, NVIC vector table register (VTOR).
@@ -72,7 +71,6 @@
     #ifndef FNET_CFG_CPU_VECTOR_TABLE
         #define FNET_CFG_CPU_VECTOR_TABLE               FNET_MK_SCB_VTOR
     #endif
-
 
     /******************************************************************************
     *  Vector number of the timer interrupt.
@@ -114,16 +112,6 @@
     #ifndef FNET_CFG_CPU_FLASH_ADDRESS
         #define FNET_CFG_CPU_FLASH_ADDRESS                  (0x0U)
     #endif
-
-    /*****************************************************************************
-    *   On-chip SRAM memory start address.
-    ******************************************************************************/
-    #if FNET_CFG_CPU_SRAM_SIZE
-        #ifndef FNET_CFG_CPU_SRAM_ADDRESS
-            #define FNET_CFG_CPU_SRAM_ADDRESS   ((fnet_uint32_t)(0x20000000U - (FNET_CFG_CPU_SRAM_SIZE/2U))) /* SRAM_L = [0x2000_0000–(SRAM_size/2)]*/
-        #endif
-    #endif
-
 
     #ifndef FNET_CFG_CPU_FLASH_PROGRAM_SIZE
         #define FNET_CFG_CPU_FLASH_PROGRAM_SIZE             (4U)

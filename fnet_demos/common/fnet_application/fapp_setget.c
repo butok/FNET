@@ -272,9 +272,19 @@ static void fapp_get_ip(fnet_shell_desc_t desc, fnet_ip4_addr_t (*get_address)( 
 #if FAPP_CFG_SETGET_CMD_IP && FNET_CFG_IP4
 static void fapp_set_cmd_ip(fnet_shell_desc_t desc, fnet_char_t *value )
 {
-    fapp_set_ip(desc, value, fnet_netif_set_ip4_addr );
+    fnet_ip4_addr_t addr;
+
+    if(fnet_inet_aton(value, (struct in_addr *) &addr) == FNET_OK)
+    {
+        fnet_netif_set_ip4_addr(fnet_netif_get_default(), addr, INADDR_ANY);
+    }
+    else
+    {
+        fnet_shell_println(desc, FAPP_PARAM_ERR, value);
+    }
 }
 #endif
+
 /************************************************************************
 * NAME: fapp_get_cmd_ip
 *
@@ -286,6 +296,7 @@ static void fapp_get_cmd_ip(fnet_shell_desc_t desc)
     fapp_get_ip(desc, fnet_netif_get_ip4_addr);
 }
 #endif
+
 /************************************************************************
 * NAME: fapp_set_cmd_gateway
 *
@@ -297,6 +308,7 @@ static void fapp_set_cmd_gateway(fnet_shell_desc_t desc, fnet_char_t *value )
     fapp_set_ip(desc, value, fnet_netif_set_ip4_gateway );
 }
 #endif
+
 /************************************************************************
 * NAME: fapp_set_cmd_gateway
 *
@@ -308,6 +320,7 @@ static void fapp_get_cmd_gateway(fnet_shell_desc_t desc)
     fapp_get_ip(desc, fnet_netif_get_ip4_gateway);
 }
 #endif
+
 /************************************************************************
 * NAME: fapp_set_cmd_netmask
 *
@@ -316,9 +329,21 @@ static void fapp_get_cmd_gateway(fnet_shell_desc_t desc)
 #if FAPP_CFG_SETGET_CMD_NETMASK && FNET_CFG_IP4
 static void fapp_set_cmd_netmask(fnet_shell_desc_t desc, fnet_char_t *value )
 {
-    fapp_set_ip(desc, value, fnet_netif_set_ip4_subnet_mask);
+    fnet_ip4_addr_t addr;
+    fnet_netif_desc_t netif = fnet_netif_get_default();
+
+    if(fnet_inet_aton(value, (struct in_addr *) &addr) == FNET_OK)
+    {
+        fnet_netif_set_ip4_addr(netif, fnet_netif_get_ip4_addr(netif), addr);
+    }
+    else
+    {
+        fnet_shell_println(desc, FAPP_PARAM_ERR, value);
+    }
+
 }
 #endif
+
 /************************************************************************
 * NAME: fapp_get_cmd_netmask
 *

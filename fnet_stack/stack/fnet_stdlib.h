@@ -83,6 +83,17 @@ typedef enum
     FNET_TRUE  = 1  /**< @brief TRUE Boolean value.*/
 } fnet_bool_t;
 
+/**************************************************************************/ /*!
+ * @brief General return codes, used by most of API functions.
+ ******************************************************************************/
+typedef enum
+{
+    FNET_OK  = (0), /**< No error.
+                     */
+    FNET_ERR = (-1) /**< There is error.
+                     */
+} fnet_return_t;
+
 
 
 #if defined(__cplusplus)

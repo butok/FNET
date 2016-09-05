@@ -38,28 +38,25 @@
 /************************************************************************
 *     Definitions.
 *************************************************************************/
-#define FAPP_APPLICATION_ADDRESS    FAPP_CFG_APPLICATION_ADDRESS /* Actually is the start address of the flash.*/
-#define FAPP_APPLICATION_SIZE       FAPP_CFG_APPLICATION_SIZE
-
-#define FAPP_SRAM_ADDRESS           FNET_CFG_CPU_SRAM_ADDRESS
-#define FAPP_SRAM_SIZE              FNET_CFG_CPU_SRAM_SIZE
-
-#define FAPP_FLASH_ADDRESS          FNET_CFG_CPU_FLASH_ADDRESS
-#define FAPP_FLASH_SIZE             FNET_CFG_CPU_FLASH_SIZE
-
-#define FAPP_FLASH_PARAMS_SIZE      FNET_CFG_CPU_FLASH_PAGE_SIZE
-#define FAPP_FLASH_PARAMS_ADDRESS   (FAPP_FLASH_ADDRESS + FAPP_FLASH_SIZE - FAPP_FLASH_PARAMS_SIZE) /* Last sectopr of the flash.*/
-
+/* Memory region.*/
 struct fapp_mem_region
 {
-    fnet_char_t     *description;
-    fnet_uint32_t   address;
-    fnet_size_t     size;
-    void            (*memcpy)( FNET_COMP_PACKED_VAR void *dest, const FNET_COMP_PACKED_VAR void *src, fnet_size_t n );
-    void            (*erase)( void *erase_addr, fnet_size_t n );
-    fnet_size_t     erase_size; /* Logical page size, that can be erased separately. */
+    fnet_char_t     *description;       /* Memory region description. Displayed to user.*/
+    fnet_uint32_t   address;            /* Memory region start address.*/
+    fnet_size_t     size;               /* Memory region size in bytes.*/
+    fnet_return_t   (*memcpy)( FNET_COMP_PACKED_VAR void *dest, const FNET_COMP_PACKED_VAR void *src, fnet_size_t n ); /* Write */
+    fnet_return_t   (*erase)( void *erase_addr, fnet_size_t n ); /* Erase */
+    fnet_return_t   (*flush)( void );   /* Flush write cache. It is optional. */
+    fnet_size_t     erase_size;         /* Logical page size. Smallest logical block which can be erased independently. */
 };
 
+/*  Reserved area inside memory region, which may not be written during firmware update.*/
+struct fapp_mem_region_reserved
+{
+    fnet_char_t    *description;        /* Reserved memory region description. Displayed to user.*/
+    fnet_uint32_t  address;             /* Reserved memory region start address.*/
+    fnet_size_t    size;                /* Reserved memory region size in bytes.*/
+};
 
 extern const struct fapp_mem_region fapp_mem_regions[];
 
@@ -75,8 +72,9 @@ void fapp_mem_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 void fapp_mem_erase_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 #endif
 
-fnet_return_t fapp_mem_memcpy (fnet_shell_desc_t desc, void *dest, const void *src, fnet_size_t n );
-fnet_bool_t fapp_mem_region_is_protected( fnet_uint32_t start, fnet_size_t n);
+fnet_return_t fapp_mem_memcpy (fnet_shell_desc_t desc, FNET_COMP_PACKED_VAR void *dest, const FNET_COMP_PACKED_VAR void *src, fnet_size_t n );
+fnet_return_t fapp_mem_flush(void);
+fnet_bool_t fapp_mem_region_is_reserved( fnet_uint32_t start, fnet_size_t n);
 void fapp_mem_erase_all(fnet_shell_desc_t desc);
 
 #if defined(__cplusplus)

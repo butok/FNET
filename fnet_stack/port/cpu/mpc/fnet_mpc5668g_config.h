@@ -41,13 +41,6 @@
  ******************************************************************************/
 #define  FNET_CFG_CPU_TIMER_NUMBER_MAX  (7)
 
-
-/* Size of the internal static heap buffer. */
-#ifndef FNET_CFG_HEAP_SIZE
-    #define FNET_CFG_HEAP_SIZE          (30 * 1024)
-#endif
-
-
 /* Default system bus frequency in Hz*/
 #ifndef FNET_CFG_CPU_CLOCK_HZ
     #define FNET_CFG_CPU_CLOCK_HZ       (94000000)
@@ -69,10 +62,5 @@
 
 /* On-chop Flash size.*/
 #define FNET_CFG_CPU_FLASH_SIZE         (1024 * 1024 * 2)   /* 2 MB*/
-
-/* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE          (1024 * 512)        /* 512 KB */
-
-
 
 #endif /* _FNET_MPC5668G_CONFIG_H_ */

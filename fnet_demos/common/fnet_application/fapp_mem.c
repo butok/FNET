@@ -38,31 +38,18 @@
 *     Definitions.
 *************************************************************************/
 
-
-/* Flash regions should be aligned to logical border. */
-struct fapp_mem_region_reserved
-{
-    fnet_char_t    *description;
-    fnet_uint32_t   address;
-    fnet_size_t     size;
-};
-
-
-
+/* Memory regions.
+ * They should be aligned to logical borders. */
 const struct fapp_mem_region fapp_mem_regions[] =
 {
-#if FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
-    {"FLASH", FAPP_FLASH_ADDRESS, FAPP_FLASH_SIZE, fnet_flash_memcpy, fnet_flash_erase, FNET_CFG_CPU_FLASH_PAGE_SIZE},
-#endif
-    {"SRAM", FAPP_SRAM_ADDRESS, FAPP_SRAM_SIZE, fnet_memcpy, 0, 0},
+    FAPP_CFG_MEM_REGION_LIST
     {0, 0, 0, 0, 0, 0} /* End */
 };
 
-
+/* Reserved areas inside memory regions, which may not be written during firmware update.*/
 static const struct fapp_mem_region_reserved fapp_mem_regions_reserved[] =
 {
-    {"FNET ROM", FAPP_APPLICATION_ADDRESS, FAPP_APPLICATION_SIZE},
-    {"FNET Params", FAPP_FLASH_PARAMS_ADDRESS, FAPP_FLASH_PARAMS_SIZE},
+    FAPP_CFG_MEM_REGION_RESERVED_LIST
     {0, 0, 0} /* End */
 };
 
@@ -87,11 +74,9 @@ static const struct fapp_mem_region *fapp_mem_region_find( fnet_uint32_t start, 
 #endif
 
 /************************************************************************
-* NAME: fapp_mem_region_is_protected
-*
-* DESCRIPTION:
+* DESCRIPTION: Checks if the memory area is placed in reserved part of region
 ************************************************************************/
-fnet_bool_t fapp_mem_region_is_protected( fnet_uint32_t start, fnet_size_t n)
+fnet_bool_t fapp_mem_region_is_reserved( fnet_uint32_t start, fnet_size_t n)
 {
     fnet_bool_t                             result = FNET_FALSE;
     const struct fapp_mem_region_reserved   *region_reserved = fapp_mem_regions_reserved;
@@ -133,16 +118,14 @@ static const struct fapp_mem_region *fapp_mem_region_find( fnet_uint32_t start, 
 }
 
 /************************************************************************
-* NAME: fapp_mem_memcpy
-*
-* DESCRIPTION:
+* DESCRIPTION: Write to not reserved memory region
 ************************************************************************/
-fnet_return_t fapp_mem_memcpy (fnet_shell_desc_t desc, void *dest, const void *src, fnet_size_t n )
+fnet_return_t fapp_mem_memcpy (fnet_shell_desc_t desc, FNET_COMP_PACKED_VAR void *dest, const FNET_COMP_PACKED_VAR void *src, fnet_size_t n )
 {
     fnet_size_t     i;
     const struct    fapp_mem_region *region;
 
-    if(fapp_mem_region_is_protected( (fnet_uint32_t)dest, n) == FNET_FALSE)
+    if(fapp_mem_region_is_reserved( (fnet_uint32_t)dest, n) == FNET_FALSE)
     {
         /* Find memory region.*/
         region = fapp_mem_region_find( (fnet_uint32_t)dest, n);
@@ -165,34 +148,7 @@ fnet_return_t fapp_mem_memcpy (fnet_shell_desc_t desc, void *dest, const void *s
 #endif
 
             /* Write. */
-            region->memcpy(dest, src, n);
-
-            /* Verify result. */
-#if 0 /* Old code.*/
-            for(i = 0; i < n; i++)
-            {
-                if(((volatile fnet_uint8_t *)dest)[i] != ((fnet_uint8_t *)src)[i])
-                {
-                    goto FAIL;
-                }
-            }
-#else
-            /* Workaround of the Flash cache issue discovered on K60.*/
-            /* Delay.  fnet_timer_delay(1); is too big - 100ms.*/
-            for(i = 0u; i < 100000000u; i++)
-            {
-                if(fnet_memcmp(dest, src, n) == 0)
-                {
-                    break;
-                }
-            }
-            if(i == 100000000u)
-            {
-                goto FAIL;
-            }
-#endif
-
-            return FNET_OK;
+            return region->memcpy(dest, src, n);
         }
     }
 
@@ -202,8 +158,27 @@ FAIL:
 }
 
 /************************************************************************
-* NAME: fapp_mem_cmd
-*
+* DESCRIPTION: Flush all regions.
+************************************************************************/
+fnet_return_t fapp_mem_flush(void)
+{
+    const struct    fapp_mem_region *region = fapp_mem_regions;
+    fnet_return_t   result;
+
+    while(region->description && region->flush)
+    {
+        result = region->flush();
+        if(result == FNET_ERR)
+        {
+            break;
+        }
+        region++;
+    }
+
+    return result;
+}
+
+/************************************************************************
 * DESCRIPTION: Shows the memory-map information for MCU.
 * Also shows the memory regions are reserved for FNET (protected).
 ************************************************************************/
@@ -222,8 +197,7 @@ void fapp_mem_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
     fnet_shell_println(desc, FAPP_MEM_DELIMITER);
     while(mem->description)
     {
-        fnet_shell_println(desc, MEM_STR, mem->description, mem->address,
-                           mem->address + mem->size - 1u);
+        fnet_shell_println(desc, MEM_STR, mem->description, mem->address, mem->address + mem->size - 1u);
         mem++;
     }
 
@@ -237,23 +211,20 @@ void fapp_mem_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
         region_reserved++;
     }
     fnet_shell_println(desc, "");
-
 }
 #endif
 
 
 #if FAPP_CFG_ERASE_CMD
 /************************************************************************
-* NAME: fapp_mem_erase
-*
-* DESCRIPTION:
+* DESCRIPTION: Erase
 ************************************************************************/
 static fnet_return_t fapp_mem_erase( void *addr, fnet_size_t n)
 {
     fnet_return_t                   result = FNET_ERR;
     const struct fapp_mem_region    *region;
 
-    if(fapp_mem_region_is_protected( (fnet_uint32_t)addr, n) == FNET_FALSE)
+    if(fapp_mem_region_is_reserved( (fnet_uint32_t)addr, n) == FNET_FALSE)
     {
         /* Find memory region.*/
         region = fapp_mem_region_find( (fnet_uint32_t)addr, n);
@@ -262,8 +233,7 @@ static fnet_return_t fapp_mem_erase( void *addr, fnet_size_t n)
         {
             if(region->erase)
             {
-                region->erase(addr, n);
-                result = FNET_OK;
+                result = region->erase(addr, n);
             }
         }
     }
@@ -271,9 +241,7 @@ static fnet_return_t fapp_mem_erase( void *addr, fnet_size_t n)
 }
 
 /************************************************************************
-* NAME: fapp_mem_erase_all
-*
-* DESCRIPTION:
+* DESCRIPTION: Erase all regions, except reserved areas
 ************************************************************************/
 void fapp_mem_erase_all(fnet_shell_desc_t desc)
 {
@@ -336,9 +304,7 @@ void fapp_mem_erase_all(fnet_shell_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fapp_mem_erase_cmd
-*
-* DESCRIPTION:
+* DESCRIPTION:  Shell Erase command
 ************************************************************************/
 void fapp_mem_erase_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
@@ -389,5 +355,3 @@ void fapp_mem_erase_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t
 #endif
 
 #endif /* FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD || FAPP_CFG_ERASE_CMD || FAPP_CFG_MEM_CMD */
-
-

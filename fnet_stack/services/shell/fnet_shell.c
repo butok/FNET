@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_shell.c
-*
-* @author Andrey Butok
-*
 * @brief Shell service implementation.
 *
 ***************************************************************************/
@@ -672,9 +667,7 @@ fnet_bool_t fnet_shell_is_ctrlc (fnet_shell_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_shell_block
-*
-* DESCRIPTION:
+* DESCRIPTION: Blocks the shell to ignore user commands.
 ************************************************************************/
 fnet_return_t fnet_shell_block( fnet_shell_desc_t desc, void (*on_ctrlc)(fnet_shell_desc_t shl_desc))
 {
@@ -696,9 +689,7 @@ fnet_return_t fnet_shell_block( fnet_shell_desc_t desc, void (*on_ctrlc)(fnet_sh
 }
 
 /************************************************************************
-* NAME: fnet_shell_unblock
-*
-* DESCRIPTION:
+* DESCRIPTION:  Unblocks the shell to accept user commands.
 ************************************************************************/
 void fnet_shell_unblock( fnet_shell_desc_t desc)
 {
@@ -711,9 +702,7 @@ void fnet_shell_unblock( fnet_shell_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_shell_block
-*
-* DESCRIPTION:
+* DESCRIPTION: Switch to other command line set.
 ************************************************************************/
 fnet_return_t fnet_shell_switch( fnet_shell_desc_t desc, const struct fnet_shell *switch_shell)
 {

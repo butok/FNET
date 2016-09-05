@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2012-2015 by Andrey Butok. FNET Community.
+* Copyright 2012-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,14 +18,6 @@
 *
 **********************************************************************/ /*!
 *
-* @file fnet_mpc_cache.c
-*
-* @author Andrey Butok
-*
-* @date Dec-17-2012
-*
-* @version 0.1.1.0
-*
 * @brief MPC-specific cache invalidation.
 *
 ***************************************************************************/
@@ -35,17 +27,14 @@
 
 #include "port/cpu/fnet_cpu.h"
 
-
 /************************************************************************
-* NAME: fnet_cpu_cache_invalidate
-*
 * DESCRIPTION: Invalidate cache.
 *************************************************************************/
 #if FNET_CFG_CPU_CACHE
 void fnet_cpu_cache_invalidate(void)
 {
 #if FNET_CFG_CPU_MPC5744P
-    fnet_mpc5744p_cacr_wr();
+    fnet_mpc5744p_dcache_disable();
 #endif
 }
 #endif

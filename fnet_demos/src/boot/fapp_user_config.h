@@ -12,11 +12,44 @@
 
 #define _FAPP_USER_CONFIG_H_
 
-#define FAPP_CFG_APPLICATION_SIZE       (48*1024) /* First 48 KBs of FLASH are reserved by 
+#define FAPP_CFG_APPLICATION_SIZE       (52*1024) /* First 48 KBs of FLASH are reserved by 
                                                    * the Bootloader application.*/
 
 #define FAPP_CFG_NAME                   "FNET Bootloader"
 #define FAPP_CFG_SHELL_PROMPT           "BOOT> "
+
+/*!!! Make sure that the network interface MAC address has unique value (FAPP_CFG_CPU_ETH0_MAC_ADDR). !!!*/
+
+#if 1 /* IPv4 address parameters are set manually */
+    /*****************************************************************************
+    * IP address for the Ethernet interface.
+    * At runtime it can be changed by the fnet_netif_set_ip4_addr(),
+    * by the DHCP client service, or by the Auto-IP service.
+    ******************************************************************************/
+    #define FAPP_CFG_ETH0_IP4_ADDR      (FNET_IP4_ADDR_INIT(192U, 168U, 0U, 22U))
+
+    /*****************************************************************************
+    * IP Subnet mask for the Ethernet interface.
+    * At runtime it can be changed by the fnet_netif_set_ip4_addr(),
+    * by the DHCP client service, or by the Auto-IP service.
+    ******************************************************************************/
+    #define FAPP_CFG_ETH0_IP4_MASK      (FNET_IP4_ADDR_INIT(255U, 255U, 255U, 0U))
+
+    /*****************************************************************************
+    * Gateway IP address for the Ethernet interface.
+    * At runtime it can be changed by the fnet_netif_set_ip4_gateway(),
+    * by the DHCP client service, or by the Auto-IP service.
+    ******************************************************************************/
+    #define FAPP_CFG_ETH0_IP4_GW        (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+
+    /*****************************************************************************
+    * DNS server IP address for the Ethernet interface.
+    * At runtime it can be changed by the fnet_netif_set_ip4_dns() or
+    * by the DHCP client service.
+    * It is used only if FNET_CFG_DNS is set to 1.
+    ******************************************************************************/
+    #define FAPP_CFG_ETH0_IP4_DNS       (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
 
 /* Enable startup boot mode. */
 #define FAPP_CFG_BOOTLOADER             (1)
@@ -35,9 +68,9 @@
 #define FAPP_CFG_SETGET_CMD_BOOT        (1)
 #define FAPP_CFG_SETGET_CMD_DELAY       (1)
 #define FAPP_CFG_SETGET_CMD_SCRIPT      (1)
-#define FAPP_CFG_SETGET_CMD_RAW         (1)
+#define FAPP_CFG_SETGET_CMD_RAW         (0)
 #define FAPP_CFG_SETGET_CMD_TFTP        (1)
-#define FAPP_CFG_SETGET_CMD_IMAGE       (1)
+#define FAPP_CFG_SETGET_CMD_IMAGE       (0)
 #define FAPP_CFG_SETGET_CMD_TYPE        (1)
 #define FAPP_CFG_SETGET_CMD_GO          (1)
 
@@ -75,9 +108,6 @@
 /* Rewriting of the configuration parameters in the Flash
  * memory duiring flashing of the application. */
 #define FAPP_CFG_PARAMS_REWRITE_FLASH    (1)
-
-/* CFM protection.*/
-#define FAPP_CFG_CFM_PROTECTION         (1)
 
 /* Default parameters values*/
 #define FAPP_CFG_PARAMS_TFTP_FILE_NAME  "fnet_firmware.srec"

@@ -41,69 +41,52 @@
 #endif
 
 /************************************************************************
+*     Function Prototypes
+*************************************************************************/
+#if FNET_CFG_IP4
+static void fnet_loop_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb);
+#endif
+#if FNET_CFG_IP6
+static void fnet_loop_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr, const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb);
+#endif
+static fnet_return_t fnet_loop_init( fnet_netif_t *netif );
+
+/************************************************************************
 *     Global Data Structures
 *************************************************************************/
-
-/* Loopback general API structure. */
+/* Loopback API. */
 const struct fnet_netif_api fnet_loop_api =
 {
-    FNET_NETIF_TYPE_LOOPBACK,   /* Data-link type. */
-    0,
-    0,                          /* initialization function.*/
-    0,                          /* shutdown function.*/
+    .netif_type = FNET_NETIF_TYPE_LOOPBACK,     /* Data-link type. */
+    .netif_init = fnet_loop_init,               /* Initialization function.*/
 #if FNET_CFG_IP4
-    fnet_loop_output_ip4,           /* transmit function.*/
-#endif
-    0,                          /* address change notification function.*/
-    0,                          /* drain function.*/
-    0,
-    0,
-    0,
-    0
-#if FNET_CFG_MULTICAST
-#if FNET_CFG_IP4
-    ,
-    0,
-    0
+    .netif_output_ip4 = fnet_loop_output_ip4,   /* IPv4 Transmit function.*/
 #endif
 #if FNET_CFG_IP6
-    ,
-    0,
-    0
-#endif
-#endif
-#if FNET_CFG_IP6
-    ,
-    fnet_loop_output_ip6
+    .netif_output_ip6 = fnet_loop_output_ip6,   /* IPv6 Transmit function.*/
 #endif /* FNET_CFG_IP6 */
 };
-
 
 /* Loopback Interface structure.*/
 fnet_netif_t fnet_loop_if =
 {
-    0,                          /* pointer to the next net_if structure.*/
-    0,                          /* pointer to the previous net_if structure.*/
-    FNET_CFG_LOOPBACK_NAME,     /* network interface name.*/
-    FNET_CFG_LOOPBACK_MTU,      /* maximum transmission unit.*/
-    0,                          /* points to interface specific data structure.*/
-    &fnet_loop_api
+    .netif_name = FNET_CFG_LOOPBACK_NAME,   /* Network interface name.*/
+    .netif_mtu = FNET_CFG_LOOPBACK_MTU,     /* Maximum transmission unit.*/
+    .netif_api = &fnet_loop_api             /* Interface API */
 };
 
 /************************************************************************
-* NAME: fnet_loop_output_ip4
-*
 * DESCRIPTION: This function just only sends outgoing packets to IP layer.
 *************************************************************************/
 #if FNET_CFG_IP4
-void fnet_loop_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb)
+static void fnet_loop_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb)
 {
     FNET_COMP_UNUSED_ARG(dest_ip_addr);
 
     fnet_isr_lock();
 
     /* MTU check */
-    if (nb->total_length <= netif->mtu)
+    if (nb->total_length <= netif->netif_mtu)
     {
         fnet_ip_input(netif, nb);
     }
@@ -117,12 +100,10 @@ void fnet_loop_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fne
 #endif /* FNET_CFG_IP4 */
 
 /************************************************************************
-* NAME: fnet_loop_output_ip6
-*
 * DESCRIPTION: This function just only sends outgoing packets to IPv6 layer.
 *************************************************************************/
 #if FNET_CFG_IP6
-void fnet_loop_output_ip6(struct fnet_netif *netif, const fnet_ip6_addr_t *src_ip_addr, const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb)
+static void fnet_loop_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr, const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb)
 {
     FNET_COMP_UNUSED_ARG(dest_ip_addr);
     FNET_COMP_UNUSED_ARG(src_ip_addr);
@@ -130,7 +111,7 @@ void fnet_loop_output_ip6(struct fnet_netif *netif, const fnet_ip6_addr_t *src_i
     fnet_isr_lock();
 
     /* MTU check */
-    if (nb->total_length <= netif->mtu)
+    if (nb->total_length <= netif->netif_mtu)
     {
         fnet_ip6_input(netif, nb);
     }
@@ -142,5 +123,21 @@ void fnet_loop_output_ip6(struct fnet_netif *netif, const fnet_ip6_addr_t *src_i
     fnet_isr_unlock();
 }
 #endif /* FNET_CFG_IP6 */
+
+/************************************************************************
+* DESCRIPTION: Initialization of loopback interface.
+*************************************************************************/
+static fnet_return_t fnet_loop_init(fnet_netif_t *netif)
+{
+    /* Set address parameters of the Loopback interface.*/
+#if FNET_CFG_IP4
+    fnet_netif_set_ip4_addr(netif, FNET_CFG_LOOPBACK_IP4_ADDR, INADDR_ANY);
+#endif /* FNET_CFG_LOOPBACK */
+#if FNET_CFG_IP6
+    fnet_netif_bind_ip6_addr(netif, &fnet_ip6_addr_loopback, FNET_NETIF_IP_ADDR_TYPE_MANUAL);
+#endif /* FNET_CFG_LOOPBACK */
+
+    return FNET_OK;
+}
 
 #endif /* FNET_CFG_LOOPBACK */

@@ -232,9 +232,7 @@ static fnet_bool_t fnet_autoip_is_collision(fnet_autoip_if_t *llif)
 ************************************************************************/
 static void fnet_autoip_apply_params(fnet_autoip_if_t *llif)
 {
-    fnet_netif_set_ip4_addr(llif->netif, llif->ipaddr);
-    fnet_netif_set_ip4_subnet_mask(llif->netif, FNET_AUTOIP_NETMASK);
-
+    fnet_netif_set_ip4_addr(llif->netif, llif->ipaddr, FNET_AUTOIP_NETMASK);
     fnet_netif_set_ip4_addr_type(llif->netif, FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE);
 
     /* Rise event. */
@@ -259,7 +257,7 @@ static void fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_
             /* TODO: Is it a good idea to reset the IP address here?
              * What if the interface already has an IP address?
              * If that's the case, probably, the best thing to do is to quit. */
-            fnet_netif_set_ip4_addr(llif->netif, INADDR_ANY); /* Set IP address to zero */
+            fnet_netif_set_ip4_addr(llif->netif, INADDR_ANY, INADDR_ANY); /* Set IP address to zero */
             break;
         case FNET_AUTOIP_STATE_WAIT:
             llif->wait_time = fnet_autoip_get_random_wait_time(0, FNET_AUTOIP_PROBE_WAIT);

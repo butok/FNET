@@ -77,23 +77,23 @@ FNET_COMP_PACKED_END
 ******************************************************************************/
 typedef struct fnet_eth_if
 {
-    void                *if_cpu_ptr;  /* Points to CPU-specific control data structure of the interface. */
-    fnet_index_t        mac_number;   /* MAC module number [0-1]. */
-    void                ( *output)(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb);
-#if FNET_CFG_MULTICAST
-    void                ( *multicast_join)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);
-    void                ( *multicast_leave)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);
+    void                            *eth_prv;           /* Points to Ethernet driver-specific control data structure. */
+    fnet_index_t                    eth_mac_number;     /* MAC module number [0-1]. */
+    void                            ( *eth_output)(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb); /* Ethernet driver output.*/
+#if FNET_CFG_MULTICAST  
+    void                            ( *eth_multicast_join)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);    /* Ethernet driver join multicast group.*/
+    void                            ( *eth_multicast_leave)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);   /* Ethernet driver leave multicast group.*/
 #endif /* FNET_CFG_MULTICAST */
     /* Internal parameters.*/
-    fnet_timer_desc_t   eth_timer;    /* Optional ETH timer.*/
+    fnet_timer_desc_t               eth_timer;          /* Optional ETH timer.*/
 #if FNET_CFG_IP4
-    fnet_arp_if_t       arp_if;
+    fnet_arp_if_t                   arp_if;             /* ARP interface.*/
 #endif
 #if FNET_CFG_IP6
-    fnet_nd6_if_t       nd6_if;
+    fnet_nd6_if_t                   nd6_if;             /* ND inteface.*/
 #endif
 #if !FNET_CFG_CPU_ETH_MIB
-    struct fnet_netif_statistics statistics;
+    struct fnet_netif_statistics    eth_statistics;     /* Statistic counters.*/
 #endif
 } fnet_eth_if_t;
 
@@ -102,15 +102,6 @@ typedef struct fnet_eth_if
 *************************************************************************/
 extern const fnet_mac_addr_t fnet_eth_null_addr;
 extern const fnet_mac_addr_t fnet_eth_broadcast;
-
-#if FNET_CFG_CPU_ETH0
-    extern fnet_netif_t fnet_eth0_if;
-    #define FNET_ETH0_IF ((fnet_netif_desc_t)(&fnet_eth0_if))
-#endif
-#if FNET_CFG_CPU_ETH1
-    extern fnet_netif_t fnet_eth1_if;
-    #define FNET_ETH1_IF ((fnet_netif_desc_t)(&fnet_eth1_if))
-#endif
 
 /************************************************************************
 *     Function Prototypes

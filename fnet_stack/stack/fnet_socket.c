@@ -56,7 +56,9 @@ static void fnet_socket_desc_set(fnet_socket_t desc, fnet_socket_if_t *sock);
 static void fnet_socket_desc_free(fnet_socket_t desc);
 static fnet_socket_if_t *fnet_socket_desc_find(fnet_socket_t desc);
 static fnet_error_t fnet_socket_addr_check_len(const struct sockaddr *addr, fnet_size_t addr_len);
+#if FNET_CFG_SOCKET_CALLBACK_ON_RX
 static void fnet_socket_is_activity(fnet_uint32_t cookie);
+#endif
 
 /************************************************************************
 * NAME: fnet_socket_init

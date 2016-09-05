@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -20,10 +20,6 @@
 **********************************************************************/
 /*!
 *
-* @file fnet_error.h
-*
-* @author Andrey Butok
-*
 * @brief Socket error API definitions.
 *
 ***************************************************************************/
@@ -39,17 +35,6 @@
 * Possible values for socket errors are defined by the @ref fnet_error_t.
 */
 /*! @{ */
-
-/**************************************************************************/ /*!
- * @brief General return codes, used by most of API functions.
- ******************************************************************************/
-typedef enum
-{
-    FNET_OK  = (0), /**< No error.
-                     */
-    FNET_ERR = (-1) /**< There is error.
-                     */
-} fnet_return_t;
 
 /**************************************************************************/ /*!
  * @brief Possible socket error codes, returned by the @ref fnet_error_get(),

@@ -46,11 +46,6 @@
     #define FNET_CFG_CPU_TIMER_NUMBER           (FNET_CFG_CPU_TIMER_NUMBER_MAX)
 #endif
 
-/* Size of the internal static heap buffer. */
-#ifndef FNET_CFG_HEAP_SIZE
-    #define FNET_CFG_HEAP_SIZE              (30 * 1024)
-#endif
-
 /* MPC Flash Module is not supported.*/
 #define FNET_CFG_CPU_FLASH              (0)
 #define FNET_CFG_CPU_FLASH_PAGE_SIZE    (2*1024)
@@ -71,9 +66,6 @@
 
 /* Flash size.*/
 #define FNET_CFG_CPU_FLASH_SIZE         (1024 * 512)    /* 512 KB */
-
-/* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE          (1024 * 64)     /* 64 KB */
 
 
 #endif /* _FNET_MPC564XBC_CONFIG_H_ */

@@ -36,8 +36,7 @@
 * @ref fnet_poll_service() periodically in background. @n
 * @n
 * The DHCP client will be released automatically if an application sets
-* any of the IP-related parameters directly by the @ref fnet_netif_set_ip4_addr(),
-* @ref fnet_netif_set_ip4_subnet_mask(), or @ref fnet_netif_set_ip4_gateway() calls. @n
+* any of the IP-related parameters directly by the @ref fnet_netif_set_ip4_addr() or @ref fnet_netif_set_ip4_gateway() calls. @n
 * @n
 * For example:
 * @code

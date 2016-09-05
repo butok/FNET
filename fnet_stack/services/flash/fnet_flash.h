@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,9 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_flash.h
-*
 * @brief On-chip Flash Module driver API.
 *
 ***************************************************************************/
@@ -66,6 +63,10 @@ extern "C" {
  *
  * @param bytes           Number of bytes to erase in the Flash memory.
  *
+ * @return This function returns:
+ *   - @ref FNET_OK if successful.
+ *   - @ref FNET_ERR if failed.
+ *
  * @see fnet_flash_memcpy()
  *
  ******************************************************************************
@@ -81,7 +82,7 @@ extern "C" {
  * Erase page size is defined by @ref FNET_CFG_CPU_FLASH_PAGE_SIZE.
  *
  ******************************************************************************/
-void fnet_flash_erase( void *flash_addr, fnet_size_t bytes);
+fnet_return_t fnet_flash_erase( void *flash_addr, fnet_size_t bytes);
 
 /***************************************************************************/ /*!
  *
@@ -95,22 +96,46 @@ void fnet_flash_erase( void *flash_addr, fnet_size_t bytes);
  * @param n               Number of bytes contained in the data buffer
  *                        pointed by @c src.
  *
- * @see fnet_flash_erase()
+ * @return This function returns:
+ *   - @ref FNET_OK if successful.
+ *   - @ref FNET_ERR if failed.
+ *
+ * @see fnet_flash_erase(), fnet_flash_flush()
  *
  ******************************************************************************
  *
  * This function copies the number of @c bytes bytes from the location
  * pointed by @c src directly to the Flash memory pointed by @c flash_addr.
+ * If the flash write-cache is enabled (@ref FNET_CFG_FLASH_CACHE), 
+ * after last data block is copyed, application must call fnet_flash_flush(0 to be
+ * sure that all data were writen to the flash.
  *
  ******************************************************************************/
-void fnet_flash_memcpy( FNET_COMP_PACKED_VAR void *flash_addr, FNET_COMP_PACKED_VAR const void *src, fnet_size_t n );
+fnet_return_t fnet_flash_memcpy( FNET_COMP_PACKED_VAR void *flash_addr, FNET_COMP_PACKED_VAR const void *src, fnet_size_t n );
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Writes all data from cache to the Flash memory.
+ *
+ * @return This function returns:
+ *   - @ref FNET_OK if successful.
+ *   - @ref FNET_ERR if failed.
+ *
+ * @see fnet_flash_erase(), fnet_flash_memcpy()
+ *
+ ******************************************************************************
+ *
+ * If the write-cache is enabled (@ref FNET_CFG_FLASH_CACHE),
+ * this function copies all data from the write-cache directly to the Flash memory.
+ *
+ ******************************************************************************/
+fnet_return_t fnet_flash_flush( void );
 
 #if defined(__cplusplus)
 }
 #endif
 
 /*! @} */
-
 
 #endif /* FNET_CFG_FLASH */
 

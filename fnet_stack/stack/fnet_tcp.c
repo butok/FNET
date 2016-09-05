@@ -340,7 +340,6 @@ DROP:
     fnet_netbuf_free_chain(nb);
 }
 
-
 /************************************************************************
 * NAME: fnet_tcp_control_input
 *
@@ -2894,9 +2893,7 @@ static void fnet_tcp_fasttimo( fnet_uint32_t cookie )
 *************************************************************************/
 static void fnet_tcp_slowtimosk( fnet_socket_if_t *sk )
 {
-
     fnet_tcp_control_t *cb = (fnet_tcp_control_t *)sk->protocol_control;
-
 
     /* If the socket is not connected, return.*/
     if(sk->state != SS_UNCONNECTED)
@@ -3010,7 +3007,6 @@ static void fnet_tcp_slowtimosk( fnet_socket_if_t *sk )
 static void fnet_tcp_fasttimosk( fnet_socket_if_t *sk )
 {
     fnet_tcp_control_t *cb = (fnet_tcp_control_t *)sk->protocol_control;
-
 
     if(sk->state != SS_UNCONNECTED)
     {
@@ -3797,7 +3793,6 @@ static void fnet_tcp_sendrstsk( fnet_socket_if_t *sk )
 *************************************************************************/
 static void fnet_tcp_abortsk( fnet_socket_if_t *sk )
 {
-
     /* If the incoming or the partial socket is present, abort it.*/
     if(sk->state == SS_LISTENING)
     {
@@ -3818,7 +3813,6 @@ static void fnet_tcp_abortsk( fnet_socket_if_t *sk )
 
     /* Close the socket.*/
     fnet_tcp_closesk(sk);
-
 }
 
 /************************************************************************
@@ -3959,7 +3953,7 @@ static void fnet_tcp_setsynopt( fnet_socket_if_t *sk, fnet_uint8_t *options, fne
 
         if((netif = fnet_ip_route(((struct sockaddr_in *)(&sk->foreign_addr))->sin_addr.s_addr)) != 0)
         {
-            cb->tcpcb_rcvmss = (fnet_uint16_t)(netif->mtu - 40u); /* MTU - [TCP,IP header size].*/
+            cb->tcpcb_rcvmss = (fnet_uint16_t)(netif->netif_mtu - 40u); /* MTU - [TCP,IP header size].*/
         }
 #else
         cb->tcpcb_rcvmss = 0; /* TBD create FNET*/

@@ -403,7 +403,7 @@ void fnet_icmp_error( fnet_netif_t *netif, fnet_uint8_t type, fnet_uint8_t code,
 
         if((type == FNET_ICMP_PARAMPROB) && (code == FNET_ICMP_UNREACHABLE_NEEDFRAG) && netif)
         {
-            icmpheader->fields.mtu = fnet_htons((fnet_uint16_t)netif->mtu);
+            icmpheader->fields.mtu = fnet_htons((fnet_uint16_t)netif->netif_mtu);
         }
         else if(type == FNET_ICMP_PARAMPROB)
         {

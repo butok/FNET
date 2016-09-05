@@ -46,22 +46,10 @@
  ******************************************************************************/
 #define FNET_CFG_CPU_VECTOR_PRIORITY_MAX                (31)
 
-
-/* Size of the internal static heap buffer. */
-#ifndef FNET_CFG_HEAP_SIZE
-    #define FNET_CFG_HEAP_SIZE                          (30 * 1024)
-#endif
-
-
 /* Default system bus frequency in Hz*/
 #ifndef FNET_CFG_CPU_CLOCK_HZ
     #define FNET_CFG_CPU_CLOCK_HZ                       (200000000)
 #endif
-
-/* MPC Flash Module is not supported.*/
-#define FNET_CFG_CPU_FLASH                              (0)
-
-#define FNET_CFG_CPU_FLASH_PAGE_SIZE                    (2*1024)
 
 /* The platform does not have second Ethernet Module.*/
 #define FNET_CFG_CPU_ETH1                               (0)
@@ -73,26 +61,24 @@
 #endif
 
 /* MPC Flash Module supported.*/
-#define FNET_CFG_CPU_FLASH                      (1)
+#define FNET_CFG_CPU_FLASH                              (1)
 
 /* Smallest logical block which can be erased independently.*/
-#define FNET_CFG_CPU_FLASH_PAGE_SIZE            (4U*1024U)        /* 4KB sector.*/
+#define FNET_CFG_CPU_FLASH_PAGE_SIZE                    (4U*1024U)        /* 4KB sector.*/
+
 
 /* On-chip Flash size.*/
-#define FNET_CFG_CPU_FLASH_SIZE                 ((1024U * 1024U * 5U) / 2U)   /* 2.5 MB*/
+#define FNET_CFG_CPU_FLASH_SIZE                         ((1024U * 1024U * 5U) / 2U)   /* 2.5 MB*/
+
 
 /*The Flash Driver require that the destination must be aligned on double word (64-bit) boundary.*/
 /*must be compliant with 8 * 2^n = FNET_CFG_CPU_FLASH_PROGRAM_SIZE */
-#define FNET_CFG_CPU_FLASH_PROGRAM_SIZE         (16U) /*Bytes.*/
-
-/* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE                          (1024 * 384)   /* 384 KB */
+#define FNET_CFG_CPU_FLASH_PROGRAM_SIZE                 (16U) /*Bytes.*/
 
 /* PIT channel to use as timer */
 #ifndef FNET_CFG_CPU_TIMER_NUMBER
     #define FNET_CFG_CPU_TIMER_NUMBER                   (0)   /* PIT channel 0 to 3, defined 0 as default */
 #endif
-
 
 /* To improve the TX performance.*/
 #ifndef FNET_CFG_CPU_ETH_HW_TX_IP_CHECKSUM

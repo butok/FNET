@@ -506,22 +506,13 @@
 #endif
 
 /**************************************************************************/ /*!
- * @def     FNET_CFG_CPU_SRAM_ADDRESS
- * @brief   On-chip SRAM memory start address. @n
- *          It is not used by the FNET stack, but can be useful for an application.
+ * @def      FNET_CFG_CPU_FLASH_VERIFY
+ * @brief    Verification of data written to the Flash memory by fnet_cpu_flash_write():
+ *               - @c 1 = is enabled.
+ *               - @c 0 = is disabled.
  ******************************************************************************/
-#ifndef FNET_CFG_CPU_SRAM_ADDRESS
-    #define FNET_CFG_CPU_SRAM_ADDRESS       (0x0U)
-#endif
-
-/**************************************************************************/ /*!
- * @def     FNET_CFG_CPU_SRAM_SIZE
- * @brief   On-chip SRAM memory size (in bytes). @n
- *          It is not used by the FNET stack, but can be useful for an application.
- *          @n @n NOTE: User application should not change this parameter.
- ******************************************************************************/
-#ifndef FNET_CFG_CPU_SRAM_SIZE
-    #define FNET_CFG_CPU_SRAM_SIZE          (0U)
+#ifndef FNET_CFG_CPU_FLASH_VERIFY
+    #define FNET_CFG_CPU_FLASH_VERIFY       (0)
 #endif
 
 /*! @} */
@@ -604,26 +595,6 @@
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER
     #define FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER	(1)
-#endif
-
-/**************************************************************************/ /*!
- * @def      FNET_CFG_CPU_ETH0_MAC_ADDR
- * @brief    Defines the default MAC address of the Ethernet-0 interface.
- *           At runtime, it can be changed by @ref fnet_netif_set_hw_addr().
- * @showinitializer
- ******************************************************************************/
-#ifndef FNET_CFG_CPU_ETH0_MAC_ADDR
-    #define FNET_CFG_CPU_ETH0_MAC_ADDR         ("00:04:9F:" __TIME__)
-#endif
-
-/**************************************************************************/ /*!
- * @def      FNET_CFG_CPU_ETH1_MAC_ADDR
- * @brief    Defines the default MAC address of the Ethernet-1 interface.
- *           At runtime, it can be changed by @ref fnet_netif_set_hw_addr().
- * @showinitializer
- ******************************************************************************/
-#ifndef FNET_CFG_CPU_ETH1_MAC_ADDR
-    #define FNET_CFG_CPU_ETH1_MAC_ADDR        ("00:04:8F:" __TIME__)
 #endif
 
 /**************************************************************************/ /*!
@@ -878,5 +849,22 @@
 #endif
 
 /*! @} */
+
+#ifdef FNET_CFG_CPU_ETH0_MAC_ADDR
+    #error "FNET_CFG_CPU_ETH0_MAC_ADDR parameter is obsolete. It is user application parameter now."
+#endif
+#ifdef FNET_CFG_CPU_ETH1_MAC_ADDR
+    #error "FNET_CFG_CPU_ETH1_MAC_ADDR parameter is obsolete. It is user application parameter now."
+#endif
+#ifdef FNET_CFG_ETH_IP4_GW
+    #error "FNET_CFG_ETH_IP4_GW parameter is obsolete. It is user application parameter now."
+#endif
+#ifdef FNET_CFG_ETH_IP4_DNS
+    #error "FNET_CFG_ETH_IP4_DNS parameter is obsolete. It is user application parameter now."
+#endif
+#ifdef FNET_CFG_ETH_MAC_ADDR
+    #error "FNET_CFG_ETH_MAC_ADDR parameter is obsolete. It is user application parameter now."
+#endif
+
 
 #endif /* _FNET_CPU_CONFIG_H_ */

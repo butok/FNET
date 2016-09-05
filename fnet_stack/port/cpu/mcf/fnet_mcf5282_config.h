@@ -36,11 +36,6 @@
 
 #define FNET_MCF                        	(1)
 
-/* Size of the internal static heap buffer. */
-#ifndef FNET_CFG_HEAP_SIZE
-    #define FNET_CFG_HEAP_SIZE              (30 * 1024)
-#endif
-
 /* The platform has ColdFire Flash Module.*/
 #define FNET_CFG_CPU_FLASH              	(1)
 
@@ -67,8 +62,5 @@
 
 /* Flash size.*/
 #define FNET_CFG_CPU_FLASH_SIZE         	(1024 * 512)    /* 512 KB */
-
-/* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE          	(1024 * 64)     /* 64 KB */
 
 #endif

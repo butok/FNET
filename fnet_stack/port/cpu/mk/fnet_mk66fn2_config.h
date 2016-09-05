@@ -35,11 +35,6 @@
 
 #define FNET_MK                                 (1)
 
-/* Size of the internal static heap buffer. */
-#ifndef FNET_CFG_HEAP_SIZE
-    #define FNET_CFG_HEAP_SIZE                  (30U * 1024U)
-#endif
-
 /* System frequency in Hz. */
 #ifndef FNET_CFG_CPU_CLOCK_HZ
     #define FNET_CFG_CPU_CLOCK_HZ               (120000000U)
@@ -64,13 +59,6 @@
 #define FNET_CFG_CPU_FLASH_SIZE                 (1024U * 1024U * 2U)    /* 2 MB */
 
 #define FNET_CFG_CPU_FLASH_PROGRAM_SIZE         (8U) /*Bytes.*/
-
-/* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE                  (1024U * 256U)    /* 256 KB */
-/* SRAM address.*/
-#ifndef FNET_CFG_CPU_SERIAL_PORT_DEFAULT
-    #define FNET_CFG_CPU_SRAM_ADDRESS           (0x1FFF0000U)
-#endif
 
 #ifndef FNET_CFG_CPU_SERIAL_PORT_DEFAULT
     #define FNET_CFG_CPU_SERIAL_PORT_DEFAULT    (0U) /* FRDMK66F board uses the default port number 0.*/

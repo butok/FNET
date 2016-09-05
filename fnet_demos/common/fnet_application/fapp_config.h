@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp_config.h
-*
-* @author Andrey Butok
-*
 * @brief FNET Demo Application Configuration.
 *
 ***************************************************************************/
@@ -128,11 +123,71 @@
     #define FAPP_CFG_LINK_UNCONNECT_SCRIPT ""
 #endif
 
+
+/* FNET-Application TCP/IP stack default parameters. */
+/**************************************************************************/ /*!
+ * @brief    Descriptor of a default network interface set during application initialisation.@n
+ *           For example, it can be set to FNET_CPU_ETH0_IF, FNET_CPU_ETH1_IF or FNET_LOOP_IF. @n
+ *           During run time it can be changed by ref@ fnet_netif_set_default().
+ ******************************************************************************/
+#ifndef FAPP_CFG_DEFAULT_IF
+    #if FNET_CFG_CPU_ETH0
+        #define FAPP_CFG_DEFAULT_IF             (FNET_CPU_ETH0_IF)
+    #elif FNET_CFG_CPU_ETH1
+        #define FAPP_CFG_DEFAULT_IF             (FNET_CPU_ETH1_IF)
+    #elif FNET_CFG_LOOPBACK
+        #define FAPP_CFG_DEFAULT_IF             (FNET_LOOP_IF)
+    #else
+        #define FAPP_CFG_DEFAULT_IF             ((fnet_netif_desc_t)FNET_NULL)
+    #endif
+#endif
+
+/************************************************************************
+* Memory regions.
+*************************************************************************/
+
+#if !defined(FAPP_CFG_MEM_REGION) && FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
+    #define FAPP_CFG_MEM_REGION_LIST                {.description = "FLASH", \
+                                                        .address = FNET_CFG_CPU_FLASH_ADDRESS, \
+                                                        .size = FNET_CFG_CPU_FLASH_SIZE, \
+                                                        .memcpy = fnet_flash_memcpy, \
+                                                        .erase = fnet_flash_erase, \
+                                                        .flush = fnet_flash_flush, \
+                                                        .erase_size = FNET_CFG_CPU_FLASH_PAGE_SIZE},
+#else
+    #define FAPP_CFG_MEM_REGION_LIST
+#endif
+
+/************************************************************************
+* Reserved areas inside memory regions, which may not be 
+* written during firmware update.
+*************************************************************************/
+#ifndef FAPP_CFG_MEM_REGION_RESERVED_LIST
+    #define FAPP_CFG_MEM_REGION_RESERVED_LIST       {.description = "FNET ROM", \
+                                                        .address = FAPP_CFG_APPLICATION_ADDRESS, \
+                                                        .size = FAPP_CFG_APPLICATION_SIZE}, \
+                                                    {.description = "FNET Params", \
+                                                        .address = FAPP_CFG_FLASH_PARAMS_ADDRESS, \
+                                                        .size = FAPP_CFG_FLASH_PARAMS_SIZE},
+#else
+    #define FAPP_CFG_MEM_REGION_RESERVED_LIST
+#endif
+
 /************************************************************************
 * Default application parameters (allocated in the Flash memory).
 *************************************************************************/
-/* FNET-Application TCP/IP stack default parameters. */
 
+/* Block size reserved for application parameters stored in flash.*/
+#ifndef FAPP_CFG_FLASH_PARAMS_SIZE
+#define FAPP_CFG_FLASH_PARAMS_SIZE      FNET_CFG_CPU_FLASH_PAGE_SIZE
+#endif
+/* Pointer to application parameters stored in flash.*/
+#ifndef FAPP_CFG_FLASH_PARAMS_ADDRESS
+#define FAPP_CFG_FLASH_PARAMS_ADDRESS   (FNET_CFG_CPU_FLASH_ADDRESS + FNET_CFG_CPU_FLASH_SIZE - FAPP_CFG_FLASH_PARAMS_SIZE) /* Last sector of the flash.*/
+#endif
+
+
+/* Default interface.*/
 #ifndef FAPP_CFG_PARAMS_NETIF_NAME
     #if FNET_CFG_CPU_ETH0
         #define FAPP_CFG_PARAMS_NETIF_NAME             FNET_CFG_CPU_ETH0_NAME
@@ -147,19 +202,19 @@
 
 
 #ifndef FAPP_CFG_PARAMS_IP_ADDR
-    #define FAPP_CFG_PARAMS_IP_ADDR             FNET_CFG_ETH0_IP4_ADDR    /* Defined by FNET */
+    #define FAPP_CFG_PARAMS_IP_ADDR             FAPP_CFG_ETH0_IP4_ADDR    /* Defined by FNET */
 #endif
 
 #ifndef FAPP_CFG_PARAMS_IP_MASK
-    #define FAPP_CFG_PARAMS_IP_MASK             FNET_CFG_ETH0_IP4_MASK    /* Defined by FNET */
+    #define FAPP_CFG_PARAMS_IP_MASK             FAPP_CFG_ETH0_IP4_MASK    /* Defined by FNET */
 #endif
 
 #ifndef FAPP_CFG_PARAMS_IP_GW
-    #define FAPP_CFG_PARAMS_IP_GW               FNET_CFG_ETH0_IP4_GW      /* Defined by FNET */
+    #define FAPP_CFG_PARAMS_IP_GW               FAPP_CFG_ETH0_IP4_GW      /* Defined by FNET */
 #endif
 
 #ifndef FAPP_CFG_PARAMS_IP_DNS
-    #define FAPP_CFG_PARAMS_IP_DNS              FNET_CFG_ETH0_IP4_DNS     /* Defined by FNET */
+    #define FAPP_CFG_PARAMS_IP_DNS              FAPP_CFG_ETH0_IP4_DNS     /* Defined by FNET */
 #endif
 
 #ifndef FAPP_CFG_PARAMS_MAC_ADDR
@@ -525,6 +580,13 @@
 /************************************************************************
 *    Memory parameters
 *************************************************************************/
+/**************************************************************************/ /*!
+ * @brief    Size of the internal static heap buffer, that is passed to @ref fnet_init().
+ ******************************************************************************/
+#ifndef FAPP_CFG_HEAP_SIZE
+    #define FAPP_CFG_HEAP_SIZE                  (30U * 1024U)
+#endif
+
 /* Start address of the ROM memory, reserved/protected for the application. Used by the bootloader application.*/
 #ifndef FAPP_CFG_APPLICATION_ADDRESS
     #define FAPP_CFG_APPLICATION_ADDRESS      FNET_CFG_CPU_FLASH_ADDRESS
@@ -532,7 +594,92 @@
 
 /* ROM memory size, reserved/protected for the application. Used by the bootloader application.*/
 #ifndef FAPP_CFG_APPLICATION_SIZE
-    #define FAPP_CFG_APPLICATION_SIZE         (48*1024) /* 48 KB */
+    #define FAPP_CFG_APPLICATION_SIZE         (52*1024) /* 52 KB */
+#endif
+
+/************************************************************************
+*    Network Interface Address parameters
+*************************************************************************/
+/**************************************************************************/ /*!
+ * @brief    Defines the default MAC address of the Ethernet-0 interface.
+ *           At runtime, it can be changed by @ref fnet_netif_set_hw_addr().
+ *           It must be unique on local network. 
+ ******************************************************************************/
+#ifndef FAPP_CFG_CPU_ETH0_MAC_ADDR
+    #define FAPP_CFG_CPU_ETH0_MAC_ADDR         FNET_MAC_ADDR_INIT(0x00, 0x11, 0x22, 0x33, 0x44, 0x55) 
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default MAC address of the Ethernet-1 interface.
+ *           At runtime, it can be changed by @ref fnet_netif_set_hw_addr().
+ *           It must be unique on local network. 
+ ******************************************************************************/
+#ifndef FAPP_CFG_CPU_ETH1_MAC_ADDR
+    #define FAPP_CFG_CPU_ETH1_MAC_ADDR        FNET_MAC_ADDR_INIT(0x22, 0x44, 0x44, 0x55, 0x66, 0x77)
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default IP address for the Ethernet-0 interface.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_addr().
+ ******************************************************************************/
+#ifndef FAPP_CFG_ETH0_IP4_ADDR
+    #define FAPP_CFG_ETH0_IP4_ADDR          (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default IP Subnetmask for the Ethernet-0 interface.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_addr().
+ ******************************************************************************/
+#ifndef FAPP_CFG_ETH0_IP4_MASK
+    #define FAPP_CFG_ETH0_IP4_MASK          (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default Gateway IP address for the Ethernet-0 interface.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_gateway().
+ ******************************************************************************/
+#ifndef FAPP_CFG_ETH0_IP4_GW
+    #define FAPP_CFG_ETH0_IP4_GW            (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default DNS IP address for the Ethernet-0 interface.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_dns().
+ ******************************************************************************/
+#ifndef FAPP_CFG_ETH0_IP4_DNS
+    #define FAPP_CFG_ETH0_IP4_DNS           (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default IP address for the Ethernet-1 interface.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_addr().
+ ******************************************************************************/
+#ifndef FAPP_CFG_ETH1_IP4_ADDR
+    #define FAPP_CFG_ETH1_IP4_ADDR          (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default IP Subnetmask for the Ethernet-1 interface.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_addr().
+ ******************************************************************************/
+#ifndef FAPP_CFG_ETH1_IP4_MASK
+    #define FAPP_CFG_ETH1_IP4_MASK          (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default Gateway IP address for the Ethernet-1 interface.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_gateway().
+ ******************************************************************************/
+#ifndef FAPP_CFG_ETH1_IP4_GW
+    #define FAPP_CFG_ETH1_IP4_GW            (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default DNS IP address for the Ethernet-1 interface.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_dns().
+ ******************************************************************************/
+#ifndef FAPP_CFG_ETH1_IP4_DNS
+    #define FAPP_CFG_ETH1_IP4_DNS           (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
 #endif
 
 #endif

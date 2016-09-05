@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -20,26 +19,20 @@
 **********************************************************************/
 /*!
 *
-* @file fapp.h
-*
-* @author Andrey Butok
-*
-* @brief FNET Shell Demo API.
+* @brief Network-interface initialization.
 *
 ***************************************************************************/
 
-#ifndef _FAPP_H_
+#ifndef _FAPP_NETIF_H_
 
-#define _FAPP_H_
-
-#include "fapp_config.h"
-#include "fnet.h"
+#define _FAPP_NETIF_H_
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-void fapp_main( void ); /* Main entry point of the shell demo. */
+/* Network-interface initialization. */
+fnet_return_t fapp_netif_init( void );
 
 #if defined(__cplusplus)
 }

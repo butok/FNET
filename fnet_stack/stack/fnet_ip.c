@@ -44,7 +44,7 @@
 
 /* Check max/min. values.*/
 #if (FNET_IP_MAX_PACKET > 65535U)
-    #error  "FNET_IP_MAX_PACKET may not be more than 65553."
+    #error  "FNET_IP_MAX_PACKET may not be more than 65535."
 #endif
 
 #if (FNET_IP_MAX_PACKET < 200U)
@@ -79,8 +79,8 @@ static fnet_bool_t fnet_ip_addr_is_onlink(fnet_netif_t *netif, fnet_ip4_addr_t a
     static fnet_netbuf_t *fnet_ip_reassembly( fnet_netbuf_t **nb_ptr );
     static void fnet_ip_frag_list_add( fnet_ip_frag_list_t **head, fnet_ip_frag_list_t *fl );
     static void fnet_ip_frag_list_del( fnet_ip_frag_list_t **head, fnet_ip_frag_list_t *fl );
-    static void fnet_ip_frag_add( fnet_ip_frag_header_t **head, fnet_ip_frag_header_t *frag, fnet_ip_frag_header_t *frag_prev );
-    static void fnet_ip_frag_del( fnet_ip_frag_header_t **head, fnet_ip_frag_header_t *frag );
+    static void fnet_ip_frag_add( fnet_ip_frag_header_t * FNET_COMP_PACKED_VAR *head, fnet_ip_frag_header_t *frag, fnet_ip_frag_header_t *frag_prev );
+    static void fnet_ip_frag_del( fnet_ip_frag_header_t * FNET_COMP_PACKED_VAR *head, fnet_ip_frag_header_t *frag );
     static void fnet_ip_frag_list_free( fnet_ip_frag_list_t *list );
     static void fnet_ip_timer(fnet_uint32_t cookie );
 #endif
@@ -188,7 +188,7 @@ fnet_bool_t fnet_ip_will_fragment( fnet_netif_t *netif, fnet_size_t protocol_mes
 {
     fnet_bool_t res;
 
-    if((protocol_message_size + sizeof(fnet_ip_header_t)) > netif->mtu)
+    if((protocol_message_size + sizeof(fnet_ip_header_t)) > netif->netif_mtu)
     {
         res = FNET_TRUE;
     }
@@ -279,7 +279,7 @@ fnet_error_t fnet_ip_output( fnet_netif_t *netif,    fnet_ip4_addr_t src_ip, fne
 
     nb = fnet_netbuf_concat(nb_header, nb);
 
-    if(total_length > netif->mtu) /* IP Fragmentation. */
+    if(total_length > netif->netif_mtu) /* IP Fragmentation. */
     {
 #if FNET_CFG_IP4_FRAGMENTATION
 
@@ -293,7 +293,7 @@ fnet_error_t fnet_ip_output( fnet_netif_t *netif,    fnet_ip4_addr_t src_ip, fne
         fnet_size_t         header_length = (fnet_size_t)(FNET_IP_HEADER_GET_HEADER_LENGTH(ipheader) << 2);
         fnet_ip_header_t    *new_ipheader;
 
-        frag_length = (netif->mtu - header_length) & ~7u; /* rounded down to an 8-byte boundary.*/
+        frag_length = (netif->netif_mtu - header_length) & ~7u; /* rounded down to an 8-byte boundary.*/
         first_frag_length = frag_length;
 
         if(((ipheader->flags_fragment_offset & FNET_HTONS(FNET_IP_DF)) != 0u) ||   /* The fragmentation is prohibited. */
@@ -454,7 +454,7 @@ static void fnet_ip_netif_output(struct fnet_netif *netif, fnet_ip4_addr_t dest_
     }
 
     /* Send to Interface.*/
-    netif->api->output_ip4(netif, dest_ip_addr, nb);
+    netif->netif_api->netif_output_ip4(netif, dest_ip_addr, nb);
 }
 
 /************************************************************************
@@ -580,7 +580,7 @@ static void fnet_ip_input_low(fnet_uint32_t cookie )
 #if FNET_CFG_MULTICAST
                || (FNET_IP4_ADDR_IS_MULTICAST(destination_addr))
 #endif
-               || (netif->api->type == FNET_NETIF_TYPE_LOOPBACK)
+               || (netif->netif_api->netif_type == FNET_NETIF_TYPE_LOOPBACK)
               )
           )
         {
@@ -1004,7 +1004,7 @@ static void fnet_ip_frag_list_del( fnet_ip_frag_list_t **head, fnet_ip_frag_list
 * DESCRIPTION: Adds frag to the frag list.
 *************************************************************************/
 #if FNET_CFG_IP4_FRAGMENTATION
-static void fnet_ip_frag_add( fnet_ip_frag_header_t **head, fnet_ip_frag_header_t *frag,
+static void fnet_ip_frag_add( fnet_ip_frag_header_t * FNET_COMP_PACKED_VAR *head, fnet_ip_frag_header_t *frag,
                               fnet_ip_frag_header_t *frag_prev )
 {
     if(frag_prev && ( *head))
@@ -1034,7 +1034,7 @@ static void fnet_ip_frag_add( fnet_ip_frag_header_t **head, fnet_ip_frag_header_
 * DESCRIPTION: Deletes frag from the frag list.
 *************************************************************************/
 #if FNET_CFG_IP4_FRAGMENTATION
-static void fnet_ip_frag_del( fnet_ip_frag_header_t **head, fnet_ip_frag_header_t *frag )
+static void fnet_ip_frag_del( fnet_ip_frag_header_t * FNET_COMP_PACKED_VAR *head, fnet_ip_frag_header_t *frag )
 {
     if(frag->prev == frag)
     {
@@ -1204,7 +1204,7 @@ fnet_size_t fnet_ip_maximum_packet( fnet_ip4_addr_t dest_ip )
         }
         else
         {
-            result = netif->mtu;
+            result = netif->netif_mtu;
         }
     }
 

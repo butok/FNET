@@ -583,8 +583,6 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
     const struct linger     linger_option = {FNET_TRUE, /*l_onoff*/
               4  /*l_linger*/
     };
-    fnet_size_t             opt_len;
-
 
     if((params == 0) || (params->root_path == 0) || (params->index_path == 0))
     {
