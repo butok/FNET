@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -47,10 +47,7 @@ static fnet_uint32_t fnet_checksum_nb(fnet_netbuf_t *nb, fnet_size_t length);
 */
 
 /************************************************************************
-* NAME: fnet_checksum_low
-*
 * DESCRIPTION: Calculates Internet checksum of nb chain.
-*
 *************************************************************************/
 #if !FNET_CFG_OVERLOAD_CHECKSUM_LOW
 
@@ -172,10 +169,7 @@ static fnet_uint32_t fnet_checksum_nb(fnet_netbuf_t *nb, fnet_size_t length)
 }
 
 /************************************************************************
-* NAME: fnet_checksum
-*
 * DESCRIPTION: Calculates one's complement (Internet) checksum.
-*
 *************************************************************************/
 fnet_uint16_t fnet_checksum(fnet_netbuf_t *nb, fnet_size_t len)
 {
@@ -195,11 +189,8 @@ fnet_uint16_t fnet_checksum(fnet_netbuf_t *nb, fnet_size_t len)
 }
 
 /************************************************************************
-* NAME: fnet_checksum_buf
-*
 * DESCRIPTION: Calculates one's complement (Internet) checksum
 *              for a buffer.
-*
 *************************************************************************/
 fnet_uint16_t fnet_checksum_buf(fnet_uint8_t *buf, fnet_size_t buf_len)
 {
@@ -217,11 +208,8 @@ fnet_uint16_t fnet_checksum_buf(fnet_uint8_t *buf, fnet_size_t buf_len)
 }
 
 /************************************************************************
-* NAME: fnet_checksum_pseudo_buf
-*
 * DESCRIPTION: Calculates one's complement (Internet) checksum of
 *              the IP pseudo header, for a buffer.
-*
 *************************************************************************/
 fnet_uint16_t fnet_checksum_pseudo_buf(fnet_uint8_t *buf, fnet_uint16_t buf_len, fnet_uint16_t protocol, const fnet_uint8_t *ip_src, const fnet_uint8_t *ip_dest, fnet_size_t addr_size )
 {
@@ -241,11 +229,8 @@ fnet_uint16_t fnet_checksum_pseudo_buf(fnet_uint8_t *buf, fnet_uint16_t buf_len,
 }
 
 /************************************************************************
-* NAME: fnet_checksum_pseudo_start
-*
 * DESCRIPTION: Calculates  one's complement (Internet) checksum of
 *              the IP pseudo header
-*
 *************************************************************************/
 fnet_uint16_t fnet_checksum_pseudo_start( fnet_netbuf_t *nb, fnet_uint16_t protocol, fnet_uint16_t protocol_len )
 {
@@ -264,11 +249,8 @@ fnet_uint16_t fnet_checksum_pseudo_start( fnet_netbuf_t *nb, fnet_uint16_t proto
 }
 
 /************************************************************************
-* NAME: fnet_checksum_pseudo_end
-*
 * DESCRIPTION: Calculates  one's complement (Internet) checksum of
 *              the IP pseudo header
-*
 *************************************************************************/
 fnet_uint16_t fnet_checksum_pseudo_end( fnet_uint16_t sum_s, const fnet_uint8_t *ip_src, const fnet_uint8_t *ip_dest, fnet_size_t addr_size )
 {
@@ -289,5 +271,3 @@ fnet_uint16_t fnet_checksum_pseudo_end( fnet_uint16_t sum_s, const fnet_uint8_t 
 
     return (fnet_uint16_t)(0xffffu & ~sum);
 }
-
-

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,11 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_mk.c
-*
-* @author Andrey Butok
-*
 * @brief CPU-specific API implementation.
 *
 ***************************************************************************/
@@ -30,10 +25,7 @@
 
 #if FNET_MK
 
-
 /************************************************************************
-* NAME: fnet_cpu_reset
-*
 * DESCRIPTION: Initiate software reset.
 *************************************************************************/
 void fnet_cpu_reset (void)
@@ -41,12 +33,9 @@ void fnet_cpu_reset (void)
     /* Application Interrupt and Reset Control Register.*/
     /* To write to this register, you must write 0x5FA to the VECTKEY field.*/
     FNET_MK_SCB_AIRCR = FNET_MK_SCB_AIRCR_VECTKEY(0x5fa) | FNET_MK_SCB_AIRCR_SYSRESETREQ_MASK; /* Asserts a signal to the outer system that requests a reset.*/
-
 }
 
 /************************************************************************
-* NAME: fnet_cpu_irq_disable
-*
 * DESCRIPTION: Disable IRQs
 *************************************************************************/
 fnet_cpu_irq_desc_t fnet_cpu_irq_disable(void)
@@ -55,8 +44,6 @@ fnet_cpu_irq_desc_t fnet_cpu_irq_disable(void)
 }
 
 /************************************************************************
-* NAME: fnet_cpu_irq_enable
-*
 * DESCRIPTION: Enables IRQs.
 *************************************************************************/
 void fnet_cpu_irq_enable(fnet_cpu_irq_desc_t irq_desc)
@@ -65,8 +52,6 @@ void fnet_cpu_irq_enable(fnet_cpu_irq_desc_t irq_desc)
 }
 
 /************************************************************************
-* NAME: fnet_mk_periph_clk_khz
-*
 * DESCRIPTION: Kinetis peripheral clock in KHZ.
 *************************************************************************/
 fnet_uint32_t fnet_mk_periph_clk_khz(void)

@@ -19,21 +19,15 @@
 *
 **********************************************************************/ /*!
 *
-* @file fnet_mcf_timer.c
-*
-* @author Andrey Butok
-*
 * @brief ColdFire specific SW timers implementation.
 *
 ***************************************************************************/
 
-#include "fnet.h"
+#include "fnet_config.h"
 
 #if FNET_MCF
 #include "fnet.h"
-#include "fnet_timer_prv.h"
-#include "fnet_isr.h"
-#include "fnet_mcf.h"
+#include "stack/fnet_timer_prv.h"
 
 
 #if FNET_CFG_DEBUG_STACK

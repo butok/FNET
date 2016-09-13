@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp_http.c
-*
-* @author Andrey Butok
-*
 * @brief FNET Shell Demo (HTTP Server Shell interface).
 *
 ***************************************************************************/
@@ -38,9 +33,7 @@
 #include "fapp_fs.h"
 
 static fnet_http_desc_t fapp_http_desc = 0; /* HTTP service descriptor. */
-
 static fnet_size_t fapp_http_string_buffer_respond(fnet_uint8_t *buffer, fnet_size_t buffer_size, fnet_bool_t *eof, fnet_uint32_t *cookie);
-
 
 /************************************************************************
 * SSI definitions
@@ -139,8 +132,6 @@ static fnet_uint8_t fapp_http_post_buffer[FAPP_HTTP_POST_BUFFER_SIZE + 1u/* For 
 #endif
 
 /************************************************************************
-* NAME: fapp_http_string_buffer_respond
-*
 * DESCRIPTION:
 *************************************************************************/
 static fnet_size_t fapp_http_string_buffer_respond(fnet_uint8_t *buffer, fnet_size_t buffer_size, fnet_bool_t *eof, fnet_uint32_t *cookie)
@@ -175,8 +166,6 @@ static fnet_size_t fapp_http_string_buffer_respond(fnet_uint8_t *buffer, fnet_si
 }
 
 /************************************************************************
-* NAME: fapp_http_ssi_echo_handle
-*
 * DESCRIPTION:
 *************************************************************************/
 #if FNET_CFG_HTTP_SSI
@@ -255,12 +244,8 @@ static fnet_return_t fapp_http_ssi_echo_handle(fnet_char_t *query, fnet_uint32_t
 }
 #endif /*FNET_CFG_HTTP_SSI*/
 
-
-
 #if FNET_CFG_HTTP_CGI
 /************************************************************************
-* NAME: fapp_http_cgi_stdata_handle
-*
 * DESCRIPTION:
 *************************************************************************/
 static fnet_return_t fapp_http_cgi_stdata_handle(fnet_http_session_t session, fnet_char_t *query, fnet_uint32_t *cookie)
@@ -295,8 +280,6 @@ static fnet_return_t fapp_http_cgi_stdata_handle(fnet_http_session_t session, fn
 
 #define FAPP_HTTP_CGI_GRAPH_MIN     (30u)
 /************************************************************************
-* NAME: fapp_http_cgi_rand
-*
 * DESCRIPTION:
 *************************************************************************/
 static fnet_uint32_t fapp_http_cgi_rand(void)
@@ -305,8 +288,6 @@ static fnet_uint32_t fapp_http_cgi_rand(void)
 }
 
 /************************************************************************
-* NAME: fapp_http_cgi_graph_handle
-*
 * DESCRIPTION:
 *************************************************************************/
 static fnet_return_t fapp_http_cgi_graph_handle(fnet_http_session_t session, fnet_char_t *query, fnet_uint32_t *cookie)
@@ -332,8 +313,6 @@ static fnet_return_t fapp_http_cgi_graph_handle(fnet_http_session_t session, fne
 
 #if FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR
 /************************************************************************
-* NAME: fapp_http_cgi_post_handle
-*
 * DESCRIPTION:
 *************************************************************************/
 static fnet_return_t fapp_http_cgi_post_handle(fnet_http_session_t session, fnet_char_t *query, fnet_uint32_t *cookie)
@@ -352,8 +331,6 @@ static fnet_return_t fapp_http_cgi_post_handle(fnet_http_session_t session, fnet
 
 #if FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR
 /************************************************************************
-* NAME: fapp_http_post_receive
-*
 * DESCRIPTION:
 *************************************************************************/
 static fnet_return_t fapp_http_post_receive (fnet_http_session_t session, fnet_uint8_t *buffer, fnet_size_t buffer_size, fnet_uint32_t *cookie)
@@ -384,8 +361,6 @@ static fnet_return_t fapp_http_post_receive (fnet_http_session_t session, fnet_u
 #endif /*FNET_CFG_HTTP_POST*/
 
 /************************************************************************
-* NAME: fapp_http_release
-*
 * DESCRIPTION: Releases HTTP server.
 *************************************************************************/
 void fapp_http_release(void)
@@ -395,8 +370,6 @@ void fapp_http_release(void)
 }
 
 /************************************************************************
-* NAME: fapp_http_cmd
-*
 * DESCRIPTION: Run HTTP server.
 *************************************************************************/
 void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -450,14 +423,11 @@ void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 }
 
 /************************************************************************
-* NAME: fapp_http_info
-*
 * DESCRIPTION:
 *************************************************************************/
 void fapp_http_info(fnet_shell_desc_t desc)
 {
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "HTTP Server", fapp_enabled_str[fnet_http_is_enabled(fapp_http_desc)]);
 }
-
 
 #endif /* FAPP_CFG_HTTP_CMD */

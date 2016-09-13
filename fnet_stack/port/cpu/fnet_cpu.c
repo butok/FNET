@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_cpu.c
-*
-* @author Andrey Butok
-*
 * @brief CPU-specific functions.
 *
 ***************************************************************************/
@@ -56,7 +51,6 @@
 #if (FNET_CFG_CPU_ETH_RX_BUFS_MAX < 2u)
     #error "FNET_CFG_CPU_ETH_RX_BUFS_MAX is less than 2, minimal required value is 2 - see errata MCF5235"
 #endif
-
 
 #if FNET_CFG_CPU_LITTLE_ENDIAN
 /* Convert short from host- to network byte order.*/

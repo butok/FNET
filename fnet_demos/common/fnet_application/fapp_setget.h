@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,15 +19,9 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp_setget.h
-*
-* @author Andrey Butok
-*
 * @brief FNET Shell Demo (HTTP Server).
 *
 ***************************************************************************/
-
 
 #ifndef _FAPP_SETGET_H_
 

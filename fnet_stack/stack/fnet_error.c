@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_error.c
-*
-* @author Andrey Butok
-*
 * @brief Socket error API implementation.
 *
 ***************************************************************************/
@@ -34,8 +29,6 @@
 static fnet_error_t FNET_ERR_NUMBER = FNET_ERR_OK;
 
 /************************************************************************
-* NAME: fnet_error_get
-*
 * DESCRIPTION: This function returns the last error that occurred.
 *************************************************************************/
 fnet_error_t fnet_error_get( void )
@@ -44,8 +37,6 @@ fnet_error_t fnet_error_get( void )
 }
 
 /************************************************************************
-* NAME: fnet_error_set
-*
 * DESCRIPTION: This function sets the error code that can
 *              be retrieved through the fnet_error_get().
 *************************************************************************/

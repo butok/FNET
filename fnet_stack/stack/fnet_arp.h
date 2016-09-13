@@ -18,7 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
 * @brief ARP protocol Public API
 *
 ***************************************************************************/
@@ -46,7 +45,6 @@ typedef struct fnet_arp_entry_info
     fnet_ip4_addr_t ip_addr;       /**< @brief ARP cache entry IPv4 address.*/
 } fnet_arp_entry_info_t;
 FNET_COMP_PACKED_END
-
 
 /************************************************************************
 *     Function Prototypes

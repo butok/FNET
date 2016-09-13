@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,16 +19,10 @@
 *
 **********************************************************************/ 
 /*!
-*
-* @file fnet_comp_asm.h
-*
-* @author Andrey Butok
-*
 * @brief Compiler-specific definitions that resolve
 * differences between different assemblers.
 *
 ***************************************************************************/
-
 
 #ifndef _FNET_COMP_ASM_H_
 
@@ -50,7 +44,6 @@
 #if FNET_MK      
     #define FNET_COMP_ASM_PREFIX(x) x
 #endif  
-
 
 /* Macro for the equate directive. */    
 FNET_COMP_ASM_EQU:  .macro  label,  value
@@ -150,11 +143,8 @@ after the END directive.*/
 FLASHBAR  DEFINE  0xC04
 RAMBAR    DEFINE  0xC05
 #endif
-                                     
     
 #endif /* FNET_CFG_COMP_IAR */
-
-
 
 /* --------------- Keil uVision ----------------------*/
 #if FNET_CFG_COMP_UV
@@ -201,8 +191,7 @@ $label   EQU  $value
 
 /* Code section. */
 #define FNET_COMP_ASM_CODE	AREA    |.text|, CODE, READONLY
-       
-      
+
 
 /*END - END directive is placed after the last
 statement of a program to tell the assembler that this is the end
@@ -210,13 +199,8 @@ of the program module. The assembler will ignore any
 statement after an END directive. Carriage return is required
 after the END directive.*/
 #define FNET_COMP_ASM_END   END 
-
-
-                                     
     
 #endif /* FNET_CFG_COMP_UV */
-
-
 
 /* --------------- GCC ----------------------*/
 #if FNET_CFG_COMP_GNUC
@@ -282,9 +266,7 @@ after the END directive.*/
 
 #endif /* FNET_MCF */
 
-
 #define FNET_COMP_ASM_LABEL(x)    FNET_COMP_ASM_PREFIX(x):
-
 
 /* Code section. */
 #define FNET_COMP_ASM_CODE  .text
@@ -293,7 +275,6 @@ after the END directive.*/
 #define FNET_COMP_ASM_END
 
 #endif /* FNET_CFG_COMP_GNUC */
-
 
 #endif /* _FNET_COMP_ASM_H_ */
 

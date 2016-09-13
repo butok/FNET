@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_http_post.c
-*
-* @author Andrey Butok
-*
 * @brief The FNET HTTP server POST method implementation.
 *
 ***************************************************************************/
@@ -34,7 +29,6 @@
 
 #include "fnet_http_prv.h"
 #include "fnet_http_post.h"
-
 
 /* Prototypes */
 static fnet_return_t fnet_http_post_handle(struct fnet_http_if *http, struct fnet_http_uri *uri);
@@ -52,8 +46,6 @@ const struct fnet_http_method fnet_http_method_post =
 };
 
 /************************************************************************
-* NAME: fnet_http_post_handle
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_return_t fnet_http_post_handle(struct fnet_http_if *http, struct fnet_http_uri *uri)
@@ -96,8 +88,6 @@ static fnet_return_t fnet_http_post_handle(struct fnet_http_if *http, struct fne
 }
 
 /************************************************************************
-* NAME: fnet_http_post_receive
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_return_t fnet_http_post_receive(struct fnet_http_if *http)
@@ -124,8 +114,6 @@ static fnet_return_t fnet_http_post_receive(struct fnet_http_if *http)
 }
 
 /************************************************************************
-* NAME: fnet_http_post_send
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_return_t fnet_http_post_send(struct fnet_http_if *http)

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2014 by Andrey Butok. FNET Community.
+* Copyright 2014-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,11 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_llmnr_config.h
-*
-* @author Andrey Butok
-*
 * @brief LLMNR Server/Responder configuration file.
 *
 ***************************************************************************/
@@ -83,7 +78,6 @@
 #ifndef FNET_CFG_LLMNR_HOSTNAME_TTL
     #define FNET_CFG_LLMNR_HOSTNAME_TTL         (30)
 #endif
-
 
 /*! @} */
 

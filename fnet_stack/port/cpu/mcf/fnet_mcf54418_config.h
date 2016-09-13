@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2012-2013 by Andrey Butok. FNET Community.
+* Copyright 2012-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 * This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_mcf54418_config.h
 *
 * @brief MCF54481 specific configuration file.
 *
@@ -98,7 +96,6 @@
 #ifndef FNET_CFG_CPU_ETH_HW_RX_MAC_ERR
     #define FNET_CFG_CPU_ETH_HW_RX_MAC_ERR              (1)
 #endif
-
 
 /**************************************************************************
  *  ENET0

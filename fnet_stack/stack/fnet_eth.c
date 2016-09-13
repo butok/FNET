@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_eth.c
-*
-* @author Andrey Butok
-*
 * @brief Ethernet platform independent API functions .
 *
 ***************************************************************************/
@@ -43,8 +38,6 @@ const fnet_mac_addr_t fnet_eth_null_addr = FNET_MAC_ADDR_INIT(0x00, 0x00, 0x00, 
 const fnet_mac_addr_t fnet_eth_broadcast = FNET_MAC_ADDR_INIT(0xff, 0xff, 0xff, 0xff, 0xff, 0xff);
 
 /************************************************************************
-* NAME: fnet_mac_to_str
-*
 * DESCRIPTION: Converts MAC address to an null-terminated string.
 *************************************************************************/
 fnet_char_t *fnet_mac_to_str( const fnet_mac_addr_t addr, fnet_char_t *str_mac )
@@ -59,8 +52,6 @@ fnet_char_t *fnet_mac_to_str( const fnet_mac_addr_t addr, fnet_char_t *str_mac )
 }
 
 /************************************************************************
-* NAME: fnet_str_to_mac
-*
 * DESCRIPTION: This function interprets the character string into MAC addr.
 *************************************************************************/
 fnet_return_t fnet_str_to_mac( const fnet_char_t *str_mac, fnet_mac_addr_t addr )
@@ -205,8 +196,6 @@ static const fnet_eth_prot_if_t fnet_eth_prot_if_list[] =
 static void fnet_eth_timer(fnet_uint32_t cookie );
 
 /************************************************************************
-* NAME: fnet_eth_prot_input
-*
 * DESCRIPTION: Eth. network-layer input function.
 *************************************************************************/
 void fnet_eth_prot_input( fnet_netif_t *netif, fnet_netbuf_t *nb, fnet_uint16_t protocol )
@@ -235,8 +224,6 @@ void fnet_eth_prot_input( fnet_netif_t *netif, fnet_netbuf_t *nb, fnet_uint16_t 
 }
 
 /************************************************************************
-* NAME: fnet_eth_output
-*
 * DESCRIPTION: Ethernet low-level output function.
 *************************************************************************/
 void fnet_eth_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb )
@@ -245,8 +232,6 @@ void fnet_eth_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_add
 }
 
 /************************************************************************
-* NAME: fnet_eth_init
-*
 * DESCRIPTION: Do initialization for an Ethernet-type interface.
 *************************************************************************/
 fnet_return_t fnet_eth_init( fnet_netif_t *netif)
@@ -321,8 +306,6 @@ fnet_return_t fnet_eth_init( fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_eth_release
-*
 * DESCRIPTION: Do relaese for an Ethernet-type interface.
 *************************************************************************/
 void fnet_eth_release( fnet_netif_t *netif)
@@ -350,8 +333,6 @@ void fnet_eth_release( fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_eth_drain
-*
 * DESCRIPTION: This function tries to free not critical parts
 *              of memory in the Ethernet driver.
 *************************************************************************/
@@ -365,8 +346,6 @@ void fnet_eth_drain(fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_eth_change_addr_notify
-*
 * DESCRIPTION:  This function is called on IP address change.
 *               It issues a gratuitous ARP request.
 *************************************************************************/
@@ -385,8 +364,6 @@ void fnet_eth_change_addr_notify(fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_eth_timer
-*
 * DESCRIPTION:
 *************************************************************************/
 static void fnet_eth_timer(fnet_uint32_t cookie )
@@ -404,8 +381,6 @@ static void fnet_eth_timer(fnet_uint32_t cookie )
 }
 
 /************************************************************************
-* NAME: fnet_eth_ip4_output
-*
 * DESCRIPTION: Ethernet IPv4 output function.
 *************************************************************************/
 #if FNET_CFG_IP4
@@ -452,8 +427,6 @@ EXIT:
 
 #if FNET_CFG_IP6
 /************************************************************************
-* NAME: fnet_eth_output_ip6
-*
 * DESCRIPTION: Ethernet IPv6 output function.
 *************************************************************************/
 void fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr,  const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb)
@@ -570,13 +543,10 @@ EXIT:
 }
 #endif /* FNET_CFG_IP6 */
 
-
 #if FNET_CFG_MULTICAST
 
 #if FNET_CFG_IP4
 /************************************************************************
-* NAME: fnet_eth_multicast_leave_ip4
-*
 * DESCRIPTION: Leavess a multicast group on an Ethernet interface.
 *************************************************************************/
 void fnet_eth_multicast_leave_ip4(fnet_netif_t *netif, fnet_ip4_addr_t multicast_addr )
@@ -589,8 +559,6 @@ void fnet_eth_multicast_leave_ip4(fnet_netif_t *netif, fnet_ip4_addr_t multicast
 }
 
 /************************************************************************
-* NAME: fnet_eth_multicast_join_ip4
-*
 * DESCRIPTION: Joins a multicast group on an Ethernet interface.
 *************************************************************************/
 void fnet_eth_multicast_join_ip4(fnet_netif_t *netif, fnet_ip4_addr_t  multicast_addr )
@@ -605,8 +573,6 @@ void fnet_eth_multicast_join_ip4(fnet_netif_t *netif, fnet_ip4_addr_t  multicast
 
 #if FNET_CFG_IP6
 /************************************************************************
-* NAME: fnet_eth_multicast_leave_ip6
-*
 * DESCRIPTION: Leavess a multicast group on an Ethernet interface.
 *************************************************************************/
 void fnet_eth_multicast_leave_ip6(fnet_netif_t *netif, fnet_ip6_addr_t *multicast_addr )
@@ -619,8 +585,6 @@ void fnet_eth_multicast_leave_ip6(fnet_netif_t *netif, fnet_ip6_addr_t *multicas
 }
 
 /************************************************************************
-* NAME: fnet_eth_multicast_join_ip6
-*
 * DESCRIPTION: Joins a multicast group on an Ethernet interface.
 *************************************************************************/
 void fnet_eth_multicast_join_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t  *multicast_addr )
@@ -636,8 +600,6 @@ void fnet_eth_multicast_join_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t  *mu
 #endif /* FNET_CFG_MULTICAST */
 
 /************************************************************************
-* NAME: fnet_eth_trace
-*
 * DESCRIPTION: Prints an Ethernet header. For debug needs only.
 *************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_ETH && FNET_CFG_DEBUG_TRACE
@@ -659,4 +621,3 @@ void fnet_eth_trace(fnet_uint8_t *str, fnet_eth_header_t *eth_hdr)
 #endif /* FNET_CFG_DEBUG_TRACE_ETH */
 
 #endif /* FNET_CFG_ETH */
-

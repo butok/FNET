@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
 *
@@ -21,10 +21,6 @@
 **********************************************************************/
 /*!
 *
-* @file fnet_serial.c
-*
-* @author Andrey Butok
-*
 * @brief FNET Serial Input and Output Library implementation.
 *
 ***************************************************************************/
@@ -34,7 +30,6 @@
 static fnet_size_t fnet_serial_printk_mknumstr( fnet_char_t *numstr, void *nump, fnet_bool_t neg, fnet_size_t radix );
 static void fnet_serial_printk_pad( fnet_uint8_t c, fnet_serial_stream_t stream, fnet_size_t curlen, fnet_size_t field_width, fnet_size_t *count );
 static void fnet_serial_buffer_putchar( fnet_index_t p_dest, fnet_char_t character );
-
 
 /******************************************************************************
  * Stream descriptors associated with the serial ports.

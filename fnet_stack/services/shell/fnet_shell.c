@@ -86,10 +86,7 @@ static fnet_index_t fnet_shell_make_argv( fnet_char_t *cmdline, fnet_char_t *arg
 static void fnet_shell_state_machine( void *shell_if_p );
 static void fnet_shell_esc_clear(fnet_char_t *str);
 
-
 /************************************************************************
-* NAME: fnet_shell_echo
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fnet_shell_echo( struct fnet_shell_if *shell_if, fnet_char_t character )
@@ -101,8 +98,6 @@ static void fnet_shell_echo( struct fnet_shell_if *shell_if, fnet_char_t charact
 }
 
 /************************************************************************
-* NAME: fnet_shell_state_machine
-*
 * DESCRIPTION: Shell state machine.
 ************************************************************************/
 static void fnet_shell_state_machine( void *shell_if_p )
@@ -292,8 +287,6 @@ static void fnet_shell_state_machine( void *shell_if_p )
 }
 
 /************************************************************************
-* NAME: fnet_shell_init
-*
 * DESCRIPTION:
 ************************************************************************/
 fnet_shell_desc_t fnet_shell_init( struct fnet_shell_params *params)
@@ -364,8 +357,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_shell_release
-*
 * DESCRIPTION:
 ************************************************************************/
 void fnet_shell_release(fnet_shell_desc_t desc)
@@ -379,8 +370,6 @@ void fnet_shell_release(fnet_shell_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_shell_esc_clear
-*
 * DESCRIPTION: Eliminate escape symbols.
 ************************************************************************/
 static void fnet_shell_esc_clear(fnet_char_t *str)
@@ -403,8 +392,6 @@ static void fnet_shell_esc_clear(fnet_char_t *str)
 }
 
 /************************************************************************
-* NAME: fnet_shell_make_argv
-*
 * DESCRIPTION: Calculates the quantity of arguments and splits them array
 *              argv[]
 ************************************************************************/
@@ -471,8 +458,6 @@ static fnet_index_t fnet_shell_make_argv( fnet_char_t *cmdline, fnet_char_t *arg
 }
 
 /************************************************************************
-* NAME: fnet_shell_printf
-*
 * DESCRIPTION:
 ************************************************************************/
 fnet_size_t fnet_shell_printf(fnet_shell_desc_t desc, const fnet_char_t *format, ... )
@@ -494,8 +479,6 @@ fnet_size_t fnet_shell_printf(fnet_shell_desc_t desc, const fnet_char_t *format,
 }
 
 /************************************************************************
-* NAME: fnet_shell_println
-*
 * DESCRIPTION:
 ************************************************************************/
 fnet_size_t fnet_shell_println(fnet_shell_desc_t desc, const fnet_char_t *format, ... )
@@ -519,8 +502,6 @@ fnet_size_t fnet_shell_println(fnet_shell_desc_t desc, const fnet_char_t *format
 }
 
 /************************************************************************
-* NAME: fnet_shell_putchar
-*
 * DESCRIPTION:
 ************************************************************************/
 void fnet_shell_putchar(fnet_shell_desc_t desc, fnet_char_t character)
@@ -535,8 +516,6 @@ void fnet_shell_putchar(fnet_shell_desc_t desc, fnet_char_t character)
 }
 
 /************************************************************************
-* NAME: fnet_shell_getchar
-*
 * DESCRIPTION:
 ************************************************************************/
 fnet_int32_t fnet_shell_getchar(fnet_shell_desc_t desc)
@@ -557,8 +536,6 @@ fnet_int32_t fnet_shell_getchar(fnet_shell_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_shell_script
-*
 * DESCRIPTION: Executes command-line script.
 ************************************************************************/
 void fnet_shell_script(fnet_shell_desc_t desc, fnet_char_t *script )
@@ -598,8 +575,6 @@ void fnet_shell_script(fnet_shell_desc_t desc, fnet_char_t *script )
 }
 
 /************************************************************************
-* NAME: fnet_shell_script_release
-*
 * DESCRIPTION:
 ************************************************************************/
 void fnet_shell_script_release( fnet_shell_desc_t desc)
@@ -613,8 +588,6 @@ void fnet_shell_script_release( fnet_shell_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_shell_help
-*
 * DESCRIPTION: Shows command shell help.
 ************************************************************************/
 void fnet_shell_help( fnet_shell_desc_t desc)
@@ -736,6 +709,3 @@ fnet_return_t fnet_shell_switch( fnet_shell_desc_t desc, const struct fnet_shell
 
     return res;
 }
-
-
-

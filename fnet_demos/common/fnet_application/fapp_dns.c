@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp_dns.c
-*
-* @author Andrey Butok
-*
 * @brief FNET Shell Demo implementation (DNS Resolver).
 *
 ***************************************************************************/
@@ -47,8 +42,6 @@ static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *add
 static void fapp_dns_on_ctrlc(fnet_shell_desc_t desc);
 
 /************************************************************************
-* NAME: fapp_dhcp_callback_resolved
-*
 * DESCRIPTION: Event handler callback on new IP from DHCP client.
 ************************************************************************/
 static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, fnet_uint32_t cookie)
@@ -77,8 +70,6 @@ static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *add
 }
 
 /************************************************************************
-* NAME: fapp_dhcp_on_ctrlc
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fapp_dns_on_ctrlc(fnet_shell_desc_t desc)
@@ -89,8 +80,6 @@ static void fapp_dns_on_ctrlc(fnet_shell_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fapp_dns_cmd
-*
 * DESCRIPTION: Start DNS client/resolver.
 ************************************************************************/
 void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -183,17 +172,3 @@ ERROR_PARAMETER:
 }
 
 #endif /* FAPP_CFG_DNS_CMD && FNET_CFG_DNS && FNET_CFG_DNS_RESOLVER */
-
-
-
-
-
-
-
-
-
-
-
-
-
-

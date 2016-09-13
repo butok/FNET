@@ -19,14 +19,6 @@
 *
 **********************************************************************/ /*!
 *
-* @file fnet_mpc_serial.c
-*
-* @author Andrey Butok
-*
-* @date Dec-17-2012
-*
-* @version 0.1.1.0
-*
 * @brief MPC Serial port I/O functions.
 *
 ***************************************************************************/
@@ -147,7 +139,6 @@ static inline void fnet_cpu_serial_gpio_init(fnet_int32_t port_number)
             break;
     }
 #endif
-
 
 #if FNET_CFG_CPU_MPC564xBC
     switch (port_number)

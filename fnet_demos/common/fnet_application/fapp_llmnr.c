@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2014 by Andrey Butok. FNET Community.
+* Copyright 2014-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,11 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp_llmnr.c
-*
-* @author Andrey Butok
-*
 * @brief FNET Shell Demo (LLMNR).
 *
 ***************************************************************************/
@@ -37,8 +32,6 @@
 static fnet_llmnr_desc_t fapp_llmnr_desc = 0; /* LLMNR service descriptor. */
 
 /************************************************************************
-* NAME: fapp_llmnr_release
-*
 * DESCRIPTION: Releases LLMNR server.
 *************************************************************************/
 void fapp_llmnr_release(void)
@@ -48,8 +41,6 @@ void fapp_llmnr_release(void)
 }
 
 /************************************************************************
-* NAME: fapp_llmnr_cmd
-*
 * DESCRIPTION: Run LLMNR server.
 *************************************************************************/
 void fapp_llmnr_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -91,14 +82,11 @@ void fapp_llmnr_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
 }
 
 /************************************************************************
-* NAME: fapp_llmnr_info
-*
 * DESCRIPTION: Print service state.
 *************************************************************************/
 void fapp_llmnr_info(fnet_shell_desc_t desc)
 {
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "LLMNR Server", fapp_enabled_str[fnet_llmnr_is_enabled(fapp_llmnr_desc)]);
 }
-
 
 #endif /* FAPP_CFG_LLMNR_CMD && FNET_CFG_LLMNR */

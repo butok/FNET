@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp_fs.c
-*
-* @author Andrey Butok
-*
 * @brief FNET Shell Demo (File System Explorer).
 *
 ***************************************************************************/
@@ -32,7 +27,6 @@
 #include "fapp.h"
 #include "fapp_fs.h"
 #include "fapp_prv.h"
-
 
 #if FAPP_CFG_EXP_CMD || FAPP_CFG_HTTP_CMD
 
@@ -75,7 +69,6 @@ static fnet_char_t FAPP_FS_PROMPT_STR [FAPP_FS_DIR_PATH_MAX +
                                        sizeof(FAPP_FS_PROMPT_STR_HEADER) +
                                        sizeof(FAPP_FS_PROMPT_STR_TRAILER)];
 
-
 /* Current path */
 static fnet_char_t fapp_fs_current_path[FAPP_FS_DIR_PATH_MAX + 1U] = {FNET_FS_SPLITTER, '\0', 0};
 
@@ -103,8 +96,6 @@ const struct fnet_shell fapp_fs_shell =
 };
 
 /************************************************************************
-* NAME: fapp_fs_init
-*
 * DESCRIPTION: File Explorer initialization function.
 ************************************************************************/
 static void fapp_fs_init( fnet_shell_desc_t desc )
@@ -121,10 +112,7 @@ static void fapp_fs_init( fnet_shell_desc_t desc )
     fnet_shell_println(desc, "%s\n", FAPP_DELIMITER_STR);
 }
 
-
 /************************************************************************
-* NAME: fapp_fs_dir_cmd
-*
 * DESCRIPTION: Displays a list of files and subdirectories in a directory.
 *************************************************************************/
 static void fapp_fs_dir_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -154,10 +142,7 @@ static void fapp_fs_dir_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_cha
     }
 }
 
-
 /************************************************************************
-* NAME: fapp_fs_cd_cmd
-*
 * DESCRIPTION: Change the current directory.
 *************************************************************************/
 static void fapp_fs_cd_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -233,8 +218,6 @@ static void fapp_fs_cd_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char
 }
 
 /************************************************************************
-* NAME: fapp_fs_view_cmd
-*
 * DESCRIPTION:
 *************************************************************************/
 static void fapp_fs_view_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -311,8 +294,6 @@ static void fapp_fs_view_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_ch
 }
 
 /************************************************************************
-* NAME: fapp_fs_exit_cmd
-*
 * DESCRIPTION: Exit from the file explorer.
 *************************************************************************/
 static void fapp_fs_exit_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -327,8 +308,6 @@ static void fapp_fs_exit_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_ch
 
 #if (FAPP_CFG_EXP_CMD || FAPP_CFG_HTTP_CMD) && FNET_CFG_FS
 /************************************************************************
-* NAME: fapp_fs_mount
-*
 * DESCRIPTION: Mount FS image.
 ************************************************************************/
 void fapp_fs_mount(void)
@@ -350,8 +329,6 @@ void fapp_fs_mount(void)
     }
 }
 /************************************************************************
-* NAME: fapp_fs_unmount
-*
 * DESCRIPTION: Unmount FS image.
 ************************************************************************/
 void fapp_fs_unmount(void)

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_ip_prv.h
-*
-* @author Andrey Butok
-*
 * @brief Private. IP protocol API.
 *
 ***************************************************************************/
@@ -181,7 +176,6 @@ typedef struct fnet_ip_frag_list
     fnet_ip_frag_header_t *frag_ptr FNET_COMP_PACKED;   /**< Pointer to the first fragment of the list.*/
 } fnet_ip_frag_list_t;
 FNET_COMP_PACKED_END
-
 
 /******************************************************************************
  * Multicast related structures.

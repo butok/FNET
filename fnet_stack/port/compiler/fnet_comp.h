@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_comp.h
-*
-* @author Andrey Butok
-*
 * @brief C-compiler-specific definitions.
 *
 ***************************************************************************/
@@ -123,6 +118,5 @@ which causes that member to be packed on a 1-byte boundary
 #ifndef FNET_COMP_UNUSED_ARG
     #define FNET_COMP_UNUSED_ARG(x) (void)(x)
 #endif
-
 
 #endif /* _FNET_COMP_H_ */

@@ -20,11 +20,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_ip.c
-*
-* @author Andrey Butok
-*
 * @brief IP protocol implementation.
 *
 ***************************************************************************/
@@ -50,7 +45,6 @@
 #if (FNET_IP_MAX_PACKET < 200U)
     #error  "FNET_IP_MAX_PACKET must be more than 200."
 #endif
-
 
 #if FNET_CFG_IP4
 
@@ -91,10 +85,7 @@ static fnet_bool_t fnet_ip_addr_is_onlink(fnet_netif_t *netif, fnet_ip4_addr_t a
     #define fnet_ip_trace(str, ip_hdr)  do{}while(0)
 #endif
 
-
 /************************************************************************
-* NAME: fnet_ip_init
-*
 * DESCRIPTION: This function makes initialization of the IP layer.
 *************************************************************************/
 fnet_return_t fnet_ip_init( void )
@@ -130,8 +121,6 @@ fnet_return_t fnet_ip_init( void )
 }
 
 /************************************************************************
-* NAME: fnet_ip_release
-*
 * DESCRIPTION: This function makes release of the all resources
 *              allocated for IP layer module.
 *************************************************************************/
@@ -147,8 +136,6 @@ void fnet_ip_release( void )
 }
 
 /************************************************************************
-* NAME: fnet_ip_route
-*
 * DESCRIPTION: This function performs IP routing
 *              on an outgoing IP packet.
 *************************************************************************/
@@ -179,8 +166,6 @@ fnet_netif_t *fnet_ip_route( fnet_ip4_addr_t dest_ip )
 }
 
 /************************************************************************
-* NAME: fnet_ip_will_fragment
-*
 * DESCRIPTION: This function returns FNET_TRUE if the protocol message
 *              will be fragmented by IPv4, and FNET_FALSE otherwise.
 *************************************************************************/
@@ -201,8 +186,6 @@ fnet_bool_t fnet_ip_will_fragment( fnet_netif_t *netif, fnet_size_t protocol_mes
 }
 
 /************************************************************************
-* NAME: fnet_ip_output
-*
 * DESCRIPTION: IP output function.
 *
 * RETURNS: FNET_OK=OK
@@ -403,12 +386,9 @@ DROP:
     fnet_netbuf_free_chain(nb);           /* Discard datagram */
 
     return (error_code);
-
 }
 
 /************************************************************************
-* NAME: fnet_ip_netif_output
-*
 * DESCRIPTION:
 *************************************************************************/
 static void fnet_ip_netif_output(struct fnet_netif *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb, fnet_bool_t do_not_route)
@@ -458,8 +438,6 @@ static void fnet_ip_netif_output(struct fnet_netif *netif, fnet_ip4_addr_t dest_
 }
 
 /************************************************************************
-* NAME: fnet_ip_addr_is_onlink
-*
 * DESCRIPTION: Checks if the address is on-link.
 *              Returns FNET_TRUE if it is on-line, FNET_FALSE otherwise.
 *************************************************************************/
@@ -483,8 +461,6 @@ static fnet_bool_t fnet_ip_addr_is_onlink(fnet_netif_t *netif, fnet_ip4_addr_t a
 }
 
 /************************************************************************
-* NAME: fnet_ip_set_socket_addr
-*
 * DESCRIPTION: Prepare sockets addreses for upper protocol.
 *************************************************************************/
 void fnet_ip_set_socket_addr(fnet_netif_t *netif, fnet_ip_header_t *ip_hdr, struct sockaddr *src_addr,  struct sockaddr *dest_addr )
@@ -502,8 +478,6 @@ void fnet_ip_set_socket_addr(fnet_netif_t *netif, fnet_ip_header_t *ip_hdr, stru
 }
 
 /************************************************************************
-* NAME: fnet_ip_input
-*
 * DESCRIPTION: IP input function.
 *************************************************************************/
 void fnet_ip_input( fnet_netif_t *netif, fnet_netbuf_t *nb )
@@ -523,8 +497,6 @@ void fnet_ip_input( fnet_netif_t *netif, fnet_netbuf_t *nb )
 }
 
 /************************************************************************
-* NAME: fnet_ip_input_low
-*
 * DESCRIPTION: This function performs handling of incoming datagrams.
 *************************************************************************/
 static void fnet_ip_input_low(fnet_uint32_t cookie )
@@ -664,8 +636,6 @@ static void fnet_ip_input_low(fnet_uint32_t cookie )
 
 
 /************************************************************************
-* NAME: fnet_ip_reassembly
-*
 * DESCRIPTION: This function attempts to assemble a complete datagram.
 *************************************************************************/
 #if FNET_CFG_IP4_FRAGMENTATION
@@ -855,8 +825,6 @@ NEXT_FRAG:
 #endif /* FNET_CFG_IP4_FRAGMENTATION */
 
 /************************************************************************
-* NAME: fnet_ip_timer
-*
 * DESCRIPTION: IP timer function.
 *************************************************************************/
 #if FNET_CFG_IP4_FRAGMENTATION
@@ -893,8 +861,6 @@ static void fnet_ip_timer(fnet_uint32_t cookie)
 #endif
 
 /************************************************************************
-* NAME: fnet_ip_drain
-*
 * DESCRIPTION: This function tries to free not critical parts
 *              of memory occupied by the IP module.
 *************************************************************************/
@@ -922,8 +888,6 @@ void fnet_ip_drain( void )
 }
 
 /************************************************************************
-* NAME: fnet_ip_frag_list_free
-*
 * DESCRIPTION: This function frees list of datagram fragments.
 *************************************************************************/
 #if FNET_CFG_IP4_FRAGMENTATION
@@ -953,8 +917,6 @@ static void fnet_ip_frag_list_free( fnet_ip_frag_list_t *list )
 #endif /* FNET_CFG_IP4_FRAGMENTATION */
 
 /************************************************************************
-* NAME: fnet_ip_frag_list_add
-*
 * DESCRIPTION: Adds frag list to the general frag list.
 *************************************************************************/
 #if FNET_CFG_IP4_FRAGMENTATION
@@ -974,8 +936,6 @@ static void fnet_ip_frag_list_add( fnet_ip_frag_list_t **head, fnet_ip_frag_list
 #endif /* FNET_CFG_IP4_FRAGMENTATION */
 
 /************************************************************************
-* NAME: fnet_ip_frag_list_del
-*
 * DESCRIPTION: Deletes frag list from the general frag list.
 *************************************************************************/
 #if FNET_CFG_IP4_FRAGMENTATION
@@ -999,8 +959,6 @@ static void fnet_ip_frag_list_del( fnet_ip_frag_list_t **head, fnet_ip_frag_list
 #endif /* FNET_CFG_IP4_FRAGMENTATION */
 
 /************************************************************************
-* NAME: fnet_ip_frag_add
-*
 * DESCRIPTION: Adds frag to the frag list.
 *************************************************************************/
 #if FNET_CFG_IP4_FRAGMENTATION
@@ -1029,8 +987,6 @@ static void fnet_ip_frag_add( fnet_ip_frag_header_t * FNET_COMP_PACKED_VAR *head
 #endif /* FNET_CFG_IP4_FRAGMENTATION */
 
 /************************************************************************
-* NAME: fnet_ip_frag_del
-*
 * DESCRIPTION: Deletes frag from the frag list.
 *************************************************************************/
 #if FNET_CFG_IP4_FRAGMENTATION
@@ -1057,8 +1013,6 @@ static void fnet_ip_frag_del( fnet_ip_frag_header_t * FNET_COMP_PACKED_VAR *head
 #if FNET_CFG_MULTICAST
 
 /************************************************************************
-* NAME: fnet_ip_multicast_join
-*
 * DESCRIPTION: Join a multicast group. Returns pointer to the entry in
 *              the multicast list, or FNET_NULL if any error;
 *************************************************************************/
@@ -1112,8 +1066,6 @@ fnet_ip4_multicast_list_entry_t *fnet_ip_multicast_join( fnet_netif_t *netif, fn
 }
 
 /************************************************************************
-* NAME: fnet_ip_multicast_leave_entry
-*
 * DESCRIPTION: Leave a multicast group.
 *************************************************************************/
 void fnet_ip_multicast_leave_entry( fnet_ip4_multicast_list_entry_t *multicastentry )
@@ -1139,8 +1091,6 @@ void fnet_ip_multicast_leave_entry( fnet_ip4_multicast_list_entry_t *multicasten
 #endif /* FNET_CFG_MULTICAST */
 
 /************************************************************************
-* NAME: fnet_ip_addr_is_broadcast
-*
 * DESCRIPTION: Is the address is broadcast?
 *************************************************************************/
 fnet_bool_t fnet_ip_addr_is_broadcast( fnet_ip4_addr_t addr, fnet_netif_t *netif )
@@ -1222,8 +1172,6 @@ fnet_size_t fnet_ip_maximum_packet( fnet_ip4_addr_t dest_ip )
 }
 
 /************************************************************************
-* NAME: fnet_ip4_getsockopt
-*
 * DESCRIPTION: This function retrieves the current value
 *              of IPv4 socket option.
 *************************************************************************/
@@ -1274,8 +1222,6 @@ static fnet_error_t fnet_ip4_getsockopt(fnet_socket_if_t *sock, fnet_socket_opti
 }
 
 /************************************************************************
-* NAME: fnet_ip4_setsockopt
-*
 * DESCRIPTION: This function sets the value of IPv4 socket option.
 *************************************************************************/
 static fnet_error_t fnet_ip4_setsockopt( fnet_socket_if_t *sock, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen )
@@ -1424,8 +1370,6 @@ static fnet_error_t fnet_ip4_setsockopt( fnet_socket_if_t *sock, fnet_socket_opt
 
 
 /************************************************************************
-* NAME: fnet_ip_trace
-*
 * DESCRIPTION: Prints an IP header. For debug needs only.
 *************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_IP && FNET_CFG_DEBUG_TRACE
@@ -1465,8 +1409,6 @@ static void fnet_ip_trace(fnet_uint8_t *str, fnet_ip_header_t *ip_hdr)
 #endif /* FNET_CFG_IP4 */
 
 /************************************************************************
-* NAME: fnet_ip_setsockopt
-*
 * DESCRIPTION: This function sets the value of IP socket option.
 *************************************************************************/
 fnet_return_t fnet_ip_setsockopt( fnet_socket_if_t *sock, fnet_protocol_t level, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen )
@@ -1519,8 +1461,6 @@ ERROR_SOCK:
 }
 
 /************************************************************************
-* NAME: fnet_ip_getsockopt
-*
 * DESCRIPTION: This function retrieves the current value
 *              of IP-layer socket option.
 *************************************************************************/
@@ -1574,8 +1514,6 @@ ERROR_SOCK:
 }
 
 /************************************************************************
-* NAME: ip_append_queue
-*
 * DESCRIPTION: Appends IP input queue.
 *************************************************************************/
 fnet_return_t fnet_ip_queue_append( fnet_ip_queue_t *queue, fnet_netif_t *netif, fnet_netbuf_t *nb )
@@ -1610,8 +1548,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: ip_read_queue
-*
 * DESCRIPTION: Reads a IP datagram from IP input queue.
 *************************************************************************/
 fnet_netbuf_t *fnet_ip_queue_read( fnet_ip_queue_t *queue, fnet_netif_t **netif )
@@ -1644,5 +1580,3 @@ fnet_netbuf_t *fnet_ip_queue_read( fnet_ip_queue_t *queue, fnet_netif_t **netif 
 
     return nb;
 }
-
-

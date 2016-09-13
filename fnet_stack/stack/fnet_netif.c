@@ -34,7 +34,6 @@
 #include "fnet_ip6_prv.h"
 #include "fnet_stack_prv.h"
 
-
 #if FNET_CFG_NETIF_IP6_ADDR_MAX < 2u
     #error "FNET_CFG_NETIF_IP6_ADDR_MAX must be > 1"
 #endif
@@ -1482,4 +1481,3 @@ void fnet_netif_ip6_addr_timer ( fnet_netif_t *netif)
 }
 
 #endif /* FNET_CFG_IP6 */
-

@@ -63,8 +63,6 @@ static void fnet_arp_trace(fnet_uint8_t *str, fnet_arp_header_t *arp_hdr);
 #endif
 
 /************************************************************************
-* NAME: fnet_arp_init
-*
 * DESCRIPTION: ARP module initialization.
 *************************************************************************/
 fnet_return_t fnet_arp_init(fnet_netif_t *netif, fnet_arp_if_t *arpif)
@@ -100,8 +98,6 @@ fnet_return_t fnet_arp_init(fnet_netif_t *netif, fnet_arp_if_t *arpif)
 }
 
 /************************************************************************
-* NAME: fnet_arp_release
-*
 * DESCRIPTION: ARP module release.
 *************************************************************************/
 void fnet_arp_release(fnet_netif_t *netif)
@@ -114,8 +110,6 @@ void fnet_arp_release(fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_arp_timer
-*
 * DESCRIPTION: ARP aging timer.
 *************************************************************************/
 #if FNET_CFG_ARP_EXPIRE_TIMEOUT
@@ -140,8 +134,6 @@ static void fnet_arp_timer(fnet_uint32_t cookie)
 #endif
 
 /************************************************************************
-* NAME: fnet_arp_add_entry
-*
 * DESCRIPTION: Adds entry to the ARP table.
 *************************************************************************/
 static fnet_arp_entry_t *fnet_arp_add_entry(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, const fnet_mac_addr_t ethaddr)
@@ -213,8 +205,6 @@ ADDED:
 }
 
 /************************************************************************
-* NAME: fnet_arp_update_entry
-*
 * DESCRIPTION: Upates ARP table.
 *************************************************************************/
 static fnet_arp_entry_t *fnet_arp_update_entry(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_mac_addr_t ethaddr)
@@ -240,8 +230,6 @@ static fnet_arp_entry_t *fnet_arp_update_entry(fnet_netif_t *netif, fnet_ip4_add
 }
 
 /************************************************************************
-* NAME: fnet_arp_get_mac
-*
 * DESCRIPTION: Gets MAC address of valid ARP cache entry.
 *************************************************************************/
 fnet_bool_t fnet_arp_get_mac( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ip_addr, fnet_mac_addr_t mac_addr)
@@ -276,8 +264,6 @@ fnet_bool_t fnet_arp_get_mac( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ip_a
 }
 
 /************************************************************************
-* NAME: fnet_arp_lookup
-*
 * DESCRIPTION: This function looks up an entry corresponding to
 *              the destination IP address
 *************************************************************************/
@@ -305,8 +291,6 @@ fnet_mac_addr_t *fnet_arp_lookup(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr)
 }
 
 /************************************************************************
-* NAME: fnet_arp_resolve
-*
 * DESCRIPTION: This function finds the first unused or the oldest
 *              ARP table entry and makes a new entry
 *              to prepare it for an ARP reply.
@@ -356,8 +340,6 @@ void fnet_arp_resolve(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_netbuf_t
 }
 
 /************************************************************************
-* NAME: fnet_arp_input
-*
 * DESCRIPTION: ARP input function.
 *************************************************************************/
 void fnet_arp_input(fnet_netif_t *netif, fnet_netbuf_t *nb)
@@ -447,8 +429,6 @@ void fnet_arp_input(fnet_netif_t *netif, fnet_netbuf_t *nb)
 }
 
 /************************************************************************
-* NAME: fnet_arp_send_request
-*
 * DESCRIPTION: Public function. Sends ARP request.
 *************************************************************************/
 void fnet_arp_send_request( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ip_addr )
@@ -471,8 +451,6 @@ void fnet_arp_send_request( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ip_add
 }
 
 /************************************************************************
-* NAME: fnet_arp_request
-*
 * DESCRIPTION: Sends ARP request.
 *************************************************************************/
 void fnet_arp_request(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr)
@@ -514,8 +492,6 @@ void fnet_arp_request(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr)
 }
 
 /************************************************************************
-* NAME: fnet_arp_ip4_addr_conflict
-*
 * DESCRIPTION: This function is called on the IP address
 *              duplication event.
 *************************************************************************/
@@ -527,8 +503,6 @@ static void fnet_arp_ip4_addr_conflict(fnet_uint32_t cookie)
 }
 
 /************************************************************************
-* NAME: fnet_arp_drain
-*
 * DESCRIPTION: This function tries to free not critical parts
 *              of memory used by ARP protocol.
 *************************************************************************/
@@ -554,8 +528,6 @@ void fnet_arp_drain(fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_arp_get_entry
-*
 * DESCRIPTION: This function Retrieves ARP cache entry of
 *             the specified network interface.
 *************************************************************************/
@@ -597,8 +569,6 @@ fnet_bool_t fnet_arp_get_entry ( fnet_netif_desc_t netif_desc, fnet_index_t n, f
 }
 
 /************************************************************************
-* NAME: fnet_arp_trace
-*
 * DESCRIPTION: Prints ARP header. For debugging purposes.
 *************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_ARP && FNET_CFG_DEBUG_TRACE

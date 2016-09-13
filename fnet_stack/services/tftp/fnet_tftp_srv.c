@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,16 +19,9 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_tftp_srv.c
-*
-* @author Andrey Butok
-*
 * @brief TFTP Server implementation.
 *
 ***************************************************************************/
-
-
 
 #include "fnet.h"
 
@@ -48,22 +41,17 @@
 #define FNET_TFTP_MODE_SIZE_MAX         (9u)
 #define FNET_TFTP_FILENAME_SIZE_MAX     (FNET_TFTP_DATA_SIZE_MAX-FNET_TFTP_MODE_SIZE_MAX)
 
-
 #define FNET_TFTP_OPCODE_READ_REQUEST   (1u)
 #define FNET_TFTP_OPCODE_WRITE_REQUEST  (2u)
 #define FNET_TFTP_OPCODE_DATA           (3u)
 #define FNET_TFTP_OPCODE_ACK            (4u)
 #define FNET_TFTP_OPCODE_ERROR          (5u)
 
-
 #define FNET_TFTP_ERR_PARAMS            "ERROR: Wrong input parameters."
 #define FNET_TFTP_ERR_SOCKET_CREATION   "ERROR: Socket creation error."
 #define FNET_TFTP_ERR_SOCKET_BIND       "ERROR: Socket Error during bind."
 #define FNET_TFTP_ERR_SERVICE           "ERROR: Service registration is failed."
 #define FNET_TFTP_ERR_IS_INITIALIZED    "ERROR: TFTP Server is already initialized."
-
-
-
 
 /* TFTP packets:*/
 FNET_COMP_PACKED_BEGIN
@@ -100,9 +88,7 @@ struct fnet_tftp_packet_error
 };
 FNET_COMP_PACKED_END
 
-
-
-const static fnet_char_t *fnet_tftp_srv_error[] =
+static const fnet_char_t *fnet_tftp_srv_error[] =
 {
     "Not defined", /* see error message (if any).*/
     "File not found",
@@ -115,7 +101,6 @@ const static fnet_char_t *fnet_tftp_srv_error[] =
 };
 
 #define FNET_TFTP_SRV_ERR_MAX   (sizeof(fnet_tftp_srv_error)/sizeof(fnet_uint8_t*))
-
 
 /************************************************************************
 *    TFTP server interface structure
@@ -149,7 +134,7 @@ struct fnet_tftp_srv_if
         struct fnet_tftp_packet_data    packet_data;
         struct fnet_tftp_packet_ack     packet_ack;
         struct fnet_tftp_packet_error   packet_error;
-    };
+    }packet;
     fnet_size_t             packet_size;
     fnet_size_t             tx_data_size;
 };
@@ -167,8 +152,6 @@ static void fnet_tftp_srv_send_ack(struct fnet_tftp_srv_if *tftp_srv_if);
 static fnet_int32_t fnet_tftp_srv_data_handler(struct fnet_tftp_srv_if *tftp_srv_if, fnet_size_t data_size);
 
 /************************************************************************
-* NAME: fnet_tftp_srv_init
-*
 * DESCRIPTION: TFTP server initialization.
 ************************************************************************/
 fnet_tftp_srv_desc_t fnet_tftp_srv_init( struct fnet_tftp_srv_params *params )
@@ -273,8 +256,6 @@ ERROR_1:
 }
 
 /************************************************************************
-* NAME: fnet_tftp_srv_send_error
-*
 * DESCRIPTION: Send TFTP error packet.
 ************************************************************************/
 static void fnet_tftp_srv_send_error(struct fnet_tftp_srv_if *tftp_srv_if, fnet_socket_t s, fnet_tftp_error_t error_code, const fnet_char_t *error_message, struct sockaddr *dest_addr)
@@ -285,8 +266,8 @@ static void fnet_tftp_srv_send_error(struct fnet_tftp_srv_if *tftp_srv_if, fnet_
              ------------------------------------------
     */
 
-    tftp_srv_if->packet_error.opcode = FNET_HTONS(FNET_TFTP_OPCODE_ERROR);
-    tftp_srv_if->packet_error.error_code = fnet_htons((fnet_uint16_t)error_code);
+    tftp_srv_if->packet.packet_error.opcode = FNET_HTONS(FNET_TFTP_OPCODE_ERROR);
+    tftp_srv_if->packet.packet_error.error_code = fnet_htons((fnet_uint16_t)error_code);
 
     if((error_message == 0) && (error_code < FNET_TFTP_SRV_ERR_MAX))
     {
@@ -295,52 +276,46 @@ static void fnet_tftp_srv_send_error(struct fnet_tftp_srv_if *tftp_srv_if, fnet_
 
     if(error_message)
     {
-        fnet_strncpy( (fnet_char_t *)tftp_srv_if->packet_error.error_message, error_message, FNET_TFTP_DATA_SIZE_MAX - 1u );
+        fnet_strncpy( (fnet_char_t *)tftp_srv_if->packet.packet_error.error_message, error_message, FNET_TFTP_DATA_SIZE_MAX - 1u );
     }
     else
     {
-        tftp_srv_if->packet_error.error_message[0] = 0u;
+        tftp_srv_if->packet.packet_error.error_message[0] = 0u;
     }
 
-    fnet_socket_sendto(s, (fnet_uint8_t *)&tftp_srv_if->packet_error, fnet_strlen(error_message) + (2u + 2u + 1u), 0u,
+    fnet_socket_sendto(s, (fnet_uint8_t *)&tftp_srv_if->packet.packet_error, fnet_strlen(error_message) + (2u + 2u + 1u), 0u,
                        dest_addr, sizeof(*dest_addr));
 }
 
 /************************************************************************
-* NAME: fnet_tftp_srv_send_data
-*
 * DESCRIPTION: Send TFTP data packet.
 ************************************************************************/
 static void fnet_tftp_srv_send_data(struct fnet_tftp_srv_if *tftp_srv_if)
 {
     /* Send data. */
-    tftp_srv_if->packet_data.opcode = FNET_HTONS(FNET_TFTP_OPCODE_DATA);
-    tftp_srv_if->packet_data.block_number = fnet_htons(tftp_srv_if->block_number_ack);
-    fnet_socket_sendto(tftp_srv_if->socket_transaction, (fnet_uint8_t *)&tftp_srv_if->packet_data, (4u + tftp_srv_if->tx_data_size), 0u,
+    tftp_srv_if->packet.packet_data.opcode = FNET_HTONS(FNET_TFTP_OPCODE_DATA);
+    tftp_srv_if->packet.packet_data.block_number = fnet_htons(tftp_srv_if->block_number_ack);
+    fnet_socket_sendto(tftp_srv_if->socket_transaction, (fnet_uint8_t *)&tftp_srv_if->packet.packet_data, (4u + tftp_srv_if->tx_data_size), 0u,
                        &tftp_srv_if->addr_transaction, sizeof(tftp_srv_if->addr_transaction) );
     /* Reset timeout. */
     tftp_srv_if->last_time = fnet_timer_ticks();
 }
 
 /************************************************************************
-* NAME: fnet_tftp_srv_send_ack
-*
 * DESCRIPTION: Send TFTP acknowledge packet.
 ************************************************************************/
 static void fnet_tftp_srv_send_ack(struct fnet_tftp_srv_if *tftp_srv_if)
 {
     /* Send acknowledge. */
-    tftp_srv_if->packet_ack.opcode = FNET_HTONS(FNET_TFTP_OPCODE_ACK);
-    tftp_srv_if->packet_ack.block_number = fnet_htons(tftp_srv_if->block_number_ack);
-    fnet_socket_sendto(tftp_srv_if->socket_transaction, (fnet_uint8_t *)&tftp_srv_if->packet_ack, sizeof(struct fnet_tftp_packet_ack), 0u,
+    tftp_srv_if->packet.packet_ack.opcode = FNET_HTONS(FNET_TFTP_OPCODE_ACK);
+    tftp_srv_if->packet.packet_ack.block_number = fnet_htons(tftp_srv_if->block_number_ack);
+    fnet_socket_sendto(tftp_srv_if->socket_transaction, (fnet_uint8_t *)&tftp_srv_if->packet.packet_ack, sizeof(struct fnet_tftp_packet_ack), 0u,
                        &tftp_srv_if->addr_transaction, sizeof(tftp_srv_if->addr_transaction) );
     /* Reset timeout. */
     tftp_srv_if->last_time = fnet_timer_ticks();
 }
 
 /************************************************************************
-* NAME: fnet_tftp_srv_send_ack
-*
 * DESCRIPTION: Call TFTP data handler.
 ************************************************************************/
 static fnet_int32_t fnet_tftp_srv_data_handler(struct fnet_tftp_srv_if *tftp_srv_if, fnet_size_t data_size)
@@ -350,7 +325,7 @@ static fnet_int32_t fnet_tftp_srv_data_handler(struct fnet_tftp_srv_if *tftp_srv
     fnet_int32_t        result;
 
     if((result = tftp_srv_if->data_handler( tftp_srv_if->request_type,
-                                            (fnet_uint8_t *)&tftp_srv_if->packet_data.data[0],
+                                            (fnet_uint8_t *)&tftp_srv_if->packet.packet_data.data[0],
                                             data_size,
                                             &error_code,
                                             &error_message,
@@ -369,8 +344,6 @@ static fnet_int32_t fnet_tftp_srv_data_handler(struct fnet_tftp_srv_if *tftp_srv
 }
 
 /************************************************************************
-* NAME: fnet_tftp_srv_state_machine
-*
 * DESCRIPTION: TFTP server state machine.
 ************************************************************************/
 static void fnet_tftp_srv_state_machine( void *fnet_tftp_srv_if_p )
@@ -393,10 +366,9 @@ static void fnet_tftp_srv_state_machine( void *fnet_tftp_srv_if_p )
         case FNET_TFTP_SRV_STATE_WAITING_REQUEST:
             addr_len = sizeof(addr);
 
-            received = fnet_socket_recvfrom(tftp_srv_if->socket_listen, (fnet_uint8_t *)&tftp_srv_if->packet_request,
+            received = fnet_socket_recvfrom(tftp_srv_if->socket_listen, (fnet_uint8_t *)&tftp_srv_if->packet.packet_request,
                                             sizeof(struct fnet_tftp_packet_request), 0u,
                                             &addr, &addr_len );
-
             if(received >= 4)
             {
                 /* Extract opcode, filename and mode. */
@@ -412,7 +384,7 @@ static void fnet_tftp_srv_state_machine( void *fnet_tftp_srv_if_p )
                 error_code = FNET_TFTP_ERROR_NOT_DEFINED;
                 error_message = 0;
 
-                switch(tftp_srv_if->packet_request.opcode)
+                switch(tftp_srv_if->packet.packet_request.opcode)
                 {
                     case FNET_HTONS(FNET_TFTP_OPCODE_READ_REQUEST):
                         FNET_DEBUG_TFTP_SRV("TFTP_SRV: Get Read request.");
@@ -423,7 +395,7 @@ static void fnet_tftp_srv_state_machine( void *fnet_tftp_srv_if_p )
                         tftp_srv_if->request_type = FNET_TFTP_REQUEST_WRITE;
                         break;
                     default:
-                        FNET_DEBUG_TFTP_SRV("TFTP_SRV: Get wrong request (%d).", fnet_ntohs(tftp_srv_if->packet_request.opcode));
+                        FNET_DEBUG_TFTP_SRV("TFTP_SRV: Get wrong request (%d).", fnet_ntohs(tftp_srv_if->packet.packet_request.opcode));
                         result = FNET_ERR;
                         return;
                 }
@@ -432,7 +404,7 @@ static void fnet_tftp_srv_state_machine( void *fnet_tftp_srv_if_p )
                 {
                     received -= 2;
                     /* Get filename. */
-                    filename = tftp_srv_if->packet_request.filename_mode;
+                    filename = tftp_srv_if->packet.packet_request.filename_mode;
                     for(i = 0u; i < (fnet_index_t)received; i++)
                     {
                         if(filename[i] == 0u)
@@ -508,7 +480,7 @@ static void fnet_tftp_srv_state_machine( void *fnet_tftp_srv_if_p )
                             else
                             {
                                 /* Data handler.*/
-                                if((sent = fnet_tftp_srv_data_handler(tftp_srv_if, (sizeof(tftp_srv_if->packet_data.data)))) == FNET_ERR)
+                                if((sent = fnet_tftp_srv_data_handler(tftp_srv_if, (sizeof(tftp_srv_if->packet.packet_data.data)))) == FNET_ERR)
                                 {
                                     break;
                                 }
@@ -535,14 +507,14 @@ static void fnet_tftp_srv_state_machine( void *fnet_tftp_srv_if_p )
         case  FNET_TFTP_SRV_STATE_HANDLE_REQUEST:
             addr_len = sizeof(addr);
 
-            received = fnet_socket_recvfrom(tftp_srv_if->socket_transaction, (fnet_uint8_t *)&tftp_srv_if->packet_data, sizeof(struct fnet_tftp_packet_data), 0u,
+            received = fnet_socket_recvfrom(tftp_srv_if->socket_transaction, (fnet_uint8_t *)&tftp_srv_if->packet.packet_data, sizeof(struct fnet_tftp_packet_data), 0u,
                                             &addr, &addr_len );
 
             if(received >= 4)
             {
                 FNET_DEBUG_TFTP_SRV("TFTP_SRV:HANDLE_REQUEST");
                 /* Error. */
-                if ( (received == FNET_ERR) || (tftp_srv_if->packet_data.opcode == FNET_HTONS(FNET_TFTP_OPCODE_ERROR)) )
+                if ( (received == FNET_ERR) || (tftp_srv_if->packet.packet_data.opcode == FNET_HTONS(FNET_TFTP_OPCODE_ERROR)) )
                 {
                     tftp_srv_if->state = FNET_TFTP_SRV_STATE_CLOSE;
                 }
@@ -555,12 +527,12 @@ static void fnet_tftp_srv_state_machine( void *fnet_tftp_srv_if_p )
                     tftp_srv_if->state = FNET_TFTP_SRV_STATE_CLOSE;
                 }
                 /* Received ACK. */
-                else if ((tftp_srv_if->request_type == FNET_TFTP_REQUEST_READ) && (tftp_srv_if->packet_data.opcode == FNET_HTONS(FNET_TFTP_OPCODE_ACK)))
+                else if ((tftp_srv_if->request_type == FNET_TFTP_REQUEST_READ) && (tftp_srv_if->packet.packet_data.opcode == FNET_HTONS(FNET_TFTP_OPCODE_ACK)))
                 {
-                    if(tftp_srv_if->block_number_ack == fnet_ntohs(tftp_srv_if->packet_data.block_number)) /* Correct ACK. */
+                    if(tftp_srv_if->block_number_ack == fnet_ntohs(tftp_srv_if->packet.packet_data.block_number)) /* Correct ACK. */
                     {
                         /* If last ACK. */
-                        if(tftp_srv_if->tx_data_size < sizeof(tftp_srv_if->packet_data.data))
+                        if(tftp_srv_if->tx_data_size < sizeof(tftp_srv_if->packet.packet_data.data))
                         {
                             tftp_srv_if->complete_status = FNET_OK;
                             tftp_srv_if->state = FNET_TFTP_SRV_STATE_CLOSE;
@@ -570,7 +542,7 @@ static void fnet_tftp_srv_state_machine( void *fnet_tftp_srv_if_p )
                         else
                         {
                             /* Data handler.*/
-                            if((sent = fnet_tftp_srv_data_handler(tftp_srv_if, (sizeof(tftp_srv_if->packet_data.data)))) == FNET_ERR)
+                            if((sent = fnet_tftp_srv_data_handler(tftp_srv_if, (sizeof(tftp_srv_if->packet.packet_data.data)))) == FNET_ERR)
                             {
                                 break;
                             }
@@ -585,9 +557,9 @@ static void fnet_tftp_srv_state_machine( void *fnet_tftp_srv_if_p )
                     tftp_srv_if->request_send(tftp_srv_if);
                 }
                 /* Received Data. */
-                else if ((tftp_srv_if->request_type == FNET_TFTP_REQUEST_WRITE) && (tftp_srv_if->packet_data.opcode == FNET_HTONS(FNET_TFTP_OPCODE_DATA)) )
+                else if ((tftp_srv_if->request_type == FNET_TFTP_REQUEST_WRITE) && (tftp_srv_if->packet.packet_data.opcode == FNET_HTONS(FNET_TFTP_OPCODE_DATA)) )
                 {
-                    if((tftp_srv_if->block_number_ack + 1u) == fnet_ntohs(tftp_srv_if->packet_data.block_number))
+                    if((tftp_srv_if->block_number_ack + 1u) == fnet_ntohs(tftp_srv_if->packet.packet_data.block_number))
                     {
                         /* Data handler.*/
                         if(fnet_tftp_srv_data_handler(tftp_srv_if, ((fnet_size_t)received - 4u)) == FNET_ERR)
@@ -658,8 +630,6 @@ static void fnet_tftp_srv_state_machine( void *fnet_tftp_srv_if_p )
 }
 
 /************************************************************************
-* NAME: fnet_tftp_srv_release
-*
 * DESCRIPTION: TFTP server release.
 ************************************************************************/
 void fnet_tftp_srv_release(fnet_tftp_srv_desc_t desc)
@@ -681,8 +651,6 @@ void fnet_tftp_srv_release(fnet_tftp_srv_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_tftp_srv_is_enabled
-*
 * DESCRIPTION: This function returns FNET_TRUE if the TFTP server
 *              is enabled/initialised.
 ************************************************************************/

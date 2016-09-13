@@ -840,7 +840,7 @@ static IN_RAM_DATA fnet_uint32_t BlankCheck_C[] =
 
 
 /* Block start addresses */
-const fnet_uint32_t BLOCK_START_ADDRS[NUM_BLOCK_ALL] =
+static const fnet_uint32_t BLOCK_START_ADDRS[NUM_BLOCK_ALL] =
 {
     /* LOW */
     0x00800000, 0x00804000, 0x00F98000, 0x00F9C000,
@@ -854,7 +854,7 @@ const fnet_uint32_t BLOCK_START_ADDRS[NUM_BLOCK_ALL] =
 };
 
 /* Block end addresses */
-const fnet_uint32_t BLOCK_END_ADDRS[NUM_BLOCK_ALL] =
+static const fnet_uint32_t BLOCK_END_ADDRS[NUM_BLOCK_ALL] =
 {
     /* LOW */
     0x00803FFF, 0x00807FFF, 0x00F9BFFF, 0x00F9FFFF,
@@ -868,11 +868,10 @@ const fnet_uint32_t BLOCK_END_ADDRS[NUM_BLOCK_ALL] =
 };
 
 static IN_RAM_DATA SSD_CONFIG    *pSSDConfig;
-static fnet_uint8_t              previousBlockId = 255;
 static ALL_BLOCK_SEL             blockSel;
 static fnet_uint32_t             pflash_pfcr1;
 
-static PFLASHINIT                pFlashInit        = (PFLASHINIT) FlashInit_C;
+static PFLASHINIT                pFlashInit        = (PFLASHINIT)FlashInit_C;
 static PFLASHERASE               pFlashErase       = (PFLASHERASE) FlashErase_C;
 static PFLASHPROGRAM             pFlashProgram     = (PFLASHPROGRAM) FlashProgram_C;
 static PFLASHCHECKSTATUS         pFlashCheckStatus = (PFLASHCHECKSTATUS) FlashCheckStatus_C;
@@ -979,7 +978,7 @@ static fnet_uint8_t fnet_cpu_flash_block_find(
 
     for (i = 0; i < NUM_BLOCK_ALL; i++)
     {
-       if((BLOCK_START_ADDRS[i] >= (fnet_uint32_t)flash_addr) )
+       if((BLOCK_START_ADDRS[i] == (fnet_uint32_t)flash_addr) )
        {
             blockID = i;
             break;
@@ -1244,18 +1243,18 @@ fnet_return_t fnet_cpu_flash_erase(
         n -= bytes;
 
         /*incr. address for next erase loop*/
-        flash_addr = (fnet_uint8_t*)flash_addr + n;
+        addr = (fnet_uint8_t*)addr + bytes;
     }
 
     //RestoreFlashControllerCache(FLASH_PFCR1 ,pflash_pfcr1);
 FAIL:
     fnet_cpu_irq_enable(irq_desc);
 
-	if(err != FNET_OK)
-	{
-		err = FNET_ERR
-	}
-	
+    if(err != FNET_OK)
+    {
+        err = FNET_ERR;
+    }
+
     return (fnet_return_t)err;
 }
 
@@ -1341,11 +1340,11 @@ fnet_return_t fnet_cpu_flash_write(
 FAIL:
     fnet_cpu_irq_enable(irq_desc);
 
-	if(err != FNET_OK)
-	{
-		err = FNET_ERR
-	}
-	
+    if(err != FNET_OK)
+    {
+        err = FNET_ERR;
+    }
+
     return (fnet_return_t)err;
 }
 

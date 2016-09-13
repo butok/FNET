@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2014 by Andrey Butok. FNET Community.
+* Copyright 2014-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,11 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_dns_prv.h
-*
-* @author Andrey Butok
-*
 * @brief DNS Definitions.
 *
 ***************************************************************************/
@@ -48,7 +43,6 @@
 #define    FNET_DNS_TYPE_A      (0x0001U)   /**< @brief IPv4 address. */
 #define    FNET_DNS_TYPE_AAAA   (0x001CU)    /**< @brief IPv6 address. */
 
-
 /************************************************************************
 *    DNS header [RFC1035, 4.1.1.]
 *************************************************************************
@@ -67,7 +61,6 @@
     |                    ARCOUNT                    |
     +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 */
-
 FNET_COMP_PACKED_BEGIN
 typedef struct
 {
@@ -109,7 +102,6 @@ FNET_COMP_PACKED_END
     |                     QCLASS                    |
     +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 */
-
 FNET_COMP_PACKED_BEGIN
 typedef struct
 {
@@ -120,7 +112,6 @@ typedef struct
 
 } fnet_dns_q_tail_t;
 FNET_COMP_PACKED_END
-
 
 /************************************************************************
 *    DNS Resource Record header [RFC1035, 4.1.3.] with message compression
@@ -145,7 +136,6 @@ FNET_COMP_PACKED_END
     /                                               /
     +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 */
-
 FNET_COMP_PACKED_BEGIN
 typedef struct
 {

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
 *
@@ -20,11 +20,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_inet.h
-*
-* @author Andrey Butok
-*
 * @brief Address-conversion functions API.
 *
 ***************************************************************************/
@@ -215,7 +210,6 @@ fnet_return_t fnet_inet_ptos (const fnet_char_t *str, struct sockaddr *addr);
 #if defined(__cplusplus)
 }
 #endif
-
 
 /*! @} */
 

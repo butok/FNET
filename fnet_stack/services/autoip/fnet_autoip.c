@@ -89,14 +89,14 @@ typedef struct fnet_autoip_if
     fnet_time_t                     collision_timestamp;
 #endif
     fnet_bool_t                     reuse_addr;
-    fnet_autoip_callback_t          callback_updated;        /* Optional ponter to the handler
+    fnet_autoip_callback_t          callback_updated;        /* Optional pointer to the handler
                                                             * callback function, that is
                                                             * called when the Auto-IP service has
                                                             * updated the IP parameters.*/
     void                            *callback_updated_param; /* Optional user-application specific parameter.
                                                             * It's passed to callback_updated
                                                             * event handler callback.*/
-    fnet_autoip_callback_t          callback_probe;        /* Optional ponter to the handler
+    fnet_autoip_callback_t          callback_probe;        /* Optional pointer to the handler
                                                             * callback function, that is
                                                             * called when the Auto-IP service probes address.*/
     void                            *callback_probe_param; /* Optional user-application specific parameter.
@@ -112,8 +112,6 @@ static void fnet_autoip_probe(fnet_autoip_if_t *llif);
 static struct fnet_autoip_if fnet_autoip_if_list[FNET_CFG_AUTOIP_MAX];
 
 /************************************************************************
-* NAME: fnet_autoip_random_address
-*
 * DESCRIPTION: Returns a pseudo-random address in the 169.245/16 network
 ************************************************************************/
 static fnet_ip4_addr_t fnet_autoip_generate_random_address(void)
@@ -130,8 +128,6 @@ static fnet_ip4_addr_t fnet_autoip_generate_random_address(void)
 }
 
 /************************************************************************
-* NAME: fnet_autoip_get_random_wait_time
-*
 * DESCRIPTION: Generates a random wait time between min and max
 * (actually, it is not a time, but number of ticks)
 ************************************************************************/
@@ -145,8 +141,6 @@ static unsigned long fnet_autoip_get_random_wait_time(unsigned min, unsigned max
 }
 
 /************************************************************************
-* NAME: fnet_autoip_probe
-*
 * DESCRIPTION: Probes for IP address availability
 * It sends an ARP request on the specified interface, having the fields
 * set to the following values:
@@ -183,8 +177,6 @@ static void fnet_autoip_probe(fnet_autoip_if_t *llif)
 }
 
 /************************************************************************
-* NAME: fnet_autoip_announce
-*
 * DESCRIPTION: Claims an IP address
 * It sends an ARP request on the specified interface, having the fields set
 * as they were in the probe request, with the only exception that the sender
@@ -200,8 +192,6 @@ static void fnet_autoip_announce(fnet_autoip_if_t *llif)
 }
 
 /************************************************************************
-* NAME: fnet_autoip_is_collision
-*
 * DESCRIPTION: Detects a conflict (somebody else is using the same IP address)
 * It doesn't return anything but increments the conflicts field of llif
 ************************************************************************/
@@ -226,8 +216,6 @@ static fnet_bool_t fnet_autoip_is_collision(fnet_autoip_if_t *llif)
 }
 
 /************************************************************************
-* NAME: fnet_autoip_apply_params
-*
 * DESCRIPTION: Apply Link-Local parameters to the interface.
 ************************************************************************/
 static void fnet_autoip_apply_params(fnet_autoip_if_t *llif)
@@ -243,8 +231,6 @@ static void fnet_autoip_apply_params(fnet_autoip_if_t *llif)
 }
 
 /************************************************************************
-* NAME: fnet_autoip_change_state
-*
 * DESCRIPTION: Change state of the Link-Local service.
 ************************************************************************/
 static void fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_t state )
@@ -296,6 +282,9 @@ static void fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_
     }
 }
 
+/************************************************************************
+* DESCRIPTION: Link-Local service state machine
+************************************************************************/
 static void fnet_autoip_state_machine( void *fnet_autoip_if_p )
 {
     fnet_autoip_if_t *llif = (fnet_autoip_if_t *)fnet_autoip_if_p;
@@ -430,10 +419,7 @@ static void fnet_autoip_state_machine( void *fnet_autoip_if_p )
 }
 
 /************************************************************************
-* NAME: fnet_autoip_init
-*
 * DESCRIPTION: Auto-IP service initialization.
-*
 ************************************************************************/
 fnet_autoip_desc_t fnet_autoip_init ( struct fnet_autoip_params *params)
 {
@@ -499,8 +485,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_autoip_release
-*
 * DESCRIPTION: Auto-IP service release.
 ************************************************************************/
 void fnet_autoip_release( fnet_autoip_desc_t desc )
@@ -515,8 +499,6 @@ void fnet_autoip_release( fnet_autoip_desc_t desc )
 }
 
 /************************************************************************
-* NAME: fnet_autoip_set_callback_updated
-*
 * DESCRIPTION: Registers the "IPv4 parameters updated" Auto-IP event handler callback.
 ************************************************************************/
 void fnet_autoip_set_callback_updated (fnet_autoip_desc_t desc, fnet_autoip_callback_t callback_updated, void *param)
@@ -531,8 +513,6 @@ void fnet_autoip_set_callback_updated (fnet_autoip_desc_t desc, fnet_autoip_call
 }
 
 /************************************************************************
-* NAME: fnet_autoip_set_callback_probe
-*
 * DESCRIPTION: Registers the "Address probing" Auto-IP event handler callback.
 ************************************************************************/
 void fnet_autoip_set_callback_probe (fnet_autoip_desc_t desc, fnet_autoip_callback_t callback_probe, void *param)
@@ -547,10 +527,8 @@ void fnet_autoip_set_callback_probe (fnet_autoip_desc_t desc, fnet_autoip_callba
 }
 
 /************************************************************************
-* NAME: fnet_autoip_is_enabled
-*
 * DESCRIPTION: This function returns FNET_TRUE if the Auto-IP service
-*              is enabled/initialised.
+*              is enabled/initialized.
 ************************************************************************/
 fnet_bool_t fnet_autoip_is_enabled(fnet_autoip_desc_t desc)
 {

@@ -19,14 +19,6 @@
 *
 **********************************************************************/ /*!
 *
-* @file fnet_mpc_isr_inst.c
-*
-* @author Andrey Butok
-*
-* @date Dec-17-2012
-*
-* @version 0.1.1.0
-*
 * @brief Interrupt service dispatcher implementation.
 *
 ***************************************************************************/
@@ -39,8 +31,6 @@
 extern fnet_uint32_t FNET_CFG_CPU_VECTOR_TABLE [];
 
 /************************************************************************
-* NAME: fnet_cpu_isr_install
-*
 * DESCRIPTION:
 *************************************************************************/
 fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t priority)

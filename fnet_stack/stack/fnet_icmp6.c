@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_icmp6.c
-*
-* @author Andrey Butok
-*
 * @brief ICMP protocol implementation.
 *
 ***************************************************************************/
@@ -63,8 +58,6 @@ fnet_prot_if_t fnet_icmp6_prot_if =
 };
 
 /************************************************************************
-* NAME: fnet_icmp6_input
-*
 * DESCRIPTION: ICMPv6 input function.
 *************************************************************************/
 static void fnet_icmp6_input(fnet_netif_t *netif, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb)
@@ -276,8 +269,6 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
 }
 
 /************************************************************************
-* NAME: fnet_icmp6_output
-*
 * DESCRIPTION: ICMPv6 output function.
 *************************************************************************/
 void fnet_icmp6_output( struct fnet_netif *netif, const fnet_ip6_addr_t *src_ip, const fnet_ip6_addr_t *dest_ip, fnet_uint8_t hop_limit, fnet_netbuf_t *nb )
@@ -295,8 +286,6 @@ void fnet_icmp6_output( struct fnet_netif *netif, const fnet_ip6_addr_t *src_ip,
 }
 
 /************************************************************************
-* NAME: fnet_icmp6_error
-*
 * DESCRIPTION: Sends ICMPv6 error message.
 *************************************************************************/
 void fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t code, fnet_uint32_t param, fnet_netbuf_t *origin_nb )
@@ -410,4 +399,3 @@ void fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t
 
 }
 #endif /* FNET_CFG_IP6 */
-

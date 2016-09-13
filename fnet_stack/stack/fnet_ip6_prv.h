@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_ip6_prv.h
-*
-* @author Andrey Butok
-*
 * @brief Private. IPv6 protocol API.
 *
 ***************************************************************************/
@@ -42,7 +37,6 @@
 *    Definitions.
 *************************************************************************/
 #define FNET_IP6_HOPLIMIT_DEFAULT       (64U)  /* Default hop-limit */
-
 #define FNET_IP6_MAX_PACKET             (FNET_CFG_IP_MAX_PACKET)
 
 /************************************************************************
@@ -51,7 +45,6 @@
 #define FNET_IP6_VERSION                (6U)   /* IPv6 version. */
 #define FNET_IP6_HOP_LIMIT_MAX          (255U) /* Maximum hop limit. */
 #define FNET_IP6_HOP_LIMIT_DEFAULT      (64U)  /* Default hop limit. */
-
 
 #define FNET_IP6_TIMER_PERIOD           (500U)
 
@@ -62,7 +55,6 @@
  * abandoned and all the fragments that have been received for that
  * packet must be discarded.*/
 #define FNET_IP6_FRAG_TTL        (60000U/FNET_IP6_TIMER_PERIOD) /* TTL for fragments to complete a datagram (60sec)*/
-
 
 /* RFC4484:
  *  Multicast destination addresses have a 4-bit scope field that
@@ -158,7 +150,6 @@ FNET_COMP_PACKED_END
                                                                     * header. If the Payload Length field of the IPv6 header indicates the
                                                                     * presence of octets past the end of a header whose Next Header field
                                                                     * contains 59, those octets must be ignored.*/
-
 
 /***********************************************************************
  * Hop-by-Hop Options Header & Destination Options Header

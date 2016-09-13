@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
 *
@@ -20,11 +20,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_prot.c
-*
-* @author Andrey Butok
-*
 * @brief Transport protocol interface implementation.
 *
 ***************************************************************************/
@@ -43,7 +38,6 @@
 /************************************************************************
 *     Global Data Structures
 *************************************************************************/
-
 
 /************************************************************************
 *     List of Transport Layer Protocols.
@@ -78,8 +72,6 @@ static fnet_prot_if_t *const fnet_prot_if_list[] =
 #define FNET_PROT_TRANSPORT_IF_LIST_SIZE  (sizeof(fnet_prot_if_list)/sizeof(fnet_prot_if_t*))
 
 /************************************************************************
-* NAME: fnet_prot_init
-*
 * DESCRIPTION: Transport and IP layers initialization.
 *************************************************************************/
 fnet_return_t fnet_prot_init( void )
@@ -124,8 +116,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_prot_release
-*
 * DESCRIPTION: Transport and IP layers release.
 *************************************************************************/
 void fnet_prot_release( void )
@@ -154,8 +144,6 @@ void fnet_prot_release( void )
 }
 
 /************************************************************************
-* NAME: fnet_prot_find
-*
 * DESCRIPTION: This function looks up a protocol by domain family name,
 *              by type and by protocol number.
 *************************************************************************/
@@ -177,8 +165,6 @@ fnet_prot_if_t *fnet_prot_find( fnet_address_family_t family, fnet_socket_type_t
 }
 
 /************************************************************************
-* NAME: fnet_prot_drain
-*
 * DESCRIPTION: Tries to free not critical parts of
 *              dynamic allocated memory in the stack, if possible.
 *************************************************************************/

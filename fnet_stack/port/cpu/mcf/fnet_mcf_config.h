@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2012-2015 by Andrey Butok.
+* Copyright 2012-2016 by Andrey Butok.
 * Copyright 2008-2011 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -18,11 +18,6 @@
 *  limitations under the License.
 *
 **********************************************************************/ /*!
-*
-* @file fnet_mcf_config.h
-*
-* @author Andrey Butok
-*
 * @brief ColdFire specific default configuration file.
 *
 ***************************************************************************/
@@ -35,9 +30,7 @@
 
 #define _FNET_MCF_CONFIG_H_
 
-
 #include "fnet_config.h"
-
 
 #if FNET_MCF || defined(__DOXYGEN__)
 

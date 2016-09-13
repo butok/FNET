@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp_setget.c
-*
-* @author Andrey Butok
-*
 * @brief FNET Application Shell Set/Get routines.
 *
 ***************************************************************************/
@@ -189,8 +184,6 @@ static const fapp_setget_cmd_t fapp_setget_cmd_table [] =
 #define FAPP_SET_CMD_NUM  ((fnet_index_t)(sizeof(fapp_setget_cmd_table)/sizeof(fapp_setget_cmd_t)))
 
 /************************************************************************
-* NAME: fapp_set_cmd_hostname
-*
 * DESCRIPTION: Sets default interface, using its name as parameter.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_NETIF
@@ -212,8 +205,6 @@ static void fapp_set_cmd_netif(fnet_shell_desc_t desc, fnet_char_t *value )
 #endif
 
 /************************************************************************
-* NAME: fapp_get_cmd_netif
-*
 * DESCRIPTION: Gets name of the default interface.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_NETIF
@@ -227,8 +218,6 @@ static void fapp_get_cmd_netif(fnet_shell_desc_t desc)
 #endif
 
 /************************************************************************
-* NAME: fapp_set_ip
-*
 * DESCRIPTION: Set IP address function.
 ************************************************************************/
 #if FNET_CFG_IP4
@@ -248,8 +237,6 @@ static void fapp_set_ip(fnet_shell_desc_t desc, fnet_char_t *value, void (*set_i
 #endif
 
 /************************************************************************
-* NAME: fapp_get_ip
-*
 * DESCRIPTION: Print IP address.
 ************************************************************************/
 #if FNET_CFG_IP4
@@ -265,8 +252,6 @@ static void fapp_get_ip(fnet_shell_desc_t desc, fnet_ip4_addr_t (*get_address)( 
 #endif
 
 /************************************************************************
-* NAME: fapp_set_cmd_ip
-*
 * DESCRIPTION: Set IP address for default network interface.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_IP && FNET_CFG_IP4
@@ -286,8 +271,6 @@ static void fapp_set_cmd_ip(fnet_shell_desc_t desc, fnet_char_t *value )
 #endif
 
 /************************************************************************
-* NAME: fapp_get_cmd_ip
-*
 * DESCRIPTION: Gets IP address for default network interface.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_IP && FNET_CFG_IP4
@@ -298,8 +281,6 @@ static void fapp_get_cmd_ip(fnet_shell_desc_t desc)
 #endif
 
 /************************************************************************
-* NAME: fapp_set_cmd_gateway
-*
 * DESCRIPTION: Sets gateway for default network interface.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_GATEWAY && FNET_CFG_IP4
@@ -310,8 +291,6 @@ static void fapp_set_cmd_gateway(fnet_shell_desc_t desc, fnet_char_t *value )
 #endif
 
 /************************************************************************
-* NAME: fapp_set_cmd_gateway
-*
 * DESCRIPTION: Gets gateway for default network interface.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_GATEWAY && FNET_CFG_IP4
@@ -322,8 +301,6 @@ static void fapp_get_cmd_gateway(fnet_shell_desc_t desc)
 #endif
 
 /************************************************************************
-* NAME: fapp_set_cmd_netmask
-*
 * DESCRIPTION: Sets netmask for default network interface.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_NETMASK && FNET_CFG_IP4
@@ -345,8 +322,6 @@ static void fapp_set_cmd_netmask(fnet_shell_desc_t desc, fnet_char_t *value )
 #endif
 
 /************************************************************************
-* NAME: fapp_get_cmd_netmask
-*
 * DESCRIPTION: Gets netmask for default network interface.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_NETMASK && FNET_CFG_IP4
@@ -357,8 +332,6 @@ static void fapp_get_cmd_netmask(fnet_shell_desc_t desc)
 #endif
 
 /************************************************************************
-* NAME: fapp_set_cmd_mac
-*
 * DESCRIPTION: Sets MAC address for default network interface.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_MAC
@@ -375,8 +348,6 @@ static void fapp_set_cmd_mac(fnet_shell_desc_t desc, fnet_char_t *value)
 #endif
 
 /************************************************************************
-* NAME: fapp_set_cmd_hostname
-*
 * DESCRIPTION: Sets host name, used by LLMNR.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_HOSTNAME
@@ -388,8 +359,6 @@ static void fapp_set_cmd_hostname(fnet_shell_desc_t desc, fnet_char_t *value )
 #endif
 
 /************************************************************************
-* NAME: fapp_get_cmd_hostname
-*
 * DESCRIPTION: Gets host name, used by LLMNR.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_HOSTNAME
@@ -400,8 +369,6 @@ static void fapp_get_cmd_hostname(fnet_shell_desc_t desc)
 #endif
 
 /************************************************************************
-* NAME: fapp_set_cmd_dns
-*
 * DESCRIPTION: Gets DNS-server IP address.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_DNS && FNET_CFG_DNS && FNET_CFG_IP4
@@ -412,8 +379,6 @@ static void fapp_get_cmd_dns(fnet_shell_desc_t desc)
 #endif
 
 /************************************************************************
-* NAME: fapp_set_cmd_dns
-*
 * DESCRIPTION: Sets DNS-server IP address.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_DNS && FNET_CFG_DNS && FNET_CFG_IP4
@@ -424,8 +389,6 @@ static void fapp_set_cmd_dns(fnet_shell_desc_t desc, fnet_char_t *value)
 #endif
 
 /************************************************************************
-* NAME: fapp_set_cmd_mac
-*
 * DESCRIPTION: Gets MAC address for default network interface.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_MAC
@@ -440,8 +403,6 @@ static void fapp_get_cmd_mac(fnet_shell_desc_t desc)
 #endif
 
 /************************************************************************
-* NAME: fapp_set_cmd_bootscript
-*
 * DESCRIPTION: Sets boot-command script .
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_SCRIPT
@@ -452,8 +413,6 @@ static void fapp_set_cmd_bootscript(fnet_shell_desc_t desc, fnet_char_t *value )
 }
 #endif
 /************************************************************************
-* NAME: fapp_get_cmd_bootscript
-*
 * DESCRIPTION: Gets boot-command script .
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_SCRIPT
@@ -463,8 +422,6 @@ static void fapp_get_cmd_bootscript(fnet_shell_desc_t desc)
 }
 #endif
 /************************************************************************
-* NAME: fapp_set_cmd_boot
-*
 * DESCRIPTION: Sets boot mode.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_BOOT
@@ -484,8 +441,6 @@ static void fapp_set_cmd_boot(fnet_shell_desc_t desc, fnet_char_t *value )
 }
 #endif
 /************************************************************************
-* NAME: fapp_get_cmd_boot
-*
 * DESCRIPTION: Gets boot mode.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_BOOT
@@ -496,8 +451,6 @@ static void fapp_get_cmd_boot(fnet_shell_desc_t desc)
 }
 #endif
 /************************************************************************
-* NAME: fapp_set_cmd_bootdelay
-*
 * DESCRIPTION: Sets boot delay.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_DELAY
@@ -518,8 +471,6 @@ static void fapp_set_cmd_bootdelay(fnet_shell_desc_t desc, fnet_char_t *value )
 }
 #endif
 /************************************************************************
-* NAME: fapp_get_cmd_bootdelay
-*
 * DESCRIPTION: Gets boot delay.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_DELAY
@@ -530,8 +481,6 @@ static void fapp_get_cmd_bootdelay(fnet_shell_desc_t desc)
 #endif
 
 /************************************************************************
-* NAME: fapp_set_cmd_tftp
-*
 * DESCRIPTION: Set IP address for default network interface.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_TFTP
@@ -548,8 +497,6 @@ static void fapp_set_cmd_tftp(fnet_shell_desc_t desc, fnet_char_t *value )
 }
 #endif
 /************************************************************************
-* NAME: fapp_get_cmd_tftp
-*
 * DESCRIPTION:
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_TFTP
@@ -561,8 +508,6 @@ static void fapp_get_cmd_tftp(fnet_shell_desc_t desc)
 }
 #endif
 /************************************************************************
-* NAME: fapp_set_cmd_image
-*
 * DESCRIPTION:
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_IMAGE
@@ -573,8 +518,6 @@ static void fapp_set_cmd_image(fnet_shell_desc_t desc, fnet_char_t *value )
 }
 #endif
 /************************************************************************
-* NAME: fapp_get_cmd_image
-*
 * DESCRIPTION:
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_IMAGE
@@ -584,8 +527,6 @@ static void fapp_get_cmd_image(fnet_shell_desc_t desc)
 }
 #endif
 /************************************************************************
-* NAME: fapp_set_cmd_image_type
-*
 * DESCRIPTION:
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_TYPE
@@ -604,8 +545,6 @@ static void fapp_set_cmd_image_type(fnet_shell_desc_t desc, fnet_char_t *value )
 }
 #endif
 /************************************************************************
-* NAME: fapp_get_cmd_image_type
-*
 * DESCRIPTION:
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_TYPE
@@ -616,8 +555,6 @@ static void fapp_get_cmd_image_type(fnet_shell_desc_t desc)
 }
 #endif
 /************************************************************************
-* NAME: fapp_set_cmd_go
-*
 * DESCRIPTION: Sets 'go' entry point.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_GO
@@ -638,8 +575,6 @@ static void fapp_set_cmd_go(fnet_shell_desc_t desc, fnet_char_t *value )
 }
 #endif
 /************************************************************************
-* NAME: fapp_get_cmd_go
-*
 * DESCRIPTION: Gets 'go' entry point.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_GO
@@ -649,8 +584,6 @@ static void fapp_get_cmd_go(fnet_shell_desc_t desc)
 }
 #endif
 /************************************************************************
-* NAME: fapp_set_cmd_raw
-*
 * DESCRIPTION: Sets the default download address for raw binary files.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_RAW
@@ -671,8 +604,6 @@ static void fapp_set_cmd_raw(fnet_shell_desc_t desc, fnet_char_t *value )
 }
 #endif
 /************************************************************************
-* NAME: fapp_get_cmd_raw
-*
 * DESCRIPTION: Gets the default download address for raw binary files.
 ************************************************************************/
 #if FAPP_CFG_SETGET_CMD_RAW
@@ -682,8 +613,6 @@ static void fapp_get_cmd_raw(fnet_shell_desc_t desc)
 }
 #endif
 /************************************************************************
-* NAME: fapp_set_cmd
-*
 * DESCRIPTION: Sets system options.
 ************************************************************************/
 void fapp_set_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -724,8 +653,6 @@ EXIT:
 }
 
 /************************************************************************
-* NAME: fapp_show
-*
 * DESCRIPTION: Shows all system settings.
 ************************************************************************/
 void fapp_get_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -759,6 +686,3 @@ void fapp_get_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
 }
 
 #endif
-
-
-

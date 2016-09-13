@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_http_ssi.c
-*
-* @author Andrey Butok
-*
 * @brief FNET HTTP Server SSI implementation.
 *
 ***************************************************************************/
@@ -61,8 +56,6 @@ const struct fnet_http_file_handler fnet_http_ssi_handler =
 
 #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
 /************************************************************************
-* NAME: fnet_http_ssi_handle
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_return_t fnet_http_ssi_handle (struct fnet_http_if *http, struct fnet_http_uri *uri)
@@ -74,8 +67,6 @@ static fnet_return_t fnet_http_ssi_handle (struct fnet_http_if *http, struct fne
 #endif
 
 /************************************************************************
-* NAME: fnet_http_ssi_send
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_size_t fnet_http_ssi_send (struct fnet_http_if *http)

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2012-2013 by Andrey Butok. FNET Community.
+* Copyright 2012-2016 by Andrey Butok. FNET Community.
 * Copyright 2005-2009 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -18,9 +18,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *
 **********************************************************************/ /*!
-*
-* @file fnet_mcf52235_config.h
-*
 * @brief MCF5223x specific configuration file.
 *
 ***************************************************************************/

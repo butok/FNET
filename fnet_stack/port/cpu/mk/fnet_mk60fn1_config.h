@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,9 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_mk60n512_config.h
-*
 * @brief K60F120 specific configuration file.
 *
 ***************************************************************************/
@@ -32,7 +29,7 @@
 #ifndef _FNET_MK60F120_CONFIG_H_
 #define _FNET_MK60F120_CONFIG_H_
 
-#define FNET_MK                             (1)
+#define FNET_MK                                 (1)
 
 /* System frequency in Hz. */
 #ifndef FNET_CFG_CPU_CLOCK_HZ
@@ -40,7 +37,7 @@
 #endif
 
 /* The platform does not have second Ethernet Module.*/
-#define FNET_CFG_CPU_ETH1        			(0)
+#define FNET_CFG_CPU_ETH1        			    (0)
 
 /* Defines the maximum number of incoming frames that may
  *           be buffered by the Ethernet module.*/
@@ -49,14 +46,14 @@
 #endif
 
 /* The platform has Kinetis Flash Memory Module (FTFL).*/
-#define FNET_CFG_CPU_FLASH                  (1)
+#define FNET_CFG_CPU_FLASH                      (1)
 
 /*/ Smallest logical block which can be erased independently.*/
-#define FNET_CFG_CPU_FLASH_PAGE_SIZE        (4*1024)        /* 4KB sector.*/
+#define FNET_CFG_CPU_FLASH_PAGE_SIZE            (4*1024)        /* 4KB sector.*/
 
 /* On-chip Flash size.*/
-#define FNET_CFG_CPU_FLASH_SIZE             (1024 * 1024)    /* 1 MB */
+#define FNET_CFG_CPU_FLASH_SIZE                 (1024 * 1024)    /* 1 MB */
 
-#define FNET_CFG_CPU_FLASH_PROGRAM_SIZE     (8) /*Bytes.*/
+#define FNET_CFG_CPU_FLASH_PROGRAM_SIZE         (8) /*Bytes.*/
 
 #endif /* _FNET_MK60F120_CONFIG_H_ */

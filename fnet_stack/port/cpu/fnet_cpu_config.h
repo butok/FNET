@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_cpu_config.h
-*
-* @author Andrey Butok
-*
 * @brief Default platform-specific configuration.
 *
 ***************************************************************************/
@@ -121,7 +116,6 @@
 #ifndef FNET_CFG_CPU_LPC1788
     #define FNET_CFG_CPU_LPC1788  	(0)
 #endif
-
 
 /*********** MFC ********************/
 #if FNET_CFG_CPU_MCF52235 /* Kirin2 */
@@ -274,7 +268,6 @@
     #define FNET_CPU_STR    "MPC5744P"
 #endif
 
-
 /*********** NXP's LPC ********************/
 #if FNET_CFG_CPU_LPC1788 /* NXP's LPC1788 MCU */
     #ifdef FNET_CPU_STR
@@ -284,7 +277,6 @@
     #include "port/cpu/lpc/fnet_lpc_1788_config.h"
     #define FNET_CPU_STR    "LPC1788"
 #endif
-
 
 /*-----------*/
 #ifndef FNET_CPU_STR
@@ -364,7 +356,6 @@
 
 #define FNET_CPU_CLOCK_KHZ       (FNET_CFG_CPU_CLOCK_HZ/1000U)
 #define FNET_CPU_CLOCK_MHZ       (FNET_CFG_CPU_CLOCK_HZ/1000000U)
-
 
 /**************************************************************************/ /*!
  * @def      FNET_CFG_CPU_SERIAL_PORT_DEFAULT
@@ -517,7 +508,6 @@
 
 /*! @} */
 
-
 /*! @addtogroup fnet_platform_eth_config  */
 /*! @{ */
 
@@ -664,7 +654,6 @@
 #ifndef FNET_CFG_CPU_ETH_VECTOR_PRIORITY
     #define FNET_CFG_CPU_ETH_VECTOR_PRIORITY    (2u)
 #endif
-
 
 /**************************************************************************/ /*!
  * @def      FNET_CFG_CPU_ETH_TX_BUFS_MAX
@@ -865,6 +854,5 @@
 #ifdef FNET_CFG_ETH_MAC_ADDR
     #error "FNET_CFG_ETH_MAC_ADDR parameter is obsolete. It is user application parameter now."
 #endif
-
 
 #endif /* _FNET_CPU_CONFIG_H_ */

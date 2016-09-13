@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_http_auth_prv.h
-*
-* @author Andrey Butok
-*
 * @brief Private. FNET HTTP Server Authentication API.
 *
 ***************************************************************************/
@@ -62,6 +57,5 @@ fnet_size_t fnet_http_auth_generate_challenge(struct fnet_http_if *http, fnet_ui
 #endif
 
 #endif
-
 
 #endif

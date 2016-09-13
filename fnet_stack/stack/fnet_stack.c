@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,9 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_stack.c
-*
 * @brief FNET init/release functions.
 *
 ***************************************************************************/
@@ -48,8 +45,6 @@ static fnet_return_t fnet_stack_init( void );
 static void fnet_stack_release( void );
 
 /************************************************************************
-* NAME: fnet_init
-*
 * DESCRIPTION:
 *************************************************************************/
 fnet_return_t fnet_init( struct fnet_init_params *init_params )
@@ -72,18 +67,14 @@ fnet_return_t fnet_init( struct fnet_init_params *init_params )
                     }
                 }
             }
-
             fnet_stack_mutex_unlock();
         }
-
     }
 
     return result;
 }
 
 /************************************************************************
-* NAME: fnet_release
-*
 * DESCRIPTION:
 *************************************************************************/
 void fnet_release(void)
@@ -102,8 +93,6 @@ void fnet_release(void)
 }
 
 /************************************************************************
-* NAME: fnet_stack_init
-*
 * DESCRIPTION: TCP/IP Stack initialization.
 ************************************************************************/
 static fnet_return_t fnet_stack_init( void )
@@ -153,8 +142,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_stack_release
-*
 * DESCRIPTION: TCP/IP Stack release.
 ************************************************************************/
 static void fnet_stack_release( void )

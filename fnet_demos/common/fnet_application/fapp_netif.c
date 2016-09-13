@@ -25,7 +25,6 @@
 
 #include "fapp.h"
 
-
 /************************************************************************
 *     Definitions.
 *************************************************************************/
@@ -82,7 +81,7 @@ fnet_return_t fapp_netif_init( void )
     /***********************************
      * Initialize all IFs.
      ************************************/
-    for(i=0; i < (sizeof(fapp_netif_init_param_list)/sizeof((fapp_netif_init_param_list)[0])); i++)
+    for(i=0; i < (sizeof(fapp_netif_init_param_list)/sizeof(fapp_netif_init_param_list[0])); i++)
     {
         result = fnet_netif_init(fapp_netif_init_param_list[i].netif_desc, fapp_netif_init_param_list[i].netif_mac_addr, sizeof(fnet_mac_addr_t));
         if(result == FNET_ERR)
@@ -100,12 +99,3 @@ fnet_return_t fapp_netif_init( void )
 
     return result;
 }
-
-
-
-
-
-
-
-
-

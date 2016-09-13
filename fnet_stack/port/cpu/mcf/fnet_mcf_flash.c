@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,15 +19,10 @@
 *
 **********************************************************************/ /*!
 *
-* @file fnet_mcf_flash.c
-*
-* @author Andrey Butok
-*
 * @brief ColdFire Flash Module driver.
 *
 ***************************************************************************/
 #include "fnet.h"
-
 
 #if FNET_MCF && FNET_CFG_CPU_FLASH
 
@@ -39,7 +34,6 @@
     #define FNET_MK_FLASH_RAM_SECTION   0
 #endif /* if 0 -> copy function to RAM buffer.*/
 
-
 #if FNET_MK_FLASH_RAM_SECTION
 /* == Should be in the RAM ==*/
 #if FNET_CFG_COMP_CW
@@ -50,8 +44,6 @@
     #pragma location = "FNET_RAMFUNC"
 #endif
 /************************************************************************
-* NAME: _cfm_command_lunch_inram
-*
 * DESCRIPTION: Launch the command. It must be in RAM.
 ************************************************************************/
 static void _cfm_command_lunch_inram(fnet_vuint8_t *cfmustat_reg)
@@ -82,10 +74,7 @@ static fnet_uint8_t cfm_command_lunch_inram_buf[sizeof(cfm_command_lunch_inram_s
 
 #endif
 
-
 /************************************************************************
-* NAME: cfm_command
-*
 * DESCRIPTION: CFM command
 ************************************************************************/
 static void cfm_command( unsigned char command, unsigned long *address, unsigned long data )
@@ -140,8 +129,6 @@ static void cfm_command( unsigned char command, unsigned long *address, unsigned
 }
 
 /************************************************************************
-* NAME: fnet_cpu_flash_erase
-*
 * DESCRIPTION: Erases the specified range of the Flash memory.
 ************************************************************************/
 fnet_return_t (void *flash_addr, fnet_size_t bytes)

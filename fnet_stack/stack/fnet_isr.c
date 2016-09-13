@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
 *
@@ -20,11 +20,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_isr.c
-*
-* @author Andrey Butok
-*
 * @brief Interrupt service dispatcher implementation.
 *
 ***************************************************************************/
@@ -42,12 +37,12 @@ typedef struct fnet_isr_entry
     struct fnet_isr_entry *next;               /* Next isr in chain */
     fnet_uint32_t vector_number;               /* Vector number */
     void (*handler_top)(fnet_uint32_t cookie); /* "Critical handler" - it will
-                                        * be called every time on interrupt event,
-                                        * (e.g. user can put here clear flags etc.)*/
+                                                * be called every time on interrupt event,
+                                                * (e.g. user can put here clear flags etc.)*/
 
     void (*handler_bottom)(fnet_uint32_t cookie); /* "Bottom half handler" - it will be called after
-                                           *  isr_handler_top() in case NO SW lock
-                                           *  or on SW unlock.*/
+                                                    *  isr_handler_top() in case NO SW lock
+                                                    *  or on SW unlock.*/
     fnet_bool_t pended;                           /* indicates interrupt pending */
     fnet_uint32_t cookie;                         /* Handler Cookie. */
 } fnet_isr_entry_t;
@@ -69,8 +64,6 @@ static fnet_isr_entry_t *fnet_isr_table = 0;
 static fnet_event_desc_t fnet_event_desc_last = FNET_EVENT_VECTOR_NUMBER;
 
 /************************************************************************
-* NAME: fnet_isr_handler
-*
 * DESCRIPTION: This handler is envoked by fnet_cpu_isr().
 *              If fnet_locked == 0 - executes the
 *              corresponding handler; else - marks it as pended.
@@ -117,8 +110,6 @@ void fnet_isr_handler(fnet_uint32_t vector_number)
 }
 
 /************************************************************************
-* NAME: fnet_isr_vector_init
-*
 * DESCRIPTION: Sets 'handler' for the interrupt vector with number
 *              'vector_number' at the internal vector queue and interrupt
 *              handler 'fnet_cpu_isr' at the real vector table
@@ -144,8 +135,6 @@ fnet_return_t fnet_isr_vector_init(fnet_uint32_t vector_number,
 }
 
 /************************************************************************
-* NAME: fnet_event_init
-*
 * DESCRIPTION: Register the event handler.
 *************************************************************************/
 fnet_event_desc_t fnet_event_init(void (*event_handler)(fnet_uint32_t cookie), fnet_uint32_t cookie)
@@ -163,8 +152,6 @@ fnet_event_desc_t fnet_event_init(void (*event_handler)(fnet_uint32_t cookie), f
 }
 
 /************************************************************************
-* NAME: fnet_isr_register
-*
 * DESCRIPTION: Register 'handler' at the isr table.
 *************************************************************************/
 static fnet_return_t fnet_isr_register(fnet_uint32_t vector_number,
@@ -197,8 +184,6 @@ static fnet_return_t fnet_isr_register(fnet_uint32_t vector_number,
 }
 
 /************************************************************************
-* NAME: fnet_isr_vector_release
-*
 * DESCRIPTION: Sets the interrupt handler 'handler' for the interrupt vector
 *              with number 'vector_number' at the exception vector table but
 *              destroys info about old interrupt handler and removes
@@ -247,8 +232,6 @@ void fnet_isr_vector_release(fnet_uint32_t vector_number)
 }
 
 /************************************************************************
-* NAME: fnet_isr_lock
-*
 * DESCRIPTION: After execution of this routine all interrupts will be
 *              pended
 *************************************************************************/
@@ -258,8 +241,6 @@ void fnet_isr_lock(void)
 }
 
 /************************************************************************
-* NAME: fnet_isr_unlock
-*
 * DESCRIPTION: Executes all pending interrupt handlers and
 *              enables hardware interrupts processing
 *************************************************************************/
@@ -335,8 +316,6 @@ void fnet_isr_unlock(void)
 #endif
 
 /************************************************************************
-* NAME: fnet_event_raise
-*
 * DESCRIPTION: This function raise registerted event.
 *************************************************************************/
 void fnet_event_raise(fnet_event_desc_t event_number)
@@ -381,10 +360,7 @@ void fnet_event_raise(fnet_event_desc_t event_number)
 }
 
 /************************************************************************
-* NAME: fnet_isr_init
-*
 * DESCRIPTION: This function inits ISR module
-*
 *************************************************************************/
 void fnet_isr_init(void)
 {

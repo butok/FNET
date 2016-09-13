@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,10 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp_dhcp.c
-*
-* @author Andrey Butok
 *
 * @brief FNET Shell Demo implementation.
 *
@@ -57,8 +53,6 @@ static void fapp_dhcp_callback_updated(fnet_dhcp_desc_t dhcp_desc, fnet_netif_de
 static void fapp_dhcp_callback_discover(fnet_dhcp_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
 
 /************************************************************************
-* NAME: fapp_dhcp_on_ctrlc
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fapp_dhcp_on_ctrlc(fnet_shell_desc_t desc)
@@ -71,8 +65,6 @@ static void fapp_dhcp_on_ctrlc(fnet_shell_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fapp_dhcp_callback_updated
-*
 * DESCRIPTION: Event handler callback on new IP from DHCP client.
 ************************************************************************/
 static void fapp_dhcp_callback_updated(fnet_dhcp_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc )
@@ -85,8 +77,6 @@ static void fapp_dhcp_callback_updated(fnet_dhcp_desc_t dhcp_desc, fnet_netif_de
 }
 
 /************************************************************************
-* NAME: fapp_dhcp_callback_discover
-*
 * DESCRIPTION: Event handler callback on new IP from DHCP client.
 ************************************************************************/
 static void fapp_dhcp_callback_discover(fnet_dhcp_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc )
@@ -116,8 +106,6 @@ static void fapp_dhcp_callback_discover(fnet_dhcp_desc_t dhcp_desc, fnet_netif_d
 }
 
 /************************************************************************
-* NAME: fapp_dhcp_release
-*
 * DESCRIPTION: Releases DHCP client.
 *************************************************************************/
 void fapp_dhcp_release(void)
@@ -127,8 +115,6 @@ void fapp_dhcp_release(void)
 }
 
 /************************************************************************
-* NAME: fapp_dhcp_cmd
-*
 * DESCRIPTION: Enable DHCP client.
 ************************************************************************/
 void fapp_dhcp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -205,8 +191,6 @@ void fapp_dhcp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 }
 
 /************************************************************************
-* NAME: fapp_dhcp_info
-*
 * DESCRIPTION: Print service state.
 *************************************************************************/
 void fapp_dhcp_info(fnet_shell_desc_t desc)

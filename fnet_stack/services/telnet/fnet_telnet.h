@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_telnet.h
-*
-* @author Andrey Butok
-*
 * @brief FNET Telnet Server API.
 *
 ***************************************************************************/
@@ -206,6 +201,5 @@ fnet_bool_t fnet_telnet_is_enabled(fnet_telnet_desc_t desc);
 /*! @} */
 
 #endif  /* FNET_CFG_TELNET */
-
 
 #endif  /* _FNET_TELNET_H_ */

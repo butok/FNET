@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,11 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_mk_timer.c
-*
-* @author Andrey Butok
-*
 * @brief Kinetis specific SW timers implementation.
 *
 ***************************************************************************/
@@ -48,8 +43,6 @@
 static void fnet_cpu_timer_handler_top(fnet_uint32_t cookie);
 
 /************************************************************************
-* NAME: fnet_timer_handler_top
-*
 * DESCRIPTION: Top interrupt handler. Increment fnet_current_time
 *              and interrupt flag.
 *************************************************************************/
@@ -67,8 +60,6 @@ static void fnet_cpu_timer_handler_top(fnet_uint32_t cookie )
 }
 
 /************************************************************************
-* NAME: fnet_cpu_timer_init
-*
 * DESCRIPTION: Starts TCP/IP hardware timer. delay_ms - period of timer (ms)
 *         e.g. Time-out period = (1/FNET_CFG_SYSTEM_CLOCK_KHZ)x(1)x(124+1)x528x100 = 100 ms
 *************************************************************************/
@@ -103,10 +94,7 @@ fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms )
 }
 
 /************************************************************************
-* NAME: fnet_cpu_timer_release
-*
 * DESCRIPTION: Relaeses TCP/IP hardware timer.
-*
 *************************************************************************/
 void fnet_cpu_timer_release( void )
 {
@@ -117,7 +105,5 @@ void fnet_cpu_timer_release( void )
      */
     fnet_isr_vector_release(FNET_CFG_CPU_TIMER_VECTOR_NUMBER);
 }
-
-
 
 #endif /*FNET_MK*/

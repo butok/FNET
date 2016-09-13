@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp_bench.c
-*
-* @author Andrey Butok
-*
 * @brief FNET Shell Demo implementation.
 *
 ***************************************************************************/
@@ -100,8 +95,6 @@ static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params);
 static void fapp_bench_udp_tx (struct fapp_bench_tx_params *params);
 
 /************************************************************************
-* NAME: fapp_bench_print_results
-*
 * DESCRIPTION: Print Benchmark results.
 ************************************************************************/
 static void fapp_bench_print_results (fnet_shell_desc_t desc)
@@ -129,8 +122,6 @@ static void fapp_bench_print_results (fnet_shell_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fapp_bench_tcp_rx
-*
 * DESCRIPTION: Start Benchmark TCP server.
 ************************************************************************/
 static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t family)
@@ -270,8 +261,6 @@ ERROR_1:
 }
 
 /************************************************************************
-* NAME: fapp_bench_udp_rx
-*
 * DESCRIPTION: Start Benchmark UDP server.
 ************************************************************************/
 static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t family, struct sockaddr *multicast_address /* optional, set to 0*/)
@@ -353,7 +342,6 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
             }
         }
 #endif
-
     }
 
     /* ------ Start test.----------- */
@@ -453,8 +441,6 @@ ERROR_1:
 }
 
 /************************************************************************
-* NAME: fapp_benchrx_cmd
-*
 * DESCRIPTION: Start RX Benchmark server.
 ************************************************************************/
 void fapp_benchrx_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -497,8 +483,6 @@ void fapp_benchrx_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **
 
 /*============================ TX ===========================================*/
 /************************************************************************
-* NAME: fapp_bench_tcp_tx
-*
 * DESCRIPTION: Start TX TCP Benchmark.
 ************************************************************************/
 static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
@@ -528,7 +512,6 @@ static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
     if(packet_size > FAPP_BENCH_BUFFER_SIZE) /* Check max size.*/
         packet_size = FAPP_BENCH_BUFFER_SIZE;
 
-
     fapp_bench.socket_listen = FNET_ERR;
 
     /* ------ Start test.----------- */
@@ -542,7 +525,6 @@ static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "Num. of iterations", params->iteration_number);
     fnet_shell_println(desc, FAPP_TOCANCEL_STR);
     fnet_shell_println(desc, FAPP_DELIMITER_STR);
-
 
     while(iterations--)
     {
@@ -660,8 +642,6 @@ ERROR_1:
 }
 
 /************************************************************************
-* NAME: fapp_bench_udp_tx
-*
 * DESCRIPTION: Start TX TCP Benchmark.
 ************************************************************************/
 static void fapp_bench_udp_tx (struct fapp_bench_tx_params *params)
@@ -683,7 +663,6 @@ static void fapp_bench_udp_tx (struct fapp_bench_tx_params *params)
     fnet_index_t            cur_packet_number;
     fnet_index_t            iterations = params->iteration_number;
     fnet_address_family_t   family = params->foreign_addr.sa_family;
-
 
     if(packet_size > FAPP_BENCH_BUFFER_SIZE) /* Check max size.*/
         packet_size = FAPP_BENCH_BUFFER_SIZE;
@@ -817,10 +796,7 @@ ERROR_1:
     fnet_shell_println(desc, FAPP_BENCH_COMPLETED_STR);
 }
 
-
 /************************************************************************
-* NAME: fapp_benchtx_cmd
-*
 * DESCRIPTION: Start TX Benchmark.
 ************************************************************************/
 void fapp_benchtx_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -897,19 +873,4 @@ void fapp_benchtx_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **
     }
 }
 
-
 #endif /* FAPP_CFG_BENCH_CMD */
-
-
-
-
-
-
-
-
-
-
-
-
-
-

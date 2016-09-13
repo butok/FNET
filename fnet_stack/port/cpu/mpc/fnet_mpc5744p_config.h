@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2015 by Andrey Butok and Gordon Jahn.
+* Copyright 2015-2016 by Andrey Butok and Gordon Jahn.
 *                        Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,8 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_mpc5744p_config.h
 *
 * @brief MPC574xP specific configuration file.
 *
@@ -53,7 +51,7 @@
 
 /* The platform does not have second Ethernet Module.*/
 #define FNET_CFG_CPU_ETH1                               (0)
-
+#define FNET_CFG_CPU_ETH0                               (1)
 /* Defines the maximum number of incoming frames that may
  *           be buffered by the Ethernet module.*/
 #ifndef FNET_CFG_CPU_ETH_RX_BUFS_MAX
@@ -63,13 +61,8 @@
 /* MPC Flash Module supported.*/
 #define FNET_CFG_CPU_FLASH                              (1)
 
-/* Smallest logical block which can be erased independently.*/
-#define FNET_CFG_CPU_FLASH_PAGE_SIZE                    (4U*1024U)        /* 4KB sector.*/
-
-
 /* On-chip Flash size.*/
 #define FNET_CFG_CPU_FLASH_SIZE                         ((1024U * 1024U * 5U) / 2U)   /* 2.5 MB*/
-
 
 /*The Flash Driver require that the destination must be aligned on double word (64-bit) boundary.*/
 /*must be compliant with 8 * 2^n = FNET_CFG_CPU_FLASH_PROGRAM_SIZE */

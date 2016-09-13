@@ -92,7 +92,6 @@
     #define FAPP_CFG_CHECK_FLASH_BEFORE_WRITE       (1)
 #endif
 
-
 /**************************************************************************/ /*!
  * @def      FAPP_CFG_BOOTLOADER
  * @brief    Bootloader:
@@ -123,7 +122,6 @@
     #define FAPP_CFG_LINK_UNCONNECT_SCRIPT ""
 #endif
 
-
 /* FNET-Application TCP/IP stack default parameters. */
 /**************************************************************************/ /*!
  * @brief    Descriptor of a default network interface set during application initialisation.@n
@@ -146,31 +144,17 @@
 * Memory regions.
 *************************************************************************/
 
-#if !defined(FAPP_CFG_MEM_REGION) && FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
+#ifndef FAPP_CFG_MEM_REGION_LIST
+#if FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
     #define FAPP_CFG_MEM_REGION_LIST                {.description = "FLASH", \
-                                                        .address = FNET_CFG_CPU_FLASH_ADDRESS, \
-                                                        .size = FNET_CFG_CPU_FLASH_SIZE, \
+                                                        .address = FNET_CFG_CPU_FLASH_ADDRESS + FAPP_CFG_BOOTLOADER_SIZE, /* Reseved for bootloader */\
+                                                        .size = FNET_CFG_CPU_FLASH_SIZE - FAPP_CFG_BOOTLOADER_SIZE - FAPP_CFG_FLASH_PARAMS_SIZE, /* Reseved for bootloader and parameters */ \
                                                         .memcpy = fnet_flash_memcpy, \
                                                         .erase = fnet_flash_erase, \
-                                                        .flush = fnet_flash_flush, \
-                                                        .erase_size = FNET_CFG_CPU_FLASH_PAGE_SIZE},
+                                                        .flush = fnet_flash_flush},
 #else
     #define FAPP_CFG_MEM_REGION_LIST
 #endif
-
-/************************************************************************
-* Reserved areas inside memory regions, which may not be 
-* written during firmware update.
-*************************************************************************/
-#ifndef FAPP_CFG_MEM_REGION_RESERVED_LIST
-    #define FAPP_CFG_MEM_REGION_RESERVED_LIST       {.description = "FNET ROM", \
-                                                        .address = FAPP_CFG_APPLICATION_ADDRESS, \
-                                                        .size = FAPP_CFG_APPLICATION_SIZE}, \
-                                                    {.description = "FNET Params", \
-                                                        .address = FAPP_CFG_FLASH_PARAMS_ADDRESS, \
-                                                        .size = FAPP_CFG_FLASH_PARAMS_SIZE},
-#else
-    #define FAPP_CFG_MEM_REGION_RESERVED_LIST
 #endif
 
 /************************************************************************
@@ -186,7 +170,6 @@
 #define FAPP_CFG_FLASH_PARAMS_ADDRESS   (FNET_CFG_CPU_FLASH_ADDRESS + FNET_CFG_CPU_FLASH_SIZE - FAPP_CFG_FLASH_PARAMS_SIZE) /* Last sector of the flash.*/
 #endif
 
-
 /* Default interface.*/
 #ifndef FAPP_CFG_PARAMS_NETIF_NAME
     #if FNET_CFG_CPU_ETH0
@@ -199,7 +182,6 @@
         #define FAPP_CFG_PARAMS_NETIF_NAME             ""
     #endif
 #endif
-
 
 #ifndef FAPP_CFG_PARAMS_IP_ADDR
     #define FAPP_CFG_PARAMS_IP_ADDR             FAPP_CFG_ETH0_IP4_ADDR    /* Defined by FNET */
@@ -258,8 +240,6 @@
 #ifndef FAPP_CFG_PARAMS_TFTP_FILE_RAW_ADDRESS
     #define FAPP_CFG_PARAMS_TFTP_FILE_RAW_ADDRESS    (0)
 #endif
-
-
 
 /************************************************************************
 *    "info" command.
@@ -536,7 +516,6 @@
     #define FAPP_CFG_TFTPS_AFTER_WRITE_REQUEST_SCRIPT   ""
 #endif
 
-
 /************************************************************************
 *    TFTP data handlers
 *************************************************************************/
@@ -593,8 +572,8 @@
 #endif
 
 /* ROM memory size, reserved/protected for the application. Used by the bootloader application.*/
-#ifndef FAPP_CFG_APPLICATION_SIZE
-    #define FAPP_CFG_APPLICATION_SIZE         (52*1024) /* 52 KB */
+#ifndef FAPP_CFG_BOOTLOADER_SIZE
+    #define FAPP_CFG_BOOTLOADER_SIZE            (52*1024) /* 52 KB */
 #endif
 
 /************************************************************************

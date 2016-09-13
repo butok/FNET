@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,18 +18,12 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_mk_flash.c
-*
-* @author Andrey Butok
-*
 * @brief Kinetis Flash Memory Module (FTFL) driver.
 *
 ***************************************************************************/
 #include "fnet.h"
 
 #if FNET_MK && FNET_CFG_CPU_FLASH
-
 
 #if (FNET_CFG_CPU_FLASH_PROGRAM_SIZE != 4u) && (FNET_CFG_CPU_FLASH_PROGRAM_SIZE != 8u)
     #error "MK Flash driver supports only 4 and 8 size of program-block"
@@ -38,7 +32,6 @@
 #ifndef FNET_MK_FLASH_RAM_SECTION
     #define FNET_MK_FLASH_RAM_SECTION   0
 #endif /* if 0 -> copy function to RAM buffer.*/
-
 
 #if FNET_MK_FLASH_RAM_SECTION
     static
@@ -51,12 +44,9 @@
     void fnet_ftfl_command_lunch_inram(fnet_vuint8_t *fstat_reg);
 #endif
 
-
 static void fnet_ftfl_command(fnet_uint8_t command, fnet_uint32_t *address, const fnet_uint8_t *data);
 
 /************************************************************************
-* NAME: fnet_ftfl_command_lunch_inram
-*
 * DESCRIPTION: Launch the command. It must be in RAM.
 ************************************************************************/
 
@@ -107,8 +97,6 @@ static fnet_uint8_t fnet_ftfl_command_lunch_inram_buf[sizeof(fnet_ftfl_command_l
 #endif
 
 /************************************************************************
-* NAME: fnet_ftfl_command
-*
 * DESCRIPTION: FTFL command
 ************************************************************************/
 static void fnet_ftfl_command( fnet_uint8_t command, fnet_uint32_t *address, const fnet_uint8_t *data )
@@ -232,8 +220,6 @@ static void fnet_ftfl_command( fnet_uint8_t command, fnet_uint32_t *address, con
 }
 
 /************************************************************************
-* NAME: fnet_cpu_flash_erase
-*
 * DESCRIPTION: Erases the specified range of the Flash memory.
 ************************************************************************/
 fnet_return_t fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes)

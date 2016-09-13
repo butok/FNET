@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,11 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_mk_serial.c
-*
-* @author Andrey Butok
-*
 * @brief Kinetis Serial port I/O functions.
 *
 ***************************************************************************/
@@ -32,7 +27,6 @@
 #if FNET_MK
 
 #include "fnet.h"
-
 
 #define FNET_MK_UART_PORT_NUMBER                (6)
 static FNET_MK_UART_MemMapPtr fnet_mk_get_uart_port_ptr[FNET_MK_UART_PORT_NUMBER] =

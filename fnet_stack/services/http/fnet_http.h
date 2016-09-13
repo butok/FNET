@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_http.h
-*
-* @author Andrey Butok
-*
 * @brief FNET HTTP Server API.
 *
 ***************************************************************************/
@@ -102,39 +97,32 @@
 typedef enum
 {
     FNET_HTTP_STATUS_CODE_NONE                  = 0,    /**< @brief NONE.@n
-                                                        * Status code is not defined.
-                                                        */
+                                                        * Status code is not defined.*/
     FNET_HTTP_STATUS_CODE_OK                    = 200,  /**< @brief OK.@n
-                                                        * The request has succeeded.
-                                                        */
+                                                        * The request has succeeded.*/
     FNET_HTTP_STATUS_CODE_CREATED               = 201,  /**< @brief Created.@n
                                                         * The request has been fulfilled
                                                         * and resulted in a new resource
-                                                        * being created.
-                                                        */
+                                                        * being created.*/
     FNET_HTTP_STATUS_CODE_ACCEPTED              = 202,  /**< @brief Accepted.@n
                                                         * The request has been accepted
                                                         * for processing, but the processing
-                                                        * has not been completed.
-                                                        */
+                                                        * has not been completed.*/
     FNET_HTTP_STATUS_CODE_NO_CONTENT            = 204,  /**< @brief No Content.@n
                                                         * The server has fulfilled the request
                                                         * but there is no new information to
-                                                        * send back.
-                                                        */
+                                                        * send back.*/
     FNET_HTTP_STATUS_CODE_MOVED_PERMANENTLY     = 301,  /**< @brief Moved Permanently.@n
                                                         * The requested resource has been
                                                         * assigned a new permanent URL and
                                                         * any future references to
                                                         * this resource should be
                                                         * done using that URL.@n
-                                                        * It's not supported by the FNET HTTP Server.
-                                                        */
+                                                        * It's not supported by the FNET HTTP Server.*/
     FNET_HTTP_STATUS_CODE_MOVED_TEMPORARILY     = 302,  /**< @brief Moved Temporarily.@n
                                                         * The requested resource resides
                                                         * temporarily under a different URL.@n
-                                                        * It's not supported by the FNET HTTP Server.
-                                                        */
+                                                        * It's not supported by the FNET HTTP Server.*/
     FNET_HTTP_STATUS_CODE_NOT_MODIFIED          = 304,  /**< @brief Not Modified.@n
                                                         * If the client has performed a
                                                         * conditional GET request and access is
@@ -143,42 +131,32 @@ typedef enum
                                                         * in the If-Modified-Since field, the server
                                                         * must respond with this status code and
                                                         * not send an Entity-Body to the client.@n
-                                                        * It's not supported by the FNET HTTP Server.
-                                                        */
+                                                        * It's not supported by the FNET HTTP Server.*/
     FNET_HTTP_STATUS_CODE_BAD_REQUEST           = 400,  /**< @brief Bad Request.@n
                                                         * The request could not be understood by
-                                                        * the server due to malformed syntax.
-                                                        */
+                                                        * the server due to malformed syntax.*/
     FNET_HTTP_STATUS_CODE_UNAUTHORIZED          = 401,  /**< @brief Unauthorized.@n
-                                                        * The request requires user authentication.
-                                                        */
+                                                        * The request requires user authentication.*/
     FNET_HTTP_STATUS_CODE_FORBIDDEN             = 403,  /**< @brief Forbidden.@n
                                                         * The server understood the request, but is
-                                                        * refusing to fulfill it.
-                                                        */
+                                                        * refusing to fulfill it.*/
     FNET_HTTP_STATUS_CODE_NOT_FOUND             = 404,  /**< @brief Not Found.@n
                                                         * The server has not found anything matching
-                                                        * the Request-URI.
-                                                        */
+                                                        * the Request-URI.*/
     FNET_HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR = 500,  /**< @brief Internal Server Error.@n
                                                         * The server encountered an unexpected condition
-                                                        * which prevented it from fulfilling the request.
-                                                        */
+                                                        * which prevented it from fulfilling the request.*/
     FNET_HTTP_STATUS_CODE_NOT_IMPLEMENTED       = 501,  /**< @brief Not Implemented.@n
                                                         * The server does not support the functionality
-                                                        * required to fulfill the request.
-                                                        */
+                                                        * required to fulfill the request.*/
     FNET_HTTP_STATUS_CODE_BAD_GATEWAY           = 502,  /**< @brief Bad Gateway.@n
                                                         * The server, while acting as a gateway or proxy,
                                                         * received an invalid response from the upstream
-                                                        * server it accessed in attempting to fulfill the request.
-                                                        */
+                                                        * server it accessed in attempting to fulfill the request.*/
     FNET_HTTP_STATUS_CODE_SERVICE_UNAVAILABLE   = 503   /**< @brief Service Unavailable.@n
                                                         * The server is currently unable to handle the
                                                         * request due to a temporary overloading or
-                                                        * maintenance of the server.
-                                                        */
-
+                                                        * maintenance of the server.*/
 } fnet_http_status_code_t;
 #endif
 
@@ -188,13 +166,13 @@ typedef enum
  ******************************************************************************/
 struct fnet_http_params
 {
-    fnet_char_t *root_path;            /**< @brief Server root-directory path (null-terminated string). */
-    fnet_char_t *index_path;          /**< @brief Index file path (null-terminated string). @n
-                                 *   It's relative to the @c root_path.*/
-    struct sockaddr address;    /**< @brief Server socket address. @n
-                                 * If server IP address is set to @c 0s, the server will listen to all current network interfaces. @n
-                                 * If server address family is set to @c 0, it will be assigned to @ref AF_SUPPORTED. @n
-                                 * If server port number is set to @c 0, it will be assigned to the default port number defined by @ref FNET_CFG_HTTP_PORT.*/
+    fnet_char_t *root_path;                     /**< @brief Server root-directory path (null-terminated string). */
+    fnet_char_t *index_path;                    /**< @brief Index file path (null-terminated string). @n
+                                                *   It's relative to the @c root_path.*/
+    struct sockaddr address;                    /**< @brief Server socket address. @n
+                                                * If server IP address is set to @c 0s, the server will listen to all current network interfaces. @n
+                                                * If server address family is set to @c 0, it will be assigned to @ref AF_SUPPORTED. @n
+                                                * If server port number is set to @c 0, it will be assigned to the default port number defined by @ref FNET_CFG_HTTP_PORT.*/
 #if FNET_CFG_HTTP_SSI || defined(__DOXYGEN__)
     const struct fnet_http_ssi *ssi_table;      /**< @brief Pointer to the optional
                                                  * SSI callback function table. */
@@ -225,12 +203,10 @@ typedef fnet_int32_t fnet_http_desc_t;
  ******************************************************************************/
 typedef fnet_int32_t fnet_http_session_t;
 
-
 #include "fnet_http_ssi.h"
 #include "fnet_http_cgi.h"
 #include "fnet_http_auth.h"
 #include "fnet_http_post.h"
-
 
 #if defined(__cplusplus)
 extern "C" {
@@ -365,8 +341,6 @@ void fnet_http_set_response_no_header (fnet_http_session_t session);
 
 /*! @} */
 
-
 #endif /* FNET_CFG_HTTP */
-
 
 #endif

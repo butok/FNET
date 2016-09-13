@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,15 +18,9 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_ping.c
-*
-* @author Andrey Butok
-*
 * @brief PING implementation.
 *
 ***************************************************************************/
-
 
 #include "fnet.h"
 
@@ -87,8 +81,6 @@ fnet_ping_if_t;
 static fnet_ping_if_t fnet_ping_if;
 
 /************************************************************************
-* NAME: fnet_ping_request
-*
 * DESCRIPTION: Initializes PING service.
 ************************************************************************/
 fnet_return_t fnet_ping_request( struct fnet_ping_params *params )
@@ -174,8 +166,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_ping_state_machine
-*
 * DESCRIPTION: PING service state machine.
 ************************************************************************/
 static void fnet_ping_state_machine(void *fnet_ping_if_p)
@@ -357,8 +347,6 @@ static void fnet_ping_state_machine(void *fnet_ping_if_p)
 }
 
 /************************************************************************
-* NAME: fnet_ping_release
-*
 * DESCRIPTION: Releases the PING service.
 ************************************************************************/
 void fnet_ping_release( void )
@@ -376,8 +364,6 @@ void fnet_ping_release( void )
 }
 
 /************************************************************************
-* NAME: fnet_ping_state
-*
 * DESCRIPTION: Retrieves the current state of the PING service
 *              (for debugging purposes).
 ************************************************************************/
@@ -385,6 +371,5 @@ fnet_ping_state_t fnet_ping_state( void )
 {
     return fnet_ping_if.state;
 }
-
 
 #endif /* FNET_CFG_PING */

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2008-2015 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2016 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
 *
@@ -18,10 +18,6 @@
 *
 **********************************************************************/ /*!
 *
-* @file fnet_mcf_cache.c
-*
-* @author Andrey Butok
-*
 * @brief ColdFire cache invalidation.
 *
 ***************************************************************************/
@@ -31,8 +27,6 @@
 #if FNET_MCF
 
 /************************************************************************
-* NAME: fnet_cpu_cache_invalidate
-*
 * DESCRIPTION: Invalidate cache.
 *************************************************************************/
 #if FNET_CFG_CPU_CACHE
@@ -44,6 +38,5 @@ void fnet_cpu_cache_invalidate()
 void fnet_cpu_cache_invalidate()
 {}
 #endif
-
 
 #endif /*FNET_MCF*/

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,9 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_mk60dn512_config.h
-*
 * @brief K60DN512 specific configuration file.
 *
 ***************************************************************************/
@@ -83,6 +80,5 @@
 #ifndef FNET_CFG_CPU_ETH_HW_RX_MAC_ERR
     #define FNET_CFG_CPU_ETH_HW_RX_MAC_ERR              (1)
 #endif
-
 
 #endif /* _FNET_MK60N512_CONFIG_H_ */

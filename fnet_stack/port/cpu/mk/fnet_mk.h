@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,11 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_mk.h
-*
-* @author Andrey Butok
-*
 * @brief Private. Kinetis Peripheral Registers definitions.
 *
 ***************************************************************************/
@@ -63,7 +58,6 @@ fnet_uint32_t fnet_mk_periph_clk_khz(void);
 
 #define FNET_MK_PERIPH_CLOCK_KHZ       fnet_mk_periph_clk_khz()
 #define FNET_MK_PERIPH_CLOCK_MHZ       (fnet_mk_periph_clk_khz()/1000)
-
 
 /* ----------------------------------------------------------------------------
    -- UART
@@ -2957,27 +2951,3 @@ fnet_uint32_t fnet_mk_irq_disable(void);
 #endif /* FNET_MK */
 
 #endif /*_FNET_MK_H_*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

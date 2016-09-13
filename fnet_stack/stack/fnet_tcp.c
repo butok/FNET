@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Alexey Shervashidze, Andrey Butok. Motorola SPS.
 *
@@ -20,11 +20,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_tcp.c
-*
-* @author Olexandr Servasidze, Andrey Butok.
-*
 * @brief TCP protocol implementation.
 *
 ***************************************************************************/
@@ -140,7 +135,6 @@ static fnet_uint32_t fnet_tcp_isntime = 1u;
 static fnet_timer_desc_t fnet_tcp_fasttimer;
 static fnet_timer_desc_t fnet_tcp_slowtimer;
 
-
 /*****************************************************************************
  * Protocol API structure.
  ******************************************************************************/
@@ -175,8 +169,6 @@ fnet_prot_if_t fnet_tcp_prot_if =
 };
 
 /************************************************************************
-* NAME: fnet_tcp_init
-*
 * DESCRIPTION: This function performs a protocol initialization.
 *
 * RETURNS: If no error occurs, this function returns ERR_OK. Otherwise
@@ -207,11 +199,7 @@ static fnet_return_t fnet_tcp_init( void )
 }
 
 /************************************************************************
-* NAME: fnet_tcp_release
-*
 * DESCRIPTION: This function resets and deletes sockets and releases timers.
-*
-* RETURNS: None.
 *************************************************************************/
 static void fnet_tcp_release( void )
 {
@@ -238,15 +226,12 @@ static void fnet_tcp_release( void )
 }
 
 /************************************************************************
-* NAME: fnet_tcp_input
-*
 * DESCRIPTION: This function receives, checks and routes input segments.
 *
 * RETURNS: FNET_OK.
 *************************************************************************/
 static void fnet_tcp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb)
 {
-
     fnet_socket_if_t   *sk;
     fnet_uint16_t   checksum;
     fnet_size_t     tcp_length;
@@ -341,11 +326,7 @@ DROP:
 }
 
 /************************************************************************
-* NAME: fnet_tcp_control_input
-*
 * DESCRIPTION: This function process ICMP errors.
-*
-* RETURNS: None.
 *************************************************************************/
 static void fnet_tcp_control_input(fnet_prot_notify_t command, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb)
 {
@@ -401,8 +382,6 @@ static void fnet_tcp_control_input(fnet_prot_notify_t command, struct sockaddr *
 }
 
 /************************************************************************
-* NAME: fnet_tcp_attach
-*
 * DESCRIPTION: This function performs the initialization of the
 *              socket's options and creates the structure of the control blok.
 *
@@ -454,7 +433,6 @@ static fnet_return_t fnet_tcp_attach( fnet_socket_if_t *sk )
     sk->options.ip6_opt.hops_unicast = 0u; /* Defined by ND.*/
 #endif
 
-
     /* Set the buffer sizes.*/
     sk->send_buffer.count_max = FNET_TCP_TX_BUF_MAX;
     sk->receive_buffer.count_max = FNET_TCP_RX_BUF_MAX;
@@ -463,8 +441,6 @@ static fnet_return_t fnet_tcp_attach( fnet_socket_if_t *sk )
 }
 
 /************************************************************************
-* NAME: fnet_tcp_close
-*
 * DESCRIPTION: This function performs the connection termination.
 *
 * RETURNS: If no error occurs, this function returns FNET_OK. Otherwise
@@ -518,8 +494,6 @@ static fnet_return_t fnet_tcp_close( fnet_socket_if_t *sk )
 
     fnet_isr_unlock();
 
-
-
     fnet_isr_lock();
 
     /* After this moment the unconnecetd socket must be deleted.*/
@@ -559,8 +533,6 @@ static fnet_return_t fnet_tcp_close( fnet_socket_if_t *sk )
 }
 
 /************************************************************************
-* NAME: fnet_tcp_connect
-*
 * DESCRIPTION: This function performs the connection establishment.
 *
 * RETURNS: If no error occurs, this function returns FNET_OK. Otherwise
@@ -639,8 +611,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_tcp_accept
-*
 * DESCRIPTION: This function removes the created socket
 *              from the incoming queue of the listening socket,
 *              and adds this socket to the main list.
@@ -676,8 +646,6 @@ static fnet_socket_if_t *fnet_tcp_accept( fnet_socket_if_t *listensk )
 }
 
 /************************************************************************
-* NAME: fnet_tcp_rcv
-*
 * DESCRIPTION: This function receives the data and sends the acknowledgment
 *              (This acknowledgment segment informs about the new free size
 *               in the input buffer).
@@ -809,8 +777,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_tcp_snd
-*
 * DESCRIPTION: This function adds the data to the output buffer and
 *              sends the data that can be sent.
 *
@@ -846,7 +812,6 @@ static fnet_int32_t fnet_tcp_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_
         goto ERROR;
     }
 
-
     if(sendlength)
     {
         fnet_isr_lock();
@@ -867,7 +832,6 @@ static fnet_int32_t fnet_tcp_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_
         }
         else
         {}
-
 
         /* If the function is nonblocking and the data length greater than the freespace, recalculate the size of the data*/
         if(freespace < sendlength)
@@ -998,7 +962,6 @@ static fnet_int32_t fnet_tcp_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_
         }
 #endif /* FNET_CFG_TCP_URGENT */
 
-
         /* Remove the dontroute flag.*/
         if(dontroute == FNET_TRUE)
         {
@@ -1015,8 +978,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_tcp_shutdown
-*
 * DESCRIPTION: This function closes a write-half, read-half, or
 *              both halves of the connection.
 *
@@ -1061,8 +1022,6 @@ static fnet_return_t fnet_tcp_shutdown( fnet_socket_if_t *sk, fnet_sd_flags_t ho
 }
 
 /************************************************************************
-* NAME: fnet_tcp_setsockopt
-*
 * DESCRIPTION: This function sets a TCP option.
 *
 * RETURNS: If no error occurs, this function returns FNET_OK. Otherwise
@@ -1255,8 +1214,6 @@ static fnet_return_t fnet_tcp_getsockopt( fnet_socket_if_t *sk, fnet_protocol_t 
 }
 
 /************************************************************************
-* NAME: fnet_tcp_listen
-*
 * DESCRIPTION: This function changes
 *              the state of the socket to the listening state.
 *
@@ -1305,8 +1262,6 @@ static fnet_return_t fnet_tcp_listen( fnet_socket_if_t *sk, fnet_size_t backlog 
 }
 
 /************************************************************************
-* NAME: fnet_tcp_drain
-*
 * DESCRIPTION: fnet_tcp_drain removes the temporary data.
 *
 * RETURNS: None.
@@ -1357,14 +1312,10 @@ static void fnet_tcp_drain( void )
         }
 #endif
     }
-
-
     fnet_isr_unlock();
 }
 
 /************************************************************************
-* NAME: fnet_tcp_initconnection
-*
 * DESCRIPTION: This function creates and initializes the control block,
 *              and initializes the socket.
 *
@@ -1429,12 +1380,9 @@ static void fnet_tcp_initconnection( fnet_socket_if_t *sk )
     {
         fnet_socket_buffer_release(&sk->receive_buffer);
     }
-
 }
 
 /************************************************************************
-* NAME: fnet_tcp_inputsk
-*
 * DESCRIPTION: This function processes the input segments of
 *              the corresponding socket.
 *
@@ -1955,7 +1903,6 @@ static fnet_bool_t fnet_tcp_inputsk( fnet_socket_if_t *sk, fnet_netbuf_t *insegm
         return FNET_TRUE;
     }
 
-
     /* If the input buffer is closed, delete the input data.*/
     if((sk->receive_buffer.is_shutdown) && (sk->receive_buffer.count))
     {
@@ -1966,8 +1913,6 @@ static fnet_bool_t fnet_tcp_inputsk( fnet_socket_if_t *sk, fnet_netbuf_t *insegm
 }
 
 /************************************************************************
-* NAME: fnet_tcp_dataprocess
-*
 * DESCRIPTION: This function proceeds the processing of the input segemnt.
 *
 * RETURNS: TRUE if the input segment must be deleted. Otherwise
@@ -2221,8 +2166,6 @@ static fnet_bool_t fnet_tcp_dataprocess( fnet_socket_if_t *sk, fnet_netbuf_t *in
 }
 
 /***********************************************************************
-* NAME: fnet_tcp_addinpbuf
-*
 * DESCRIPTION: This function adds the data to the input buffer and
 *              returns the acknowledgement parameter.
 *
@@ -2449,8 +2392,6 @@ static fnet_bool_t fnet_tcp_addinpbuf( fnet_socket_if_t *sk, fnet_netbuf_t *inse
 }
 
 /***********************************************************************
-* NAME: fnet_tcp_sendanydata
-*
 * DESCRIPTION: This function sends the data that is allowed by the windows
 *              (The congestion window and the window of another side).
 *
@@ -2527,7 +2468,6 @@ static fnet_bool_t fnet_tcp_sendanydata( fnet_socket_if_t *sk, fnet_bool_t oneex
         return result;
     }
 
-
     /* The sntdata variable will include the size of the data that is sent.*/
     sntdata = 0u;
 
@@ -2599,7 +2539,6 @@ static fnet_bool_t fnet_tcp_sendanydata( fnet_socket_if_t *sk, fnet_bool_t oneex
     /* If the data is sent.*/
     if(sntdata > 0u)
     {
-
         /* Process the states of round trip time measurement.*/
         if((cb->tcpcb_timing_state == TCP_TS_ACK_RECEIVED) || ((cb->tcpcb_timing_state == TCP_TS_SEGMENT_LOST)
                 && (FNET_TCP_COMP_G(cb->tcpcb_sndseq, cb->tcpcb_timingack))))
@@ -2625,8 +2564,6 @@ static fnet_bool_t fnet_tcp_sendanydata( fnet_socket_if_t *sk, fnet_bool_t oneex
 
 #if FNET_CFG_TCP_URGENT
 /***********************************************************************
-* NAME: fnet_tcp_urgprocessing
-*
 * DESCRIPTION: This function processes the urgent data.
 *
 * RETURNS: None.
@@ -2639,9 +2576,7 @@ static void fnet_tcp_urgprocessing( fnet_socket_if_t *sk, fnet_netbuf_t **segmen
     fnet_netbuf_t       *buf;
     fnet_uint32_t       tcp_seq;
 
-
     buf = (fnet_netbuf_t *) *segment;
-
 
     /* Receive the urgent pointer.*/
     upointer = fnet_ntohs(FNET_TCP_URG(buf));
@@ -2701,20 +2636,16 @@ static void fnet_tcp_urgprocessing( fnet_socket_if_t *sk, fnet_netbuf_t **segmen
 
     /* Acknowledgment must be sent immediately.*/
     *ackparam |= FNET_TCP_AP_SEND_IMMEDIATELLY;
-
 }
 #endif /* FNET_CFG_TCP_URGENT */
 
 /***********************************************************************
-* NAME: fnet_tcp_finprocessing
-*
 * DESCRIPTION: This function processes the final segment.
 *
 * RETURNS: None.
 *************************************************************************/
 static void fnet_tcp_finprocessing( fnet_socket_if_t *sk, fnet_uint32_t ack )
 {
-
     /* Initialize the pointer to the control block.*/
     fnet_tcp_control_t  *cb = (fnet_tcp_control_t *)sk->protocol_control;
 
@@ -2752,12 +2683,9 @@ static void fnet_tcp_finprocessing( fnet_socket_if_t *sk, fnet_uint32_t ack )
     }
 
     cb->tcpcb_flags |= FNET_TCP_CBF_FIN_RCVD;
-
 }
 
 /***********************************************************************
-* NAME: tcp_rcvwnd
-*
 * DESCRIPTION: This function receives a new window size.
 *
 * RETURNS: The new window.
@@ -2797,8 +2725,6 @@ static fnet_uint32_t fnet_tcp_getrcvwnd( fnet_socket_if_t *sk )
 }
 
 /************************************************************************
-* NAME: fnet_tcp_slowtimo
-*
 * DESCRIPTION: This function processes the timeouts.
 *              (fnet_tcp_slowtimo is performed every 500 ms).
 *
@@ -2849,8 +2775,6 @@ static void fnet_tcp_slowtimo(fnet_uint32_t cookie)
 }
 
 /************************************************************************
-* NAME: fnet_tcp_fasttimo
-*
 * DESCRIPTION: This function processes the timeouts
 *              (fnet_tcp_fasttimo is performed every 200 ms).
 *
@@ -2884,8 +2808,6 @@ static void fnet_tcp_fasttimo( fnet_uint32_t cookie )
 }
 
 /************************************************************************
-* NAME: fnet_tcp_slowtimosk
-*
 * DESCRIPTION: This function processes the timers of the socket
 *              (fnet_tcp_slowtimosk is performed every 500 ms).
 *
@@ -2997,8 +2919,6 @@ static void fnet_tcp_slowtimosk( fnet_socket_if_t *sk )
 }
 
 /************************************************************************
-* NAME: fnet_tcp_fasttimosk
-*
 * DESCRIPTION: This function processes the delayed acknowledgment timer
 *              of the socket (fnet_tcp_fasttimo is performed every 200 ms).
 *
@@ -3027,8 +2947,6 @@ static void fnet_tcp_fasttimosk( fnet_socket_if_t *sk )
 }
 
 /************************************************************************
-* NAME: fnet_tcp_rtimeo
-*
 * DESCRIPTION: This function processes the timeout of the retransmission
 *              timer.
 *
@@ -3127,12 +3045,9 @@ static void fnet_tcp_rtimeo( fnet_socket_if_t *sk )
     }
 
     cb->tcpcb_timers.retransmission = cb->tcpcb_crto;
-
 }
 
 /************************************************************************
-* NAME: fnet_tcp_ktimeo
-*
 * DESCRIPTION: This function processes the timeout of the keepalive
 *              timer.
 *
@@ -3184,8 +3099,6 @@ static void fnet_tcp_ktimeo( fnet_socket_if_t *sk )
 }
 
 /************************************************************************
-* NAME: fnet_tcp_ptimeo
-*
 * DESCRIPTION: This function processes the timeout of the persist
 *              timer.
 *
@@ -3236,8 +3149,6 @@ static void fnet_tcp_ptimeo( fnet_socket_if_t *sk )
 }
 
 /************************************************************************
-* NAME: fnet_tcp_sendseg
-*
 * DESCRIPTION: This function sends the segment.
 *
 * RETURNS: FNET_OK if the segment is sent. Otherwise
@@ -3335,8 +3246,6 @@ static fnet_error_t fnet_tcp_sendseg(struct fnet_tcp_segment *segment)
     }
 #endif /* FNET_CFG_UDP_CHECKSUM */
 
-
-
 #if FNET_CFG_IP4
     if(segment->dest_addr.sa_family == AF_INET)
     {
@@ -3369,10 +3278,7 @@ static fnet_error_t fnet_tcp_sendseg(struct fnet_tcp_segment *segment)
     return error;
 }
 
-
 /************************************************************************
-* NAME: fnet_tcp_sendheadseg
-*
 * DESCRIPTION: This function sends the segment wihout data.
 *
 * RETURNS: TRUE if no error occurs. Otherwise
@@ -3488,8 +3394,6 @@ static fnet_error_t fnet_tcp_sendheadseg( fnet_socket_if_t *sk, fnet_uint8_t fla
 }
 
 /************************************************************************
-* NAME: fnet_tcp_senddataseg
-*
 * DESCRIPTION: This function sends the data segment.
 *
 * RETURNS: TRUE if no error occurs. Otherwise
@@ -3640,8 +3544,6 @@ static fnet_error_t fnet_tcp_senddataseg( fnet_socket_if_t *sk, void *options, f
 }
 
 /************************************************************************
-* NAME: fnet_tcp_sendack
-*
 * DESCRIPTION: This function sends the acknowledgement segment.
 *
 * RETURNS: None.
@@ -3657,7 +3559,6 @@ static void fnet_tcp_sendack( fnet_socket_if_t *sk )
     {
         /* In the SYN_RCVD state acknowledgement must be with the SYN flag.*/
         case FNET_TCP_CS_SYN_RCVD:
-
             /* Reinitialize of the sequnce number.*/
             cb->tcpcb_sndseq--;
 
@@ -3666,7 +3567,6 @@ static void fnet_tcp_sendack( fnet_socket_if_t *sk )
             /* Create and send the SYN segment.*/
             fnet_tcp_sendheadseg(sk, FNET_TCP_SGT_SYN | FNET_TCP_SGT_ACK, options, optionlen);
             break;
-
         /* In the FIN_WAIT_1 and LAST_ACK states acknowledgement must be with the FIN flag.*/
         case FNET_TCP_CS_FIN_WAIT_1:
         case FNET_TCP_CS_LAST_ACK:
@@ -3677,7 +3577,6 @@ static void fnet_tcp_sendack( fnet_socket_if_t *sk )
             /* Create and send the FIN segment.*/
             fnet_tcp_sendheadseg(sk, FNET_TCP_SGT_FIN | FNET_TCP_SGT_ACK, 0, 0u);
             break;
-
         default:
 #if FNET_CFG_TCP_URGENT
             /* If the urgent data is present, set the urgent flag.*/
@@ -3695,13 +3594,9 @@ static void fnet_tcp_sendack( fnet_socket_if_t *sk )
 
     /* Turn of the delayed acknowledgment timer.*/
     cb->tcpcb_timers.delayed_ack = FNET_TCP_TIMER_OFF;
-
-
 }
 
 /************************************************************************
-* NAME: fnet_tcp_sendrst
-*
 * DESCRIPTION: This function sends the reset segment.
 *
 * RETURNS: None.
@@ -3740,8 +3635,6 @@ static void fnet_tcp_sendrst( fnet_socket_option_t *sockoption, fnet_netbuf_t *i
 }
 
 /************************************************************************
-* NAME: fnet_tcp_sendrstsk
-*
 * DESCRIPTION: This function sends the reset segment.
 *
 * RETURNS: None.
@@ -3785,8 +3678,6 @@ static void fnet_tcp_sendrstsk( fnet_socket_if_t *sk )
 }
 
 /************************************************************************
-* NAME: fnet_tcp_abortsk
-*
 * DESCRIPTION: This function sends the reset segment and closes the socket.
 *
 * RETURNS: None.
@@ -3816,8 +3707,6 @@ static void fnet_tcp_abortsk( fnet_socket_if_t *sk )
 }
 
 /************************************************************************
-* NAME: fnet_tcp_addopt
-*
 * DESCRIPTION: This function adds the options in the segment.
 *              fnet_tcp_addopt can be used only before the data adding and only after
 *              the creating of the main header.
@@ -3871,8 +3760,6 @@ static fnet_error_t fnet_tcp_addopt( fnet_netbuf_t *segment, fnet_size_t len, vo
 }
 
 /************************************************************************
-* NAME: fnet_tcp_getopt
-*
 * DESCRIPTION: This function processes the received options.
 *
 * RETURNS: None.
@@ -3929,12 +3816,9 @@ static void fnet_tcp_getopt( fnet_socket_if_t *sk, fnet_netbuf_t *segment )
             i += FNET_TCP_GETUCHAR(segment->data_ptr, i + 1u);
         }
     }
-
 }
 
 /************************************************************************
-* NAME: fnet_tcp_setsynopt
-*
 * DESCRIPTION: This function sets the options of the synchronized (SYN )
 *              segment.
 * RETURNS: None.
@@ -3973,8 +3857,6 @@ static void fnet_tcp_setsynopt( fnet_socket_if_t *sk, fnet_uint8_t *options, fne
 }
 
 /************************************************************************
-* NAME: fnet_tcp_getsynopt
-*
 * DESCRIPTION: This function performs the initialization depend on
 *              options of the synchronized (SYN) segment.
 *
@@ -4000,12 +3882,9 @@ static void fnet_tcp_getsynopt( fnet_socket_if_t *sk )
 
     /* Initialize the congestion window.*/
     cb->tcpcb_cwnd = cb->tcpcb_sndmss;
-
 }
 
 /************************************************************************
-* NAME: fnet_tcp_findsk
-*
 * DESCRIPTION: This function finds the socket with parameters that allow
 *              to receive and process the segment.
 *
@@ -4091,8 +3970,6 @@ static fnet_socket_if_t *fnet_tcp_findsk( struct sockaddr *src_addr,  struct soc
 }
 
 /***********************************************************************
-* NAME: fnet_tcp_addpartialsk
-*
 * DESCRIPTION: This function adds the socket to the partial sockets list.
 *
 * RETURNS: None.
@@ -4105,8 +3982,6 @@ static void fnet_tcp_addpartialsk( fnet_socket_if_t *mainsk, fnet_socket_if_t *p
 }
 
 /***********************************************************************
-* NAME: fnet_tcp_movesk2incominglist
-*
 * DESCRIPTION: This function moves socket from the partial list
 *              to the incoming list.
 *
@@ -4125,8 +4000,6 @@ static void fnet_tcp_movesk2incominglist( fnet_socket_if_t *sk )
 }
 
 /***********************************************************************
-* NAME: fnet_tcp_closesk
-*
 * DESCRIPTION: This function closes the socket.
 *
 * RETURNS: None.
@@ -4171,8 +4044,6 @@ static void fnet_tcp_closesk( fnet_socket_if_t *sk )
     }
 }
 /***********************************************************************
-* NAME: fnet_tcp_delpartialsk
-*
 * DESCRIPTION: This function  deletes the socket from
 *              the partial list.
 *
@@ -4185,8 +4056,6 @@ static void fnet_tcp_delpartialsk( fnet_socket_if_t *sk )
 }
 
 /***********************************************************************
-* NAME: fnet_tcp_delincomingsk
-*
 * DESCRIPTION: This function deletes the socket from the incoming list.
 *
 * RETURNS: None.
@@ -4198,8 +4067,6 @@ static void fnet_tcp_delincomingsk( fnet_socket_if_t *sk )
 }
 
 /***********************************************************************
-* NAME: fnet_tcp_delcb
-*
 * DESCRIPTION: This function deletes the control block.
 *
 * RETURNS: None.
@@ -4216,8 +4083,6 @@ static void fnet_tcp_delcb( fnet_tcp_control_t *cb )
 }
 
 /***********************************************************************
-* NAME: fnet_tcp_delcb
-*
 * DESCRIPTION: This function deletes the temporary buffer.
 *
 * RETURNS: None.
@@ -4243,8 +4108,6 @@ static void fnet_tcp_deletetmpbuf( fnet_tcp_control_t *cb )
 #endif
 
 /***********************************************************************
-* NAME: fnet_tcp_delsk
-*
 * DESCRIPTION: This function deletes the socket.
 *
 * RETURNS: None.
@@ -4256,11 +4119,7 @@ static void fnet_tcp_delsk( fnet_socket_if_t **head, fnet_socket_if_t *sk )
 }
 
 /***********************************************************************
-* NAME: fnet_tcp_hit
-*
-* DESCRIPTION:
-*
-* RETURNS:  This function returns TRUE if position (pos) is located
+* DESCRIPTION: This function returns TRUE if position (pos) is located
 *           in the interval between startpos and endpos. Otherwise
 *           this function returns FALSE.
 *************************************************************************/
@@ -4287,11 +4146,7 @@ static fnet_bool_t fnet_tcp_hit( fnet_uint32_t startpos, fnet_uint32_t endpos, f
 }
 
 /***********************************************************************
-* NAME: fnet_tcp_getsize
-*
-* DESCRIPTION:
-*
-* RETURNS: This function returns the length of the interval
+* DESCRIPTION: This function returns the length of the interval
 *              (from pos1 to pos2 ).
 *************************************************************************/
 static fnet_uint32_t fnet_tcp_getsize( fnet_uint32_t pos1, fnet_uint32_t pos2 )
@@ -4311,8 +4166,6 @@ static fnet_uint32_t fnet_tcp_getsize( fnet_uint32_t pos1, fnet_uint32_t pos2 )
 }
 
 /************************************************************************
-* NAME: fnet_tcp_trace
-*
 * DESCRIPTION: Prints TCP header. For debugging purposes.
 *************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_TCP && FNET_CFG_DEBUG_TRACE
@@ -4380,6 +4233,5 @@ fnet_return_t FNET_DEBUG_check_send_buffer( fnet_socket_if_t *sk)
     return FNET_OK;
 }
 #endif
-
 
 #endif

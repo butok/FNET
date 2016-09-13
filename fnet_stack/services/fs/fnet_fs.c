@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_fs.c
-*
-* @author Andrey Butok
-*
 * @brief File System API Implementation.
 *
 ***************************************************************************/
@@ -47,8 +42,6 @@ static struct fnet_fs *fnet_fs_list;
 static struct fnet_fs_mount_point *fnet_fs_find_mount( const fnet_char_t **name );
 
 /************************************************************************
-* NAME: fnet_fs_init
-*
 * DESCRIPTION: This function initializes FNET FS interface.
 *************************************************************************/
 fnet_return_t fnet_fs_init( void )
@@ -65,8 +58,6 @@ fnet_return_t fnet_fs_init( void )
 }
 
 /************************************************************************
-* NAME: fnet_fs_release
-*
 * DESCRIPTION: This function releases FNET FS interface.
 *************************************************************************/
 void fnet_fs_release( void )
@@ -81,8 +72,6 @@ void fnet_fs_release( void )
 }
 
 /************************************************************************
-* NAME: fnet_fs_register
-*
 * DESCRIPTION: This function registers a FS.
 *************************************************************************/
 void fnet_fs_register( struct fnet_fs *fs )
@@ -102,8 +91,6 @@ void fnet_fs_register( struct fnet_fs *fs )
 }
 
 /************************************************************************
-* NAME: fnet_fs_unregister
-*
 * DESCRIPTION: This function unregisters a FS.
 *************************************************************************/
 void fnet_fs_unregister( struct fnet_fs *fs )
@@ -127,8 +114,6 @@ void fnet_fs_unregister( struct fnet_fs *fs )
 }
 
 /************************************************************************
-* NAME: fnet_fs_find_name
-*
 * DESCRIPTION: Returns a FS given its name.
 *************************************************************************/
 struct fnet_fs *fnet_fs_find_name( fnet_char_t *name )
@@ -151,8 +136,6 @@ struct fnet_fs *fnet_fs_find_name( fnet_char_t *name )
 }
 
 /************************************************************************
-* NAME: fnet_fs_mount
-*
 * DESCRIPTION: Mounts a FS.
 *************************************************************************/
 fnet_return_t fnet_fs_mount( fnet_char_t *fs_name, const fnet_char_t *mount_name, const void *arg )
@@ -247,8 +230,6 @@ fnet_int32_t fnet_fs_path_cmp( const fnet_char_t **path, const fnet_char_t *name
 }
 
 /************************************************************************
-* NAME: fnet_fs_find_mount
-*
 * DESCRIPTION: Find mount point given its name and remove mount name from
 *               the path.
 *************************************************************************/
@@ -275,8 +256,6 @@ static struct fnet_fs_mount_point *fnet_fs_find_mount( const fnet_char_t **name 
 }
 
 /************************************************************************
-* NAME: fnet_fs_unmount
-*
 * DESCRIPTION: Unmounts a FS.
 *************************************************************************/
 fnet_return_t fnet_fs_unmount( const fnet_char_t *mount_name )
@@ -306,8 +285,6 @@ fnet_return_t fnet_fs_unmount( const fnet_char_t *mount_name )
 }
 
 /************************************************************************
-* NAME: fnet_fs_opendir
-*
 * DESCRIPTION: Open DIR stream.
 *************************************************************************/
 fnet_fs_dir_t fnet_fs_opendir( const fnet_char_t *dirname)
@@ -350,8 +327,6 @@ fnet_fs_dir_t fnet_fs_opendir( const fnet_char_t *dirname)
 }
 
 /************************************************************************
-* NAME: fnet_fs_closedir
-*
 * DESCRIPTION: Close DIR stream.
 *************************************************************************/
 fnet_return_t fnet_fs_closedir( fnet_fs_dir_t dir)
@@ -369,8 +344,6 @@ fnet_return_t fnet_fs_closedir( fnet_fs_dir_t dir)
 }
 
 /************************************************************************
-* NAME: fnet_fs_readdir
-*
 * DESCRIPTION: Returns a pointer to a structure representing the directory
 * entry.
 *************************************************************************/
@@ -392,8 +365,6 @@ fnet_return_t fnet_fs_readdir(fnet_fs_dir_t dir, struct fnet_fs_dirent *dirent)
 }
 
 /************************************************************************
-* NAME: fnet_fs_rewinddir
-*
 * DESCRIPTION: Resets the position of the directory stream.
 *************************************************************************/
 void fnet_fs_rewinddir( fnet_fs_dir_t dir )
@@ -408,8 +379,6 @@ void fnet_fs_rewinddir( fnet_fs_dir_t dir )
 }
 
 /************************************************************************
-* NAME: fnet_fs_fopen
-*
 * DESCRIPTION: Opens the specified file.
 *************************************************************************/
 fnet_fs_file_t fnet_fs_fopen(const fnet_char_t *filename, const fnet_char_t *mode)
@@ -418,8 +387,6 @@ fnet_fs_file_t fnet_fs_fopen(const fnet_char_t *filename, const fnet_char_t *mod
 }
 
 /************************************************************************
-* NAME: fnet_fs_fopen
-*
 * DESCRIPTION: Opens the specified file relative to.
 *************************************************************************/
 fnet_fs_file_t fnet_fs_fopen_re(const fnet_char_t *filename, const fnet_char_t *mode, fnet_fs_dir_t dir )
@@ -506,8 +473,6 @@ fnet_fs_file_t fnet_fs_fopen_re(const fnet_char_t *filename, const fnet_char_t *
 }
 
 /************************************************************************
-* NAME: fnet_fs_fclose
-*
 * DESCRIPTION: Close DIR stream.
 *************************************************************************/
 fnet_return_t fnet_fs_fclose( fnet_fs_file_t file)
@@ -525,8 +490,6 @@ fnet_return_t fnet_fs_fclose( fnet_fs_file_t file)
 }
 
 /************************************************************************
-* NAME: fnet_fs_rewind
-*
 * DESCRIPTION: Resets the position of the file stream.
 *************************************************************************/
 void fnet_fs_rewind(fnet_fs_file_t file)
@@ -541,8 +504,6 @@ void fnet_fs_rewind(fnet_fs_file_t file)
 }
 
 /************************************************************************
-* NAME: get_fs_fread
-*
 * DESCRIPTION:
 *************************************************************************/
 fnet_size_t fnet_fs_fread(void *buf, fnet_size_t size, fnet_fs_file_t file)
@@ -564,8 +525,6 @@ fnet_size_t fnet_fs_fread(void *buf, fnet_size_t size, fnet_fs_file_t file)
 }
 
 /************************************************************************
-* NAME: fnet_fs_feof
-*
 * DESCRIPTION: A nonzero value signifies that the end of the file has been
 *               reached; a value of zero signifies that it has not.
 * In virtually all cases, there's no need to use feof at all.
@@ -586,8 +545,6 @@ fnet_bool_t fnet_fs_feof(fnet_fs_file_t file)
 }
 
 /************************************************************************
-* NAME: fnet_fs_fgetc
-*
 * DESCRIPTION: If successful, fgetc returns the next byte or character from the stream
 *  If unsuccessful, fgetc returns EOF.
 *************************************************************************/
@@ -613,8 +570,6 @@ fnet_int32_t fnet_fs_fgetc(fnet_fs_file_t file)
 }
 
 /************************************************************************
-* NAME: fnet_fs_fseek
-*
 * DESCRIPTION: Change the file position indicator for the specified file.
 *************************************************************************/
 fnet_return_t fnet_fs_fseek (fnet_fs_file_t file, fnet_int32_t offset, fnet_fs_seek_origin_t origin)
@@ -635,8 +590,6 @@ fnet_return_t fnet_fs_fseek (fnet_fs_file_t file, fnet_int32_t offset, fnet_fs_s
 }
 
 /************************************************************************
-* NAME: fnet_fs_ftell
-*
 * DESCRIPTION: Returns the current offset in a stream in relation to the first byte.
 *************************************************************************/
 fnet_int32_t fnet_fs_ftell (fnet_fs_file_t file)
@@ -652,8 +605,6 @@ fnet_int32_t fnet_fs_ftell (fnet_fs_file_t file)
 }
 
 /************************************************************************
-* NAME: fnet_fs_finfo
-*
 * DESCRIPTION: Reads file info data.
 *************************************************************************/
 fnet_return_t fnet_fs_finfo (fnet_fs_file_t file, struct fnet_fs_dirent *dirent)
@@ -674,4 +625,3 @@ fnet_return_t fnet_fs_finfo (fnet_fs_file_t file, struct fnet_fs_dirent *dirent)
 }
 
 #endif /* FNET_CFG_FS */
-

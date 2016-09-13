@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_http_auth.c
-*
-* @author Andrey Butok
-*
 * @brief FNET HTTP Server Authentication implementation.
 *
 ***************************************************************************/
@@ -34,7 +29,6 @@
 
 #include "fnet_http_prv.h"
 #include "fnet_http_auth_prv.h"
-
 
 /************************************************************************
 *     Definitions
@@ -57,8 +51,6 @@ static const struct fnet_http_auth_scheme  fnet_http_auth_scheme_table[] =
 };
 
 /************************************************************************
-* NAME:
-*
 * DESCRIPTION:
 ************************************************************************/
 void fnet_http_auth_validate_uri(struct fnet_http_if *http)
@@ -97,8 +89,6 @@ void fnet_http_auth_validate_uri(struct fnet_http_if *http)
 }
 
 /************************************************************************
-* NAME: fnet_http_auth_validate_credentials
-*
 * DESCRIPTION:
 ************************************************************************/
 fnet_return_t fnet_http_auth_validate_credentials(struct fnet_http_if *http, fnet_char_t *credentials)
@@ -130,8 +120,6 @@ fnet_return_t fnet_http_auth_validate_credentials(struct fnet_http_if *http, fne
 }
 
 /************************************************************************
-* NAME: fnet_http_auth_generate_challenge
-*
 * DESCRIPTION:
 ************************************************************************/
 fnet_size_t fnet_http_auth_generate_challenge(struct fnet_http_if *http, fnet_uint8_t *buffer, fnet_size_t buffer_size)
@@ -148,8 +136,6 @@ fnet_size_t fnet_http_auth_generate_challenge(struct fnet_http_if *http, fnet_ui
 }
 
 /************************************************************************
-* NAME: fnet_http_auth_scheme_basic_validate
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_return_t fnet_http_auth_scheme_basic_validate (const struct fnet_http_auth *auth_entry, fnet_char_t *auth_param)
@@ -176,8 +162,6 @@ static fnet_return_t fnet_http_auth_scheme_basic_validate (const struct fnet_htt
 }
 
 /************************************************************************
-* NAME: decode_base64_char
-*
 * DESCRIPTION: Decode a base64 character.
 ************************************************************************/
 static fnet_uint8_t decode_base64_char(fnet_uint8_t c)
@@ -209,8 +193,6 @@ static fnet_uint8_t decode_base64_char(fnet_uint8_t c)
 }
 
 /************************************************************************
-* NAME: fnet_http_auth_decode_base64
-*
 * DESCRIPTION: Decode the base64 encoded string.
 ************************************************************************/
 static void fnet_http_auth_decode_base64(fnet_char_t *src)
@@ -263,8 +245,6 @@ static void fnet_http_auth_decode_base64(fnet_char_t *src)
 }
 
 /************************************************************************
-* NAME: fnet_http_auth_decode_base64
-*
 * DESCRIPTION: Decode the base64 encoded string.
 ************************************************************************/
 static fnet_size_t fnet_http_auth_scheme_basic_generate(struct fnet_http_if *http, fnet_uint8_t *buffer, fnet_size_t buffer_size)

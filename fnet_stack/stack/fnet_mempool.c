@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -54,8 +54,6 @@ fnet_int32_t DEBUG_last_free_addr_num = 0;
 #endif
 
 /************************************************************************
-* NAME: fnet_mempool_init
-*
 * DESCRIPTION:
 *************************************************************************/
 fnet_mempool_desc_t fnet_mempool_init( void *pool_ptr, fnet_size_t pool_size, fnet_mempool_align_t alignment )
@@ -89,10 +87,7 @@ fnet_mempool_desc_t fnet_mempool_init( void *pool_ptr, fnet_size_t pool_size, fn
 }
 
 /************************************************************************
-* NAME: fnet_mem_release
-*
 * DESCRIPTION: Release the mempool.
-*
 *************************************************************************/
 void fnet_mempool_release( fnet_mempool_desc_t mpool )
 {
@@ -101,10 +96,7 @@ void fnet_mempool_release( fnet_mempool_desc_t mpool )
 }
 
 /************************************************************************
-* NAME: fnet_free
-*
 * DESCRIPTION: Frees memory in the mempool.
-*
 *************************************************************************/
 void fnet_mempool_free( fnet_mempool_desc_t mpool, void *ap )
 {
@@ -118,7 +110,6 @@ void fnet_mempool_free( fnet_mempool_desc_t mpool, void *ap )
 
         /* Block pointer = allocated memory block addr - allocation unit size.*/
         bp = (fnet_mempool_unit_header_t *)((fnet_uint32_t)ap - mempool->unit_size); /* Point to block header. */
-
 
 #if FNET_DEBUG_MEMPOOL_CHECK
         {
@@ -160,8 +151,6 @@ void fnet_mempool_free( fnet_mempool_desc_t mpool, void *ap )
                 return;
             }
 #endif
-
-
             if((p >= p->ptr) && ((bp > p) || (bp < p->ptr)))
             {
                 break; /* Freed block at start or end of arena. */
@@ -196,10 +185,7 @@ void fnet_mempool_free( fnet_mempool_desc_t mpool, void *ap )
 }
 
 /************************************************************************
-* NAME: fnet_mempool_malloc
-*
 * DESCRIPTION: Allocates memory in the memory pool.
-*
 *************************************************************************/
 #if FNET_MEMPOOL_MALLOC_BEST_CHOICE /* Choose the best. */
 void *fnet_mempool_malloc(fnet_mempool_desc_t mpool, fnet_size_t nbytes )
@@ -341,10 +327,7 @@ void *fnet_mempool_malloc(fnet_mempool_desc_t mpool, fnet_size_t nbytes )
 #endif
 
 /************************************************************************
-* NAME: fnet_free_mem_status
-*
 * DESCRIPTION: Returns a quantity of free memory (for debug needs)
-*
 *************************************************************************/
 fnet_size_t fnet_mempool_free_mem_status( fnet_mempool_desc_t mpool)
 {
@@ -383,10 +366,7 @@ fnet_size_t fnet_mempool_free_mem_status( fnet_mempool_desc_t mpool)
 }
 
 /************************************************************************
-* NAME: fnet_malloc_max
-*
 * DESCRIPTION: Returns a maximum size of posible allocated memory chunk.
-*
 *************************************************************************/
 fnet_size_t fnet_mempool_malloc_max( fnet_mempool_desc_t mpool )
 {
@@ -475,4 +455,3 @@ fnet_return_t fnet_mempool_check( fnet_mempool_desc_t mpool )
     return FNET_OK;
 }
 #endif
-

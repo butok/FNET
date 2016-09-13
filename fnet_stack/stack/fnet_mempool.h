@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_mempool.h
-*
-* @author Andrey Butok
-*
 * @brief FNET memory pools API.
 *
 ***************************************************************************/
@@ -48,7 +43,6 @@ typedef struct fnet_mempool_unit_header
 }
 fnet_mempool_unit_header_t;
 FNET_COMP_PACKED_END
-
 
 typedef enum
 {

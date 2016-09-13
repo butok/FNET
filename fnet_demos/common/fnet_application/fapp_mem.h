@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp_mem.h
-*
-* @author Andrey Butok
-*
 * @brief FNET Shell Demo API.
 *
 ***************************************************************************/
@@ -47,15 +42,6 @@ struct fapp_mem_region
     fnet_return_t   (*memcpy)( FNET_COMP_PACKED_VAR void *dest, const FNET_COMP_PACKED_VAR void *src, fnet_size_t n ); /* Write */
     fnet_return_t   (*erase)( void *erase_addr, fnet_size_t n ); /* Erase */
     fnet_return_t   (*flush)( void );   /* Flush write cache. It is optional. */
-    fnet_size_t     erase_size;         /* Logical page size. Smallest logical block which can be erased independently. */
-};
-
-/*  Reserved area inside memory region, which may not be written during firmware update.*/
-struct fapp_mem_region_reserved
-{
-    fnet_char_t    *description;        /* Reserved memory region description. Displayed to user.*/
-    fnet_uint32_t  address;             /* Reserved memory region start address.*/
-    fnet_size_t    size;                /* Reserved memory region size in bytes.*/
 };
 
 extern const struct fapp_mem_region fapp_mem_regions[];
@@ -74,8 +60,8 @@ void fapp_mem_erase_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t
 
 fnet_return_t fapp_mem_memcpy (fnet_shell_desc_t desc, FNET_COMP_PACKED_VAR void *dest, const FNET_COMP_PACKED_VAR void *src, fnet_size_t n );
 fnet_return_t fapp_mem_flush(void);
-fnet_bool_t fapp_mem_region_is_reserved( fnet_uint32_t start, fnet_size_t n);
 void fapp_mem_erase_all(fnet_shell_desc_t desc);
+fnet_return_t fapp_mem_region_get_begin_end(fnet_index_t n, fnet_uint8_t *FNET_COMP_PACKED_VAR *begin_p, fnet_uint8_t *FNET_COMP_PACKED_VAR *end_p);
 
 #if defined(__cplusplus)
 }

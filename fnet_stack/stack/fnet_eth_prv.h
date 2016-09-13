@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_eth_prv.h
-*
-* @author Andrey Butok
-*
 * @brief Private. Ethernet platform independent API functions.
 *
 ***************************************************************************/
@@ -106,7 +101,6 @@ extern const fnet_mac_addr_t fnet_eth_broadcast;
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-
 #if defined(__cplusplus)
 extern "C" {
 #endif

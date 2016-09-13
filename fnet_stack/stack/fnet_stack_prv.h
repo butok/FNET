@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_stack.h
-*
-* @author Andrey Butok
-*
 * @brief Main including header for the FNET TCP/IP stack.
 *
 ***************************************************************************/
@@ -33,8 +28,6 @@
 #define _FNET_STACK_PRV_H_
 
 extern fnet_bool_t _fnet_is_enabled;
-
-
 
 #if defined(__cplusplus)
 extern "C" {

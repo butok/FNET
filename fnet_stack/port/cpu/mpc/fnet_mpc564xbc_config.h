@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2005-2011 by Andrey Butok and Gordon Jahn.
+* Copyright 2005-2016 by Andrey Butok and Gordon Jahn.
 *                        Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,9 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_mpc564xbc_config.h
-
 *
 * @brief MPC564xBC specific configuration file.
 *
@@ -48,7 +45,6 @@
 
 /* MPC Flash Module is not supported.*/
 #define FNET_CFG_CPU_FLASH              (0)
-#define FNET_CFG_CPU_FLASH_PAGE_SIZE    (2*1024)
 
 /* The platform does not have second Ethernet Module.*/
 #define FNET_CFG_CPU_ETH1               (0)
@@ -66,6 +62,5 @@
 
 /* Flash size.*/
 #define FNET_CFG_CPU_FLASH_SIZE         (1024 * 512)    /* 512 KB */
-
 
 #endif /* _FNET_MPC564XBC_CONFIG_H_ */

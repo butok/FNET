@@ -19,12 +19,7 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet.h
-*
-* @author Andrey Butok
-*
-* @brief Main including header for the FNET project.
+* @brief Main include header for FNET project.
 *
 ***************************************************************************/
 
@@ -80,9 +75,8 @@
  *        string.
  * @showinitializer
  ******************************************************************************/
-#define FNET_VERSION            "3.6.0"
+#define FNET_VERSION            "3.6.1"
 
 /*! @} */
 
 #endif /* _FNET_H_ */
-

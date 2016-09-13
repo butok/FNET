@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -36,7 +36,6 @@
 #define _FNET_MK_CONFIG_H_
 
 #include "fnet_user_config.h"
-
 
 #ifndef FNET_MK
     #define FNET_MK   (0)

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_loop.h
-*
-* @author Andrey Butok
-*
 * @brief Private. Loopback driver function definitions, data structures, etc.
 *
 ***************************************************************************/
@@ -37,7 +32,6 @@
 #if FNET_CFG_LOOPBACK
 
 #include "fnet_netif_prv.h"
-
 
 /************************************************************************
 *     Global Data Structures

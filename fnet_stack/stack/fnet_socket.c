@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
 *
@@ -19,11 +19,6 @@
 *  limitations under the License.
 *
 **********************************************************************/ /*!
-*
-* @file fnet_socket.c
-*
-* @author Andrey Butok
-*
 * @brief Socket interface implementation.
 *
 ***************************************************************************/
@@ -61,8 +56,6 @@ static void fnet_socket_is_activity(fnet_uint32_t cookie);
 #endif
 
 /************************************************************************
-* NAME: fnet_socket_init
-*
 * DESCRIPTION: Initialization of the socket layer.
 *************************************************************************/
 fnet_return_t fnet_socket_init( void )
@@ -81,8 +74,6 @@ fnet_return_t fnet_socket_init( void )
 }
 
 /************************************************************************
-* NAME: fnet_socket_is_activity
-*
 * DESCRIPTION: This function is called on the socket activity event.
 *************************************************************************/
 #if FNET_CFG_SOCKET_CALLBACK_ON_RX
@@ -97,8 +88,6 @@ static void fnet_socket_is_activity(fnet_uint32_t cookie)
 }
 
 /************************************************************************
-* NAME: fnet_socket_set_callback_on_rx
-*
 * DESCRIPTION: Registers the "socket layer activity" event handler.
 *************************************************************************/
 void fnet_socket_set_callback_on_rx( void(*callback)(void))
@@ -109,8 +98,6 @@ void fnet_socket_set_callback_on_rx( void(*callback)(void))
 #endif /* FNET_CFG_SOCKET_CALLBACK_ON_RX */
 
 /************************************************************************
-* NAME: fnet_socket_set_error
-*
 * DESCRIPTION: This function sets socket error.
 *************************************************************************/
 void fnet_socket_set_error( fnet_socket_if_t *sock, fnet_error_t error )
@@ -127,8 +114,6 @@ void fnet_socket_set_error( fnet_socket_if_t *sock, fnet_error_t error )
 }
 
 /************************************************************************
-* NAME: fnet_socket_list_add
-*
 * DESCRIPTION: This function adds socket into the queue.
 *************************************************************************/
 void fnet_socket_list_add( fnet_socket_if_t **head, fnet_socket_if_t *s )
@@ -147,8 +132,6 @@ void fnet_socket_list_add( fnet_socket_if_t **head, fnet_socket_if_t *s )
 }
 
 /************************************************************************
-* NAME: fnet_socket_list_del
-*
 * DESCRIPTION: This function removes socket from the queue
 *************************************************************************/
 void fnet_socket_list_del( fnet_socket_if_t **head, fnet_socket_if_t *s )
@@ -173,8 +156,6 @@ void fnet_socket_list_del( fnet_socket_if_t **head, fnet_socket_if_t *s )
 }
 
 /************************************************************************
-* NAME: fnet_socket_desc_alloc
-*
 * DESCRIPTION: This function reserves socket descriptor.
 *************************************************************************/
 static fnet_socket_t fnet_socket_desc_alloc( void )
@@ -200,8 +181,6 @@ static fnet_socket_t fnet_socket_desc_alloc( void )
 }
 
 /************************************************************************
-* NAME: fnet_socket_desc_set
-*
 * DESCRIPTION: This function assigns the socket descriptor to the socket.
 *************************************************************************/
 static void fnet_socket_desc_set( fnet_socket_t desc, fnet_socket_if_t *sock )
@@ -211,8 +190,6 @@ static void fnet_socket_desc_set( fnet_socket_t desc, fnet_socket_if_t *sock )
 }
 
 /************************************************************************
-* NAME: fnet_socket_desc_free
-*
 * DESCRIPTION: This function frees the socket descriptor.
 *************************************************************************/
 static void fnet_socket_desc_free( fnet_socket_t desc )
@@ -221,8 +198,6 @@ static void fnet_socket_desc_free( fnet_socket_t desc )
 }
 
 /************************************************************************
-* NAME: fnet_socket_desc_find
-*
 * DESCRIPTION: This function looking for socket structure
 *              associated with the socket descriptor.
 *************************************************************************/
@@ -242,8 +217,6 @@ static fnet_socket_if_t *fnet_socket_desc_find( fnet_socket_t desc )
 }
 
 /************************************************************************
-* NAME: fnet_socket_release
-*
 * DESCRIPTION: This function release all resources allocated for the socket.
 *************************************************************************/
 void fnet_socket_release( fnet_socket_if_t **head, fnet_socket_if_t *sock )
@@ -257,8 +230,6 @@ void fnet_socket_release( fnet_socket_if_t **head, fnet_socket_if_t *sock )
 }
 
 /************************************************************************
-* NAME: fnet_socket_conflict
-*
 * DESCRIPTION: Return FNET_TRUE if there's a socket whose addresses 'confict'
 *              with the supplied addresses.
 *************************************************************************/
@@ -284,8 +255,6 @@ fnet_bool_t fnet_socket_conflict( fnet_socket_if_t *head,  const struct sockaddr
 }
 
 /************************************************************************
-* NAME: fnet_socket_lookup
-*
 * DESCRIPTION: This function looks for a socket with the best match
 *              to the local and foreign address parameters.
 *************************************************************************/
@@ -380,8 +349,6 @@ fnet_socket_if_t *fnet_socket_lookup( fnet_socket_if_t *head,  struct sockaddr *
 }
 
 /************************************************************************
-* NAME: fnet_socket_uniqueport
-*
 * DESCRIPTION: Choose a unique (non-conflicting) local port for the socket
 *              list starting at 'head'. The port will always be
 *	           FNET_SOCKET_PORT_RESERVED < local_port <= FNET_SOCKET_PORT_USERRESERVED (ephemeral port).
@@ -415,8 +382,6 @@ fnet_uint16_t fnet_socket_get_uniqueport( fnet_socket_if_t *head, struct sockadd
 }
 
 /************************************************************************
-* NAME: fnet_socket_copy
-*
 * DESCRIPTION: This function creates new socket structure and fills
 *              its proper fields by values from existing socket
 *************************************************************************/
@@ -450,8 +415,6 @@ fnet_socket_if_t *fnet_socket_copy( fnet_socket_if_t *sock )
     }
 }
 /************************************************************************
-* NAME: socket
-*
 * DESCRIPTION: This function creates a socket and returns
 *              the descriptor to the application.
 *************************************************************************/
@@ -529,8 +492,6 @@ ERROR_1:
 }
 
 /************************************************************************
-* NAME: connect
-*
 * DESCRIPTION: This function establishes a connection to
 *              a specified socket.
 *************************************************************************/
@@ -679,8 +640,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: bind
-*
 * DESCRIPTION: This function associates a local address with a socket.
 *************************************************************************/
 fnet_return_t fnet_socket_bind( fnet_socket_t s, const struct sockaddr *name, fnet_size_t namelen )
@@ -757,8 +716,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: closesocket
-*
 * DESCRIPTION: This function closes an existing socket.
 *************************************************************************/
 fnet_return_t fnet_socket_close( fnet_socket_t s )
@@ -828,8 +785,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: shutdown
-*
 * DESCRIPTION: This function to disable reception, transmission, or both.
 *************************************************************************/
 fnet_return_t fnet_socket_shutdown( fnet_socket_t s, fnet_sd_flags_t how )
@@ -865,8 +820,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: listen
-*
 * DESCRIPTION: This function places the socket into the state where
 *              it is listening for an incoming connection.
 *************************************************************************/
@@ -922,8 +875,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: accept
-*
 * DESCRIPTION: This function accepts a connection on a specified socket.
 *************************************************************************/
 fnet_socket_t fnet_socket_accept( fnet_socket_t s, struct sockaddr *addr, fnet_size_t *addrlen )
@@ -1007,8 +958,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: sendto
-*
 * DESCRIPTION: This function sends data to a specific destination.
 *************************************************************************/
 fnet_int32_t fnet_socket_sendto( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct sockaddr *to, fnet_size_t tolen )
@@ -1091,8 +1040,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: send
-*
 * DESCRIPTION: This function sends data on a connected socket.
 *************************************************************************/
 fnet_int32_t fnet_socket_send( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags )
@@ -1101,8 +1048,6 @@ fnet_int32_t fnet_socket_send( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t l
 }
 
 /************************************************************************
-* NAME: recvfrom
-*
 * DESCRIPTION: This function reads incoming data of socket and captures
 *              the address from which the data was sent.
 *************************************************************************/
@@ -1177,8 +1122,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: recv
-*
 * DESCRIPTION: This function receives data from a connected socket.
 *************************************************************************/
 fnet_int32_t fnet_socket_recv( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags )
@@ -1187,8 +1130,6 @@ fnet_int32_t fnet_socket_recv( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t l
 }
 
 /************************************************************************
-* NAME: getsockname
-*
 * DESCRIPTION: This function retrieves the current name
 *              for the specified socket.
 *************************************************************************/
@@ -1240,8 +1181,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: getpeername
-*
 * DESCRIPTION: This function retrieves the name of the peer
 *              connected to the socket
 *************************************************************************/
@@ -1293,8 +1232,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: setsockopt
-*
 * DESCRIPTION: This function sets the current value for a socket option
 *              associated with a socket
 *************************************************************************/
@@ -1412,8 +1349,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_socket_getopt
-*
 * DESCRIPTION: This function retrieves the current value for
 *              a socket option associated with a socket
 *************************************************************************/
@@ -1600,8 +1535,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_socket_buffer_release
-*
 * DESCRIPTION: Discards any buffers in the socket buffer
 *************************************************************************/
 void fnet_socket_buffer_release( fnet_socket_buffer_t *sb )
@@ -1630,8 +1563,6 @@ void fnet_socket_buffer_release( fnet_socket_buffer_t *sb )
 }
 
 /************************************************************************
-* NAME: fnet_socket_buffer_append_record
-*
 * DESCRIPTION: Append the record to the end of the socket buffer.
 *************************************************************************/
 fnet_return_t fnet_socket_buffer_append_record( fnet_socket_buffer_t *sb, fnet_netbuf_t *nb )
@@ -1653,8 +1584,6 @@ fnet_return_t fnet_socket_buffer_append_record( fnet_socket_buffer_t *sb, fnet_n
 }
 
 /************************************************************************
-* NAME: fnet_socket_buffer_append_address
-*
 * DESCRIPTION: Constract net_buf chain  and add it to the queue.
 *              The chain contains the address of the message
 *              and the message data.
@@ -1699,8 +1628,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_socket_buffer_read_record
-*
 * DESCRIPTION: This function reads data from socket buffer and
 *              put this data into application buffer.
 *************************************************************************/
@@ -1732,8 +1659,6 @@ fnet_size_t fnet_socket_buffer_read_record( fnet_socket_buffer_t *sb, fnet_uint8
 }
 
 /************************************************************************
-* NAME: fnet_socket_buffer_read_address
-*
 * DESCRIPTION:This function reads data from socket buffer and
 *             put this data into application buffer.
 *             And captures the address information from which the data was sent.
@@ -1788,8 +1713,6 @@ fnet_int32_t fnet_socket_buffer_read_address( fnet_socket_buffer_t *sb, fnet_uin
 }
 
 /************************************************************************
-* NAME: fnet_socket_addr_check_len
-*
 * DESCRIPTION: This function check sockaddr structure and its size.
 *************************************************************************/
 static fnet_error_t fnet_socket_addr_check_len(const struct sockaddr *addr, fnet_size_t addr_len )
@@ -1832,8 +1755,6 @@ static fnet_error_t fnet_socket_addr_check_len(const struct sockaddr *addr, fnet
 }
 
 /************************************************************************
-* NAME: fnet_socket_addr_is_multicast
-*
 * DESCRIPTION: Returns FNET_FALSE if the address is not multicast.
 *************************************************************************/
 fnet_bool_t fnet_socket_addr_is_multicast(const struct sockaddr *addr)
@@ -1864,8 +1785,6 @@ fnet_bool_t fnet_socket_addr_is_multicast(const struct sockaddr *addr)
 }
 
 /************************************************************************
-* NAME: fnet_socket_addr_is_broadcast
-*
 * DESCRIPTION: Returns FNET_FALSE if the address is not broadcast.
 *************************************************************************/
 fnet_bool_t fnet_socket_addr_is_broadcast(const struct sockaddr *addr, fnet_netif_t *netif)
@@ -1889,8 +1808,6 @@ fnet_bool_t fnet_socket_addr_is_broadcast(const struct sockaddr *addr, fnet_neti
 }
 
 /************************************************************************
-* NAME: fnet_socket_addr_is_unspecified
-*
 * DESCRIPTION: Returns FNET_FALSE if the address is not specified.
 *************************************************************************/
 fnet_bool_t fnet_socket_addr_is_unspecified(const struct sockaddr *addr)
@@ -1920,8 +1837,6 @@ fnet_bool_t fnet_socket_addr_is_unspecified(const struct sockaddr *addr)
 }
 
 /************************************************************************
-* NAME: fnet_socket_addr_are_equal
-*
 * DESCRIPTION: Returns FNET_FALSE if the addresses are not equal.
 *************************************************************************/
 fnet_bool_t fnet_socket_addr_are_equal(const struct sockaddr *addr1, const struct sockaddr *addr2 )
@@ -1951,8 +1866,6 @@ fnet_bool_t fnet_socket_addr_are_equal(const struct sockaddr *addr1, const struc
 }
 
 /************************************************************************
-* NAME: fnet_socket_ip_addr_copy
-*
 * DESCRIPTION:
 *************************************************************************/
 void fnet_socket_ip_addr_copy(const struct sockaddr *from_addr, struct sockaddr *to_addr)
@@ -1979,8 +1892,6 @@ void fnet_socket_ip_addr_copy(const struct sockaddr *from_addr, struct sockaddr 
 }
 
 /************************************************************************
-* NAME: fnet_socket_addr_copy
-*
 * DESCRIPTION:
 *************************************************************************/
 void fnet_socket_addr_copy(const struct sockaddr *from_addr, struct sockaddr *to_addr)
@@ -2006,8 +1917,6 @@ void fnet_socket_addr_copy(const struct sockaddr *from_addr, struct sockaddr *to
 }
 
 /************************************************************************
-* NAME: fnet_socket_addr_route
-*
 * DESCRIPTION:
 *************************************************************************/
 fnet_netif_t *fnet_socket_addr_route(const struct sockaddr *dest_addr)
@@ -2047,5 +1956,3 @@ fnet_netif_t *fnet_socket_addr_route(const struct sockaddr *dest_addr)
 
     return result;
 }
-
-

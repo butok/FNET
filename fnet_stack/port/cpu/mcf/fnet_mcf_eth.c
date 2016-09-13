@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -18,10 +18,6 @@
 *  limitations under the License.
 *
 **********************************************************************/ /*!
-*
-* @file fnet_mcf_eth.c
-*
-* @author Andrey Butok
 *
 * @brief Ethernet driver implementation.
 *
@@ -274,7 +270,6 @@ void fnet_eth_phy_init(fnet_fec_if_t *ethif)
     }
 
 }
-
 
 #endif /* FNET_MCF && FNET_CFG_ETH */
 

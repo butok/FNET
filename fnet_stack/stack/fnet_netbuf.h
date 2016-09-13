@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_netbuf.h
-*
-* @author Andrey Butok
-*
 * @brief Private. FNET Buffer and memory management definitions.
 *
 ***************************************************************************/

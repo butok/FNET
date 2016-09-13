@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2005-2015 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2005-2016 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
 *
@@ -17,10 +17,6 @@
 *  limitations under the License.
 *
 **********************************************************************/ /*!
-*
-* @file fnet_mcf.h
-*
-* @author Andrey Butok
 *
 * @brief Private. ColdFire Peripheral Registers definitions.
 *
@@ -51,7 +47,6 @@ typedef volatile fnet_uint8_t fnet_vuint8_t;     /*  8 bits */
 typedef volatile fnet_uint16_t fnet_vuint16_t;   /* 16 bits */
 typedef volatile fnet_uint32_t fnet_vuint32_t;   /* 32 bits */
 
-
 /*********************************************************************
 *
 * MCF ASM utility functions
@@ -64,7 +59,6 @@ fnet_uint16_t fnet_mcf_sr_rd(void);
 void fnet_mcf_sr_wr(fnet_uint16_t);
 void fnet_mcf_illegal(void);
 void fnet_mcf_nop(void);
-
 
 /*********************************************************************
 *

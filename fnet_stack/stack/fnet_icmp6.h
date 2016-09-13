@@ -1,8 +1,6 @@
-#ifndef _FNET_ICMP6_H_
-#define _FNET_ICMP6_H_
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -21,14 +19,11 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_icmp6.h
-*
-* @author Andrey Butok
-*
 * @brief Private. ICMP protocol function definitions, data structures, etc.
 *
 ***************************************************************************/
+#ifndef _FNET_ICMP6_H_
+#define _FNET_ICMP6_H_
 
 #include "fnet.h"
 #include "fnet_netbuf.h"
@@ -94,7 +89,6 @@
 * messages have message types from 128 to 255.
 */
 #define FNET_ICMP6_TYPE_IS_ERROR(t) (((t) & 0x80u) == 0x00u)
-
 
 /***********************************************************************
  * Generic ICMP packet header

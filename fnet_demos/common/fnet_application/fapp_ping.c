@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,18 +18,12 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp_ping.c
-*
-* @author Andrey Butok
-*
 * @brief FNET Shell Demo implementation (Ping).
 *
 ***************************************************************************/
 
 #include "fapp.h"
 #include "fapp_prv.h"
-
 
 #if FNET_CFG_PING && (FAPP_CFG_PING_CMD || FAPP_CFG_PING6_CMD)
 
@@ -44,7 +38,6 @@
 #define FAPP_PING_STR_REPLY         "Reply from %s"
 #define FAPP_PING_STR_TIMEOUT       "Request timed out."
 
-
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
@@ -52,8 +45,6 @@ static void fapp_ping_callback(fnet_error_t result, fnet_size_t packet_count, st
 static void fapp_ping_on_ctrlc(fnet_shell_desc_t desc);
 
 /************************************************************************
-* NAME: fapp_ping_callback
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fapp_ping_callback (fnet_error_t result, fnet_size_t packet_count, struct sockaddr *target_addr, fnet_uint32_t cookie)
@@ -81,8 +72,6 @@ static void fapp_ping_callback (fnet_error_t result, fnet_size_t packet_count, s
 }
 
 /************************************************************************
-* NAME: fapp_ping_on_ctrlc
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fapp_ping_on_ctrlc(fnet_shell_desc_t desc)
@@ -93,8 +82,6 @@ static void fapp_ping_on_ctrlc(fnet_shell_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fapp_ping_cmd
-*
 * DESCRIPTION: Ping command.
 ************************************************************************/
 void fapp_ping_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -104,7 +91,6 @@ void fapp_ping_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
     fnet_char_t             *p;
     fnet_uint32_t           value;
     fnet_char_t             ip_str[FNET_IP_ADDR_STR_SIZE];
-
 
     fnet_memset_zero(&ping_params, sizeof(ping_params));
 

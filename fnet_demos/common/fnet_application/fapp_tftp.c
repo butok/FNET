@@ -22,7 +22,6 @@
 * @brief TFTP file loader implementation.
 *
 ***************************************************************************/
-
 #include "fapp.h"
 #include "fapp_prv.h"
 #include "fapp_tftp.h"
@@ -72,7 +71,6 @@
     #endif
 #endif
 
-
 #if FAPP_CFG_TFTP_TX_BIN && (FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD)
     static void fapp_tftp_tx_bin_gen (struct fapp_tftp_tx_handler_bin_context *tx_bin);
 #endif
@@ -85,25 +83,19 @@
 #if FAPP_CFG_TFTP_TX_HEX && (FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD)
     static void fapp_tftp_tx_hex_gen (struct fapp_tftp_tx_handler_hex_context *tx_hex);
 #endif
-
 #if FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD
     static fnet_int32_t fapp_tftp_handler (fnet_tftp_request_t request_type, fnet_uint8_t *data_ptr, fnet_size_t data_size, fnet_return_t result, void *shl_desc);
-#endif
-
-#if FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD
-    static void fapp_tftp_tx_image_begin_end(fnet_uint8_t *FNET_COMP_PACKED_VAR *data_begin_p, fnet_uint8_t *FNET_COMP_PACKED_VAR *data_end_p);
 #endif
 
 #if FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD
 static fapp_tftp_handler_control_t fapp_tftp_handler_control;
 
 /* Progress variables. */
-const static fnet_uint8_t   progress[] = {'\\', '|', '/', '-'};
-static fnet_index_t progress_counter = 0u;
+static const fnet_uint8_t   progress[] = {'\\', '|', '/', '-'};
+static fnet_index_t         progress_counter = 0u;
 
 static void fapp_tftp_on_ctrlc(fnet_shell_desc_t desc);
 #endif
-
 
 #if FAPP_CFG_TFTPS_CMD
 
@@ -203,8 +195,6 @@ const struct image_type image_types[] =
 #define FAPP_TFTP_IMAGE_TYPE_DEFAULT   image_types[0]  /* Default image type. */
 
 /************************************************************************
-* NAME: fapp_tftp_image_type_by_index
-*
 * DESCRIPTION:
 ************************************************************************/
 const struct image_type *fapp_tftp_image_type_by_index (fapp_params_tftp_file_type_t index)
@@ -227,8 +217,6 @@ const struct image_type *fapp_tftp_image_type_by_index (fapp_params_tftp_file_ty
 }
 
 /************************************************************************
-* NAME: fapp_tftp_image_type_by_index
-*
 * DESCRIPTION:
 ************************************************************************/
 const struct image_type *fapp_tftp_image_type_by_name (fnet_char_t *name)
@@ -254,43 +242,15 @@ const struct image_type *fapp_tftp_image_type_by_name (fnet_char_t *name)
 
 #if FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD
 
-/************************************************************************
-* NAME: fapp_tftp_tx_image_begin_end
-*
-* DESCRIPTION:
-************************************************************************/
-static void fapp_tftp_tx_image_begin_end(fnet_uint8_t *FNET_COMP_PACKED_VAR *data_begin_p, fnet_uint8_t *FNET_COMP_PACKED_VAR *data_end_p)
-{
-    fnet_uint8_t    *data_end = (fnet_uint8_t *)FAPP_TFTP_TX_MEM_REGION->address + FAPP_TFTP_TX_MEM_REGION->size;
-    fnet_uint8_t    *data_cur;
-    fnet_size_t     step = FAPP_TFTP_TX_MEM_REGION->erase_size;
-
-    /* Find image start. */
-    data_cur = (fnet_uint8_t *)FAPP_TFTP_TX_MEM_REGION->address;
-    while((data_cur < data_end) && (fapp_mem_region_is_reserved((fnet_uint32_t)data_cur, step) == FNET_TRUE) )
-    {
-        data_cur += step;
-    }
-    *data_begin_p = data_cur;
-
-    /* Find image end. */
-    while((data_cur < data_end) && (fapp_mem_region_is_reserved((fnet_uint32_t)data_cur, step) == FNET_FALSE) )
-    {
-        data_cur += step;
-    }
-    *data_end_p = data_cur;
-}
 
 /*======================== BIN ========================================*/
 #if FAPP_CFG_TFTP_RX_BIN && (FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD)
 /************************************************************************
-* NAME: fapp_tftp_rx_handler_bin
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_return_t fapp_tftp_rx_handler_bin (fapp_tftp_handler_control_t *tftp_handler, fnet_shell_desc_t desc, fnet_uint8_t *data, fnet_size_t data_size)
 {
-    struct fapp_tftp_rx_handler_bin_context *bin = &tftp_handler->rx_bin;
+    struct fapp_tftp_rx_handler_bin_context *bin = &tftp_handler->context.rx_bin;
     fnet_return_t result = FNET_OK;
 
     while(data_size && (result == FNET_OK))
@@ -301,21 +261,21 @@ static fnet_return_t fapp_tftp_rx_handler_bin (fapp_tftp_handler_control_t *tftp
             {
                 fnet_size_t copy_size;
 
-                copy_size = bin->header.size;
+                copy_size = bin->header.fields.size;
                 if(copy_size > data_size)
                 {
                     copy_size = data_size;
                 }
 
                 /* Copy to the destination. */
-                if( (result = fapp_mem_memcpy (desc, (void *) bin->header.address, data, copy_size )) == FNET_OK )
+                if( (result = fapp_mem_memcpy (desc, (void *) bin->header.fields.address, data, copy_size )) == FNET_OK )
                 {
-                    bin->header.address += copy_size;
-                    bin->header.size -= copy_size;
+                    bin->header.fields.address += copy_size;
+                    bin->header.fields.size -= copy_size;
                     data_size -= copy_size;
                     data += copy_size;
 
-                    if(bin->header.size == 0u)
+                    if(bin->header.fields.size == 0u)
                     {
                         bin->state = FAPP_TFTP_HANDLER_BIN_STATE_INIT;
                     }
@@ -329,7 +289,7 @@ static fnet_return_t fapp_tftp_rx_handler_bin (fapp_tftp_handler_control_t *tftp
             case FAPP_TFTP_HANDLER_BIN_STATE_GETHEADER: /* Get header. */
                 if(bin->header_index < FAPP_TFTP_BIN_HEADER_SIZE)
                 {
-                    bin->header_bytes[bin->header_index++] = *data++;
+                    bin->header.bytes[bin->header_index++] = *data++;
                     data_size--;
                 }
                 else
@@ -348,8 +308,6 @@ static fnet_return_t fapp_tftp_rx_handler_bin (fapp_tftp_handler_control_t *tftp
 
 #if FAPP_CFG_TFTP_TX_BIN && (FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD)
 /************************************************************************
-* NAME: fapp_tftp_tx_bin_gen
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fapp_tftp_tx_bin_gen (struct fapp_tftp_tx_handler_bin_context *tx_bin)
@@ -386,13 +344,11 @@ static void fapp_tftp_tx_bin_gen (struct fapp_tftp_tx_handler_bin_context *tx_bi
 }
 
 /************************************************************************
-* NAME: fapp_tftp_tx_handler_bin
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_int32_t fapp_tftp_tx_handler_bin (fapp_tftp_handler_control_t *tftp_handler, fnet_shell_desc_t desc, fnet_uint8_t *data, fnet_size_t data_size)
 {
-    struct fapp_tftp_tx_handler_bin_context *tx_bin = &tftp_handler->tx_bin;
+    struct fapp_tftp_tx_handler_bin_context *tx_bin = &tftp_handler->context.tx_bin;
     fnet_size_t                             send_size;
     fnet_int32_t                            result = 0;
 
@@ -401,7 +357,7 @@ static fnet_int32_t fapp_tftp_tx_handler_bin (fapp_tftp_handler_control_t *tftp_
     /* Define start and end address.*/
     if((tx_bin->data_start == 0) && (tx_bin->data_end == 0)) /* Only first time. */
     {
-        fapp_tftp_tx_image_begin_end(&tx_bin->data_start, &tx_bin->data_end);
+        fapp_mem_region_get_begin_end(0, &tx_bin->data_start, &tx_bin->data_end);
     }
 
     while(data_size)
@@ -439,14 +395,12 @@ static fnet_int32_t fapp_tftp_tx_handler_bin (fapp_tftp_handler_control_t *tftp_
 /*======================== RAW ========================================*/
 
 /************************************************************************
-* NAME: fapp_tftp_rx_handler_raw
-*
 * DESCRIPTION:
 ************************************************************************/
 #if FAPP_CFG_TFTP_RX_RAW && (FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD)
 static fnet_return_t fapp_tftp_rx_handler_raw (fapp_tftp_handler_control_t *tftp_handler, fnet_shell_desc_t desc, fnet_uint8_t *data, fnet_size_t data_size)
 {
-    struct fapp_tftp_rx_handler_raw_context *raw = &tftp_handler->rx_raw;
+    struct fapp_tftp_rx_handler_raw_context *raw = &tftp_handler->context.rx_raw;
     fnet_return_t                           result;
 
     if(raw->dest == 0u) /* Only one time. */
@@ -465,8 +419,6 @@ static fnet_return_t fapp_tftp_rx_handler_raw (fapp_tftp_handler_control_t *tftp
 
 #if FAPP_CFG_TFTP_TX_RAW && (FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD)
 /************************************************************************
-* NAME: fapp_tftp_tx_raw_gen
-*
 * DESCRIPTION:
 ************************************************************************/
 static /* inline */ void fapp_tftp_tx_raw_gen (struct fapp_tftp_tx_handler_raw_context *tx_raw)
@@ -494,13 +446,11 @@ static /* inline */ void fapp_tftp_tx_raw_gen (struct fapp_tftp_tx_handler_raw_c
 }
 
 /************************************************************************
-* NAME: fapp_tftp_tx_handler_raw
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_int32_t fapp_tftp_tx_handler_raw (fapp_tftp_handler_control_t *tftp_handler, fnet_shell_desc_t desc, fnet_uint8_t *data, fnet_size_t data_size)
 {
-    struct fapp_tftp_tx_handler_raw_context *tx_raw = &tftp_handler->tx_raw;
+    struct fapp_tftp_tx_handler_raw_context *tx_raw = &tftp_handler->context.tx_raw;
     fnet_size_t                             send_size;
     fnet_int32_t                            result = 0;
 
@@ -509,7 +459,7 @@ static fnet_int32_t fapp_tftp_tx_handler_raw (fapp_tftp_handler_control_t *tftp_
     /* Define start and end address.*/
     if((tx_raw->data_start == 0) && (tx_raw->data_end == 0)) /* Only first time. */
     {
-        fapp_tftp_tx_image_begin_end(&tx_raw->data_start, &tx_raw->data_end);
+        fapp_mem_region_get_begin_end(0, &tx_raw->data_start, &tx_raw->data_end);
     }
 
     while(data_size)
@@ -548,13 +498,11 @@ static fnet_int32_t fapp_tftp_tx_handler_raw (fapp_tftp_handler_control_t *tftp_
 /*======================== SREC ========================================*/
 #if FAPP_CFG_TFTP_RX_SREC && (FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD)
 /************************************************************************
-* NAME: fapp_tftp_rx_handler_srec
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_return_t fapp_tftp_rx_handler_srec (fapp_tftp_handler_control_t *tftp_handler, fnet_shell_desc_t desc, fnet_uint8_t *data, fnet_size_t data_size)
 {
-    struct fapp_tftp_rx_handler_srec_context    *srec = &tftp_handler->rx_srec;
+    struct fapp_tftp_rx_handler_srec_context    *srec = &tftp_handler->context.rx_srec;
     fnet_return_t                               result = FNET_OK;
     fnet_char_t                                 tmp[2];
     fnet_uint8_t                                tmp_data;
@@ -582,7 +530,7 @@ static fnet_return_t fapp_tftp_rx_handler_srec (fapp_tftp_handler_control_t *tft
                 srec->type = *data++;
                 data_size--;
                 srec->record_hex_index = 0u; /* Reset hex index. */
-                srec->record.count = 0xFFu; /* Trick. */
+                srec->record.fields.count = 0xFFu; /* Trick. */
                 srec->state = FAPP_TFTP_RX_HANDLER_SREC_STATE_GETDATA;
                 break;
             case FAPP_TFTP_RX_HANDLER_SREC_STATE_GETDATA:
@@ -595,22 +543,22 @@ static fnet_return_t fapp_tftp_rx_handler_srec (fapp_tftp_handler_control_t *tft
                     break;
                 }
 
-                srec->record_bytes[srec->record_hex_index >> 1] = (fnet_uint8_t)((srec->record_bytes[srec->record_hex_index >> 1] & (0xFu << (4u * (srec->record_hex_index % 2u))))
+                srec->record.bytes[srec->record_hex_index >> 1] = (fnet_uint8_t)((srec->record.bytes[srec->record_hex_index >> 1] & (0xFu << (4u * (srec->record_hex_index % 2u))))
                         + (fnet_uint8_t)(tmp_data << (4u * ((srec->record_hex_index + 1u) % 2u))));
 
-                if(srec->record_hex_index > (((fnet_index_t)srec->record.count << 1u)))
+                if(srec->record_hex_index > (((fnet_index_t)srec->record.fields.count << 1u)))
                 {
                     fnet_uint8_t type;
                     fnet_uint8_t *addr = 0;
 
                     /* Check checksum. */
                     checksum = 0u;
-                    for(i = 0u; i < srec->record.count; i++)
+                    for(i = 0u; i < srec->record.fields.count; i++)
                     {
-                        checksum += srec->record_bytes[i];
+                        checksum += srec->record.bytes[i];
                     }
 
-                    if(srec->record_bytes[srec->record.count] != (fnet_uint8_t)~checksum)
+                    if(srec->record.bytes[srec->record.fields.count] != (fnet_uint8_t)~checksum)
                     {
                         result = FNET_ERR;
                         fnet_shell_println(desc, FAPP_TFTP_CHECKSUM_ERR);
@@ -621,25 +569,25 @@ static fnet_return_t fapp_tftp_rx_handler_srec (fapp_tftp_handler_control_t *tft
                     type = (fnet_uint8_t)(srec->type - '0'); /* Convert from character to number.*/
                     if((type == 1u) || (type == 9u))
                     {
-                        addr = (fnet_uint8_t *)( ((fnet_uint32_t)((srec->record.data[0]) & 0xFFLU) << 8 ) + (fnet_uint32_t)((srec->record.data[1]) & 0xFFLU));
+                        addr = (fnet_uint8_t *)( ((fnet_uint32_t)((srec->record.fields.data[0]) & 0xFFLU) << 8 ) + (fnet_uint32_t)((srec->record.fields.data[1]) & 0xFFLU));
                     }
 
                     if((type == 2u) || (type == 8u))
                     {
-                        addr = (fnet_uint8_t *)( ((fnet_uint32_t)((srec->record.data[0]) & 0xFFLU) << 16) +
-                                                 ((fnet_uint32_t)((srec->record.data[1]) & 0xFFLU) << 8 ) + (fnet_uint32_t)((srec->record.data[2]) & 0xFFLU));
+                        addr = (fnet_uint8_t *)( ((fnet_uint32_t)((srec->record.fields.data[0]) & 0xFFLU) << 16) +
+                                                 ((fnet_uint32_t)((srec->record.fields.data[1]) & 0xFFLU) << 8 ) + (fnet_uint32_t)((srec->record.fields.data[2]) & 0xFFLU));
                     }
 
                     if((type == 3u) || (type == 7u))
                     {
-                        addr = (fnet_uint8_t *)(((fnet_uint32_t)((srec->record.data[0]) & 0xFFLU) << 24) + ((fnet_uint32_t)((srec->record.data[1]) & 0xFFLU) << 16) +
-                                                ((fnet_uint32_t)((srec->record.data[2]) & 0xFFLU) << 8 ) + (fnet_uint32_t)((srec->record.data[3]) & 0xFFLU));
+                        addr = (fnet_uint8_t *)(((fnet_uint32_t)((srec->record.fields.data[0]) & 0xFFLU) << 24) + ((fnet_uint32_t)((srec->record.fields.data[1]) & 0xFFLU) << 16) +
+                                                ((fnet_uint32_t)((srec->record.fields.data[2]) & 0xFFLU) << 8 ) + (fnet_uint32_t)((srec->record.fields.data[3]) & 0xFFLU));
                     }
 
                     if((type > 0u) && (type < 4u)) /* Data sequence. */
                     {
                         /* Copy data to the destination. */
-                        result = fapp_mem_memcpy (desc, (void *)addr, srec->record.data + (1u + type), (fnet_size_t)(srec->record.count - (2u + type)) );
+                        result = fapp_mem_memcpy (desc, (void *)addr, srec->record.fields.data + (1u + type), (fnet_size_t)(srec->record.fields.count - (2u + type)) );
                     }
 
                     if((type > 6u) && (type < 10u)) /* End of block. */
@@ -665,8 +613,6 @@ static fnet_return_t fapp_tftp_rx_handler_srec (fapp_tftp_handler_control_t *tft
 
 #if FAPP_CFG_TFTP_TX_SREC && (FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD)
 /************************************************************************
-* NAME: fapp_tftp_tx_srec_gen
-*
 * DESCRIPTION:
 ************************************************************************/
 static /*inline*/ void fapp_tftp_tx_srec_gen (struct fapp_tftp_tx_handler_srec_context *tx_srec)
@@ -715,9 +661,13 @@ static /*inline*/ void fapp_tftp_tx_srec_gen (struct fapp_tftp_tx_handler_srec_c
                 fnet_sprintf((fnet_char_t *)&tx_srec->srec_line.data[send_size], "%02X\n", (fnet_uint8_t)~checksum);
             }
 
-            if(tx_srec->data_end == tx_srec->data_start) /* End of image.*/
+            if(tx_srec->data_end == tx_srec->data_start) /* End of mem region.*/
             {
-                tx_srec->state = FAPP_TFTP_TX_HANDLER_SREC_STATE_EOB;
+                tx_srec->mem_region_number++; /* next region.*/
+                if( fapp_mem_region_get_begin_end(tx_srec->mem_region_number, &tx_srec->data_start, &tx_srec->data_end) == FNET_ERR)
+                {
+                    tx_srec->state = FAPP_TFTP_TX_HANDLER_SREC_STATE_EOB; /* End of image.*/
+                }
             }
             break;
         /*=== End of block. ===*/
@@ -747,16 +697,12 @@ static /*inline*/ void fapp_tftp_tx_srec_gen (struct fapp_tftp_tx_handler_srec_c
     tx_srec->srec_line_cur = (fnet_uint8_t *) & (tx_srec->srec_line);
 }
 
-
-
 /************************************************************************
-* NAME: fapp_tftp_tx_handler_srec
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_int32_t fapp_tftp_tx_handler_srec (fapp_tftp_handler_control_t *tftp_handler, fnet_shell_desc_t desc, fnet_uint8_t *data, fnet_size_t data_size)
 {
-    struct fapp_tftp_tx_handler_srec_context    *tx_srec = &tftp_handler->tx_srec;
+    struct fapp_tftp_tx_handler_srec_context    *tx_srec = &tftp_handler->context.tx_srec;
     fnet_size_t                                 send_size;
     fnet_int32_t                                result = 0;
 
@@ -765,7 +711,8 @@ static fnet_int32_t fapp_tftp_tx_handler_srec (fapp_tftp_handler_control_t *tftp
     /* Define start and end address.*/
     if(tx_srec->data_start == tx_srec->data_end) /*0==0. Only first time. */
     {
-        fapp_tftp_tx_image_begin_end(&tx_srec->data_start, &tx_srec->data_end);
+        tx_srec->mem_region_number = 0; /* start from first region.*/
+        fapp_mem_region_get_begin_end(0, &tx_srec->data_start, &tx_srec->data_end);
     }
 
     while(data_size)
@@ -804,13 +751,11 @@ static fnet_int32_t fapp_tftp_tx_handler_srec (fapp_tftp_handler_control_t *tftp
 /*======================== HEX ========================================*/
 #if FAPP_CFG_TFTP_RX_HEX
 /************************************************************************
-* NAME: fapp_tftp_rx_handler_hex
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_return_t fapp_tftp_rx_handler_hex(fapp_tftp_handler_control_t *tftp_handler, fnet_shell_desc_t desc, fnet_uint8_t *data, fnet_size_t data_size)
 {
-    struct fapp_tftp_rx_handler_hex_context *hex = &tftp_handler->rx_hex;
+    struct fapp_tftp_rx_handler_hex_context *hex = &tftp_handler->context.rx_hex;
     fnet_return_t                           result = FNET_OK;
     fnet_uint32_t                           addr;
     fnet_uint8_t                            tmp_data;
@@ -925,8 +870,6 @@ static fnet_return_t fapp_tftp_rx_handler_hex(fapp_tftp_handler_control_t *tftp_
 
 #if FAPP_CFG_TFTP_TX_HEX
 /************************************************************************
-* NAME: fapp_tftp_tx_hex_gen
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fapp_tftp_tx_hex_gen (struct fapp_tftp_tx_handler_hex_context *tx_hex)
@@ -1009,15 +952,12 @@ static void fapp_tftp_tx_hex_gen (struct fapp_tftp_tx_handler_hex_context *tx_he
     tx_hex->hex_line_cur = (fnet_uint8_t *) & (tx_hex->hex_line);
 }
 
-
 /************************************************************************
-* NAME: fapp_tftp_tx_handler_hex
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_int32_t fapp_tftp_tx_handler_hex (fapp_tftp_handler_control_t *tftp_handler, fnet_shell_desc_t desc, fnet_uint8_t *data, fnet_size_t data_size)
 {
-    struct fapp_tftp_tx_handler_hex_context *tx_hex = &tftp_handler->tx_hex;
+    struct fapp_tftp_tx_handler_hex_context *tx_hex = &tftp_handler->context.tx_hex;
     fnet_size_t send_size;
     fnet_int32_t result = 0;
 
@@ -1026,7 +966,7 @@ static fnet_int32_t fapp_tftp_tx_handler_hex (fapp_tftp_handler_control_t *tftp_
     /* Define start and end address.*/
     if((tx_hex->data_start == 0) && (tx_hex->data_end == 0)) /* Only first time. */
     {
-        fapp_tftp_tx_image_begin_end(&tx_hex->data_start, &tx_hex->data_end);
+        fapp_mem_region_get_begin_end(0, &tx_hex->data_start, &tx_hex->data_end);
     }
 
     while(data_size)
@@ -1068,8 +1008,6 @@ static fnet_int32_t fapp_tftp_tx_handler_hex (fapp_tftp_handler_control_t *tftp_
 
 #if FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD
 /************************************************************************
-* NAME: fapp_tftp_handler
-*
 * DESCRIPTION: TFTP RX and TX handler.
 ************************************************************************/
 static fnet_int32_t fapp_tftp_handler (fnet_tftp_request_t request_type, fnet_uint8_t *data_ptr, fnet_size_t data_size, fnet_return_t result, void *shl_desc)
@@ -1145,8 +1083,6 @@ static void fapp_tftp_on_ctrlc(fnet_shell_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fapp_tftp_cmd
-*
 * DESCRIPTION: Start TFTP-client loader/uploader.
 ************************************************************************/
 void fapp_tftp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -1230,8 +1166,6 @@ void fapp_tftp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 
 #define FAPP_TFTPS_ERROR_BUSY "Busy"
 /************************************************************************
-* NAME: fapp_tftps_request_handler
-*
 * DESCRIPTION: TFTP server request handler.
 *************************************************************************/
 static fnet_return_t fapp_tftps_request_handler(fnet_tftp_request_t request_type,
@@ -1291,8 +1225,6 @@ static fnet_return_t fapp_tftps_request_handler(fnet_tftp_request_t request_type
 }
 
 /************************************************************************
-* NAME: fapp_tftps_data_handler
-*
 * DESCRIPTION: TFTP server data handler.
 *************************************************************************/
 static fnet_int32_t fapp_tftps_data_handler(fnet_tftp_request_t request,
@@ -1359,8 +1291,6 @@ static fnet_int32_t fapp_tftps_data_handler(fnet_tftp_request_t request,
 }
 
 /************************************************************************
-* NAME: fapp_tftps_release
-*
 * DESCRIPTION: Releases TFTP server.
 *************************************************************************/
 void fapp_tftps_release(void)
@@ -1370,8 +1300,6 @@ void fapp_tftps_release(void)
 }
 
 /************************************************************************
-* NAME: fapp_tftps_cmd
-*
 * DESCRIPTION: Run TFTP server.
 *************************************************************************/
 void fapp_tftps_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -1414,8 +1342,6 @@ void fapp_tftps_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
 }
 
 /************************************************************************
-* NAME: fapp_tftps_info
-*
 * DESCRIPTION:
 *************************************************************************/
 void fapp_tftps_info(fnet_shell_desc_t desc)

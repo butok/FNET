@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,10 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_http_get.c
-*
-* @author Andrey Butok
 *
 * @brief FNET HTTP Server GET method implementation.
 *
@@ -50,8 +46,6 @@ const struct fnet_http_method fnet_http_method_get =
 };
 
 /************************************************************************
-* NAME: fnet_http_get_handle
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_return_t fnet_http_get_handle(struct fnet_http_if *http, struct fnet_http_uri *uri)
@@ -75,8 +69,6 @@ static fnet_return_t fnet_http_get_handle(struct fnet_http_if *http, struct fnet
 }
 
 /************************************************************************
-* NAME: fnet_http_get_send
-*
 * DESCRIPTION: Simple-Response. Simple-responce consists only of the
 * entity body and is terminated by the server closing connection.
 ************************************************************************/
@@ -98,8 +90,6 @@ static fnet_return_t fnet_http_get_send(struct fnet_http_if *http)
 }
 
 /************************************************************************
-* NAME: fnet_http_get_close
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fnet_http_get_close(struct fnet_http_if *http)

@@ -2,7 +2,7 @@
 #define _FNET_FEC_H_
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -21,11 +21,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_fec.h
-*
-* @author Andrey Butok
-*
 * @brief FEC module driver definitions.
 *
 ***************************************************************************/
@@ -42,7 +37,6 @@
 #include "stack/fnet_arp_prv.h"
 #include "stack/fnet_timer_prv.h"
 #include "stack/fnet_loop.h"
-
 
 /* CPU-specific configuration.*/
 #if FNET_MCF    /* ColdFire.*/
@@ -129,11 +123,9 @@
 * the IEEE 802.3 MII specification. */
 #define FNET_FEC_MII_CLOCK_KHZ      (2500U)
 
-
 #define FNET_FEC_BUF_SIZE           (((FNET_CFG_CPU_ETH0_MTU>FNET_CFG_CPU_ETH1_MTU)?FNET_CFG_CPU_ETH0_MTU:FNET_CFG_CPU_ETH1_MTU)+FNET_ETH_HDR_SIZE+FNET_ETH_CRC_SIZE+16U) /* Ring Buffer sizes in bytes.*/
 #define FNET_FEC_TX_BUF_NUM         (FNET_CFG_CPU_ETH_TX_BUFS_MAX)
 #define FNET_FEC_RX_BUF_NUM         (FNET_CFG_CPU_ETH_RX_BUFS_MAX)
-
 
 /************************************************************************
 *     MII Register Indexes.
@@ -526,7 +518,6 @@ fnet_fec_reg_t;
     #define FNET_FEC_TX_BD_CSL      (0x0001U)
 #endif
 
-
 /* Ethernet Buffer descriptor */
 FNET_COMP_PACKED_BEGIN
 typedef struct
@@ -575,7 +566,6 @@ extern const fnet_netif_api_t fnet_fec_api;
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -608,4 +598,3 @@ fnet_return_t fnet_fec_mii_read(fnet_fec_if_t *ethif, fnet_uint32_t reg_addr, fn
 #endif /* (FNET_MCF || FNET_MK || FNET_MPC) && FNET_CFG_ETH */
 
 #endif /*_FNET_FEC_H_*/
-

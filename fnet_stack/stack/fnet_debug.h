@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,9 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_debug.h
-*
 * @brief Private. Debug definitions.
 *
 ***************************************************************************/
@@ -51,6 +48,5 @@ extern fnet_size_t fnet_dbg_stack_max;
 #if defined(__cplusplus)
 }
 #endif
-
 
 #endif

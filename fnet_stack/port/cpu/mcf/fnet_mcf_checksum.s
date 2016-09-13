@@ -1,6 +1,6 @@
 /**************************************************************************
 * 
-* Copyright 2008-2011 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2016 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
 *
@@ -18,10 +18,6 @@
 *
 **********************************************************************//*!
 *
-* @file fnet_mcf_checksum.asm
-*
-* @author Andrey Butok
-*
 * @brief ColdFire-specific Internet checksum calculation.
 *
 ***************************************************************************/
@@ -37,10 +33,7 @@
 	FNET_COMP_ASM_ALIGN 4
 	
 /************************************************************************
-* NAME: fnet_checksum_low
-*
 * DESCRIPTION: Calculates checksum.
-*
 *************************************************************************
 * unsigned long fnet_checksum_low(unsigned long sum, int current_length, unsigned short *d_ptr);
 *   Arguments:

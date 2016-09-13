@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2012-2015 by Andrey Butok. FNET Community.
+* Copyright 2012-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2011 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -18,8 +18,6 @@
 *  limitations under the License.
 *
 **********************************************************************/ /*!
-*
-* @file fnet_mcf52259_config.h
 *
 * @brief MCF5225x specific configuration file.
 *

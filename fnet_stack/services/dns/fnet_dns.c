@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,16 +18,9 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_dns.c
-*
-* @author Andrey Butok
-*
 * @brief DNS Resolver implementation.
 *
 ***************************************************************************/
-
-
 #include "fnet.h"
 
 #if FNET_CFG_DNS_RESOLVER
@@ -43,13 +36,11 @@
 /************************************************************************
 *     Definitions
 *************************************************************************/
-
 #define FNET_DNS_ERR_PARAMS            "ERROR: Wrong input parameters."
 #define FNET_DNS_ERR_SOCKET_CREATION   "ERROR: Socket creation error."
 #define FNET_DNS_ERR_SOCKET_CONNECT    "ERROR: Socket Error during connect."
 #define FNET_DNS_ERR_SERVICE           "ERROR: Service registration is failed."
 #define FNET_DNS_ERR_IS_INITIALIZED    "ERROR: DNS is already initialized."
-
 
 static void fnet_dns_state_machine( void *fnet_dns_if_p );
 static fnet_size_t fnet_dns_add_question( fnet_uint8_t *message, fnet_uint16_t type, fnet_char_t *host_name);
@@ -117,8 +108,6 @@ fnet_dns_if_t;
 static fnet_dns_if_t fnet_dns_if;
 
 /************************************************************************
-* NAME: fnet_dns_init
-*
 * DESCRIPTION: Initializes DNS client service and starts the host
 *              name reolving.
 ************************************************************************/
@@ -182,8 +171,6 @@ static fnet_size_t fnet_dns_add_question( fnet_uint8_t *message, fnet_uint16_t t
 
 
 /************************************************************************
-* NAME: fnet_dns_init
-*
 * DESCRIPTION: Initializes DNS client service and starts the host
 *              name resolving.
 ************************************************************************/
@@ -317,8 +304,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_dns_state_machine
-*
 * DESCRIPTION: DNS-client state machine.
 ************************************************************************/
 static void fnet_dns_state_machine( void *fnet_dns_if_p )
@@ -469,12 +454,9 @@ static void fnet_dns_state_machine( void *fnet_dns_if_p )
         default:
             break;
     }
-
 }
 
 /************************************************************************
-* NAME: fnet_dns_release
-*
 * DESCRIPTION: This function aborts the resolving and releases
 * the DNS-client service.
 ************************************************************************/
@@ -493,14 +475,11 @@ void fnet_dns_release( void )
 }
 
 /************************************************************************
-* NAME: fnet_dns_state
-*
 * DESCRIPTION: This function returns a current state of the DNS client.
 ************************************************************************/
 fnet_dns_state_t fnet_dns_state( void )
 {
     return fnet_dns_if.state;
 }
-
 
 #endif /* FNET_CFG_DNS_RESOLVER */

@@ -1,7 +1,7 @@
 
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2011 by Andrey Butok,Gordon Jahn. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -20,18 +20,9 @@
 *
 **********************************************************************/ /*!
 *
-* @file fnet_mpc_eth.c
-*
-* @author Andrey Butok
-*
-* @date Dec-17-2012
-*
-* @version 0.1.1.0
-*
 * @brief Ethernet driver interafce.
 *
 ***************************************************************************/
-
 
 #include "fnet.h"
 #if FNET_MPC && (FNET_CFG_CPU_ETH0 ||FNET_CFG_CPU_ETH1)
@@ -58,7 +49,6 @@ fnet_netif_t fnet_cpu_eth0_if =
     .netif_prv = &fnet_mpc_eth0_if,       /* Points to interface specific data structure.*/
     .netif_api = &fnet_fec_api            /* Interface API */
 };
-
 
 /************************************************************************
 * NAME: fnet_eth_io_init

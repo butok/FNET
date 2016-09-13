@@ -18,32 +18,17 @@
 *  limitations under the License.
 *
 **********************************************************************/ /*!
-*
-* @file fnet_mcf_isr_inst.c
-*
-* @author Andrey Butok
-*
 * @brief Interrupt service dispatcher implementation.
 *
 ***************************************************************************/
 
 #include "fnet.h"
 #if FNET_MCF
-#if !FNET_OS
-
-#include "fnet.h"
-#include "fnet_isr.h"
-#include "fnet_timer.h"
-#include "fnet_netbuf.h"
-#include "fnet_mcf.h"
 
 /* Vector table address. Defined in linker file.*/
 extern fnet_uint32_t FNET_CFG_CPU_VECTOR_TABLE [1];
 
-
 /************************************************************************
-* NAME: fnet_cpu_isr_install
-*
 * DESCRIPTION:
 *************************************************************************/
 fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t priority)
@@ -97,7 +82,5 @@ fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t pr
     return result;
 }
 
-
-#endif
 
 #endif /*FNET_MCF*/

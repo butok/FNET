@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,11 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_raw.c
-*
-* @author Andrey Butok
-*
 * @brief RAW socket implementation.
 *
 ***************************************************************************/
@@ -84,8 +79,6 @@ fnet_prot_if_t fnet_raw_prot_if =
 };
 
 /************************************************************************
-* NAME: fnet_raw_release
-*
 * DESCRIPTION: This function releases all sockets associated
 *              with RAW protocol.
 *************************************************************************/
@@ -98,8 +91,6 @@ static void fnet_raw_release( void )
 }
 
 /************************************************************************
-* NAME: fnet_raw_output
-*
 * DESCRIPTION: RAW output function
 *************************************************************************/
 static fnet_error_t fnet_raw_output(  struct sockaddr *src_addr, const struct sockaddr *dest_addr, fnet_uint8_t protocol_number,
@@ -143,8 +134,6 @@ static fnet_error_t fnet_raw_output(  struct sockaddr *src_addr, const struct so
 }
 
 /************************************************************************
-* NAME: fnet_raw_input
-*
 * DESCRIPTION: RAW input function.
 *************************************************************************/
 void fnet_raw_input(fnet_netif_t *netif, struct sockaddr *foreign_addr,  struct sockaddr *local_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb)
@@ -321,8 +310,6 @@ BAD:
 }
 
 /************************************************************************
-* NAME: fnet_raw_attach
-*
 * DESCRIPTION: RAW attach function.
 *************************************************************************/
 static fnet_return_t fnet_raw_attach( fnet_socket_if_t *sk )
@@ -342,8 +329,6 @@ static fnet_return_t fnet_raw_attach( fnet_socket_if_t *sk )
 }
 
 /************************************************************************
-* NAME: fnet_raw_detach
-*
 * DESCRIPTION: RAW close function.
 *************************************************************************/
 static fnet_return_t fnet_raw_detach( fnet_socket_if_t *sk )
@@ -355,8 +340,6 @@ static fnet_return_t fnet_raw_detach( fnet_socket_if_t *sk )
 }
 
 /************************************************************************
-* NAME: fnet_raw_shutdown
-*
 * DESCRIPTION:  RAW shutdown function.
 *************************************************************************/
 static fnet_return_t fnet_raw_shutdown( fnet_socket_if_t *sk, fnet_sd_flags_t how )
@@ -380,8 +363,6 @@ static fnet_return_t fnet_raw_shutdown( fnet_socket_if_t *sk, fnet_sd_flags_t ho
 }
 
 /************************************************************************
-* NAME: fnet_raw_connect
-*
 * DESCRIPTION: RAW connect function.
 *************************************************************************/
 static fnet_return_t fnet_raw_connect( fnet_socket_if_t *sk, struct sockaddr *foreign_addr)
@@ -399,8 +380,6 @@ static fnet_return_t fnet_raw_connect( fnet_socket_if_t *sk, struct sockaddr *fo
 }
 
 /************************************************************************
-* NAME: fnet_raw_snd
-*
 * DESCRIPTION: RAW send function.
 *************************************************************************/
 static fnet_int32_t fnet_raw_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct sockaddr *addr)
@@ -459,8 +438,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_raw_rcv
-*
 * DESCRIPTION :RAW receive function.
 *************************************************************************/
 static fnet_int32_t fnet_raw_rcv(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct sockaddr *addr)

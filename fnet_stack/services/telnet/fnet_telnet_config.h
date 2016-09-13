@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_telnet_config.h
-*
-* @author Andrey Butok
-*
 * @brief FNET Telnet Server configuration file.
 *
 ***************************************************************************/
@@ -35,7 +30,6 @@
 #ifndef _FNET_TELNET_CONFIG_H_
 
 #define _FNET_TELNET_CONFIG_H_
-
 
 /** @addtogroup fnet_telnet_config */
 /** @{ */
@@ -114,7 +108,6 @@
 #ifndef FNET_CFG_TELNET_CMD_LINE_BUF_SIZE
     #define FNET_CFG_TELNET_CMD_LINE_BUF_SIZE   (60u)
 #endif
-
 
 /** @} */
 

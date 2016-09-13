@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_fec.c
-*
-* @author Andrey Butok
-*
 * @brief FEC module driver implementation.
 *
 ***************************************************************************/
@@ -58,7 +53,6 @@ static fnet_return_t fnet_fec_set_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_
 static fnet_bool_t fnet_fec_is_connected(fnet_netif_t *netif);
 static fnet_return_t fnet_fec_get_statistics(fnet_netif_t *netif, struct fnet_netif_statistics *statistics);
 
-
 /* FEC rx frame interrup handler. */
 static void fnet_fec_isr_rx_handler_top(fnet_uint32_t cookie);
 static void fnet_fec_isr_rx_handler_bottom(fnet_uint32_t cookie);
@@ -77,7 +71,6 @@ void fnet_fec_debug_mii_print_regs(fnet_netif_t *netif) ;
 /************************************************************************
 *     Global Data Structures
 *************************************************************************/
-
 #if FNET_CFG_COMP_GHS
 #pragma ghs section bss=".uncacheable"
 #endif
@@ -132,8 +125,6 @@ const fnet_netif_api_t fnet_fec_api =
 #endif
 
 /************************************************************************
-* NAME: fnet_fec_init
-*
 * DESCRIPTION: Ethernet module initialization.
 *************************************************************************/
 static fnet_return_t fnet_fec_init(fnet_netif_t *netif)
@@ -403,8 +394,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_fec_release
-*
 * DESCRIPTION: Ethernet module release.
 *************************************************************************/
 static void fnet_fec_release(fnet_netif_t *netif)
@@ -429,8 +418,6 @@ static void fnet_fec_release(fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_fec_stop
-*
 * DESCRIPTION: Stop Ethernet module.
 *              For debugging needs.
 *************************************************************************/
@@ -442,8 +429,6 @@ void fnet_fec_stop(fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_fec_resume
-*
 * DESCRIPTION: Resume Ethernet module.
 *              For debugging needs.
 *************************************************************************/
@@ -455,8 +440,6 @@ void fnet_fec_resume(fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_fec_input
-*
 * DESCRIPTION: Ethernet input function.
 *************************************************************************/
 static void fnet_fec_input(fnet_netif_t *netif)
@@ -539,8 +522,6 @@ static void fnet_fec_input(fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_fec_input_frame
-*
 * DESCRIPTION: Ethernet input function.
 *   !!!! Used for debug needs only!!!!!
 *************************************************************************/
@@ -611,8 +592,6 @@ fnet_size_t fnet_fec_input_frame(fnet_netif_t *netif, fnet_uint8_t *buf, fnet_si
 }
 
 /************************************************************************
-* NAME: fnet_fec_rx_buf_next
-*
 * DESCRIPTION: Goes not the next Rx buffer.
 *************************************************************************/
 static void fnet_fec_rx_buf_next( fnet_fec_if_t *ethif)
@@ -636,8 +615,6 @@ static void fnet_fec_rx_buf_next( fnet_fec_if_t *ethif)
 }
 
 /************************************************************************
-* NAME: fnet_fec_checksum_clear
-*
 * DESCRIPTION: This is WORKAROUND.
 * If an IP frame with a known protocol is transmitted, the checksum
 * is inserted automatically into the frame.
@@ -700,8 +677,6 @@ static void fnet_fec_checksum_clear(fnet_uint16_t type, fnet_uint8_t *datagram, 
 #endif
 
 /************************************************************************
-* NAME: fnet_fec_output
-*
 * DESCRIPTION: Ethernet low-level output function.
 *************************************************************************/
 void fnet_fec_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb)
@@ -731,18 +706,14 @@ void fnet_fec_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_add
             fnet_fec_checksum_clear(type, (fnet_uint8_t *)ethheader + FNET_ETH_HDR_SIZE, nb->total_length);
         }
 #endif
-
-
         fnet_memcpy (ethheader->destination_addr, dest_addr, sizeof(fnet_mac_addr_t));
 
         fnet_fec_get_mac_addr(ethif, &ethheader->source_addr);
 
         ethheader->type = fnet_htons(type);
 
-
         ethif->tx_buf_desc_cur->length = fnet_htons((fnet_uint16_t)(FNET_ETH_HDR_SIZE + nb->total_length));
         ethif->tx_buf_desc_cur->status |= FNET_HTONS(FNET_FEC_TX_BD_R); /* Set Frame ready for transmit.*/
-
 
 #ifdef FNET_FEC_TEST_RACE_CONDITION
         if (fnet_fec_output_reentry_count)
@@ -752,8 +723,6 @@ void fnet_fec_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_add
         }
         fnet_fec_output_reentry_count = 1;
 #endif
-
-
         /* Update pointer to next entry.*/
         if ((ethif->tx_buf_desc_cur->status & FNET_HTONS(FNET_FEC_TX_BD_W)) != 0u)
         {
@@ -789,8 +758,6 @@ void fnet_fec_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_add
 }
 
 /************************************************************************
-* NAME: fnet_eth_output_frame
-*
 * DESCRIPTION: Ethernet low-level output frame function.
 *   !!!! Used for debug needs only!!!!!
 *************************************************************************/
@@ -808,7 +775,6 @@ void fnet_fec_output_frame(fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t
         {}
 
         ethheader = (fnet_eth_header_t *)fnet_ntohl((fnet_uint32_t)ethif->tx_buf_desc_cur->buf_ptr);
-
 
         fnet_memcpy (ethheader, frame, frame_size);
 
@@ -836,12 +802,9 @@ void fnet_fec_output_frame(fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t
         ((fnet_eth_if_t *)(netif->netif_prv))->eth_statistics.tx_packet++;
 #endif
     }
-
 }
 
 /************************************************************************
-* NAME: fnet_fec_set_hw_addr
-*
 * DESCRIPTION: This function sets MAC address.
 *************************************************************************/
 static fnet_return_t fnet_fec_set_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_addr)
@@ -870,13 +833,10 @@ static fnet_return_t fnet_fec_set_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_
         result = FNET_ERR;
     }
 
-
     return result;
 }
 
 /************************************************************************
-* NAME: fnet_fec_get_hw_addr
-*
 * DESCRIPTION: This function reads HW address.
 *************************************************************************/
 static fnet_return_t fnet_fec_get_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_addr)
@@ -900,8 +860,6 @@ static fnet_return_t fnet_fec_get_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_
 }
 
 /************************************************************************
-* NAME: fnet_fec_get_mac_addr
-*
 * DESCRIPTION: This function reads MAC address.
 *************************************************************************/
 static void fnet_fec_get_mac_addr(fnet_fec_if_t *ethif, fnet_mac_addr_t *mac_addr)
@@ -920,8 +878,6 @@ static void fnet_fec_get_mac_addr(fnet_fec_if_t *ethif, fnet_mac_addr_t *mac_add
 }
 
 /************************************************************************
-* NAME: fnet_fec_get_statistics
-*
 * DESCRIPTION: Returns Ethernet statistics information
 *************************************************************************/
 static fnet_return_t fnet_fec_get_statistics(fnet_netif_t *netif, struct fnet_netif_statistics *statistics)
@@ -949,8 +905,6 @@ static fnet_return_t fnet_fec_get_statistics(fnet_netif_t *netif, struct fnet_ne
 }
 
 /************************************************************************
-* NAME: fnet_fec_isr_rx_handler_top
-*
 * DESCRIPTION: Top Ethernet receive frame interrupt handler.
 *              Clear event flag
 *************************************************************************/
@@ -963,8 +917,6 @@ static void fnet_fec_isr_rx_handler_top (fnet_uint32_t cookie)
 }
 
 /************************************************************************
-* NAME: fnet_fec_isr_rx_handler_bottom
-*
 * DESCRIPTION: This function implements the Ethernet receive
 *              frame interrupt handler.
 *************************************************************************/
@@ -984,8 +936,6 @@ static void fnet_fec_isr_rx_handler_bottom (fnet_uint32_t cookie)
 *************************************************************************/
 
 /************************************************************************
-* NAME: fnet_fec_phy_discover_addr
-*
 * DESCRIPTION: Looking for a valid PHY address.
 *************************************************************************/
 #if FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER
@@ -1013,8 +963,6 @@ static void fnet_fec_phy_discover_addr (fnet_fec_if_t *ethif, fnet_uint8_t phy_a
 #endif
 
 /************************************************************************
-* NAME: fnet_fec_mii_read
-*
 * DESCRIPTION: Read a value from a PHY's MII register.
 * reg_addr < address of the register in the PHY
 * data < Pointer to storage for the Data to be read from the PHY register (passed by reference)
@@ -1070,8 +1018,6 @@ fnet_return_t fnet_fec_mii_read(fnet_fec_if_t *ethif, fnet_uint32_t reg_addr, fn
 }
 
 /************************************************************************
-* NAME: fnet_fec_mii_write
-*
 * DESCRIPTION: Write a value to a PHY's MII register.
 * reg_addr < address of the register in the PHY
 * data < Data to be writen to the PHY register (passed by reference)
@@ -1127,8 +1073,6 @@ fnet_return_t fnet_fec_mii_write(fnet_fec_if_t *ethif, fnet_uint32_t reg_addr, f
 }
 
 /************************************************************************
-* NAME: fnet_fec_is_connected
-*
 * DESCRIPTION: Link status.
 *************************************************************************/
 static fnet_bool_t fnet_fec_is_connected(fnet_netif_t *netif)
@@ -1159,8 +1103,6 @@ static fnet_bool_t fnet_fec_is_connected(fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_fec_crc_hash
-*
 * DESCRIPTION: Compute the CRC-32 polynomial on the multicast group
 *************************************************************************/
 #if FNET_CFG_MULTICAST
@@ -1192,8 +1134,6 @@ static fnet_uint32_t fnet_fec_crc_hash(fnet_mac_addr_t multicast_addr )
 }
 
 /************************************************************************
-* NAME: fnet_fec_multicast_join
-*
 * DESCRIPTION: Joins a multicast group on FEC interface.
 *************************************************************************/
 void fnet_fec_multicast_join(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr )
@@ -1235,8 +1175,6 @@ void fnet_fec_multicast_join(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr
 }
 
 /************************************************************************
-* NAME: fnet_fec_multicast_leave
-*
 * DESCRIPTION: Leavess a multicast group on FEC interface.
 *************************************************************************/
 void fnet_fec_multicast_leave(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr )
@@ -1266,8 +1204,6 @@ void fnet_fec_multicast_leave(fnet_netif_t *netif, fnet_mac_addr_t multicast_add
 
 
 /************************************************************************
-* NAME: fnet_eth_mii_print_regs
-*
 * DESCRIPTION: Prints all MII register.
 * !!!! Used only for debug needs. !!!!!
 *************************************************************************/
@@ -1335,4 +1271,3 @@ void fnet_fec_debug_mii_print_regs(fnet_netif_t *netif)
 }
 
 #endif /* (FNET_MCF || FNET_MK) && FNET_CFG_ETH */
-

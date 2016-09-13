@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_cpu.h
-*
-* @author Andrey Butok
-*
 * @brief CPU-specific library API.
 *
 ***************************************************************************/
@@ -201,14 +196,12 @@ fnet_uint32_t fnet_ntohl(fnet_uint32_t long_var);
 
 /*! @} */
 
-
 /*! @addtogroup fnet_cpu
 * The CPU-specific library provides commonly used platform dependent functions.
 * Most of these functions are not used by the FNET, but can be useful for
 * an application.
 */
 /*! @{ */
-
 
 /**************************************************************************/ /*!
  * @brief IRQ status descriptor returned by the @ref fnet_cpu_irq_disable() function.
@@ -320,7 +313,6 @@ fnet_int32_t fnet_cpu_serial_getchar( fnet_index_t port_number );
  *
  ******************************************************************************/
 void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate);
-
 
 /***************************************************************************/ /*!
  *
@@ -436,12 +428,10 @@ struct fnet_netif; /* Forward declaration.*/
     #define FNET_CPU_ETH1_IF ((fnet_netif_desc_t)(&fnet_cpu_eth1_if))
 #endif
 
-
 #if defined(__cplusplus)
 }
 #endif
 
 /*! @} */
-
 
 #endif /* _FNET_CPU_H_ */

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,11 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_mld.h
-*
-* @author Andrey Butok
-*
 * @brief Private. MLD protocol function definitions, data structures, etc.
 *
 ***************************************************************************/
@@ -44,7 +39,6 @@
  * multicast listeners on directly attached links, and to discover which
  * multicast addresses are of interest to those neighboring nodes.
  ************************************************************************/
-
 
 /**********************************************************************
 * MLD messages have the following format (RFC 2710)
@@ -75,7 +69,6 @@ typedef struct fnet_mld_header
 } fnet_mld_header_t;
 FNET_COMP_PACKED_END
 
-
 /***********************************************************************
  * MLD Router Alert option, in  IPv6 Hop-by-Hop Options.
  ***********************************************************************
@@ -99,7 +92,6 @@ typedef struct fnet_mld_ra_option
     fnet_ip6_option_header_t    padn_option_header  FNET_COMP_PACKED;   /* Padding. It must be multiple to 8 octets. */
 } fnet_mld_ra_option_header_t;
 FNET_COMP_PACKED_END
-
 
 /************************************************************************
 *     Function Prototypes

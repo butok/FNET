@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp_params_prv.h
-*
-* @author Andrey Butok
-*
 * @brief FNET Application parameters private API.
 *
 ***************************************************************************/
@@ -56,6 +51,5 @@ fnet_return_t fapp_params_from_flash(void);
 #if defined(__cplusplus)
 }
 #endif
-
 
 #endif /* _FAPP_PARAMS_PRV_H_ */

@@ -20,13 +20,9 @@
 **********************************************************************/
 /*!
 *
-* @file fnet_mpc5566_config.h
-*
 * @brief MPC5566 specific configuration file.
 *
 ***************************************************************************/
-
-/* NOTE: Contributed by NanoZera */
 
 /************************************************************************
  * !!!DO NOT MODIFY THIS FILE!!!
@@ -51,15 +47,13 @@
 /* MPC Flash Module is not supported.*/
 #define FNET_CFG_CPU_FLASH                       (0)
 
-#define FNET_CFG_CPU_FLASH_PAGE_SIZE             (0)
-
 /* The platform does not have second Ethernet Module.*/
 #define FNET_CFG_CPU_ETH1                        (0)
 
 /* Defines the maximum number of incoming frames that may
  *           be buffered by the Ethernet module.*/
 #ifndef FNET_CFG_CPU_ETH_RX_BUFS_MAX
-    #define FNET_CFG_CPU_ETH_RX_BUFS_MAX             (4)
+    #define FNET_CFG_CPU_ETH_RX_BUFS_MAX      	(4)
 #endif
 
 /* On-chip Flash size.*/

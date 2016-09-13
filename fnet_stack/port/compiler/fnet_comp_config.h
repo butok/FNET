@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_comp_config.h
-*
-* @author Andrey Butok
-*
 * @brief Compiler-specific default configuration file.
 *
 ***************************************************************************/
@@ -126,10 +121,6 @@
 #ifndef FNET_CFG_COMP_DCC
     #define FNET_CFG_COMP_DCC   (0)
 #endif
-
-
-
-
 
 /*! @} */
 

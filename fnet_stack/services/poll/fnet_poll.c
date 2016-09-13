@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,17 +19,11 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_poll.c
-*
-* @author Andrey Butok
-*
 * @brief FNET Services polling mechanism implementation.
 *
 ***************************************************************************/
 
 #include "fnet.h"
-
 
 /************************************************************************
 *     Definitions
@@ -51,8 +45,6 @@ static struct
 } fnet_poll_if;
 
 /************************************************************************
-* NAME: fnet_poll_service
-*
 * DESCRIPTION: This function calls all registered service routines in
 *              the polling list.
 *************************************************************************/
@@ -70,8 +62,6 @@ void fnet_poll_service( void )
 }
 
 /************************************************************************
-* NAME: fnet_poll_service_release
-*
 * DESCRIPTION: This function calls all registered service routines in
 *              the polling list.
 *************************************************************************/
@@ -81,8 +71,6 @@ void fnet_poll_service_release( void )
 }
 
 /************************************************************************
-* NAME: fnet_poll_service_register
-*
 * DESCRIPTION: This function adds service routine into the polling list.
 *************************************************************************/
 fnet_poll_desc_t fnet_poll_service_register( fnet_poll_service_t service, void *service_param )
@@ -114,8 +102,6 @@ fnet_poll_desc_t fnet_poll_service_register( fnet_poll_service_t service, void *
 }
 
 /************************************************************************
-* NAME: fnet_poll_service_unregister
-*
 * DESCRIPTION: This function removes service routine from the polling list.
 *************************************************************************/
 void fnet_poll_service_unregister( fnet_poll_desc_t desc )
@@ -127,4 +113,3 @@ void fnet_poll_service_unregister( fnet_poll_desc_t desc )
         poll_entry->service = 0;
     }
 }
-

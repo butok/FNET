@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -18,10 +18,6 @@
 *  limitations under the License.
 *
 **********************************************************************/ /*!
-*
-* @file fnet_mcf_serial.c
-*
-* @author Andrey Butok
 *
 * @brief ColdFire Serial port I/O functions.
 *
@@ -52,7 +48,6 @@ void fnet_cpu_serial_putchar (fnet_index_t port_number, fnet_char_t character)
     /* Send the character */
     FNET_MCF_UART_UTB(port_number) = character;
 #endif
-
 }
 
 /********************************************************************/
@@ -151,7 +146,6 @@ static inline void fnet_cpu_serial_gpio_init(fnet_index_t port_number)
             break;
     }
 #endif	/* FNET_CFG_CPU_MCF54418 */
-
 
 #if FNET_CFG_MCF_SCI /* V1 Lasco */
 

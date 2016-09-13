@@ -19,8 +19,6 @@
 *
 **********************************************************************/ /*!
 *
-* @file fnet_mpc.h
-*
 * @brief MPC Registers definitions.
 *
 ***************************************************************************/
@@ -49,7 +47,6 @@
     typedef volatile fnet_uint8_t  fnet_vuint8_t;    /*  8 bits */
     typedef volatile fnet_uint16_t fnet_vuint16_t;   /* 16 bits */
     typedef volatile fnet_uint32_t fnet_vuint32_t;   /* 32 bits */
-
 
     /*********************************************************************
     *

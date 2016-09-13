@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_timer.h
-*
-* @author Andrey Butok
-*
 * @brief FNET Timer API.
 *
 ***************************************************************************/
@@ -48,17 +43,17 @@
 /**************************************************************************/ /*!
  * @brief Number of timer ticks in one hour.
  ******************************************************************************/
-#define FNET_TIMER_TICKS_IN_HOUR     ((1000U*60U*60U)/FNET_TIMER_PERIOD_MS)
+#define FNET_TIMER_TICKS_IN_HOUR    ((1000U*60U*60U)/FNET_TIMER_PERIOD_MS)
 
 /**************************************************************************/ /*!
  * @brief Number of timer ticks in one minute.
  ******************************************************************************/
-#define FNET_TIMER_TICKS_IN_MIN      ((1000U*60U)/FNET_TIMER_PERIOD_MS)
+#define FNET_TIMER_TICKS_IN_MIN     ((1000U*60U)/FNET_TIMER_PERIOD_MS)
 
 /**************************************************************************/ /*!
  * @brief Number of timer ticks in one second.
  ******************************************************************************/
-#define FNET_TIMER_TICKS_IN_SEC      (1000U/FNET_TIMER_PERIOD_MS)
+#define FNET_TIMER_TICKS_IN_SEC     (1000U/FNET_TIMER_PERIOD_MS)
 
 #if defined(__cplusplus)
 extern "C" {
@@ -73,7 +68,6 @@ typedef fnet_uint32_t fnet_time_t;
 /***************************************************************************/ /*!
  *
  * @brief    Gets the timer counter value in ticks.
- *
  *
  * @return   This function returns a current value of the timer counter in ticks.
  *
@@ -93,7 +87,6 @@ fnet_time_t fnet_timer_ticks( void );
  *
  * @brief    Gets the timer counter value in seconds.
  *
- *
  * @return   This function returns a current value of the timer counter
  *           in seconds.
  *
@@ -111,7 +104,6 @@ fnet_time_t fnet_timer_seconds( void );
 /***************************************************************************/ /*!
  *
  * @brief    Gets the timer counter value in milliseconds.
- *
  *
  * @return   This function returns a current value of the timer counter
  *           in milliseconds.

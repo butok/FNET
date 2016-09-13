@@ -33,8 +33,6 @@ static fnet_uint32_t fnet_rand_value;  /* Used by fnet_rand()*/
 
 #if !FNET_CFG_OVERLOAD_MEMCPY
 /************************************************************************
-* NAME: fnet_memcpy
-*
 * DESCRIPTION:
 *************************************************************************/
 #if 0
@@ -177,8 +175,6 @@ void fnet_memcpy(FNET_COMP_PACKED_VAR void *to_ptr, FNET_COMP_PACKED_VAR const v
 #endif
 
 /************************************************************************
-* NAME: fnet_memcpy_func
-*
 * DESCRIPTION: Copy function to other location.
 *              Used for relocate function from Flash to RAM
 *
@@ -192,10 +188,7 @@ void *fnet_memcpy_func(void *to_buf_ptr, const void *from_func_ptr, fnet_size_t 
 }
 
 /************************************************************************
-* NAME: fnet_memset
-*
 * DESCRIPTION:
-*
 *************************************************************************/
 void fnet_memset( void *dest, fnet_uint8_t value, fnet_size_t n )
 {
@@ -210,10 +203,7 @@ void fnet_memset( void *dest, fnet_uint8_t value, fnet_size_t n )
 }
 
 /************************************************************************
-* NAME: fnet_memset_zero
-*
 * DESCRIPTION: Same as "fnet_memset( void *s, 0, unsigned n )"
-*
 *************************************************************************/
 void fnet_memset_zero( void *dest, fnet_size_t n )
 {
@@ -228,11 +218,8 @@ void fnet_memset_zero( void *dest, fnet_size_t n )
 }
 
 /************************************************************************
-* NAME: fnet_memcmp
-*
 * DESCRIPTION: Compare two memory regions and return zero if they are identical,
 *              non-zero otherwise.  If count is zero, return zero.
-*
 *************************************************************************/
 fnet_int32_t fnet_memcmp(const void *src1, const void *src2, fnet_size_t count )
 {
@@ -252,10 +239,7 @@ fnet_int32_t fnet_memcmp(const void *src1, const void *src2, fnet_size_t count )
 }
 
 /************************************************************************
-* NAME: fnet_strcmp
-*
 * DESCRIPTION:
-*
 *************************************************************************/
 fnet_int32_t fnet_strcmp( const fnet_char_t *str1, const fnet_char_t *str2 )
 {
@@ -299,10 +283,7 @@ fnet_size_t fnet_strlen (const fnet_char_t *str)
 }
 
 /************************************************************************
-* NAME: fnet_strcat
-*
 * DESCRIPTION:
-*
 *************************************************************************/
 void fnet_strcat (fnet_char_t *dest, const fnet_char_t *src)
 {
@@ -322,10 +303,7 @@ void fnet_strcat (fnet_char_t *dest, const fnet_char_t *src)
 }
 
 /************************************************************************
-* NAME: fnet_strncat
-*
 * DESCRIPTION:
-*
 *************************************************************************/
 void fnet_strncat (fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n)
 {
@@ -346,10 +324,7 @@ void fnet_strncat (fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n)
 }
 
 /************************************************************************
-* NAME: fnet_strcpy
-*
 * DESCRIPTION:
-*
 *************************************************************************/
 void fnet_strcpy (fnet_char_t *dest, const fnet_char_t *src)
 {
@@ -367,10 +342,7 @@ void fnet_strcpy (fnet_char_t *dest, const fnet_char_t *src)
 }
 
 /************************************************************************
-* NAME: fnet_strncpy
-*
 * DESCRIPTION:
-*
 *************************************************************************/
 void fnet_strncpy( fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n )
 {
@@ -389,11 +361,8 @@ void fnet_strncpy( fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n )
 }
 
 /************************************************************************
-* NAME: fnet_strrchr
-*
 * DESCRIPTION: The function fnet_strrchr() returns a pointer to the last
 * occurrence of chr in str, or NULL if no match is found.
-*
 *************************************************************************/
 fnet_char_t *fnet_strrchr(const fnet_char_t *str, fnet_char_t chr )
 {
@@ -420,11 +389,8 @@ fnet_char_t *fnet_strrchr(const fnet_char_t *str, fnet_char_t chr )
     return (c ? FNET_NULL : (fnet_char_t *)(p - 1));
 }
 /************************************************************************
-* NAME: fnet_strchr
-*
 * DESCRIPTION: The function fnet_strchr() returns a pointer to the first
 * occurence of chr in str, or 0 if chr is not found.
-*
 *************************************************************************/
 fnet_char_t *fnet_strchr( const fnet_char_t *str, fnet_char_t chr )
 {
@@ -446,13 +412,10 @@ fnet_char_t *fnet_strchr( const fnet_char_t *str, fnet_char_t chr )
 }
 
 /************************************************************************
-* NAME: fnet_strstr
-*
 * DESCRIPTION: The function fnet_strstr() returns a pointer to the first
 * occurrence of substr in str, or 0 if no match is found.
 * If the length of pat is zero, then fnet_strstr() will
 * simply return str.
-*
 *************************************************************************/
 fnet_char_t *fnet_strstr( const fnet_char_t *str, const fnet_char_t *substr )
 {
@@ -490,11 +453,8 @@ fnet_char_t *fnet_strstr( const fnet_char_t *str, const fnet_char_t *substr )
 }
 
 /************************************************************************
-* NAME: fnet_strncmp
-*
 * DESCRIPTION: The fnet_strncmp() function compares at most count characters
 * of str1 and str2.
-*
 *************************************************************************/
 fnet_int32_t fnet_strncmp( const fnet_char_t *str1, const fnet_char_t *str2, fnet_size_t n )
 {
@@ -522,10 +482,7 @@ fnet_int32_t fnet_strncmp( const fnet_char_t *str1, const fnet_char_t *str2, fne
 }
 
 /************************************************************************
-* NAME: fnet_strtoul
-*
 * DESCRIPTION:
-*
 *************************************************************************/
 fnet_uint32_t fnet_strtoul (const fnet_char_t *str, fnet_char_t **ptr, fnet_size_t base)
 {
@@ -651,11 +608,8 @@ fnet_uint32_t fnet_strtoul (const fnet_char_t *str, fnet_char_t **ptr, fnet_size
 }
 
 /************************************************************************
-* NAME: fnet_tolower
-*
 * DESCRIPTION: This function converts an uppercase letter to the corresponding
 * lowercase letter.
-*
 *************************************************************************/
 fnet_char_t fnet_tolower( fnet_char_t to_lower )
 {
@@ -668,13 +622,10 @@ fnet_char_t fnet_tolower( fnet_char_t to_lower )
 }
 
 /************************************************************************
-* NAME: fnet_strcasecmp
-*
 * DESCRIPTION: The fnet_strcasecmp() function compares the two strings s1
 * and s2, ignoring the case of the characters. It returns an
 * integer less than, equal to, or greater than zero if s1 is found,
 * respectively, to be less than, to match, or be greater than s2.
-*
 *************************************************************************/
 fnet_int32_t fnet_strcasecmp( const fnet_char_t *str1, const fnet_char_t *str2 )
 {
@@ -703,10 +654,7 @@ fnet_int32_t fnet_strcasecmp( const fnet_char_t *str1, const fnet_char_t *str2 )
 }
 
 /************************************************************************
-* NAME: fnet_strcmp_splitter
-*
 * DESCRIPTION:
-*
 *************************************************************************/
 fnet_int32_t fnet_strcmp_splitter( const fnet_char_t *in_str, const fnet_char_t *name, fnet_char_t splitter)
 {
@@ -749,10 +697,7 @@ fnet_int32_t fnet_strcmp_splitter( const fnet_char_t *in_str, const fnet_char_t 
 }
 
 /************************************************************************
-* NAME: fnet_strtok_r
-*
 * DESCRIPTION: Breaks a string into a sequence of tokens.
-*
 *************************************************************************/
 fnet_char_t *fnet_strtok_r(fnet_char_t *str, const fnet_char_t *delimiter, fnet_char_t **last)
 {
@@ -816,10 +761,7 @@ CONT:
 }
 
 /************************************************************************
-* NAME: fnet_rand
-*
 * DESCRIPTION: Generates a pseudo-random number.
-*
 *************************************************************************/
 fnet_uint32_t fnet_rand(void)
 {
@@ -828,10 +770,7 @@ fnet_uint32_t fnet_rand(void)
 }
 
 /************************************************************************
-* NAME: fnet_srand
-*
 * DESCRIPTION: Initializes the pseudo-random number generator.
-*
 *************************************************************************/
 void fnet_srand(fnet_uint32_t seed)
 {

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_http_cgi.c
-*
-* @author Andrey Butok
-*
 * @brief FNET HTTP server  CGI implementation.
 *
 ***************************************************************************/
@@ -40,7 +35,6 @@ static fnet_size_t fnet_http_cgi_send (struct fnet_http_if *http);
 /************************************************************************
 *     Definitions
 ************************************************************************/
-
 const struct fnet_http_file_handler fnet_http_cgi_handler =
 {
     FNET_HTTP_CGI_EXTENSION,
@@ -50,8 +44,6 @@ const struct fnet_http_file_handler fnet_http_cgi_handler =
 };
 
 /************************************************************************
-* NAME: fnet_http_cgi_handle
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_return_t fnet_http_cgi_handle (struct fnet_http_if *http, struct fnet_http_uri *uri)
@@ -96,8 +88,6 @@ static fnet_return_t fnet_http_cgi_handle (struct fnet_http_if *http, struct fne
 }
 
 /************************************************************************
-* NAME: fnet_http_cgi_send
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_size_t fnet_http_cgi_send (struct fnet_http_if *http)
@@ -118,7 +108,5 @@ static fnet_size_t fnet_http_cgi_send (struct fnet_http_if *http)
 
     return result;
 }
-
-
 
 #endif /* FNET_CFG_HTTP && FNET_CFG_HTTP_CGI */

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,10 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp.c
-*
-* @author Andrey Butok
 *
 * @brief FNET Shell Demo implementation.
 *
@@ -296,8 +292,6 @@ static const struct boot_mode boot_modes[] =
 
 
 /************************************************************************
-* NAME: fapp_boot_mode_by_index
-*
 * DESCRIPTION:
 ************************************************************************/
 const struct boot_mode *fapp_boot_mode_by_index (fapp_params_boot_mode_t index)
@@ -318,8 +312,6 @@ const struct boot_mode *fapp_boot_mode_by_index (fapp_params_boot_mode_t index)
 }
 
 /************************************************************************
-* NAME: fapp_boot_mode_by_name
-*
 * DESCRIPTION:
 ************************************************************************/
 const struct boot_mode *fapp_boot_mode_by_name (fnet_char_t *name)
@@ -340,8 +332,6 @@ const struct boot_mode *fapp_boot_mode_by_name (fnet_char_t *name)
 }
 
 /************************************************************************
-* NAME: fapp_boot_mode_go
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fapp_boot_mode_go(fnet_shell_desc_t desc)
@@ -350,8 +340,6 @@ static void fapp_boot_mode_go(fnet_shell_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fapp_boot_mode_script
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fapp_boot_mode_script(fnet_shell_desc_t desc)
@@ -362,8 +350,6 @@ static void fapp_boot_mode_script(fnet_shell_desc_t desc)
 #endif /* FAPP_CFG_BOOTLOADER */
 
 /************************************************************************
-* NAME: fapp_boot
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fapp_boot(fnet_shell_desc_t desc)
@@ -426,8 +412,6 @@ static void fapp_boot(fnet_shell_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fapp_reset_cmd
-*
 * DESCRIPTION: Reset command reboots the system.
 ************************************************************************/
 #if FAPP_CFG_RESET_CMD || FAPP_CFG_REBOOT_CMD
@@ -444,8 +428,6 @@ static void fapp_reset_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char
 #endif
 
 /************************************************************************
-* NAME: fapp_debug_cmd
-*
 * DESCRIPTION: Print your DEBUG info.
 ************************************************************************/
 #if FAPP_CFG_DEBUG_CMD
@@ -518,16 +500,12 @@ void fapp_debug_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
         fnet_printf("fnet_mempool_malloc_max %d\n", fnet_mempool_malloc_max(fnet_mempool_main));
         fnet_printf("Complete\n");
     }
-
-
 #endif
 
 }
 #endif
 
 /************************************************************************
-* NAME: fapp_dup_ip_callback
-*
 * DESCRIPTION: IP address is duplicated.
 ************************************************************************/
 #if FNET_CFG_IP4
@@ -546,8 +524,6 @@ static void fapp_dup_ip_callback( fnet_netif_desc_t netif )
 #endif /* FNET_CFG_IP4 */
 
 /************************************************************************
-* NAME: fapp_init
-*
 * DESCRIPTION: FNET Application initialization.
 ************************************************************************/
 static void fapp_init(void)
@@ -614,12 +590,9 @@ static void fapp_init(void)
     {
         fnet_printf(FAPP_INIT_ERR, "FNET");
     }
-
 }
 
 /************************************************************************
-* NAME: fapp_init
-*
 * DESCRIPTION: FNET Application release.
 ************************************************************************/
 #if FAPP_CFG_REINIT_CMD
@@ -660,8 +633,6 @@ static void fapp_release(fnet_shell_desc_t desc)
 #endif /* FAPP_CFG_REINIT_CMD */
 
 /************************************************************************
-* NAME: fapp
-*
 * DESCRIPTION: main() of the shell demo.
 ************************************************************************/
 void fapp_main(void)
@@ -676,8 +647,6 @@ void fapp_main(void)
 }
 
 /************************************************************************
-* NAME: fapp_print_netif_info
-*
 * DESCRIPTION: Print detailed address information about default
 *              network interface.
 ************************************************************************/
@@ -712,8 +681,6 @@ void fapp_print_netif_info( fnet_shell_desc_t desc, fnet_netif_desc_t netif)
 }
 
 /************************************************************************
-* NAME: fapp_print_netif_addr
-*
 * DESCRIPTION: Print Interface IP addresses.
 ************************************************************************/
 void fapp_print_netif_addr(fnet_shell_desc_t desc, fnet_address_family_t family, fnet_netif_desc_t netif, fnet_bool_t print_type)
@@ -776,8 +743,6 @@ void fapp_print_netif_addr(fnet_shell_desc_t desc, fnet_address_family_t family,
 }
 
 /************************************************************************
-* NAME: fapp_print_info
-*
 * DESCRIPTION: Display detailed information about the stack.
 ************************************************************************/
 static void fapp_print_info( fnet_shell_desc_t desc )
@@ -823,8 +788,6 @@ static void fapp_print_info( fnet_shell_desc_t desc )
 }
 
 /************************************************************************
-* NAME: fapp_info_cmd
-*
 * DESCRIPTION: "info" command
 ************************************************************************/
 #if FAPP_CFG_INFO_CMD
@@ -838,8 +801,6 @@ static void fapp_info_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_
 #endif
 
 /************************************************************************
-* NAME: fapp_stat_cmd
-*
 * DESCRIPTION: "stat" command
 ************************************************************************/
 #if FAPP_CFG_STAT_CMD
@@ -922,8 +883,6 @@ static void fapp_stat_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_
 #endif
 
 /************************************************************************
-* NAME: fapp_shell_init
-*
 * DESCRIPTION: Main Shell initial function.
 ************************************************************************/
 void fapp_shell_init( fnet_shell_desc_t desc )
@@ -948,8 +907,6 @@ void fapp_shell_init( fnet_shell_desc_t desc )
 }
 
 /************************************************************************
-* NAME: fapp_go_cmd
-*
 * DESCRIPTION:
 ************************************************************************/
 #if FAPP_CFG_GO_CMD
@@ -978,8 +935,6 @@ void fapp_go_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
 #endif
 
 /************************************************************************
-* NAME: fapp_go
-*
 * DESCRIPTION:   Jump to application entry point.
 ************************************************************************/
 #if FAPP_CFG_GO_CMD || FAPP_CFG_BOOTLOADER || FAPP_CFG_SETGET_CMD_BOOT
@@ -1002,8 +957,6 @@ static void fapp_go ( fnet_shell_desc_t desc, fnet_uint32_t address )
 #endif
 
 /************************************************************************
-* NAME: fapp_save_cmd
-*
 * DESCRIPTION: Save environment variables to persistent storage.
 ************************************************************************/
 #if FAPP_CFG_SAVE_CMD && FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
@@ -1025,8 +978,6 @@ static void fapp_save_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char
 #endif
 
 /************************************************************************
-* NAME: fapp_help_cmd
-*
 * DESCRIPTION: Display command help.
 ************************************************************************/
 void fapp_help_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -1038,8 +989,6 @@ void fapp_help_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
 }
 
 /************************************************************************
-* NAME: fapp_reinit_cmd
-*
 * DESCRIPTION: Used to test FNET release/init only.
 ************************************************************************/
 #if FAPP_CFG_REINIT_CMD
@@ -1055,8 +1004,6 @@ void fapp_reinit_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **
 #endif
 
 /************************************************************************
-* NAME: fapp_bind_cmd
-*
 * DESCRIPTION: Binds IPv6 address to the default interface.
 ************************************************************************/
 #if FAPP_CFG_BIND_CMD && FNET_CFG_IP6
@@ -1079,8 +1026,6 @@ static void fapp_bind_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_
 #endif
 
 /************************************************************************
-* NAME: fapp_unbind_cmd
-*
 * DESCRIPTION: Unbinds IPv6 address from the default interface.
 ************************************************************************/
 #if FAPP_CFG_UNBIND_CMD && FNET_CFG_IP6
@@ -1103,8 +1048,6 @@ static void fapp_unbind_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_cha
 #endif
 
 /************************************************************************
-* NAME: fapp_exp_cmd
-*
 * DESCRIPTION: Start file explorer shell.
 ************************************************************************/
 #if FAPP_CFG_EXP_CMD && FNET_CFG_FS
@@ -1133,12 +1076,3 @@ void fapp_addr_callback_updated(fnet_shell_desc_t desc, fnet_netif_desc_t netif)
     fapp_print_netif_info( desc, netif );
 }
 #endif
-
-
-
-
-
-
-
-
-

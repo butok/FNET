@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,11 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_ping_config.h
-*
-* @author Andrey Butok
-*
 * @brief PING service configuration file.
 *
 ***************************************************************************/
@@ -69,7 +64,6 @@
 #ifndef FNET_CFG_PING_IDENTIFIER
     #define FNET_CFG_PING_IDENTIFIER            (FNET_HTONS(1U))
 #endif
-
 
 /*! @} */
 

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
 *
@@ -20,11 +20,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_icmp.c
-*
-* @author Andrey Butok
-*
 * @brief ICMP protocol implementation.
 *
 ***************************************************************************/
@@ -71,8 +66,6 @@ fnet_prot_if_t fnet_icmp_prot_if =
 };
 
 /************************************************************************
-* NAME: fnet_icmp_input
-*
 * DESCRIPTION: ICMP input function.
 *************************************************************************/
 static void fnet_icmp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip4_nb)
@@ -273,8 +266,6 @@ static void fnet_icmp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  str
 }
 
 /************************************************************************
-* NAME: fnet_icmp_notify_protocol
-*
 * DESCRIPTION: Upper protocol notification..
 *************************************************************************/
 static void fnet_icmp_notify_protocol(fnet_netif_t *netif, fnet_prot_notify_t prot_cmd, fnet_netbuf_t *nb)
@@ -325,8 +316,6 @@ DISCARD:
 
 
 /************************************************************************
-* NAME: fnet_icmp_output
-*
 * DESCRIPTION: ICMP output function.
 *************************************************************************/
 static void fnet_icmp_output( fnet_netif_t *netif, fnet_ip4_addr_t src_ip,
@@ -350,8 +339,6 @@ static void fnet_icmp_output( fnet_netif_t *netif, fnet_ip4_addr_t src_ip,
 }
 
 /************************************************************************
-* NAME: fnet_icmp_error
-*
 * DESCRIPTION: Sends ICMP error message.
 *************************************************************************/
 void fnet_icmp_error( fnet_netif_t *netif, fnet_uint8_t type, fnet_uint8_t code, fnet_netbuf_t *nb )
@@ -433,8 +420,6 @@ void fnet_icmp_error( fnet_netif_t *netif, fnet_uint8_t type, fnet_uint8_t code,
 }
 
 /************************************************************************
-* NAME: fnet_icmp_trace
-*
 * DESCRIPTION: Prints an ICMP header. For debug needs only.
 *************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_ICMP && FNET_CFG_DEBUG_TRACE

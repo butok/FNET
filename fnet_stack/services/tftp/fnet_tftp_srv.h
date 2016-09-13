@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_tftp_srv.h
-*
-* @author Andrey Butok
-*
 * @brief TFTP Server API.
 *
 ***************************************************************************/
@@ -307,8 +302,6 @@ fnet_bool_t fnet_tftp_srv_is_enabled(fnet_tftp_srv_desc_t desc);
 
 /*! @} */
 
-
 #endif /* FNET_CFG_TFTP_SRV */
-
 
 #endif /* _FNET_TFTP_SRV_H_ */

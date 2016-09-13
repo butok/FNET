@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,10 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_http_prv.h
-*
-* @author Andrey Butok
 *
 * @brief Private. FNET HTTP Server API.
 *
@@ -106,7 +102,6 @@ struct fnet_http_version
 };
 
 #endif /* FNET_CFG_HTTP_VERSION_MAJOR */
-
 
 /******************************************************************************
  * HTTP server states.

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2012-2015 by Andrey Butok. FNET Community.
+* Copyright 2012-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,14 +18,6 @@
 *
 **********************************************************************/ /*!
 *
-* @file fnet_mpc_config.h
-*
-* @author Andrey Butok
-*
-* @date Dec-17-2012
-*
-* @version 0.1.1.0
-*
 * @brief MPC-specific default configuration file.
 *
 ***************************************************************************/
@@ -39,7 +31,6 @@
 #define _FNET_MPC_CONFIG_H_
 
 #include "fnet.h"
-
 
 #if FNET_MPC
 

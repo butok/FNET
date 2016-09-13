@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,11 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_mk_isr.c
-*
-* @author Andrey Butok
-*
 * @brief Lowest level ISR routine for Kinetis.
 *
 ***************************************************************************/
@@ -32,8 +27,6 @@
 #if FNET_MK
 
 /************************************************************************
-* NAME: void fnet_cpu_isr(void);
-*
 * DESCRIPTION: This handler is executed on every FNET interrupt
 *              (from ethernet and timer module).
 *              Extructs vector number and calls fnet_isr_handler().

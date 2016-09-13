@@ -19,14 +19,6 @@
 *
 **********************************************************************/ /*!
 *
-* @file fnet_mpc_isr.c
-*
-* @author Andrey Butok
-*
-* @date Dec-17-2012
-*
-* @version 0.1.1.0
-*
 * @brief Lowest level ISR routine for MPC.
 *
 ***************************************************************************/
@@ -36,8 +28,6 @@
 #if FNET_MPC
 
 /************************************************************************
-* NAME: void fnet_cpu_isr(void);
-*
 * DESCRIPTION: This handler is executed on every FNET interrupt
 *              (from ethernet and timer module).
 *              Extructs vector number and calls fnet_isr_handler().

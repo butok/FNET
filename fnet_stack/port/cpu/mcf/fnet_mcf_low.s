@@ -1,6 +1,6 @@
 /**************************************************************************
 * 
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -18,10 +18,6 @@
 *  limitations under the License.
 *
 **********************************************************************//*!
-*
-* @file fnet_mcf_low.asm
-*
-* @author Andrey Butok
 *
 * @brief Lowest level routines for ColdFire.
 *

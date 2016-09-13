@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp_telnet.c
-*
-* @author Andrey Butok
-*
 * @brief FNET Shell Demo implementation.
 *
 ***************************************************************************/
@@ -36,11 +31,9 @@
     #include "fapp_setget.h"
 #endif
 
-
 #if FAPP_CFG_TELNET_CMD && FNET_CFG_TELNET
 
 #define FAPP_TELNET_PROMPT_STR     FAPP_CFG_SHELL_PROMPT
-
 
 /************************************************************************
 *     The main shell control data structure.
@@ -52,13 +45,9 @@ const struct fnet_shell fapp_telnet_shell =
     fapp_shell_init,            /* shell_init */
 };
 
-
 static fnet_telnet_desc_t fapp_telnet_desc = 0; /* Telnet descriptor. */
 
-
 /************************************************************************
-* NAME: fapp_telnet_release
-*
 * DESCRIPTION: Releases TELNET server.
 *************************************************************************/
 void fapp_telnet_release(void)
@@ -68,8 +57,6 @@ void fapp_telnet_release(void)
 }
 
 /************************************************************************
-* NAME: fapp_telnet_cmd
-*
 * DESCRIPTION: Run Telnet server.
 *************************************************************************/
 void fapp_telnet_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -109,8 +96,6 @@ void fapp_telnet_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **a
 }
 
 /************************************************************************
-* NAME: fapp_telnet_exit_cmd
-*
 * DESCRIPTION:
 ************************************************************************/
 #if 0
@@ -125,8 +110,6 @@ static void fapp_telnet_exit_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fn
 #endif
 
 /************************************************************************
-* NAME: fapp_telnet_info
-*
 * DESCRIPTION:
 *************************************************************************/
 void fapp_telnet_info(fnet_shell_desc_t desc)
@@ -136,8 +119,6 @@ void fapp_telnet_info(fnet_shell_desc_t desc)
 
 #if FAPP_CFG_TELNET_TEST_CMD
 /************************************************************************
-* NAME: fapp_telnet_test_cmd
-*
 * DESCRIPTION: "test" command. Used to test Telnet sending.
 * For debug needs only
 ************************************************************************/
@@ -152,14 +133,3 @@ void fapp_telnet_test_cmd( fnet_shell_desc_t desc )
 #endif
 
 #endif
-
-
-
-
-
-
-
-
-
-
-

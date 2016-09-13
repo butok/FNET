@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,11 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_igmp.c
-*
-* @author Andrey Butok
-*
 * @brief MLD protocol implementation.
 *
 ***************************************************************************/
@@ -54,8 +49,6 @@ static const fnet_mld_ra_option_header_t mld_ra_option = {FNET_IP_PROTOCOL_ICMP6
 static void fnet_mld_send( fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet_uint8_t type);
 
 /************************************************************************
-* NAME: fnet_mld_join
-*
 * DESCRIPTION: Sends Host Membership Reports.
 *************************************************************************/
 void fnet_mld_join(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr)
@@ -64,8 +57,6 @@ void fnet_mld_join(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr)
 }
 
 /************************************************************************
-* NAME: fnet_mld_leave
-*
 * DESCRIPTION: Sends a Leave Group message.
 *************************************************************************/
 void fnet_mld_leave(fnet_netif_t *netif, fnet_ip6_addr_t  *group_addr)
@@ -74,8 +65,6 @@ void fnet_mld_leave(fnet_netif_t *netif, fnet_ip6_addr_t  *group_addr)
 }
 
 /************************************************************************
-* NAME: fnet_mld_report_all
-*
 * DESCRIPTION: Generates new MLD Report messages for all multicast
 *              addresses joined on the interface.
 *************************************************************************/
@@ -96,8 +85,6 @@ void fnet_mld_report_all(fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_mld_send
-*
 * DESCRIPTION: Sends MLD message defined by type:
 *        FNET_ICMP6_TYPE_MULTICAST_LISTENER_REPORT or FNET_ICMP6_TYPE_MULTICAST_LISTENER_DONE
 *************************************************************************/
@@ -181,8 +168,6 @@ static void fnet_mld_send(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet
 }
 
 /************************************************************************
-* NAME: fnet_mld_query_receive
-*
 * DESCRIPTION: Handles received Multicast Listener Query message.
 *************************************************************************/
 void fnet_mld_query_receive(fnet_netif_t *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb)
@@ -231,6 +216,5 @@ DROP:
     fnet_netbuf_free_chain(ip6_nb);
     fnet_netbuf_free_chain(nb);
 }
-
 
 #endif /* FNET_CFG_MLD */

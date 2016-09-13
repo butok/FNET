@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2005-2011 by Andrey Butok and Gordon Jahn.
+* Copyright 2005-2016 by Andrey Butok and Gordon Jahn.
 *                        Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -20,8 +20,6 @@
 **********************************************************************/
 /*!
 *
-* @file fnet_mpc5668g_config.h
-*
 * @brief MPC5668g specific configuration file.
 *
 ***************************************************************************/
@@ -34,33 +32,31 @@
 
 #define _FNET_MPC5668G_CONFIG_H_
 
-#define FNET_MPC                        (1)
+#define FNET_MPC                        	(1)
 
 /******************************************************************************
  * Maximum Timer number that is avaiable on the used platform.
  ******************************************************************************/
-#define  FNET_CFG_CPU_TIMER_NUMBER_MAX  (7)
+#define  FNET_CFG_CPU_TIMER_NUMBER_MAX  	(7)
 
 /* Default system bus frequency in Hz*/
 #ifndef FNET_CFG_CPU_CLOCK_HZ
-    #define FNET_CFG_CPU_CLOCK_HZ       (94000000)
+    #define FNET_CFG_CPU_CLOCK_HZ       	(94000000)
 #endif
 
 /* MPC Flash Module is not supported.*/
-#define FNET_CFG_CPU_FLASH              (0)
-
-#define FNET_CFG_CPU_FLASH_PAGE_SIZE    (2*1024)
+#define FNET_CFG_CPU_FLASH              	(0)
 
 /* The platform does not have second Ethernet Module.*/
-#define FNET_CFG_CPU_ETH1        		(0)
+#define FNET_CFG_CPU_ETH1        			(0)
 
 /* Defines the maximum number of incoming frames that may
  *           be buffered by the Ethernet module.*/
 #ifndef FNET_CFG_CPU_ETH_RX_BUFS_MAX
-    #define FNET_CFG_CPU_ETH_RX_BUFS_MAX    (4)
+    #define FNET_CFG_CPU_ETH_RX_BUFS_MAX	(4)
 #endif
 
 /* On-chop Flash size.*/
-#define FNET_CFG_CPU_FLASH_SIZE         (1024 * 1024 * 2)   /* 2 MB*/
+#define FNET_CFG_CPU_FLASH_SIZE         	(1024 * 1024 * 2)   /* 2 MB*/
 
 #endif /* _FNET_MPC5668G_CONFIG_H_ */

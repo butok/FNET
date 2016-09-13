@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fapp_params.c
-*
-* @author Andrey Butok
-*
 * @brief FNET Shell Demo implementation.
 *
 ***************************************************************************/
@@ -33,13 +28,11 @@
 #include "fapp_mem.h"
 #include "fapp_params.h"
 
-
 #if FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
     #define fapp_params_erase   fnet_flash_erase
     #define fapp_params_memcpy  fnet_flash_memcpy
     #define fapp_params_flush   fnet_flash_flush
 #endif
-
 
 /* Default parameter values.
 * One-time setup done as a part of the manufacturing process/flashing
@@ -124,8 +117,6 @@ struct fapp_params_tftp fapp_params_tftp_config =
 #endif
 
 /************************************************************************
-* NAME: fapp_params_to_flash
-*
 * DESCRIPTION: Save current configuration parameters to the flash.
 ************************************************************************/
 #if FAPP_CFG_SAVE_CMD && FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
@@ -204,8 +195,6 @@ fnet_return_t fapp_params_to_flash(void)
 #endif
 
 /************************************************************************
-* NAME: fapp_params_from_flash
-*
 * DESCRIPTION: Load configuration parameters from flash.
 ************************************************************************/
 #if FAPP_CFG_PARAMS_READ_FLASH
@@ -250,4 +239,3 @@ fnet_return_t fapp_params_from_flash(void)
 
 }
 #endif
-

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2005-2015 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2005-2016 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
 *
@@ -17,11 +17,6 @@
 *  limitations under the License.
 *
 **********************************************************************/ /*!
-*
-* @file fnet_mcf.c
-*
-* @author Andrey Butok
-*
 * @brief CPU-specific API implementation.
 *
 ***************************************************************************/
@@ -38,8 +33,6 @@
 static fnet_cpu_irq_desc_t fnet_mcf_set_irqlevel(fnet_uint32_t level);
 
 /************************************************************************
-* NAME: fnet_cpu_reset
-*
 * DESCRIPTION: Initiate software reset.
 *************************************************************************/
 void fnet_cpu_reset (void)
@@ -55,8 +48,6 @@ void fnet_cpu_reset (void)
 }
 
 /************************************************************************
-* NAME: fnet_cpu_reset
-*
 * DESCRIPTION: Initiate software reset.
 *************************************************************************/
 static fnet_cpu_irq_desc_t fnet_mcf_set_irqlevel(fnet_uint32_t level)
@@ -75,10 +66,7 @@ static fnet_cpu_irq_desc_t fnet_mcf_set_irqlevel(fnet_uint32_t level)
     return oldlevel;
 }
 
-
 /************************************************************************
-* NAME: fnet_cpu_disable_irq
-*
 * DESCRIPTION: Disable IRQs
 *************************************************************************/
 fnet_cpu_irq_desc_t fnet_cpu_irq_disable(void)
@@ -87,8 +75,6 @@ fnet_cpu_irq_desc_t fnet_cpu_irq_disable(void)
 }
 
 /************************************************************************
-* NAME: fnet_cpu_disable_irq
-*
 * DESCRIPTION: Enables IRQs at interrupt level mask value.
 *************************************************************************/
 void fnet_cpu_irq_enable(fnet_cpu_irq_desc_t irq_desc)

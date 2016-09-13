@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2014 by Andrey Butok. FNET Community.
+* Copyright 2014-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,15 +18,9 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_llmnr.c
-*
-* @author Andrey Butok
-*
 * @brief LLMNR Server/Responder implementation (RFC4795).
 *
 ***************************************************************************/
-
 
 #include "fnet.h"
 
@@ -49,14 +43,11 @@
 /************************************************************************
 *     Definitions
 *************************************************************************/
-
 /* LLMNR-server states. */
 typedef enum
 {
-    FNET_LLMNR_STATE_DISABLED = 0,       /**< @brief The LLMNR server is not
-                                             * initialized or released.  */
-    FNET_LLMNR_STATE_WAITING_REQUEST     /**< @brief LLMNR server is waiting
-                                             * for a request from a LLMNR client. */
+    FNET_LLMNR_STATE_DISABLED = 0,       /**< @brief The LLMNR server is not initialized or released.  */
+    FNET_LLMNR_STATE_WAITING_REQUEST     /**< @brief LLMNR server is waiting for a request from a LLMNR client. */
 } fnet_llmnr_state_t;
 
 
@@ -183,8 +174,6 @@ FNET_COMP_PACKED_END
                                                     * response with a non-zero RCODE sent in response to a
                                                     * multicast query. */
 
-
-
 static void fnet_llmnr_state_machine( void *fnet_llmnr_if_p );
 static fnet_bool_t fnet_llmnr_hostname_cmp(const fnet_uint8_t *req_hostname, const fnet_uint8_t *hostname);
 
@@ -207,10 +196,7 @@ struct fnet_llmnr_if
 /* The LLMNR Server interface */
 static struct fnet_llmnr_if llmnr_if_list[FNET_CFG_LLMNR_MAX];
 
-
 /************************************************************************
-* NAME: fnet_llmnr_is_host_name
-*
 * DESCRIPTION: Checks if this our host name.
 ************************************************************************/
 static fnet_bool_t fnet_llmnr_hostname_cmp(const fnet_uint8_t *req_hostname, const fnet_uint8_t *hostname)
@@ -248,8 +234,6 @@ static fnet_bool_t fnet_llmnr_hostname_cmp(const fnet_uint8_t *req_hostname, con
 }
 
 /************************************************************************
-* NAME: fnet_llmnr_init
-*
 * DESCRIPTION: Initializes Link-Local Multicast Name Resolution (LLMNR)
 *              server/responder service.
 ************************************************************************/
@@ -390,8 +374,6 @@ ERROR_1:
 }
 
 /************************************************************************
-* NAME: fnet_llmnr_state_machine
-*
 * DESCRIPTION: LLMNR server state machine.
 ************************************************************************/
 static void fnet_llmnr_state_machine( void *fnet_llmnr_if_p )
@@ -517,8 +499,6 @@ static void fnet_llmnr_state_machine( void *fnet_llmnr_if_p )
 }
 
 /************************************************************************
-* NAME: fnet_llmnr_release
-*
 * DESCRIPTION: eleases the Link-Local Multicast Name Resolution (LLMNR)
 * server/responder service.
 ************************************************************************/
@@ -536,8 +516,6 @@ void fnet_llmnr_release(fnet_llmnr_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_llmnr_is_enabled
-*
 * DESCRIPTION: This function returns FNET_TRUE if the LLMNR server
 *              is enabled/initialised.
 ************************************************************************/

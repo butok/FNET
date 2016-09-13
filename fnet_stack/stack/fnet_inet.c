@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
 *
@@ -20,11 +20,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_inet.c
-*
-* @author Andrey Butok
-*
 * @brief Address-conversion functions.
 *
 ***************************************************************************/
@@ -43,8 +38,6 @@ static fnet_return_t fnet_inet_pton_ip4(const fnet_char_t *str, fnet_ip4_addr_t 
 #endif
 
 /************************************************************************
-* NAME: fnet_inet_ntoa
-*
 * DESCRIPTION:The function converts an (IPv4) Internet network address
 *             into a string in Internet standard dotted format.
 *************************************************************************/
@@ -54,8 +47,6 @@ fnet_char_t *fnet_inet_ntoa( struct in_addr addr, fnet_char_t *res_str )
 }
 
 /************************************************************************
-* NAME: fnet_inet_aton
-*
 * DESCRIPTION:The function converts a string containing an (IPv4)
 *             Internet Protocol dotted address into a suitable binary
 *             representation of the Internet address.
@@ -66,8 +57,6 @@ fnet_return_t fnet_inet_aton( fnet_char_t *cp, struct in_addr *addr )
 }
 
 /************************************************************************
-* NAME: fnet_inet_ntop
-*
 * DESCRIPTION:The function converts network format IPv4 and IPv6 address
 *               to presentation/text format (string).
 *************************************************************************/
@@ -96,8 +85,6 @@ fnet_char_t *fnet_inet_ntop(fnet_address_family_t family, const void *addr, fnet
 }
 
 /************************************************************************
-* NAME: fnet_inet_pton
-*
 * DESCRIPTION:The function converts from presentation format (string)
 *	        to network format.
 *************************************************************************/
@@ -139,8 +126,6 @@ fnet_return_t fnet_inet_pton(fnet_address_family_t family, const fnet_char_t *st
 }
 
 /************************************************************************
-* NAME: fnet_inet_ptos
-*
 * DESCRIPTION:The function converts from presentation format (string)
 *	        to struct sockaddr.
 *************************************************************************/
@@ -187,8 +172,6 @@ fnet_return_t fnet_inet_ptos (const fnet_char_t *str, struct sockaddr *addr)
 }
 
 /************************************************************************
-* NAME: fnet_inet_pton_ip4
-*
 * DESCRIPTION:The function converts from presentation format (string)
 *	        to IPv4 address.
 *************************************************************************/
@@ -260,8 +243,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_inet_pton_ip6
-*
 * DESCRIPTION:The function converts from presentation format (string)
 *	        to IPv6 address.
 *************************************************************************/
@@ -389,8 +370,6 @@ ERROR:
 #endif /* FNET_CFG_IP6 */
 
 /************************************************************************
-* NAME: fnet_inet_ntop_ip4
-*
 * DESCRIPTION:The function converts IPv4 address
 *               to presentation format (string).
 *************************************************************************/
@@ -415,8 +394,6 @@ static fnet_char_t *fnet_inet_ntop_ip4 ( const fnet_ip4_addr_t *addr, fnet_char_
 }
 
 /************************************************************************
-* NAME: fnet_inet_ntop_ip6
-*
 * DESCRIPTION:The function converts IPv6 binary address into
 *               presentation (printable) format.
 *************************************************************************/
@@ -524,5 +501,3 @@ static fnet_char_t *fnet_inet_ntop_ip6 (const fnet_ip6_addr_t *addr, fnet_char_t
     return (str);
 }
 #endif /* FNET_CFG_IP6 */
-
-

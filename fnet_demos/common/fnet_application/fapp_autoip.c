@@ -51,8 +51,6 @@ static void fapp_autoip_callback_updated(fnet_autoip_desc_t autoip_desc, fnet_ne
 static void fapp_autoip_callback_probe(fnet_autoip_desc_t autoip_desc, fnet_netif_desc_t netif, void *shl_desc );
 
 /************************************************************************
-* NAME: fapp_dhcp_on_ctrlc
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fapp_autoip_on_ctrlc(fnet_shell_desc_t desc)
@@ -65,8 +63,6 @@ static void fapp_autoip_on_ctrlc(fnet_shell_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fapp_autoip_release
-*
 * DESCRIPTION: Releases Auto-IP server.
 *************************************************************************/
 void fapp_autoip_release(void)
@@ -76,8 +72,6 @@ void fapp_autoip_release(void)
 }
 
 /************************************************************************
-* NAME: fapp_autoip_callback_updated
-*
 * DESCRIPTION: Event handler callback on new IP from Auto-IP service.
 ************************************************************************/
 static void fapp_autoip_callback_updated(fnet_autoip_desc_t autoip_desc, fnet_netif_desc_t netif, void *shl_desc )
@@ -88,8 +82,6 @@ static void fapp_autoip_callback_updated(fnet_autoip_desc_t autoip_desc, fnet_ne
 }
 
 /************************************************************************
-* NAME: fapp_autoip_callback_probe
-*
 * DESCRIPTION: Event handler callback on "Address probing" by Auto-IP service.
 ************************************************************************/
 static void fapp_autoip_callback_probe(fnet_autoip_desc_t autoip_desc, fnet_netif_desc_t netif, void *shl_desc )
@@ -103,8 +95,6 @@ static void fapp_autoip_callback_probe(fnet_autoip_desc_t autoip_desc, fnet_neti
 }
 
 /************************************************************************
-* NAME: fapp_autoip_cmd
-*
 * DESCRIPTION: Run Auto-IP service.
 *************************************************************************/
 void fapp_autoip_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
@@ -160,14 +150,11 @@ void fapp_autoip_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **a
 }
 
 /************************************************************************
-* NAME: fapp_autoip_info
-*
 * DESCRIPTION:
 *************************************************************************/
 void fapp_autoip_info(fnet_shell_desc_t desc)
 {
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "AUTOIP Service", fapp_enabled_str[fnet_autoip_is_enabled(fapp_autoip_desc)]);
 }
-
 
 #endif /* FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP && FNET_CFG_IP4 */

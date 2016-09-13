@@ -1,6 +1,6 @@
 /**************************************************************************
 * 
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -18,11 +18,6 @@
 *  limitations under the License.
 *
 **********************************************************************//*!
-*
-* @file fnet_mcf_isr.asm
-*
-* @author Andrey Butok
-*
 * @brief Lowest level routines for ColdFire.
 *
 ***************************************************************************/
@@ -37,12 +32,9 @@ FNET_COMP_ASM_EXTERN    FNET_COMP_ASM_PREFIX(fnet_isr_handler)
 FNET_COMP_ASM_GLOBAL    FNET_COMP_ASM_PREFIX(fnet_cpu_isr)
 
 
-
 FNET_COMP_ASM_CODE
 
 /************************************************************************
-* NAME: void fnet_cpu_isr(void);
-*
 * DESCRIPTION: This handler is executed on every FNET interrupt 
 *              (from ethernet and timer module).
 *              Extructs vector number and calls fnet_isr_handler().

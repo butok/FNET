@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
 *
@@ -49,8 +49,6 @@ static fnet_mempool_desc_t fnet_mempool_main = 0; /* Main memory pool. */
 fnet_netbuf_t *dm_nb;
 
 /************************************************************************
-* NAME: fnet_netbuf_new
-*
 * DESCRIPTION: Creates a new net_buf and allocates memory
 *              for a new data buffer.
 *************************************************************************/
@@ -102,8 +100,6 @@ fnet_netbuf_t *fnet_netbuf_new( fnet_size_t len, fnet_bool_t drain )
 }
 
 /************************************************************************
-* NAME: fnet_netbuf_copy
-*
 * DESCRIPTION: Creates a new net_buf using data buffer,
 *              which was created before for another net_buf.
 *************************************************************************/
@@ -244,8 +240,6 @@ fnet_netbuf_t *fnet_netbuf_copy( fnet_netbuf_t *nb, fnet_size_t offset, fnet_siz
 }
 
 /************************************************************************
-* NAME: fnet_netbuf_from_buf
-*
 * DESCRIPTION: Creates a new net_buf and fills it by a content of
 *              the external data buffer.
 *************************************************************************/
@@ -264,8 +258,6 @@ fnet_netbuf_t *fnet_netbuf_from_buf( void *data_ptr, fnet_size_t len, fnet_bool_
 }
 
 /************************************************************************
-* NAME: fnet_netbuf_to_buf
-*
 * DESCRIPTION: Creates a new continuous buffer, which contains
 *              info from all net buffers of the current chain.
 *************************************************************************/
@@ -346,8 +338,6 @@ void fnet_netbuf_to_buf( fnet_netbuf_t *nb, fnet_size_t offset, fnet_size_t len,
 }
 
 /************************************************************************
-* NAME: fnet_netbuf_free
-*
 * DESCRIPTION: Frees the memory, which was allocated by net_buf 'nb' and
 *              returns pointer to the next net_buf.
 *************************************************************************/
@@ -379,8 +369,6 @@ fnet_netbuf_t *fnet_netbuf_free( fnet_netbuf_t *nb )
 }
 
 /************************************************************************
-* NAME: fnet_netbuf_free_chain
-*
 * DESCRIPTION: Frees the memory, which was allocated by all net_bufs
 *              in the chain beginning from the buffer 'nb'
 *************************************************************************/
@@ -408,8 +396,6 @@ void fnet_netbuf_free_chain( fnet_netbuf_t *nb )
 }
 
 /************************************************************************
-* NAME: fnet_netbuf_pullup
-*
 * DESCRIPTION: Create a data buffer for the first net_buf with the
 *              length len
 *************************************************************************/
@@ -510,8 +496,6 @@ fnet_return_t fnet_netbuf_pullup( fnet_netbuf_t **nb_ptr, fnet_size_t len)
 
 
 /************************************************************************
-* NAME: fnet_netbuf_trim
-*
 * DESCRIPTION: Trims len bytes from the begin of the net_buf data if len
 *              is positive. Otherwise len bytes should be trimmed from the
 *              end of net_buf buffer. If len=0 - do nothing
@@ -605,8 +589,6 @@ void fnet_netbuf_trim( fnet_netbuf_t **nb_ptr, fnet_int32_t len )
 }
 
 /************************************************************************
-* NAME: fnet_netbuf_cut_center
-*
 * DESCRIPTION: Cuts len bytes in net_buf queue starting from offset "offset"
 *
 *************************************************************************/
@@ -729,8 +711,6 @@ fnet_netbuf_t *fnet_netbuf_cut_center( fnet_netbuf_t **nb_ptr, fnet_size_t offse
 }
 
 /************************************************************************
-* NAME: fnet_netbuf_concat
-*
 * DESCRIPTION: Makes one net_buf from two. If the first or second pointer
 *              is 0, the pointer to the second or first buffer
 *              correspondingly is returned
@@ -765,11 +745,7 @@ fnet_netbuf_t *fnet_netbuf_concat( fnet_netbuf_t *nb1, fnet_netbuf_t *nb2 )
 }
 
 /************************************************************************
-* NAME: fnet_netbuf_add_chain
-*
-* DESCRIPTION: Adds chain nb_chain into the queue of chains pointed by
-*              nb_ptr
-*
+* DESCRIPTION: Adds chain nb_chain into the queue of chains pointed by nb_ptr
 *************************************************************************/
 void fnet_netbuf_add_chain( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain )
 {
@@ -794,11 +770,7 @@ void fnet_netbuf_add_chain( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain )
 }
 
 /************************************************************************
-* NAME: fnet_netbuf_del_chain
-*
-* DESCRIPTION: Deletes chain nb_chain, which is in the queue pointed by
-*              nb_ptr
-*
+* DESCRIPTION: Deletes chain nb_chain, which is in the queue pointed by nb_ptr
 *************************************************************************/
 void fnet_netbuf_del_chain( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain )
 {
@@ -835,10 +807,7 @@ void fnet_netbuf_del_chain( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain )
 }
 
 /************************************************************************
-* NAME: fnet_heap_init
-*
 * DESCRIPTION: Heap init
-*
 *************************************************************************/
 fnet_return_t fnet_heap_init( void *heap_ptr, fnet_size_t heap_size )
 {
@@ -864,12 +833,8 @@ fnet_return_t fnet_heap_init( void *heap_ptr, fnet_size_t heap_size )
     return result;
 }
 
-
 /************************************************************************
-* NAME: fnet_free
-*
 * DESCRIPTION: Frees memory in heap for TCP/IP
-*
 *************************************************************************/
 void fnet_free_netbuf( void *ap )
 {
@@ -877,10 +842,7 @@ void fnet_free_netbuf( void *ap )
 }
 
 /************************************************************************
-* NAME: fnet_malloc_netbuf
-*
 * DESCRIPTION: Allocates memory in heap for TCP/IP
-*
 *************************************************************************/
 void *fnet_malloc_netbuf( fnet_size_t nbytes )
 {
@@ -888,10 +850,7 @@ void *fnet_malloc_netbuf( fnet_size_t nbytes )
 }
 
 /************************************************************************
-* NAME: fnet_free_mem_status
-*
 * DESCRIPTION: Returns a quantity of free memory (for debug needs)
-*
 *************************************************************************/
 fnet_size_t fnet_free_mem_status_netbuf( void )
 {
@@ -899,10 +858,7 @@ fnet_size_t fnet_free_mem_status_netbuf( void )
 }
 
 /************************************************************************
-* NAME: fnet_malloc_max
-*
 * DESCRIPTION: Returns a maximum size of posible allocated memory chunk.
-*
 *************************************************************************/
 fnet_size_t fnet_malloc_max_netbuf( void )
 {
@@ -910,22 +866,15 @@ fnet_size_t fnet_malloc_max_netbuf( void )
 }
 
 /************************************************************************
-* NAME: fnet_mem_release
-*
 * DESCRIPTION: Free all Net Memory
-*
 *************************************************************************/
 void fnet_mem_release_netbuf( void )
 {
     fnet_mempool_release(fnet_mempool_netbuf);
 }
 
-
 /************************************************************************
-* NAME: fnet_free
-*
 * DESCRIPTION: Frees memory in heap for TCP/IP
-*
 *************************************************************************/
 void fnet_free( void *ap )
 {
@@ -933,10 +882,7 @@ void fnet_free( void *ap )
 }
 
 /************************************************************************
-* NAME: fnet_malloc
-*
 * DESCRIPTION: Allocates memory in heap for TCP/IP
-*
 *************************************************************************/
 void *fnet_malloc( fnet_size_t nbytes )
 {
@@ -944,10 +890,7 @@ void *fnet_malloc( fnet_size_t nbytes )
 }
 
 /************************************************************************
-* NAME: fnet_malloc
-*
 * DESCRIPTION: Allocates memory in heap for TCP/IP
-*
 *************************************************************************/
 void *fnet_malloc_zero( fnet_size_t nbytes )
 {
@@ -963,10 +906,7 @@ void *fnet_malloc_zero( fnet_size_t nbytes )
 }
 
 /************************************************************************
-* NAME: fnet_free_mem_status
-*
 * DESCRIPTION: Returns a quantity of free memory (for debug needs)
-*
 *************************************************************************/
 fnet_size_t fnet_free_mem_status( void )
 {
@@ -974,10 +914,7 @@ fnet_size_t fnet_free_mem_status( void )
 }
 
 /************************************************************************
-* NAME: fnet_malloc_max
-*
 * DESCRIPTION: Returns a maximum size of posible allocated memory chunk.
-*
 *************************************************************************/
 fnet_size_t fnet_malloc_max( void )
 {
@@ -985,10 +922,7 @@ fnet_size_t fnet_malloc_max( void )
 }
 
 /************************************************************************
-* NAME: fnet_mem_release
-*
 * DESCRIPTION: Free all Net Memory
-*
 *************************************************************************/
 void fnet_mem_release( void )
 {

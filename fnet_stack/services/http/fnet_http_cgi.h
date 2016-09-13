@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_http_cgi.h
-*
-* @author Andrey Butok
-*
 * @brief FNET HTTP Server CGI API.
 *
 ***************************************************************************/
@@ -135,11 +130,8 @@ struct fnet_http_cgi
                                          * the CGI response. It's optional. */
 };
 
-
 /*! @} */
 
-
 #endif
-
 
 #endif

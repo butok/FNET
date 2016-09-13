@@ -20,11 +20,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_tcp.h
-*
-* @author Alexey Shervashidze, Andrey Butok.
-*
 * @brief Private. TCP protocol definitions.
 *
 ***************************************************************************/
@@ -87,30 +82,26 @@ extern struct fnet_prot_if fnet_tcp_prot_if;
 *    Keepalive timer parameters
 *************************************************************************/
 #define FNET_TCP_KEEPIDLE_DEFAULT   (14400u) /* x FNET_TCP_SLOWTIMO  
-                                             * Standart value for keepalive timer (2 hours).
-                                             */
+                                             * Standart value for keepalive timer (2 hours).*/
 #define FNET_TCP_KEEPINTVL_DEFAULT  (150u)   /* x FNET_TCP_SLOWTIMO  
-                                             * Standart value for retransmission of the keepalive segment (75 sec).
-                                             */
-#define FNET_TCP_KEEPCNT_DEFAULT    (8u)     /* Number of keepalive segments in state of retransmission.
-                                             */
-
+                                             * Standart value for retransmission of the keepalive segment (75 sec).*/
+#define FNET_TCP_KEEPCNT_DEFAULT    (8u)     /* Number of keepalive segments in state of retransmission.*/
 
 /************************************************************************
 *    Initial value for the retransmission and persist timers (6 sec)
 *************************************************************************/
-#define FNET_TCP_TIMERS_INIT    (12u)
+#define FNET_TCP_TIMERS_INIT        (12u)
 
 /************************************************************************
 *    Limit of timers (60 sec)
 *************************************************************************/
-#define FNET_TCP_TIMERS_LIMIT   (120u)
+#define FNET_TCP_TIMERS_LIMIT       (120u)
 
 /************************************************************************
 *    Shifts of the retransmission variables
 *************************************************************************/
-#define FNET_TCP_RTT_SHIFT      (3u) /* Smoothed round trip time shift.*/
-#define FNET_TCP_RTTVAR_SHIFT   (2u) /* Round trip time variance shift.*/
+#define FNET_TCP_RTT_SHIFT          (3u) /* Smoothed round trip time shift.*/
+#define FNET_TCP_RTTVAR_SHIFT       (2u) /* Round trip time variance shift.*/
 
 /************************************************************************
 *    Maximal size of synchronized options
@@ -161,7 +152,6 @@ extern struct fnet_prot_if fnet_tcp_prot_if;
 *    Timewait delay
 *************************************************************************/
 #define FNET_TCP_TIME_WAIT              (240u/5u) /* 240 x FNET_TCP_SLOWTIMO  = 2 minutes/5 */
-
 
 /************************************************************************
 *    Receiving of a byte, word and double word
@@ -233,8 +223,7 @@ typedef struct
                                     *   send data, if there is unacknowledged data already "in flight",
                                     *   or until a full-size packet can be sent.
                                     *   But for some applications this algorithm can impede
-                                    *   performance, especially for a bulky data transfer.
-                                    */
+                                    *   performance, especially for a bulky data transfer*/
 #if FNET_CFG_TCP_URGENT
     fnet_bool_t tcp_bsd;    /*  If this option is set to FNET_TRUE, the BSD interpretation of
                                     *   the urgent pointer is used. In this case the
@@ -246,8 +235,7 @@ typedef struct
                                     *   the TCP specification is used. In this case the
                                     *   urgent pointer of the TCP segment points
                                     *   to the urgent byte.
-                                    *   This option is avalable only if FNET_CFG_TCP_URGENT is set to 1.
-                                    */
+                                    *   This option is avalable only if FNET_CFG_TCP_URGENT is set to 1.*/
 #endif
 
 } fnet_tcp_sockopt_t;
@@ -258,14 +246,14 @@ typedef struct
 FNET_COMP_PACKED_BEGIN
 typedef struct
 {
-    fnet_uint16_t  source_port     FNET_COMP_PACKED;       /* Source port number.*/
-    fnet_uint16_t  destination_port    FNET_COMP_PACKED;   /* Destination port number.*/
+    fnet_uint16_t   source_port     FNET_COMP_PACKED;       /* Source port number.*/
+    fnet_uint16_t   destination_port    FNET_COMP_PACKED;   /* Destination port number.*/
     fnet_uint32_t   sequence_number     FNET_COMP_PACKED;   /* Sequence Number.*/
     fnet_uint32_t   ack_number  FNET_COMP_PACKED;           /* Sequence Number.*/
-    fnet_uint16_t  hdrlength__flags FNET_COMP_PACKED;      /* (4 bits) Number of 32 bit words in the TCP Header. (6 bits) Reserved. (6bits) Flags.*/
-    fnet_uint16_t  window  FNET_COMP_PACKED;               /* Window.*/
-    fnet_uint16_t  checksum    FNET_COMP_PACKED;           /* Checksum.*/
-    fnet_uint16_t  urgent_ptr  FNET_COMP_PACKED;           /* Urgent pointer.*/
+    fnet_uint16_t   hdrlength__flags FNET_COMP_PACKED;      /* (4 bits) Number of 32 bit words in the TCP Header. (6 bits) Reserved. (6bits) Flags.*/
+    fnet_uint16_t   window  FNET_COMP_PACKED;               /* Window.*/
+    fnet_uint16_t   checksum    FNET_COMP_PACKED;           /* Checksum.*/
+    fnet_uint16_t   urgent_ptr  FNET_COMP_PACKED;           /* Urgent pointer.*/
 } fnet_tcp_header_t;
 FNET_COMP_PACKED_END
 
@@ -335,7 +323,6 @@ typedef enum
     TCP_TS_SEGMENT_LOST = 2    /* Timing segments are lost.*/
 } fnet_tcp_timing_state_t;
 
-
 /************************************************************************
 *    TCP timers structure
 *************************************************************************/
@@ -352,7 +339,6 @@ typedef struct
     fnet_time_t delayed_ack;        /* Delayed acknowledgment timer.*/
     fnet_time_t round_trip;         /* Round trip timer.*/
 } fnet_tcp_timers_t;
-
 
 /************************************************************************
 *    Control block structure

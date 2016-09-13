@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_nd6.c
-*
-* @author Andrey Butok
-*
 * @brief IPv6 Neighbor Discovery implementation.
 *
 ***************************************************************************/
@@ -73,8 +68,6 @@ static fnet_bool_t fnet_nd6_is_firsthop_router(fnet_netif_t *netif, fnet_ip6_add
 #endif
 
 /************************************************************************
-* NAME: fnet_nd6_init
-* RETURNS: FNET_OK or FNET_ERR.
 * DESCRIPTION: Initializes the Neighbor Disscovery on an interface.
 *************************************************************************/
 fnet_return_t fnet_nd6_init (struct fnet_netif *netif, fnet_nd6_if_t *nd6_if_ptr)
@@ -126,8 +119,6 @@ fnet_return_t fnet_nd6_init (struct fnet_netif *netif, fnet_nd6_if_t *nd6_if_ptr
 }
 
 /************************************************************************
-* NAME: fnet_nd6_release
-* RETURNS: void
 * DESCRIPTION: Release the Neighbor Disscovery for the interface.
 *************************************************************************/
 void fnet_nd6_release (struct fnet_netif *netif)
@@ -140,8 +131,6 @@ void fnet_nd6_release (struct fnet_netif *netif)
 }
 
 /************************************************************************
-* NAME: fnet_nd6_timer
-*
 * DESCRIPTION: ND6 timer.
 *************************************************************************/
 static void fnet_nd6_timer( fnet_uint32_t cookie )
@@ -170,8 +159,6 @@ static void fnet_nd6_timer( fnet_uint32_t cookie )
 }
 
 /************************************************************************
-* NAME: fnet_nd6_neighbor_cache_get
-*
 * DESCRIPTION: Get entry from Neighbor cache that corresponds ip_addr.
 *               It returns NULL if no entry is found.
 *************************************************************************/
@@ -198,8 +185,6 @@ fnet_nd6_neighbor_entry_t *fnet_nd6_neighbor_cache_get(struct fnet_netif *netif,
 }
 
 /************************************************************************
-* NAME: fnet_nd6_neighbor_cache_del
-*
 * DESCRIPTION: Deletes an entry from the Neighbor Cache.
 *************************************************************************/
 void fnet_nd6_neighbor_cache_del(struct fnet_netif *netif, fnet_nd6_neighbor_entry_t *neighbor_entry)
@@ -220,8 +205,6 @@ void fnet_nd6_neighbor_cache_del(struct fnet_netif *netif, fnet_nd6_neighbor_ent
 }
 
 /************************************************************************
-* NAME: fnet_nd6_neighbor_cache_add
-*
 * DESCRIPTION: Adds (TBD update) entry into the Neighbor cache.
 *************************************************************************/
 fnet_nd6_neighbor_entry_t *fnet_nd6_neighbor_cache_add(struct fnet_netif *netif, const fnet_ip6_addr_t *ip_addr, fnet_netif_ll_addr_t ll_addr, fnet_nd6_neighbor_state_t state)
@@ -277,7 +260,6 @@ fnet_nd6_neighbor_entry_t *fnet_nd6_neighbor_cache_add(struct fnet_netif *netif,
 }
 
 /************************************************************************
-* NAME: fnet_nd6_neighbor_cache_timer
 * DESCRIPTION: Timer routine used for Neighbor Cache check.
 *************************************************************************/
 static void fnet_nd6_neighbor_cache_timer(fnet_netif_t *netif)
@@ -429,8 +411,6 @@ static void fnet_nd6_neighbor_cache_timer(fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_nd6_neighbor_enqueue_waiting_netbuf
-*
 * DESCRIPTION: Put netbuf to the queue, waiting for address resolution to complete.
 *************************************************************************/
 void fnet_nd6_neighbor_enqueue_waiting_netbuf(fnet_nd6_neighbor_entry_t *neighbor_entry, fnet_netbuf_t *waiting_netbuf)
@@ -449,8 +429,6 @@ void fnet_nd6_neighbor_enqueue_waiting_netbuf(fnet_nd6_neighbor_entry_t *neighbo
 }
 
 /************************************************************************
-* NAME: fnet_nd6_neighbor_send_waiting_netbuf
-*
 * DESCRIPTION: Sends waiting PCBs, if any.
 *************************************************************************/
 void fnet_nd6_neighbor_send_waiting_netbuf(struct fnet_netif *netif, fnet_nd6_neighbor_entry_t *neighbor_entry)
@@ -465,8 +443,6 @@ void fnet_nd6_neighbor_send_waiting_netbuf(struct fnet_netif *netif, fnet_nd6_ne
 }
 
 /************************************************************************
-* NAME: fnet_nd6_router_list_add
-*
 * DESCRIPTION: Adds entry into the Router List.
 *************************************************************************/
 void fnet_nd6_router_list_add( fnet_nd6_neighbor_entry_t *neighbor_entry, fnet_time_t lifetime )
@@ -491,8 +467,6 @@ void fnet_nd6_router_list_add( fnet_nd6_neighbor_entry_t *neighbor_entry, fnet_t
 }
 
 /************************************************************************
-* NAME: fnet_nd6_router_list_del
-*
 * DESCRIPTION: Deletes an entry from the Router List.
 *************************************************************************/
 void fnet_nd6_router_list_del( fnet_nd6_neighbor_entry_t *neighbor_entry )
@@ -505,8 +479,6 @@ void fnet_nd6_router_list_del( fnet_nd6_neighbor_entry_t *neighbor_entry )
 }
 
 /************************************************************************
-* NAME: fnet_nd6_default_router_get
-*
 * DESCRIPTION: Chooses default router. Returns FNET_NULL if no router exists.
 *************************************************************************/
 fnet_nd6_neighbor_entry_t *fnet_nd6_default_router_get(struct fnet_netif *netif)
@@ -556,8 +528,6 @@ fnet_nd6_neighbor_entry_t *fnet_nd6_default_router_get(struct fnet_netif *netif)
 }
 
 /************************************************************************
-* NAME: fnet_nd6_is_firsthop_router
-*
 * DESCRIPTION: The IP source address of the Redirect is the same as the current
 *                 first-hop router for the specified ICMP Destination Address.
 *************************************************************************/
@@ -596,8 +566,6 @@ static fnet_bool_t fnet_nd6_is_firsthop_router(fnet_netif_t *netif, fnet_ip6_add
 }
 
 /************************************************************************
-* NAME: nd6_prefix_list_get
-*
 * DESCRIPTION: Get entry from Prefix List that corresponds to "prefix".
 * It returns NULL if no entry is found.
 *************************************************************************/
@@ -625,8 +593,6 @@ fnet_nd6_prefix_entry_t *fnet_nd6_prefix_list_get(struct fnet_netif *netif, fnet
 }
 
 /************************************************************************
-* NAME: fnet_nd6_prefix_list_del
-*
 * DESCRIPTION: Deletes an entry from the Prefix List.
 *************************************************************************/
 void fnet_nd6_prefix_list_del(fnet_nd6_prefix_entry_t *prefix_entry)
@@ -638,8 +604,6 @@ void fnet_nd6_prefix_list_del(fnet_nd6_prefix_entry_t *prefix_entry)
 }
 
 /************************************************************************
-* NAME: fnet_nd6_prefix_list_add
-*
 * DESCRIPTION: Adds (TBD update) entry into the Prefix List.
 *************************************************************************/
 fnet_nd6_prefix_entry_t *fnet_nd6_prefix_list_add(struct fnet_netif *if_ptr, const fnet_ip6_addr_t *prefix, fnet_size_t prefix_length, fnet_time_t lifetime)
@@ -660,7 +624,6 @@ fnet_nd6_prefix_entry_t *fnet_nd6_prefix_list_add(struct fnet_netif *if_ptr, con
                 break;
             }
         }
-
 
         /* If no free entry is found.
          */
@@ -691,7 +654,6 @@ fnet_nd6_prefix_entry_t *fnet_nd6_prefix_list_add(struct fnet_netif *if_ptr, con
 }
 
 /************************************************************************
-* NAME: fnet_nd6_prefix_timer
 * DESCRIPTION: Timer routine used for Prefix List lifetime check.
 *************************************************************************/
 static void fnet_nd6_prefix_timer(fnet_netif_t *netif)
@@ -712,8 +674,6 @@ static void fnet_nd6_prefix_timer(fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_nd6_redirect_table_add
-*
 * DESCRIPTION: Add entry into the Redirect Table.
 *************************************************************************/
 static fnet_nd6_redirect_entry_t *fnet_nd6_redirect_table_add(fnet_netif_t *if_ptr, const fnet_ip6_addr_t *destination_addr, const fnet_ip6_addr_t *target_addr)
@@ -777,8 +737,6 @@ static fnet_nd6_redirect_entry_t *fnet_nd6_redirect_table_add(fnet_netif_t *if_p
 }
 
 /************************************************************************
-* NAME: fnet_nd6_redirect_table_del
-*
 * DESCRIPTION: Deletes an entry from the Redirect Table.
 *************************************************************************/
 static void fnet_nd6_redirect_table_del(fnet_netif_t *if_ptr, const fnet_ip6_addr_t *target_addr)
@@ -800,8 +758,6 @@ static void fnet_nd6_redirect_table_del(fnet_netif_t *if_ptr, const fnet_ip6_add
 }
 
 /************************************************************************
-* NAME: fnet_nd6_redirect_addr
-*
 * DESCRIPTION: Redirects destination address, if needed.
 *************************************************************************/
 void fnet_nd6_redirect_addr(struct fnet_netif *if_ptr, const fnet_ip6_addr_t **destination_addr_p)
@@ -824,8 +780,6 @@ void fnet_nd6_redirect_addr(struct fnet_netif *if_ptr, const fnet_ip6_addr_t **d
 }
 
 /************************************************************************
-* NAME: fnet_nd6_addr_is_onlink
-*
 * DESCRIPTION: Checks if the address is on-link.
 *              Returns FNET_TRUE if it is on-line, FNET_FALSE otherwise.
 *************************************************************************/
@@ -852,7 +806,6 @@ fnet_bool_t fnet_nd6_addr_is_onlink(struct fnet_netif *netif, const fnet_ip6_add
 }
 
 /************************************************************************
-* NAME: fnet_nd6_neighbor_solicitation_send
 * DESCRIPTION: Sends an Neighbor Solicitation Message.
 *   Nodes send Neighbor Solicitations to request the link-layer address
 *   of a target node while also providing their own link-layer address to
@@ -953,7 +906,6 @@ DROP:
 }
 
 /************************************************************************
-* NAME: fnet_nd6_neighbor_solicitation_receive
 * DESCRIPTION: Handles received Neighbor Solicitation message.
 *************************************************************************/
 void fnet_nd6_neighbor_solicitation_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb)
@@ -1151,7 +1103,6 @@ DROP:
 }
 
 /************************************************************************
-* NAME: fnet_nd6_neighbor_advertisement_send
 * DESCRIPTION: Sends an Neighbor Advertisement message.
 *************************************************************************/
 void fnet_nd6_neighbor_advertisement_send(struct fnet_netif *netif, const fnet_ip6_addr_t *ipsrc, const fnet_ip6_addr_t *ipdest, fnet_uint8_t na_flags)
@@ -1196,7 +1147,6 @@ DROP:
 }
 
 /************************************************************************
-* NAME: fnet_nd6_router_solicitation_send
 * DESCRIPTION: Sends an Router Solicitation Message.
 *   Nodes send Neighbor Solicitations to request the link-layer address
 *   of a target node while also providing their own link-layer address to
@@ -1268,7 +1218,6 @@ DROP:
 }
 
 /************************************************************************
-* NAME: fnet_nd6_neighbor_advertisement_receive
 * DESCRIPTION: Handles received Neighbor Advertisement message.
 *************************************************************************/
 void fnet_nd6_neighbor_advertisement_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb)
@@ -1304,7 +1253,6 @@ void fnet_nd6_neighbor_advertisement_receive(struct fnet_netif *netif, fnet_ip6_
     {
         goto DROP;
     }
-
 
     {
         /************************************************************
@@ -1504,7 +1452,6 @@ DROP:
 }
 
 /************************************************************************
-* NAME: nd6_router_advertisement_receive
 * DESCRIPTION: Handles received Router Advertisement message.
 *************************************************************************/
 void fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb)
@@ -1868,14 +1815,12 @@ void fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_ad
 
     }
 
-
 DROP:
     fnet_netbuf_free_chain(ip6_nb);
     fnet_netbuf_free_chain(nb);
 }
 
 /************************************************************************
-* NAME: fnet_nd6_redirect_receive
 * DESCRIPTION: Handles received Redirect message.
 *************************************************************************/
 void fnet_nd6_redirect_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb)
@@ -2009,14 +1954,12 @@ void fnet_nd6_redirect_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip
         fnet_nd6_redirect_table_add(netif, destination_addr, target_addr);
     }
 
-
 DROP:
     fnet_netbuf_free_chain(ip6_nb);
     fnet_netbuf_free_chain(nb);
 }
 
 /************************************************************************
-* NAME: fnet_nd6_rd_start
 * DESCRIPTION: Start the Router Discovery for the interface.
 *************************************************************************/
 void fnet_nd6_rd_start(struct fnet_netif *netif)
@@ -2029,7 +1972,6 @@ void fnet_nd6_rd_start(struct fnet_netif *netif)
 }
 
 /************************************************************************
-* NAME: fnet_nd6_rd_timer
 * DESCRIPTION: Timer routine used by Router Discovery.
 *************************************************************************/
 static void fnet_nd6_rd_timer(fnet_netif_t *netif)
@@ -2058,8 +2000,6 @@ static void fnet_nd6_rd_timer(fnet_netif_t *netif)
 }
 
 /************************************************************************
-* NAME: fnet_nd6_dad_start
-* RETURS: None.
 * DESCRIPTION: Start the Duplicate Address Detection for the address.
 *************************************************************************/
 void fnet_nd6_dad_start(struct fnet_netif *netif, struct fnet_netif_ip6_addr *addr_info)
@@ -2078,8 +2018,6 @@ void fnet_nd6_dad_start(struct fnet_netif *netif, struct fnet_netif_ip6_addr *ad
 }
 
 /************************************************************************
-* NAME: fnet_nd6_dad_timer
-* RETURS: None.
 * DESCRIPTION: Timer routine used by Duplicate Address Detection.
 *************************************************************************/
 static void fnet_nd6_dad_timer(fnet_netif_t *netif )
@@ -2131,8 +2069,6 @@ static void fnet_nd6_dad_timer(fnet_netif_t *netif )
 }
 
 /************************************************************************
-* NAME: nd6_dad_failed
-* RETURS: None.
 * DESCRIPTION: Called when DAD is failed.
 *************************************************************************/
 static void fnet_nd6_dad_failed(fnet_netif_t *netif , fnet_netif_ip6_addr_t *addr_info)
@@ -2171,8 +2107,6 @@ static void fnet_nd6_dad_failed(fnet_netif_t *netif , fnet_netif_ip6_addr_t *add
 
 #if FNET_CFG_ND6_RDNSS && FNET_CFG_DNS
 /************************************************************************
-* NAME: fnet_nd6_rdnss_list_update
-*
 * DESCRIPTION: Update entry in the RDNSS List.
 *************************************************************************/
 static void fnet_nd6_rdnss_list_update(fnet_netif_t *if_ptr, const fnet_ip6_addr_t *rdnss_addr, fnet_time_t lifetime)
@@ -2244,8 +2178,6 @@ static void fnet_nd6_rdnss_list_update(fnet_netif_t *if_ptr, const fnet_ip6_addr
 }
 
 /************************************************************************
-* NAME: fnet_nd6_rdnss_list_del
-*
 * DESCRIPTION: Deletes an entry from the RDNSS List.
 *************************************************************************/
 static void fnet_nd6_rdnss_list_del(fnet_nd6_rdnss_entry_t *rdnss_entry)
@@ -2257,8 +2189,6 @@ static void fnet_nd6_rdnss_list_del(fnet_nd6_rdnss_entry_t *rdnss_entry)
 }
 
 /************************************************************************
-* NAME: fnet_nd6_rdnss_get_addr
-*
 * DESCRIPTION: This function returns a RDNS Server address.
 *************************************************************************/
 fnet_bool_t fnet_nd6_rdnss_get_addr(fnet_netif_t *netif, fnet_index_t n, fnet_ip6_addr_t *addr_dns )
@@ -2289,7 +2219,6 @@ fnet_bool_t fnet_nd6_rdnss_get_addr(fnet_netif_t *netif, fnet_index_t n, fnet_ip
 }
 
 /************************************************************************
-* NAME: fnet_nd6_rdnss_timer
 * DESCRIPTION: Timer routine used for RDNSS lifetime check.
 *************************************************************************/
 static void fnet_nd6_rdnss_timer(fnet_netif_t *netif)
@@ -2318,8 +2247,6 @@ static void fnet_nd6_rdnss_timer(fnet_netif_t *netif)
 /*=================== For DEBUG needs only. =============================*/
 
 /************************************************************************
-* NAME: fnet_nd6_debug_print_prefix_list
-* RETURS: None.
 * DESCRIPTION: Prints prefix list. For DEBUG needs only.
 *************************************************************************/
 void fnet_nd6_debug_print_prefix_list( struct fnet_netif *netif )

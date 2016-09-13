@@ -1,4 +1,4 @@
-***************************************************************************
+/***************************************************************************
 *
 * This is FREESCALE SOFTWARE LICENSE AGREEMENT copy of ReleaseNotes.rtf from
 * Standard Software Driver (SSD) for C55 Flash module v1.1.0.
@@ -125,14 +125,18 @@
 
 #include "fnet.h"
 
-#if FNET_CFG_CPU_MPC5744P && FNET_CFG_COMP_GHS
+#if FNET_MPC && FNET_CFG_CPU_MPC5744P && FNET_CFG_COMP_GHS
 
-#include <ppc_ghs.h>
+/*For writing SPR*/
+#define mtspr(rn, v)    __asm__ volatile("mtspr " #rn ",%0" : : "r" (v))
 
-#define E200CORE_SYNC()                __MSYNC()               /* Memory synchronize  */
-#define E200CORE_ISYNC()               __ISYNC()               /* Instruction synchronize */
-#define E200CORE_SPR_GET(lhs, reg)     {lhs = __MFSPR(reg);}   /* read from special register*/
-#define E200CORE_SPR_SET(reg, val)     __MTSPR(reg, val)       /* write to special register*/
+/*For reading SPR*/
+#define mfspr(reg, spr)    __asm__ volatile("mfspr %0, " # spr : "=r"  (reg))
+
+#define E200CORE_SYNC()                __asm__("msync")        /* Memory synchronize  */
+#define E200CORE_ISYNC()               __asm__("se_isync" )    /* Instruction synchronize */
+#define E200CORE_SPR_GET(lhs, reg)     mfspr( lhs, reg)        /* read from special register*/
+#define E200CORE_SPR_SET(reg, val)     mtspr( reg, val)        /* write to special register*/
 #define E200CORE_L1CSR0                1010                    /* L1 Cache Control and Status Register 0 */
 #define E200CORE_L1CSR0_CE             0x00000001              /* Data cache enable */
 #define E200CORE_L1CSR0_CWM            0x00100000              /* Data cache Write mode */

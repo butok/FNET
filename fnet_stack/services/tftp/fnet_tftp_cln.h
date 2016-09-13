@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_tftp_cln.h
-*
-* @author Andrey Butok
-*
 * @brief TFTP Client API.
 *
 ***************************************************************************/
@@ -56,8 +51,6 @@
 * - @ref FNET_CFG_TFTP_CLN_TIMEOUT
 */
 /*! @{ */
-
-
 
 /**************************************************************************/ /*!
  * @brief TFTP-client event handler callback function prototype, that is
@@ -239,8 +232,6 @@ fnet_tftp_cln_state_t fnet_tftp_cln_state( void );
 
 /*! @} */
 
-
 #endif /* FNET_CFG_TFTP_CLN */
-
 
 #endif /* _FNET_TFTP_CLN_H_ */

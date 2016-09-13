@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_shell.h
-*
-* @author Andrey Butok
-*
 * @brief FNET Shell service API.
 *
 ***************************************************************************/
@@ -622,7 +617,6 @@ fnet_return_t fnet_shell_switch( fnet_shell_desc_t desc, const struct fnet_shell
  *
  ******************************************************************************/
 fnet_bool_t fnet_shell_is_ctrlc (fnet_shell_desc_t desc);
-
 
 #if defined(__cplusplus)
 }

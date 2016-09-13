@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
 *
@@ -20,11 +20,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_udp.c
-*
-* @author Andrey Butok
-*
 * @brief UDP protocol implementation.
 *
 ***************************************************************************/
@@ -95,8 +90,6 @@ fnet_prot_if_t fnet_udp_prot_if =
 };
 
 /************************************************************************
-* NAME: fnet_udp_release
-*
 * DESCRIPTION: This function releases all sockets associated
 *              with UDP protocol.
 *************************************************************************/
@@ -109,8 +102,6 @@ static void fnet_udp_release( void )
 }
 
 /************************************************************************
-* NAME: fnet_udp_output
-*
 * DESCRIPTION: UDP output function
 *************************************************************************/
 static fnet_error_t fnet_udp_output(  struct sockaddr *src_addr, const struct sockaddr *dest_addr,
@@ -218,8 +209,6 @@ static fnet_error_t fnet_udp_output(  struct sockaddr *src_addr, const struct so
 }
 
 /************************************************************************
-* NAME: fnet_udp_input
-*
 * DESCRIPTION: UDP input function.
 *************************************************************************/
 static void fnet_udp_input(fnet_netif_t *netif, struct sockaddr *foreign_addr,  struct sockaddr *local_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb)
@@ -439,8 +428,6 @@ static void fnet_udp_input(fnet_netif_t *netif, struct sockaddr *foreign_addr,  
 }
 
 /************************************************************************
-* NAME: fnet_udp_attach
-*
 * DESCRIPTION: UDP attach function.
 *************************************************************************/
 static fnet_return_t fnet_udp_attach( fnet_socket_if_t *sk )
@@ -464,8 +451,6 @@ static fnet_return_t fnet_udp_attach( fnet_socket_if_t *sk )
 }
 
 /************************************************************************
-* NAME: fnet_udp_detach
-*
 * DESCRIPTION: UDP close function.
 *************************************************************************/
 static fnet_return_t fnet_udp_detach( fnet_socket_if_t *sk )
@@ -477,8 +462,6 @@ static fnet_return_t fnet_udp_detach( fnet_socket_if_t *sk )
 }
 
 /************************************************************************
-* NAME: fnet_udp_shutdown
-*
 * DESCRIPTION:  UDP shutdown function.
 *************************************************************************/
 static fnet_return_t fnet_udp_shutdown( fnet_socket_if_t *sk, fnet_sd_flags_t how )
@@ -502,8 +485,6 @@ static fnet_return_t fnet_udp_shutdown( fnet_socket_if_t *sk, fnet_sd_flags_t ho
 }
 
 /************************************************************************
-* NAME: fnet_udp_connect
-*
 * DESCRIPTION: UDP connect function.
 *************************************************************************/
 static fnet_return_t fnet_udp_connect( fnet_socket_if_t *sk, struct sockaddr *foreign_addr)
@@ -519,8 +500,6 @@ static fnet_return_t fnet_udp_connect( fnet_socket_if_t *sk, struct sockaddr *fo
 }
 
 /************************************************************************
-* NAME: fnet_udp_snd
-*
 * DESCRIPTION: UDP send function.
 *************************************************************************/
 static fnet_int32_t fnet_udp_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct sockaddr *addr)
@@ -592,8 +571,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_udp_rcv
-*
 * DESCRIPTION :UDP receive function.
 *************************************************************************/
 static fnet_int32_t fnet_udp_rcv(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct sockaddr *addr)
@@ -640,8 +617,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_udp_control_input
-*
 * DESCRIPTION: This function processes the ICMP errors.
 *************************************************************************/
 static void fnet_udp_control_input(fnet_prot_notify_t command, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb)
@@ -691,8 +666,6 @@ static void fnet_udp_control_input(fnet_prot_notify_t command, struct sockaddr *
 }
 
 /************************************************************************
-* NAME: fnet_udp_trace
-*
 * DESCRIPTION: Prints UDP header. For debugging purposes.
 *************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_UDP && FNET_CFG_DEBUG_TRACE

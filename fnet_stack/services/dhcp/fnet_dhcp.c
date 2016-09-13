@@ -27,7 +27,6 @@
 
 #if FNET_CFG_DHCP && FNET_CFG_IP4
 
-
 #if FNET_CFG_DEBUG_DHCP && FNET_CFG_DEBUG
     #define FNET_DEBUG_DHCP   FNET_DEBUG
 #else
@@ -37,8 +36,6 @@
 /************************************************************************
 *     Definitions
 *************************************************************************/
-
-
 #define FNET_DHCP_OP_BOOTREQUEST        (1U)
 #define FNET_DHCP_FLAGS_BROADCAST       (0x8000U) /* RFC2131:  A server or relay agent sending or relaying a DHCP message directly
                                                    to a DHCP client (i.e., not to a relay agent specified in the
@@ -78,7 +75,6 @@
 #define FNET_DHCP_ERR_SERVICE           "ERROR: Service registration is failed."
 
 #define FNET_DHCP_ISTIMEOUT (-1)
-
 
 /************************************************************************
 *     DHCP Options. [RFC 2132] definitions
@@ -182,18 +178,15 @@ struct fnet_dhcp_options_prv
 {
     fnet_uint8_t message_type;      /* The DHCP Message Type.
                                      * This option is used to convey the type of the
-                                     * last DHCP message.
-                                     */
+                                     * last DHCP message.*/
 
 #if FNET_CFG_DHCP_OVERLOAD && !FNET_CFG_DHCP_BOOTP
 
     fnet_uint8_t  overload;         /* Overload Option.
                                      * If this option is present, the DHCP client interprets
                                      * the specified additional fields after it concludes
-                                     * interpretation of the standard option fields.
-                                     */
+                                     * interpretation of the standard option fields.*/
 #endif
-
 };
 
 /**************************************************************************/ /*!
@@ -324,7 +317,6 @@ typedef struct fnet_dhcp_if
                                                             * event handler callback.*/
 } fnet_dhcp_if_t;
 
-
 /* DHCP client interface */
 static fnet_dhcp_if_t fnet_dhcp_if_list[FNET_CFG_DHCP_MAX];
 
@@ -355,8 +347,6 @@ static void fnet_dhcp_state_machine( void *fnet_dhcp_if_p );
 
 #if FNET_CFG_DEBUG_DHCP && FNET_CFG_DEBUG/* Debug functions */
 /************************************************************************
-* NAME: fnet_dhcp_print_header
-*
 * DESCRIPTION: Print DHCP header. For debug needs.
 ************************************************************************/
 static void fnet_dhcp_print_header( fnet_dhcp_header_t *header )
@@ -393,8 +383,6 @@ static void fnet_dhcp_print_header( fnet_dhcp_header_t *header )
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_print_state
-*
 * DESCRIPTION: Print DHCP current state. For debug needs.
 ************************************************************************/
 static void fnet_dhcp_print_state( fnet_dhcp_if_t *dhcp )
@@ -441,8 +429,6 @@ static void fnet_dhcp_print_state( fnet_dhcp_if_t *dhcp )
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_print_options
-*
 * DESCRIPTION: Print DHCP options. For debug needs.
 ************************************************************************/
 static void fnet_dhcp_print_options( struct fnet_dhcp_options_in *options )
@@ -474,7 +460,6 @@ static void fnet_dhcp_print_options( struct fnet_dhcp_options_in *options )
     FNET_DEBUG_DHCP(" overload \t\t 0x%02X", options->public_options.overload);
 
 #endif
-
 }
 
 #else
@@ -485,13 +470,9 @@ static void fnet_dhcp_print_options( struct fnet_dhcp_options_in *options )
 
 #endif /* FNET_CFG_DEBUG_DHCP && FNET_CFG_DEBUG */
 
-
 /************************************************************************
-* NAME: fnet_dhcp_add_option
-*
 * DESCRIPTION: Add option to a DHCP options field.
 ************************************************************************/
-
 static void fnet_dhcp_add_option( fnet_dhcp_message_t *message, fnet_uint8_t option_code, fnet_uint8_t option_length,  const void *option_value )
 {
     if((&message->header.options[FNET_DHCP_OPTIONS_LENGTH] - message->next_option_position)
@@ -507,8 +488,6 @@ static void fnet_dhcp_add_option( fnet_dhcp_message_t *message, fnet_uint8_t opt
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_next_option
-*
 * DESCRIPTION: Go to the next DHCP option.
 ************************************************************************/
 static fnet_uint8_t *fnet_dhcp_next_option( fnet_dhcp_message_t *message )
@@ -556,8 +535,6 @@ EXIT:
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_parse_options
-*
 * DESCRIPTION: Parse DHCP options from message.
 ************************************************************************/
 static void fnet_dhcp_parse_options( fnet_dhcp_message_t *message, struct fnet_dhcp_options_in *options )
@@ -648,10 +625,7 @@ static void fnet_dhcp_parse_options( fnet_dhcp_message_t *message, struct fnet_d
     }
 }
 
-
 /************************************************************************
-* NAME: fnet_dhcp_send_message
-*
 * DESCRIPTION: Send DHCP message.
 ************************************************************************/
 static fnet_int32_t fnet_dhcp_send_message( fnet_dhcp_if_t *dhcp )
@@ -761,13 +735,13 @@ static fnet_int32_t fnet_dhcp_send_message( fnet_dhcp_if_t *dhcp )
 
     /* Add Maximum DHCP message size option. */
     max_message_size = fnet_htons(sizeof(fnet_dhcp_header_t));
-    fnet_dhcp_add_option(message,                              FNET_DHCP_OPTION_MESSAGE_SIZE,
+    fnet_dhcp_add_option(message,  FNET_DHCP_OPTION_MESSAGE_SIZE,
                          FNET_DHCP_OPTION_MESSAGE_SIZE_LENGTH, &max_message_size);
 
     /* Client ID (MAC) option */
     client_id[0] = message->header.htype;
     fnet_memcpy(&client_id[1], dhcp->macaddr, sizeof(dhcp->macaddr));
-    fnet_dhcp_add_option(&dhcp->message,                    FNET_DHCP_OPTION_CLIENT_ID,
+    fnet_dhcp_add_option(&dhcp->message, FNET_DHCP_OPTION_CLIENT_ID,
                          FNET_DHCP_OPTION_CLIENT_ID_LENGTH, &client_id);
 
 #endif /* FNET_CFG_DHCP_BOOTP */
@@ -787,8 +761,6 @@ static fnet_int32_t fnet_dhcp_send_message( fnet_dhcp_if_t *dhcp )
 }
 
 /************************************************************************
-* NAME: dhcp_receive_message
-*
 * DESCRIPTION: Receive DHCP message (non blocking).
 ************************************************************************/
 static fnet_int32_t fnet_dhcp_receive_message( fnet_dhcp_if_t *dhcp, struct fnet_dhcp_options_in *options )
@@ -854,8 +826,6 @@ static fnet_int32_t fnet_dhcp_receive_message( fnet_dhcp_if_t *dhcp, struct fnet
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_change_state
-*
 * DESCRIPTION: Change state of DHCP client.
 ************************************************************************/
 static void fnet_dhcp_change_state( fnet_dhcp_if_t *dhcp, fnet_dhcp_state_t state )
@@ -946,8 +916,6 @@ static void fnet_dhcp_change_state( fnet_dhcp_if_t *dhcp, fnet_dhcp_state_t stat
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_apply_params
-*
 * DESCRIPTION: Apply DHCP parameters to the interface.
 ************************************************************************/
 static void fnet_dhcp_apply_params(fnet_dhcp_if_t *dhcp)
@@ -969,8 +937,6 @@ static void fnet_dhcp_apply_params(fnet_dhcp_if_t *dhcp)
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_state_machine
-*
 * DESCRIPTION: DHCP client state machine.
 ************************************************************************/
 /*
@@ -1262,8 +1228,6 @@ static void fnet_dhcp_state_machine( void *fnet_dhcp_if_p )
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_init
-*
 * DESCRIPTION: DHCP client initialization.
 ************************************************************************/
 fnet_dhcp_desc_t fnet_dhcp_init( fnet_netif_desc_t netif, struct fnet_dhcp_params *params )
@@ -1368,8 +1332,6 @@ ERROR:
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_release
-*
 * DESCRIPTION: DHCP client release.
 ************************************************************************/
 void fnet_dhcp_release(fnet_dhcp_desc_t desc)
@@ -1391,8 +1353,6 @@ void fnet_dhcp_release(fnet_dhcp_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_is_enabled
-*
 * DESCRIPTION: This function returns FNET_TRUE if the DHCP client
 *              is enabled/initialised.
 ************************************************************************/
@@ -1414,8 +1374,6 @@ fnet_bool_t fnet_dhcp_is_enabled(fnet_dhcp_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_get_options
-*
 * DESCRIPTION: This function copies current DHCP options to structure
 *              pointed by 'options'.
 ************************************************************************/
@@ -1430,8 +1388,6 @@ void fnet_dhcp_get_options(fnet_dhcp_desc_t desc, struct fnet_dhcp_options *opti
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_set_callback_updated
-*
 * DESCRIPTION: Registers the "IP parameters updated" DHCP event handler callback.
 ************************************************************************/
 void fnet_dhcp_set_callback_updated(fnet_dhcp_desc_t desc, fnet_dhcp_callback_t callback_updated, void *param)
@@ -1446,8 +1402,6 @@ void fnet_dhcp_set_callback_updated(fnet_dhcp_desc_t desc, fnet_dhcp_callback_t 
 }
 
 /************************************************************************
-* NAME: fnet_dhcp_set_callback_discover
-*
 * DESCRIPTION: Registers the "Discover message sent" DHCP event handler callback.
 ************************************************************************/
 void fnet_dhcp_set_callback_discover(fnet_dhcp_desc_t desc, fnet_dhcp_callback_t callback_discover, void *param)
@@ -1460,6 +1414,5 @@ void fnet_dhcp_set_callback_discover(fnet_dhcp_desc_t desc, fnet_dhcp_callback_t
         dhcp_if->callback_discover_param = param;
     }
 }
-
 
 #endif /* FNET_CFG_DHCP && FNET_CFG_IP4 */

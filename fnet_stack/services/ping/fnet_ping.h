@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -31,7 +31,6 @@
 
 #define _FNET_PING_H_
 
-
 #if FNET_CFG_PING || defined(__DOXYGEN__)
 
 /*! @addtogroup fnet_ping
@@ -54,7 +53,6 @@
 * - @ref FNET_CFG_PING
 * - @ref FNET_CFG_PING_PACKET_MAX
 * - @ref FNET_CFG_PING_IDENTIFIER
-*
 */
 
 /*! @{ */
@@ -189,9 +187,7 @@ fnet_ping_state_t fnet_ping_state(void);
 }
 #endif
 
-
 /*! @} */
-
 
 #endif /* FNET_CFG_PING */
 

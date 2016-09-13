@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_igmp.c
-*
-* @author Andrey Butok
-*
 * @brief IGMPv1/v2 protocol implementation.
 *
 ***************************************************************************/
@@ -37,7 +32,6 @@
 #include "fnet_prot.h"
 #include "fnet_checksum.h"
 
-
 /* IGMP requires multicast support.*/
 #if FNET_CFG_MULTICAST == 0
     #error "FNET_CFG_MULTICAST must be enabled for IGMP"
@@ -46,7 +40,6 @@
 #if (FNET_CFG_IGMP_VERSION < 1) || (FNET_CFG_IGMP_VERSION > 2)
     #error "FNET_CFG_IGMP_VERSION must be set to 1 or to 2"
 #endif
-
 
 /* TBD Random delay timers */
 
@@ -67,7 +60,6 @@ static void fnet_igmp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  str
     #define fnet_igmp_trace(str, icmp_hdr)  do {}while(0)
 #endif
 
-
 /************************************************************************
 * Protocol API structure.
 ************************************************************************/
@@ -86,8 +78,6 @@ fnet_prot_if_t fnet_igmp_prot_if =
 };
 
 /************************************************************************
-* NAME: fnet_igmp_input
-*
 * DESCRIPTION: IGMP input function.
 *************************************************************************/
 static void fnet_igmp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip4_nb)
@@ -176,8 +166,6 @@ DISCARD:
 }
 
 /************************************************************************
-* NAME: fnet_igmp_join
-*
 * DESCRIPTION: Sends Host Membership Reports.
 *************************************************************************/
 void fnet_igmp_join( fnet_netif_t *netif, fnet_ip4_addr_t  group_addr )
@@ -211,8 +199,6 @@ void fnet_igmp_join( fnet_netif_t *netif, fnet_ip4_addr_t  group_addr )
 
 
 /************************************************************************
-* NAME: fnet_igmp_leave
-*
 * DESCRIPTION: Sends a Leave Group message.
 *************************************************************************/
 void fnet_igmp_leave( fnet_netif_t *netif, fnet_ip4_addr_t  group_addr )
@@ -251,8 +237,6 @@ void fnet_igmp_leave( fnet_netif_t *netif, fnet_ip4_addr_t  group_addr )
 }
 
 /************************************************************************
-* NAME: fnet_igmp_trace
-*
 * DESCRIPTION: Prints an IGMP header. For debug needs only.
 *************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_IGMP && FNET_CFG_DEBUG_TRACE

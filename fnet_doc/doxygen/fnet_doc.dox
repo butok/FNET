@@ -799,17 +799,12 @@ dhcp; erase all; tftp; set boot go; save; go
 @endverbatim
 This script has the following steps:
     -# @c dhcp = starts DHCP client service and tries to update the IPv4 parameters (@c ip, @c gateway and @c netmask) from DHCP server. If the DHCP service will fail to retrieve the IP parameter from a DHCP server, the bootloder will continue with the old IP settings.
-    -# @c erase @c all = erases all Flash memory blocks. It skips the reserved memory sections, which are the first 52 Kbytes (reserved for the Bootloader) and the last page (reserved for the bootloder parameters). To see the memory map enter the @c mem command: @verbatim
+    -# @c erase @c all = erases all Flash memory blocks. To see the memory map enter the @c mem command: @verbatim
 BOOT> mem
 
    Memory type       Start         End
   ----------------------------------------
   FLASH            0x00000000   0x0007FFFF
-
-      Reserved       Start         End
-  ----------------------------------------
-  FNET ROM         0x00000000   0x0000CFFF
-  FNET Params      0x0007F000   0x0007FFFF
 
 BOOT>
 @endverbatim
@@ -1165,8 +1160,6 @@ BENCH> help
         [<number of messages>[<number of iterations>]]]- Transmitter Benchmark
 BENCH>
 @endverbatim
-
-
 
 @subsection fnet_stepbystep_bench_rx Receiver Benchmark
 The Receiver Benchmark command has the following syntax:
@@ -1544,6 +1537,12 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.6.1:
+	- Removed application reserved memory regions FAPP_CFG_MEM_REGION_RESERVED_LIST from the boot-loader application.
+	- Added multiple memory region support to TFTP .srec generator.
+	- Renamed FAPP_CFG_APPLICATION_SIZE to FAPP_CFG_BOOTLOADER_SIZE.
+	- Minor cleanings and fixes.
+	
 - Version 3.6.0:
 	- Disabled automatic network-interface initialization during fnet_init() call:
 		- Only loop-back interface is initialized automatically, if enabled.
@@ -1555,6 +1554,7 @@ FNET public releases:
 	- Deleted obsolete FNET_CFG_CPU_SRAM_ADDRESS and FNET_CFG_CPU_SRAM_SIZE.
 	- Added experimental Write-Caching in Flash driver, enabled by FNET_CFG_FLASH_CACHE. Thanks to Patrice Cavin. 
 	- Started using C99 structure member initialization. Only members that are needed are defined.
+	- Increased reserved flash-memory size for the Boot-loader to 52 Kbytes.
 	- Other minor changes and fixes.
 	
 - Version 3.5.0:

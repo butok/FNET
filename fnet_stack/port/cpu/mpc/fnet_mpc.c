@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2011 by Andrey Butok,Gordon Jahn. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,14 +19,6 @@
 *
 **********************************************************************/ /*!
 *
-* @file fnet_mpc.c
-*
-* @author Andrey Butok
-*
-* @date Dec-17-2012
-*
-* @version 0.1.1.0
-*
 * @brief CPU-specific API implementation.
 *
 ***************************************************************************/
@@ -36,8 +28,6 @@
 #if FNET_MPC
 
 /************************************************************************
-* NAME: fnet_cpu_reset
-*
 * DESCRIPTION: Initiate software reset.
 *************************************************************************/
 void fnet_cpu_reset (void)
@@ -48,21 +38,11 @@ void fnet_cpu_reset (void)
 }
 
 /************************************************************************
-* NAME: fnet_cpu_disable_irq
-*
 * DESCRIPTION: Disable IRQs
 *************************************************************************/
 fnet_cpu_irq_desc_t fnet_cpu_irq_disable(void)
 {
     fnet_cpu_irq_desc_t oldlevel;
-
-
-#if 0 /* Not the best way to do this... SWT might depend upon it */
-    asm("wrteei 0");
-    return 0;
-#endif
-
-
 
 #if FNET_CFG_CPU_INDEX==0
     oldlevel = FNET_MPC_INTC_CPR_PRC0;
@@ -76,8 +56,6 @@ fnet_cpu_irq_desc_t fnet_cpu_irq_disable(void)
 }
 
 /************************************************************************
-* NAME: fnet_cpu_disable_irq
-*
 * DESCRIPTION: Enables IRQs at interrupt level mask value.
 *************************************************************************/
 void fnet_cpu_irq_enable(fnet_cpu_irq_desc_t irq_desc)

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_fs.h
-*
-* @author Andrey Butok
-*
 * @brief FNET File System API.
 *
 ***************************************************************************/
@@ -664,7 +659,6 @@ fnet_return_t fnet_fs_finfo (fnet_fs_file_t file, struct fnet_fs_dirent *dirent)
 #if defined(__cplusplus)
 }
 #endif
-
 
 /*! @} */
 

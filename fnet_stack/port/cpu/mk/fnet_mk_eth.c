@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,11 +18,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_mk_eth.c
-*
-* @author Andrey Butok
-*
 * @brief Ethernet driver interafce.
 *
 ***************************************************************************/
@@ -31,7 +26,6 @@
 #if FNET_MK && (FNET_CFG_CPU_ETH0 ||FNET_CFG_CPU_ETH1)
 
 #include "port/cpu/common/fnet_fec.h"
-
 
 /************************************************************************
 * Ethernet interface structure.
@@ -153,9 +147,4 @@ void fnet_eth_phy_init(fnet_fec_if_t *ethif)
     FNET_COMP_UNUSED_ARG(ethif);
 }
 
-
-
 #endif /* FNET_MK && FNET_CFG_ETH */
-
-
-

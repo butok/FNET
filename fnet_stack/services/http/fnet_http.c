@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_http.c
-*
-* @author Andrey Butok
-*
 * @brief FNET HTTP/0.9 Server implementation.
 *
 ***************************************************************************/
@@ -149,8 +144,6 @@ static fnet_return_t fnet_http_tx_status_line (struct fnet_http_if *http);
 #endif /* FNET_CFG_HTTP_VERSION_MAJOR */
 
 /************************************************************************
-* NAME: fnet_http_state_machine
-*
 * DESCRIPTION: Http server state machine.
 ************************************************************************/
 static void fnet_http_state_machine( void *http_if_p )
@@ -570,8 +563,6 @@ static void fnet_http_state_machine( void *http_if_p )
 }
 
 /************************************************************************
-* NAME: fnet_http_init
-*
 * DESCRIPTION: Initialization of the HTTP server.
 *************************************************************************/
 fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
@@ -719,8 +710,6 @@ ERROR_1:
 }
 
 /************************************************************************
-* NAME: fnet_http_release
-*
 * DESCRIPTION: HTTP server release.
 ************************************************************************/
 void fnet_http_release(fnet_http_desc_t desc)
@@ -752,8 +741,6 @@ void fnet_http_release(fnet_http_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_http_is_enabled
-*
 * DESCRIPTION: This function returns FNET_TRUE if the HTTP server
 *              is enabled/initialised.
 ************************************************************************/
@@ -778,8 +765,6 @@ fnet_bool_t fnet_http_is_enabled(fnet_http_desc_t desc)
 #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
 
 /************************************************************************
-* NAME: fnet_http_tx_status_line
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_return_t fnet_http_tx_status_line (struct fnet_http_if *http)
@@ -898,8 +883,6 @@ static fnet_return_t fnet_http_tx_status_line (struct fnet_http_if *http)
 #endif /* FNET_CFG_HTTP_VERSION_MAJOR */
 
 /************************************************************************
-* NAME: fnet_http_find_handler
-*
 * DESCRIPTION:
 ************************************************************************/
 const struct fnet_http_file_handler *fnet_http_find_handler (struct fnet_http_if *http, struct fnet_http_uri *uri)
@@ -932,8 +915,6 @@ const struct fnet_http_file_handler *fnet_http_find_handler (struct fnet_http_if
 }
 
 /************************************************************************
-* NAME: fnet_http_find_content_type
-*
 * DESCRIPTION:
 ************************************************************************/
 #if FNET_CFG_HTTP_VERSION_MAJOR
@@ -967,8 +948,6 @@ const struct fnet_http_content_type *fnet_http_find_content_type (struct fnet_ht
 #endif /* FNET_CFG_HTTP_VERSION_MAJOR */
 
 /************************************************************************
-* NAME: fnet_http_default_send
-*
 * DESCRIPTION:
 ************************************************************************/
 fnet_return_t fnet_http_default_handle (struct fnet_http_if *http, struct fnet_http_uri *uri)
@@ -1010,8 +989,6 @@ fnet_return_t fnet_http_default_handle (struct fnet_http_if *http, struct fnet_h
 }
 
 /************************************************************************
-* NAME: fnet_http_default_send
-*
 * DESCRIPTION:
 ************************************************************************/
 fnet_size_t fnet_http_default_send (struct fnet_http_if *http)
@@ -1022,8 +999,6 @@ fnet_size_t fnet_http_default_send (struct fnet_http_if *http)
 }
 
 /************************************************************************
-* NAME: fnet_http_default_close
-*
 * DESCRIPTION:
 ************************************************************************/
 void fnet_http_default_close (struct fnet_http_if *http)
@@ -1037,8 +1012,6 @@ void fnet_http_default_close (struct fnet_http_if *http)
 }
 
 /************************************************************************
-* NAME: fnet_http_query_unencode
-*
 * DESCRIPTION:
 ************************************************************************/
 void fnet_http_query_unencode(fnet_uint8_t *dest, fnet_uint8_t *src)
@@ -1097,8 +1070,6 @@ void fnet_http_query_unencode(fnet_uint8_t *dest, fnet_uint8_t *src)
 
 
 /************************************************************************
-* NAME: fnet_http_uri_parse
-*
 * DESCRIPTION:
 *   Returns pointer to the end of URI str.
 ************************************************************************/
@@ -1172,11 +1143,8 @@ fnet_char_t *fnet_http_uri_parse(fnet_char_t *in_str, struct fnet_http_uri *uri)
     return cur;
 }
 
-
 #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
 /************************************************************************
-* NAME: fnet_http_version_parse
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fnet_http_version_parse(fnet_char_t *in_str, struct fnet_http_version *version)
@@ -1230,8 +1198,6 @@ EXIT:
 }
 
 /************************************************************************
-* NAME: fnet_http_set_response_status_code
-*
 * DESCRIPTION: Set response status code.
 ************************************************************************/
 void fnet_http_set_response_status_code (fnet_http_session_t session, fnet_http_status_code_t status_code)
@@ -1243,8 +1209,6 @@ void fnet_http_set_response_status_code (fnet_http_session_t session, fnet_http_
 }
 
 /************************************************************************
-* NAME: fnet_http_set_response_content_length
-*
 * DESCRIPTION: Set response content length.
 ************************************************************************/
 void fnet_http_set_response_content_length (fnet_http_session_t session, fnet_size_t content_length)
@@ -1256,8 +1220,6 @@ void fnet_http_set_response_content_length (fnet_http_session_t session, fnet_si
 }
 
 /************************************************************************
-* NAME: fnet_http_set_response_no_header
-*
 * DESCRIPTION: Disable response Status-Line and Header
 ************************************************************************/
 void fnet_http_set_response_no_header (fnet_http_session_t session)
@@ -1267,8 +1229,6 @@ void fnet_http_set_response_no_header (fnet_http_session_t session)
         ((struct fnet_http_session_if *)session)->response.no_header = FNET_TRUE;
     }
 }
-
-
 
 #endif /* FNET_CFG_HTTP_VERSION_MAJOR */
 

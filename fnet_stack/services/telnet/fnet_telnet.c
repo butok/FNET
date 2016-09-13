@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
+* Copyright 2011-2016 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -19,11 +19,6 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_telnet.c
-*
-* @author Andrey Butok
-*
 * @brief FNET Telnet Server implementation.
 *
 ***************************************************************************/
@@ -51,7 +46,6 @@
     error "FNET_TELNET_TX_BUFFER_SIZE must be > 4"
 #endif
 
-
 /* Keepalive probe retransmit limit.*/
 #define FNET_TELNET_TCP_KEEPCNT         (2)
 
@@ -60,7 +54,6 @@
 
 /* Time between keepalive probes.*/
 #define FNET_TELNET_TCP_KEEPIDLE        (7) /*sec*/
-
 
 /* RFC:
 * All TELNET commands consist of at least a two byte sequence: the
@@ -80,7 +73,6 @@
 * The Network Virtual Terminal (NVT) is a bi-directional character
 * device.
 */
-
 
 #define FNET_TELNET_CMD_IAC   ((fnet_uint8_t)255) /* "Interpret as Command" (IAC) escape character followed by the code for the command. */
 #define FNET_TELNET_CMD_WILL  ((fnet_uint8_t)251) /* Indicates the desire to begin performing, or confirmation that
@@ -147,7 +139,6 @@ struct fnet_telnet_if
 /* The Telnet interface */
 static struct fnet_telnet_if telnet_if_list[FNET_CFG_TELNET_MAX];
 
-
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
@@ -162,7 +153,6 @@ static fnet_int32_t fnet_telnet_getchar(fnet_index_t id);
 static void fnet_telnet_flush(fnet_index_t id);
 static void fnet_telnet_send_cmd(struct fnet_telnet_session_if *session, fnet_uint8_t command, fnet_uint8_t option);
 static void fnet_telnet_state_machine(void *telnet_if_p);
-
 
 /************************************************************************
 * Buffer functions.
@@ -180,7 +170,6 @@ static fnet_size_t tx_buffer_free_space(struct fnet_telnet_session_if *session)
 {
     return(FNET_TELNET_TX_BUFFER_SIZE  - session->tx_buffer_head_index);
 }
-
 
 /* Write to Rx circular buffer. */
 /* It's posible to write FNET_TELNET_RX_BUFFER_SIZE-1 characters. */
@@ -218,8 +207,6 @@ static fnet_size_t rx_buffer_free_space(struct fnet_telnet_session_if *session)
 }
 
 /************************************************************************
-* NAME: fnet_telnet_putchar
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fnet_telnet_putchar(fnet_index_t id, fnet_char_t character)
@@ -238,8 +225,6 @@ static void fnet_telnet_putchar(fnet_index_t id, fnet_char_t character)
 }
 
 /************************************************************************
-* NAME: fnet_telnet_getchar
-*
 * DESCRIPTION:
 ************************************************************************/
 static fnet_int32_t fnet_telnet_getchar(fnet_index_t id)
@@ -257,8 +242,6 @@ static fnet_int32_t fnet_telnet_getchar(fnet_index_t id)
 }
 
 /************************************************************************
-* NAME: fnet_telnet_flush
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fnet_telnet_flush(fnet_index_t id)
@@ -269,8 +252,6 @@ static void fnet_telnet_flush(fnet_index_t id)
 }
 
 /************************************************************************
-* NAME: fnet_telnet_send
-*
 * DESCRIPTION:
 ************************************************************************/
 static void fnet_telnet_send(struct fnet_telnet_session_if *session)
@@ -313,8 +294,6 @@ static void fnet_telnet_send(struct fnet_telnet_session_if *session)
 }
 
 /************************************************************************
-* NAME: fnet_telnet_send_cmd
-*
 * DESCRIPTION: Wrie command to the TX buffer.
 ************************************************************************/
 static void fnet_telnet_send_cmd(struct fnet_telnet_session_if *session, fnet_uint8_t command, fnet_uint8_t option )
@@ -330,8 +309,6 @@ static void fnet_telnet_send_cmd(struct fnet_telnet_session_if *session, fnet_ui
 }
 
 /************************************************************************
-* NAME: fnet_telnet_state_machine
-*
 * DESCRIPTION: Telnet server state machine.
 ************************************************************************/
 static void fnet_telnet_state_machine( void *telnet_if_p )
@@ -532,8 +509,6 @@ static void fnet_telnet_state_machine( void *telnet_if_p )
 }
 
 /************************************************************************
-* NAME: fnet_telnet_init
-*
 * DESCRIPTION: Initialization of the Telnet server.
 *************************************************************************/
 fnet_telnet_desc_t fnet_telnet_init( struct fnet_telnet_params *params )
@@ -679,8 +654,6 @@ ERROR_1:
 }
 
 /************************************************************************
-* NAME: fnet_telnet_release
-*
 * DESCRIPTION: Telnet server release.
 ************************************************************************/
 void fnet_telnet_release(fnet_telnet_desc_t desc)
@@ -712,8 +685,6 @@ void fnet_telnet_release(fnet_telnet_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_telnet_close_session
-*
 * DESCRIPTION: Close current Telnet server session.
 ************************************************************************/
 void fnet_telnet_close_session(fnet_telnet_desc_t desc)
@@ -727,8 +698,6 @@ void fnet_telnet_close_session(fnet_telnet_desc_t desc)
 }
 
 /************************************************************************
-* NAME: fnet_telnet_is_enabled
-*
 * DESCRIPTION: This function returns FNET_TRUE if the Telnet server
 *              is enabled/initialised.
 ************************************************************************/

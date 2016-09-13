@@ -73,7 +73,6 @@ typedef unsigned int fnet_index_t;
  ******************************************************************************/
 typedef char fnet_char_t;
 
-
 /**************************************************************************/ /*!
  * @brief Boolean type.
  ******************************************************************************/
@@ -93,8 +92,6 @@ typedef enum
     FNET_ERR = (-1) /**< There is error.
                      */
 } fnet_return_t;
-
-
 
 #if defined(__cplusplus)
 extern "C" {
