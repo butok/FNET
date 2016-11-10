@@ -23,16 +23,16 @@
 *
 ***************************************************************************/
 
-#include "fnet.h"
 #include "fapp.h"
-#include "fapp_prv.h"
-#include "fapp_http.h"
 
 #if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
 
+#include "fapp_prv.h"
+#include "fapp_http.h"
 #include "fapp_fs.h"
+#include "fapp_mdns.h"
 
-static fnet_http_desc_t fapp_http_desc = 0; /* HTTP service descriptor. */
+fnet_http_desc_t fapp_http_desc = 0; /* HTTP service descriptor. */
 static fnet_size_t fapp_http_string_buffer_respond(fnet_uint8_t *buffer, fnet_size_t buffer_size, fnet_bool_t *eof, fnet_uint32_t *cookie);
 
 /************************************************************************
@@ -260,7 +260,7 @@ static fnet_return_t fapp_http_cgi_stdata_handle(fnet_http_session_t session, fn
     FNET_COMP_UNUSED_ARG(session);
 
     /* Get Time. */
-    cur_time = fnet_timer_ticks();
+    cur_time = fnet_timer_get_ticks();
     t_hour = cur_time / FNET_TIMER_TICKS_IN_HOUR;
     t_min  = (cur_time % FNET_TIMER_TICKS_IN_HOUR) / FNET_TIMER_TICKS_IN_MIN;
     t_sec  = (cur_time % FNET_TIMER_TICKS_IN_MIN) / FNET_TIMER_TICKS_IN_SEC;
@@ -406,6 +406,12 @@ void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
 
             fapp_http_desc = http_desc;
+
+        #if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS    
+            /* Register HTTP server in mDNS SD.*/
+            fapp_mdns_service_register_http();
+        #endif
+
         }
         else
         {
@@ -415,7 +421,12 @@ void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
     else if((argc == 2u) && (fnet_strcasecmp(&FAPP_COMMAND_RELEASE[0], argv[1]) == 0)) /* [release] */
     {
         fapp_http_release();
-    }
+
+    #if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS    
+        /* Unregister HTTP server from mDNS SD.*/
+        fapp_mdns_service_unregister_http();
+    #endif
+     }
     else
     {
         fnet_shell_println(desc, FAPP_PARAM_ERR, argv[1]);
@@ -427,7 +438,7 @@ void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 *************************************************************************/
 void fapp_http_info(fnet_shell_desc_t desc)
 {
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "HTTP Server", fapp_enabled_str[fnet_http_is_enabled(fapp_http_desc)]);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "HTTP Server", fapp_is_enabled_str[fnet_http_is_enabled(fapp_http_desc)]);
 }
 
 #endif /* FAPP_CFG_HTTP_CMD */

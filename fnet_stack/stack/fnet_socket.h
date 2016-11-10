@@ -161,11 +161,15 @@ typedef fnet_uint32_t   fnet_scope_id_t;
  ******************************************************************************/
 #define AF_SUPPORTED ((fnet_address_family_t)((fnet_address_family_t)(AF_INET6*(fnet_address_family_t)FNET_CFG_IP6) | (fnet_address_family_t)(AF_INET*(fnet_address_family_t)FNET_CFG_IP4)))
 
-/* Size of sa_data[]*/
+/**************************************************************************/ /*!
+ * @brief Size of sa_data[] field of @ref sockaddr structure. @n
+ * It used to cover sockaddr_in and sockaddr_in6.
+ * @showinitializer
+ ******************************************************************************/
 #if FNET_CFG_IP6
-    #define FNET_SA_DATA_SIZE   (16U) /* To cover sockaddr_in and sockaddr_in6. */
+    #define FNET_SA_DATA_SIZE       (sizeof(struct in6_addr)) 
 #else /* IPv4 */
-    #define FNET_SA_DATA_SIZE    (4U)
+    #define FNET_SA_DATA_SIZE       (sizeof(struct in_addr))
 #endif
 
 /**************************************************************************/ /*!
@@ -183,29 +187,6 @@ typedef fnet_uint32_t   fnet_scope_id_t;
 #endif
 
 #define FNET_IP_ADDR_STR_SIZE_MAX       FNET_IP6_ADDR_STR_SIZE
-
-/**************************************************************************/ /*!
- * @brief Socket address structure.
- *
- * @see sockaddr_in, sockaddr_in6
- *
- * The original goal of the @ref sockaddr structure is to support multiple
- * protocols. For the TCP/IP stack @c sa_data, it contains a destination address
- * and port number for a socket.
- ******************************************************************************/
-struct sockaddr
-{
-    fnet_address_family_t   sa_family;      /**< @brief Address family. Specifies the
-                                            * address family, to which the address belongs. @n
-                                            * It is defined by @ref fnet_address_family_t.*/
-    fnet_uint16_t           sa_port;        /**< @brief 16-bit port number used to
-                                            * demultiplex the transport-level messages
-                                            * (in network byte order).*/
-    fnet_scope_id_t         sa_scope_id;    /**< @brief Scope zone index, defining network interface.*/
-    fnet_uint8_t            sa_data[FNET_SA_DATA_SIZE];/**< @brief Address value. For the TCP/IP stack,
-                                            * it contains the destination address and port
-                                            * number for a socket.*/
-};
 
 /**************************************************************************/ /*!
  * @brief IPv4 address structure.
@@ -276,6 +257,29 @@ struct sockaddr_in6
                                             * (in network byte order).*/
     fnet_scope_id_t         sin6_scope_id;  /**< @brief Scope zone index, defining network interface.*/
     struct in6_addr         sin6_addr;      /**< @brief 128-bit IPv6 internet address.*/
+};
+
+/**************************************************************************/ /*!
+ * @brief Socket address structure.
+ *
+ * @see sockaddr_in, sockaddr_in6
+ *
+ * The original goal of the @ref sockaddr structure is to support multiple
+ * protocols. For the TCP/IP stack @c sa_data, it contains a destination address
+ * and port number for a socket.
+ ******************************************************************************/
+struct sockaddr
+{
+    fnet_address_family_t   sa_family;      /**< @brief Address family. Specifies the
+                                            * address family, to which the address belongs. @n
+                                            * It is defined by @ref fnet_address_family_t.*/
+    fnet_uint16_t           sa_port;        /**< @brief 16-bit port number used to
+                                            * demultiplex the transport-level messages
+                                            * (in network byte order).*/
+    fnet_scope_id_t         sa_scope_id;    /**< @brief Scope zone index, defining network interface.*/
+    fnet_uint8_t            sa_data[FNET_SA_DATA_SIZE];/**< @brief Address value. For the TCP/IP stack,
+                                            * it contains the destination address and port
+                                            * number for a socket.*/
 };
 
 /**************************************************************************/ /*!

@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -19,36 +18,36 @@
 *
 **********************************************************************/
 /*!
-* @brief FNET Shell Demo (HTTP Server).
+* @brief FNET Shell Demo (MDNS Server).
 *
 ***************************************************************************/
 
 /************************************************************************
 *     Private Definitions.
 *************************************************************************/
-#ifndef _FAPP_HTTP_H_
+#ifndef _FAPP_MDNS_H_
 
-#define _FAPP_HTTP_H_
+#define _FAPP_MDNS_H_
 
-#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
+#include "fapp.h"
 
-#define FAPP_HTTP_MOUNT_NAME   FAPP_FS_MOUNT_NAME
-#define FAPP_HTTP_INDEX_FILE   "index.html"
+#if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
-extern fnet_http_desc_t fapp_http_desc; /* HTTP service descriptor. */
 
-void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
-void fapp_http_info(fnet_shell_desc_t desc);
-void fapp_http_release(void);
-
+void fapp_mdns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
+void fapp_mdns_info(fnet_shell_desc_t desc);
+void fapp_mdns_release(void);
+void fapp_mdns_service_register_http(void);
+void fapp_mdns_service_unregister_http(void);
+void fapp_mdns_change_name( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif
+#endif /* FAPP_CFG_MDNS_CMD */
 
-#endif
+#endif /* _FAPP_MDNS_H_ */

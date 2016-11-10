@@ -198,7 +198,7 @@ void fapp_dhcp_info(fnet_shell_desc_t desc)
     fnet_char_t     ip_str[FNET_IP4_ADDR_STR_SIZE];
     fnet_bool_t     dhcp_is_enabled = fnet_dhcp_is_enabled(fapp_dhcp_desc);
 
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "DHCP Client", fapp_enabled_str[dhcp_is_enabled]);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "DHCP Client", fapp_is_enabled_str[dhcp_is_enabled]);
 
     if(dhcp_is_enabled && (fnet_netif_get_ip4_addr_type(fnet_netif_get_default()) == FNET_NETIF_IP_ADDR_TYPE_DHCP))
     {

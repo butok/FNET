@@ -113,7 +113,7 @@ struct fnet_telnet_params
  * @brief Telnet server descriptor.
  * @see fnet_telnet_init()
  ******************************************************************************/
-typedef fnet_int32_t fnet_telnet_desc_t;
+typedef void* fnet_telnet_desc_t;
 
 #if defined(__cplusplus)
 extern "C" {

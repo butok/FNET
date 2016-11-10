@@ -216,7 +216,7 @@ void fnet_netif_set_pmtu(fnet_netif_t *netif, fnet_size_t pmtu)
     /* Set Path MTU for the link. */
     netif->pmtu = pmtu;
 
-    netif->pmtu_timestamp = fnet_timer_ms();
+    netif->pmtu_timestamp = fnet_timer_get_ms();
 }
 
 /************************************************************************
@@ -226,7 +226,7 @@ static void fnet_netif_pmtu_timer( fnet_uint32_t cookie )
 {
     fnet_netif_t    *netif = (fnet_netif_t *)cookie;
 
-    if( fnet_timer_get_interval(netif->pmtu_timestamp, fnet_timer_ms()) > FNET_NETIF_PMTU_TIMEOUT)
+    if( fnet_timer_get_interval(netif->pmtu_timestamp, fnet_timer_get_ms()) > FNET_NETIF_PMTU_TIMEOUT)
     {
         fnet_netif_set_pmtu(netif, netif->netif_mtu);
     }
@@ -864,7 +864,7 @@ fnet_bool_t fnet_netif_is_connected( fnet_netif_desc_t netif_desc )
 
     if(netif && (netif->netif_api->netif_is_connected))
     {
-        fnet_time_t current_time = fnet_timer_ticks();
+        fnet_time_t current_time = fnet_timer_get_ticks();
 
         if(fnet_timer_get_interval(netif->is_connected_timestamp, current_time) > (FNET_NETIF_IS_CONNECTED_PERIOD / FNET_TIMER_PERIOD_MS))
         {
@@ -1369,7 +1369,7 @@ fnet_return_t fnet_netif_bind_ip6_addr_prv(fnet_netif_t *netif, const fnet_ip6_a
             }
 
             /* Save creation time, in seconds.*/
-            if_addr_ptr->creation_time = fnet_timer_seconds();
+            if_addr_ptr->creation_time = fnet_timer_get_seconds();
 
             /* Set lifetime, in seconds.*/
             if_addr_ptr->lifetime = lifetime;
@@ -1467,7 +1467,7 @@ void fnet_netif_ip6_addr_timer ( fnet_netif_t *netif)
         /* Check lifetime for address.*/
         if((netif->ip6_addr[i].state != FNET_NETIF_IP6_ADDR_STATE_NOT_USED)
            && (netif->ip6_addr[i].lifetime != FNET_NETIF_IP6_ADDR_LIFETIME_INFINITE)
-           && (fnet_timer_get_interval(netif->ip6_addr[i].creation_time, fnet_timer_seconds()) > netif->ip6_addr[i].lifetime)
+           && (fnet_timer_get_interval(netif->ip6_addr[i].creation_time, fnet_timer_get_seconds()) > netif->ip6_addr[i].lifetime)
           )
         {
             /* RFC4862 5.5.4: An address (and its association with an interface) becomes invalid

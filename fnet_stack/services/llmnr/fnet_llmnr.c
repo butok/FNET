@@ -53,18 +53,18 @@ typedef enum
 
 /* RFC 4795: The IPv4 link-scope multicast address a given responder listens to, and to which a
  * sender sends queries, is 224.0.0.252.*/
-#define FNET_LLMNR_IP4_LINK_LOCAL_MULTICAST_ADDR   FNET_IP4_ADDR_INIT(224u, 0u, 0u, 252u)
+#define FNET_LLMNR_IP4_MULTICAST_ADDR   FNET_IP4_ADDR_INIT(224u, 0u, 0u, 252u)
 
 /* RFC 4795: The IPv6 link-scope multicast address a given responder listens to,
  * and to which a sender sends all queries, is FF02:0:0:0:0:0:1:3.*/
-static const fnet_ip6_addr_t fnet_llmnr_ip6_link_local_multicast_addr = FNET_IP6_ADDR_INIT(0xFF, 0x02, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x01, 0x00, 0x03);
+static const fnet_ip6_addr_t fnet_llmnr_ip6_multicast_addr = FNET_IP6_ADDR_INIT(0xFF, 0x02, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x01, 0x00, 0x03);
 
 /* Error strings.*/
 #define FNET_LLMNR_ERR_PARAMS            "LLMNR: Wrong input parameters."
 #define FNET_LLMNR_ERR_SOCKET_CREATION   "LLMNR: Socket creation error."
 #define FNET_LLMNR_ERR_SOCKET_BIND       "LLMNR: Socket Error during bind."
 #define FNET_LLMNR_ERR_SERVICE           "LLMNR: Service registration is failed."
-#define FNET_LLMNR_ERR_IS_INITIALIZED    "LLMNR: DNS is already initialized."
+#define FNET_LLMNR_ERR_IS_INITIALIZED    "LLMNR: Is already initialized."
 #define FNET_LLMNR_ERR_JOIN_MULTICAST    "LLMNR: Joining to multicast group is failed."
 
 #define FNET_LLMNR_MESSAGE_SIZE     (FNET_DNS_MESSAGE_SIZE) /* Messages carried by UDP are restricted to 512 bytes (not counting the IP
@@ -76,7 +76,7 @@ static const fnet_ip6_addr_t fnet_llmnr_ip6_link_local_multicast_addr = FNET_IP6
  * and the TTL field in the IPV4 header MAY be set to any value.
  * However, it is RECOMMENDED that the value 255 be used for
  * compatibility with early implementations of [RFC3927]. */
-#define FNET_LLMNR_TTL              (255u)
+#define FNET_LLMNR_IP_TTL              (255u)
 
 
 /************************************************************************
@@ -126,7 +126,6 @@ typedef struct
                                                      * with NSCOUNT not equal to zero.*/
     fnet_uint16_t arcount  FNET_COMP_PACKED;       /* An unsigned 16-bit integer specifying the number of resource
                                                      * records in the additional records section.*/
-
 } fnet_llmnr_header_t;
 FNET_COMP_PACKED_END
 
@@ -174,9 +173,6 @@ FNET_COMP_PACKED_END
                                                     * response with a non-zero RCODE sent in response to a
                                                     * multicast query. */
 
-static void fnet_llmnr_state_machine( void *fnet_llmnr_if_p );
-static fnet_bool_t fnet_llmnr_hostname_cmp(const fnet_uint8_t *req_hostname, const fnet_uint8_t *hostname);
-
 /************************************************************************
 *    LLMNR server interface structure
 *************************************************************************/
@@ -184,8 +180,8 @@ struct fnet_llmnr_if
 {
     fnet_llmnr_state_t      state;                  /* Current state.*/
     fnet_socket_t           socket_listen;          /* Listening socket.*/
-    fnet_poll_desc_t        service_descriptor;     /* Network interface descriptor. */
-    fnet_netif_desc_t       netif;                  /* Service descriptor. */
+    fnet_poll_desc_t        service_descriptor;     /* Service descriptor. */
+    fnet_netif_desc_t       netif;                  /* Network interface descriptor. */
     const fnet_char_t       *host_name;             /* Link-local host name. */
     fnet_uint32_t           host_name_ttl;          /* TTL value that indicates for how many seconds link-local host name
                                                      * is valid for LLMNR querier, in seconds (it is optional).@n
@@ -195,6 +191,9 @@ struct fnet_llmnr_if
 
 /* The LLMNR Server interface */
 static struct fnet_llmnr_if llmnr_if_list[FNET_CFG_LLMNR_MAX];
+
+static void fnet_llmnr_state_machine( void *fnet_llmnr_if_p );
+static fnet_bool_t fnet_llmnr_hostname_cmp(const fnet_uint8_t *req_hostname, const fnet_uint8_t *hostname);
 
 /************************************************************************
 * DESCRIPTION: Checks if this our host name.
@@ -242,12 +241,20 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
     struct fnet_llmnr_if    *llmnr_if = 0;
     fnet_index_t            i;
     struct sockaddr         local_addr;
-    fnet_uint32_t           option = FNET_LLMNR_TTL;
+    fnet_uint32_t           option = FNET_LLMNR_IP_TTL;
     fnet_size_t             host_name_length;
+    fnet_scope_id_t         scope_id;
 
     /* Check input paramters. */
     if((params == 0) || (params->netif_desc == 0) || (params->host_name == 0)
        || ((host_name_length = fnet_strlen(params->host_name)) == 0u) || (host_name_length >= FNET_DNS_MAME_SIZE))
+    {
+        FNET_DEBUG_LLMNR(FNET_LLMNR_ERR_PARAMS);
+        goto ERROR_1;
+    }
+
+    scope_id = fnet_netif_get_scope_id(params->netif_desc);
+    if(scope_id == 0)
     {
         FNET_DEBUG_LLMNR(FNET_LLMNR_ERR_PARAMS);
         goto ERROR_1;
@@ -286,13 +293,16 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
 
     /* Init local socket address.*/
     fnet_memset_zero(&local_addr, sizeof(local_addr));
-    local_addr.sa_family = params->addr_family;
     if(local_addr.sa_family == 0u)
     {
         local_addr.sa_family = AF_SUPPORTED;
     }
+    else
+    {
+        local_addr.sa_family = params->addr_family;
+    }
     local_addr.sa_port = FNET_CFG_LLMNR_PORT;
-    local_addr.sa_scope_id = fnet_netif_get_scope_id(params->netif_desc);
+    local_addr.sa_scope_id = scope_id;
 
     /* Create listen socket */
     if((llmnr_if->socket_listen = fnet_socket(local_addr.sa_family, SOCK_DGRAM, 0u)) == FNET_ERR)
@@ -314,8 +324,8 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
     {
         struct ip_mreq mreq; /* Multicast group information.*/
 
-        mreq.imr_multiaddr.s_addr = FNET_LLMNR_IP4_LINK_LOCAL_MULTICAST_ADDR;
-        mreq.imr_interface = fnet_netif_get_scope_id(params->netif_desc);
+        mreq.imr_multiaddr.s_addr = FNET_LLMNR_IP4_MULTICAST_ADDR;
+        mreq.imr_interface = scope_id;
 
         /* Join multicast group. */
         if(fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IP, IP_ADD_MEMBERSHIP, (fnet_char_t *)&mreq, sizeof(mreq)) == FNET_ERR)
@@ -336,8 +346,8 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
     {
         struct ipv6_mreq mreq6; /* Multicast group information.*/
 
-        FNET_IP6_ADDR_COPY(&fnet_llmnr_ip6_link_local_multicast_addr, &mreq6.ipv6imr_multiaddr.s6_addr);
-        mreq6.ipv6imr_interface = fnet_netif_get_scope_id(params->netif_desc);
+        FNET_IP6_ADDR_COPY(&fnet_llmnr_ip6_multicast_addr, &mreq6.ipv6imr_multiaddr.s6_addr);
+        mreq6.ipv6imr_interface = scope_id;
 
         /* Join multicast group. */
         if(fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IPV6, IPV6_JOIN_GROUP, (fnet_char_t *)&mreq6, sizeof(mreq6)) == FNET_ERR)
@@ -499,7 +509,7 @@ static void fnet_llmnr_state_machine( void *fnet_llmnr_if_p )
 }
 
 /************************************************************************
-* DESCRIPTION: eleases the Link-Local Multicast Name Resolution (LLMNR)
+* DESCRIPTION: Releases the Link-Local Multicast Name Resolution (LLMNR)
 * server/responder service.
 ************************************************************************/
 void fnet_llmnr_release(fnet_llmnr_desc_t desc)

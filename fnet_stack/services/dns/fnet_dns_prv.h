@@ -40,7 +40,7 @@
 /********************************************************************/ /*!
 * @brief DNS Resorce Record Types
 *************************************************************************/
-#define    FNET_DNS_TYPE_A      (0x0001U)   /**< @brief IPv4 address. */
+#define    FNET_DNS_TYPE_A      (0x0001U)    /**< @brief IPv4 address. */
 #define    FNET_DNS_TYPE_AAAA   (0x001CU)    /**< @brief IPv6 address. */
 
 /************************************************************************

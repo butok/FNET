@@ -71,6 +71,10 @@
     #include "fapp_llmnr.h"
 #endif
 
+#if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS
+    #include "fapp_mdns.h"
+#endif
+
 #if FNET_CFG_LINK
     #include "fapp_link.h"
 #endif
@@ -91,6 +95,7 @@ static const fnet_char_t FAPP_NET_ERR[]   = "Error: Network Interface is not con
 const fnet_char_t FAPP_INIT_ERR[]  = "Error: %s initialization is failed!";
 const fnet_char_t FAPP_SHELL_INFO_FORMAT_S[]  = " %-16s : %s";
 const fnet_char_t FAPP_SHELL_INFO_FORMAT_D[]  = " %-16s : %u";
+const fnet_char_t FAPP_SHELL_INFO_FORMAT_H[]  = " %-16s : %8x";
 const fnet_char_t FAPP_SHELL_CANCELED_CTRL_C[]  = "Canceled by [Ctrl+C]!";
 
 /* Service release command */
@@ -201,7 +206,13 @@ const struct fnet_shell_command fapp_cmd_table [] =
     { "dns",        2u, 3u, fapp_dns_cmd,     "Resolve IPv4|6 address of <host name>", "<host name> 4|6 [<server ip>]"},
 #endif
 #if FAPP_CFG_LLMNR_CMD && FNET_CFG_LLMNR
-    { "llmnr",     0u, 1u, fapp_llmnr_cmd,    "Start LLMNR Server", "[release]"},
+    { "llmnr",      0u, 1u, fapp_llmnr_cmd,    "Start LLMNR Server", "[release]"},
+#endif
+#if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS
+    { "mdns",       0u, 1u, fapp_mdns_cmd,      "Start MDNS Server", "[release]"},
+#endif
+#if FAPP_CFG_MDNS_CN_CMD && FNET_CFG_MDNS
+    { "mdnscn",     0u, 0u, fapp_mdns_change_name,  "Change name, Bonjour test", ""},
 #endif
 #if FAPP_CFG_MEM_CMD
     { "mem",        0u, 0u, fapp_mem_cmd,     "Show memory map", ""},
@@ -255,9 +266,9 @@ const fnet_char_t *const fapp_netif_connection_state_str[] = {"unconnected", /* 
                                                              };
 
 /* Connection state string */
-const fnet_char_t *const fapp_enabled_str[] = {"disabled",  /* false */
-                                               "enabled"    /* true */
-                                              };
+const fnet_char_t *const fapp_is_enabled_str[] =    {"disabled",  /* Disabled */
+                                                     "enabled"    /* Enabled */
+                                                    };
 
 /************************************************************************
 *     The main shell control data structure.
@@ -598,6 +609,10 @@ static void fapp_init(void)
 #if FAPP_CFG_REINIT_CMD
 static void fapp_release(fnet_shell_desc_t desc)
 {
+#if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS          /* Release mDNS server. */
+    fapp_mdns_release();
+#endif
+
 #if FAPP_CFG_LLMNR_CMD && FNET_CFG_LLMNR        /* Release LLMNR server. */
     fapp_llmnr_release();
 #endif
@@ -784,6 +799,10 @@ static void fapp_print_info( fnet_shell_desc_t desc )
 
 #if FAPP_CFG_LLMNR_CMD && FNET_CFG_LLMNR
     fapp_llmnr_info(desc);
+#endif
+
+#if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS
+    fapp_mdns_info(desc);
 #endif
 }
 

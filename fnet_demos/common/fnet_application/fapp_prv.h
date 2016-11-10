@@ -43,8 +43,9 @@ extern const fnet_char_t FAPP_PARAM_ERR[];
 extern const fnet_char_t FAPP_INIT_ERR[];
 extern const fnet_char_t FAPP_SHELL_INFO_FORMAT_S[];
 extern const fnet_char_t FAPP_SHELL_INFO_FORMAT_D[];
+extern const fnet_char_t FAPP_SHELL_INFO_FORMAT_H[];
 extern const fnet_char_t FAPP_SHELL_CANCELED_CTRL_C[];
-extern const fnet_char_t *const fapp_enabled_str[];
+extern const fnet_char_t *const fapp_is_enabled_str[];
 
 /* Boot mode structure. */
 struct boot_mode

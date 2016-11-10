@@ -96,7 +96,8 @@ preferred way to configure stack features). @n
 	- @b DHCP/BOOTP client.
 	- @b Auto-IP service. Passed "Phase 1, Link-Local Address Allocation", Bonjour Conformance Test suite Version 1.3.1.
 	- @b DNS client/resolver.
-	- Link-Detection service. 
+	- @b Link-Detection service.
+	- @b Multicast @b DNS @b (mdNS) "Bonjour" Server/Responder.
 	- @b LLMNR Server/Responder.
 	- @b PING service.
 	- @b TFTP server and client. Both Read and Write requests are supported.
@@ -113,26 +114,26 @@ preferred way to configure stack features). @n
 	- @ref quick_start_boot "TCP/UDP Throughput Benchmark Application".
 - Source-code based User documentation, by Doxygen.
 - RFC list supported by the FNET stack: 
-	- RFC 768 - UDP
-	- RFC 791 - IPv4
-	- RFC 792 - ICMPv4
-	- RFC 793 - TCP
-	- RFC 826 - ARP
-	- RFC 854 - Telnet server
-	- RFC 951 - BOOTP client
-	- RFC 1035 - DNS resolver
-	- RFC 1350 - TFTP client and server
-	- RFC 1945 - HTTP v 1.0 server
-	- RFC 1981 - Path MTU Discovery for IPv6
-	- RFC 2131 - DHCP IPv4 client
-	- RFC 2236 - IGMPv2
-	- RFC 2460 - IPv6
-	- RFC 3927 - Dynamic Configuration of IPv4 Link-Local
-	- RFC 4861 - Neighbor Discovery for IPv6
-	- RFC 4862 - IPv6 Stateless Address Autoconfiguration
-	- RFC 4443 - ICMPv6
-	- RFC 4795 - Link-Local Multicast Name Resolution (LLMNR) server
-
+	- RFC 768 - UDP.
+	- RFC 791 - IPv4.
+	- RFC 792 - ICMPv4.
+	- RFC 793 - TCP.
+	- RFC 826 - ARP.
+	- RFC 854 - Telnet server.
+	- RFC 951 - BOOTP client.
+	- RFC 6762 - Multicast DNS server.
+	- RFC 1035 - DNS resolver.
+	- RFC 1350 - TFTP client and server.
+	- RFC 1945 - HTTP v 1.0 server.
+	- RFC 1981 - Path MTU Discovery for IPv6.
+	- RFC 2131 - DHCP IPv4 client.
+	- RFC 2236 - IGMPv2.
+	- RFC 2460 - IPv6.
+	- RFC 3927 - Dynamic Configuration of IPv4 Link-Local.
+	- RFC 4861 - Neighbor Discovery for IPv6.
+	- RFC 4862 - IPv6 Stateless Address Autoconfiguration.
+	- RFC 4443 - ICMPv6.
+	- RFC 4795 - Link-Local Multicast Name Resolution (LLMNR) server.
 
 
 */
@@ -303,16 +304,16 @@ Parameters loaded from Flash.
  FNET Shell Application
 ************************************************
  FNET TCP/IP Stack for MK64FN1
- Version 3.5.0
- Built Aug 23 2016 at 13:18:33 by IAR
+ Version 3.7.0
+ Built Nov  9 2016 at 15:34:08 by IAR
 ************************************************
  Interface        : eth0
- IPv4 Address     : 192.168.0.20 <manual>
- IPv6 Address     : fe80::204:9fff:fe13:1845 <autoconfigurable> ScopeID:1
- IPv4 Subnet mask : 255.255.255.0
+ IPv4 Address     : 0.0.0.0 <manual>
+ IPv6 Address     : fe80::211:22ff:fe33:4455 <autoconfigurable> ScopeID:1
+ IPv4 Subnet mask : 255.0.0.0
  IPv4 Gateway     : 0.0.0.0
  IPv4 DNS         : 0.0.0.0
- MAC Address      : 00:04:9f:13:18:45
+ MAC Address      : 00:11:22:33:44:55
  MTU              : 1500
  Link Status      : unconnected
  Free Heap        : 30272
@@ -321,6 +322,7 @@ Parameters loaded from Flash.
  AUTOIP Service   : disabled
  TELNET Server    : disabled
  LLMNR Server     : disabled
+ MDNS Server      : disabled
 
  Enter 'help' for command list.
 ************************************************
@@ -336,7 +338,7 @@ SHELL>
   
   So if network cable is connected, in your terminal program window you should see:
 @verbatim
-eth0: connected => Script: dhcp autoip; llmnr;
+eth0: connected => Script: dhcp autoip; mdns; llmnr;
 ************************************************
  DHCPv4 Client started.
 ************************************************
@@ -363,13 +365,26 @@ AutoIP: Probing...
  IPv4 Gateway     : 0.0.0.0
  IPv4 DNS         : 0.0.0.0
 ************************************************
+ mDNS server started.
+ Name             : fnet
+************************************************
+************************************************
  LLMNR server started.
  Host Name        : fnet
 ************************************************
 SHELL>
 @endverbatim
 - There is additional possibility to start any other service (http, telnet etc.) automatically during power-up by setting the @c FAPP_CFG_STARTUP_SCRIPT_ENABLED parameter to @c 1 and setting the FAPP_CFG_STARTUP_SCRIPT parameter to command line string.
-- You may start LLMNR server (if not started already during start-up), which allows name resolution for hosts on the same local link. 
+- You may start mDNS server (if not started already during start-up), which allows name resolution for hosts on the same local link. It is natively supported by Apple OSs and named "Bonjour".@n
+  If HTTP server is enabled, the application registers the "_http._tcp.local" service in mDNS server. So the HTTP server can be discoverable by in MacOS Safari browser using Bonjour.
+@verbatim
+SHELL> mdns
+************************************************
+ mDNS server started.
+ Name             : fnet
+************************************************
+@endverbatim
+- You may start LLMNR server (if not started already during start-up), which allows name resolution for hosts on the same local link. It is natively supported by Windows OSs.
 @verbatim
 SHELL> llmnr
 ************************************************
@@ -396,6 +411,7 @@ SHELL> help
 > telnet [release]                       - Start Telnet Server
 >    dns <host name> 4|6 [<server ip>]   - Resolve IPv4|6 address of <host name>
 >  llmnr [release]                       - Start LLMNR Server
+>   mdns [release]                       - Start MDNS Server
 >   save                                 - Save parameters to the FLASH
 >  reset                                 - Reset the board
 >   ping [-c <count>][-i <seconds>]
@@ -1537,6 +1553,15 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.7.0:
+	- Added Multicast DNS (mDNS) "Bonjour" Server/Responder. Thanks to NXP-Semiconductor for support.
+	- Passed the Bonjour Conformance Test, Version 1.3.1. (https://developer.apple.com/softwarelicensing/agreements/bonjour.php)
+	  Bonjour Conformance Test includes "Link-Local Address Allocation", "Multicast DNS" and "Network Interoperability" test phases (48 tests).
+	- Removed all instances of recursion.
+	- Added FNET_CFG_ASSERT - enables/disables FNET_ASSERT().
+	- Fixed Mutex API, thanks to Paul.
+	- Other minor changes.
+	
 - Version 3.6.1:
 	- Removed application reserved memory regions FAPP_CFG_MEM_REGION_RESERVED_LIST from the boot-loader application.
 	- Added multiple memory region support to TFTP .srec generator.
@@ -1767,7 +1792,7 @@ FNET public releases:
 	- Added basic MCF5235 support, contributed by Thomas Buergel.
 	- Fixed MLD-query receive-function that could send a wrong MLD report.
 	- New configuration parameters:
-       - @ref FNET_CFG_ND6_RDNSS enabled/disabled RDNSS support.
+       - @ref FNET_CFG_ND6_RDNSS enables/disables RDNSS support.
        - @ref FNET_CFG_ND6_RDNSS_LIST_SIZE sets maximum number of entries in the RDNSS address list.
 	- Other minor changes.
 
@@ -2419,6 +2444,14 @@ which includes all service-specific configuration files.
 *   configuration file @c fnet_user_config.h.
 */
 /*! 
+*	@defgroup fnet_mdns_config MDNS Server Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the MDNS server.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+/*! 
 *	@defgroup fnet_flash_config Flash Driver Configuration Parameters
 *	@ingroup fnet_services_config 
 *	This section describes the parameters specific to the Flash driver.
@@ -2606,6 +2639,11 @@ which includes all service-specific configuration files.
 
 /*! 
 *	@defgroup fnet_llmnr LLMNR server/responder API
+*	@ingroup services_api 
+*/
+
+/*! 
+*	@defgroup fnet_mdns MDNS (Bonjour) server/responder API
 *	@ingroup services_api 
 */
 

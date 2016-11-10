@@ -120,7 +120,7 @@ static void fnet_arp_timer(fnet_uint32_t cookie)
 
     for (i = 0U; i < FNET_CFG_ARP_TABLE_SIZE; i++)
     {
-        if ((arpif->arp_table[i].prot_addr) && (((fnet_timer_ticks() - arpif->arp_table[i].cr_time)) > (fnet_time_t)((FNET_CFG_ARP_EXPIRE_TIMEOUT * 1000U) / FNET_TIMER_PERIOD_MS)))
+        if ((arpif->arp_table[i].prot_addr) && (((fnet_timer_get_ticks() - arpif->arp_table[i].cr_time)) > (fnet_time_t)((FNET_CFG_ARP_EXPIRE_TIMEOUT * 1000U) / FNET_TIMER_PERIOD_MS)))
         {
             if (arpif->arp_table[i].hold)
             {
@@ -152,7 +152,7 @@ static fnet_arp_entry_t *fnet_arp_add_entry(fnet_netif_t *netif, fnet_ip4_addr_t
         {
             /* Update this and return. */
             fnet_memcpy(arpif->arp_table[i].hard_addr, ethaddr, sizeof(fnet_mac_addr_t));
-            arpif->arp_table[i].cr_time = fnet_timer_ticks();
+            arpif->arp_table[i].cr_time = fnet_timer_get_ticks();
             goto ADDED;
         }
     }
@@ -177,9 +177,9 @@ static fnet_arp_entry_t *fnet_arp_add_entry(fnet_netif_t *netif, fnet_ip4_addr_t
 
         for (i = 0U; i < FNET_CFG_ARP_TABLE_SIZE; ++i)
         {
-            if ((fnet_timer_ticks() - arpif->arp_table[i].cr_time) > max_time)
+            if ((fnet_timer_get_ticks() - arpif->arp_table[i].cr_time) > max_time)
             {
-                max_time = fnet_timer_ticks() - arpif->arp_table[i].cr_time;
+                max_time = fnet_timer_get_ticks() - arpif->arp_table[i].cr_time;
                 j = i;
             }
         }
@@ -199,7 +199,7 @@ static fnet_arp_entry_t *fnet_arp_add_entry(fnet_netif_t *netif, fnet_ip4_addr_t
     arpif->arp_table[i].prot_addr = ipaddr;
     fnet_memcpy(arpif->arp_table[i].hard_addr, ethaddr, sizeof(fnet_mac_addr_t));
 
-    arpif->arp_table[i].cr_time = fnet_timer_ticks();
+    arpif->arp_table[i].cr_time = fnet_timer_get_ticks();
 ADDED:
     return (&arpif->arp_table[i]);
 }
@@ -221,7 +221,7 @@ static fnet_arp_entry_t *fnet_arp_update_entry(fnet_netif_t *netif, fnet_ip4_add
         {
             /* Update this and return. */
             fnet_memcpy(arpif->arp_table[i].hard_addr, ethaddr, sizeof(fnet_mac_addr_t));
-            arpif->arp_table[i].cr_time = fnet_timer_ticks();
+            arpif->arp_table[i].cr_time = fnet_timer_get_ticks();
             return (&arpif->arp_table[i]);
         }
     }
@@ -326,9 +326,9 @@ void fnet_arp_resolve(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_netbuf_t
         entry->hold = NULL;
     }
 
-    if ((i == FNET_CFG_ARP_TABLE_SIZE) || ((entry->hold) && (((fnet_timer_ticks() - entry->hold_time) * FNET_TIMER_PERIOD_MS) > 1000U)) || (!entry->hold))
+    if ((i == FNET_CFG_ARP_TABLE_SIZE) || ((entry->hold) && (((fnet_timer_get_ticks() - entry->hold_time) * FNET_TIMER_PERIOD_MS) > 1000U)) || (!entry->hold))
     {
-        entry->hold_time = fnet_timer_ticks();
+        entry->hold_time = fnet_timer_get_ticks();
         entry->hold = nb;
         fnet_arp_request(netif, ipaddr);
     }

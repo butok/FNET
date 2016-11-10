@@ -98,6 +98,9 @@
 /*  "llmnr" command.*/
 #define FAPP_CFG_LLMNR_CMD              (1)
 
+/*  "mdns" command.*/
+#define FAPP_CFG_MDNS_CMD               (1)
+
 /* Reading of the configuration parameters from the Flash
  * memory during the application bootup.*/
 #define FAPP_CFG_PARAMS_READ_FLASH       (1)
@@ -112,8 +115,8 @@
 #endif
 
 /* On connect/unconnect scripts:*/
-#define FAPP_CFG_LINK_CONNECT_SCRIPT     "dhcp autoip; llmnr;"
-#define FAPP_CFG_LINK_UNCONNECT_SCRIPT   "llmnr release; dhcp release; autoip release;"
+#define FAPP_CFG_LINK_CONNECT_SCRIPT     "dhcp autoip; mdns; llmnr;"
+#define FAPP_CFG_LINK_UNCONNECT_SCRIPT   "mdns release; llmnr release; dhcp release; autoip release;"
 
 #endif /* _FAPP_USER_CONFIG_H_ */
 

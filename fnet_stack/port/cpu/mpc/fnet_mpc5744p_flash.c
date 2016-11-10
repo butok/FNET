@@ -1146,7 +1146,10 @@ static fnet_int32_t fnet_cpu_flash_init(
     /*Init pointer to the SSD struct*/
     pSSDConfig = fnet_cpu_flash_init_SSD();
 
-    /*Data cache must be also disabled, set FNET_CFG_CPU_CACHE for proper operation of the Flash Driver (SSD)*/
+    /*D-Cache must be disabled for proper operation of the Flash Driver (SSD)
+      See User's Manual SSD_C55_UM_v1.1.pdf, chapter 3.3 Notes and Limitations point 3*/
+    fnet_cpu_cache_invalidate();
+
     DisableFlashControllerCache(FLASH_PFCR1, FLASH_FMC_BFEN, &pflash_pfcr1);
 
     /* Flash Init */

@@ -106,29 +106,29 @@ typedef struct
 *************************************************************************/
 typedef struct _fnet_socket_if_t
 {
-    struct _fnet_socket_if_t   *next;                  /**< Pointer to the next socket structure.*/
-    struct _fnet_socket_if_t   *prev;                  /**< Pointer to the previous socket structure.*/
-    fnet_socket_t                  descriptor;             /**< Socket descriptor.*/
-    fnet_socket_state_t     state;                  /**< Socket state.*/
-    fnet_uint32_t           protocol_number;        /**< Protocol number.*/
-    struct fnet_prot_if     *protocol_interface;    /**< Points to protocol specific functions (interface).*/
-    void                    *protocol_control;      /**< Points to protocol control structure (optional).*/
+    struct _fnet_socket_if_t    *next;                  /**< Pointer to the next socket structure.*/
+    struct _fnet_socket_if_t    *prev;                  /**< Pointer to the previous socket structure.*/
+    fnet_socket_t               descriptor;             /**< Socket descriptor.*/
+    fnet_socket_state_t         state;                  /**< Socket state.*/
+    fnet_uint32_t               protocol_number;        /**< Protocol number.*/
+    struct fnet_prot_if         *protocol_interface;    /**< Points to protocol specific functions (interface).*/
+    void                        *protocol_control;      /**< Points to protocol control structure (optional).*/
 
     /* For sockets with SO_ACCEPTCONN.*/
-    struct _fnet_socket_if_t   *partial_con;           /**< Queue of partial connections.*/
-    fnet_size_t             partial_con_len;        /**< Number of connections on partial_con.*/
-    struct _fnet_socket_if_t   *incoming_con;          /**< Queue of incoming connections.*/
-    fnet_size_t             incoming_con_len;       /**< Number of connections on incoming_con.*/
-    fnet_size_t             con_limit;              /**< Max number queued connections (specified  by "listen").*/
-    struct _fnet_socket_if_t   *head_con;              /**< Back pointer to accept socket.*/
+    struct _fnet_socket_if_t    *partial_con;           /**< Queue of partial connections.*/
+    fnet_size_t                 partial_con_len;        /**< Number of connections on partial_con.*/
+    struct _fnet_socket_if_t    *incoming_con;          /**< Queue of incoming connections.*/
+    fnet_size_t                 incoming_con_len;       /**< Number of connections on incoming_con.*/
+    fnet_size_t                 con_limit;              /**< Max number queued connections (specified  by "listen").*/
+    struct _fnet_socket_if_t    *head_con;              /**< Back pointer to accept socket.*/
 
-    fnet_socket_buffer_t    receive_buffer;         /**< Socket buffer for incoming data.*/
-    fnet_socket_buffer_t    send_buffer;            /**< Socket buffer for outgoing data.*/
+    fnet_socket_buffer_t        receive_buffer;         /**< Socket buffer for incoming data.*/
+    fnet_socket_buffer_t        send_buffer;            /**< Socket buffer for outgoing data.*/
 
     /* Common protocol params.*/
-    struct sockaddr         foreign_addr;           /**< Foreign socket address.*/
-    struct sockaddr         local_addr;             /**< Lockal socket address.*/
-    fnet_socket_option_t    options;                /**< Collection of socket options.*/
+    struct sockaddr             foreign_addr;           /**< Foreign socket address.*/
+    struct sockaddr             local_addr;             /**< Lockal socket address.*/
+    fnet_socket_option_t        options;                /**< Collection of socket options.*/
 
 #if FNET_CFG_MULTICAST
     /* Multicast params.*/

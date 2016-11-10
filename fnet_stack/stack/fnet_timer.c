@@ -85,7 +85,7 @@ void fnet_timer_release( void )
 /************************************************************************
 * DESCRIPTION: This function returns current value of the timer in ticks.
 *************************************************************************/
-fnet_time_t fnet_timer_ticks( void )
+fnet_time_t fnet_timer_get_ticks( void )
 {
     return fnet_current_time;
 }
@@ -93,7 +93,7 @@ fnet_time_t fnet_timer_ticks( void )
 /************************************************************************
 * DESCRIPTION: This function returns current value of the timer in seconds.
 *************************************************************************/
-fnet_time_t fnet_timer_seconds( void )
+fnet_time_t fnet_timer_get_seconds( void )
 {
     return (fnet_current_time / FNET_TIMER_TICKS_IN_SEC);
 }
@@ -102,7 +102,7 @@ fnet_time_t fnet_timer_seconds( void )
 * DESCRIPTION: This function returns current value of the timer
 * in milliseconds.
 *************************************************************************/
-fnet_time_t fnet_timer_ms( void )
+fnet_time_t fnet_timer_get_ms( void )
 {
     return (fnet_current_time * FNET_TIMER_PERIOD_MS);
 }
@@ -239,7 +239,7 @@ void fnet_timer_delay( fnet_time_t delay_ticks )
 {
     fnet_time_t start_ticks = fnet_current_time;
 
-    while(fnet_timer_get_interval(start_ticks, fnet_timer_ticks()) < delay_ticks)
+    while(fnet_timer_get_interval(start_ticks, fnet_timer_get_ticks()) < delay_ticks)
     {}
 }
 

@@ -432,13 +432,25 @@
 
 /**************************************************************************/ /*!
  * @def      FNET_CFG_CPU_CACHE
- * @brief    Cache invalidation:
- *               - @c 1 = is enabled (for MCF5282/5235).
- *               - @c 0 = is disabled. For platforms that do not have cache.
+ * @brief    Data Cache:
+ *               - @c 1 = is present on current platform (for MCF5282/5235, MPC).
+ *               - @c 0 = is absent on current platform. For platforms that do not have cache.
  *  @n @n NOTE: User application should not change this parameter.
+ * @see FNET_CFG_CPU_CACHE_INVALIDATE
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_CACHE
     #define FNET_CFG_CPU_CACHE              (0)
+#endif
+
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_CPU_CACHE_INVALIDATE
+ * @brief    Cache invalidation in runtime:
+ *               - @c 1 = is enabled (by default).
+ *               - @c 0 = is disabled. i.e code is already placed in non-cacheable memory region.
+ * @see FNET_CFG_CPU_CACHE
+ ******************************************************************************/
+#ifndef FNET_CFG_CPU_CACHE_INVALIDATE
+    #define FNET_CFG_CPU_CACHE_INVALIDATE   (1)
 #endif
 
 /**************************************************************************/ /*!

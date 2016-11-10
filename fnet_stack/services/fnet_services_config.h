@@ -41,12 +41,12 @@
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_POLL_MAX
-    #define FNET_CFG_POLL_MAX   (10u)
+    #define FNET_CFG_POLL_MAX   (11u)
 #endif
 
 #include "services/dhcp/fnet_dhcp_config.h"
 #include "services/autoip/fnet_autoip_config.h"
-#include "services/ssl/fnet_ssl_config.h"
+#include "services/tls/fnet_tls_config.h"
 #include "services/http/fnet_http_config.h"
 #include "services/fs/fnet_fs_config.h"
 #include "services/tftp/fnet_tftp_config.h"
@@ -56,6 +56,7 @@
 #include "services/serial/fnet_serial_config.h"
 #include "services/shell/fnet_shell_config.h"
 #include "services/llmnr/fnet_llmnr_config.h"
+#include "services/mdns/fnet_mdns_config.h"
 #include "services/flash/fnet_flash_config.h"
 #include "services/link/fnet_link_config.h"
 

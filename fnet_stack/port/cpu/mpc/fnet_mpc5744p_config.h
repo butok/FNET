@@ -61,6 +61,9 @@
 /* MPC Flash Module supported.*/
 #define FNET_CFG_CPU_FLASH                              (1)
 
+/* There is cache. */
+#define FNET_CFG_CPU_CACHE                              (1)
+
 /* On-chip Flash size.*/
 #define FNET_CFG_CPU_FLASH_SIZE                         ((1024U * 1024U * 5U) / 2U)   /* 2.5 MB*/
 

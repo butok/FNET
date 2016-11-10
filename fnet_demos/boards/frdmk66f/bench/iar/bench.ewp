@@ -2146,6 +2146,18 @@
         </file>
       </group>
       <group>
+        <name>mdns</name>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/mdns/fnet_mdns.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/mdns/fnet_mdns.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/mdns/fnet_mdns_config.h</name>
+        </file>
+      </group>
+      <group>
         <name>flash</name>
         <file>
           <name>$PROJ_DIR$/../../../../../fnet_stack/services/flash/fnet_flash.c</name>
@@ -2345,6 +2357,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_arp_prv.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_assert.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_checksum.c</name>
@@ -2586,6 +2601,12 @@
     </file>
     <file>
       <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_mem.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_mdns.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_mdns.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_netif.c</name>

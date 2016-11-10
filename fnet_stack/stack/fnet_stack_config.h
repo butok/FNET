@@ -255,6 +255,20 @@
 ******************************************************************************/
 
 /**************************************************************************/ /*!
+ * @def      FNET_CFG_ASSET
+ * @brief    FNET_ASSERT() support:
+ *               - @c 1 = is enabled.
+ *               - @b @c 0 = is disabled (Default value).@n
+ *           @n
+ *           Asserts check that the given condition is true, otherwise it prints error message 
+ *           and stops the program execution. By default, it is disabled.
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_ASSET
+    #define FNET_CFG_ASSET                  (0)
+#endif
+
+/**************************************************************************/ /*!
  * @def      FNET_CFG_TCP
  * @brief    TCP protocol support:
  *               - @b @c 1 = is enabled (Default value).
@@ -727,6 +741,10 @@
 
 #ifndef FNET_CFG_DEBUG_LLMNR
     #define FNET_CFG_DEBUG_LLMNR        (0)
+#endif
+
+#ifndef FNET_CFG_DEBUG_MDNS
+    #define FNET_CFG_DEBUG_MDNS        (0)
 #endif
 
 #ifndef FNET_CFG_DEBUG_PING

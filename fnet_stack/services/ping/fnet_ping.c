@@ -224,7 +224,7 @@ static void fnet_ping_state_machine(void *fnet_ping_if_p)
             fnet_socket_sendto(fnet_ping_if.socket_foreign, (fnet_uint8_t *)(&fnet_ping_if.buffer[0]), (sizeof(*hdr) + ping_if->packet_size), 0u,  &ping_if->target_addr, sizeof(ping_if->target_addr));
             ping_if->packet_count--;
 
-            fnet_ping_if.send_time = fnet_timer_ticks();
+            fnet_ping_if.send_time = fnet_timer_get_ticks();
 
             ping_if->state = FNET_PING_STATE_WAITING_REPLY;
             break;
@@ -314,7 +314,7 @@ static void fnet_ping_state_machine(void *fnet_ping_if_p)
             else /* No data. Check timeout */
             {
             NO_DATA:
-                if(fnet_timer_get_interval(fnet_ping_if.send_time, fnet_timer_ticks()) > fnet_ping_if.timeout_clk)
+                if(fnet_timer_get_interval(fnet_ping_if.send_time, fnet_timer_get_ticks()) > fnet_ping_if.timeout_clk)
                 {
                     /* Call handler callback.*/
                     if(ping_if->callback)
@@ -335,7 +335,7 @@ static void fnet_ping_state_machine(void *fnet_ping_if_p)
             break;
         /*===================================*/
         case FNET_PING_STATE_WAITING_TIMEOUT:
-            if(fnet_timer_get_interval(fnet_ping_if.send_time, fnet_timer_ticks()) > fnet_ping_if.timeout_clk)
+            if(fnet_timer_get_interval(fnet_ping_if.send_time, fnet_timer_get_ticks()) > fnet_ping_if.timeout_clk)
             {
                 ping_if->state = FNET_PING_STATE_SENDING_REQUEST;
             }

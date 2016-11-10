@@ -268,7 +268,7 @@ static void fnet_tftp_cln_state_machine( void *fnet_tftp_cln_if_p )
             }
             else
             {
-                tftp_if->last_time = fnet_timer_ticks();
+                tftp_if->last_time = fnet_timer_get_ticks();
                 tftp_if->state = FNET_TFTP_CLN_STATE_HANDLE_REQUEST;
             }
             break;
@@ -310,7 +310,7 @@ static void fnet_tftp_cln_state_machine( void *fnet_tftp_cln_if_p )
                                            (struct sockaddr *)&addr, sizeof(addr) );
 
                         /* Reset timeout. */
-                        tftp_if->last_time = fnet_timer_ticks();
+                        tftp_if->last_time = fnet_timer_get_ticks();
 
                         /* Message the application. */
                         if((tftp_if->block_number_ack + 1u) == fnet_htons(tftp_if->packet.packet_data.block_number))
@@ -374,7 +374,7 @@ static void fnet_tftp_cln_state_machine( void *fnet_tftp_cln_if_p )
                         fnet_socket_sendto(tftp_if->socket_client, (fnet_uint8_t *)&tftp_if->packet.packet_data, (4u + (tftp_if->tx_data_size)), 0u,
                                            &addr, sizeof(addr) );
                         /* Reset timeout. */
-                        tftp_if->last_time = fnet_timer_ticks();
+                        tftp_if->last_time = fnet_timer_get_ticks();
                     }
 
                 }
@@ -388,7 +388,7 @@ static void fnet_tftp_cln_state_machine( void *fnet_tftp_cln_if_p )
             {
                 /* Check error. Check timeout */
                 if((received == FNET_ERR) ||
-                   (fnet_timer_get_interval(tftp_if->last_time, fnet_timer_ticks()) > (fnet_tftp_if.timeout / FNET_TIMER_PERIOD_MS)))
+                   (fnet_timer_get_interval(tftp_if->last_time, fnet_timer_get_ticks()) > (fnet_tftp_if.timeout / FNET_TIMER_PERIOD_MS)))
                 {
                     goto ERROR;
                 }

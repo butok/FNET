@@ -53,6 +53,9 @@ fnet_return_t fnet_init( struct fnet_init_params *init_params )
 
     if(init_params && init_params->netheap_size)
     {
+#if FNET_CFG_MULTITHREADING
+        fnet_mutex_api = init_params->mutex_api;
+#endif
         if(fnet_stack_mutex_init() == FNET_OK)
         {
             fnet_stack_mutex_lock();
@@ -89,7 +92,11 @@ void fnet_release(void)
 
     fnet_stack_mutex_unlock();
 
-    fnet_stack_mutex_release();
+    fnet_stack_mutex_free();
+
+#if FNET_CFG_MULTITHREADING
+    fnet_mutex_api = NULL;
+#endif
 }
 
 /************************************************************************
@@ -181,7 +188,7 @@ void fnet_stack_mutex_lock(void)
     {
         if(fnet_mutex_api->mutex_lock)
         {
-            result = fnet_mutex_api->mutex_lock(&fnet_stack_mutex);
+           fnet_mutex_api->mutex_lock(&fnet_stack_mutex);
         }
     }
 }
@@ -192,18 +199,18 @@ void fnet_stack_mutex_unlock(void)
     {
         if(fnet_mutex_api->mutex_unlock)
         {
-            result = fnet_mutex_api->mutex_unlock(&fnet_stack_mutex);
+            fnet_mutex_api->mutex_unlock(&fnet_stack_mutex);
         }
     }
 }
 
-void fnet_stack_mutex_release(void)
+void fnet_stack_mutex_free(void)
 {
     if(fnet_mutex_api) /* Check if multithreading is enabled.*/
     {
-        if(fnet_mutex_api->mutex_release)
+        if(fnet_mutex_api->mutex_free)
         {
-            result = fnet_mutex_api->mutex_release(&fnet_stack_mutex);
+            fnet_mutex_api->mutex_free(&fnet_stack_mutex);
         }
     }
 }

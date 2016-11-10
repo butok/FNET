@@ -154,7 +154,7 @@ void fapp_autoip_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **a
 *************************************************************************/
 void fapp_autoip_info(fnet_shell_desc_t desc)
 {
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "AUTOIP Service", fapp_enabled_str[fnet_autoip_is_enabled(fapp_autoip_desc)]);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "AUTOIP Service", fapp_is_enabled_str[fnet_autoip_is_enabled(fapp_autoip_desc)]);
 }
 
 #endif /* FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP && FNET_CFG_IP4 */

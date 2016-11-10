@@ -138,7 +138,7 @@ static void fnet_icmp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  str
                 /* All times are in milliseconds since the stack timer start modulo 1 day.
                 * The high-order bit is set as the time value is recorded in nonstandard units. */
                 ((fnet_icmp_timestamp_header_t *)hdr)->receive_timestamp
-                    = fnet_htonl(((fnet_timer_ticks() * FNET_TIMER_PERIOD_MS) % (24 * 60 * 60 * 1000)) | (0x80000000));
+                    = fnet_htonl(((fnet_timer_get_ticks() * FNET_TIMER_PERIOD_MS) % (24 * 60 * 60 * 1000)) | (0x80000000));
 
                 dest_ip = netif->ip4_addr.address;
 

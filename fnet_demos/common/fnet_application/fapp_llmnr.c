@@ -86,7 +86,7 @@ void fapp_llmnr_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
 *************************************************************************/
 void fapp_llmnr_info(fnet_shell_desc_t desc)
 {
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "LLMNR Server", fapp_enabled_str[fnet_llmnr_is_enabled(fapp_llmnr_desc)]);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "LLMNR Server", fapp_is_enabled_str[fnet_llmnr_is_enabled(fapp_llmnr_desc)]);
 }
 
 #endif /* FAPP_CFG_LLMNR_CMD && FNET_CFG_LLMNR */

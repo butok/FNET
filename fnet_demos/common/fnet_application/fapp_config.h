@@ -422,6 +422,21 @@
 #endif
 
 /************************************************************************
+*    "mdns" command.
+*************************************************************************/
+#ifndef FAPP_CFG_MDNS_CMD
+    #define FAPP_CFG_MDNS_CMD           (0)
+#endif
+
+/************************************************************************
+*    "mdnscn" command. Manual Name Change test.
+*    It is used only for Bonjour Conformance Testing.
+*************************************************************************/
+#ifndef FAPP_CFG_MDNS_CN_CMD
+    #define FAPP_CFG_MDNS_CN_CMD        (0)
+#endif
+
+/************************************************************************
 *    "d" command. Used for DEBUGGING needs only.
 *************************************************************************/
 #ifndef FAPP_CFG_DEBUG_CMD

@@ -329,7 +329,7 @@ static void fnet_dns_state_machine( void *fnet_dns_if_p )
             }
             else
             {
-                dns_if->last_time = fnet_timer_ticks();
+                dns_if->last_time = fnet_timer_get_ticks();
                 dns_if->state = FNET_DNS_STATE_RX;
             }
             break;
@@ -394,7 +394,7 @@ static void fnet_dns_state_machine( void *fnet_dns_if_p )
                 dns_if->state = FNET_DNS_STATE_RELEASE; /* ERROR */
             }
             else /* No data. Check timeout */
-                if(fnet_timer_get_interval(dns_if->last_time, fnet_timer_ticks()) > ((FNET_CFG_DNS_RETRANSMISSION_TIMEOUT * 1000U) / FNET_TIMER_PERIOD_MS))
+                if(fnet_timer_get_interval(dns_if->last_time, fnet_timer_get_ticks()) > ((FNET_CFG_DNS_RETRANSMISSION_TIMEOUT * 1000U) / FNET_TIMER_PERIOD_MS))
                 {
                     dns_if->iteration++;
 

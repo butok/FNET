@@ -225,7 +225,7 @@ static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
 
                 fnet_shell_println(desc, "Receiving from %s:%d", fnet_inet_ntop(foreign_addr.sa_family, (fnet_uint8_t *)(foreign_addr.sa_data), ip_str, sizeof(ip_str)), fnet_ntohs(foreign_addr.sa_port));
 
-                fapp_bench.first_time = fnet_timer_ticks();
+                fapp_bench.first_time = fnet_timer_get_ticks();
 
                 while(1) /* Receiving data.*/
                 {
@@ -233,7 +233,7 @@ static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
 
                     if ((received == FNET_ERR) || exit_flag)
                     {
-                        fapp_bench.last_time = fnet_timer_ticks();
+                        fapp_bench.last_time = fnet_timer_get_ticks();
 
                         /* Print benchmark results.*/
                         fapp_bench_print_results (desc);
@@ -376,16 +376,15 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
 
             if(received >= FAPP_BENCH_UDP_END_BUFFER_LENGTH)
             {
-
                 /* Reset timeout. */
-                fapp_bench.last_time = fnet_timer_ticks();
+                fapp_bench.last_time = fnet_timer_get_ticks();
 
                 if(is_first)
                 {
                     if( received > FAPP_BENCH_UDP_END_BUFFER_LENGTH )
                     {
                         fnet_shell_println(desc, "Receiving from %s:%d",  fnet_inet_ntop(addr.sa_family, (fnet_uint8_t *)(addr.sa_data), ip_str, sizeof(ip_str)), fnet_ntohs(addr.sa_port));
-                        fapp_bench.first_time = fnet_timer_ticks();
+                        fapp_bench.first_time = fnet_timer_get_ticks();
                         is_first = FNET_FALSE;
                     }
                 }
@@ -420,7 +419,7 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
                 }
                 /* Check timeout. */
                 if((is_first == FNET_FALSE) &&
-                   (fnet_timer_get_interval(fapp_bench.last_time, fnet_timer_ticks()) > (FAPP_UDP_TIMEOUT_MS / FNET_TIMER_PERIOD_MS)))
+                   (fnet_timer_get_interval(fapp_bench.last_time, fnet_timer_get_ticks()) > (FAPP_UDP_TIMEOUT_MS / FNET_TIMER_PERIOD_MS)))
                 {
                     fnet_shell_println(desc, "BENCH: Exit on timeout.");
                     fapp_bench_print_results (desc);
@@ -585,12 +584,12 @@ static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
         cur_packet_number = 0;
         buffer_offset = 0;
 
-        fapp_bench.first_time = fnet_timer_ticks();
+        fapp_bench.first_time = fnet_timer_get_ticks();
 
         while(1)
         {
             send_result = fnet_socket_send( fapp_bench.socket_foreign, (fnet_uint8_t *)(&fapp_bench.buffer[buffer_offset]), (packet_size - buffer_offset), 0);
-            fapp_bench.last_time = fnet_timer_ticks();
+            fapp_bench.last_time = fnet_timer_get_ticks();
 
             if ( send_result == FNET_ERR )
             {
@@ -722,12 +721,12 @@ static void fapp_bench_udp_tx (struct fapp_bench_tx_params *params)
         fapp_bench.remote_bytes = 0;
         cur_packet_number = 0;
 
-        fapp_bench.first_time = fnet_timer_ticks();
+        fapp_bench.first_time = fnet_timer_get_ticks();
 
         while(1)
         {
             send_result = fnet_socket_send( fapp_bench.socket_foreign, (fnet_uint8_t *)(&fapp_bench.buffer[0]), packet_size, 0);
-            fapp_bench.last_time = fnet_timer_ticks();
+            fapp_bench.last_time = fnet_timer_get_ticks();
 
 
             if ( send_result == FNET_ERR )

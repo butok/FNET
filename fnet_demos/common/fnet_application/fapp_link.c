@@ -97,7 +97,7 @@ void fapp_link_release(void)
 *************************************************************************/
 void fapp_link_info(fnet_shell_desc_t desc)
 {
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "LINK Service", fapp_enabled_str[fnet_link_is_enabled(fapp_link_desc)]);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "LINK Service", fapp_is_enabled_str[fnet_link_is_enabled(fapp_link_desc)]);
 }
 
 #endif /* FNET_CFG_LINK */

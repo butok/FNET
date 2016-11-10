@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -19,36 +18,27 @@
 *
 **********************************************************************/
 /*!
-* @brief FNET Shell Demo (HTTP Server).
+* @brief FNET assert macros.
 *
 ***************************************************************************/
+#ifndef _FNET_ASSERT_H_
+#define _FNET_ASSERT_H_
 
-/************************************************************************
-*     Private Definitions.
-*************************************************************************/
-#ifndef _FAPP_HTTP_H_
+#if FNET_CFG_ASSERT
 
-#define _FAPP_HTTP_H_
+    #define FNET_ASSERT_ERROR_MESSAGE   "FNET ASSERT: %s: %s: %d\n\r"
 
-#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
-
-#define FAPP_HTTP_MOUNT_NAME   FAPP_FS_MOUNT_NAME
-#define FAPP_HTTP_INDEX_FILE   "index.html"
-
-#if defined(__cplusplus)
-extern "C" {
-#endif
-extern fnet_http_desc_t fapp_http_desc; /* HTTP service descriptor. */
-
-void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
-void fapp_http_info(fnet_shell_desc_t desc);
-void fapp_http_release(void);
-
-
-#if defined(__cplusplus)
-}
+    /* Checks that the given condition is true, otherwise it prints error message 
+     * and stops the program execution.*/
+    #define FNET_ASSERT(condition)                                                  \
+            if (!(condition))                                                       \
+            {                                                                       \
+                printf(FNET_ASSERT_ERROR_MESSAGE, __func__, __FILE__, __LINE__);    \
+                while (1);                                                          \
+            } 
+#else
+    #define FNET_ASSERT(condition)  ((void) 0)
 #endif
 
-#endif
+#endif  /* _FNET_ASSERT_H_ */
 
-#endif

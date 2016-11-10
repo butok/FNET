@@ -3689,12 +3689,14 @@ static void fnet_tcp_abortsk( fnet_socket_if_t *sk )
     {
         while(sk->partial_con)
         {
-            fnet_tcp_abortsk(sk->partial_con);
+            fnet_tcp_sendrstsk(sk->partial_con);
+            fnet_tcp_closesk(sk->partial_con);
         }
 
         while(sk->incoming_con)
         {
-            fnet_tcp_abortsk(sk->incoming_con);
+            fnet_tcp_sendrstsk(sk->incoming_con);
+            fnet_tcp_closesk(sk->incoming_con);
         }
     }
     else

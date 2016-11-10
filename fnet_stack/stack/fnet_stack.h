@@ -27,6 +27,7 @@
 
 #define _FNET_STACK_H_
 
+#include "fnet_assert.h"
 #include "fnet_error.h"
 #include "fnet_stdlib.h"
 #include "fnet_socket.h"

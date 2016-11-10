@@ -582,6 +582,36 @@
       <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/dns/fnet_dns_prv.h</locationURI>
     </link>
     <link>
+      <name>fnet_stack/services/mdns</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/mdns/fnet_mdns.c</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/mdns/fnet_mdns.c</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/mdns</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/mdns/fnet_mdns.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/mdns/fnet_mdns.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/mdns</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/mdns/fnet_mdns_config.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/mdns/fnet_mdns_config.h</locationURI>
+    </link>
+    <link>
       <name>fnet_stack/services/flash</name>
       <type>2</type>
       <locationURI>virtual:/virtual</locationURI>
@@ -1130,6 +1160,16 @@
       <name>fnet_stack/stack/fnet_arp_prv.h</name>
       <type>1</type>
       <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_arp_prv.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/stack</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/stack/fnet_assert.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_assert.h</locationURI>
     </link>
     <link>
       <name>fnet_stack/stack</name>
@@ -1920,6 +1960,26 @@
       <name>fnet_application/fapp_mem.h</name>
       <type>1</type>
       <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_mem.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_application</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_application/fapp_mdns.c</name>
+      <type>1</type>
+      <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_mdns.c</locationURI>
+    </link>
+    <link>
+      <name>fnet_application</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_application/fapp_mdns.h</name>
+      <type>1</type>
+      <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_mdns.h</locationURI>
     </link>
     <link>
       <name>fnet_application</name>

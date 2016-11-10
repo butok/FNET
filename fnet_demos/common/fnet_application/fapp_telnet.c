@@ -114,7 +114,7 @@ static void fapp_telnet_exit_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fn
 *************************************************************************/
 void fapp_telnet_info(fnet_shell_desc_t desc)
 {
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "TELNET Server", fapp_enabled_str[fnet_telnet_is_enabled(fapp_telnet_desc)]);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "TELNET Server", fapp_is_enabled_str[fnet_telnet_is_enabled(fapp_telnet_desc)]);
 }
 
 #if FAPP_CFG_TELNET_TEST_CMD

@@ -71,21 +71,28 @@ void fnet_fec_debug_mii_print_regs(fnet_netif_t *netif) ;
 /************************************************************************
 *     Global Data Structures
 *************************************************************************/
-#if FNET_CFG_COMP_GHS
-#pragma ghs section bss=".uncacheable"
-#endif
+
 
 /* Ethernet specific control data structures.*/
 #if FNET_CFG_CPU_ETH0
+
+    #if (FNET_CFG_COMP_UV || FNET_CFG_COMP_GNUC || FNET_CFG_COMP_GHS) && FNET_CFG_CPU_CACHE && !FNET_CFG_CPU_CACHE_INVALIDATE
+        __attribute__((section(".uncacheable")))
+    #endif
+
     fnet_fec_if_t fnet_fec0_if;  /*eth0*/
 #endif
+
+
 #if FNET_CFG_CPU_ETH1
+
+    #if (FNET_CFG_COMP_UV || FNET_CFG_COMP_GNUC || FNET_CFG_COMP_GHS) && FNET_CFG_CPU_CACHE && !FNET_CFG_CPU_CACHE_INVALIDATE
+        __attribute__((section(".uncacheable")))
+    #endif
+
     fnet_fec_if_t fnet_fec1_if;  /*eth1*/
 #endif
 
-#if FNET_CFG_COMP_GHS
-#pragma ghs section bss=default
-#endif
 /*****************************************************************************
  * FEC general API structure.
  ******************************************************************************/
@@ -370,7 +377,7 @@ static fnet_return_t fnet_fec_init(fnet_netif_t *netif)
             if ((status & FNET_FEC_MII_REG_SR_AN_ABILITY) != 0u)
             {
                 /* Has auto-negotiate ability. */
-                last_time =  fnet_timer_ticks();
+                last_time =  fnet_timer_get_ticks();
 
                 do
                 {
@@ -381,7 +388,7 @@ static fnet_return_t fnet_fec_init(fnet_netif_t *netif)
                     }
                 }
                 while ( (fnet_fec_mii_read(ethif, FNET_FEC_MII_REG_SR, &status) == FNET_OK)
-                        && (  fnet_timer_get_interval(last_time, fnet_timer_ticks()) <= ((FNET_CFG_CPU_ETH_ATONEGOTIATION_TIMEOUT) / FNET_TIMER_PERIOD_MS) ) );
+                        && (  fnet_timer_get_interval(last_time, fnet_timer_get_ticks()) <= ((FNET_CFG_CPU_ETH_ATONEGOTIATION_TIMEOUT) / FNET_TIMER_PERIOD_MS) ) );
             }
         }
 #endif /* FNET_CFG_CPU_ETH_ATONEGOTIATION_TIMEOUT */
@@ -450,7 +457,9 @@ static void fnet_fec_input(fnet_netif_t *netif)
 
     fnet_mac_addr_t local_mac_addr;
 
+#if FNET_CFG_CPU_CACHE_INVALIDATE
     fnet_cpu_cache_invalidate();
+#endif
 
     /* While buffer !(empty or rx in progress)*/
     while((ethif->rx_buf_desc_cur->status & FNET_HTONS(FNET_FEC_RX_BD_E)) == 0u)
@@ -1180,8 +1189,8 @@ void fnet_fec_multicast_join(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr
 void fnet_fec_multicast_leave(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr )
 {
     fnet_fec_if_t   *ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->netif_prv))->eth_prv;
-    fnet_uint32_t     reg_value;
-    fnet_uint32_t     crc;
+    fnet_uint32_t   reg_value;
+    fnet_uint32_t   crc;
 
     /* Set the appropriate bit in the hash table */
     crc = fnet_fec_crc_hash(multicast_addr );

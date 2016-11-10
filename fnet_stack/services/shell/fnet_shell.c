@@ -575,7 +575,7 @@ void fnet_shell_script(fnet_shell_desc_t desc, fnet_char_t *script )
 }
 
 /************************************************************************
-* DESCRIPTION:
+* DESCRIPTION: Stops execution of the shell command line.
 ************************************************************************/
 void fnet_shell_script_release( fnet_shell_desc_t desc)
 {

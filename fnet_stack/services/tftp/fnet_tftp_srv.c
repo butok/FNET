@@ -298,7 +298,7 @@ static void fnet_tftp_srv_send_data(struct fnet_tftp_srv_if *tftp_srv_if)
     fnet_socket_sendto(tftp_srv_if->socket_transaction, (fnet_uint8_t *)&tftp_srv_if->packet.packet_data, (4u + tftp_srv_if->tx_data_size), 0u,
                        &tftp_srv_if->addr_transaction, sizeof(tftp_srv_if->addr_transaction) );
     /* Reset timeout. */
-    tftp_srv_if->last_time = fnet_timer_ticks();
+    tftp_srv_if->last_time = fnet_timer_get_ticks();
 }
 
 /************************************************************************
@@ -312,7 +312,7 @@ static void fnet_tftp_srv_send_ack(struct fnet_tftp_srv_if *tftp_srv_if)
     fnet_socket_sendto(tftp_srv_if->socket_transaction, (fnet_uint8_t *)&tftp_srv_if->packet.packet_ack, sizeof(struct fnet_tftp_packet_ack), 0u,
                        &tftp_srv_if->addr_transaction, sizeof(tftp_srv_if->addr_transaction) );
     /* Reset timeout. */
-    tftp_srv_if->last_time = fnet_timer_ticks();
+    tftp_srv_if->last_time = fnet_timer_get_ticks();
 }
 
 /************************************************************************
@@ -591,7 +591,7 @@ static void fnet_tftp_srv_state_machine( void *fnet_tftp_srv_if_p )
                 tftp_srv_if->state = FNET_TFTP_SRV_STATE_CLOSE;
             }
             /* Check timeout */
-            else if(fnet_timer_get_interval(tftp_srv_if->last_time, fnet_timer_ticks()) > (tftp_srv_if->timeout))
+            else if(fnet_timer_get_interval(tftp_srv_if->last_time, fnet_timer_get_ticks()) > (tftp_srv_if->timeout))
             {
                 /* Retransmit */
                 if(tftp_srv_if->retransmit_cur < tftp_srv_if->retransmit_max)

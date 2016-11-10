@@ -136,7 +136,7 @@ struct fnet_telnet_if
 };
 
 
-/* The Telnet interface */
+/* The Telnet interface list.*/
 static struct fnet_telnet_if telnet_if_list[FNET_CFG_TELNET_MAX];
 
 /************************************************************************
@@ -258,7 +258,7 @@ static void fnet_telnet_send(struct fnet_telnet_session_if *session)
 {
     fnet_int32_t    res;
     fnet_index_t    tx_buffer_tail_index = 0u;
-    fnet_time_t     timeout = fnet_timer_ticks();
+    fnet_time_t     timeout = fnet_timer_get_ticks();
 
     /* Send all data in the buffer.*/
     while((tx_buffer_tail_index != session->tx_buffer_head_index) && (session->state != FNET_TELNET_STATE_CLOSING))
@@ -271,9 +271,9 @@ static void fnet_telnet_send(struct fnet_telnet_session_if *session)
                 tx_buffer_tail_index += (fnet_index_t)res;
 
                 /* Reset timeout. */
-                timeout = fnet_timer_ticks();
+                timeout = fnet_timer_get_ticks();
             }
-            else if( fnet_timer_get_interval(timeout, fnet_timer_ticks())
+            else if( fnet_timer_get_interval(timeout, fnet_timer_get_ticks())
                      > (FNET_TELNET_WAIT_SEND_MS / FNET_TIMER_PERIOD_MS) ) /* Check timeout */
             {
                 FNET_DEBUG_TELNET("TELNET:Send timeout.");

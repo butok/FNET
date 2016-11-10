@@ -156,7 +156,7 @@ static void fnet_autoip_probe(fnet_autoip_if_t *llif)
      * Make sure that the IP address of the interface is still 0.0.0.0 (for
      * example, the DHCP client may have changed it in the meantime.
      */
-    llif->probe_time = fnet_timer_ticks();
+    llif->probe_time = fnet_timer_get_ticks();
     llif->wait_time = fnet_autoip_get_random_wait_time(FNET_AUTOIP_PROBE_MIN, FNET_AUTOIP_PROBE_MAX);
 
     /* RFC 3927 : the term "ARP Probe" is used to refer to an ARP
@@ -186,7 +186,7 @@ static void fnet_autoip_announce(fnet_autoip_if_t *llif)
 {
     /* TODO: Double check: is this gonna work?
      */
-    llif->announce_time = fnet_timer_ticks();
+    llif->announce_time = fnet_timer_get_ticks();
     fnet_arp_send_request(llif->netif, llif->ipaddr );
     llif->announcements++;
 }
@@ -239,7 +239,7 @@ static void fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_
     switch (state)
     {
         case FNET_AUTOIP_STATE_INIT:
-            llif->init_time = fnet_timer_ticks();
+            llif->init_time = fnet_timer_get_ticks();
             /* TODO: Is it a good idea to reset the IP address here?
              * What if the interface already has an IP address?
              * If that's the case, probably, the best thing to do is to quit. */
@@ -266,7 +266,7 @@ static void fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_
 #if FNET_CFG_AUTOIP_DEFEND_INTERVAL
         case FNET_AUTOIP_STATE_DEFEND:
             /* Record the time when the conflicting ARP packet was received. */
-            llif->collision_timestamp = fnet_timer_ticks();
+            llif->collision_timestamp = fnet_timer_get_ticks();
             /* Clear conflict flag and broadcast ARP announcement.*/
             fnet_netif_clear_ip4_addr_conflict(llif->netif);
             fnet_autoip_announce(llif);
@@ -311,7 +311,7 @@ static void fnet_autoip_state_machine( void *fnet_autoip_if_p )
             fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_WAIT);
             break;
         case FNET_AUTOIP_STATE_WAIT:
-            if (fnet_timer_get_interval(llif->init_time, fnet_timer_ticks()) > llif->wait_time)
+            if (fnet_timer_get_interval(llif->init_time, fnet_timer_get_ticks()) > llif->wait_time)
             {
                 fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_PROBE);
             }
@@ -336,7 +336,7 @@ static void fnet_autoip_state_machine( void *fnet_autoip_if_p )
                 else
                 {
                     /* There are still probes to be sent, after wait interval. */
-                    if (fnet_timer_get_interval(llif->probe_time, fnet_timer_ticks()) > llif->wait_time)
+                    if (fnet_timer_get_interval(llif->probe_time, fnet_timer_get_ticks()) > llif->wait_time)
                     {
                         fnet_autoip_probe(llif);
                     }
@@ -354,7 +354,7 @@ static void fnet_autoip_state_machine( void *fnet_autoip_if_p )
                 {
                     fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_INIT);
                 }
-                else if (fnet_timer_get_interval(llif->announce_time, fnet_timer_ticks())
+                else if (fnet_timer_get_interval(llif->announce_time, fnet_timer_get_ticks())
                          > FNET_AUTOIP_ANNOUNCE_INTERVAL * FNET_TIMER_TICKS_IN_SEC)
                 {
                     fnet_autoip_announce(llif);
@@ -405,7 +405,7 @@ static void fnet_autoip_state_machine( void *fnet_autoip_if_p )
                  * loop with both hosts trying to defend the same address.*/
                 fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_INIT); /* Reset */
             }
-            else if(fnet_timer_get_interval(llif->collision_timestamp, fnet_timer_ticks()) > (FNET_AUTOIP_DEFEND_INTERVAL * FNET_TIMER_TICKS_IN_SEC))
+            else if(fnet_timer_get_interval(llif->collision_timestamp, fnet_timer_get_ticks()) > (FNET_AUTOIP_DEFEND_INTERVAL * FNET_TIMER_TICKS_IN_SEC))
             {
                 /* Return to bound state.*/
                 fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_BOUND);

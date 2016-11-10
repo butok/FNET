@@ -35,14 +35,14 @@ extern "C" {
 
 #if FNET_CFG_MULTITHREADING
 fnet_return_t fnet_stack_mutex_init(void);
+void fnet_stack_mutex_free(void);
 void fnet_stack_mutex_lock(void);
 void fnet_stack_mutex_unlock(void);
-void fnet_stack_mutex_release(void);
 #else
 #define fnet_stack_mutex_init()        FNET_OK
+#define fnet_stack_mutex_free()        do{}while(0)
 #define fnet_stack_mutex_lock()        do{}while(0)
 #define fnet_stack_mutex_unlock()      do{}while(0)
-#define fnet_stack_mutex_release()     do{}while(0)
 #endif
 
 #if defined(__cplusplus)

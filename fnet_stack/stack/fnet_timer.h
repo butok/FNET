@@ -28,7 +28,7 @@
 #define _FNET_TIMER_H
 
 /*! @addtogroup fnet_timer
-* An application can use the @ref fnet_timer_ticks() function to get a number of
+* An application can use the @ref fnet_timer_get_ticks() function to get a number of
 * ticks (periods, defined by the @ref FNET_TIMER_PERIOD_MS) since the
 * hardware timer startup.
 */
@@ -71,7 +71,7 @@ typedef fnet_uint32_t fnet_time_t;
  *
  * @return   This function returns a current value of the timer counter in ticks.
  *
- * @see fnet_timer_seconds()
+ * @see fnet_timer_get_seconds()
  *
  ******************************************************************************
  *
@@ -81,8 +81,8 @@ typedef fnet_uint32_t fnet_time_t;
  * The period of one timer tick is defined by the @ref FNET_TIMER_PERIOD_MS.
  *
  ******************************************************************************/
-fnet_time_t fnet_timer_ticks( void );
-
+fnet_time_t fnet_timer_get_ticks( void );
+ 
 /***************************************************************************/ /*!
  *
  * @brief    Gets the timer counter value in seconds.
@@ -90,7 +90,7 @@ fnet_time_t fnet_timer_ticks( void );
  * @return   This function returns a current value of the timer counter
  *           in seconds.
  *
- * @see fnet_timer_ticks()
+ * @see fnet_timer_get_ticks()
  *
  ******************************************************************************
  *
@@ -99,7 +99,7 @@ fnet_time_t fnet_timer_ticks( void );
  * (it's done in the FNET stack initialization).
  *
  ******************************************************************************/
-fnet_time_t fnet_timer_seconds( void );
+fnet_time_t fnet_timer_get_seconds( void );
 
 /***************************************************************************/ /*!
  *
@@ -108,7 +108,7 @@ fnet_time_t fnet_timer_seconds( void );
  * @return   This function returns a current value of the timer counter
  *           in milliseconds.
  *
- * @see fnet_timer_ms()
+ * @see fnet_timer_get_ms()
  *
  ******************************************************************************
  *
@@ -117,7 +117,7 @@ fnet_time_t fnet_timer_seconds( void );
  * (it's done in the FNET stack initialization).@n
  *
  ******************************************************************************/
-fnet_time_t fnet_timer_ms( void );
+fnet_time_t fnet_timer_get_ms( void );
 
 /***************************************************************************/ /*!
  *

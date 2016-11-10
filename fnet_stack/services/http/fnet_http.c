@@ -181,7 +181,6 @@ static void fnet_http_state_machine( void *http_if_p )
                             FNET_DEBUG_HTTP("HTTP: RX Request From: %s; Port: %d.", ip_str, fnet_ntohs(foreign_addr.sa_port));
                         }
 #endif
-
                         /* Reset response & request parameters.*/
                         fnet_memset_zero(&session->response, sizeof(struct fnet_http_response));
                         fnet_memset_zero(&session->request, sizeof(struct fnet_http_request));
@@ -193,7 +192,7 @@ static void fnet_http_state_machine( void *http_if_p )
                         session->response.version.minor = FNET_HTTP_VERSION_MINOR;
                         session->response.tx_data = fnet_http_tx_status_line;
 #endif
-                        session->state_time = fnet_timer_ticks();          /* Reset timeout. */
+                        session->state_time = fnet_timer_get_ticks();          /* Reset timeout. */
                         session->buffer_actual_size = 0u;
                         session->state = FNET_HTTP_STATE_RX_REQUEST; /* => WAITING HTTP REQUEST */
                     }
@@ -210,7 +209,7 @@ static void fnet_http_state_machine( void *http_if_p )
                         {
                             if(res > 0) /* Received a data.*/
                             {
-                                session->state_time = fnet_timer_ticks();  /* Reset timeout.*/
+                                session->state_time = fnet_timer_get_ticks();  /* Reset timeout.*/
 
                                 session->buffer_actual_size++;
 
@@ -438,7 +437,7 @@ static void fnet_http_state_machine( void *http_if_p )
                                 {}
                             }
                             /* No data.*/
-                            else if(fnet_timer_get_interval(session->state_time, fnet_timer_ticks()) /* Time out? */
+                            else if(fnet_timer_get_interval(session->state_time, fnet_timer_get_ticks()) /* Time out? */
                                     > (FNET_HTTP_WAIT_RX_MS / FNET_TIMER_PERIOD_MS))
                             {
                                 session->state = FNET_HTTP_STATE_CLOSING; /*=> CLOSING */
@@ -466,7 +465,7 @@ static void fnet_http_state_machine( void *http_if_p )
                         if(res > 0)
                             /* Some Data.*/
                         {
-                            session->state_time = fnet_timer_ticks();  /* Reset timeout.*/
+                            session->state_time = fnet_timer_get_ticks();  /* Reset timeout.*/
                             res = session->request.method->receive(http);
                             if(res == FNET_ERR)
                             {
@@ -488,7 +487,7 @@ static void fnet_http_state_machine( void *http_if_p )
                         else
                             /* No Data.*/
                         {
-                            if(fnet_timer_get_interval(session->state_time, fnet_timer_ticks())
+                            if(fnet_timer_get_interval(session->state_time, fnet_timer_get_ticks())
                                > (FNET_HTTP_WAIT_RX_MS / FNET_TIMER_PERIOD_MS))
                                 /* Time out.*/
                             {
@@ -506,7 +505,7 @@ static void fnet_http_state_machine( void *http_if_p )
 #endif /* FNET_CFG_HTTP_POST.*/
                 /*---- TX --------------------------------------------------*/
                 case FNET_HTTP_STATE_TX: /* Send data. */
-                    if(fnet_timer_get_interval(session->state_time, fnet_timer_ticks())
+                    if(fnet_timer_get_interval(session->state_time, fnet_timer_get_ticks())
                        < (FNET_HTTP_WAIT_TX_MS / FNET_TIMER_PERIOD_MS)) /* Check timeout */
                     {
                         fnet_size_t send_size;
@@ -533,7 +532,7 @@ static void fnet_http_state_machine( void *http_if_p )
                             {
                                 FNET_DEBUG_HTTP("HTTP: TX %d bytes.", res);
 
-                                session->state_time = fnet_timer_ticks();              /* reset timeout */
+                                session->state_time = fnet_timer_get_ticks();              /* reset timeout */
                                 session->response.buffer_sent += (fnet_size_t)res;
                             }
                             break; /* => SENDING */
