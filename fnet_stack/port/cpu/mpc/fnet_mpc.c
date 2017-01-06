@@ -32,9 +32,14 @@
 *************************************************************************/
 void fnet_cpu_reset (void)
 {
-#if !FNET_CFG_CPU_MPC5744P
+#if FNET_CFG_CPU_MPC5744P
+    /* triggers a "functional" reset event */
+    FNET_MPC_MC_MCTL = 0x00005AF0;
+    FNET_MPC_MC_MCTL = 0x0000A50F;
+#else
     FNET_MPC_SIU_SRCR = 0x80000000; /* Software System Reset */
 #endif
+
 }
 
 /************************************************************************

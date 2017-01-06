@@ -151,16 +151,12 @@ typedef struct fnet_mdns_if
     fnet_mdns_state_t           state;                                          /* Current state */
     fnet_poll_desc_t            service_descriptor;                             /* Service descriptor. */
     fnet_netif_desc_t           netif;                                          /* Network interface descriptor. */
-    const char                  *name;                                          /* Name, null-terminated. Provided during initialization.
-                                                                                * User-visible name of the accessory, e.g. "LED Bulb".
-                                                                                * It must match the name provided in the Accessory Information Service 
-                                                                                * of the HAP Accessory object that has an instanceID of 1.
-                                                                                * Maximum length is 63. UTF-8 encoded text. */
     fnet_uint32_t               rr_ttl;                                         /* Resource record TTL */
     fnet_address_family_t       addr_family;                                    /* Address family (IPv6 or IPv4 or both) the server will listen and send */
-    char                        host_name[FNET_MDNS_HOST_NAME_LEN_MAX];         /* Parsed "name" containing only legal symbols, optionally appended with host_name_count */  
+    fnet_size_t                 name_length;                                    /* Length of the service name without index postfix */
+    char                        host_name[FNET_MDNS_HOST_NAME_LEN_MAX+1];       /* Parsed "name" containing only legal symbols, optionally appended with host_name_count */  
     fnet_uint32_t               host_name_count;                                /* Count of try device name */
-    char                        service_name[FNET_MDNS_HOST_NAME_LEN_MAX];      /* Service name, optionally appended with host_name_count */  
+    char                        service_name[FNET_MDNS_HOST_NAME_LEN_MAX+1];    /* Service name, optionally appended with host_name_count */  
     fnet_uint32_t               probe_count;                                    /* Number of sent probe queries without name conflict.*/
     fnet_uint32_t               announce_count;                                 /* Count of sent annoncemnts */
     fnet_socket_t               socket_listen;                                  /* Listening socket.*/
@@ -232,7 +228,8 @@ static fnet_uint8_t * fnet_mdns_add_domain_name(fnet_uint8_t *buf, fnet_uint32_t
 static void fnet_mdns_send_response(fnet_mdns_if_t *mdns_if, fnet_uint32_t ttl);
 static fnet_uint8_t * fnet_mdns_add_rr_header(fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_mdns_rr_type_t type, fnet_bool_t flush, fnet_uint32_t ttl, fnet_uint16_t data_length);
 static void fnet_mdns_send(fnet_mdns_if_t *mdns_if, fnet_address_family_t address_family, fnet_uint8_t * buffer, fnet_uint32_t send_size);
-static void fnet_mdns_generate_name(fnet_mdns_if_t *mdns_if);
+static void fnet_mdns_update_name(fnet_mdns_if_t *mdns_if, const fnet_char_t *name);
+static void fnet_mdns_update_name_counter(fnet_mdns_if_t *mdns_if);
 static void fnet_mdns_change_state(fnet_mdns_if_t *mdns_if, fnet_mdns_state_t state);
 static void fnet_mdns_recv(fnet_mdns_if_t *mdns_if);
 static void fnet_mdns_send_probe(fnet_mdns_if_t *mdns_if);
@@ -324,7 +321,6 @@ fnet_mdns_desc_t fnet_mdns_init( struct fnet_mdns_params *params )
 
     /* Set parameters.*/
     mdns_if->netif = params->netif_desc;
-    mdns_if->name = params->name;
     if(params->rr_ttl == 0u)
     {
         mdns_if->rr_ttl = FNET_CFG_MDNS_RR_TTL;
@@ -334,11 +330,8 @@ fnet_mdns_desc_t fnet_mdns_init( struct fnet_mdns_params *params )
         mdns_if->rr_ttl = params->rr_ttl;
     }
 
-    /* Reset device name counter */
-    mdns_if->host_name_count = 0;
-
     /* Generate host_name.*/
-    fnet_mdns_generate_name(mdns_if);
+    fnet_mdns_update_name(mdns_if, params->name);
 
     /* Init local socket address.*/
     fnet_memset_zero(&local_addr, sizeof(local_addr));
@@ -356,7 +349,8 @@ fnet_mdns_desc_t fnet_mdns_init( struct fnet_mdns_params *params )
     mdns_if->addr_family = local_addr.sa_family;
 
     /* Create listen socket */
-    if((mdns_if->socket_listen = fnet_socket(local_addr.sa_family, SOCK_DGRAM, 0u)) == FNET_ERR)
+    mdns_if->socket_listen = fnet_socket(local_addr.sa_family, SOCK_DGRAM, 0u);
+    if(mdns_if->socket_listen == FNET_NULL)
     {
         FNET_DEBUG_MDNS(FNET_MDNS_ERR_SOCKET_CREATION);
         goto ERROR_1;
@@ -545,46 +539,74 @@ fnet_bool_t fnet_mdns_is_enabled(fnet_mdns_desc_t desc)
 /************************************************************************
 * DESCRIPTION: Generate host and service name.
 ************************************************************************/
-static void fnet_mdns_generate_name(fnet_mdns_if_t *mdns_if)
+static void fnet_mdns_update_name(fnet_mdns_if_t *mdns_if, const fnet_char_t *name)
 {
     FNET_ASSERT(mdns_if != NULL);
+    FNET_ASSERT(name != NULL);
 
     fnet_char_t *c;
+    fnet_size_t length = fnet_strlen(name);
 
-    /* Change name to device (count) */
-    if(mdns_if->host_name_count>0)
+    if(length <= FNET_MDNS_NAME_MAX)
     {
-        fnet_snprintf(mdns_if->host_name, sizeof(mdns_if->host_name), "%s %d", mdns_if->name, mdns_if->host_name_count);
-        fnet_snprintf(mdns_if->service_name, sizeof(mdns_if->service_name), "%s %d", mdns_if->name, mdns_if->host_name_count);
-    }
-    else
-    {
-        fnet_snprintf(mdns_if->host_name, sizeof(mdns_if->host_name), "%s", mdns_if->name);
-        fnet_snprintf(mdns_if->service_name, sizeof(mdns_if->service_name), "%s", mdns_if->name);
-    }
-   
-    /* Allow only legal characters in address record names.*/
-    for(c = mdns_if->host_name; *c != '\0'; c++)
-    {
-        /*7-bit ASCII embedded in an 8 bit byte whose high order bit is always 0.*/
-        if(*c <= 127)
+        /* Reset device name counter */
+        mdns_if->host_name_count = 0;
+
+        /* Save name length.*/
+        mdns_if->name_length = fnet_strlen(name);
+
+        /* Copy name. */
+        fnet_strcpy(mdns_if->host_name, name);
+        fnet_strcpy(mdns_if->service_name, name);
+       
+        /* Allow only legal characters in address record names.*/
+        for(c = mdns_if->host_name; *c != '\0'; c++)
         {
-            /*RFC6762: For names that are restricted to US-ASCII [RFC0020] letters, digits and and hyphens*/
-            if( !(((*c<='Z') && (*c>='A'))||
-                ((*c<='z') && (*c>='a'))||
-                ((*c<='9') && (*c>='0'))||
-                (*c=='-') ||
-                (*c=='_') ) )
+            /*7-bit ASCII embedded in an 8 bit byte whose high order bit is always 0.*/
+            if(*c <= 127)
             {
-                /* Replace illegal label symbols by '-'*/
-                *c = '-';
+                /*RFC6762: For names that are restricted to US-ASCII [RFC0020] letters, digits and and hyphens*/
+                if( !(((*c<='Z') && (*c>='A'))||
+                    ((*c<='z') && (*c>='a'))||
+                    ((*c<='9') && (*c>='0'))||
+                    (*c=='-') ||
+                    (*c=='_') ) )
+                {
+                    /* Replace illegal label symbols by '-'*/
+                    *c = '-';
+                }
             }
+            /* else UTF-8 */
         }
-        /* else UTF-8 */
     }
 
     FNET_DEBUG_MDNS("MDNS: Host-name set to (%s).", mdns_if->host_name);
 }
+/************************************************************************
+* DESCRIPTION: Update counter of host and service name. 
+************************************************************************/
+static void fnet_mdns_update_name_counter(fnet_mdns_if_t *mdns_if)
+{
+    FNET_ASSERT(mdns_if != NULL);
+
+    /* Update name counter. */
+    mdns_if->host_name_count++;
+
+    /* Change name to device (count) */
+    if(mdns_if->host_name_count>0)
+    {
+        fnet_snprintf(&mdns_if->host_name[mdns_if->name_length], (sizeof(mdns_if->host_name) - mdns_if->name_length), " %d", mdns_if->host_name_count);
+        fnet_snprintf(&mdns_if->service_name[mdns_if->name_length], (sizeof(mdns_if->service_name) - mdns_if->name_length), " %d", mdns_if->host_name_count);
+    }
+    else
+    {
+        mdns_if->host_name[mdns_if->name_length] = '\0';
+        mdns_if->service_name[mdns_if->name_length] = '\0';
+    }
+
+    FNET_DEBUG_MDNS("MDNS: Host-name set to (%s).", mdns_if->host_name);
+}
+
 
 /************************************************************************
 * DESCRIPTION: mDNS server poll (state machine).
@@ -1532,8 +1554,7 @@ static const fnet_uint8_t *fnet_mdns_process_response(fnet_mdns_if_t *mdns_if, c
                 /* If in Probing state, change name and try again */
                 if((mdns_if->state == FNET_MDNS_STATE_PROBING))
                 {
-                    mdns_if->host_name_count++;
-                    fnet_mdns_generate_name(mdns_if); /* Regenerate name.*/
+                    fnet_mdns_update_name_counter(mdns_if); /* Regenerate name.*/
                 }
 
                 /* RFC: If fifteen conflicts occur within any ten-second period, then the
@@ -2504,8 +2525,6 @@ static fnet_uint8_t * fnet_mdns_add_service_name(fnet_mdns_if_t *mdns_if, fnet_u
     }
     else
     {
-        FNET_ASSERT(ptr >= mdns_if->buffer);
-
         if(compression)
         {
             /* Offset, used by Domain Name Compression.*/

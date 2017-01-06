@@ -60,6 +60,8 @@
 * - @ref FNET_CFG_HTTP_AUTHENTICATION_BASIC
 * - @ref FNET_CFG_HTTP_PORT
 * - @ref FNET_CFG_HTTP_REQUEST_SIZE_MAX
+* - @ref FNET_CFG_HTTP_TLS
+* - @ref FNET_CFG_HTTP_TLS_PORT
 */
 /*! @{ */
 
@@ -160,6 +162,18 @@ typedef enum
 } fnet_http_status_code_t;
 #endif
 
+#if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS) || defined(__DOXYGEN__)
+/**************************************************************************/ /*!
+ * @brief HTTP over TLS (HTTPS) input parameters for @ref fnet_http_init().
+ ******************************************************************************/
+struct fnet_http_tls_params
+{
+    const fnet_uint8_t  *certificate_buffer;        /**< @brief Buffer holding the certificate data in PEM or DER format. */
+    fnet_size_t         certificate_buffer_size;    /**< @brief Size of the certificate buffer (including the terminating null byte for PEM data). */
+    const fnet_uint8_t  *private_key_buffer;        /**< @brief Buffer holding the private key in PEM or DER format. */
+    fnet_size_t         private_key_buffer_size;    /**< @brief Size of the private key buffer (including the terminating null byte for PEM data). */
+};
+#endif
 
 /**************************************************************************/ /*!
  * @brief Input parameters for @ref fnet_http_init().
@@ -174,20 +188,19 @@ struct fnet_http_params
                                                 * If server address family is set to @c 0, it will be assigned to @ref AF_SUPPORTED. @n
                                                 * If server port number is set to @c 0, it will be assigned to the default port number defined by @ref FNET_CFG_HTTP_PORT.*/
 #if FNET_CFG_HTTP_SSI || defined(__DOXYGEN__)
-    const struct fnet_http_ssi *ssi_table;      /**< @brief Pointer to the optional
-                                                 * SSI callback function table. */
+    const struct fnet_http_ssi *ssi_table;      /**< @brief Pointer to the optional SSI callback function table. */
 #endif
 #if FNET_CFG_HTTP_CGI || defined(__DOXYGEN__)
-    const struct fnet_http_cgi *cgi_table;      /**< @brief Pointer to the optional
-                                                 * CGI callback function table. */
+    const struct fnet_http_cgi *cgi_table;      /**< @brief Pointer to the optional CGI callback function table. */
 #endif
 #if (FNET_CFG_HTTP_AUTHENTICATION_BASIC && FNET_CFG_HTTP_VERSION_MAJOR) || defined(__DOXYGEN__)
-    const struct fnet_http_auth  *auth_table;   /**< @brief Pointer to the optional
-                                                 * HTTP Access Authentification table. */
+    const struct fnet_http_auth  *auth_table;   /**< @brief Pointer to the optional HTTP Access Authentification table. */
 #endif
 #if (FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR) || defined(__DOXYGEN__)
-    const struct fnet_http_post *post_table;    /**< @brief Pointer to the optional
-                                                 * POST callback function table. */
+    const struct fnet_http_post *post_table;    /**< @brief Pointer to the optional POST callback function table. */
+#endif
+#if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS) || defined(__DOXYGEN__)
+    struct fnet_http_tls_params *tls_params;    /**< @brief Pointer to the optional HTTP over TLS (HTTPS) parameters. */
 #endif
 };
 

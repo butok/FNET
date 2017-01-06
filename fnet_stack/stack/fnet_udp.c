@@ -589,16 +589,16 @@ static fnet_int32_t fnet_udp_rcv(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_s
     }
 #endif /* FNET_CFG_TCP_URGENT */
 
-    if((length = fnet_socket_buffer_read_address(&(sk->receive_buffer), buf,
-                 len, &foreign_addr, ((flags & MSG_PEEK) == 0u) ? FNET_TRUE : FNET_FALSE)) == FNET_ERR)
-    {
-        /* The message was too large to fit into the specified buffer and was truncated.*/
-        error = FNET_ERR_MSGSIZE;
-        goto ERROR;
-    }
-
     if(sk->options.local_error == FNET_ERR_OK)
     {
+        if((length = fnet_socket_buffer_read_address(&(sk->receive_buffer), buf,
+                     len, &foreign_addr, ((flags & MSG_PEEK) == 0u) ? FNET_TRUE : FNET_FALSE)) == FNET_ERR)
+        {
+            /* The message was too large to fit into the specified buffer and was truncated.*/
+            error = FNET_ERR_MSGSIZE;
+            goto ERROR;
+        }
+
         if(addr)
         {
             fnet_socket_addr_copy(&foreign_addr, addr);
@@ -644,7 +644,7 @@ static void fnet_udp_control_input(fnet_prot_notify_t command, struct sockaddr *
                 error = FNET_ERR_CONNRESET;
                 break;
             case FNET_PROT_NOTIFY_PARAMPROB:        /* Header incorrect.*/
-                error = FNET_ERR_NOPROTOOPT;          /* Bad protocol option.*/
+                error = FNET_ERR_NOPROTOOPT;        /* Bad protocol option.*/
                 break;
             default:
                 return;

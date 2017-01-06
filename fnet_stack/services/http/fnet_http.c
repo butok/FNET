@@ -41,8 +41,8 @@
 *     Definitions
 ************************************************************************/
 /* Automated time-outs */
-#define FNET_HTTP_WAIT_TX_MS                    (10000u)  /* ms*/
-#define FNET_HTTP_WAIT_RX_MS                    (15000u)  /* ms*/
+#define FNET_HTTP_WAIT_TX_MS                    (15000u)  /* ms*/
+#define FNET_HTTP_WAIT_RX_MS                    (20000u)  /* ms*/
 
 #define FNET_HTTP_BACKLOG_MAX                   (FNET_CFG_HTTP_SESSION_MAX)
 
@@ -112,7 +112,9 @@ static const struct fnet_http_content_type *fnet_http_content_type_list[] =
 /* The HTTP interface */
 static struct fnet_http_if http_if_list[FNET_CFG_HTTP_MAX];
 
-static void fnet_http_state_machine( void *http_if_p );
+static void fnet_http_poll(void *http_if_p);
+static fnet_int32_t fnet_http_recv(struct fnet_http_session_if *session, fnet_uint8_t *buf, fnet_size_t len);
+static fnet_int32_t fnet_http_send(struct fnet_http_session_if *session, fnet_uint8_t *buf, fnet_size_t len);
 
 #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
 
@@ -146,7 +148,7 @@ static fnet_return_t fnet_http_tx_status_line (struct fnet_http_if *http);
 /************************************************************************
 * DESCRIPTION: Http server state machine.
 ************************************************************************/
-static void fnet_http_state_machine( void *http_if_p )
+static void fnet_http_poll( void *http_if_p )
 {
     struct sockaddr                 foreign_addr;
     fnet_size_t                     len;
@@ -170,8 +172,8 @@ static void fnet_http_state_machine( void *http_if_p )
                 /*---- LISTENING ------------------------------------------------*/
                 case FNET_HTTP_STATE_LISTENING:
                     len = sizeof(foreign_addr);
-
-                    if((session->socket_foreign = fnet_socket_accept(http->socket_listen, &foreign_addr, &len)) != FNET_ERR)
+                    session->socket_foreign = fnet_socket_accept(http->socket_listen, &foreign_addr, &len);
+                    if(session->socket_foreign)
                     {
 #if FNET_CFG_DEBUG_HTTP && FNET_CFG_DEBUG
                         {
@@ -194,18 +196,30 @@ static void fnet_http_state_machine( void *http_if_p )
 #endif
                         session->state_time = fnet_timer_get_ticks();          /* Reset timeout. */
                         session->buffer_actual_size = 0u;
+
+#if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
+                        if(http->tls_desc)
+                        {
+                            session->tls_sock = fnet_tls_socket(http->tls_desc, session->socket_foreign);
+                            if(session->tls_sock == 0)
+                            {
+                                FNET_DEBUG_HTTP("HTTP: TLS socket() failed");
+                                session->state = FNET_HTTP_STATE_CLOSING;
+                                break;
+                            }
+                        }
+#endif
                         session->state = FNET_HTTP_STATE_RX_REQUEST; /* => WAITING HTTP REQUEST */
                     }
                     break;
                 /*---- RX_LINE -----------------------------------------------*/
                 case FNET_HTTP_STATE_RX_REQUEST:
-
                     do
                     {
                         /* Read character by character.*/
                         ch = &session->buffer[session->buffer_actual_size];
 
-                        if((res = fnet_socket_recv(session->socket_foreign, ch, 1u, 0u) ) != FNET_ERR)
+                        if((res = fnet_http_recv(session, ch, 1u) ) != FNET_ERR)
                         {
                             if(res > 0) /* Received a data.*/
                             {
@@ -267,6 +281,7 @@ static void fnet_http_state_machine( void *http_if_p )
                                             {
                                                 /* Client does not support HTTP/1.x*/
                                                 session->state = FNET_HTTP_STATE_CLOSING;  /*=> CLOSING */
+                                                FNET_DEBUG_HTTP("HTTP: client does not support HTTP/1.x");
                                             }
                                             else
                                             {
@@ -309,6 +324,7 @@ static void fnet_http_state_machine( void *http_if_p )
                                                     session->state = FNET_HTTP_STATE_TX; /* Send error.*/
 #else /* HTTP/0.9 */
                                                     session->state = FNET_HTTP_STATE_CLOSING;
+                                                    FNET_DEBUG_HTTP("HTTP: method error");
 #endif
                                                 }
                                             }
@@ -323,6 +339,7 @@ static void fnet_http_state_machine( void *http_if_p )
                                             session->state = FNET_HTTP_STATE_TX; /* Send error.*/
 #else /* HTTP/0.9 */
                                             session->state = FNET_HTTP_STATE_CLOSING;
+                                            FNET_DEBUG_HTTP("HTTP: Method is not supported.");
 #endif
                                         }
 
@@ -431,6 +448,7 @@ static void fnet_http_state_machine( void *http_if_p )
 
 #else /* HTTP/0.9 */
                                     session->state = FNET_HTTP_STATE_CLOSING;
+                                    fnet_println("HTTP: Buffer is full.");
 #endif
                                 }
                                 else
@@ -441,15 +459,17 @@ static void fnet_http_state_machine( void *http_if_p )
                                     > (FNET_HTTP_WAIT_RX_MS / FNET_TIMER_PERIOD_MS))
                             {
                                 session->state = FNET_HTTP_STATE_CLOSING; /*=> CLOSING */
+                                FNET_DEBUG_HTTP("HTTP: Timeout.");
                             }
                             /* else => WAITING REQUEST. */
                             else
                             {}
                         }
-                        /* fnet_socket_recv() error.*/
+                        /* fnet_http_recv() error.*/
                         else
                         {
                             session->state = FNET_HTTP_STATE_CLOSING; /*=> CLOSING */
+                            FNET_DEBUG_HTTP("HTTP: RX error.");
                         }
                     }
                     while ((res > 0) && (session->state == FNET_HTTP_STATE_RX_REQUEST)); /* Till receiving the request header.*/
@@ -457,7 +477,7 @@ static void fnet_http_state_machine( void *http_if_p )
 #if FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR
                 /*---- RX --------------------------------------------------*/
                 case FNET_HTTP_STATE_RX: /* Receive data (Entity-Body). */
-                    if((res = fnet_socket_recv(session->socket_foreign, &session->buffer[session->buffer_actual_size], (FNET_HTTP_BUF_SIZE - session->buffer_actual_size), 0u) ) != FNET_ERR)
+                    if((res = fnet_http_recv(session, &session->buffer[session->buffer_actual_size], (FNET_HTTP_BUF_SIZE - session->buffer_actual_size)) ) != FNET_ERR)
                     {
                         session->buffer_actual_size += (fnet_size_t)res;
                         session->request.content_length -= res;
@@ -491,6 +511,7 @@ static void fnet_http_state_machine( void *http_if_p )
                                > (FNET_HTTP_WAIT_RX_MS / FNET_TIMER_PERIOD_MS))
                                 /* Time out.*/
                             {
+                                FNET_DEBUG_HTTP("HTTP: Time out.");
                                 session->state = FNET_HTTP_STATE_CLOSING; /*=> CLOSING */
                             }
                         }
@@ -498,6 +519,7 @@ static void fnet_http_state_machine( void *http_if_p )
                     else
                         /* Socket error.*/
                     {
+                        FNET_DEBUG_HTTP("HTTP: Socket error.");
                         session->state = FNET_HTTP_STATE_CLOSING; /*=> CLOSING */
                     }
 
@@ -518,6 +540,7 @@ static void fnet_http_state_machine( void *http_if_p )
 
                             if((session->response.send_eof) || (session->response.tx_data(http) == FNET_ERR)) /* get data for sending */
                             {
+                                FNET_DEBUG_HTTP("HTTP: TX EOF.");
                                 session->state = FNET_HTTP_STATE_CLOSING; /*=> CLOSING */
                                 break;
                             }
@@ -525,8 +548,7 @@ static void fnet_http_state_machine( void *http_if_p )
 
                         send_size = (session->buffer_actual_size - session->response.buffer_sent);
 
-                        if((res = fnet_socket_send(session->socket_foreign, session->buffer
-                                                   + session->response.buffer_sent, send_size, 0u)) != FNET_ERR)
+                        if((res = fnet_http_send(session, session->buffer + session->response.buffer_sent, send_size)) != FNET_ERR)
                         {
                             if(res)
                             {
@@ -538,7 +560,7 @@ static void fnet_http_state_machine( void *http_if_p )
                             break; /* => SENDING */
                         }
                     }
-
+                    FNET_DEBUG_HTTP("HTTP:Time out.");
                     session->state = FNET_HTTP_STATE_CLOSING; /*=> CLOSING */
                     break;
                 /*---- CLOSING --------------------------------------------------*/
@@ -548,8 +570,18 @@ static void fnet_http_state_machine( void *http_if_p )
                         session->request.method->close(http);
                     }
 
+#if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
+                    if(session->tls_sock)
+                    {
+                        /* Close TLS session */
+                        fnet_tls_socket_close(session->tls_sock);
+                        session->tls_sock = 0;
+                    }
+#endif
                     fnet_socket_close(session->socket_foreign);
-                    session->socket_foreign = FNET_ERR;
+                    session->socket_foreign = FNET_NULL;
+
+                    FNET_DEBUG_HTTP("HTTP: Session close");
 
                     session->state = FNET_HTTP_STATE_LISTENING; /*=> LISTENING */
                     break;
@@ -570,9 +602,8 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
     struct fnet_http_uri    uri;
     fnet_index_t            i;
     struct fnet_http_if     *http_if = 0;
-    const struct linger     linger_option = {FNET_TRUE, /*l_onoff*/
-              4  /*l_linger*/
-    };
+    const struct linger     linger_option = { .l_onoff = FNET_TRUE, 
+                                              .l_linger = 4 /*sec*/};
 
     if((params == 0) || (params->root_path == 0) || (params->index_path == 0))
     {
@@ -583,7 +614,7 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
     /* Try to find free HTTP server. */
     for(i = 0u; i < FNET_CFG_HTTP_MAX; i++)
     {
-        if(http_if_list[i].enabled == FNET_FALSE)
+        if(http_if_list[i].is_enabled == FNET_FALSE)
         {
             http_if = &http_if_list[i];
             break;
@@ -596,6 +627,9 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
         FNET_DEBUG_HTTP("HTTP: No free HTTP Server.");
         goto ERROR_1;
     }
+
+    /* Clear all parameters.*/
+    fnet_memset(http_if, 0, sizeof(*http_if));
 
 #if FNET_CFG_HTTP_SSI
     http_if->ssi.ssi_table = params->ssi_table;
@@ -617,7 +651,17 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
 
     if(local_addr.sa_port == 0u)
     {
-        local_addr.sa_port = FNET_CFG_HTTP_PORT; /* Aply the default port.*/
+        /* Aply the default port.*/
+    #if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
+        if(params->tls_params)
+        {
+            local_addr.sa_port = FNET_CFG_HTTP_TLS_PORT;
+        }
+        else
+    #endif
+        {
+            local_addr.sa_port = FNET_CFG_HTTP_PORT; 
+        }
     }
 
     if(local_addr.sa_family == AF_UNSPEC)
@@ -626,7 +670,8 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
     }
 
     /* Create listen socket */
-    if((http_if->socket_listen = fnet_socket(local_addr.sa_family, SOCK_STREAM, 0u)) == FNET_ERR)
+    http_if->socket_listen = fnet_socket(local_addr.sa_family, SOCK_STREAM, 0u);
+    if(http_if->socket_listen == FNET_NULL)
     {
         FNET_DEBUG_HTTP("HTTP: Socket creation error.");
         goto ERROR_1;
@@ -677,33 +722,49 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
     for(i = 0u; i < FNET_CFG_HTTP_SESSION_MAX; i++)
     {
         struct fnet_http_session_if   *session = &http_if->session[i];
-
-        session->socket_foreign = FNET_ERR;
-
         session->state = FNET_HTTP_STATE_LISTENING;
     }
 
-    http_if->service_descriptor = fnet_poll_service_register(fnet_http_state_machine, (void *) http_if);
+    http_if->service_descriptor = fnet_poll_service_register(fnet_http_poll, (void *) http_if);
     if(http_if->service_descriptor == 0)
     {
         FNET_DEBUG_HTTP("HTTP: Service registration error.");
         goto ERROR_4;
     }
 
-    http_if->session_active = FNET_NULL;
-    http_if->enabled = FNET_TRUE;
+#if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
+    if(params->tls_params)
+    {
+        struct fnet_tls_params tls_params;
+        
+        tls_params.certificate_buffer = params->tls_params->certificate_buffer;
+        tls_params.certificate_buffer_size = params->tls_params->certificate_buffer_size;
+        tls_params.private_key_buffer = params->tls_params->private_key_buffer;
+        tls_params.private_key_buffer_size = params->tls_params->private_key_buffer_size;
+
+        http_if->tls_desc = fnet_tls_init(&tls_params);
+        if(http_if->tls_desc == 0)
+        {
+            FNET_DEBUG_HTTP("HTTP: TLS initialization error.");
+            goto ERROR_5;
+        }
+    }
+#endif
+
+    http_if->is_enabled = FNET_TRUE;
 
     return (fnet_http_desc_t)http_if;
 
+#if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
+ERROR_5:
+    fnet_poll_service_unregister(http_if->service_descriptor);
+#endif
 ERROR_4:
     fnet_fs_fclose(http_if->index_file);
-
 ERROR_3:
     fnet_fs_closedir(http_if->root_dir);
-
 ERROR_2:
     fnet_socket_close(http_if->socket_listen);
-
 ERROR_1:
     return 0;
 }
@@ -716,26 +777,38 @@ void fnet_http_release(fnet_http_desc_t desc)
     struct fnet_http_if     *http_if = (struct fnet_http_if *) desc;
     fnet_index_t            i;
 
-    if(http_if && (http_if->enabled == FNET_TRUE))
+    if(http_if && (http_if->is_enabled == FNET_TRUE))
     {
         for(i = 0u; i < FNET_CFG_HTTP_SESSION_MAX; i++)
         {
             struct fnet_http_session_if   *session = &http_if->session[i];
 
+#if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
+            if(session->tls_sock)
+            {
+                /* Close TLS session */
+                fnet_tls_socket_close(session->tls_sock);
+            }
+#endif
+
             fnet_socket_close(session->socket_foreign);
-            session->socket_foreign = FNET_ERR;
-            session->state = FNET_HTTP_STATE_DISABLED;
             fnet_fs_fclose(session->send_param.file_desc);
         }
 
         fnet_fs_fclose(http_if->index_file);
-
         fnet_fs_closedir(http_if->root_dir);
-
         fnet_socket_close(http_if->socket_listen);
         fnet_poll_service_unregister(http_if->service_descriptor); /* Delete service.*/
 
-        http_if->enabled = FNET_FALSE;
+#if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
+        if(http_if->tls_desc)
+        {
+            fnet_tls_release(http_if->tls_desc);                   /* Release TLS. */
+        }
+#endif
+
+        /* Clear all parameters.*/
+        fnet_memset(http_if, 0, sizeof(*http_if));
     }
 }
 
@@ -750,7 +823,7 @@ fnet_bool_t fnet_http_is_enabled(fnet_http_desc_t desc)
 
     if(http_if)
     {
-        result = http_if->enabled;
+        result = http_if->is_enabled;
     }
     else
     {
@@ -1227,6 +1300,46 @@ void fnet_http_set_response_no_header (fnet_http_session_t session)
     {
         ((struct fnet_http_session_if *)session)->response.no_header = FNET_TRUE;
     }
+}
+
+/************************************************************************
+* DESCRIPTION: Receives the data from a HTTP session socket.
+************************************************************************/
+static fnet_int32_t fnet_http_recv(struct fnet_http_session_if *session, fnet_uint8_t *buf, fnet_size_t len)
+{
+    fnet_int32_t res;
+
+#if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
+    if(session->tls_sock)
+    {
+        res =  fnet_tls_socket_recv(session->tls_sock, buf, len);
+    }
+    else
+#endif
+    {
+        res = fnet_socket_recv(session->socket_foreign, buf, len, 0u);
+    }
+    return res;
+}
+
+/************************************************************************
+* DESCRIPTION: Sends data on a HTTP session socket.
+************************************************************************/
+static fnet_int32_t fnet_http_send(struct fnet_http_session_if *session, fnet_uint8_t *buf, fnet_size_t len)
+{
+    fnet_int32_t res;
+
+#if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
+    if(session->tls_sock)
+    {
+        res =  fnet_tls_socket_send(session->tls_sock, buf, len);
+    }
+    else
+#endif
+    {
+        res = fnet_socket_send(session->socket_foreign, buf, len, 0u);
+    }
+    return res;
 }
 
 #endif /* FNET_CFG_HTTP_VERSION_MAJOR */

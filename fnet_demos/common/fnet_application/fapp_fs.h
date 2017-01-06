@@ -39,7 +39,7 @@
 extern "C" {
 #endif
 
-#if FAPP_CFG_EXP_CMD || FAPP_CFG_HTTP_CMD
+#if FAPP_CFG_EXP_CMD || FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD
 
 #define FAPP_FS_MOUNT_NAME       "rom"
 

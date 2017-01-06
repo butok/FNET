@@ -45,6 +45,7 @@
 #include "mdns/fnet_mdns.h"
 #include "autoip/fnet_autoip.h"
 #include "link/fnet_link.h"
+#include "tls/fnet_tls.h"
 
 #endif
 

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2015 by Andrey Butok. FNET Community.
+* Copyright 2015-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -17,12 +17,7 @@
 *  limitations under the License.
 *
 **********************************************************************/ /*!
-*
-* @file fnet_ssl_config.h
-*
-* @author Andrey Butok
-*
-* @brief FNET SSL library configuration file.
+* @brief FNET TLS library configuration file.
 *
 ***************************************************************************/
 
@@ -30,22 +25,45 @@
  * !!!DO NOT MODIFY THIS FILE!!!
  **************************************************************************/
 
-#ifndef _FNET_SSL_CONFIG_H_
+#ifndef _FNET_TLS_CONFIG_H_
 
-#define _FNET_SSL_CONFIG_H_
+#define _FNET_TLS_CONFIG_H_
 
-/* TBD under development */
+/** @addtogroup fnet_tls_config */
+/** @{ */
 
 /**************************************************************************/ /*!
- * @def      FNET_CFG_SSL //TBD under development
- * @internal
- * @brief    SSL Library support:
- *               - @c 1 = is enabled.
+ * @def      FNET_CFG_TLS
+ * @brief    TLS Library support:
+ *               - @c 1 = is enabled. It is used mbedTLS.
  *               - @b @c 0 = is disabled (Default value).
+ * @showinitializer
  ******************************************************************************/
-#ifndef FNET_CFG_SSL
-    #define FNET_CFG_SSL       (0)
+#ifndef FNET_CFG_TLS
+    #define FNET_CFG_TLS                (0)
 #endif
 
+/**************************************************************************/ /*!
+ * @def     FNET_CFG_TLS_MAX
+ * @brief   Maximum number of the TLS contexts that can be initialized 
+ *          simultaneously, using fnet_tls_init(). @n
+ *          Default value is @b @c 1.
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_TLS_MAX
+    #define FNET_CFG_TLS_MAX            (1u)
+#endif
 
-#endif /* _FNET_SSL_CONFIG_H_ */
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_TLS_SOCKET_MAX
+ * @brief    Maximum number of TLS sockets that may exist at the same time. @n
+ *          Default value is @b @c 3.
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_TLS_SOCKET_MAX
+    #define FNET_CFG_TLS_SOCKET_MAX     (3u)
+#endif
+
+/** @} */
+
+#endif /* _FNET_TLS_CONFIG_H_ */

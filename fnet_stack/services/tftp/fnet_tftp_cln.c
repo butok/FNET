@@ -55,7 +55,7 @@
 #define FNET_TFTP_ERR_SERVICE           "ERROR: Service registration is failed."
 #define FNET_TFTP_ERR_IS_INITIALIZED    "ERROR: TFTP is already initialized."
 
-static void fnet_tftp_cln_state_machine(void *fnet_tftp_cln_if_p);
+static void fnet_tftp_cln_poll(void *fnet_tftp_cln_if_p);
 
 /* TFTP packets:*/
 FNET_COMP_PACKED_BEGIN
@@ -186,7 +186,8 @@ fnet_return_t fnet_tftp_cln_init( struct fnet_tftp_cln_params *params )
     }
 
     /* Create client socket */
-    if((fnet_tftp_if.socket_client = fnet_socket(params->server_addr.sa_family, SOCK_DGRAM, 0u)) == FNET_ERR)
+    fnet_tftp_if.socket_client = fnet_socket(params->server_addr.sa_family, SOCK_DGRAM, 0u);
+    if(fnet_tftp_if.socket_client = FNET_NULL)
     {
         FNET_DEBUG_TFTP(FNET_TFTP_ERR_SOCKET_CREATION);
         goto ERROR;
@@ -225,7 +226,7 @@ fnet_return_t fnet_tftp_cln_init( struct fnet_tftp_cln_params *params )
     fnet_tftp_if.packet_size = sizeof(fnet_tftp_if.packet.packet_request.opcode) + fnet_strlen(params->file_name) + 1u + sizeof(FNET_TFTP_MODE);
 
     /* Register TFTP service. */
-    fnet_tftp_if.service_descriptor = fnet_poll_service_register(fnet_tftp_cln_state_machine, (void *) &fnet_tftp_if);
+    fnet_tftp_if.service_descriptor = fnet_poll_service_register(fnet_tftp_cln_poll, (void *) &fnet_tftp_if);
     if(fnet_tftp_if.service_descriptor == 0)
     {
         FNET_DEBUG_TFTP(FNET_TFTP_ERR_SERVICE);
@@ -245,7 +246,7 @@ ERROR:
 /************************************************************************
 * DESCRIPTION: TFTP-client state machine.
 ************************************************************************/
-static void fnet_tftp_cln_state_machine( void *fnet_tftp_cln_if_p )
+static void fnet_tftp_cln_poll( void *fnet_tftp_cln_if_p )
 {
     struct sockaddr addr;
     fnet_size_t     addr_len;

@@ -52,7 +52,7 @@
 
 #define FNET_PING_BUFFER_SIZE   (sizeof(fnet_icmp_echo_header_t) + FNET_CFG_PING_PACKET_MAX)
 
-static void fnet_ping_state_machine(void *fnet_ping_if_p);
+static void fnet_ping_poll(void *fnet_ping_if_p);
 
 /************************************************************************
 *    PING service interface structure.
@@ -122,7 +122,8 @@ fnet_return_t fnet_ping_request( struct fnet_ping_params *params )
     fnet_memcpy(&fnet_ping_if.target_addr, &params->target_addr, sizeof(fnet_ping_if.target_addr));
 
     /* Create socket */
-    if((fnet_ping_if.socket_foreign = fnet_socket(fnet_ping_if.family, SOCK_RAW, (fnet_uint32_t)((params->target_addr.sa_family == AF_INET) ? IPPROTO_ICMP : IPPROTO_ICMPV6))) == FNET_ERR)
+    fnet_ping_if.socket_foreign = fnet_socket(fnet_ping_if.family, SOCK_RAW, (fnet_uint32_t)((params->target_addr.sa_family == AF_INET) ? IPPROTO_ICMP : IPPROTO_ICMPV6));
+    if(fnet_ping_if.socket_foreign == FNET_NULL)
     {
         FNET_DEBUG_PING(FNET_PING_ERR_SOCKET_CREATION);
         goto ERROR;
@@ -147,7 +148,7 @@ fnet_return_t fnet_ping_request( struct fnet_ping_params *params )
     fnet_socket_setopt(fnet_ping_if.socket_foreign, SOL_SOCKET, SO_SNDBUF, &bufsize_option, sizeof(bufsize_option));
 
     /* Register PING service. */
-    fnet_ping_if.service_descriptor = fnet_poll_service_register(fnet_ping_state_machine, (void *) &fnet_ping_if);
+    fnet_ping_if.service_descriptor = fnet_poll_service_register(fnet_ping_poll, (void *) &fnet_ping_if);
     if(fnet_ping_if.service_descriptor == 0)
     {
         FNET_DEBUG_PING(FNET_PING_ERR_SERVICE);
@@ -168,7 +169,7 @@ ERROR:
 /************************************************************************
 * DESCRIPTION: PING service state machine.
 ************************************************************************/
-static void fnet_ping_state_machine(void *fnet_ping_if_p)
+static void fnet_ping_poll(void *fnet_ping_if_p)
 {
     fnet_int32_t            received;
     fnet_icmp_echo_header_t *hdr;

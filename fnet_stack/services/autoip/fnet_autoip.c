@@ -75,7 +75,7 @@ typedef struct fnet_autoip_if
 {
     fnet_autoip_state_t             state;
     fnet_netif_desc_t               netif;
-    fnet_bool_t                     enabled;
+    fnet_bool_t                     is_enabled;
     fnet_poll_desc_t                service_descriptor;
     fnet_ip4_addr_t                 ipaddr;
     fnet_time_t                     init_time;              /* Time when initialization started */
@@ -273,7 +273,7 @@ static void fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_
             break;
 #endif
         case FNET_AUTOIP_STATE_DISABLED:
-            llif->enabled = FNET_FALSE;
+            llif->is_enabled = FNET_FALSE;
             fnet_poll_service_unregister(llif->service_descriptor); /* Delete service. */
             break;
         case FNET_AUTOIP_STATE_BOUND:
@@ -285,7 +285,7 @@ static void fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_
 /************************************************************************
 * DESCRIPTION: Link-Local service state machine
 ************************************************************************/
-static void fnet_autoip_state_machine( void *fnet_autoip_if_p )
+static void fnet_autoip_poll( void *fnet_autoip_if_p )
 {
     fnet_autoip_if_t *llif = (fnet_autoip_if_t *)fnet_autoip_if_p;
 
@@ -434,7 +434,7 @@ fnet_autoip_desc_t fnet_autoip_init ( struct fnet_autoip_params *params)
     /* Try to find free Auto-IP Service. */
     for(i = 0u; i < FNET_CFG_AUTOIP_MAX; i++)
     {
-        if(fnet_autoip_if_list[i].enabled == FNET_FALSE)
+        if(fnet_autoip_if_list[i].is_enabled == FNET_FALSE)
         {
             autoip_if = &fnet_autoip_if_list[i];
         }
@@ -461,7 +461,7 @@ fnet_autoip_desc_t fnet_autoip_init ( struct fnet_autoip_params *params)
 
     autoip_if->netif = params->netif_desc;
 
-    autoip_if->service_descriptor = fnet_poll_service_register(fnet_autoip_state_machine, (void *) autoip_if);
+    autoip_if->service_descriptor = fnet_poll_service_register(fnet_autoip_poll, (void *) autoip_if);
     if (autoip_if->service_descriptor == 0)
     {
         goto ERROR;
@@ -476,7 +476,7 @@ fnet_autoip_desc_t fnet_autoip_init ( struct fnet_autoip_params *params)
 
     fnet_autoip_change_state(autoip_if, FNET_AUTOIP_STATE_INIT);
 
-    autoip_if->enabled = FNET_TRUE;
+    autoip_if->is_enabled = FNET_TRUE;
 
     return (fnet_autoip_desc_t)autoip_if;
 
@@ -491,10 +491,10 @@ void fnet_autoip_release( fnet_autoip_desc_t desc )
 {
     struct fnet_autoip_if   *autoip_if = (struct fnet_autoip_if *) desc;
 
-    if (autoip_if && (autoip_if->enabled == FNET_TRUE))
+    if (autoip_if && (autoip_if->is_enabled == FNET_TRUE))
     {
         fnet_autoip_change_state(autoip_if, FNET_AUTOIP_STATE_DISABLED);
-        fnet_autoip_state_machine(autoip_if); /* 1 pass. */
+        fnet_autoip_poll(autoip_if); /* 1 pass. */
     }
 }
 
@@ -537,7 +537,7 @@ fnet_bool_t fnet_autoip_is_enabled(fnet_autoip_desc_t desc)
 
     if(autoip_if)
     {
-        result = autoip_if->enabled;
+        result = autoip_if->is_enabled;
     }
     else
     {

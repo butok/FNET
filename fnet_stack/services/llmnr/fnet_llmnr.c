@@ -192,7 +192,7 @@ struct fnet_llmnr_if
 /* The LLMNR Server interface */
 static struct fnet_llmnr_if llmnr_if_list[FNET_CFG_LLMNR_MAX];
 
-static void fnet_llmnr_state_machine( void *fnet_llmnr_if_p );
+static void fnet_llmnr_poll( void *fnet_llmnr_if_p );
 static fnet_bool_t fnet_llmnr_hostname_cmp(const fnet_uint8_t *req_hostname, const fnet_uint8_t *hostname);
 
 /************************************************************************
@@ -238,7 +238,7 @@ static fnet_bool_t fnet_llmnr_hostname_cmp(const fnet_uint8_t *req_hostname, con
 ************************************************************************/
 fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
 {
-    struct fnet_llmnr_if    *llmnr_if = 0;
+    struct fnet_llmnr_if    *llmnr_if = FNET_NULL;
     fnet_index_t            i;
     struct sockaddr         local_addr;
     fnet_uint32_t           option = FNET_LLMNR_IP_TTL;
@@ -266,6 +266,7 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
         if(llmnr_if_list[i].state == FNET_LLMNR_STATE_DISABLED)
         {
             llmnr_if = &llmnr_if_list[i];
+            break;
         }
     }
 
@@ -305,7 +306,8 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
     local_addr.sa_scope_id = scope_id;
 
     /* Create listen socket */
-    if((llmnr_if->socket_listen = fnet_socket(local_addr.sa_family, SOCK_DGRAM, 0u)) == FNET_ERR)
+    llmnr_if->socket_listen = fnet_socket(local_addr.sa_family, SOCK_DGRAM, 0u);
+    if(llmnr_if->socket_listen == FNET_NULL)
     {
         FNET_DEBUG_LLMNR(FNET_LLMNR_ERR_SOCKET_CREATION);
         goto ERROR_1;
@@ -365,7 +367,7 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
 #endif
 
     /* Register service. */
-    llmnr_if->service_descriptor = fnet_poll_service_register(fnet_llmnr_state_machine, (void *) llmnr_if);
+    llmnr_if->service_descriptor = fnet_poll_service_register(fnet_llmnr_poll, (void *) llmnr_if);
 
     if(llmnr_if->service_descriptor == 0)
     {
@@ -386,7 +388,7 @@ ERROR_1:
 /************************************************************************
 * DESCRIPTION: LLMNR server state machine.
 ************************************************************************/
-static void fnet_llmnr_state_machine( void *fnet_llmnr_if_p )
+static void fnet_llmnr_poll( void *fnet_llmnr_if_p )
 {
     struct sockaddr         addr;
     fnet_size_t             addr_len;

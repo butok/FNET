@@ -25,14 +25,22 @@
 
 #include "fapp.h"
 
-#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
+#if (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP
 
 #include "fapp_prv.h"
 #include "fapp_http.h"
 #include "fapp_fs.h"
 #include "fapp_mdns.h"
 
-fnet_http_desc_t fapp_http_desc = 0; /* HTTP service descriptor. */
+#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP_TLS && FNET_CFG_TLS
+#include "mbedtls/certs.h"
+fnet_http_desc_t fapp_http_tls_desc = 0; /* HTTPS server descriptor. */
+#endif
+
+#if FAPP_CFG_HTTP_CMD 
+fnet_http_desc_t fapp_http_desc = 0;    /* HTTP server descriptor. */
+#endif
+
 static fnet_size_t fapp_http_string_buffer_respond(fnet_uint8_t *buffer, fnet_size_t buffer_size, fnet_bool_t *eof, fnet_uint32_t *cookie);
 
 /************************************************************************
@@ -360,6 +368,7 @@ static fnet_return_t fapp_http_post_receive (fnet_http_session_t session, fnet_u
 
 #endif /*FNET_CFG_HTTP_POST*/
 
+#if FAPP_CFG_HTTP_CMD 
 /************************************************************************
 * DESCRIPTION: Releases HTTP server.
 *************************************************************************/
@@ -432,13 +441,102 @@ void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
         fnet_shell_println(desc, FAPP_PARAM_ERR, argv[1]);
     }
 }
+#endif /* FAPP_CFG_HTTP_CMD */
+
+#if (FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
+/************************************************************************
+* DESCRIPTION: Releases HTTP over TLS (HTTPS) server.
+*************************************************************************/
+void fapp_http_tls_release(void)
+{
+    fnet_http_release(fapp_http_tls_desc);
+    fapp_http_tls_desc = 0;
+}
+
+/************************************************************************
+* DESCRIPTION: Run HTTP over TLS (HTTPS) server.
+*************************************************************************/
+void fapp_http_tls_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
+{
+    struct fnet_http_params         params;
+    fnet_http_desc_t                http_tls_desc;
+    struct fnet_http_tls_params     tls_params;
+    
+    if(argc == 1u) /* By default is "init".*/
+    {
+        fnet_memset_zero(&params, sizeof(struct fnet_http_params));
+
+        params.root_path = FAPP_HTTP_MOUNT_NAME;    /* Root directory path */
+        params.index_path = FAPP_HTTP_INDEX_FILE;   /* Index file path, relative to the root_path */
+#if FNET_CFG_HTTP_SSI
+        params.ssi_table = fapp_ssi_table;
+#endif
+#if FNET_CFG_HTTP_CGI
+        params.cgi_table = fapp_cgi_table;
+#endif
+#if FNET_CFG_HTTP_AUTHENTICATION_BASIC && FNET_CFG_HTTP_VERSION_MAJOR
+        params.auth_table = fapp_auth_table;
+#endif
+#if FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR
+        params.post_table = fapp_post_table;
+#endif
+
+        /* Set TLS parameters. Use mbedTLS test certificate and key. */
+        tls_params.certificate_buffer = (const fnet_uint8_t *)mbedtls_test_srv_crt; /* Certificate data. */
+        tls_params.certificate_buffer_size = mbedtls_test_srv_crt_len;              /* Size of the certificate buffer. */
+        tls_params.private_key_buffer = (const fnet_uint8_t *)mbedtls_test_srv_key; /* Private key. */
+        tls_params.private_key_buffer_size =  mbedtls_test_srv_key_len;             /* Size of the private key buffer. */
+        params.tls_params = &tls_params;
+
+        /* Enable HTTP server */
+        http_tls_desc = fnet_http_init(&params);
+        if(http_tls_desc)
+        {
+            fnet_shell_println(desc, FAPP_DELIMITER_STR);
+            fnet_shell_println(desc, " HTTPS server started.");
+            fapp_print_netif_addr(desc, AF_SUPPORTED, fnet_netif_get_default(), FNET_FALSE);
+            fnet_shell_println(desc, FAPP_DELIMITER_STR);
+
+            fapp_http_tls_desc = http_tls_desc;
+
+        #if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS    
+            /* Register HTTPS server in mDNS SD.*/
+            fapp_mdns_service_register_http_tls();
+        #endif
+
+        }
+        else
+        {
+            fnet_shell_println(desc, FAPP_INIT_ERR, "HTTPS");
+        }
+    }
+    else if((argc == 2u) && (fnet_strcasecmp(&FAPP_COMMAND_RELEASE[0], argv[1]) == 0)) /* [release] */
+    {
+        fapp_http_tls_release();
+
+    #if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS    
+        /* Unregister HTTPS server from mDNS SD.*/
+        fapp_mdns_service_unregister_http_tls();
+    #endif
+     }
+    else
+    {
+        fnet_shell_println(desc, FAPP_PARAM_ERR, argv[1]);
+    }
+}
+#endif /*(FNET_CFG_HTTP_TLS && FNET_CFG_TLS)*/
 
 /************************************************************************
 * DESCRIPTION:
 *************************************************************************/
 void fapp_http_info(fnet_shell_desc_t desc)
 {
+#if FAPP_CFG_HTTP_CMD 
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "HTTP Server", fapp_is_enabled_str[fnet_http_is_enabled(fapp_http_desc)]);
+#endif
+#if FAPP_CFG_HTTP_TLS_CMD 
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "HTTPS Server", fapp_is_enabled_str[fnet_http_is_enabled(fapp_http_tls_desc)]);
+#endif
 }
 
-#endif /* FAPP_CFG_HTTP_CMD */
+#endif /* (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP */

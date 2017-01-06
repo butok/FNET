@@ -42,7 +42,9 @@ void fapp_mdns_info(fnet_shell_desc_t desc);
 void fapp_mdns_release(void);
 void fapp_mdns_service_register_http(void);
 void fapp_mdns_service_unregister_http(void);
-void fapp_mdns_change_name( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
+void fapp_mdns_service_register_http_tls(void);
+void fapp_mdns_service_unregister_http_tls(void);
+void fapp_mdns_change_name_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 
 #if defined(__cplusplus)
 }

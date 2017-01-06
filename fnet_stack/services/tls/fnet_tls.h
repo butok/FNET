@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2015 by Andrey Butok. FNET Community.
+* Copyright 2015-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,63 +18,225 @@
 *
 **********************************************************************/
 /*!
-*
-* @file fnet_ssl.h
-*
-* @author Andrey Butok
-*
+* @brief TLS Library API.
 *
 ***************************************************************************/
-#ifndef _FNET_SSL_H_
+#ifndef _FNET_TLS_H_
 
-#define _FNET_SSL_H_
-
-#include "fnet_config.h"
-
-#if FNET_CFG_SSL /* TBD under development */
+#define _FNET_TLS_H_
 
 #include "fnet.h"
 
-/**************************************************************************/ /*!
- * @brief SSL session descriptor.
- * @see fnet_ssl_session_init()
- ******************************************************************************/
-typedef long fnet_ssl_session_desc_t;
+#if FNET_CFG_TLS || defined(__DOXYGEN__)
+
+/*! @addtogroup fnet_tls
+*
+* The Transport Layer Security (TLS) protocol provides privacy and data integrity between communicating applications.@n
+* FNET uses the mbedTLS library (https://tls.mbed.org/). Its source code is placed in the fnet/third_party/mbedtls-2.4.0 folder.
+* @n
+* After the TLS context is initialized by calling the @ref fnet_tls_init() function,
+* the user application may create TLS sockets by calling fnet_tls_socket() and to receive/send data using fnet_tls_socket_recv() and fnet_tls_socket_send().
+* @n
+* For the TLS server example, refer to the HTTPS server and the FNET Shell mbedTLS demo example.
+*
+* @note
+* Current version of TLS API supports only the TLS server role.
+*
+* Configuration parameters:
+* - @ref FNET_CFG_TLS
+* - @ref FNET_CFG_TLS_MAX
+* - @ref FNET_CFG_TLS_SOCKET_MAX
+*
+*/
+
+/*! @{ */
 
 /**************************************************************************/ /*!
- * @brief SSL Socket descriptor.
+ * @brief TLS context descriptor.
+ * @see fnet_tls_init()
  ******************************************************************************/
-typedef long SSL_SOCKET;
+typedef void* fnet_tls_desc_t;
 
 /**************************************************************************/ /*!
- * @brief    SSL Session types
+ * @brief TLS socket descriptor.
+ * @see fnet_tls_socket()
+ ******************************************************************************/
+typedef void* fnet_tls_socket_t;
+
+#if 0 /* Not supported yet.*/
+/**************************************************************************/ /*!
+ * @brief    TLS roles
  ******************************************************************************/
 typedef enum
 {
-    FNET_SSL_SESSION_ROLE_SERVER            = 1,     /**< @brief SSL Server */
-    FNET_SSL_SESSION_ROLE_CLIENT            = 2      /**< @brief SSL Client */
-} fnet_ssl_session_role_t;
+    FNET_TLS_ROLE_SERVER            = 1,     /**< @brief TLS Server */
+    FNET_TLS_ROLE_CLIENT            = 2      /**< @brief TLS Client (Not Supported yet) */
+} fnet_tls_role_t;
+#endif
 
 /**************************************************************************/ /*!
- * @brief Input parameters structure for @ref fnet_ssl_session_init()
+ * @brief Input parameters structure for @ref fnet_tls_init()
  ******************************************************************************/
-struct fnet_ssl_session_params
+struct fnet_tls_params
 {
-    fnet_ssl_session_role_t session_role;           /**< @brief SSL Session type. Client or server.*/
-    char                    *cert_file_path;        /**< @brief Certificate file path (null-terminated string). It is optional. */
-    char                    *priv_key_file_path;    /**< @brief Private Key file path (null-terminated string). It is optional. */
-    char                    *ca_cert_file_path;     /**< @brief CA (Certificate Authority) certificate file path (null-terminated string). It is optional. */
+#if 0 /* Not supported yet.*/
+    fnet_tls_role_t     role;                       /**< @brief TLS role. Client or server. */          
+#endif
+    const fnet_uint8_t  *certificate_buffer;        /**< @brief Buffer holding the Client or Server Certificate data, in PEM or DER format. */
+    fnet_size_t         certificate_buffer_size;    /**< @brief Size of the certificate buffer (including the terminating null byte for PEM data). */
+    const fnet_uint8_t  *private_key_buffer;        /**< @brief Buffer holding the private key, in PEM or DER format. */
+    fnet_size_t         private_key_buffer_size;    /**< @brief Size of the private key buffer (including the terminating null byte for PEM data). */
+#if 0 /* Not supported yet.*/
+    char                *ca_certificate_buffer;     /**< @brief Buffer holding CA (Certificate Authority), or trusted root, certificate data, in PEM or DER format. @n
+                                                        It is optional. It is used to verify certificates received from peers during the TLS handshake.*/
+    fnet_size_t         ca_certificate_buffer_size; /**< @brief Size of the CA certificate buffer (including the terminating null byte for PEM data). */
+#endif
 };
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
-fnet_ssl_session_desc_t fnet_ssl_session_init(struct fnet_ssl_session_params *params);
-void fnet_ssl_session_release(fnet_ssl_session_desc_t ssl_desc);
+/***************************************************************************/ /*!
+ *
+ * @brief    Initializes the TLS context.
+ *
+ * @param params     Initialization parameters defined by @ref fnet_tls_params.
+ *
+ * @return This function returns:
+ *   -  TLS Context descriptor if no error occurs.
+ *   - @c FNET_NULL if an error occurs.
+ *
+ * @see fnet_tls_release(), fnet_tls_socket()
+ *
+ ******************************************************************************
+ *
+ * This function initializes the TLS context.@n
+ * It allocates all  resources and set parameters required for TLS connection.
+ * After a successful initialization, the application may create TLS sockets using
+ * fnet_tls_socket(). The context may be shared between several sockets.
+ *
+ ******************************************************************************/
+fnet_tls_desc_t fnet_tls_init(struct fnet_tls_params *params);
 
-SSL_SOCKET fnet_ssl_socket(fnet_ssl_session_desc_t session_desc, SOCKET sock);
-int fnet_ssl_close(SSL_SOCKET ssl_sock);
-int fnet_ssl_recv(SSL_SOCKET ssl_sock, char *buf, int len, int flags);
-int fnet_ssl_send(SSL_SOCKET ssl_sock, char *buf, int len, int flags);
+/***************************************************************************/ /*!
+ *
+ * @brief    Releases the TLS context.
+ *
+ * @param tls_desc     TLS context descriptor to be released.
+ *
+ * @see fnet_tls_init()
+ *
+ ******************************************************************************
+ *
+ * This function releases all resources allocated  during TLS context initialization.
+ *
+ ******************************************************************************/
+void fnet_tls_release(fnet_tls_desc_t tls_desc);
 
-#endif /* FNET_CFG_SSL */
+/***************************************************************************/ /*!
+ *
+ * @brief    Creates the TLS socket.
+ *
+ * @param tls_desc   TLS context descriptor.
+ *
+ * @param sock       FNET socket descriptor.
+ *
+ * @return This function returns:
+ *   - TLS socket descriptor, if no error occurs.
+ *   - @ref FNET_NULL if an error occurs. 
+ *
+ * @see fnet_tls_socket_close(), fnet_tls_init()
+ *
+ ******************************************************************************
+ *
+ * This function creates a TLS socket and returns its descriptor.@n
+ * The data can be transferred using the @ref fnet_tls_socket_send() and  the @ref
+ * fnet_tls_socket_recv() calls. When a session has been completed, the @ref fnet_tls_socket_close()
+ * must be performed.
+ *
+ ******************************************************************************/
+fnet_tls_socket_t fnet_tls_socket(fnet_tls_desc_t tls_desc, fnet_socket_t sock);
 
-#endif /* _FNET_SSL_H_ */
+/***************************************************************************/ /*!
+ *
+ * @brief    Closes the TLS socket.
+ *
+ * @param tls_sock      TLS socket descriptor to be closed.
+ *
+ * @see fnet_tls_socket()
+ *
+ ******************************************************************************
+ *
+ * This function releases the TLS socket descriptor.@n
+ * An application should always have a matching call to the @ref fnet_tls_socket_close() for
+ * each successful call to the @ref fnet_tls_socket() to return any TLS socket resources to
+ * the system.
+ *
+ ******************************************************************************/
+void fnet_tls_socket_close(fnet_tls_socket_t tls_sock);
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Receives data from a TLS socket.
+ *
+ * @param tls_sock      TLS socket descriptor.
+ *
+ * @param buf           Buffer for the incoming data.
+ *
+ * @param len           Length of the @c buf.
+ *
+ *
+ * @return This function returns:
+ *   - The number of bytes received, if no error occurs.
+ *     The return value is set to zero, if there
+ *     is no input data.
+ *   - @ref FNET_ERR if an error occurs.
+ *
+ * @see fnet_tls_socket()
+ *
+ ******************************************************************************
+ *
+ * The function returns as much data as is currently available up to the size
+ * of the buffer supplied.@n
+ * If the function returns FNET_ERR the current TLS connection must be closed.
+ *
+ ******************************************************************************/
+fnet_int32_t fnet_tls_socket_recv(fnet_tls_socket_t tls_sock, fnet_uint8_t *buf, fnet_size_t len);
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Sends data on a TLS socket.
+ *
+ * @param tls_sock  TLS socket descriptor.
+ *
+ * @param buf       Buffer containing data to be transmitted.
+ *
+ * @param len       Length of the data in @c buf.
+ *
+ * @return This function returns:
+ *   - The total number of bytes sent, if no error occurs.
+ *     It can be less than the number indicated by @c len.
+ *   - @ref FNET_ERR if an error occurs. 
+ *
+ * @see fnet_tls_socket()
+ *
+ ******************************************************************************
+ *
+ * This function sends data over TLS layer. @n 
+ * The number of actually sent bytes can be between @c 0 and the requested length, depending on
+ * buffer availability on both client and server machines.@n
+ * If the function returns FNET_ERR the current TLS connection must be closed.
+ *
+ ******************************************************************************/
+fnet_int32_t fnet_tls_socket_send(fnet_tls_socket_t tls_sock, fnet_uint8_t *buf, fnet_size_t len);
+
+#if defined(__cplusplus)
+}
+#endif
+
+/*! @} */
+
+#endif /* FNET_CFG_TLS */
+
+#endif /* _FNET_TLS_H_ */

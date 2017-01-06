@@ -100,6 +100,28 @@
 #endif
 
 /**************************************************************************/ /*!
+ * @def      FNET_CFG_HTTP_TLS
+ * @brief    HTTPS over TLS (HTTPS) Server service support:
+ *               - @c 1 = is enabled.
+ *               - @b @c 0 = is disabled (Default value).
+ ******************************************************************************/
+#ifndef FNET_CFG_HTTP_TLS
+    #define FNET_CFG_HTTP_TLS               (0)
+#endif
+
+/**************************************************************************/ /*!
+ * @def     FNET_CFG_HTTP_TLS_PORT
+ * @brief   Default HTTP over TLS (HTTPS) port number (in network byte order).@n
+ *          It can be changed during the HTTPS server initialization by the
+ *          @ref fnet_http_init() function.@n
+ *          Default value FNET_HTONS(443).
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_HTTP_TLS_PORT
+    #define FNET_CFG_HTTP_TLS_PORT          (FNET_HTONS(443u))
+#endif
+
+/**************************************************************************/ /*!
  * @def     FNET_CFG_HTTP_REQUEST_SIZE_MAX
  * @brief   Maximum size of an incoming request.@n
  *          Also it defines the maximum number of bytes to use for internal

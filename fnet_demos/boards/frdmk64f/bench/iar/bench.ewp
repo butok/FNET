@@ -706,7 +706,7 @@
         </option>
         <option>
           <name>IlinkConfigDefines</name>
-          <state>__stack_size__=0x1000</state>
+          <state>__stack_size__=0x2000</state>
           <state>__ram_vector_table__=1</state>
         </option>
         <option>
@@ -1678,7 +1678,7 @@
         </option>
         <option>
           <name>IlinkConfigDefines</name>
-          <state>__stack_size__=0x1000</state>
+          <state>__stack_size__=0x2000</state>
           <state>__ram_vector_table__=1</state>
         </option>
         <option>
@@ -2344,6 +2344,18 @@
         </file>
         <file>
           <name>$PROJ_DIR$/../../../../../fnet_stack/services/tftp/fnet_tftp_srv.h</name>
+        </file>
+      </group>
+      <group>
+        <name>tls</name>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/tls/fnet_tls.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/tls/fnet_tls.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/tls/fnet_tls_config.h</name>
         </file>
       </group>
     </group>

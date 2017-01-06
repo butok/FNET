@@ -42,7 +42,7 @@
 #define FNET_DNS_ERR_SERVICE           "ERROR: Service registration is failed."
 #define FNET_DNS_ERR_IS_INITIALIZED    "ERROR: DNS is already initialized."
 
-static void fnet_dns_state_machine( void *fnet_dns_if_p );
+static void fnet_dns_poll( void *fnet_dns_if_p );
 static fnet_size_t fnet_dns_add_question( fnet_uint8_t *message, fnet_uint16_t type, fnet_char_t *host_name);
 
 /************************************************************************
@@ -225,7 +225,7 @@ fnet_return_t fnet_dns_init( struct fnet_dns_params *params )
     fnet_dns_if.id++;           /* Change query ID.*/
 
     /* Create socket */
-    if((fnet_dns_if.socket_cln = fnet_socket(params->dns_server_addr.sa_family, SOCK_DGRAM, 0u)) == FNET_ERR)
+    if((fnet_dns_if.socket_cln = fnet_socket(params->dns_server_addr.sa_family, SOCK_DGRAM, 0u)) == FNET_NULL)
     {
         FNET_DEBUG_DNS(FNET_DNS_ERR_SOCKET_CREATION);
         goto ERROR;
@@ -286,7 +286,7 @@ fnet_return_t fnet_dns_init( struct fnet_dns_params *params )
     fnet_dns_if.message_size = total_length;
 
     /* Register DNS service. */
-    fnet_dns_if.service_descriptor = fnet_poll_service_register(fnet_dns_state_machine, (void *) &fnet_dns_if);
+    fnet_dns_if.service_descriptor = fnet_poll_service_register(fnet_dns_poll, (void *) &fnet_dns_if);
     if(fnet_dns_if.service_descriptor == 0)
     {
         FNET_DEBUG_DNS(FNET_DNS_ERR_SERVICE);
@@ -306,7 +306,7 @@ ERROR:
 /************************************************************************
 * DESCRIPTION: DNS-client state machine.
 ************************************************************************/
-static void fnet_dns_state_machine( void *fnet_dns_if_p )
+static void fnet_dns_poll( void *fnet_dns_if_p )
 {
     fnet_int32_t            sent_size;
     fnet_int32_t            received;

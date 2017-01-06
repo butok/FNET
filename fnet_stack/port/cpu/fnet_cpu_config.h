@@ -421,7 +421,7 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_CPU_TIMER_VECTOR_PRIORITY
  * @brief    Default Interrupt priority level for a timer used by the FNET.
- *           It can range from 1 to 7. The higher the value, the greater
+ *           It can range from 1 to FNET_CFG_CPU_VECTOR_PRIORITY_MAX. The higher the value, the greater
  *           the priority of the corresponding interrupt.
  *           @n @n NOTE: It's ignored for MCF V1.
  * @showinitializer
@@ -658,7 +658,7 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_CPU_ETH_VECTOR_PRIORITY
  * @brief    Default Interrupt priority level for the Ethernet module.
- *           It can range from 1 to 7. The higher the value, the greater
+ *           It can range from 1 to FNET_CFG_CPU_VECTOR_PRIORITY_MAX. The higher the value, the greater
  *           the priority of the corresponding interrupt.
  *           @n @n NOTE: It's ignored for MCF V1.
  * @showinitializer

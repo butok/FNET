@@ -29,12 +29,16 @@
 #include "fapp_prv.h"
 #include "fapp_mdns.h"
 
-#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
+#if (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP
 #include "fapp_http.h"
 const fnet_uint8_t *fapp_mdns_service_txt ='\0'; /* or "path=/index.html"*/
 static const fnet_uint8_t *fapp_mdns_service_get_txt(void);
 static  fnet_mdns_service_desc_t fapp_mdns_http_service_desc = 0; /* HTTP service descriptor. */ 
-static const fnet_mdns_service_t fapp_mdns_http_service = {.service_type =  "_http._tcp", .service_port = FNET_HTONS(80), .service_get_txt = fapp_mdns_service_get_txt}; /* HTTP service parameters.*/
+static const fnet_mdns_service_t fapp_mdns_http_service = {.service_type =  "_http._tcp", .service_port = FNET_CFG_HTTP_PORT, .service_get_txt = fapp_mdns_service_get_txt};        /* HTTP service parameters.*/
+#if FNET_CFG_HTTP_TLS
+static  fnet_mdns_service_desc_t fapp_mdns_http_tls_service_desc = 0; /* HTTPS service descriptor. */ 
+static const fnet_mdns_service_t fapp_mdns_http_tls_service = {.service_type =  "_https._tcp", .service_port = FNET_CFG_HTTP_TLS_PORT, .service_get_txt = fapp_mdns_service_get_txt};   /* HTTPS service parameters.*/
+#endif
 #endif
 
 static fnet_mdns_desc_t fapp_mdns_desc = 0; /* MDNS service descriptor. */
@@ -48,6 +52,9 @@ void fapp_mdns_release(void)
     fapp_mdns_desc = 0;
 #if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
     fapp_mdns_http_service_desc = 0;
+#endif
+#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP && FNET_CFG_HTTP_TLS
+    fapp_mdns_http_tls_service_desc = 0;
 #endif
 }
 
@@ -105,7 +112,7 @@ static const fnet_uint8_t *fapp_mdns_service_get_txt(void)
 #endif
 
 /************************************************************************
-* DESCRIPTION: Register mDNS server.
+* DESCRIPTION: Register HTTP service in mDNS.
 *************************************************************************/
 void fapp_mdns_service_register_http( void )
 {
@@ -124,7 +131,26 @@ void fapp_mdns_service_register_http( void )
 }
 
 /************************************************************************
-* DESCRIPTION: Register mDNS server.
+* DESCRIPTION: Register HTTPS service in MDNS.
+*************************************************************************/
+void fapp_mdns_service_register_http_tls( void )
+{
+#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP && FNET_CFG_HTTP_TLS
+    if(fapp_mdns_desc)
+    {
+        if(fapp_http_tls_desc) /* If HTTPS server is started.*/
+        {
+            if(fapp_mdns_http_tls_service_desc == 0) /* If HTTP service is not registered yet.*/
+            {
+                fapp_mdns_http_tls_service_desc = fnet_mdns_service_register(fapp_mdns_desc, &fapp_mdns_http_tls_service);
+            }
+        }
+    }
+#endif
+}
+
+/************************************************************************
+* DESCRIPTION: Unregister HTTP service from mDNS.
 *************************************************************************/
 void fapp_mdns_service_unregister_http( void )
 {
@@ -141,10 +167,27 @@ void fapp_mdns_service_unregister_http( void )
 }
 
 /************************************************************************
+* DESCRIPTION: Unregister HTTPS service from mDNS.
+*************************************************************************/
+void fapp_mdns_service_unregister_http_tls( void )
+{
+#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP && FNET_CFG_HTTP_TLS
+    if(fapp_mdns_desc)
+    {
+        if(fapp_mdns_http_tls_service_desc) /* If HTTP service is registered.*/
+        {
+            fnet_mdns_service_unregister(fapp_mdns_http_tls_service_desc);
+            fapp_mdns_http_tls_service_desc = 0;
+        }
+    }
+#endif
+}
+
+/************************************************************************
 * DESCRIPTION:   Manual Name Change test.
 *                It used only for Bonjour Conformance Testing.
 *************************************************************************/
-void fapp_mdns_change_name( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
+void fapp_mdns_change_name_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
     if(fapp_mdns_desc) /* If mdns is initialized */
     {

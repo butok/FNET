@@ -178,18 +178,21 @@ struct fnet_http_request
 *************************************************************************/
 struct fnet_http_session_if
 {
-    fnet_http_state_t           state;                          /* Current state.*/
-    fnet_time_t                 state_time;                     /* Start time used by the state machine for timeout calculation.*/
-    fnet_socket_t               socket_foreign;                 /* Foreign socket.*/
-    fnet_uint8_t                buffer[FNET_HTTP_BUF_SIZE + 1u]; /* Receive/Transmit buffer */
-    fnet_size_t                 buffer_actual_size;             /* Size of the actual data in the buffer.*/
+    fnet_http_state_t           state;                              /* Current state.*/
+    fnet_time_t                 state_time;                         /* Start time used by the state machine for timeout calculation.*/
+    fnet_socket_t               socket_foreign;                     /* Foreign socket.*/
+    fnet_uint8_t                buffer[FNET_HTTP_BUF_SIZE + 1u];    /* Receive/Transmit buffer */
+    fnet_size_t                 buffer_actual_size;                 /* Size of the actual data in the buffer.*/
     union
     {
         fnet_fs_file_t  file_desc;
         const void      *data_ptr;
     } send_param;
-    struct fnet_http_response   response;                       /* Holds the accumulated data for the HTTP 1.0 response header */
+    struct fnet_http_response   response;                           /* Holds the accumulated data for the HTTP 1.0 response header. */
     struct fnet_http_request    request;
+#if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
+    fnet_tls_socket_t           tls_sock;                           /* TLS socket descriptor. */
+#endif
 };
 
 /************************************************************************
@@ -199,7 +202,7 @@ struct fnet_http_if
 {
     fnet_socket_t                           socket_listen;              /* Listening socket.*/
     fnet_poll_desc_t                        service_descriptor;         /* Descriptor of polling service.*/
-    fnet_bool_t                             enabled;
+    fnet_bool_t                             is_enabled;
     fnet_fs_dir_t                           root_dir;
     fnet_fs_file_t                          index_file;
     const struct fnet_http_file_handler     *index_file_handler;
@@ -215,10 +218,13 @@ struct fnet_http_if
     const struct fnet_http_cgi              *cgi_table;
 #endif
 #if FNET_CFG_HTTP_AUTHENTICATION_BASIC && FNET_CFG_HTTP_VERSION_MAJOR
-    const struct fnet_http_auth *auth_table;
+    const struct fnet_http_auth             *auth_table;
 #endif
 #if FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR
-    const struct fnet_http_post *post_table;
+    const struct fnet_http_post             *post_table;
+#endif
+#if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
+    fnet_tls_desc_t                         tls_desc;                   /* TLS descriptor. */
 #endif
 };
 

@@ -42,7 +42,7 @@
     #include "fapp_autoip.h"
 #endif
 
-#if (FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP)|| (FAPP_CFG_EXP_CMD && FNET_CFG_FS)
+#if ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP)|| (FAPP_CFG_EXP_CMD && FNET_CFG_FS)
     #include "fapp_http.h"
     #include "fapp_fs.h"
 #endif
@@ -187,6 +187,9 @@ const struct fnet_shell_command fapp_cmd_table [] =
 #if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
     { "http",       0u, 1u, fapp_http_cmd,    "Start HTTP Server", "[release]"},
 #endif
+#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP && FNET_CFG_HTTP_TLS && FNET_CFG_TLS
+    { "https",       0u, 1u, fapp_http_tls_cmd,    "Start HTTPS Server", "[release]"},
+#endif
 #if FAPP_CFG_EXP_CMD && FNET_CFG_FS
     { "exp",        0u, 1u, fapp_exp_cmd,     "File Explorer submenu...", ""},
 #endif
@@ -212,7 +215,7 @@ const struct fnet_shell_command fapp_cmd_table [] =
     { "mdns",       0u, 1u, fapp_mdns_cmd,      "Start MDNS Server", "[release]"},
 #endif
 #if FAPP_CFG_MDNS_CN_CMD && FNET_CFG_MDNS
-    { "mdnscn",     0u, 0u, fapp_mdns_change_name,  "Change name, Bonjour test", ""},
+    { "mdnscn",     0u, 0u, fapp_mdns_change_name_cmd,  "Change name, Bonjour test", ""},
 #endif
 #if FAPP_CFG_MEM_CMD
     { "mem",        0u, 0u, fapp_mem_cmd,     "Show memory map", ""},
@@ -572,7 +575,7 @@ static void fapp_init(void)
                 fnet_printf(FAPP_NET_ERR);
             }
 
-    #if (FAPP_CFG_EXP_CMD && FNET_CFG_FS) || (FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP)
+    #if (FAPP_CFG_EXP_CMD && FNET_CFG_FS) || ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP)
             fapp_fs_mount(); /* Init FS and mount FS Image. */
     #endif
 
@@ -633,11 +636,15 @@ static void fapp_release(fnet_shell_desc_t desc)
     fapp_http_release();
 #endif
 
+#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP && FNET_CFG_HTTP_TLS && FNET_CFG_TLS /* Release HTTPS server. */
+    fapp_http_tls_release();
+#endif
+
 #if FAPP_CFG_TFTPS_CMD                          /* Release TFTP server. */
     fapp_tftps_release();
 #endif
 
-#if (FAPP_CFG_EXP_CMD && FNET_CFG_FS) || (FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP)
+#if (FAPP_CFG_EXP_CMD && FNET_CFG_FS) || ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP)
     fapp_fs_unmount();                          /* Unmount and release FS. */
 #endif
 
@@ -777,7 +784,7 @@ static void fapp_print_info( fnet_shell_desc_t desc )
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Link Status", fapp_netif_connection_state_str[fnet_netif_is_connected(netif)]);
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "Free Heap", fnet_free_mem_status());
 
-#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
+#if (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP
     fapp_http_info(desc);
 #endif
 

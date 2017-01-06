@@ -129,7 +129,7 @@ struct fnet_telnet_if
 {
     fnet_socket_t                   socket_listen;      /* Listening socket.*/
     fnet_poll_desc_t                service_descriptor; /* Descriptor of polling service.*/
-    fnet_bool_t                     enabled;
+    fnet_bool_t                     is_enabled;
     fnet_size_t                     backlog;
     struct fnet_telnet_session_if   *session_active;
     struct fnet_telnet_session_if   session[FNET_CFG_TELNET_SESSION_MAX];
@@ -152,7 +152,7 @@ static void fnet_telnet_putchar(fnet_index_t id, fnet_char_t character);
 static fnet_int32_t fnet_telnet_getchar(fnet_index_t id);
 static void fnet_telnet_flush(fnet_index_t id);
 static void fnet_telnet_send_cmd(struct fnet_telnet_session_if *session, fnet_uint8_t command, fnet_uint8_t option);
-static void fnet_telnet_state_machine(void *telnet_if_p);
+static void fnet_telnet_poll(void *telnet_if_p);
 
 /************************************************************************
 * Buffer functions.
@@ -311,7 +311,7 @@ static void fnet_telnet_send_cmd(struct fnet_telnet_session_if *session, fnet_ui
 /************************************************************************
 * DESCRIPTION: Telnet server state machine.
 ************************************************************************/
-static void fnet_telnet_state_machine( void *telnet_if_p )
+static void fnet_telnet_poll( void *telnet_if_p )
 {
     struct sockaddr                 foreign_addr;
     fnet_int32_t                    res;
@@ -334,8 +334,7 @@ static void fnet_telnet_state_machine( void *telnet_if_p )
                 case FNET_TELNET_STATE_LISTENING:
                     len = sizeof(foreign_addr);
                     session->socket_foreign = fnet_socket_accept(telnet->socket_listen, (struct sockaddr *) &foreign_addr, &len);
-
-                    if(session->socket_foreign != FNET_ERR)
+                    if(session->socket_foreign)
                     {
 #if FNET_CFG_DEBUG_TELNET && FNET_CFG_DEBUG
                         {
@@ -344,7 +343,6 @@ static void fnet_telnet_state_machine( void *telnet_if_p )
                             FNET_DEBUG_TELNET("\nTELNET: New connection: %s; Port: %d.", ip_str, fnet_ntohs(foreign_addr.sa_port));
                         }
 #endif
-
                         /* Init Shell. */
                         session->shell_descriptor = fnet_shell_init(&session->shell_params);
 
@@ -492,7 +490,7 @@ static void fnet_telnet_state_machine( void *telnet_if_p )
                     session->rx_buffer_tail = session->rx_buffer;
 
                     fnet_socket_close(session->socket_foreign);
-                    session->socket_foreign = FNET_ERR;
+                    session->socket_foreign = FNET_NULL;
 
                     fnet_socket_listen(telnet->socket_listen, ++telnet->backlog); /* Allow connection.*/
 
@@ -517,9 +515,10 @@ fnet_telnet_desc_t fnet_telnet_init( struct fnet_telnet_params *params )
     struct fnet_telnet_if   *telnet_if = 0;
 
     /* Socket options. */
-    const struct linger     linger_option = {FNET_TRUE, /*l_onoff*/
-              4  /*l_linger*/
-    };
+    const struct linger     linger_option = {
+                                                .l_onoff = FNET_TRUE, /* on */
+                                                .l_linger = 4  /*seconds*/
+                                        };
     const fnet_size_t       bufsize_option = FNET_CFG_TELNET_SOCKET_BUF_SIZE;
     const fnet_int32_t      keepalive_option = 1;
     const fnet_int32_t      keepcnt_option = FNET_TELNET_TCP_KEEPCNT;
@@ -536,7 +535,7 @@ fnet_telnet_desc_t fnet_telnet_init( struct fnet_telnet_params *params )
     /* Try to find free Telnet server descriptor. */
     for(i = 0u; i < FNET_CFG_TELNET_MAX; i++)
     {
-        if(telnet_if_list[i].enabled == FNET_FALSE)
+        if(telnet_if_list[i].is_enabled == FNET_FALSE)
         {
             telnet_if = &telnet_if_list[i];
             break;
@@ -549,6 +548,9 @@ fnet_telnet_desc_t fnet_telnet_init( struct fnet_telnet_params *params )
         FNET_DEBUG_TELNET("TELNET: No free Telnet Server.");
         goto ERROR_1;
     }
+
+    /* Reset all parameters*/
+    fnet_memset(telnet_if, 0, sizeof(*telnet_if));
 
     fnet_memcpy(&local_addr, &params->address, sizeof(local_addr));
 
@@ -563,7 +565,8 @@ fnet_telnet_desc_t fnet_telnet_init( struct fnet_telnet_params *params )
     }
 
     /* Create listen socket */
-    if((telnet_if->socket_listen = fnet_socket(local_addr.sa_family, SOCK_STREAM, 0u)) == FNET_ERR)
+    telnet_if->socket_listen = fnet_socket(local_addr.sa_family, SOCK_STREAM, 0u);
+    if(telnet_if->socket_listen == FNET_NULL)
     {
         FNET_DEBUG_TELNET("TELNET: Socket creation error.");
         goto ERROR_1;
@@ -604,7 +607,7 @@ fnet_telnet_desc_t fnet_telnet_init( struct fnet_telnet_params *params )
     }
 
     /* Register service. */
-    telnet_if->service_descriptor = fnet_poll_service_register(fnet_telnet_state_machine, (void *) telnet_if);
+    telnet_if->service_descriptor = fnet_poll_service_register(fnet_telnet_poll, (void *) telnet_if);
 
     if(telnet_if->service_descriptor == 0)
     {
@@ -617,7 +620,6 @@ fnet_telnet_desc_t fnet_telnet_init( struct fnet_telnet_params *params )
         struct fnet_telnet_session_if   *session = &telnet_if->session[i];
 
         /* Reset buffer pointers. Move it to init state. */
-        session->tx_buffer_head_index = 0u;
         session->rx_buffer_head = session->rx_buffer;
         session->rx_buffer_tail = session->rx_buffer;
         session->rx_buffer_end = &session->rx_buffer[FNET_TELNET_RX_BUFFER_SIZE];
@@ -635,14 +637,10 @@ fnet_telnet_desc_t fnet_telnet_init( struct fnet_telnet_params *params )
         session->shell_params.stream = &session->stream;
         session->shell_params.echo = FNET_CFG_TELNET_SHELL_ECHO ? FNET_TRUE : FNET_FALSE;
 
-        session->socket_foreign = FNET_ERR;
-
         session->state = FNET_TELNET_STATE_LISTENING;
     }
 
-
-    telnet_if->session_active = FNET_NULL;
-    telnet_if->enabled = FNET_TRUE;
+    telnet_if->is_enabled = FNET_TRUE;
 
     return (fnet_telnet_desc_t)telnet_if;
 
@@ -661,26 +659,24 @@ void fnet_telnet_release(fnet_telnet_desc_t desc)
     struct fnet_telnet_if   *telnet_if = (struct fnet_telnet_if *) desc;
     fnet_index_t            i;
 
-    if(telnet_if && (telnet_if->enabled == FNET_TRUE))
+    if(telnet_if && (telnet_if->is_enabled == FNET_TRUE))
     {
         for(i = 0u; i < FNET_CFG_TELNET_SESSION_MAX; i++)
         {
             struct fnet_telnet_session_if   *session = &telnet_if->session[i];
 
             fnet_socket_close(session->socket_foreign);
-            session->socket_foreign = FNET_ERR;
 
             if(session->shell_descriptor)
             {
                 fnet_shell_release(session->shell_descriptor);
-                session->shell_descriptor = 0;
             }
-            session->state = FNET_TELNET_STATE_DISABLED;
         }
         fnet_socket_close(telnet_if->socket_listen);
         fnet_poll_service_unregister(telnet_if->service_descriptor); /* Delete service.*/
 
-        telnet_if->enabled = FNET_FALSE;
+        /* Reset all parameters.*/
+        fnet_memset(telnet_if, 0, sizeof(*telnet_if));
     }
 }
 
@@ -691,7 +687,7 @@ void fnet_telnet_close_session(fnet_telnet_desc_t desc)
 {
     struct fnet_telnet_if *telnet_if = (struct fnet_telnet_if *) desc;
 
-    if(telnet_if && (telnet_if->enabled == FNET_TRUE) && (telnet_if->session_active))
+    if(telnet_if && (telnet_if->is_enabled == FNET_TRUE) && (telnet_if->session_active))
     {
         telnet_if->session_active->state = FNET_TELNET_STATE_CLOSING;
     }
@@ -708,7 +704,7 @@ fnet_bool_t fnet_telnet_is_enabled(fnet_telnet_desc_t desc)
 
     if(telnet_if)
     {
-        result = telnet_if->enabled;
+        result = telnet_if->is_enabled;
     }
     else
     {

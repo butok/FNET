@@ -1755,6 +1755,7 @@ void fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_ad
                         {
                             if((netif->ip6_addr[j].state != FNET_NETIF_IP6_ADDR_STATE_NOT_USED)
                                && (netif->ip6_addr[j].type == FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE)
+                               && (netif->ip6_addr[j].prefix_length == nd_option_prefix[i]->prefix_length)
                                && (fnet_ip6_addr_pefix_cmp(&nd_option_prefix[i]->prefix, &netif->ip6_addr[j].address, (fnet_size_t)nd_option_prefix[i]->prefix_length) == FNET_TRUE) )
                             {
                                 addr_info = &netif->ip6_addr[j];

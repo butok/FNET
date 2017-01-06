@@ -33,7 +33,7 @@
 
 #define FNET_LINK_ERR_IS_INITIALIZED    "ERROR: No free service."
 
-static void fnet_link_state_machine( void *fnet_link_if_p );
+static void fnet_link_poll( void *fnet_link_if_p );
 
 /************************************************************************
 *    Link-Detection interface structure.
@@ -41,7 +41,7 @@ static void fnet_link_state_machine( void *fnet_link_if_p );
 typedef struct fnet_link_if
 {
     fnet_netif_desc_t               netif;
-    fnet_bool_t                     enabled;
+    fnet_bool_t                     is_enabled;
     fnet_poll_desc_t                service_descriptor;
 
     fnet_bool_t                     connection_flag;
@@ -52,7 +52,7 @@ typedef struct fnet_link_if
     void                            *callback_param;    /* Optional user-application specific parameter.*/
 } fnet_link_if_t;
 
-/* The LLMNR Server interface */
+/* The Link-Detection service interface */
 static struct fnet_link_if fnet_link_if_list[FNET_CFG_LINK_MAX];
 
 /******************************************************************************
@@ -60,7 +60,7 @@ static struct fnet_link_if fnet_link_if_list[FNET_CFG_LINK_MAX];
  ******************************************************************************/
 fnet_link_desc_t fnet_link_init( struct fnet_link_params *params )
 {
-    fnet_link_if_t    *link_if = 0;
+    fnet_link_if_t    *link_if = FNET_NULL;
     fnet_index_t      i;
 
     if ((params == 0) || (params->netif_desc == 0) || (params->callback == 0))
@@ -71,9 +71,10 @@ fnet_link_desc_t fnet_link_init( struct fnet_link_params *params )
     /* Try to find free Link-Detection Service. */
     for(i = 0u; i < FNET_CFG_LINK_MAX; i++)
     {
-        if(fnet_link_if_list[i].enabled == FNET_FALSE)
+        if(fnet_link_if_list[i].is_enabled == FNET_FALSE)
         {
             link_if = &fnet_link_if_list[i];
+            break;
         }
     }
 
@@ -91,7 +92,7 @@ fnet_link_desc_t fnet_link_init( struct fnet_link_params *params )
     link_if->callback = params->callback;
     link_if->callback_param = params->callback_param;
 
-    link_if->service_descriptor = fnet_poll_service_register(fnet_link_state_machine, (void *) link_if);
+    link_if->service_descriptor = fnet_poll_service_register(fnet_link_poll, (void *) link_if);
     if (link_if->service_descriptor == 0)
     {
         goto ERROR;
@@ -99,7 +100,7 @@ fnet_link_desc_t fnet_link_init( struct fnet_link_params *params )
 
     link_if->connection_flag = FNET_FALSE;
 
-    link_if->enabled = FNET_TRUE;
+    link_if->is_enabled = FNET_TRUE;
 
     return (fnet_link_desc_t)link_if;
 
@@ -110,7 +111,7 @@ ERROR:
 /******************************************************************************
  * DESCRIPTION: Link-Detection service state machine.
  ******************************************************************************/
-static void fnet_link_state_machine( void *fnet_link_if_p )
+static void fnet_link_poll( void *fnet_link_if_p )
 {
     fnet_bool_t     connected;
     fnet_link_if_t  *link_if = (fnet_link_if_t *)fnet_link_if_p;
@@ -135,7 +136,7 @@ void fnet_link_release(fnet_link_desc_t desc)
     if (link_if)
     {
         fnet_poll_service_unregister(link_if->service_descriptor); /* Delete service.*/
-        link_if->enabled = FNET_FALSE;
+        link_if->is_enabled = FNET_FALSE;
     }
 }
 
@@ -149,7 +150,7 @@ fnet_bool_t fnet_link_is_enabled(fnet_link_desc_t desc)
 
     if(link_if)
     {
-        result = link_if->enabled;
+        result = link_if->is_enabled;
     }
     else
     {

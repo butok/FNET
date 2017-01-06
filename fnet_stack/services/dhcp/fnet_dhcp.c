@@ -284,7 +284,7 @@ typedef struct fnet_dhcp_if
 {
     fnet_socket_t               socket_client;
     fnet_dhcp_state_t           state;                      /* Current state.*/
-    fnet_bool_t                 enabled;
+    fnet_bool_t                 is_enabled;
 #if !FNET_CFG_DHCP_BOOTP
     fnet_time_t                 state_timeout;              /* Current State timeout (ticks).*/
     fnet_dhcp_state_t           state_timeout_next_state;   /* Next state on state timeout.*/
@@ -341,7 +341,7 @@ static fnet_int32_t fnet_dhcp_send_message( fnet_dhcp_if_t *dhcp );
 static fnet_int32_t fnet_dhcp_receive_message( fnet_dhcp_if_t *dhcp, struct fnet_dhcp_options_in *options );
 static void fnet_dhcp_apply_params(fnet_dhcp_if_t *dhcp);
 static void fnet_dhcp_change_state( fnet_dhcp_if_t *dhcp, fnet_dhcp_state_t state );
-static void fnet_dhcp_state_machine( void *fnet_dhcp_if_p );
+static void fnet_dhcp_poll( void *fnet_dhcp_if_p );
 
 #if FNET_CFG_DEBUG_DHCP && FNET_CFG_DEBUG/* Debug functions */
 /************************************************************************
@@ -912,7 +912,7 @@ static void fnet_dhcp_change_state( fnet_dhcp_if_t *dhcp, fnet_dhcp_state_t stat
             }
 #endif
 
-            dhcp->enabled = FNET_FALSE;
+            dhcp->is_enabled = FNET_FALSE;
             fnet_socket_close(dhcp->socket_client);
             fnet_poll_service_unregister(dhcp->service_descriptor); /* Delete service. */
             break;
@@ -1010,7 +1010,7 @@ timers T1, T2   ------------  send DHCPREQUEST      |               |
 
 */
 
-static void fnet_dhcp_state_machine( void *fnet_dhcp_if_p )
+static void fnet_dhcp_poll( void *fnet_dhcp_if_p )
 {
     fnet_dhcp_if_t                  *dhcp = (fnet_dhcp_if_t *)fnet_dhcp_if_p;
     struct fnet_dhcp_options_in     options;
@@ -1240,7 +1240,7 @@ fnet_dhcp_desc_t fnet_dhcp_init( fnet_netif_desc_t netif, struct fnet_dhcp_param
     /* Try to find free DHCP server. */
     for(i = 0u; i < FNET_CFG_DHCP_MAX; i++)
     {
-        if(fnet_dhcp_if_list[i].enabled == FNET_FALSE)
+        if(fnet_dhcp_if_list[i].is_enabled == FNET_FALSE)
         {
             dhcp_if = &fnet_dhcp_if_list[i];
         }
@@ -1269,7 +1269,7 @@ fnet_dhcp_desc_t fnet_dhcp_init( fnet_netif_desc_t netif, struct fnet_dhcp_param
     ((struct sockaddr_in *)(&addr_client))->sin_addr.s_addr = FNET_HTONL(INADDR_ANY);
     ((struct sockaddr_in *)(&addr_client))->sin_scope_id = fnet_netif_get_scope_id(netif);
 
-    if((dhcp_if->socket_client = fnet_socket(AF_INET, SOCK_DGRAM, 0u)) == FNET_ERR)
+    if((dhcp_if->socket_client = fnet_socket(AF_INET, SOCK_DGRAM, 0u)) == FNET_NULL)
     {
         FNET_DEBUG_DHCP(FNET_DHCP_ERR_SOCKET_CREATION);
         goto ERROR;
@@ -1281,7 +1281,7 @@ fnet_dhcp_desc_t fnet_dhcp_init( fnet_netif_desc_t netif, struct fnet_dhcp_param
         goto ERROR_1;
     }
 
-    dhcp_if->service_descriptor = fnet_poll_service_register(fnet_dhcp_state_machine, (void *) dhcp_if);
+    dhcp_if->service_descriptor = fnet_poll_service_register(fnet_dhcp_poll, (void *) dhcp_if);
 
     if(dhcp_if->service_descriptor == 0)
     {
@@ -1315,7 +1315,7 @@ fnet_dhcp_desc_t fnet_dhcp_init( fnet_netif_desc_t netif, struct fnet_dhcp_param
 
     fnet_dhcp_change_state(dhcp_if, state);
 
-    dhcp_if->enabled = FNET_TRUE;
+    dhcp_if->is_enabled = FNET_TRUE;
 
     return (fnet_dhcp_desc_t)dhcp_if;
 ERROR_1:
@@ -1332,7 +1332,7 @@ void fnet_dhcp_release(fnet_dhcp_desc_t desc)
 {
     struct fnet_dhcp_if   *dhcp_if = (struct fnet_dhcp_if *) desc;
 
-    if(dhcp_if && (dhcp_if->enabled == FNET_TRUE))
+    if(dhcp_if && (dhcp_if->is_enabled == FNET_TRUE))
     {
         fnet_dhcp_change_state(dhcp_if, FNET_DHCP_STATE_DISABLED); /* => DISABLED */
     }
@@ -1349,7 +1349,7 @@ fnet_bool_t fnet_dhcp_is_enabled(fnet_dhcp_desc_t desc)
 
     if(dhcp_if)
     {
-        result = dhcp_if->enabled;
+        result = dhcp_if->is_enabled;
     }
     else
     {

@@ -601,9 +601,8 @@ fnet_int32_t fnet_shell_getchar(fnet_shell_desc_t desc);
 fnet_return_t fnet_shell_switch( fnet_shell_desc_t desc, const struct fnet_shell *switch_shell);
 
 /***************************************************************************/ /*!
- * @internal
+ * 
  * @brief    Detects if the [Ctrl]+[c] is received.
- *
  *
  * @return This function returns:
  *   - @c 0 if [Ctrl]+[c] is not received/pressed.

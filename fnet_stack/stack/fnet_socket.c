@@ -161,7 +161,7 @@ void fnet_socket_list_del( fnet_socket_if_t **head, fnet_socket_if_t *s )
 static fnet_socket_t fnet_socket_desc_alloc( void )
 {
     fnet_index_t    i;
-    fnet_socket_t          res = FNET_ERR;
+    fnet_socket_t   res = FNET_NULL;
 
     fnet_isr_lock();
 
@@ -170,7 +170,7 @@ static fnet_socket_t fnet_socket_desc_alloc( void )
         if(fnet_socket_desc[i] == 0)
         {
             fnet_socket_desc[i] = (fnet_socket_if_t *)FNET_SOCKET_DESC_RESERVED;
-            res = (fnet_socket_t)i;
+            res = &fnet_socket_desc[i];
             break;
         }
     }
@@ -185,7 +185,7 @@ static fnet_socket_t fnet_socket_desc_alloc( void )
 *************************************************************************/
 static void fnet_socket_desc_set( fnet_socket_t desc, fnet_socket_if_t *sock )
 {
-    fnet_socket_desc[desc] = sock;
+    *(fnet_socket_if_t **)desc = sock;
     sock->descriptor = desc;
 }
 
@@ -194,7 +194,7 @@ static void fnet_socket_desc_set( fnet_socket_t desc, fnet_socket_if_t *sock )
 *************************************************************************/
 static void fnet_socket_desc_free( fnet_socket_t desc )
 {
-    fnet_socket_desc[desc] = 0;
+    *(fnet_socket_if_t **)desc = FNET_NULL;
 }
 
 /************************************************************************
@@ -203,14 +203,11 @@ static void fnet_socket_desc_free( fnet_socket_t desc )
 *************************************************************************/
 static fnet_socket_if_t *fnet_socket_desc_find( fnet_socket_t desc )
 {
-    fnet_socket_if_t *s = 0;
+    fnet_socket_if_t *s = FNET_NULL;
 
-    if(_fnet_is_enabled && (desc >= 0) && (desc != FNET_ERR))
+    if(_fnet_is_enabled && desc)
     {
-        if((desc < (fnet_socket_t)FNET_CFG_SOCKET_MAX))
-        {
-            s = fnet_socket_desc[desc];
-        }
+        s = *(fnet_socket_if_t **)desc;
     }
 
     return (s);
@@ -395,7 +392,7 @@ fnet_socket_if_t *fnet_socket_copy( fnet_socket_if_t *sock )
 
         sock_cp->next = 0;
         sock_cp->prev = 0;
-        sock_cp->descriptor = FNET_SOCKET_DESC_RESERVED;
+        sock_cp->descriptor = FNET_NULL;
         sock_cp->state = SS_UNCONNECTED;
         sock_cp->protocol_control = 0;
         sock_cp->head_con = 0;
@@ -420,10 +417,10 @@ fnet_socket_if_t *fnet_socket_copy( fnet_socket_if_t *sock )
 *************************************************************************/
 fnet_socket_t fnet_socket( fnet_address_family_t family, fnet_socket_type_t type, fnet_uint32_t protocol )
 {
-    fnet_prot_if_t  *prot;
-    fnet_socket_if_t   *sock;
-    fnet_socket_t          res;
-    fnet_error_t    error = FNET_ERR_OK;
+    fnet_prot_if_t      *prot;
+    fnet_socket_if_t    *sock;
+    fnet_socket_t       res;
+    fnet_error_t        error = FNET_ERR_OK;
 
     fnet_stack_mutex_lock();
 
@@ -435,7 +432,7 @@ fnet_socket_t fnet_socket( fnet_address_family_t family, fnet_socket_type_t type
 
     res = fnet_socket_desc_alloc();
 
-    if(res == FNET_ERR)
+    if(res == FNET_NULL)
     {
         error = FNET_ERR_NO_DESC; /* No more socket descriptors are available.*/
         goto ERROR_1;
@@ -488,7 +485,7 @@ ERROR_1:
 
     fnet_stack_mutex_unlock();
 
-    return (FNET_ERR);
+    return (FNET_NULL);
 }
 
 /************************************************************************
@@ -881,8 +878,8 @@ fnet_socket_t fnet_socket_accept( fnet_socket_t s, struct sockaddr *addr, fnet_s
 {
     fnet_socket_if_t   *sock;
     fnet_socket_if_t   *sock_new;
-    fnet_socket_t          desc;
-    fnet_error_t    error;
+    fnet_socket_t       desc;
+    fnet_error_t        error;
 
     fnet_stack_mutex_lock();
 
@@ -904,7 +901,8 @@ fnet_socket_t fnet_socket_accept( fnet_socket_t s, struct sockaddr *addr, fnet_s
                 }
             }
 
-            if((desc = fnet_socket_desc_alloc()) != FNET_ERR)
+            desc = fnet_socket_desc_alloc();
+            if(desc)
             {
                 fnet_isr_lock();
 
@@ -954,7 +952,7 @@ ERROR_SOCK:
 ERROR:
     fnet_stack_mutex_unlock();
 
-    return (FNET_ERR);
+    return (FNET_NULL);
 }
 
 /************************************************************************

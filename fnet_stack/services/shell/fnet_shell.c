@@ -83,7 +83,7 @@ struct fnet_shell_if
 static struct fnet_shell_if shell_if_list[FNET_CFG_SHELL_MAX];
 static void fnet_shell_echo( struct fnet_shell_if *shell_if, fnet_char_t character );
 static fnet_index_t fnet_shell_make_argv( fnet_char_t *cmdline, fnet_char_t *argv [] );
-static void fnet_shell_state_machine( void *shell_if_p );
+static void fnet_shell_poll( void *shell_if_p );
 static void fnet_shell_esc_clear(fnet_char_t *str);
 
 /************************************************************************
@@ -100,7 +100,7 @@ static void fnet_shell_echo( struct fnet_shell_if *shell_if, fnet_char_t charact
 /************************************************************************
 * DESCRIPTION: Shell state machine.
 ************************************************************************/
-static void fnet_shell_state_machine( void *shell_if_p )
+static void fnet_shell_poll( void *shell_if_p )
 {
     struct fnet_shell_if    *shell_if = (struct fnet_shell_if *)shell_if_p;
     const struct fnet_shell *shell = ((struct fnet_shell_if *)shell_if_p)->shell;
@@ -334,7 +334,7 @@ fnet_shell_desc_t fnet_shell_init( struct fnet_shell_params *params)
         shell_if->stream = FNET_SERIAL_STREAM_DEFAULT;
     }
 
-    shell_if->service_descriptor = fnet_poll_service_register(fnet_shell_state_machine, (void *) shell_if);
+    shell_if->service_descriptor = fnet_poll_service_register(fnet_shell_poll, (void *) shell_if);
     if(shell_if->service_descriptor == 0)
     {
         FNET_DEBUG_SHELL("Shell: Service registration error.");

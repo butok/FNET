@@ -682,7 +682,7 @@ struct linger
 /**************************************************************************/ /*!
  * @brief Socket descriptor.
  ******************************************************************************/
-typedef fnet_int32_t fnet_socket_t;
+typedef void* fnet_socket_t;
 
 /**************************************************************************/ /*!
  * @brief The flags parameters for receiving and sending functions
@@ -746,7 +746,7 @@ extern "C" {
  *
  * @return This function returns:
  *   - Socket descriptor referencing the new socket, if no error occurs.
- *   - @ref FNET_ERR if an error occurs. @n
+ *   - @ref FNET_NULL if an error occurs. @n
  *     The specific error code can be retrieved using the @ref fnet_error_get().
  *
  * @see fnet_socket_close()
@@ -862,7 +862,7 @@ fnet_return_t fnet_socket_listen( fnet_socket_t s, fnet_size_t backlog );
  *
  * @return This function returns:
  *   - Socket descriptor referencing the new socket, if no error occurs.
- *   - @ref FNET_ERR if an error occurs. @n
+ *   - @ref FNET_NULL if an error occurs. @n
  *     The specific error code can be retrieved using @ref fnet_error_get().
  *
  * @see fnet_socket(), fnet_socket_bind()
@@ -875,7 +875,7 @@ fnet_return_t fnet_socket_listen( fnet_socket_t s, fnet_size_t backlog );
  * connection and has the same properties as the socket @c s.
  * The original socket remains open and listens for new connection requests.
  * If no pending connections are present in the queue of the socket,
- * the @ref fnet_socket_accept() returns an error and the specific error code is set to
+ * the @ref fnet_socket_accept() returns FNET_NULL and the specific error code is set to
  * @ref FNET_ERR_AGAIN.@n
  * The parameter @c addr is a result parameter that is filled in with the
  * address of the remote host. The @c addrlen should initially contain the
@@ -1071,7 +1071,7 @@ fnet_int32_t fnet_socket_recvfrom( fnet_socket_t s, fnet_uint8_t *buf, fnet_size
  ******************************************************************************
  *
  * For stream-oriented sockets (@ref SOCK_STREAM), the number of
- * actually sent bytes can be between @c 1 and the requested length, depending on
+ * actually sent bytes can be between @c 0 and the requested length, depending on
  * buffer availability on both client and server machines.@n
  * @n
  * For message-oriented sockets (@ref SOCK_DGRAM), care must be taken not to
@@ -1187,9 +1187,7 @@ fnet_return_t fnet_socket_shutdown( fnet_socket_t s, fnet_sd_flags_t how );
  *
  * @brief    Closes an existing socket.
  *
- *
  * @param s      Descriptor, identifying a socket to close.
- *
  *
  * @return This function returns:
  *   - @ref FNET_OK if no error occurs.

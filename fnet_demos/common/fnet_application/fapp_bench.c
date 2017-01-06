@@ -145,7 +145,8 @@ static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
     fapp_bench.socket_foreign = FNET_ERR;
 
     /* Create listen socket */
-    if((fapp_bench.socket_listen = fnet_socket(family, SOCK_STREAM, 0)) == FNET_ERR)
+    fapp_bench.socket_listen = fnet_socket(family, SOCK_STREAM, 0u);
+    if(fapp_bench.socket_listen == FNET_NULL)
     {
         FNET_DEBUG("BENCH: Socket creation error.");
         goto ERROR_1;
@@ -213,16 +214,13 @@ static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
 
         while((fapp_bench.socket_foreign == FNET_ERR) && (exit_flag == FNET_FALSE))
         {
+            exit_flag = fnet_shell_is_ctrlc (desc);
+
             /*Accept*/
             addr_len = sizeof(foreign_addr);
             fapp_bench.socket_foreign = fnet_socket_accept(fapp_bench.socket_listen, &foreign_addr, &addr_len);
-
-
-            exit_flag = fnet_shell_is_ctrlc (desc);
-
-            if(fapp_bench.socket_foreign != FNET_ERR)
+            if(fapp_bench.socket_foreign)
             {
-
                 fnet_shell_println(desc, "Receiving from %s:%d", fnet_inet_ntop(foreign_addr.sa_family, (fnet_uint8_t *)(foreign_addr.sa_data), ip_str, sizeof(ip_str)), fnet_ntohs(foreign_addr.sa_port));
 
                 fapp_bench.first_time = fnet_timer_get_ticks();
@@ -276,7 +274,8 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
 
 
     /* Create listen socket */
-    if((fapp_bench.socket_listen = fnet_socket(family, SOCK_DGRAM, 0)) == FNET_ERR)
+    fapp_bench.socket_listen = fnet_socket(family, SOCK_DGRAM, 0u);
+    if(fapp_bench.socket_listen == FNET_NULL)
     {
         FNET_DEBUG("BENCH: Socket creation error.\n");
         goto ERROR_1;
@@ -528,7 +527,8 @@ static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
     while(iterations--)
     {
         /* Create socket */
-        if((fapp_bench.socket_foreign = fnet_socket(family, SOCK_STREAM, 0)) == FNET_ERR)
+        fapp_bench.socket_foreign = fnet_socket(family, SOCK_STREAM, 0u);
+        if(fapp_bench.socket_foreign == FNET_NULL)
         {
             FNET_DEBUG("BENCH: Socket creation error.\n");
             iterations = 0;
@@ -683,7 +683,8 @@ static void fapp_bench_udp_tx (struct fapp_bench_tx_params *params)
     while(iterations--)
     {
         /* Create socket */
-        if((fapp_bench.socket_foreign = fnet_socket(family, SOCK_DGRAM, 0)) == FNET_ERR)
+        fapp_bench.socket_foreign = fnet_socket(family, SOCK_DGRAM, 0u);
+        if(fapp_bench.socket_foreign == FNET_NULL)
         {
             FNET_DEBUG("BENCH: Socket creation error.\n");
             iterations = 0;

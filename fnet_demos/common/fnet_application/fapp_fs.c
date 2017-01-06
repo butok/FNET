@@ -28,7 +28,7 @@
 #include "fapp_fs.h"
 #include "fapp_prv.h"
 
-#if FAPP_CFG_EXP_CMD || FAPP_CFG_HTTP_CMD
+#if FAPP_CFG_EXP_CMD || FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD
 
     /************************************************************************
     *     Definitions.
@@ -306,7 +306,7 @@ static void fapp_fs_exit_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_ch
 
 #endif /* FAPP_CFG_EXP_CMD */
 
-#if (FAPP_CFG_EXP_CMD || FAPP_CFG_HTTP_CMD) && FNET_CFG_FS
+#if (FAPP_CFG_EXP_CMD || FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_FS
 /************************************************************************
 * DESCRIPTION: Mount FS image.
 ************************************************************************/

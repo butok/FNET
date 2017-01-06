@@ -92,15 +92,17 @@ preferred way to configure stack features). @n
 		- GET and POST requests.
 		- CGI and SSI.
 		- Basic access authentication.
+		- HTTP over TLS (HTTPS).
 	- @b TELNET server. 
 	- @b DHCP/BOOTP client.
 	- @b Auto-IP service. Passed "Phase 1, Link-Local Address Allocation", Bonjour Conformance Test suite Version 1.3.1.
 	- @b DNS client/resolver.
 	- @b Link-Detection service.
-	- @b Multicast @b DNS @b (mdNS) "Bonjour" Server/Responder.
+	- @b Multicast @b DNS @b (mDNS) "Bonjour" Server/Responder.
 	- @b LLMNR Server/Responder.
 	- @b PING service.
 	- @b TFTP server and client. Both Read and Write requests are supported.
+	- @b TLS using mbedTLS library.
 	- ROM File System.
 	- On-chip Flash Memory driver.
 	- Command line shell.
@@ -148,50 +150,57 @@ The current version of the FNET project has the following directory structure:
 @image html fnet_dir_structure.jpg "FNET Directory Structure"
 
 @verbatim
-fnet                      - FNET root directory.
-|-- fnet_stack              - FNET TCP/IP stack.
-|    |-- stack                - FNET TCP/IP stack platform-independent source code.
-|    |-- services             - FNET Services.
-|    |    |-- autoip            - Auto-IP service.
-|    |    |-- dhcp              - DHCP/BOOTP client service.
-|    |    |-- dns               - DNS client/resolver service.
-|    |    |-- flash             - Flash  Memory driver.
-|    |    |-- fs                - File System driver.
-|    |    |-- http              - HTTP Server service.
-|    |    |-- link              - Link-Detection service.
-|    |    |-- llmnr             - LLMNR Server/Responder.
-|    |    |-- ping              - PING service.
-|    |    |-- poll              - Polling Mechanism library.
-|    |    |-- serial            - Serial Input/Output driver.
-|    |    |-- shell             - Command Shell service.
-|    |    |-- telnet            - TELNET server service.
-|    |    |-- tftp              - TFTP server and client services.
-|    |-- port                  - FNET port-specific source code.
-|         |-- cpu                  - FNET platform-specific source code.
-|         |    |-- common            - Common platform-specific source code.
-|         |    |-- mcf               - Freescale ColdFire-specific source code.
-|         |    |-- mk                - Freescale Kinetis-specific source code.
-|         |    |-- mpc               - Freescale Power Architecture-specific source code.
-|         |-- compiler             - Compiler-specific source code.
+fnet                        - FNET root directory.
+|-- fnet_stack                - FNET TCP/IP stack.
+|    |-- stack                  - FNET TCP/IP stack platform-independent source code.
+|    |-- services               - FNET Services.
+|    |    |-- autoip              - Auto-IP service.
+|    |    |-- dhcp                - DHCP/BOOTP client service.
+|    |    |-- dns                 - DNS client/resolver service.
+|    |    |-- flash               - Flash  Memory driver.
+|    |    |-- fs                  - File System driver.
+|    |    |-- http                - HTTP Server service.
+|    |    |-- link                - Link-Detection service.
+|    |    |-- llmnr               - LLMNR Server/Responder.
+|    |    |-- mdns                - mDNS Server/Responder.
+|    |    |-- ping                - PING service.
+|    |    |-- poll                - Polling Mechanism library.
+|    |    |-- serial              - Serial Input/Output driver.
+|    |    |-- shell               - Command Shell service.
+|    |    |-- telnet              - TELNET server service.
+|    |    |-- tftp                - TFTP server and client services.
+|    |    |-- tls                 - TLS library.
+|    |-- port                   - FNET port-specific source code.
+|         |-- cpu                 - FNET platform-specific source code.
+|         |    |-- common           - Common platform-specific source code.
+|         |    |-- mcf              - ColdFire-specific source code.
+|         |    |-- mk               - Kinetis-specific source code.
+|         |    |-- mpc              - Power Architecture-specific source code.
+|         |-- compiler            - Compiler-specific source code.
 |-- fnet_doc                  - FNET documentation.
 |-- fnet_demos                - FNET demo projects.
 |    |-- common                 - Common source code used by demos.
 |    |    |-- fnet_application    - Demo application source code.
 |    |    |-- fnet_webpage        - Demo web page source code.
 |    |    |-- startup             - Platform-specific startup source code.
-|    |-- boards               - Demo projects 
-|         |-- <board_name>           - Demo projects for a <board_name> board.
-|              |-- boot              - FNET TFTP Bootloader.
-|              |-- benchmark         - TCP/UDP Throughput Benchmark application. 
-|              |-- shell             - "Shell" demo is a fully featured shell. It allows
-|              |                       view/change various parameters (e.g. IP address,
-|              |                       subnet mask), explore mounted file systems, run 
-|              |                       DHCP client, HTTP and Telnet servers.
-|              |-- shell_boot        - Example application used for the FNET TFTP Bootloader
-|                                      demonstration. This demo has the same features as 
-|                                      the "Shell" demo, but it`s modified to be able to
-|                                      work with the FNET Bootloader.
-|-- fnet_tools             - FNET tools.
+|    |-- boards                 - Demo projects.
+|         |-- <board_name>        - Demo projects for a <board_name> board.
+|              |-- boot           - FNET TFTP Bootloader.
+|              |-- benchmark      - TCP/UDP Throughput Benchmark application. 
+|              |-- shell          - "Shell" demo is a fully featured shell. It allows
+|              |                    view/change various parameters (e.g. IP address,
+|              |                    subnet mask), explore mounted file systems, run 
+|              |                    DHCP client, HTTP and Telnet servers.
+|              |-- shell_boot     - Example application used for the FNET TFTP Bootloader
+|              |                    demonstration. This demo has the same features as
+|              |                    the "Shell" demo, but it`s modified to be able to
+|              |                    work with the FNET Bootloader.
+|              |-- shell_mbedtls  - Example application used for the HTTPS server demonstration.
+|                                   This demo has the same features as the "Shell" demo,
+|                                   but in addition it includes the mbedTLS library.
+|-- fnet_tools                - FNET tools.
+|-- third_party               - Optional, third-party libraries.
+|    |-- mbedtls-2.4.0          - mbedTLS library, used by FNET TLS.
               
 @endverbatim
 */
@@ -199,8 +208,9 @@ fnet                      - FNET root directory.
 //*************************DEMOS************************************
 /*! 
 @page demos FNET Demo Applications
-*- @subpage quick_start_shell  
-*- @subpage quick_start_boot 
+*- @subpage quick_start_shell
+*- @subpage quick_start_shell_mbedtls
+*- @subpage quick_start_boot
 *- @subpage quick_start_benchmark 
 
 The FNET project supplied with several demo applications. They can be used for demonstration of FNET features or as an example of FNET User-API usage. @n
@@ -208,16 +218,19 @@ It is recommended to use them as starting point for your new applications.@n
 Project files are placed in @verbatim fnet\fnet_demos\boards\<board_name>\<demo_name>\<compiler_name>\ @endverbatim
 There are four types of demo projects:
 - @c shell - This is the main demo application. @n 
-The "Shell" demo allows to view/change various system parameters (e.g. IP address, subnet mask), to explore mounted file systems, to run DHCP and DNS clients, HTTP and Telnet servers, via a serial-terminal application. @n
- More information can be found in @ref quick_start_shell.
-- @c boot - This is the TFTP Client and Server Firmware Bootloader. @n 
-It allows to update or backup a firmware application, placed in on-chip Flash memory, using the TFTP protocol. @n 
-More information can be found in @ref quick_start_boot.
+  The "Shell" demo allows to view/change various system parameters (e.g. IP address, subnet mask), to explore mounted file systems, to run DHCP and DNS clients, HTTP and Telnet servers, via a serial-terminal application. @n
+  More information can be found in @ref quick_start_shell.
 - @c shell_boot - This is the example application used with the FNET TFTP Bootloader. @n
-This demo has the same features as the "Shell" demo, but it was modified to be able to work with the FNET Bootloader. @n
- More information can be found in @ref quick_start_boot.
+  This demo has the same features as the "Shell" demo, but it was modified to be able to work with the FNET Bootloader. @n
+  More information can be found in @ref quick_start_boot.
+- @c boot - This is the TFTP Client and Server Firmware Bootloader. @n 
+  It allows to update or backup a firmware application, placed in on-chip Flash memory, using the TFTP protocol. @n 
+  More information can be found in @ref quick_start_boot.
+- @c shell_mbedtls - This is the example application used for the HTTPS server demonstration.
+  This demo has the same features as the "Shell" demo, but in addition it includes the mbedTLS library.@n
+  More information can be found in @ref quick_start_shell_mbedtls.
 - @c benchmark - This is the TCP/UDP Throughput Benchmark application. @n
-More information can be found in @ref quick_start_benchmark.
+  More information can be found in @ref quick_start_benchmark.
 
 The following table summarizes the supported demo applications, platforms and compilers:
  <table>
@@ -227,15 +240,18 @@ The following table summarizes the supported demo applications, platforms and co
  <th ALIGN=CENTER>Shell</th>
  <th ALIGN=CENTER>Bootloader</th>
  <th ALIGN=CENTER>Benchmark</th>
+ <th ALIGN=CENTER>Shell mbedTLS</th>
  </tr>
 <tr>
  <td class="fnet_td_grey">MK64FN1M (Kinetis)</td>
  <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
  <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
  <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">MK66FN2M (Kinetis)</td>
+ <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
  <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
  <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
  <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
@@ -245,6 +261,7 @@ The following table summarizes the supported demo applications, platforms and co
  <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
  <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
  <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
+ <td ALIGN=CENTER>-</td> 
  </tr>
 </table>
 
@@ -277,7 +294,7 @@ Tools used during this quick start:
 
 Follow these steps to run the FNET Shell demo application: 
 - Prepare your evaluation board according to your board User Manual.
-- Use the RS-232 male/female DB-9 serial cable to connect your PC (through COM port) to the evaluation board.
+- Use USB or RS-232 male/female DB-9 serial cable to connect your PC (through COM port) to the evaluation board.
 - Connect the evaluation board to an Ethernet network.
 - Power the board up. 
 - Invoke the terminal program on the PC to which the evaluation board is connected and configure it to:
@@ -597,12 +614,141 @@ Be sure that the @c dns parameter is set to correct IPv4 address of the DNS serv
 
 
 
+//********************************************************************
+//************************* Shell mbedTLS Demo Quick Start *******************
+//********************************************************************
 
+/*!
+* @page quick_start_shell_mbedtls FNET Shell mbedTLS Demo Quick Start
 
+@section fnet_requirements_shell_mbedtls Requirements
 
+Tools used during this quick start:
+- Supported IDE.
+- Terminal program (Tera Term Pro v4.63 http://ttssh2.sourceforge.jp).
+- WEB browser.
+- FNET project source code, coming with this document.
+	
 
+@section fnet_stepbystep_shell_mbedtls Step by step
 
+Follow these steps to run the FNET Shell demo application: 
+- Prepare your evaluation board according to your board User Manual.
+- Use USB or RS-232 male/female DB-9 serial cable to connect your PC (through COM port) to the evaluation board.
+- Connect the evaluation board to an Ethernet network.
+- Power the board up. 
+- Invoke the terminal program on the PC to which the evaluation board is connected and configure it to:
+      - Bits per second: 115200.
+      - Data bits: 8.
+      - Parity: none.
+      - Stop bits: 1.
+      - Flow control: None. 	
+	@n @n
+      @image html fnet_serial_setup.jpg "Serial port setup"
 
+- Launch IDE.
+- Open the project:
+@verbatim fnet\fnet_demos\boards\<board_name>\shell_mbedtls\<compiler_name>\
+@endverbatim
+
+- In the IDE, choose a project target you want to compile.
+- Compile, load (or flash) the application to the board and run the project.
+- In your terminal program window you should see the FNET application welcome message:
+@verbatim
+Parameters loaded from Flash.
+
+Parameters loaded from Flash.
+
+************************************************
+ FNET Shell Application (mbedTLS)
+************************************************
+ FNET TCP/IP Stack for MK64FN1
+ Version 3.8.0
+ Built Jan  6 2017 at 12:19:47 by IAR
+************************************************
+ Interface        : eth0
+ IPv4 Address     : 0.0.0.0 <manual>
+ IPv6 Address     : fe80::211:22ff:fe33:4455 <autoconfigurable> ScopeID:1
+ IPv4 Subnet mask : 255.0.0.0
+ IPv4 Gateway     : 0.0.0.0
+ IPv4 DNS         : 0.0.0.0
+ MAC Address      : 00:11:22:33:44:55
+ MTU              : 1500
+ Link Status      : unconnected
+ Free Heap        : 30272
+ HTTP Server      : disabled
+ HTTPS Server     : disabled
+ DHCP Client      : disabled
+ AUTOIP Service   : disabled
+ TELNET Server    : disabled
+ LLMNR Server     : disabled
+ MDNS Server      : disabled
+
+ Enter 'help' for command list.
+************************************************
+
+SHELL>
+eth0: connected => Script: dhcp autoip; mdns; llmnr;
+************************************************
+ DHCPv4 Client started.
+************************************************
+Press [Ctr+C] to cancel.
+DHCP: Discovering...
+
+************************************************
+ IPv4 parameters updated :
+************************************************
+ Interface        : eth0
+ IPv4 Address     : 192.168.0.103 <dhcp>
+ IPv6 Address     : fe80::211:22ff:fe33:4455 <autoconfigurable> ScopeID:1
+ IPv4 Subnet mask : 255.255.255.0
+ IPv4 Gateway     : 192.168.0.1
+ IPv4 DNS         : 192.168.0.1
+************************************************
+ mDNS server started.
+ Name             : fnet
+************************************************
+************************************************
+ LLMNR server started.
+ Host Name        : fnet
+************************************************
+@endverbatim
+
+- This application has absolutely the same features and behavior as the Shell demo application. 
+  So before next steps, read about it in @ref quick_start_shell.
+- You can run the HTTPS Server on the board, by typing the command @c https into your terminal program window. @n
+In your terminal program window you should see: 
+@verbatim
+SHELL> https
+************************************************
+ HTTPS server started.
+ IPv4 Address     : 192.168.0.103
+ IPv6 Address     : fe80::211:22ff:fe33:4455
+************************************************
+SHELL>
+@endverbatim
+- Then run your Web browser and navigate to the server address (the address you have assigned to the system or obtained from the DHCP server): 
+@verbatim
+https:// 192.168.0.103
+@endverbatim
+or
+@verbatim
+https:// [fe80::211:22ff:fe33:4455]
+@endverbatim
+- Depending on the used Web browser, you may get a warning message about that there is a problem with the security certificate. 
+  It occurs because the demo HTTPS server uses the test security certificate which was not signed by a trusted certificate authority.
+  But a real application should use a valid certificate acquire from one of trusted certificate authorities.@n
+  So just ignore this warning and continue to the website.
+- You should see a Web page served by the FNET HTTPS server.
+  The HTTPS server uses the same Web pages as the normal HTTP server but transfered over TLS protocol set.
+  
+@note
+- The application project includes mbedTLS library (https://tls.mbed.org/).
+  Its source code is located in fnet/third_party/mbedtls-2.4.0/.
+- mbedTLS FNET application configuration parameter are in the fnet_mdedtls_user_config.h file.@n
+- The MBEDTLS_CONFIG_FILE definition is set to "fnet_mbedtls_user_config.h" in preprocessor project options.
+
+*/
 
 //********************************************************************
 //************************* Bootloader Quick Start *******************
@@ -623,7 +769,7 @@ Tools used during this quick start:
 
 Follow these steps to run the FNET Bootloader: 
 - Prepare your evaluation board according to your board User Manual.
-- Use the RS-232 male/female DB-9 serial cable to connect your PC (through COM port) to the evaluation board.
+- Use USB or RS-232 male/female DB-9 serial cable to connect your PC (through COM port) to the evaluation board.
 - Connect the evaluation board to an Ethernet network. 
 - Power the board up. 
 - Invoke the terminal program on the PC to which the evaluation board is connected and configure it to:
@@ -642,7 +788,7 @@ Follow these steps to run the FNET Bootloader:
       - Press [OK]:
        @n @n
       @image html fnet_tftp_start.jpg "Tftpd32"
-@n 
+
 
 @par Prepare the example-application image file that is to be downloaded by the TFTP Bootloader:
 
@@ -1101,7 +1247,7 @@ Tools used during this quick start:
 
 Follow these steps to run the FNET Throughput benchmark: 
 - Prepare your evaluation board according to your board User Manual.
-- Use the RS-232 male/female DB-9 serial cable to connect your PC (through COM port) to the evaluation board.
+- Use USB or RS-232 male/female DB-9 serial cable to connect your PC (through COM port) to the evaluation board.
 - Connect the evaluation board to an Ethernet network. 
 - Power the board up. 
 - Invoke the terminal program on the PC to which the evaluation board is connected and configure it to:
@@ -1553,6 +1699,16 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.8.0:
+	- Added TLS:
+		- Added TLS server API.
+		- Added mbedTLS library support, placed in third_party/mbedtls-2.4.0.
+		- Added shell_mbedtls example.
+	- Changed the fnet_socket_t descriptor type from fnet_int32_t to void*.
+	  So now, fnet_socket_accept() and fnet_socket() return FNET_NULL instead of FNET_ERR.
+	- Fixed fnet_mempool_free(), thanks to Paul. 
+	- Fixed FNET_CFG_CPU_VECTOR_PRIORITY_MAX for Kinetis.
+	
 - Version 3.7.0:
 	- Added Multicast DNS (mDNS) "Bonjour" Server/Responder. Thanks to NXP-Semiconductor for support.
 	- Passed the Bonjour Conformance Test, Version 1.3.1. (https://developer.apple.com/softwarelicensing/agreements/bonjour.php)
@@ -2521,6 +2677,14 @@ which includes all service-specific configuration files.
 *   The user may override and change the default values in the application-specific 
 *   configuration file @c fnet_user_config.h.
 */
+/*! 
+*	@defgroup fnet_tls_config TLS (Transport Layer Security) Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the TLS (Transport Layer Security).
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
 
 
 //***********************************************************************
@@ -2666,7 +2830,10 @@ which includes all service-specific configuration files.
 *	@defgroup fnet_tftp_srv TFTP server API
 *	@ingroup fnet_tftp 
 */
-
+/*! 
+*	@defgroup fnet_tls TLS API
+*	@ingroup services_api 
+*/
 /*! 
 *	@defgroup fnet_cfm Flash driver API
 *	@ingroup services_api 

@@ -145,7 +145,7 @@ static struct fnet_tftp_srv_if tftp_srv_if_list[FNET_CFG_TFTP_SRV_MAX];
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fnet_tftp_srv_state_machine( void *fnet_tftp_srv_if_p );
+static void fnet_tftp_srv_poll( void *fnet_tftp_srv_if_p );
 static void fnet_tftp_srv_send_error(struct fnet_tftp_srv_if *tftp_srv_if, fnet_socket_t s, fnet_tftp_error_t error_code, const fnet_char_t *error_message, struct sockaddr *dest_addr);
 static void fnet_tftp_srv_send_data(struct fnet_tftp_srv_if *tftp_srv_if);
 static void fnet_tftp_srv_send_ack(struct fnet_tftp_srv_if *tftp_srv_if);
@@ -225,7 +225,8 @@ fnet_tftp_srv_desc_t fnet_tftp_srv_init( struct fnet_tftp_srv_params *params )
     }
 
     /* Create listen socket */
-    if((tftp_srv_if->socket_listen = fnet_socket(local_addr.sa_family, SOCK_DGRAM, 0u)) == FNET_ERR)
+    tftp_srv_if->socket_listen = fnet_socket(local_addr.sa_family, SOCK_DGRAM, 0u);
+    if(tftp_srv_if->socket_listen == FNET_NULL)
     {
         FNET_DEBUG_TFTP_SRV("TFTP_SRV: Socket creation error.");
         goto ERROR_1;
@@ -238,7 +239,7 @@ fnet_tftp_srv_desc_t fnet_tftp_srv_init( struct fnet_tftp_srv_params *params )
     }
 
     /* Register service. */
-    tftp_srv_if->service_descriptor = fnet_poll_service_register(fnet_tftp_srv_state_machine, (void *) tftp_srv_if);
+    tftp_srv_if->service_descriptor = fnet_poll_service_register(fnet_tftp_srv_poll, (void *) tftp_srv_if);
 
     if(tftp_srv_if->service_descriptor == 0)
     {
@@ -346,7 +347,7 @@ static fnet_int32_t fnet_tftp_srv_data_handler(struct fnet_tftp_srv_if *tftp_srv
 /************************************************************************
 * DESCRIPTION: TFTP server state machine.
 ************************************************************************/
-static void fnet_tftp_srv_state_machine( void *fnet_tftp_srv_if_p )
+static void fnet_tftp_srv_poll( void *fnet_tftp_srv_if_p )
 {
     struct sockaddr         addr;
     fnet_size_t             addr_len;
@@ -446,7 +447,8 @@ static void fnet_tftp_srv_state_machine( void *fnet_tftp_srv_if_p )
                     tftp_srv_if->complete_status = FNET_ERR; /* Set default value.*/
 
                     /* Create a socket for the new transaction. */
-                    if((tftp_srv_if->socket_transaction = fnet_socket(addr.sa_family, SOCK_DGRAM, 0u)) == FNET_ERR)
+                    tftp_srv_if->socket_transaction = fnet_socket(addr.sa_family, SOCK_DGRAM, 0u);
+                    if(tftp_srv_if->socket_transaction == FNET_NULL)
                     {
                         FNET_DEBUG_TFTP_SRV("TFTP_SRV: Socket creation error.");
                         fnet_tftp_srv_send_error(tftp_srv_if, tftp_srv_if->socket_listen, FNET_TFTP_ERROR_NOT_DEFINED, 0, &addr);

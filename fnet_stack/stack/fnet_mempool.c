@@ -102,7 +102,8 @@ void fnet_mempool_free( fnet_mempool_desc_t mpool, void *ap )
 {
     struct fnet_mempool *mempool = (struct fnet_mempool *)mpool;
 
-    fnet_mempool_unit_header_t *bp, *p;
+    fnet_mempool_unit_header_t *bp;
+    fnet_mempool_unit_header_t *p;
 
     if(ap != 0)
     {
@@ -140,6 +141,7 @@ void fnet_mempool_free( fnet_mempool_desc_t mpool, void *ap )
         }
 #endif
 
+        /* Find most close free-block*/
         for (p = mempool->free_ptr; !((bp > p) && (bp < p->ptr)); p = p->ptr)
         {
 
@@ -157,23 +159,32 @@ void fnet_mempool_free( fnet_mempool_desc_t mpool, void *ap )
             }
         }
 
+        
         if((fnet_mempool_unit_header_t *)((fnet_uint32_t)bp + bp->size * mempool->unit_size) == p->ptr)
         {
+            /* Join blocks.*/
             bp->size += p->ptr->size;
             bp->ptr = p->ptr->ptr;
+            if( p == p->ptr ) /* So we have only one free block */
+            {
+                p = bp ; /* Point to start of new merged block */
+            }
         }
         else
         {
+            /* Insert block*/
             bp->ptr = p->ptr;
         }
 
         if((fnet_mempool_unit_header_t *)((fnet_uint32_t)p + p->size * mempool->unit_size) == bp)
         {
+            /* Join blocks.*/
             p->size += bp->size;
             p->ptr = bp->ptr;
         }
         else
         {
+            /* Insert block*/
             p->ptr = bp;
         }
 
