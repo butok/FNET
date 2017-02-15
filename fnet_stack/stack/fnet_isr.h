@@ -30,6 +30,9 @@
 #ifndef FNET_ISR_HANDLER
     #define FNET_ISR_HANDLER    fnet_cpu_isr
 #endif
+#ifndef FNET_ISR_HANDLER_INSTALL
+    #define FNET_ISR_HANDLER_INSTALL    fnet_cpu_isr_install
+#endif
 
 /* Defines number of the first event handler. MUST be higher than any HW-vector number. */
 #define FNET_EVENT_VECTOR_NUMBER (1025)

@@ -145,7 +145,7 @@
     #ifndef __FNET_ASM_CODE
         #ifndef FNET_CFG_MCF_IPSBAR
             /* The following symbol should be defined in the lcf */
-            extern fnet_uint8_t __IPSBAR [];
+            extern unsigned char __IPSBAR [];
 
             #define FNET_CFG_MCF_IPSBAR                 __IPSBAR
 
@@ -180,7 +180,7 @@
                 #if FNET_CFG_MCF_V1
                     #define FNET_CFG_CPU_FLASH_ADDRESS  (0x00000000)
                 #else
-                    extern fnet_uint8_t __FLASHBAR [];
+                    extern unsigned char __FLASHBAR [];
                     #define FNET_CFG_CPU_FLASH_ADDRESS  ((fnet_uint32_t)__FLASHBAR)
                 #endif
 

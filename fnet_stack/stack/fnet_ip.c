@@ -1048,7 +1048,7 @@ fnet_ip4_multicast_list_entry_t *fnet_ip_multicast_join( fnet_netif_t *netif, fn
             result->netif = netif;
 
             /* Join HW interface. */
-            fnet_netif_join_ip4_multicast ( (fnet_netif_desc_t) netif, group_addr );
+            _fnet_netif_join_ip4_multicast ( (fnet_netif_desc_t) netif, group_addr );
 
 #if FNET_CFG_IGMP  /* Send IGMP report.*/
             /*
@@ -1083,7 +1083,7 @@ void fnet_ip_multicast_leave_entry( fnet_ip4_multicast_list_entry_t *multicasten
 #endif /* FNET_CFG_IGMP */
 
             /* Leave HW interface. */
-            fnet_netif_leave_ip4_multicast ( (fnet_netif_desc_t) multicastentry->netif, multicastentry->group_addr );
+            _fnet_netif_leave_ip4_multicast ( (fnet_netif_desc_t) multicastentry->netif, multicastentry->group_addr );
         }
     }
 }

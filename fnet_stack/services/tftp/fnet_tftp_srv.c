@@ -210,7 +210,7 @@ fnet_tftp_srv_desc_t fnet_tftp_srv_init( struct fnet_tftp_srv_params *params )
         tftp_srv_if->retransmit_max = params->retransmit_max;
     }
 
-    tftp_srv_if->socket_transaction = FNET_ERR;
+    tftp_srv_if->socket_transaction = FNET_NULL;
 
     fnet_memcpy(&local_addr, &params->address, sizeof(local_addr));
 
@@ -614,10 +614,10 @@ static void fnet_tftp_srv_poll( void *fnet_tftp_srv_if_p )
         default:
             FNET_DEBUG_TFTP_SRV("TFTP_SRV: STATE_CLOSING");
 
-            if(tftp_srv_if->socket_transaction != FNET_ERR)
+            if(tftp_srv_if->socket_transaction != FNET_NULL)
             {
                 fnet_socket_close(tftp_srv_if->socket_transaction);
-                tftp_srv_if->socket_transaction = FNET_ERR;
+                tftp_srv_if->socket_transaction = FNET_NULL;
             }
 
             /* Call complete handler. */

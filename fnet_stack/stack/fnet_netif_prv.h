@@ -191,6 +191,12 @@ void fnet_netif_release_all( void );
 void fnet_netif_drain( void );
 void fnet_netif_signal_p4_addr_conflict( fnet_netif_desc_t netif );
 
+#if FNET_CFG_MULTICAST & FNET_CFG_IP4
+void _fnet_netif_join_ip4_multicast (fnet_netif_desc_t netif_desc, fnet_ip4_addr_t multicast_addr);
+void _fnet_netif_leave_ip4_multicast (fnet_netif_desc_t netif_desc, fnet_ip4_addr_t multicast_addr);
+#endif
+fnet_return_t _fnet_netif_set_hw_addr(fnet_netif_desc_t netif_desc, fnet_uint8_t *hw_addr, fnet_size_t hw_addr_size);
+
 #if FNET_CFG_IP6
 fnet_netif_ip6_addr_t *fnet_netif_get_ip6_addr_info(fnet_netif_t *netif, const fnet_ip6_addr_t *ip_addr);
 fnet_return_t fnet_netif_bind_ip6_addr_prv(fnet_netif_t *netif, const fnet_ip6_addr_t *addr, fnet_netif_ip_addr_type_t addr_type,
@@ -207,11 +213,12 @@ void fnet_netif_pmtu_init(fnet_netif_t *netif);
 void fnet_netif_pmtu_release(fnet_netif_t *netif);
 void fnet_netif_set_pmtu(fnet_netif_t *netif, fnet_size_t pmtu);
 #endif
+void _fnet_netif_join_ip6_multicast (fnet_netif_desc_t netif_desc, const fnet_ip6_addr_t *multicast_addr);
+void _fnet_netif_leave_ip6_multicast (fnet_netif_desc_t netif_desc, fnet_ip6_addr_t *multicast_addr);
+#endif /* FNET_CFG_IP6 */
 
 #if defined(__cplusplus)
 }
-#endif
-
 #endif
 
 #endif /* _FNET_NETIF_PRV_H_ */

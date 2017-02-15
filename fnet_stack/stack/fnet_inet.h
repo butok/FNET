@@ -113,7 +113,7 @@ fnet_return_t fnet_inet_aton( fnet_char_t *cp, struct in_addr *addr );
  * @param addr  Pointer to the IP address in network-byte order.
  *
  * @param str   Pointer to a buffer in which to store the NULL-terminated
- *              string representation of the IP address..@n
+ *              string representation of the IP address.@n
  *              For an IPv4 address, the @c str buffer must be at least 16 bytes long
  *                   (@ref FNET_IP4_ADDR_STR_SIZE).@n
  *              For an IPv6 address, the @c str buffer must be at least 46 bytes long

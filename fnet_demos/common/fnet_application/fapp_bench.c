@@ -142,7 +142,7 @@ static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
     fnet_bool_t         exit_flag = FNET_FALSE;
 
 
-    fapp_bench.socket_foreign = FNET_ERR;
+    fapp_bench.socket_foreign = FNET_NULL;
 
     /* Create listen socket */
     fapp_bench.socket_listen = fnet_socket(family, SOCK_STREAM, 0u);
@@ -206,13 +206,13 @@ static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
 
         fapp_bench.bytes = 0;
         fapp_bench.remote_bytes = 0;
-        if(fapp_bench.socket_foreign != FNET_ERR)
+        if(fapp_bench.socket_foreign != FNET_NULL)
         {
             fnet_socket_close(fapp_bench.socket_foreign);
-            fapp_bench.socket_foreign = FNET_ERR;
+            fapp_bench.socket_foreign = FNET_NULL;
         }
 
-        while((fapp_bench.socket_foreign == FNET_ERR) && (exit_flag == FNET_FALSE))
+        while((fapp_bench.socket_foreign == FNET_NULL) && (exit_flag == FNET_FALSE))
         {
             exit_flag = fnet_shell_is_ctrlc (desc);
 
@@ -487,9 +487,8 @@ static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
 {
     fnet_int32_t            send_result;
     fnet_char_t             ip_str[FNET_IP_ADDR_STR_SIZE];
-    const struct linger     linger_option = {FNET_TRUE, /*l_onoff*/
-              4  /*l_linger*/
-    };
+    const struct linger     linger_option = {.l_onoff = FNET_TRUE, 
+                                             .l_linger = 4 };
     const fnet_size_t       bufsize_option = FAPP_BENCH_SOCKET_BUF_SIZE;
     const fnet_int32_t      keepalive_option = 1;
     const fnet_int32_t      keepcnt_option = FAPP_BENCH_TCP_KEEPCNT;
@@ -510,7 +509,7 @@ static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
     if(packet_size > FAPP_BENCH_BUFFER_SIZE) /* Check max size.*/
         packet_size = FAPP_BENCH_BUFFER_SIZE;
 
-    fapp_bench.socket_listen = FNET_ERR;
+    fapp_bench.socket_listen = FNET_NULL;
 
     /* ------ Start test.----------- */
     fnet_shell_println(desc, FAPP_DELIMITER_STR);
@@ -666,7 +665,7 @@ static void fapp_bench_udp_tx (struct fapp_bench_tx_params *params)
     if(packet_size > FAPP_BENCH_BUFFER_SIZE) /* Check max size.*/
         packet_size = FAPP_BENCH_BUFFER_SIZE;
 
-    fapp_bench.socket_listen = FNET_ERR;
+    fapp_bench.socket_listen = FNET_NULL;
 
     /* ------ Start test.----------- */
     fnet_shell_println(desc, FAPP_DELIMITER_STR);

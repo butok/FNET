@@ -616,7 +616,7 @@
  *           It must be unique on local network. 
  ******************************************************************************/
 #ifndef FAPP_CFG_CPU_ETH1_MAC_ADDR
-    #define FAPP_CFG_CPU_ETH1_MAC_ADDR        FNET_MAC_ADDR_INIT(0x22, 0x44, 0x44, 0x55, 0x66, 0x77)
+    #define FAPP_CFG_CPU_ETH1_MAC_ADDR        FNET_MAC_ADDR_INIT(0x22, 0x33, 0x44, 0x55, 0x66, 0x77)
 #endif
 
 /**************************************************************************/ /*!
@@ -681,6 +681,17 @@
  ******************************************************************************/
 #ifndef FAPP_CFG_ETH1_IP4_DNS
     #define FAPP_CFG_ETH1_IP4_DNS           (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief   Testing of mutex nesting conflict:
+ *               - @b @c 1 = is enabled.
+ *               - @c 0 = is disabled (Default value).@n
+ * Valid only if FNET_CFG_MULTITHREADING is 1.
+ * @note Used only for testing needs. 
+ ******************************************************************************/
+#ifndef FAPP_CFG_TEST_MUTEX_CONFLICT
+    #define FAPP_CFG_TEST_MUTEX_CONFLICT    0
 #endif
 
 #endif

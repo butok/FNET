@@ -595,7 +595,7 @@ static void fnet_mdns_update_name_counter(fnet_mdns_if_t *mdns_if)
     /* Change name to device (count) */
     if(mdns_if->host_name_count>0)
     {
-        fnet_snprintf(&mdns_if->host_name[mdns_if->name_length], (sizeof(mdns_if->host_name) - mdns_if->name_length), " %d", mdns_if->host_name_count);
+        fnet_snprintf(&mdns_if->host_name[mdns_if->name_length], (sizeof(mdns_if->host_name) - mdns_if->name_length), "-%d", mdns_if->host_name_count);
         fnet_snprintf(&mdns_if->service_name[mdns_if->name_length], (sizeof(mdns_if->service_name) - mdns_if->name_length), " %d", mdns_if->host_name_count);
     }
     else
@@ -902,6 +902,36 @@ static fnet_mdns_query_type_t fnet_mdns_get_query_type(fnet_uint16_t type)
     return query_rr_type;
 }
 
+/* Print query name */
+/************************************************************************
+* DESCRIPTION: Print MDNS query name.
+************************************************************************/
+#if FNET_CFG_DEBUG_MDNS && FNET_CFG_DEBUG
+static void fnet_mdns_print_qe_name(const fnet_char_t *prefix, const fnet_char_t *qe_name)
+{
+    fnet_size_t     qe_name_legth = hk_strlen(qe_name);
+    fnet_uint8_t    name_length_index = 0;
+    fnet_index_t    i;
+
+    fnet_print("%s", prefix); /* Print prefix*/    
+
+    for(i=0; i<qe_name_legth; i++)
+    {
+        if(i == name_length_index)
+        {
+            fnet_print("."); /* Instead of name length */
+            name_length_index += qe_name[i]+1; /* Next name length byte */
+        }
+        else
+        {
+            fnet_print("%c", qe_name[i]);
+        }
+    }
+
+    fnet_prinln("");
+}
+#endif
+
 /************************************************************************
 * DESCRIPTION: Received MDNS query (request) and process it.
 ************************************************************************/
@@ -934,7 +964,9 @@ static const fnet_uint8_t * fnet_mdns_process_query(fnet_mdns_if_t *mdns_if, fne
                         || (service = fnet_mdns_get_service_by_name(mdns_if, qe_name))     /* service instance name */
                         || (service = fnet_mdns_get_service_by_type(mdns_if, qe_name)) )   /* service type in a domain */
                     {
-                        FNET_DEBUG_MDNS("MDNS: RX Query for: %s", qe_name);
+                    #if FNET_CFG_DEBUG_MDNS && FNET_CFG_DEBUG
+                        fnet_mdns_print_qe_name("MDNS: RX Query for:", qe_name);
+                    #endif
 
                         /* Check query record */ //TBD move it UP
                         if( (qe_header->rr_class &(~FNET_HTONS(FNET_MDNS_HEADER_CACHE_FLUSH)))== FNET_HTONS(FNET_MDNS_HEADER_CLASS_IN)) /* Support only IN = Internet protocol. Ignore flush flag.*/
@@ -971,7 +1003,9 @@ static const fnet_uint8_t * fnet_mdns_process_query(fnet_mdns_if_t *mdns_if, fne
                     if(fnet_mdns_is_our_host_name(mdns_if, qe_name) 
                         || fnet_mdns_get_service_by_name(mdns_if, qe_name)) 
                     {
-                        FNET_DEBUG_MDNS("MDNS: RX Probe for: %s", qe_name);
+                    #if FNET_CFG_DEBUG_MDNS && FNET_CFG_DEBUG
+                        fnet_mdns_print_qe_name("MDNS: RX Probe for:", qe_name);
+                    #endif
 
                         /* Simultaneous Probe Tiebreaking */
                         /* RFC6762: When a host that is probing for a record sees another host issue a
@@ -2466,8 +2500,6 @@ static fnet_uint8_t * fnet_mdns_add_host_name(fnet_mdns_if_t *mdns_if, fnet_uint
     }
     else
     {
-        FNET_ASSERT(ptr >= mdns_if->buffer);
-
         if(compression)
         {
             /* Offset, used by Domain Name Compression.*/

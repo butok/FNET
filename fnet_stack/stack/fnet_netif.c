@@ -298,12 +298,12 @@ fnet_return_t fnet_netif_init(fnet_netif_desc_t netif_desc, fnet_uint8_t *hw_add
              * NOTE:(224.0.0.1) membership is never reported by IGMP.
              **************************************************************/
             /* Join HW interface. */
-            fnet_netif_join_ip4_multicast ( netif, FNET_IP4_ADDR_INIT(224, 0, 0, 1) );
+            _fnet_netif_join_ip4_multicast ( netif, FNET_IP4_ADDR_INIT(224, 0, 0, 1) );
 #endif
             /* Set HW Address.*/
             if(hw_addr && hw_addr_size)
             {
-                result = fnet_netif_set_hw_addr(netif, hw_addr, hw_addr_size);
+                result = _fnet_netif_set_hw_addr(netif, hw_addr, hw_addr_size);
             }
             
             if(result == FNET_OK)
@@ -763,7 +763,7 @@ fnet_return_t fnet_netif_get_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
 * DESCRIPTION: This function sets HW interface address.
 *              (MAC address in case of Ethernet interface)
 *************************************************************************/
-fnet_return_t fnet_netif_set_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t *hw_addr, fnet_size_t hw_addr_size )
+fnet_return_t _fnet_netif_set_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t *hw_addr, fnet_size_t hw_addr_size )
 {
     fnet_return_t result;
     fnet_netif_t  *netif = (fnet_netif_t *)netif_desc;
@@ -773,8 +773,6 @@ fnet_return_t fnet_netif_set_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
     {
         fnet_srand(((fnet_uint32_t)hw_addr[0] << 24u) | ((fnet_uint32_t)hw_addr[1] << 16u) | ((fnet_uint32_t)hw_addr[2] << 8u) | hw_addr[3]);
     }
-
-    fnet_stack_mutex_lock();
 
     if(netif && hw_addr
        && (netif->netif_api)
@@ -788,6 +786,14 @@ fnet_return_t fnet_netif_set_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
         result = FNET_ERR;
     }
 
+    return result;
+}
+fnet_return_t fnet_netif_set_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t *hw_addr, fnet_size_t hw_addr_size )
+{
+    fnet_return_t result;
+
+    fnet_stack_mutex_lock();
+    result = _fnet_netif_set_hw_addr(netif_desc, hw_addr, hw_addr_size);
     fnet_stack_mutex_unlock();
 
     return result;
@@ -801,17 +807,19 @@ fnet_return_t fnet_netif_set_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
 * the upper layers for further processing.
 *************************************************************************/
 #if FNET_CFG_MULTICAST & FNET_CFG_IP4
-void fnet_netif_join_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t multicast_addr )
+void _fnet_netif_join_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t multicast_addr )
 {
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
-
-    fnet_stack_mutex_lock();
 
     if(netif && (netif->netif_api->netif_multicast_join_ip4))
     {
         netif->netif_api->netif_multicast_join_ip4(netif, multicast_addr);
     }
-
+}
+void fnet_netif_join_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t multicast_addr )
+{
+    fnet_stack_mutex_lock();
+    _fnet_netif_join_ip4_multicast(netif_desc, multicast_addr);
     fnet_stack_mutex_unlock();
 }
 #endif /* FNET_CFG_MULTICAST & FNET_CFG_IP4 */
@@ -819,7 +827,7 @@ void fnet_netif_join_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_addr
 * DESCRIPTION:
 *************************************************************************/
 #if FNET_CFG_MULTICAST & FNET_CFG_IP4
-void fnet_netif_leave_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t multicast_addr )
+void _fnet_netif_leave_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t multicast_addr )
 {
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
 
@@ -830,6 +838,12 @@ void fnet_netif_leave_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_add
         netif->netif_api->netif_multicast_leave_ip4(netif, multicast_addr);
     }
 
+    fnet_stack_mutex_unlock();
+}
+void fnet_netif_leave_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t multicast_addr )
+{
+    fnet_stack_mutex_lock();
+    _fnet_netif_leave_ip4_multicast(netif_desc, multicast_addr);
     fnet_stack_mutex_unlock();
 }
 #endif /* FNET_CFG_MULTICAST & FNET_CFG_IP4*/
@@ -1096,36 +1110,40 @@ fnet_bool_t fnet_netif_get_ip6_addr (fnet_netif_desc_t netif_desc, fnet_index_t 
 }
 
 /************************************************************************
-* DESCRIPTION:
+* DESCRIPTION: Joins the specified network interface to IPv6 multicast group.
 *************************************************************************/
-void fnet_netif_join_ip6_multicast ( fnet_netif_desc_t netif_desc, const fnet_ip6_addr_t *multicast_addr )
+void _fnet_netif_join_ip6_multicast ( fnet_netif_desc_t netif_desc, const fnet_ip6_addr_t *multicast_addr )
 {
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
-
-    fnet_stack_mutex_lock();
 
     if(netif && (netif->netif_api->netif_multicast_join_ip6))
     {
         netif->netif_api->netif_multicast_join_ip6(netif, multicast_addr);
     }
-
+}
+void fnet_netif_join_ip6_multicast ( fnet_netif_desc_t netif_desc, const fnet_ip6_addr_t *multicast_addr )
+{
+    fnet_stack_mutex_lock();
+    _fnet_netif_join_ip6_multicast (netif_desc, multicast_addr);
     fnet_stack_mutex_unlock();
 }
 
 /************************************************************************
-* DESCRIPTION:
+* DESCRIPTION: Leaves the specified network interface from IPv6 multicast group.
 *************************************************************************/
-void fnet_netif_leave_ip6_multicast ( fnet_netif_desc_t netif_desc, fnet_ip6_addr_t *multicast_addr )
+void _fnet_netif_leave_ip6_multicast ( fnet_netif_desc_t netif_desc, fnet_ip6_addr_t *multicast_addr )
 {
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
-
-    fnet_stack_mutex_lock();
 
     if(netif && (netif->netif_api->netif_multicast_leave_ip6))
     {
         netif->netif_api->netif_multicast_leave_ip6(netif, multicast_addr);
     }
-
+}
+void fnet_netif_leave_ip6_multicast ( fnet_netif_desc_t netif_desc, fnet_ip6_addr_t *multicast_addr )
+{
+    fnet_stack_mutex_lock();
+    _fnet_netif_leave_ip6_multicast(netif_desc, multicast_addr);
     fnet_stack_mutex_unlock();
 }
 
@@ -1318,8 +1336,6 @@ fnet_return_t fnet_netif_bind_ip6_addr_prv(fnet_netif_t *netif, const fnet_ip6_a
     fnet_netif_ip6_addr_t   *if_addr_ptr = FNET_NULL;
     fnet_index_t            i;
 
-    fnet_stack_mutex_lock();
-
     /* Check input parameters. */
     if(netif && addr && (!FNET_IP6_ADDR_IS_MULTICAST(addr)))
     {
@@ -1411,7 +1427,6 @@ fnet_return_t fnet_netif_bind_ip6_addr_prv(fnet_netif_t *netif, const fnet_ip6_a
     }
 
 COMPLETE:
-    fnet_stack_mutex_unlock();
 
     return result;
 }

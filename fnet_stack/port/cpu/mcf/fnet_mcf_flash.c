@@ -131,7 +131,7 @@ static void cfm_command( unsigned char command, unsigned long *address, unsigned
 /************************************************************************
 * DESCRIPTION: Erases the specified range of the Flash memory.
 ************************************************************************/
-fnet_return_t (void *flash_addr, fnet_size_t bytes)
+fnet_return_t fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes)
 {
     fnet_index_t    n_pages;
     fnet_uint32_t   page_shift = (fnet_uint32_t)flash_addr & (FNET_CFG_CPU_FLASH_PAGE_SIZE - 1U);
@@ -176,6 +176,8 @@ fnet_return_t fnet_cpu_flash_write(unsigned char *dest, const unsigned char *dat
         }
     }
 #endif /*FNET_CFG_CPU_FLASH_VERIFY*/
+
+    return FNET_OK;
 }
 
 #endif /* FNET_MCF && FNET_CFG_CPU_FLASH */

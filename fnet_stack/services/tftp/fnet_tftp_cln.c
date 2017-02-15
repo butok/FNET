@@ -187,7 +187,7 @@ fnet_return_t fnet_tftp_cln_init( struct fnet_tftp_cln_params *params )
 
     /* Create client socket */
     fnet_tftp_if.socket_client = fnet_socket(params->server_addr.sa_family, SOCK_DGRAM, 0u);
-    if(fnet_tftp_if.socket_client = FNET_NULL)
+    if(fnet_tftp_if.socket_client == FNET_NULL)
     {
         FNET_DEBUG_TFTP(FNET_TFTP_ERR_SOCKET_CREATION);
         goto ERROR;

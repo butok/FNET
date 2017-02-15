@@ -718,10 +718,7 @@ void fnet_netif_join_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_addr
  ******************************************************************************/
 void fnet_netif_leave_ip4_multicast ( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t multicast_addr );
 
-
 #endif /* FNET_CFG_MULTICAST & FNET_CFG_IP4*/
-
-
 
 #if FNET_CFG_IP6 || defined(__DOXYGEN__)
 

@@ -34,9 +34,6 @@ void fnet_cpu_cache_invalidate()
 {
     fnet_mcf_cacr_wr((0 | FNET_CFG_MCF_CACHE_CACR | FNET_MCF_CACR_CINV));
 }
-#else
-void fnet_cpu_cache_invalidate()
-{}
 #endif
 
 #endif /*FNET_MCF*/

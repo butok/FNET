@@ -286,6 +286,24 @@ static const struct fnet_shell fapp_shell =
 static fnet_shell_desc_t fapp_shell_desc = 0; /* Shell descriptor. */
 
 
+/******************************************************************************
+ *  Testing of mutex nesting conflict.
+ *  Used only for testing needs. 
+ ******************************************************************************/
+#if FNET_CFG_MULTITHREADING && FAPP_CFG_TEST_MUTEX_CONFLICT
+static  fnet_return_t fapp_test_mutex_init( fnet_mutex_t *counter);
+static void fapp_test_mutex_free( fnet_mutex_t *counter );
+static void fapp_test_mutex_lock( fnet_mutex_t *counter );
+static void fapp_test_mutex_unlock( fnet_mutex_t *counter );
+const fnet_mutex_api_t fapp_test_mutex_api = {.mutex_init = fapp_test_mutex_init,
+                                              .mutex_free = fapp_test_mutex_free,
+                                              .mutex_lock = fapp_test_mutex_lock,
+                                              .mutex_unlock = fapp_test_mutex_unlock};
+
+#endif
+
+
+
 #if FAPP_CFG_BOOTLOADER || FAPP_CFG_SETGET_CMD_BOOT
 
 /* Boot-mode string matching. */
@@ -549,6 +567,9 @@ static void fapp_init(void)
     /* Input parameters for FNET stack initialization */
     init_params.netheap_ptr = stack_heap;
     init_params.netheap_size = sizeof(stack_heap);
+#if FNET_CFG_MULTITHREADING && FAPP_CFG_TEST_MUTEX_CONFLICT
+    init_params.mutex_api = &fapp_test_mutex_api;
+#endif
 
     /* Add event handler on duplicated IP address */
 #if FNET_CFG_IP4
@@ -1100,5 +1121,55 @@ void fapp_addr_callback_updated(fnet_shell_desc_t desc, fnet_netif_desc_t netif)
     fnet_shell_println( desc, FAPP_DELIMITER_STR);
 
     fapp_print_netif_info( desc, netif );
+}
+#endif
+
+
+/******************************************************************************
+ *  Testing of mutex nesting conflict.
+ *  Used only for testing needs. 
+ ******************************************************************************/
+#if FNET_CFG_MULTITHREADING && FAPP_CFG_TEST_MUTEX_CONFLICT
+
+/* Create a new mutex */
+static  fnet_return_t fapp_test_mutex_init( fnet_mutex_t *counter)
+{
+    *counter = 0;
+    return FNET_OK;
+}
+
+/* Delete a mutex. */
+static void fapp_test_mutex_free( fnet_mutex_t *counter )
+{
+    if(*counter != 0) /* Is locked */
+    {
+        fnet_println("Wrong mutex value: %d", *counter);
+        while(1) /* Stop */
+        {};
+    }
+}
+
+/* Lock a mutex. */
+static void fapp_test_mutex_lock( fnet_mutex_t *counter )
+{
+    if(*counter != 0) /* Is locked */
+    {
+        fnet_println("Wrong mutex value: %d", *counter);
+        while(1) /* Stop */
+        {};
+    }
+    *counter = (fnet_mutex_t)1; /* Lock */
+}
+
+/* Unlock a mutex. */
+static void fapp_test_mutex_unlock( fnet_mutex_t *counter )
+{
+    if(*counter != (fnet_mutex_t)1) /* Is not locked */
+    {
+        fnet_println("Wrong mutex value: %d", *counter);
+        while(1) /* Stop */
+        {};
+    }
+    *counter = 0; /* Unlock */
 }
 #endif

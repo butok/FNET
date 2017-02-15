@@ -128,7 +128,7 @@ fnet_return_t fnet_isr_vector_init(fnet_uint32_t vector_number,
     if (result == FNET_OK)
     {
         /* CPU-specific initalisation. */
-        result = fnet_cpu_isr_install(vector_number, priority);
+        result = FNET_ISR_HANDLER_INSTALL(vector_number, priority);
     }
 
     return result;

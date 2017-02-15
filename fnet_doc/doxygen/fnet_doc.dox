@@ -1699,11 +1699,16 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.8.1:
+	- Fixed MCF compilation issues. Thanks to Frank Lombardo.
+	- Other minor fixes.
+	
 - Version 3.8.0:
 	- Added TLS:
 		- Added TLS server API.
 		- Added mbedTLS library support, placed in third_party/mbedtls-2.4.0.
-		- Added shell_mbedtls example.
+		- Added HTTP server over TLS (HTTPS).
+		- Added shell_mbedtls example, with new "https" command and mbedTLS library.
 	- Changed the fnet_socket_t descriptor type from fnet_int32_t to void*.
 	  So now, fnet_socket_accept() and fnet_socket() return FNET_NULL instead of FNET_ERR.
 	- Fixed fnet_mempool_free(), thanks to Paul. 

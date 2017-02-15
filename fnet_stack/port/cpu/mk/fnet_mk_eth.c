@@ -66,8 +66,10 @@ void fnet_eth_io_init(void)
     FNET_MK_SIM_SCGC5 |= FNET_MK_SIM_SCGC5_PORTC_MASK | FNET_MK_SIM_SCGC5_PORTA_MASK | FNET_MK_SIM_SCGC5_PORTB_MASK;
 
     pctl = (FNET_MK_PORT_MemMapPtr)FNET_MK_PORTC_BASE_PTR;
+#if 0 /* PTC16-17 may be used also as UART pins */
     pctl->PCR[16] = 0x00000400u;
     pctl->PCR[17] = 0x00000400u;
+#endif
     pctl->PCR[18] = 0x00000400u;
     pctl->PCR[19] = 0x00000400u;
 

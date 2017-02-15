@@ -2056,7 +2056,7 @@ fnet_ip6_multicast_list_entry_t *fnet_ip6_multicast_join(fnet_netif_t *netif, co
         }
         else /* user_counter == 0.*/
         {
-            result = &fnet_ip6_multicast_list[i]; /* Save the last free.*/
+            result = &fnet_ip6_multicast_list[i]; /* Save the last free one.*/
         }
     }
 
@@ -2070,7 +2070,7 @@ fnet_ip6_multicast_list_entry_t *fnet_ip6_multicast_join(fnet_netif_t *netif, co
             result->netif = netif;
 
             /* Join HW interface. */
-            fnet_netif_join_ip6_multicast ( (fnet_netif_desc_t) netif, group_addr );
+            _fnet_netif_join_ip6_multicast ( (fnet_netif_desc_t) netif, group_addr );
 
 #if FNET_CFG_MLD
             /*
@@ -2156,7 +2156,7 @@ void fnet_ip6_multicast_leave_entry( fnet_ip6_multicast_list_entry_t *multicaste
 #endif
 
             /* Leave HW interface. */
-            fnet_netif_leave_ip6_multicast ( (fnet_netif_desc_t) multicastentry->netif, &multicastentry->group_addr );
+            _fnet_netif_leave_ip6_multicast( (fnet_netif_desc_t) multicastentry->netif, &multicastentry->group_addr );
         }
     }
 }
