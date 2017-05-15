@@ -117,7 +117,8 @@ static void fnet_icmp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  str
                 }
 
                 hdr->type = FNET_ICMP_ECHOREPLY;
-
+                
+                /* Swap source and destination addresses.*/
                 fnet_icmp_output(netif, dest_ip, src_ip, nb);
                 break;
 #if 0 /* Optional functionality.*/
@@ -348,7 +349,6 @@ void fnet_icmp_error( fnet_netif_t *netif, fnet_uint8_t type, fnet_uint8_t code,
     fnet_icmp_err_header_t  *icmpheader;
     fnet_ip4_addr_t          source_addr;
     fnet_ip4_addr_t          destination_addr;
-
 
     if(nb)
     {

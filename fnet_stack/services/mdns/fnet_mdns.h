@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2016 by Andrey Butok. FNET Community.
+* Copyright 2016-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -48,7 +48,7 @@
 * - @ref FNET_CFG_MDNS_PORT
 * - @ref FNET_CFG_MDNS_RR_TTL
 * - @ref FNET_CFG_MDNS_SERVICE_MAX
-*
+* - @ref FNET_CFG_MDNS_SERVICE_TYPE_ENUMERATION
 */
 
 /*! @{ */
@@ -67,16 +67,31 @@ struct fnet_mdns_params
 };
 
 /**************************************************************************/ /*!
+ * @brief TXT key.
+ *
+ * This structure defines the TXT key table returned by fnet_mdns_service_t.service_get_txt() callback function. 
+ * The last table element must have all fields set to zero as the end-of-table mark.
+ * @see fnet_mdns_service
+ ******************************************************************************/
+typedef struct fnet_mdns_txt_key
+{
+    const fnet_char_t       *key_name;	    /**< @brief TXT key name string (null-terminated). */
+    const fnet_char_t       *key_value;     /**< @brief TXT key value string (null-terminated). */
+} fnet_mdns_txt_key_t;
+
+/**************************************************************************/ /*!
  * @brief The mDNS Service structure defining application-specific 
  * service, advertised by the mDNS server.
  * @see fnet_mdns_service_register()
  ******************************************************************************/
 typedef struct fnet_mdns_service
 {
-    const char*         service_type;               /**< @brief Service Type. Null-terminated string. Example "_http._tcp". */
-    fnet_uint16_t       service_port;               /**< @brief Service Port number (in network byte order). */
-    const fnet_uint8_t* (*service_get_txt)(void);   /**< @brief Call-back function, which returns a pointer to the service TXT record (null-terminated). 
-                                                    If the service does not provide any TXT record, this parameter must be set to NULL. */
+    const char                  *service_type;             /**< @brief Service Type. Null-terminated string. Example "_http._tcp". */
+    fnet_uint16_t               service_port;              /**< @brief Service Port number (in network byte order). */
+    const fnet_mdns_txt_key_t   *(*service_get_txt)(void); /**< @brief Call-back function, which returns a pointer to the TXT key table. 
+                                                            The last table element must have all fields set to zero as the end-of-table mark. 
+                                                            It may not be allocated on stack, it should be static or global.@n
+                                                            If the service does not provide any TXT record, this parameter must be set to NULL. */
 } fnet_mdns_service_t;
 
 /**************************************************************************/ /*!

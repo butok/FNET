@@ -494,7 +494,7 @@ ERROR_1:
 *************************************************************************/
 fnet_return_t fnet_socket_connect( fnet_socket_t s, struct sockaddr *name, fnet_size_t namelen )
 {
-    fnet_socket_if_t       *sock;
+    fnet_socket_if_t    *sock;
     fnet_error_t        error = FNET_ERR_OK;
     struct sockaddr     foreign_addr;
     struct sockaddr     local_addr_tmp;
@@ -527,7 +527,7 @@ fnet_return_t fnet_socket_connect( fnet_socket_t s, struct sockaddr *name, fnet_
             }
         }
 
-
+        /* Check name, namelen values */
         if((error = fnet_socket_addr_check_len(name, namelen)) != FNET_ERR_OK)
         {
             goto ERROR_SOCK;

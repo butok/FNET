@@ -25,8 +25,6 @@
 
 #define _FNET_TLS_H_
 
-#include "fnet.h"
-
 #if FNET_CFG_TLS || defined(__DOXYGEN__)
 
 /*! @addtogroup fnet_tls

@@ -1054,7 +1054,7 @@ fnet_ip4_multicast_list_entry_t *fnet_ip_multicast_join( fnet_netif_t *netif, fn
             /*
              * When a host joins a new group, it should immediately transmit a
              * Report for that group.
-             * //TBD To cover the possibility of the initial Report being lost or damaged, it is
+             * TBD To cover the possibility of the initial Report being lost or damaged, it is
              * recommended that it be repeated once or twice after short delays.
              */
             fnet_igmp_join(netif, group_addr );

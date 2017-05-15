@@ -56,17 +56,16 @@ static fnet_return_t fnet_isr_register(fnet_uint32_t vector_number,
                                        fnet_uint32_t cookie);
 
 /************************************************************************
-*     Variables,
+*     Variables
 *************************************************************************/
 static fnet_uint32_t fnet_locked = 0u;
 static fnet_isr_entry_t *fnet_isr_table = 0;
-
 static fnet_event_desc_t fnet_event_desc_last = FNET_EVENT_VECTOR_NUMBER;
 
 /************************************************************************
 * DESCRIPTION: This handler is envoked by fnet_cpu_isr().
 *              If fnet_locked == 0 - executes the
-*              corresponding handler; else - marks it as pended.
+*              corresponding handler, else - marks it as pended.
 *************************************************************************/
 void fnet_isr_handler(fnet_uint32_t vector_number)
 {

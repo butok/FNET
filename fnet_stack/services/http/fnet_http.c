@@ -792,7 +792,7 @@ void fnet_http_release(fnet_http_desc_t desc)
 #endif
 
             fnet_socket_close(session->socket_foreign);
-            fnet_fs_fclose(session->send_param.file_desc);
+            fnet_fs_fclose(session->file_desc);
         }
 
         fnet_fs_fclose(http_if->index_file);
@@ -1030,20 +1030,20 @@ fnet_return_t fnet_http_default_handle (struct fnet_http_if *http, struct fnet_h
     if (!fnet_strcmp(uri->path, "/")) /* Default index file */
     {
         fnet_fs_rewind(http->index_file);
-        session->send_param.file_desc = http->index_file;
+        session->file_desc = http->index_file;
     }
     else
     {
-        session->send_param.file_desc = fnet_fs_fopen_re(uri->path, "r", http->root_dir);
+        session->file_desc = fnet_fs_fopen_re(uri->path, "r", http->root_dir);
     }
 
-    if (session->send_param.file_desc)
+    if (session->file_desc)
     {
 #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
         {
             struct fnet_fs_dirent dirent;
 
-            fnet_fs_finfo(session->send_param.file_desc, &dirent);
+            fnet_fs_finfo(session->file_desc, &dirent);
             session->response.content_length = (fnet_int32_t)dirent.d_size;
         }
 #endif
@@ -1067,7 +1067,7 @@ fnet_size_t fnet_http_default_send (struct fnet_http_if *http)
 {
     struct fnet_http_session_if *session =  http->session_active;
 
-    return fnet_fs_fread(session->buffer, sizeof(session->buffer), session->send_param.file_desc);
+    return fnet_fs_fread(session->buffer, sizeof(session->buffer), session->file_desc);
 }
 
 /************************************************************************
@@ -1077,9 +1077,9 @@ void fnet_http_default_close (struct fnet_http_if *http)
 {
     struct fnet_http_session_if *session =  http->session_active;
 
-    if(session->send_param.file_desc != http->index_file)
+    if(session->file_desc != http->index_file)
     {
-        fnet_fs_fclose(session->send_param.file_desc); /* Close file */
+        fnet_fs_fclose(session->file_desc); /* Close file */
     }
 }
 

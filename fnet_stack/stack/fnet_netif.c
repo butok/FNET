@@ -29,7 +29,6 @@
 #include "fnet_ip6_prv.h"
 #include "fnet_netif_prv.h"
 #include "fnet_eth_prv.h"
-#include "fnet_loop.h"
 #include "fnet_nd6.h"
 #include "fnet_ip6_prv.h"
 #include "fnet_stack_prv.h"

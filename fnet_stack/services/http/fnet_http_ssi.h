@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -126,8 +126,8 @@ typedef fnet_size_t (*fnet_http_ssi_send_t)(fnet_uint8_t *buffer, fnet_size_t bu
  ******************************************************************************/
 struct fnet_http_ssi
 {
-    fnet_char_t                 *name;	    /**< @brief SSI command name. */
-    fnet_http_ssi_handle_t handle;      /**< @brief Pointer to the SSI parameters
+    fnet_char_t             *name;	    /**< @brief SSI command name. */
+    fnet_http_ssi_handle_t  handle;     /**< @brief Pointer to the SSI parameters
 	                                     *   handler. It's optional. */
     fnet_http_ssi_send_t    send;       /**< @brief Pointer to the SSI include function.
                                          * This function actually inserts dynamic content to

@@ -407,7 +407,7 @@ static fnet_index_t fnet_shell_make_argv( fnet_char_t *cmdline, fnet_char_t *arg
     in_text_flag = FNET_FALSE;
     qouted = FNET_FALSE;
 
-    if( cmdline && argv)
+    if(cmdline && argv)
     {
 
         for(i = 0u; cmdline[i] != '\0'; i++)
@@ -471,6 +471,7 @@ fnet_size_t fnet_shell_printf(fnet_shell_desc_t desc, const fnet_char_t *format,
         /* Initialize the pointer to the variable length argument list. */
         va_start(ap, format);
         result = fnet_serial_vprintf(shell_if->stream, format, ap);
+        va_end(ap);
 
         fnet_serial_flush(shell_if->stream);
     }
@@ -492,13 +493,13 @@ fnet_size_t fnet_shell_println(fnet_shell_desc_t desc, const fnet_char_t *format
         /* Initialize the pointer to the variable length argument list. */
         va_start(ap, format);
         result = fnet_serial_vprintf(shell_if->stream, format, ap);
+        va_end(ap);
         result += fnet_shell_printf(desc, "\n"); /* Add new line.*/
 
         fnet_serial_flush(shell_if->stream);
     }
 
     return result;
-
 }
 
 /************************************************************************

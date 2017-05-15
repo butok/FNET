@@ -151,6 +151,7 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
                     dest_ip = FNET_NULL;
                 }
 
+                /* Swap source and destination addresses.*/
                 fnet_icmp6_output(netif, dest_ip/*ipsrc*/, src_ip/*ipdest*/, 0u, nb);
                 fnet_netbuf_free_chain(ip6_nb);
                 break;
@@ -388,6 +389,7 @@ void fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t
 
         origin_nb = fnet_netbuf_concat(nb_header, origin_nb);
 
+        /* Swap source and destination addresses.*/
         fnet_icmp6_output( netif, dest_ip/*ipsrc*/, src_ip/*ipdest*/, 0u, origin_nb);
 
         return;

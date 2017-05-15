@@ -433,7 +433,7 @@ void fnet_nd6_neighbor_enqueue_waiting_netbuf(fnet_nd6_neighbor_entry_t *neighbo
 *************************************************************************/
 void fnet_nd6_neighbor_send_waiting_netbuf(struct fnet_netif *netif, fnet_nd6_neighbor_entry_t *neighbor_entry)
 {
-    if (neighbor_entry->waiting_netbuf != FNET_NULL)
+    if (neighbor_entry && (neighbor_entry->waiting_netbuf != FNET_NULL))
     {
         /* Send.*/
         netif->netif_api->netif_output_ip6(netif, FNET_NULL /* not needed.*/,  &neighbor_entry->ip_addr, neighbor_entry->waiting_netbuf); /* IPv6 Transmit function.*/

@@ -122,7 +122,7 @@ void fnet_mempool_free( fnet_mempool_desc_t mpool, void *ap )
                 {
                     if(DEBUG_allocated_addr[i].size == bp->size)
                     {
-                        DEBUG_allocated_addr[i].address = 0; // Clear;
+                        DEBUG_allocated_addr[i].address = 0;
                         DEBUG_last_free_addr_num = i - 50;
                         if (DEBUG_last_free_addr_num < 0)
                             DEBUG_last_free_addr_num = 0;

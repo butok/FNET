@@ -1687,10 +1687,9 @@ static fnet_bool_t fnet_tcp_inputsk( fnet_socket_if_t *sk, fnet_netbuf_t *insegm
                 {
                     cb->tcpcb_timers.keepalive = sk->options.tcp_opt.keep_idle;
                 }
-                break;
             }
             else
-                /* Process the simultaneous open.*/
+            /* Process the simultaneous open.*/
             {
                 /* Reinitialize the retrasmission timer.*/
                 cb->tcpcb_timers.retransmission = cb->tcpcb_rto;
@@ -1718,9 +1717,8 @@ static fnet_bool_t fnet_tcp_inputsk( fnet_socket_if_t *sk, fnet_netbuf_t *insegm
 
                 /* Send acknowledgment.*/
                 fnet_tcp_sendack(sk);
-                break;
             }
-
+            break;
         /* Process the first segment.*/
         case FNET_TCP_CS_LISTENING:
 
@@ -2660,14 +2658,15 @@ static void fnet_tcp_finprocessing( fnet_socket_if_t *sk, fnet_uint32_t ack )
             break;
 
         case FNET_TCP_CS_FIN_WAIT_1:
-            if(ack != cb->tcpcb_sndseq)
+        case FNET_TCP_CS_FIN_WAIT_2:
+            if( (cb->tcpcb_connection_state == FNET_TCP_CS_FIN_WAIT_1)
+                && (ack != cb->tcpcb_sndseq) )
             {
                 /* Simultaneous close.*/
                 cb->tcpcb_connection_state = FNET_TCP_CS_CLOSING;
                 break;
             }
 
-        case FNET_TCP_CS_FIN_WAIT_2:
             cb->tcpcb_connection_state = FNET_TCP_CS_TIME_WAIT;
             /* Set timewait timeout.*/
             if((cb->tcpcb_timers.connection == FNET_TCP_TIMER_OFF) || (cb->tcpcb_timers.connection == 0u)) /* If it was not already set before by other state. */

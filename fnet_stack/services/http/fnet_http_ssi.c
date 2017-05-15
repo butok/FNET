@@ -82,7 +82,7 @@ static fnet_size_t fnet_http_ssi_send (struct fnet_http_if *http)
     while ((result < sizeof(session->buffer)) && (next == FNET_FALSE))
     {
         if((http->ssi.state != FNET_HTTP_SSI_INCLUDING) /* Read from file if not in including. */
-           && ((read_result = fnet_fs_fread(buffer, 1u, session->send_param.file_desc)) == 0u) )
+           && ((read_result = fnet_fs_fread(buffer, 1u, session->file_desc)) == 0u) )
         {
             break; /*EOF*/
         }
@@ -100,7 +100,7 @@ static fnet_size_t fnet_http_ssi_send (struct fnet_http_if *http)
                         if(result >= sizeof(fnet_http_ssi_head))
                         {
                             /* Found in the middle */
-                            fnet_fs_fseek (session->send_param.file_desc, -((fnet_int32_t)sizeof(fnet_http_ssi_head)), FNET_FS_SEEK_CUR);
+                            fnet_fs_fseek (session->file_desc, -((fnet_int32_t)sizeof(fnet_http_ssi_head)), FNET_FS_SEEK_CUR);
                             next = FNET_TRUE; /* break */
                             result -= sizeof(fnet_http_ssi_head); /* Correct result */
                         }
@@ -203,7 +203,7 @@ static fnet_size_t fnet_http_ssi_send (struct fnet_http_if *http)
     {
         /* Potential SSI is splitted => parse in the next itteration */
         result -= ssi_head_index; /* adjust result */
-        fnet_fs_fseek(session->send_param.file_desc, -(fnet_int32_t)ssi_head_index, FNET_FS_SEEK_CUR);
+        fnet_fs_fseek(session->file_desc, -(fnet_int32_t)ssi_head_index, FNET_FS_SEEK_CUR);
     }
 
     return result;

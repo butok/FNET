@@ -621,27 +621,29 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
 fnet_size_t fnet_serial_printf(fnet_serial_stream_t stream, const fnet_char_t *format, ... )
 {
     va_list ap;
-    /*
-     * Initialize the pointer to the variable length argument list.
-     */
+    fnet_size_t result;
+
+    /* Initialize the pointer to the variable length argument list.*/
     va_start(ap, format);
-    return fnet_serial_vprintf(stream, format, ap);
+    result = fnet_serial_vprintf(stream, format, ap);
+    va_end(ap);
+    return result;
 }
 
 /********************************************************************/
 fnet_size_t fnet_printf(const fnet_char_t *format, ... )
 {
-    va_list ap;
-    /*
-     * Initialize the pointer to the variable length argument list.
-     */
+    va_list     ap;
+    fnet_size_t result;
+    
+    /* Initialize the pointer to the variable length argument list. */
     va_start(ap, format);
-    return fnet_serial_vprintf(FNET_SERIAL_STREAM_DEFAULT, format, ap);
+    result = fnet_serial_vprintf(FNET_SERIAL_STREAM_DEFAULT, format, ap);
+    va_end(ap);
+    return result;
 }
 
 /************************************************************************
-* NAME: fnet_println
-*
 * DESCRIPTION:
 ************************************************************************/
 fnet_size_t fnet_println(const fnet_char_t *format, ... )
@@ -649,11 +651,10 @@ fnet_size_t fnet_println(const fnet_char_t *format, ... )
     va_list         ap;
     fnet_size_t     result = 0u;
 
-    /*
-     * Initialize the pointer to the variable length argument list.
-     */
+    /* Initialize the pointer to the variable length argument list.*/
     va_start(ap, format);
     result = fnet_serial_vprintf(FNET_SERIAL_STREAM_DEFAULT, format, ap);
+    va_end(ap);
     result += fnet_printf("\n");
 
     return result;
@@ -704,6 +705,7 @@ fnet_size_t fnet_sprintf( fnet_char_t *str, const fnet_char_t *format, ... )
          */
         va_start(ap, format);
         result = fnet_serial_vprintf(&buffer_stream, format, ap);
+        va_end(ap);
         *buffer_id.dest = '\0'; /* Trailing null character.*/
     }
 
@@ -733,6 +735,7 @@ fnet_size_t fnet_snprintf( fnet_char_t *str, fnet_size_t size, const fnet_char_t
          */
         va_start(ap, format);
         result = fnet_serial_vprintf(&buffer_stream, format, ap);
+        va_end(ap);
         *buffer_id.dest = '\0'; /* Trailing null character.*/
         if(result > size)
         {

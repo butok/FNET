@@ -364,7 +364,10 @@ void fnet_arp_input(fnet_netif_t *netif, fnet_netbuf_t *nb)
 
         fnet_arp_trace("RX", arp_hdr); /* Print ARP header. */
 
-        fnet_netif_get_hw_addr(netif, local_addr, sizeof(fnet_mac_addr_t));
+        if(fnet_netif_get_hw_addr(netif, local_addr, sizeof(fnet_mac_addr_t)) != FNET_OK)
+        {
+            goto DROP;
+        }
 
         if (!((!fnet_memcmp(arp_hdr->sender_hard_addr, local_addr, sizeof(fnet_mac_addr_t)))             /* It's from me => ignore it.*/
               || (!fnet_memcmp(arp_hdr->sender_hard_addr, fnet_eth_broadcast, sizeof(fnet_mac_addr_t)))) /* It's broadcast=> error. */
@@ -424,7 +427,7 @@ void fnet_arp_input(fnet_netif_t *netif, fnet_netbuf_t *nb)
             }
         }
     }
-
+DROP:
     fnet_netbuf_free_chain(nb);
 }
 
@@ -471,23 +474,24 @@ void fnet_arp_request(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr)
                                                                 protocol address (=4). */
         arp_hdr->op = FNET_HTONS(FNET_ARP_OP_REQUEST);       /* Opcode. */
 
-        fnet_netif_get_hw_addr(netif, sender_addr, sizeof(fnet_mac_addr_t));
-
-        fnet_memcpy(arp_hdr->target_hard_addr, fnet_eth_null_addr, sizeof(fnet_mac_addr_t));
-        fnet_memcpy(arp_hdr->sender_hard_addr, sender_addr, sizeof(fnet_mac_addr_t));
-
-        arp_hdr->targer_prot_addr = ipaddr;                  /* Protocol address of target of this packet.*/
-        arp_hdr->sender_prot_addr = netif->ip4_addr.address; /* Protocol address of sender of this packet.*/
-
-        if(netif->ip4_addr.address == INADDR_ANY) /* Is it probing?*/
+        if(fnet_netif_get_hw_addr(netif, sender_addr, sizeof(fnet_mac_addr_t)) == FNET_OK)
         {
-            /* Save probe IPv4 address, for later conflict detection. */
-            netif->arp_if_ptr->arp_probe_ipaddr = ipaddr;
+            fnet_memcpy(arp_hdr->target_hard_addr, fnet_eth_null_addr, sizeof(fnet_mac_addr_t));
+            fnet_memcpy(arp_hdr->sender_hard_addr, sender_addr, sizeof(fnet_mac_addr_t));
+
+            arp_hdr->targer_prot_addr = ipaddr;                  /* Protocol address of target of this packet.*/
+            arp_hdr->sender_prot_addr = netif->ip4_addr.address; /* Protocol address of sender of this packet.*/
+
+            if(netif->ip4_addr.address == INADDR_ANY) /* Is it probing?*/
+            {
+                /* Save probe IPv4 address, for later conflict detection. */
+                netif->arp_if_ptr->arp_probe_ipaddr = ipaddr;
+            }
+
+            fnet_arp_trace("TX", arp_hdr); /* Print ARP header. */
+
+            fnet_eth_output(netif, FNET_ETH_TYPE_ARP, fnet_eth_broadcast, nb);
         }
-
-        fnet_arp_trace("TX", arp_hdr); /* Print ARP header. */
-
-        fnet_eth_output(netif, FNET_ETH_TYPE_ARP, fnet_eth_broadcast, nb);
     }
 }
 

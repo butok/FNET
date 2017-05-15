@@ -87,6 +87,25 @@
     #define FNET_CFG_MDNS_SERVICE_MAX           (2u)
 #endif
 
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_MDNS_SERVICE_TYPE_ENUMERATION
+ * @brief    mDNS Service Tpe Enumeration (RFC6763) support:
+ *               - @c 1 = is enabled (Default value).
+ *               - @b @c 0 = is disabled .
+ *         
+ *           @note: RFC6763: for problem diagnosis and network management tools, it may
+ *           be useful for network administrators to find the list of advertised
+ *           service types on the network, even if those Service Names are just
+ *           opaque identifiers and not particularly informative in isolation.
+ *           For this purpose, a special meta-query is defined.  A DNS query for
+ *           PTR records with the name "_services._dns-sd._udp.Domain" yields a
+ *           set of PTR records, where the rdata of each PTR record is the two-
+ *           label Service name, plus the same domain.
+ ******************************************************************************/
+#ifndef FNET_CFG_MDNS_SERVICE_TYPE_ENUMERATION
+    #define FNET_CFG_MDNS_SERVICE_TYPE_ENUMERATION                       (1)
+#endif
+
 /*! @} */
 
 #endif /* _FNET_LLMNR_CONFIG_H_ */

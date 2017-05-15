@@ -352,7 +352,7 @@ typedef struct fnet_ip6_frag_list
     fnet_uint32_t               id                  FNET_COMP_PACKED;   /**< identification.*/
     fnet_ip6_addr_t             source_addr         FNET_COMP_PACKED;   /**< source address.*/
     fnet_ip6_addr_t             destination_addr    FNET_COMP_PACKED;   /**< destination address.*/
-    fnet_uint16_t               hdr_length          FNET_COMP_PACKED;   /* Length of the IPv6 payload of first packet (for ICMPv6 error). //PFI*/
+    fnet_uint16_t               hdr_length          FNET_COMP_PACKED;   /* Length of the IPv6 payload of first packet (for ICMPv6 error).*/
     fnet_uint8_t                hdr_hop_limit       FNET_COMP_PACKED;
     fnet_netif_t                *netif              FNET_COMP_PACKED;
     fnet_ip6_frag_header_t      *frag_ptr           FNET_COMP_PACKED;   /**< Pointer to the first fragment of the list.*/

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -183,11 +183,8 @@ struct fnet_http_session_if
     fnet_socket_t               socket_foreign;                     /* Foreign socket.*/
     fnet_uint8_t                buffer[FNET_HTTP_BUF_SIZE + 1u];    /* Receive/Transmit buffer */
     fnet_size_t                 buffer_actual_size;                 /* Size of the actual data in the buffer.*/
-    union
-    {
-        fnet_fs_file_t  file_desc;
-        const void      *data_ptr;
-    } send_param;
+    fnet_fs_file_t               file_desc;                         /* File to send */
+    const void                  *data_ptr;                          /* Data to send */
     struct fnet_http_response   response;                           /* Holds the accumulated data for the HTTP 1.0 response header. */
     struct fnet_http_request    request;
 #if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)

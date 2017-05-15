@@ -841,8 +841,9 @@ fnet_return_t fnet_socket_bind( fnet_socket_t s, const struct sockaddr *name, fn
  * more than one connection request at a time. @n
  * An application can call @ref fnet_socket_listen() more than once on the same socket.
  * If there are more pending connections than the new backlog value,
- * the excess pending connections will be reset and dropped.
- *
+ * the excess pending connections will be reset and dropped. 
+ * Once pending connections accepted by application using fnet_socket_accept(), 
+ * they are removed from backlog.  
  ******************************************************************************/
 fnet_return_t fnet_socket_listen( fnet_socket_t s, fnet_size_t backlog );
 

@@ -61,7 +61,7 @@ static fnet_return_t fnet_http_cgi_handle (struct fnet_http_if *http, struct fne
             uri->path++;
         }
 
-        session->send_param.data_ptr = 0; /* Clear. */
+        session->data_ptr = 0; /* Clear. */
 
         /* Find CGI function */
         for(cgi_ptr = http->cgi_table; cgi_ptr->name; cgi_ptr++)
@@ -70,7 +70,7 @@ static fnet_return_t fnet_http_cgi_handle (struct fnet_http_if *http, struct fne
                                cgi_ptr->name,
                                fnet_strlen(cgi_ptr->name)))
             {
-                session->send_param.data_ptr = cgi_ptr;
+                session->data_ptr = cgi_ptr;
                 if(cgi_ptr->handle)
                 {
                     result = cgi_ptr->handle((fnet_http_session_t)session, uri->query, &session->response.cookie);
@@ -96,9 +96,9 @@ static fnet_size_t fnet_http_cgi_send (struct fnet_http_if *http)
     fnet_size_t                 result = 0u;
     struct fnet_http_session_if *session =  http->session_active;
 
-    if(session->send_param.data_ptr)
+    if(session->data_ptr)
     {
-        cgi_ptr = (const struct fnet_http_cgi *) session->send_param.data_ptr;
+        cgi_ptr = (const struct fnet_http_cgi *) session->data_ptr;
 
         if(cgi_ptr->send)
         {

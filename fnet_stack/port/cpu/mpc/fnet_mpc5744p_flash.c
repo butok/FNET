@@ -1339,7 +1339,6 @@ fnet_return_t fnet_cpu_flash_write(
         goto FAIL;
     }
 
-    //RestoreFlashControllerCache(FLASH_PFCR1 ,pflash_pfcr1);
 FAIL:
     fnet_cpu_irq_enable(irq_desc);
 

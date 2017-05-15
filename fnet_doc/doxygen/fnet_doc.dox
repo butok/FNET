@@ -1484,12 +1484,14 @@ To add the FNET TCP/IP stack code to your project, follow the steps below:
 -# Start IDE.
 -# Open your existing project or create a new one.
 -# Add the whole @a fnet\\fnet_stack directory to the project. 
+-# Add path to the "/fnet_stack" directory in your project settings for C/C++ Compiler ans Assembler.
 -# Anywhere in your project-directory structure, create the FNET user-configuration file @a fnet_user_config.h and add it to the project. As a reference you can use any fnet_user_config.h file from existing demo applications.
 @n
 @n
 @image html fnet_adding_2.jpg
 @n
 -# Edit your @a fnet_user_config.h file to change default FNET parameters. See @ref fnet_config chapter for different configuration options available.
+-# Be sure that the @ref FNET_CFG_COMP_compiler_type and the @ref FNET_CFG_CPU_processor_type configuration parameters corresponds to your compiler and platform.
 -# Add initialization sequence of FNET TCP/IP stack into your application code (see the @ref fnet_stack_init chapter). For example in your main function:
 @code
 #include "fnet.h" /* FNET API */ 
@@ -1699,6 +1701,13 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.8.2
+	-Added RFC6763 Service Type Enumeration to the mDNS server, enabled by FNET_CFG_MDNS_SERVICE_TYPE_ENUMERATION.
+	-Simplified user API for adding of mDNS TXT record keys.
+	-Fixed possible infinite loop caused by a malformed mDNS packet.
+	-Fixed HTTP server release issue when there are open CGI sessions.
+	-Fixed minor issues detected by Coverity tool.
+
 - Version 3.8.1:
 	- Fixed MCF compilation issues. Thanks to Frank Lombardo.
 	- Other minor fixes.

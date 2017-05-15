@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2016 by Andrey Butok. FNET Community.
+* Copyright 2016-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -31,14 +31,16 @@
 
 #if (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP
 #include "fapp_http.h"
-const fnet_uint8_t *fapp_mdns_service_txt ='\0'; /* or "path=/index.html"*/
-static const fnet_uint8_t *fapp_mdns_service_get_txt(void);
+static const fnet_mdns_txt_key_t *fapp_mdns_service_get_txt(void);
 static  fnet_mdns_service_desc_t fapp_mdns_http_service_desc = 0; /* HTTP service descriptor. */ 
 static const fnet_mdns_service_t fapp_mdns_http_service = {.service_type =  "_http._tcp", .service_port = FNET_CFG_HTTP_PORT, .service_get_txt = fapp_mdns_service_get_txt};        /* HTTP service parameters.*/
 #if FNET_CFG_HTTP_TLS
 static  fnet_mdns_service_desc_t fapp_mdns_http_tls_service_desc = 0; /* HTTPS service descriptor. */ 
 static const fnet_mdns_service_t fapp_mdns_http_tls_service = {.service_type =  "_https._tcp", .service_port = FNET_CFG_HTTP_TLS_PORT, .service_get_txt = fapp_mdns_service_get_txt};   /* HTTPS service parameters.*/
 #endif
+
+const fnet_mdns_txt_key_t fapp_mdns_txt_key_http_table[] = {{.key_name= "path", .key_value ="/index.html"},
+                                                            {0, 0} /* End of the table.*/};
 #endif
 
 static fnet_mdns_desc_t fapp_mdns_desc = 0; /* MDNS service descriptor. */
@@ -105,9 +107,9 @@ void fapp_mdns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 }
 
 #if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
-static const fnet_uint8_t *fapp_mdns_service_get_txt(void)
+static const fnet_mdns_txt_key_t *fapp_mdns_service_get_txt(void)
 {
-    return fapp_mdns_service_txt;
+    return fapp_mdns_txt_key_http_table;
 }
 #endif
 

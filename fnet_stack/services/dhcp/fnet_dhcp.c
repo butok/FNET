@@ -1088,27 +1088,26 @@ static void fnet_dhcp_poll( void *fnet_dhcp_if_p )
             break;
 
 #if !FNET_CFG_DHCP_BOOTP  /* DHCP */
-        /*---- FNET_DHCP_STATE_INIT_REBOOT -----------------------------*/
-        case FNET_DHCP_STATE_INIT_REBOOT:
+        case FNET_DHCP_STATE_INIT_REBOOT: /*---- INIT_REBOOT -----------------------------*/
             fnet_dhcp_change_state(dhcp, FNET_DHCP_STATE_REBOOTING); /* => REBOOTING */
             if(dhcp->callback_discover)
             {
                 dhcp->callback_discover((fnet_dhcp_desc_t)dhcp, dhcp->netif, dhcp->callback_discover_param);
             }
             break;
-        /*---- RENEWING -------------------------------------------------*/
-        case FNET_DHCP_STATE_RENEWING:
-        /*---- REBINDING ------------------------------------------------*/
-        case FNET_DHCP_STATE_REBINDING:
-            if(fnet_netif_get_ip4_addr_type(dhcp->netif) != FNET_NETIF_IP_ADDR_TYPE_DHCP) /* If user changed parameters manually. */
+        case FNET_DHCP_STATE_RENEWING:      /*---- RENEWING ------------------------------*/
+        case FNET_DHCP_STATE_REBINDING:     /*---- REBINDING -----------------------------*/
+        case FNET_DHCP_STATE_REBOOTING:     /*---- REBOOTING -----------------------------*/
+        case FNET_DHCP_STATE_REQUESTING:    /*---- REQUESTING ----------------------------*/
+            if((dhcp->state == FNET_DHCP_STATE_RENEWING) || (dhcp->state == FNET_DHCP_STATE_REBINDING))
             {
-                fnet_dhcp_release((fnet_dhcp_desc_t)dhcp);                           /* Disable DHCP if user has changed ip parameters. */
-                break;
+                if(fnet_netif_get_ip4_addr_type(dhcp->netif) != FNET_NETIF_IP_ADDR_TYPE_DHCP) /* If user changed parameters manually. */
+                {
+                    fnet_dhcp_release((fnet_dhcp_desc_t)dhcp);      /* Disable DHCP if user has changed ip parameters. */
+                    break;
+                }
             }
-        /*---- REBOOTING ------------------------------------------------*/
-        case FNET_DHCP_STATE_REBOOTING:
-        /*---- REQUESTING -----------------------------------------------*/
-        case FNET_DHCP_STATE_REQUESTING:
+
             if(fnet_timer_get_interval(dhcp->lease_obtained_time, fnet_timer_get_ticks()) < dhcp->state_timeout)
             {
                 /* Waiting for ACK */
@@ -1281,6 +1280,11 @@ fnet_dhcp_desc_t fnet_dhcp_init( fnet_netif_desc_t netif, struct fnet_dhcp_param
         goto ERROR_1;
     }
 
+    if(fnet_netif_get_hw_addr(netif, dhcp_if->macaddr, sizeof(fnet_mac_addr_t))!= FNET_OK)
+    {
+        goto ERROR_1;
+    }
+
     dhcp_if->service_descriptor = fnet_poll_service_register(fnet_dhcp_poll, (void *) dhcp_if);
 
     if(dhcp_if->service_descriptor == 0)
@@ -1290,7 +1294,6 @@ fnet_dhcp_desc_t fnet_dhcp_init( fnet_netif_desc_t netif, struct fnet_dhcp_param
     }
 
     dhcp_if->netif = netif;
-    fnet_netif_get_hw_addr(netif, dhcp_if->macaddr, sizeof(fnet_mac_addr_t));
 
     if(params)
     {

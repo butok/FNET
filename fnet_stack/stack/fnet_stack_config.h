@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -636,6 +636,17 @@
     #define FNET_CFG_IP_MAX_PACKET              (10U*1024U)
 #endif
 
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_ASSERT
+ * @brief    FNET assert macro FNET_ASSERT():
+ *               - @c 1 = is enabled.
+ *               - @b @c 0 = is disabled (Default value).@n
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_ASSERT
+    #define FNET_CFG_ASSERT                     (0U)
+#endif
+
 /*****************************************************************************
  * Function Overload
  *****************************************************************************/
@@ -808,8 +819,6 @@
 #ifdef FNET_CFG_ETH_MTU
     #error "FNET_CFG_ETH_MTU parameter is obsolete."
 #endif
-
-
 
 #ifdef FNET_CFG_ETH0_IP4_ADDR
     #error "FNET_CFG_ETH0_IP4_ADDR parameter is obsolete. It is user application parameter now."

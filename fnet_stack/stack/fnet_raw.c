@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -25,7 +25,6 @@
 #include "fnet.h"
 #include "fnet_raw.h"
 #include "fnet_ip_prv.h"
-#include "fnet_checksum.h"
 #include "fnet_prot.h"
 
 #if FNET_CFG_RAW
@@ -446,6 +445,8 @@ static fnet_int32_t fnet_raw_rcv(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_s
     fnet_int32_t    length;
     struct sockaddr foreign_addr;
 
+    fnet_memset_zero ((void *)&foreign_addr, sizeof(foreign_addr));
+
 #if FNET_CFG_TCP_URGENT
     if(flags & MSG_OOB)
     {
@@ -461,7 +462,6 @@ static fnet_int32_t fnet_raw_rcv(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_s
         error = FNET_ERR_MSGSIZE;
         goto ERROR;
     }
-
 
     if((error == FNET_ERR_OK) && (sk->options.local_error == FNET_ERR_OK)) /* We get RAW or ICMP error.*/
     {

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -36,7 +36,6 @@
 #include "fnet_netif_prv.h"
 #include "fnet_prot.h"
 #include "fnet_loop.h"
-#include "fnet_igmp.h"
 #include "fnet_prot.h"
 #include "fnet_raw.h"
 #include "fnet_mld.h"
