@@ -33,18 +33,20 @@
 * The basic data types.
 *
 *********************************************************************/
-typedef unsigned char fnet_uint8_t;       /*  8 bits */
+typedef unsigned char fnet_uint8_t;         /*  8 bits */
+typedef unsigned short int fnet_uint16_t;   /* 16 bits */
+typedef unsigned long int fnet_uint32_t;    /* 32 bits */
+typedef unsigned long long fnet_uint64_t;   /* 64 bits */
 
-typedef unsigned short int fnet_uint16_t; /* 16 bits */
-typedef unsigned long int fnet_uint32_t;  /* 32 bits */
-
-typedef signed char fnet_int8_t;          /*  8 bits */
-typedef signed short int fnet_int16_t;    /* 16 bits */
-typedef signed long int fnet_int32_t;     /* 32 bits */
+typedef signed char fnet_int8_t;            /*  8 bits */
+typedef signed short int fnet_int16_t;      /* 16 bits */
+typedef signed long int fnet_int32_t;       /* 32 bits */
+typedef signed long long fnet_int64_t;      /* 64 bits */
 
 typedef volatile fnet_uint8_t fnet_vuint8_t;     /*  8 bits */
 typedef volatile fnet_uint16_t fnet_vuint16_t;   /* 16 bits */
 typedef volatile fnet_uint32_t fnet_vuint32_t;   /* 32 bits */
+typedef volatile fnet_uint64_t fnet_vuint64_t;   /* 64 bits */
 
 
 /* Ensure that the Thumb bit is set.*/

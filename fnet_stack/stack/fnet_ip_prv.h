@@ -66,39 +66,6 @@
 /* Maximum size of IP input queue.*/
 #define FNET_IP_QUEUE_COUNT_MAX (FNET_CFG_IP_MAX_PACKET/2U)
 
-/************************************************************************
-*    Timestamp option
-*************************************************************************/
-
-/**************************************************************************/ /*!
- * @internal
- * @brief    timestamp.
- ******************************************************************************/
-FNET_COMP_PACKED_BEGIN
-typedef struct
-{
-    fnet_uint8_t code      FNET_COMP_PACKED;       /**< = IPOPT_TS */
-    fnet_uint8_t length    FNET_COMP_PACKED;       /**< The number of bytes in the option.*/
-    fnet_uint8_t pointer   FNET_COMP_PACKED;       /**< The number of bytes from the beginning of this option to the end of timestamps plus one.*/
-    fnet_uint8_t overflow__flag FNET_COMP_PACKED;  /**< overflow counter & flag */
-    union
-    {
-        fnet_uint32_t time[1];
-        struct
-        {
-            fnet_ip4_addr_t address  FNET_COMP_PACKED;
-            fnet_uint32_t time[1]   FNET_COMP_PACKED;
-        } record    FNET_COMP_PACKED;
-    } timestamp     FNET_COMP_PACKED;
-} fnet_ip_timestamp_t;
-FNET_COMP_PACKED_END
-
-#define FNET_IP_TIMESTAMP_GET_OVERFLOW(x)           (((x)->overflow__flag & 0xF0)>>4)
-#define FNET_IP_TIMESTAMP_SET_OVERFLOW(x, overflow) ((x)->overflow__flag = (fnet_uint8_t)(((x)->overflow__flag & 0x0F)|(((overflow)&0x0F)<<4)))
-#define FNET_IP_TIMESTAMP_GET_FLAG(x)               ((x)->overflow__flag & 0x0F)
-#define FNET_IP_TIMESTAMP_SET_FLAG(x, flag)         ((x)->overflow__flag = (fnet_uint8_t)(((x)->overflow__flag & 0xF0)|((flag)&0x0F)))
-
-
 /**************************************************************************/ /*!
  * @internal
  * @brief    IPv4 layer socket options.

@@ -14,12 +14,13 @@ FNET project directory structure:
 	|    |    |-- fs                  - File System driver.
 	|    |    |-- http                - HTTP Server service.
 	|    |    |-- link                - Link-Detection service.
-	|    |    |-- llmnr               - LLMNR Server/Responder.
-	|    |    |-- mdns                - mDNS Server/Responder.
+	|    |    |-- llmnr               - LLMNR server/responder.
+	|    |    |-- mdns                - mDNS server/responder.
 	|    |    |-- ping                - PING service.
 	|    |    |-- poll                - Polling Mechanism library.
 	|    |    |-- serial              - Serial Input/Output driver.
 	|    |    |-- shell               - Command Shell service.
+	|    |    |-- sntp                - SNTP client.
 	|    |    |-- telnet              - TELNET server service.
 	|    |    |-- tftp                - TFTP server and client services.
 	|    |    |-- tls                 - TLS library.
@@ -53,6 +54,6 @@ FNET project directory structure:
 	|                                   but in addition it includes the mbedTLS library.
 	|-- fnet_tools                - FNET tools.
 	|-- third_party               - Optional, third-party libraries.
-	|    |-- mbedtls-2.4.0          - mbedTLS library, used by FNET TLS.
+	|    |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
 
 

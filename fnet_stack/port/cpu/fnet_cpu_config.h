@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -38,21 +38,22 @@
  * @brief    This is the set of the @c FNET_CFG_CPU_[processor_type] definitions that
  *           define a currently used processor. @n
  *           Current version of the FNET supports the following processor definitions:
- *            - @c FNET_CFG_CPU_MK60DN512  = Used platform is the MK60DN512.
- *            - @c FNET_CFG_CPU_MK60N512  = Used platform is the MK60N512.
- *            - @c FNET_CFG_CPU_MK66FN2  = Used platform is the MK66FN2.
- *            - @c FNET_CFG_CPU_MK64FN1  = Used platform is the MK64FN1.
- *            - @c FNET_CFG_CPU_MK70FN1  = Used platform is the MK70FN1.
- *            - @c FNET_CFG_CPU_MK60FN1  = Used platform is the MK60FN1.
- *            - @c FNET_CFG_CPU_MPC5668G  = Used platform is the MPC5668G.
- *            - @c FNET_CFG_CPU_MPC5566  = Used platform is the MPC5566.
- *            - @c FNET_CFG_CPU_MPC564xBC  = Used platform is the MPC564xBC.
- *            - @c FNET_CFG_CPU_MPC5744P  = Used platform is the MPC5744P.
- *            - @c FNET_CFG_CPU_MCF52235  = Used platform is the MCF52235.
- *            - @c FNET_CFG_CPU_MCF52259 = Used platform is the MCF52259.
- *            - @c FNET_CFG_CPU_MCF5282  = Used platform is the MCF5282.
- *            - @c FNET_CFG_CPU_MCF51CN128  = Used platform is the MCF51CN128.
- *            - @c FNET_CFG_CPU_MCF54418  = Used platform is the MCF54418.
+ *            - @c FNET_CFG_CPU_MK60DN512  = Used platform is MK60DN512.
+ *            - @c FNET_CFG_CPU_MK60N512  = Used platform is MK60N512.
+ *            - @c FNET_CFG_CPU_MK66FN2  = Used platform is MK66FN2.
+ *            - @c FNET_CFG_CPU_MK64FN1  = Used platform is MK64FN1.
+ *            - @c FNET_CFG_CPU_MK70FN1  = Used platform is MK70FN1.
+ *            - @c FNET_CFG_CPU_MK60FN1  = Used platform is MK60FN1.
+ *            - @c FNET_CFG_CPU_MPC5668G  = Used platform is MPC5668G.
+ *            - @c FNET_CFG_CPU_MPC5566  = Used platform is MPC5566.
+ *            - @c FNET_CFG_CPU_MPC564xBC  = Used platform is MPC564xBC.
+ *            - @c FNET_CFG_CPU_MPC5744P  = Used platform is MPC5744P.
+ *            - @c FNET_CFG_CPU_MCF52235  = Used platform is MCF52235.
+ *            - @c FNET_CFG_CPU_MCF52259 = Used platform is MCF52259.
+ *            - @c FNET_CFG_CPU_MCF5282  = Used platform is MCF5282.
+ *            - @c FNET_CFG_CPU_MCF51CN128  = Used platform is MCF51CN128.
+ *            - @c FNET_CFG_CPU_MCF54418  = Used platform is MCF54418.
+ *            - @c FNET_CFG_CPU_S32R274 = Used platform is S32R274
  *            @n @n
  *            Selected processor definition should be only one and must be defined as 1.
  *            All others may be defined but must have the 0 value.
@@ -110,6 +111,9 @@
 #endif
 #ifndef FNET_CFG_CPU_MPC5744P
     #define FNET_CFG_CPU_MPC5744P   (0)
+#endif
+#ifndef FNET_CFG_CPU_S32R274
+    #define FNET_CFG_CPU_S32R274    (0)
 #endif
 
 /* LPC1788 */
@@ -266,6 +270,17 @@
 
     #include "port/cpu/mpc/fnet_mpc5744p_config.h"
     #define FNET_CPU_STR    "MPC5744P"
+#endif
+
+/*********** S32R274 ********************/
+
+#if FNET_CFG_CPU_S32R274 /* Racerunner Ultra */
+	#ifdef FNET_CPU_STR
+		#error More than one CPU selected FNET_CPU_XXXX
+	#endif
+
+	#include "port/cpu/mpc/fnet_s32r274_config.h"
+	#define FNET_CPU_STR    "S32R274"
 #endif
 
 /*********** NXP's LPC ********************/

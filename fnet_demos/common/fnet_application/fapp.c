@@ -79,6 +79,10 @@
     #include "fapp_link.h"
 #endif
 
+#if FAPP_CFG_SNTP_CMD && FNET_CFG_SNTP
+    #include "fapp_sntp.h"
+#endif
+
 #include "fapp_netif.h"
 
 /************************************************************************
@@ -185,10 +189,10 @@ const struct fnet_shell_command fapp_cmd_table [] =
     { "autoip",     0u, 1u, fapp_autoip_cmd,  "Start Auto-IP service", "[release]"},
 #endif
 #if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
-    { "http",       0u, 1u, fapp_http_cmd,    "Start HTTP Server", "[release]"},
+    { "http",       0u, 1u, fapp_http_cmd,    "Start HTTP server", "[release]"},
 #endif
 #if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP && FNET_CFG_HTTP_TLS && FNET_CFG_TLS
-    { "https",       0u, 1u, fapp_http_tls_cmd,    "Start HTTPS Server", "[release]"},
+    { "https",       0u, 1u, fapp_http_tls_cmd,    "Start HTTPS server", "[release]"},
 #endif
 #if FAPP_CFG_EXP_CMD && FNET_CFG_FS
     { "exp",        0u, 1u, fapp_exp_cmd,     "File Explorer submenu...", ""},
@@ -203,19 +207,22 @@ const struct fnet_shell_command fapp_cmd_table [] =
     { "tftps",      0u, 1u, fapp_tftps_cmd,   "TFTP firmware server", "[release]"},
 #endif
 #if FAPP_CFG_TELNET_CMD && FNET_CFG_TELNET
-    { "telnet",     0u, 1u, fapp_telnet_cmd,  "Start Telnet Server", "[release]"},
+    { "telnet",     0u, 1u, fapp_telnet_cmd,  "Start Telnet server", "[release]"},
 #endif
 #if FAPP_CFG_DNS_CMD && FNET_CFG_DNS && FNET_CFG_DNS_RESOLVER
     { "dns",        2u, 3u, fapp_dns_cmd,     "Resolve IPv4|6 address of <host name>", "<host name> 4|6 [<server ip>]"},
 #endif
 #if FAPP_CFG_LLMNR_CMD && FNET_CFG_LLMNR
-    { "llmnr",      0u, 1u, fapp_llmnr_cmd,    "Start LLMNR Server", "[release]"},
+    { "llmnr",      0u, 1u, fapp_llmnr_cmd,    "Start LLMNR server", "[release]"},
 #endif
 #if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS
-    { "mdns",       0u, 1u, fapp_mdns_cmd,      "Start MDNS Server", "[release]"},
+    { "mdns",       0u, 1u, fapp_mdns_cmd,     "Start MDNS server", "[release]"},
 #endif
 #if FAPP_CFG_MDNS_CN_CMD && FNET_CFG_MDNS
-    { "mdnscn",     0u, 0u, fapp_mdns_change_name_cmd,  "Change name, Bonjour test", ""},
+    { "mdnscn",     0u, 0u, fapp_mdns_change_name_cmd,  "Change MDNS service name, Bonjour test", ""},
+#endif
+#if FAPP_CFG_SNTP_CMD && FNET_CFG_SNTP
+    { "sntp",       1u, 1u, fapp_sntp_cmd,     "Resolve time over SNTP", "<server ip>"},
 #endif
 #if FAPP_CFG_MEM_CMD
     { "mem",        0u, 0u, fapp_mem_cmd,     "Show memory map", ""},

@@ -35,7 +35,7 @@
 
 #define _FNET_MK_CONFIG_H_
 
-#include "fnet_user_config.h"
+#include "fnet_config.h"
 
 #ifndef FNET_MK
     #define FNET_MK   (0)

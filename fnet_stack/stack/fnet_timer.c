@@ -123,7 +123,7 @@ void fnet_timer_ticks_inc( void )
 /************************************************************************
 * DESCRIPTION: Handles timer interrupts
 *************************************************************************/
-void fnet_timer_handler_bottom(fnet_uint32_t cookie)
+void fnet_timer_handler_bottom(void *cookie)
 {
     struct fnet_net_timer *timer = fnet_tl_head;
 

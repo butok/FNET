@@ -37,7 +37,7 @@
 /**************************************************************************/ /*!
  * @def     FNET_CFG_POLL_MAX
  * @brief   Maximum number of registered services in the service-polling list.@n
- *          Default value is @b @c 10.
+ *          Default value is @b @c 11.
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_POLL_MAX
@@ -55,6 +55,7 @@
 #include "services/ping/fnet_ping_config.h"
 #include "services/serial/fnet_serial_config.h"
 #include "services/shell/fnet_shell_config.h"
+#include "services/sntp/fnet_sntp_config.h"
 #include "services/llmnr/fnet_llmnr_config.h"
 #include "services/mdns/fnet_mdns_config.h"
 #include "services/flash/fnet_flash_config.h"

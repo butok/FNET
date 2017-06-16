@@ -685,8 +685,7 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
     }
 
     /* Set socket options.*/
-    fnet_socket_setopt (http_if->socket_listen, SOL_SOCKET, SO_LINGER,
-                        &linger_option, sizeof(linger_option));
+    fnet_socket_setopt (http_if->socket_listen, SOL_SOCKET, SO_LINGER, &linger_option, sizeof(linger_option));
 
     /* Listen.*/
     if(fnet_socket_listen(http_if->socket_listen, FNET_HTTP_BACKLOG_MAX) == FNET_ERR)

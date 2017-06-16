@@ -166,18 +166,18 @@ static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
 
     /* Set Socket options. */
     if( /* Setup linger option. */
-        (fnet_socket_setopt (fapp_bench.socket_listen, SOL_SOCKET, SO_LINGER, (fnet_uint8_t *)&linger_option, sizeof(linger_option)) == FNET_ERR) ||
+        (fnet_socket_setopt (fapp_bench.socket_listen, SOL_SOCKET, SO_LINGER, &linger_option, sizeof(linger_option)) == FNET_ERR) ||
         /* Set socket buffer size. */
-        (fnet_socket_setopt(fapp_bench.socket_listen, SOL_SOCKET, SO_RCVBUF, (fnet_uint8_t *) &bufsize_option, sizeof(bufsize_option)) == FNET_ERR) ||
-        (fnet_socket_setopt(fapp_bench.socket_listen, SOL_SOCKET, SO_SNDBUF, (fnet_uint8_t *) &bufsize_option, sizeof(bufsize_option)) == FNET_ERR) ||
+        (fnet_socket_setopt(fapp_bench.socket_listen, SOL_SOCKET, SO_RCVBUF, &bufsize_option, sizeof(bufsize_option)) == FNET_ERR) ||
+        (fnet_socket_setopt(fapp_bench.socket_listen, SOL_SOCKET, SO_SNDBUF, &bufsize_option, sizeof(bufsize_option)) == FNET_ERR) ||
         /* Enable keepalive_option option. */
-        (fnet_socket_setopt (fapp_bench.socket_listen, SOL_SOCKET, SO_KEEPALIVE, (fnet_uint8_t *)&keepalive_option, sizeof(keepalive_option)) == FNET_ERR) ||
+        (fnet_socket_setopt (fapp_bench.socket_listen, SOL_SOCKET, SO_KEEPALIVE, &keepalive_option, sizeof(keepalive_option)) == FNET_ERR) ||
         /* Keepalive probe retransmit limit. */
-        (fnet_socket_setopt (fapp_bench.socket_listen, IPPROTO_TCP, TCP_KEEPCNT, (fnet_uint8_t *)&keepcnt_option, sizeof(keepcnt_option)) == FNET_ERR) ||
+        (fnet_socket_setopt (fapp_bench.socket_listen, IPPROTO_TCP, TCP_KEEPCNT, &keepcnt_option, sizeof(keepcnt_option)) == FNET_ERR) ||
         /* Keepalive retransmit interval.*/
-        (fnet_socket_setopt (fapp_bench.socket_listen, IPPROTO_TCP, TCP_KEEPINTVL, (fnet_uint8_t *)&keepintvl_option, sizeof(keepintvl_option)) == FNET_ERR) ||
+        (fnet_socket_setopt (fapp_bench.socket_listen, IPPROTO_TCP, TCP_KEEPINTVL, &keepintvl_option, sizeof(keepintvl_option)) == FNET_ERR) ||
         /* Time between keepalive probes.*/
-        (fnet_socket_setopt (fapp_bench.socket_listen, IPPROTO_TCP, TCP_KEEPIDLE, (fnet_uint8_t *)&keepidle_option, sizeof(keepidle_option)) == FNET_ERR)
+        (fnet_socket_setopt (fapp_bench.socket_listen, IPPROTO_TCP, TCP_KEEPIDLE, &keepidle_option, sizeof(keepidle_option)) == FNET_ERR)
     )
     {
         FNET_DEBUG("BENCH: Socket setsockopt error.\n");
@@ -227,7 +227,7 @@ static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
 
                 while(1) /* Receiving data.*/
                 {
-                    received = fnet_socket_recv(fapp_bench.socket_foreign, (fnet_uint8_t *)(&fapp_bench.buffer[0]), FAPP_BENCH_BUFFER_SIZE, 0);
+                    received = fnet_socket_recv(fapp_bench.socket_foreign, &fapp_bench.buffer[0], FAPP_BENCH_BUFFER_SIZE, 0);
 
                     if ((received == FNET_ERR) || exit_flag)
                     {
@@ -297,8 +297,8 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
     /* Set socket options. */
     if(
         /* Set socket buffer size. */
-        (fnet_socket_setopt(fapp_bench.socket_listen, SOL_SOCKET, SO_RCVBUF, (fnet_uint8_t *) &bufsize_option, sizeof(bufsize_option)) == FNET_ERR) ||
-        (fnet_socket_setopt(fapp_bench.socket_listen, SOL_SOCKET, SO_SNDBUF, (fnet_uint8_t *) &bufsize_option, sizeof(bufsize_option)) == FNET_ERR)
+        (fnet_socket_setopt(fapp_bench.socket_listen, SOL_SOCKET, SO_RCVBUF, &bufsize_option, sizeof(bufsize_option)) == FNET_ERR) ||
+        (fnet_socket_setopt(fapp_bench.socket_listen, SOL_SOCKET, SO_SNDBUF, &bufsize_option, sizeof(bufsize_option)) == FNET_ERR)
     )
     {
         FNET_DEBUG("BENCH: Socket setsockopt error.\n");
@@ -318,7 +318,7 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
             mreq.imr_interface = 0; /* Default Interface.*/
 
             /* Join multicast group. */
-            if(fnet_socket_setopt(fapp_bench.socket_listen, IPPROTO_IP, IP_ADD_MEMBERSHIP, (fnet_uint8_t *)&mreq, sizeof(mreq)) == FNET_ERR)
+            if(fnet_socket_setopt(fapp_bench.socket_listen, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) == FNET_ERR)
             {
                 FNET_DEBUG("BENCH: Joining to multicast group is failed.\n");
                 goto ERROR_2;
@@ -334,7 +334,7 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
             mreq6.ipv6imr_interface = ((struct sockaddr_in6 *)multicast_address)->sin6_scope_id;
 
             /* Join multicast group. */
-            if(fnet_socket_setopt(fapp_bench.socket_listen, IPPROTO_IPV6, IPV6_JOIN_GROUP, (fnet_uint8_t *)&mreq6, sizeof(mreq6)) == FNET_ERR)
+            if(fnet_socket_setopt(fapp_bench.socket_listen, IPPROTO_IPV6, IPV6_JOIN_GROUP, &mreq6, sizeof(mreq6)) == FNET_ERR)
             {
                 FNET_DEBUG("BENCH: Joining to multicast group is failed.\n");
                 goto ERROR_2;
@@ -370,7 +370,7 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
         {
 
             /* Receive data */
-            received = fnet_socket_recvfrom  (fapp_bench.socket_listen, (fnet_uint8_t *)(&fapp_bench.buffer[0]), FAPP_BENCH_BUFFER_SIZE, 0,
+            received = fnet_socket_recvfrom  (fapp_bench.socket_listen, &fapp_bench.buffer[0], FAPP_BENCH_BUFFER_SIZE, 0,
                                               &addr, &addr_len );
 
             if(received >= FAPP_BENCH_UDP_END_BUFFER_LENGTH)
@@ -395,9 +395,9 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
                         fnet_uint32_t ack_bytes = fnet_htonl(fapp_bench.bytes);
 
                         /* Send several times, just to be sure that it is received/not lost.*/
-                        fnet_socket_sendto(fapp_bench.socket_listen, (fnet_uint8_t *)(&ack_bytes), sizeof(ack_bytes), 0, (struct sockaddr *)&addr, sizeof(addr));
-                        fnet_socket_sendto(fapp_bench.socket_listen, (fnet_uint8_t *)(&ack_bytes), sizeof(ack_bytes), 0, (struct sockaddr *)&addr, sizeof(addr));
-                        fnet_socket_sendto(fapp_bench.socket_listen, (fnet_uint8_t *)(&ack_bytes), sizeof(ack_bytes), 0, (struct sockaddr *)&addr, sizeof(addr));
+                        fnet_socket_sendto(fapp_bench.socket_listen, &ack_bytes, sizeof(ack_bytes), 0, (struct sockaddr *)&addr, sizeof(addr));
+                        fnet_socket_sendto(fapp_bench.socket_listen, &ack_bytes, sizeof(ack_bytes), 0, (struct sockaddr *)&addr, sizeof(addr));
+                        fnet_socket_sendto(fapp_bench.socket_listen, &ack_bytes, sizeof(ack_bytes), 0, (struct sockaddr *)&addr, sizeof(addr));
 
                         /* Print benchmark results.*/
                         fapp_bench_print_results (desc);
@@ -536,18 +536,18 @@ static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
 
         /* Set Socket options. */
         if( /* Setup linger option. */
-            (fnet_socket_setopt (fapp_bench.socket_foreign, SOL_SOCKET, SO_LINGER, (fnet_uint8_t *)&linger_option, sizeof(linger_option)) == FNET_ERR) ||
+            (fnet_socket_setopt (fapp_bench.socket_foreign, SOL_SOCKET, SO_LINGER, &linger_option, sizeof(linger_option)) == FNET_ERR) ||
             /* Set socket buffer size. */
-            (fnet_socket_setopt(fapp_bench.socket_foreign, SOL_SOCKET, SO_RCVBUF, (fnet_uint8_t *) &bufsize_option, sizeof(bufsize_option)) == FNET_ERR) ||
-            (fnet_socket_setopt(fapp_bench.socket_foreign, SOL_SOCKET, SO_SNDBUF, (fnet_uint8_t *) &bufsize_option, sizeof(bufsize_option)) == FNET_ERR) ||
+            (fnet_socket_setopt(fapp_bench.socket_foreign, SOL_SOCKET, SO_RCVBUF, &bufsize_option, sizeof(bufsize_option)) == FNET_ERR) ||
+            (fnet_socket_setopt(fapp_bench.socket_foreign, SOL_SOCKET, SO_SNDBUF, &bufsize_option, sizeof(bufsize_option)) == FNET_ERR) ||
             /* Enable keepalive_option option. */
-            (fnet_socket_setopt (fapp_bench.socket_foreign, SOL_SOCKET, SO_KEEPALIVE, (fnet_uint8_t *)&keepalive_option, sizeof(keepalive_option)) == FNET_ERR) ||
+            (fnet_socket_setopt (fapp_bench.socket_foreign, SOL_SOCKET, SO_KEEPALIVE, &keepalive_option, sizeof(keepalive_option)) == FNET_ERR) ||
             /* Keepalive probe retransmit limit. */
-            (fnet_socket_setopt (fapp_bench.socket_foreign, IPPROTO_TCP, TCP_KEEPCNT, (fnet_uint8_t *)&keepcnt_option, sizeof(keepcnt_option)) == FNET_ERR) ||
+            (fnet_socket_setopt (fapp_bench.socket_foreign, IPPROTO_TCP, TCP_KEEPCNT, &keepcnt_option, sizeof(keepcnt_option)) == FNET_ERR) ||
             /* Keepalive retransmit interval.*/
-            (fnet_socket_setopt (fapp_bench.socket_foreign, IPPROTO_TCP, TCP_KEEPINTVL, (fnet_uint8_t *)&keepintvl_option, sizeof(keepintvl_option)) == FNET_ERR) ||
+            (fnet_socket_setopt (fapp_bench.socket_foreign, IPPROTO_TCP, TCP_KEEPINTVL, &keepintvl_option, sizeof(keepintvl_option)) == FNET_ERR) ||
             /* Time between keepalive probes.*/
-            (fnet_socket_setopt (fapp_bench.socket_foreign, IPPROTO_TCP, TCP_KEEPIDLE, (fnet_uint8_t *)&keepidle_option, sizeof(keepidle_option)) == FNET_ERR)
+            (fnet_socket_setopt (fapp_bench.socket_foreign, IPPROTO_TCP, TCP_KEEPIDLE, &keepidle_option, sizeof(keepidle_option)) == FNET_ERR)
         )
         {
             FNET_DEBUG("BENCH: Socket setsockopt error.\n");
@@ -565,7 +565,7 @@ static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
         do
         {
             option_len = sizeof(connection_state);
-            fnet_socket_getopt(fapp_bench.socket_foreign, SOL_SOCKET, SO_STATE, (fnet_uint8_t *)&connection_state, &option_len);
+            fnet_socket_getopt(fapp_bench.socket_foreign, SOL_SOCKET, SO_STATE, &connection_state, &option_len);
         }
         while (connection_state == SS_CONNECTING);
 
@@ -587,7 +587,7 @@ static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
 
         while(1)
         {
-            send_result = fnet_socket_send( fapp_bench.socket_foreign, (fnet_uint8_t *)(&fapp_bench.buffer[buffer_offset]), (packet_size - buffer_offset), 0);
+            send_result = fnet_socket_send( fapp_bench.socket_foreign, &fapp_bench.buffer[buffer_offset], (packet_size - buffer_offset), 0);
             fapp_bench.last_time = fnet_timer_get_ticks();
 
             if ( send_result == FNET_ERR )
@@ -692,10 +692,10 @@ static void fapp_bench_udp_tx (struct fapp_bench_tx_params *params)
 
         /* Set Socket options. */
         if( /* Setup linger option. */
-            (fnet_socket_setopt (fapp_bench.socket_foreign, SOL_SOCKET, SO_LINGER, (fnet_uint8_t *)&linger_option, sizeof(linger_option)) == FNET_ERR) ||
+            (fnet_socket_setopt (fapp_bench.socket_foreign, SOL_SOCKET, SO_LINGER, &linger_option, sizeof(linger_option)) == FNET_ERR) ||
             /* Set socket buffer size. */
-            (fnet_socket_setopt(fapp_bench.socket_foreign, SOL_SOCKET, SO_RCVBUF, (fnet_uint8_t *) &bufsize_option, sizeof(bufsize_option)) == FNET_ERR) ||
-            (fnet_socket_setopt(fapp_bench.socket_foreign, SOL_SOCKET, SO_SNDBUF, (fnet_uint8_t *) &bufsize_option, sizeof(bufsize_option)) == FNET_ERR)
+            (fnet_socket_setopt(fapp_bench.socket_foreign, SOL_SOCKET, SO_RCVBUF, &bufsize_option, sizeof(bufsize_option)) == FNET_ERR) ||
+            (fnet_socket_setopt(fapp_bench.socket_foreign, SOL_SOCKET, SO_SNDBUF, &bufsize_option, sizeof(bufsize_option)) == FNET_ERR)
         )
         {
             FNET_DEBUG("BENCH: Socket setsockopt error.\n");
@@ -725,14 +725,14 @@ static void fapp_bench_udp_tx (struct fapp_bench_tx_params *params)
 
         while(1)
         {
-            send_result = fnet_socket_send( fapp_bench.socket_foreign, (fnet_uint8_t *)(&fapp_bench.buffer[0]), packet_size, 0);
+            send_result = fnet_socket_send( fapp_bench.socket_foreign, &fapp_bench.buffer[0], packet_size, 0);
             fapp_bench.last_time = fnet_timer_get_ticks();
 
 
             if ( send_result == FNET_ERR )
             {
                 option_len = sizeof(sock_err);
-                fnet_socket_getopt(fapp_bench.socket_foreign, SOL_SOCKET, SO_ERROR, (fnet_uint8_t *)&sock_err, &option_len);
+                fnet_socket_getopt(fapp_bench.socket_foreign, SOL_SOCKET, SO_ERROR, &sock_err, &option_len);
                 fnet_shell_println(desc, "socket_error = %d", sock_err);
 
                 iterations = 0;
@@ -765,11 +765,11 @@ static void fapp_bench_udp_tx (struct fapp_bench_tx_params *params)
             fnet_uint32_t ack_bytes;
 
             /* Send END mark.*/
-            fnet_socket_send( fapp_bench.socket_foreign, (fnet_uint8_t *)(&fapp_bench.buffer[0]), 1, 0);
+            fnet_socket_send( fapp_bench.socket_foreign, &fapp_bench.buffer[0], 1, 0);
             fnet_timer_delay(1);
 
             /* Check ACK. It should contain recieved amount of data.*/
-            received = fnet_socket_recv(fapp_bench.socket_foreign, (fnet_uint8_t *)(&ack_bytes), sizeof(ack_bytes), 0);
+            received = fnet_socket_recv(fapp_bench.socket_foreign, &ack_bytes, sizeof(ack_bytes), 0);
 
             if(received == sizeof(ack_bytes)) /* ACK received.*/
             {

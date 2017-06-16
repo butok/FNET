@@ -45,7 +45,7 @@
 /**************************************************************************/ /*!
  * @brief Descriptor of a registered service.
  ******************************************************************************/
-typedef fnet_uint32_t fnet_poll_desc_t;
+typedef void *fnet_poll_desc_t;
 
 /**************************************************************************/ /*!
  * @brief Service callback function prototype.

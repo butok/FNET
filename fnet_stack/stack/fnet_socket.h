@@ -986,7 +986,7 @@ fnet_return_t fnet_socket_connect( fnet_socket_t s, struct sockaddr *name, fnet_
  * invocation beyond the options specified for the associated socket.
  *
  ******************************************************************************/
-fnet_int32_t fnet_socket_recv( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags );
+fnet_int32_t fnet_socket_recv( fnet_socket_t s, void *buf, fnet_size_t len, fnet_flag_t flags );
 
 /***************************************************************************/ /*!
  *
@@ -1043,7 +1043,7 @@ fnet_int32_t fnet_socket_recv( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t l
  * invocation beyond the options specified for the associated socket.
  *
  ******************************************************************************/
-fnet_int32_t fnet_socket_recvfrom( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct sockaddr *from, fnet_size_t *fromlen );
+fnet_int32_t fnet_socket_recvfrom( fnet_socket_t s, void *buf, fnet_size_t len, fnet_flag_t flags, struct sockaddr *from, fnet_size_t *fromlen );
 
 /***************************************************************************/ /*!
  *
@@ -1090,7 +1090,7 @@ fnet_int32_t fnet_socket_recvfrom( fnet_socket_t s, fnet_uint8_t *buf, fnet_size
  * invocation beyond the options specified for the associated socket.
  *
  ******************************************************************************/
-fnet_int32_t fnet_socket_send( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags );
+fnet_int32_t fnet_socket_send( fnet_socket_t s, const void *buf, fnet_size_t len, fnet_flag_t flags );
 
 /***************************************************************************/ /*!
  *
@@ -1149,7 +1149,7 @@ fnet_int32_t fnet_socket_send( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t l
  * invocation beyond the options specified for the associated socket.
  *
  ******************************************************************************/
-fnet_int32_t fnet_socket_sendto( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct sockaddr *to, fnet_size_t tolen );
+fnet_int32_t fnet_socket_sendto( fnet_socket_t s, const void *buf, fnet_size_t len, fnet_flag_t flags, const struct sockaddr *to, fnet_size_t tolen );
 
 /***************************************************************************/ /*!
  *

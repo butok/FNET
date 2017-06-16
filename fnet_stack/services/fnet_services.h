@@ -29,6 +29,7 @@
 
 #include "serial/fnet_serial.h"
 #include "shell/fnet_shell.h"
+#include "sntp/fnet_sntp.h"
 #include "telnet/fnet_telnet.h"
 #include "poll/fnet_poll.h"
 #include "tftp/fnet_tftp_cln.h"

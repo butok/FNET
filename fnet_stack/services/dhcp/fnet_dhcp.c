@@ -752,7 +752,7 @@ static fnet_int32_t fnet_dhcp_send_message( fnet_dhcp_if_t *dhcp )
     ((struct sockaddr_in *)(&addr_send))->sin_addr = ip_address;
 
     length = (fnet_size_t)(message->next_option_position - (fnet_uint8_t *) &message->header);
-    return fnet_socket_sendto(dhcp->socket_client, (fnet_uint8_t *) &message->header, length, 0u, (struct sockaddr *) &addr_send, sizeof(addr_send));
+    return fnet_socket_sendto(dhcp->socket_client, &message->header, length, 0u, (struct sockaddr *) &addr_send, sizeof(addr_send));
 }
 
 /************************************************************************
@@ -765,7 +765,7 @@ static fnet_int32_t fnet_dhcp_receive_message( fnet_dhcp_if_t *dhcp, struct fnet
     fnet_dhcp_header_t      *dhcp_header = &dhcp->message.header;
     fnet_size_t             addr_len = sizeof(addr_from);
 
-    size = fnet_socket_recvfrom(dhcp->socket_client, (fnet_uint8_t *) dhcp_header, sizeof(fnet_dhcp_header_t),
+    size = fnet_socket_recvfrom(dhcp->socket_client, dhcp_header, sizeof(fnet_dhcp_header_t),
                                 0U,                   (struct sockaddr *) &addr_from, &addr_len);
 
     if(fnet_timer_get_interval(dhcp->send_request_time, fnet_timer_get_ticks()) < dhcp->state_send_timeout)
@@ -1070,7 +1070,7 @@ static void fnet_dhcp_poll( void *fnet_dhcp_if_p )
                 fnet_size_t         addr_len = sizeof(addr_from);
 
                 /* Discard all input data. */
-                fnet_socket_recvfrom(dhcp->socket_client, (fnet_uint8_t *) &dhcp->message.header, sizeof(fnet_dhcp_header_t),
+                fnet_socket_recvfrom(dhcp->socket_client, &dhcp->message.header, sizeof(fnet_dhcp_header_t),
                                      0U,                   (struct sockaddr *) &addr_from, &addr_len);
 
 

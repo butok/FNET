@@ -32,6 +32,7 @@
 #define FNET_CFG_HTTP_CGI                   (1)
 
 #define FNET_CFG_TELNET                     (1)
+#define FNET_CFG_SNTP                       (1)
 
 #define FNET_CFG_FLASH                      (1)
 

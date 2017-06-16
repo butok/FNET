@@ -101,6 +101,9 @@
 /*  "mdns" command.*/
 #define FAPP_CFG_MDNS_CMD               (1)
 
+/*  "sntp" command.*/
+#define FAPP_CFG_SNTP_CMD                (1)
+
 /* Reading of the configuration parameters from the Flash
  * memory during the application bootup.*/
 #define FAPP_CFG_PARAMS_READ_FLASH       (1)

@@ -370,7 +370,7 @@ static int fnet_tls_mbedtls_send(void *ctx, unsigned char const *buf, size_t len
 {
     int result;
 
-    result = fnet_socket_send((fnet_socket_t)ctx, (fnet_uint8_t *)buf, len, 0);
+    result = fnet_socket_send((fnet_socket_t)ctx, buf, len, 0);
 
     FNET_DEBUG_TLS("TLS: TX(%d) %d", len, result);
     /* Convert to right mbeTLS result.*/
@@ -393,7 +393,7 @@ static int fnet_tls_mbedtls_recv(void *ctx, unsigned char *buf, size_t len)
 {
     int result;
 
-    result = fnet_socket_recv((fnet_socket_t)ctx, (fnet_uint8_t *)buf, len, 0);
+    result = fnet_socket_recv((fnet_socket_t)ctx, buf, len, 0);
 
     FNET_DEBUG_TLS("TLS: RX(%d) %d", len, result);
     /* Convert to right mbeTLS result.*/

@@ -958,11 +958,11 @@ ERROR:
 /************************************************************************
 * DESCRIPTION: This function sends data to a specific destination.
 *************************************************************************/
-fnet_int32_t fnet_socket_sendto( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct sockaddr *to, fnet_size_t tolen )
+fnet_int32_t fnet_socket_sendto( fnet_socket_t s, const void *buf, fnet_size_t len, fnet_flag_t flags, const struct sockaddr *to, fnet_size_t tolen )
 {
-    fnet_socket_if_t   *sock;
-    fnet_error_t    error;
-    fnet_int32_t    result = 0;
+    fnet_socket_if_t    *sock;
+    fnet_error_t        error;
+    fnet_int32_t        result = 0;
 
     fnet_stack_mutex_lock();
 
@@ -994,7 +994,6 @@ fnet_int32_t fnet_socket_sendto( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t
 
         if(buf)
         {
-
             /* If the socket is shutdowned, return.*/
             if(sock->send_buffer.is_shutdown)
             {
@@ -1004,7 +1003,7 @@ fnet_int32_t fnet_socket_sendto( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t
 
             if(sock->protocol_interface->socket_api->prot_snd)
             {
-                result = sock->protocol_interface->socket_api->prot_snd(sock, buf, len, flags, to);
+                result = sock->protocol_interface->socket_api->prot_snd(sock, (fnet_uint8_t *)buf, len, flags, to);
             }
             else
             {
@@ -1040,7 +1039,7 @@ ERROR:
 /************************************************************************
 * DESCRIPTION: This function sends data on a connected socket.
 *************************************************************************/
-fnet_int32_t fnet_socket_send( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags )
+fnet_int32_t fnet_socket_send( fnet_socket_t s, const void *buf, fnet_size_t len, fnet_flag_t flags )
 {
     return fnet_socket_sendto(s, buf, len, flags, FNET_NULL, 0u);
 }
@@ -1049,7 +1048,7 @@ fnet_int32_t fnet_socket_send( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t l
 * DESCRIPTION: This function reads incoming data of socket and captures
 *              the address from which the data was sent.
 *************************************************************************/
-fnet_int32_t fnet_socket_recvfrom( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct sockaddr *from, fnet_size_t *fromlen )
+fnet_int32_t fnet_socket_recvfrom( fnet_socket_t s, void *buf, fnet_size_t len, fnet_flag_t flags, struct sockaddr *from, fnet_size_t *fromlen )
 {
     fnet_socket_if_t   *sock;
     fnet_error_t    error;
@@ -1122,7 +1121,7 @@ ERROR:
 /************************************************************************
 * DESCRIPTION: This function receives data from a connected socket.
 *************************************************************************/
-fnet_int32_t fnet_socket_recv( fnet_socket_t s, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags )
+fnet_int32_t fnet_socket_recv( fnet_socket_t s, void *buf, fnet_size_t len, fnet_flag_t flags )
 {
     return fnet_socket_recvfrom(s, buf, len, flags, FNET_NULL, FNET_NULL);
 }

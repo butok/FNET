@@ -30,7 +30,7 @@
 
 #define _FNET_MPC_CONFIG_H_
 
-#include "fnet.h"
+#include "fnet_config.h"
 
 #if FNET_MPC
 
@@ -47,7 +47,7 @@
         #if FNET_CFG_CPU_MPC5668G
             #define FNET_CFG_CPU_ETH0_VECTOR_NUMBER      (299)
         #endif
-        #if FNET_CFG_CPU_MPC5744P
+        #if FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_S32R274
             #define FNET_CFG_CPU_ETH0_VECTOR_NUMBER      (218)
         #endif
         #if FNET_CFG_CPU_MPC5566
@@ -73,7 +73,7 @@
         #if FNET_CFG_CPU_MPC5668G
             #define FNET_CFG_CPU_TIMER_VECTOR_NUMBER    (149+FNET_CFG_CPU_TIMER_NUMBER)
 
-        #elif FNET_CFG_CPU_MPC5744P
+        #elif FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_S32R274
             #define FNET_CFG_CPU_TIMER_VECTOR_NUMBER    (226+FNET_CFG_CPU_TIMER_NUMBER)
 
         #elif FNET_CFG_CPU_MPC564xBC

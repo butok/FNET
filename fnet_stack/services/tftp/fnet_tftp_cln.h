@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -38,7 +38,7 @@
 * the user application should call the main service-polling function
 * @ref fnet_poll_service() periodically in the background. @n
 * The TFP client service is released automatically as soon as the requested file is
-* fully received/sent or an error occurs. Your application code may still continue
+* fully received/sent or an error occurs. Your application code may continue
 * to call @ref fnet_poll_service() to handle other services, but this will not have any
 * impact on the TFTP client communication until you initialize the next file transfer by calling
 * @ref fnet_tftp_cln_init() again. @n

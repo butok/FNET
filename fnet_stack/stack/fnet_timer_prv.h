@@ -46,7 +46,7 @@ void fnet_timer_reset_all( void );
 fnet_timer_desc_t fnet_timer_new( fnet_time_t period_ticks, void (*handler)( fnet_uint32_t cookie ), fnet_uint32_t cookie );
 void fnet_timer_free( fnet_timer_desc_t timer );
 void fnet_timer_ticks_inc( void );
-void fnet_timer_handler_bottom(fnet_uint32_t cookie);
+void fnet_timer_handler_bottom(void *cookie);
 fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms );
 
 #if defined(__cplusplus)

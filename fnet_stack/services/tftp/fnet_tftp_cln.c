@@ -261,7 +261,7 @@ static void fnet_tftp_cln_poll( void *fnet_tftp_cln_if_p )
             fnet_memcpy(&addr, &fnet_tftp_if.server_addr, sizeof(addr));
 
             /* ---- Send request ---- */
-            sent_size = fnet_socket_sendto(tftp_if->socket_client, (fnet_uint8_t *)&tftp_if->packet.packet_request, tftp_if->packet_size, 0u, &addr, sizeof(addr));
+            sent_size = fnet_socket_sendto(tftp_if->socket_client, &tftp_if->packet.packet_request, tftp_if->packet_size, 0u, &addr, sizeof(addr));
 
             if (sent_size != (fnet_int32_t)tftp_if->packet_size)
             {
@@ -278,7 +278,7 @@ static void fnet_tftp_cln_poll( void *fnet_tftp_cln_if_p )
             /* Receive data */
             addr_len = sizeof(addr);
 
-            received = fnet_socket_recvfrom  (tftp_if->socket_client, (fnet_uint8_t *)&tftp_if->packet.packet_data, sizeof(struct fnet_tftp_packet_data), 0u,
+            received = fnet_socket_recvfrom  (tftp_if->socket_client, &tftp_if->packet.packet_data, sizeof(struct fnet_tftp_packet_data), 0u,
                                               &addr, &addr_len );
 
             if(received >= 4)
@@ -307,7 +307,7 @@ static void fnet_tftp_cln_poll( void *fnet_tftp_cln_if_p )
                     {
                         /* Send ACK */
                         tftp_if->packet.packet_ack.opcode = FNET_HTONS(FNET_TFTP_OPCODE_ACK);
-                        fnet_socket_sendto(tftp_if->socket_client, (fnet_uint8_t *)&tftp_if->packet.packet_ack, sizeof(struct fnet_tftp_packet_ack), 0u,
+                        fnet_socket_sendto(tftp_if->socket_client, &tftp_if->packet.packet_ack, sizeof(struct fnet_tftp_packet_ack), 0u,
                                            (struct sockaddr *)&addr, sizeof(addr) );
 
                         /* Reset timeout. */
@@ -372,7 +372,7 @@ static void fnet_tftp_cln_poll( void *fnet_tftp_cln_if_p )
                         /* Send data. */
                         tftp_if->packet.packet_data.opcode = FNET_HTONS(FNET_TFTP_OPCODE_DATA);
                         tftp_if->packet.packet_data.block_number = fnet_htons(tftp_if->block_number_ack);
-                        fnet_socket_sendto(tftp_if->socket_client, (fnet_uint8_t *)&tftp_if->packet.packet_data, (4u + (tftp_if->tx_data_size)), 0u,
+                        fnet_socket_sendto(tftp_if->socket_client, &tftp_if->packet.packet_data, (4u + (tftp_if->tx_data_size)), 0u,
                                            &addr, sizeof(addr) );
                         /* Reset timeout. */
                         tftp_if->last_time = fnet_timer_get_ticks();

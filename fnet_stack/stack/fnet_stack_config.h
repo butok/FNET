@@ -762,6 +762,10 @@
     #define FNET_CFG_DEBUG_PING         (0)
 #endif
 
+#ifndef FNET_CFG_DEBUG_SNTP
+    #define FNET_CFG_DEBUG_SNTP        (0)
+#endif
+
 #ifndef FNET_CFG_DEBUG_TRACE
     #define FNET_CFG_DEBUG_TRACE        (0)
 #endif

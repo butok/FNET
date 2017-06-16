@@ -41,7 +41,6 @@ typedef struct
 static struct
 {
     fnet_poll_list_entry_t list[FNET_CFG_POLL_MAX]; /* Polling list.*/
-    fnet_poll_desc_t last;                      /* Index of the last valid entry plus 1, in the polling list.*/
 } fnet_poll_if;
 
 /************************************************************************
@@ -50,9 +49,9 @@ static struct
 *************************************************************************/
 void fnet_poll_service( void )
 {
-    fnet_poll_desc_t i;
+    fnet_index_t i;
 
-    for (i = 0u; i < fnet_poll_if.last; i++)
+    for (i = 0u; i < FNET_CFG_POLL_MAX; i++)
     {
         if(fnet_poll_if.list[i].service)
         {
@@ -62,8 +61,7 @@ void fnet_poll_service( void )
 }
 
 /************************************************************************
-* DESCRIPTION: This function calls all registered service routines in
-*              the polling list.
+* DESCRIPTION: Unregisters all registered service routines.
 *************************************************************************/
 void fnet_poll_service_release( void )
 {
@@ -90,11 +88,6 @@ fnet_poll_desc_t fnet_poll_service_register( fnet_poll_service_t service, void *
             fnet_poll_if.list[i].service = service;
             fnet_poll_if.list[i].service_param = service_param;
             poll_entry = &fnet_poll_if.list[i];
-
-            if(i >= fnet_poll_if.last)
-            {
-                fnet_poll_if.last = i + 1u;
-            }
         }
     }
 

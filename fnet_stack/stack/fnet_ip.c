@@ -64,7 +64,7 @@ static fnet_event_desc_t ip_event;
 *     Function Prototypes
 *************************************************************************/
 static void fnet_ip_netif_output(struct fnet_netif *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb, fnet_bool_t do_not_route);
-static void fnet_ip_input_low(fnet_uint32_t cookie );
+static void fnet_ip_input_low(void *cookie);
 static fnet_error_t fnet_ip4_getsockopt(fnet_socket_if_t *sock, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen );
 static fnet_error_t fnet_ip4_setsockopt( fnet_socket_if_t *sock, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen );
 static fnet_bool_t fnet_ip_addr_is_onlink(fnet_netif_t *netif, fnet_ip4_addr_t addr);
@@ -499,7 +499,7 @@ void fnet_ip_input( fnet_netif_t *netif, fnet_netbuf_t *nb )
 /************************************************************************
 * DESCRIPTION: This function performs handling of incoming datagrams.
 *************************************************************************/
-static void fnet_ip_input_low(fnet_uint32_t cookie )
+static void fnet_ip_input_low(void *cookie)
 {
     fnet_ip_header_t    *hdr;
     fnet_netbuf_t       *ip4_nb;

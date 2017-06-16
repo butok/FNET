@@ -53,15 +53,10 @@ preferred way to configure stack features). @n
 		- @b MK64FN1M (FRDM-K64F board)
 		- @b MK66FN2M (FRDM-K66F board)
 		- @b MK6DN512 (TWR-K60D100M board)
-	- Older Platforms:
-		- Lasko - MCF51CN128 (TWR-MCF51CN board)
-		- Reindeer - MCF5282 (M5282EVB board) 
-		- Kirin2 - MCF52235 (M52235EVB board)
-		- Modelo - MCF54418 (TWR-MCF5441x board)
-		- Kirin3 - MCF52259 (M52259EVB, M52259DEMO and TWR-MCF52259 boards)
-		- Fado - MPC5668G (MPC5668GKIT board).
-		- Kinetis MK70FN1M (TWR-K70F120M board)
-		- Kinetis MK60FN1M (TWR-K60F120M board)
+	- Older Platforms (not supported):
+		- ColdFire: MCF51CN128, MCF5282, MCF52235, MCF54418, MCF52259
+		- PowerPC: MPC5668G, MPC5566, MPC564xBC, MPC5744P, S32R274.
+		- Kinetis: MK70FN1M, MK60FN1M.
  
 - Supported Compilers:
 	- IAR: Embedded Workbench for ARM, version 7.6
@@ -101,6 +96,7 @@ preferred way to configure stack features). @n
 	- @b Multicast @b DNS @b (mDNS) "Bonjour" Server/Responder.
 	- @b LLMNR Server/Responder.
 	- @b PING service.
+	- @b SNTP client.	
 	- @b TFTP server and client. Both Read and Write requests are supported.
 	- @b TLS using mbedTLS library.
 	- ROM File System.
@@ -132,6 +128,7 @@ preferred way to configure stack features). @n
 	- RFC 2236 - IGMPv2.
 	- RFC 2460 - IPv6.
 	- RFC 3927 - Dynamic Configuration of IPv4 Link-Local.
+	- RFC 4330 - Simple Network Time Protocol (SNTP) Version 4.
 	- RFC 4861 - Neighbor Discovery for IPv6.
 	- RFC 4862 - IPv6 Stateless Address Autoconfiguration.
 	- RFC 4443 - ICMPv6.
@@ -161,12 +158,13 @@ fnet                        - FNET root directory.
 |    |    |-- fs                  - File System driver.
 |    |    |-- http                - HTTP Server service.
 |    |    |-- link                - Link-Detection service.
-|    |    |-- llmnr               - LLMNR Server/Responder.
-|    |    |-- mdns                - mDNS Server/Responder.
+|    |    |-- llmnr               - LLMNR server/responder.
+|    |    |-- mdns                - mDNS server/responder.
 |    |    |-- ping                - PING service.
 |    |    |-- poll                - Polling Mechanism library.
 |    |    |-- serial              - Serial Input/Output driver.
 |    |    |-- shell               - Command Shell service.
+|    |    |-- sntp                - SNTP client.
 |    |    |-- telnet              - TELNET server service.
 |    |    |-- tftp                - TFTP server and client services.
 |    |    |-- tls                 - TLS library.
@@ -200,7 +198,7 @@ fnet                        - FNET root directory.
 |                                   but in addition it includes the mbedTLS library.
 |-- fnet_tools                - FNET tools.
 |-- third_party               - Optional, third-party libraries.
-|    |-- mbedtls-2.4.0          - mbedTLS library, used by FNET TLS.
+|    |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
               
 @endverbatim
 */
@@ -595,20 +593,63 @@ SHELL>
 @n
 @n
 @image html fnet_telnet_session.jpg "Telnet session"
-- If you need to get know an IP address of the domain/host name (like www.google.com or others), you can use DNS client/resolver, by typing the command @c dns @c \<host_name\> into your command shell window. @n
-For example, if you want to get know the IPv4 address of www.google.com, enter @c dns @c www.google.com in your terminal program window:
+- If you need to get know an IP address of the domain/host name (like www.google.com or others), you may use DNS client/resolver, by typing the command @c dns @c \<host_name\> @c 4|6 into the command shell window. @n
+For example, if you want to get know the IPv4 address of www.google.com, enter @c dns @c www.google.com @c 4 in your terminal program window:
 @verbatim
-SHELL> dns www.google.com
+SHELL> dns www.google.com 4
 ************************************************
  Resolving        : www.google.com
- DNS Server       : 10.171.88.254
+ DNS Server       : 192.168.0.1
 Press [Ctr+C] to cancel.
 ************************************************
- Resolved address : 209.85.148.106
-SHELL>
+ Resolved address : 216.58.208.100       TTL=1241513984
+@endverbatim
+For example, if you want to get know the IPv6 address of www.google.com, enter @c dns @c www.google.com @c 6 in your terminal program window:
+@verbatim
+SHELL> dns www.google.com 6
+************************************************
+ Resolving        : www.google.com
+ DNS Server       : 192.168.0.1
+Press [Ctr+C] to cancel.
+************************************************
+ Resolved address : 2a00:1450:4017:802::2004     TTL=167772160
 @endverbatim
 @note
-Be sure that the @c dns parameter is set to correct IPv4 address of the DNS server on your network. It can be set manually by the @c set command or can be obtained automatically by the DHCP IPv4 client service. 
+Be sure that the @c dns parameter is set to correct IP address of the DNS server on your network. It can be set manually by the @c set command or can be obtained automatically by the DHCP IPv4 client service. 
+
+- If you need to get know current date and time, you may use SNTP client, by typing the command @c sntp @c \<server ip\> @c 4|6 into the command shell window. @n
+For example, you may use public pool of NTP servers addressed by "pool.ntp.org". Use the "dns" command to resolve its IP addresses.
+@verbatim
+SHELL> dns pool.ntp.org 4
+************************************************
+ Resolving        : pool.ntp.org
+ DNS Server       : 192.168.0.1
+Press [Ctr+C] to cancel.
+************************************************
+ Resolved address : 52.209.118.149       TTL=1627389952
+ Resolved address : 89.163.241.149       TTL=1627389952
+ Resolved address : 213.251.53.187       TTL=1627389952
+ Resolved address : 108.59.2.24  TTL=1627389952
+ Resolved address : 207.171.17.42        TTL=4100195584
+ Resolved address : 212.25.19.23         TTL=1427308544
+ Resolved address : 174.127.124.192      TTL=1427308544
+ Resolved address : 193.243.171.138      TTL=1427308544
+ Resolved address : 89.36.18.22  TTL=1427308544
+ Resolved address : 199.249.224.53       TTL=1427308544
+ Resolved address : 85.214.25.217        TTL=1427308544
+ Resolved address : 178.63.120.205       TTL=1427308544
+ Resolved address : 199.188.48.59        TTL=1427308544
+SHELL> sntp 89.163.241.149
+************************************************
+ SNTP Resolving
+ SNTP Server      : 89.163.241.149
+Press [Ctr+C] to cancel.
+************************************************
+ UTC: 2017-6-8 8:38:14.886
+@endverbatim
+@note
+- If one SNTP server is failed, try another one from the resolved address list.
+- If you do not have access to public NTP servers, for testing you may use a local SNTP server provided by the http://tftpd32.jounin.net/ application.
 
 */
 
@@ -1701,12 +1742,17 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.9.0
+	- Added SNTPv4 (Simple Network Time Protocol) client.
+	- Fix possible buffer overflow in the DNS client/resolver.
+	- Added S32R274 platform, thanks to Andrian Onea.
+	
 - Version 3.8.2
-	-Added RFC6763 Service Type Enumeration to the mDNS server, enabled by FNET_CFG_MDNS_SERVICE_TYPE_ENUMERATION.
-	-Simplified user API for adding of mDNS TXT record keys.
-	-Fixed possible infinite loop caused by a malformed mDNS packet.
-	-Fixed HTTP server release issue when there are open CGI sessions.
-	-Fixed minor issues detected by Coverity tool.
+	- Added RFC6763 Service Type Enumeration to the mDNS server, enabled by FNET_CFG_MDNS_SERVICE_TYPE_ENUMERATION.
+	- Simplified user API for adding of mDNS TXT record keys.
+	- Fixed possible infinite loop caused by a malformed mDNS packet.
+	- Fixed HTTP server release issue when there are open CGI sessions.
+	- Fixed minor issues detected by Coverity tool.
 
 - Version 3.8.1:
 	- Fixed MCF compilation issues. Thanks to Frank Lombardo.

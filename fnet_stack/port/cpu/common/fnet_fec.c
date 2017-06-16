@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -39,6 +39,16 @@
     #include "stack/fnet_tcp.h"
 #endif
 
+/******************************************************************************
+ * FEC module RX interrupt support:
+ *               - 1 = is enabled (Default value).
+ *               - 0 = is disabled. Only for debug needs. 
+ *                     fnet_fec_poll() should be called periodically.
+ ******************************************************************************/
+#ifndef FNET_CFG_FEC_INTERRUPT_ENABLE
+    #define FNET_CFG_FEC_INTERRUPT_ENABLE   1
+#endif
+
 #define FNET_FEC_ALIGN_DIV(div, x)     ((fnet_uint32_t)((fnet_uint8_t *)(x) + ((div)-1U)) & (~((div)-1U)))
 
 /************************************************************************
@@ -54,8 +64,8 @@ static fnet_bool_t fnet_fec_is_connected(fnet_netif_t *netif);
 static fnet_return_t fnet_fec_get_statistics(fnet_netif_t *netif, struct fnet_netif_statistics *statistics);
 
 /* FEC rx frame interrup handler. */
-static void fnet_fec_isr_rx_handler_top(fnet_uint32_t cookie);
-static void fnet_fec_isr_rx_handler_bottom(fnet_uint32_t cookie);
+static void fnet_fec_isr_rx_handler_top(void *cookie);
+static void fnet_fec_isr_rx_handler_bottom(void *cookie);
 
 static void fnet_fec_get_mac_addr(fnet_fec_if_t *ethif, fnet_mac_addr_t *mac_addr);
 
@@ -74,23 +84,33 @@ void fnet_fec_debug_mii_print_regs(fnet_netif_t *netif) ;
 
 
 /* Ethernet specific control data structures.*/
-#if FNET_CFG_CPU_ETH0
+#if FNET_CFG_CPU_ETH0 /*eth0*/
 
     #if (FNET_CFG_COMP_UV || FNET_CFG_COMP_GNUC || FNET_CFG_COMP_GHS) && FNET_CFG_CPU_CACHE && !FNET_CFG_CPU_CACHE_INVALIDATE
         __attribute__((section(".uncacheable")))
     #endif
 
-    fnet_fec_if_t fnet_fec0_if;  /*eth0*/
+    fnet_fec_if_t fnet_fec0_if  
+
+    #if FNET_CFG_COMP_IAR  && FNET_CFG_CPU_CACHE && !FNET_CFG_CPU_CACHE_INVALIDATE
+        @".uncacheable"
+    #endif
+    ;
 #endif
 
 
-#if FNET_CFG_CPU_ETH1
+#if FNET_CFG_CPU_ETH1 /*eth1*/
 
     #if (FNET_CFG_COMP_UV || FNET_CFG_COMP_GNUC || FNET_CFG_COMP_GHS) && FNET_CFG_CPU_CACHE && !FNET_CFG_CPU_CACHE_INVALIDATE
         __attribute__((section(".uncacheable")))
     #endif
 
-    fnet_fec_if_t fnet_fec1_if;  /*eth1*/
+    fnet_fec_if_t fnet_fec1_if
+  
+    #if FNET_CFG_COMP_IAR  && FNET_CFG_CPU_CACHE && !FNET_CFG_CPU_CACHE_INVALIDATE
+        @".uncacheable"
+    #endif
+    ;
 #endif
 
 /*****************************************************************************
@@ -125,11 +145,6 @@ const fnet_netif_api_t fnet_fec_api =
     , fnet_eth_output_ip6           /* IPv6 Transmit function.*/
 #endif
 };
-
-/* For debug needs.*/
-#ifndef FNET_FEC_INTERRUPT_ENABLE
-    #define FNET_FEC_INTERRUPT_ENABLE   1
-#endif
 
 /************************************************************************
 * DESCRIPTION: Ethernet module initialization.
@@ -216,7 +231,7 @@ static fnet_return_t fnet_fec_init(fnet_netif_t *netif)
     /*======== END of Ethernet buffers initialisation ========*/
 
     /* Install RX Frame interrupt handler.*/
-    result = fnet_isr_vector_init(ethif->vector_number, fnet_fec_isr_rx_handler_top, fnet_fec_isr_rx_handler_bottom, FNET_CFG_CPU_ETH_VECTOR_PRIORITY, (fnet_uint32_t)netif);
+    result = fnet_isr_vector_init(ethif->vector_number, fnet_fec_isr_rx_handler_top, fnet_fec_isr_rx_handler_bottom, FNET_CFG_CPU_ETH_VECTOR_PRIORITY, netif);
 
     if( result == FNET_OK)
     {
@@ -252,6 +267,9 @@ static fnet_return_t fnet_fec_init(fnet_netif_t *netif)
                           | FNET_FEC_RCR_RMII_10T
 #endif
 #endif /* FNET_CFG_CPU_ETH_RMII */
+#if FNET_CFG_CPU_S32R274
+                          | FNET_FEC_RCR_RGMII_EN /* TBD: make it configurable */
+#endif 
 #if FNET_CFG_CPU_ETH_PROMISCUOUS
                           | FNET_FEC_RCR_PROM /* Enable promiscuous mode.*/
 #endif
@@ -328,18 +346,26 @@ static fnet_return_t fnet_fec_init(fnet_netif_t *netif)
 #if FNET_CFG_CPU_MPC564xBC || FNET_CFG_CPU_MPC5668G || FNET_CFG_CPU_MPC5566 || FNET_MCF /* Older platforms.*/
         /* MDC formula defined in the corresponding MCU Reference Manual looks like : (SYS_CLK / PREDIV) x (1 / MII_SPEED) = MDC */
         ethif->reg_phy->MSCR = FNET_FEC_MSCR_MII_SPEED((FNET_FEC_CLOCK_KHZ / FNET_FEC_MII_CLOCK_KHZ) + (fnet_uint32_t)(((FNET_FEC_CLOCK_KHZ % FNET_FEC_MII_CLOCK_KHZ) != 0U) ? 1U : 0U));
-#else  /* FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_MCF54418 || FNET_CFG_CPU_MK60N512 || FNET_CFG_CPU_MK60DN512 || FNET_CFG_CPU_MK64FN1 || FNET_CFG_CPU_MK66FN2 || FNET_CFG_CPU_MK70FN1 || FNET_CFG_CPU_MK60FN1 */
+    #elif FNET_CFG_CPU_S32R274
+        //ethif->reg_phy->MSCR = FNET_FEC_MSCR_MII_SPEED((FNET_FEC_CLOCK_KHZ/FNET_FEC_MII_CLOCK_KHZ) - 1U) & ~1U;
+        ethif->reg_phy->MSCR = 0x16; //TBD make it result of calculation
+	#else  /* FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_MCF54418 || FNET_CFG_CPU_MK60N512 || FNET_CFG_CPU_MK60DN512 || FNET_CFG_CPU_MK64FN1 || FNET_CFG_CPU_MK66FN2 || FNET_CFG_CPU_MK70FN1 || FNET_CFG_CPU_MK60FN1 */
         /* MDC formula defined in the corresponding MCU Reference Manual looks like : (SYS_CLK / PREDIV) x (1 / ((MII_SPEED + 1)) = MDC */
         ethif->reg_phy->MSCR = FNET_FEC_MSCR_MII_SPEED((FNET_FEC_CLOCK_KHZ / FNET_FEC_MII_CLOCK_KHZ) - (fnet_uint32_t)(((FNET_FEC_CLOCK_KHZ % FNET_FEC_MII_CLOCK_KHZ) != 0U) ? 0U : 1U));
 #endif
 
         /* Enable interrupts (Receive frame interrupt).*/
-#if FNET_FEC_INTERRUPT_ENABLE
+#if FNET_CFG_FEC_INTERRUPT_ENABLE
         ethif->reg->EIMR = FNET_FEC_EIMR_RXF;
 #endif
 
         /* Enable FEC */
+    #if FNET_CFG_CPU_S32R274
+        ethif->reg->ECR = FNET_FEC_ECR_ETHER_EN | FNET_FEC_ECR_SPEED;
+    #else
         ethif->reg->ECR = FNET_FEC_ECR_ETHER_EN;
+    #endif
+       
 
 #if FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER
         fnet_fec_phy_discover_addr(ethif, ethif->phy_addr);
@@ -917,7 +943,7 @@ static fnet_return_t fnet_fec_get_statistics(fnet_netif_t *netif, struct fnet_ne
 * DESCRIPTION: Top Ethernet receive frame interrupt handler.
 *              Clear event flag
 *************************************************************************/
-static void fnet_fec_isr_rx_handler_top (fnet_uint32_t cookie)
+static void fnet_fec_isr_rx_handler_top (void *cookie)
 {
     fnet_fec_if_t *ethif = (fnet_fec_if_t *)((fnet_eth_if_t *)(((fnet_netif_t *)cookie)->netif_prv))->eth_prv;
 
@@ -929,7 +955,7 @@ static void fnet_fec_isr_rx_handler_top (fnet_uint32_t cookie)
 * DESCRIPTION: This function implements the Ethernet receive
 *              frame interrupt handler.
 *************************************************************************/
-static void fnet_fec_isr_rx_handler_bottom (fnet_uint32_t cookie)
+static void fnet_fec_isr_rx_handler_bottom (void *cookie)
 {
     fnet_netif_t *netif = (fnet_netif_t *)cookie;
 
@@ -1211,6 +1237,21 @@ void fnet_fec_multicast_leave(fnet_netif_t *netif, fnet_mac_addr_t multicast_add
 
 #endif /*FNET_CFG_MULTICAST*/
 
+/************************************************************************
+* DESCRIPTION: This function polls fec driver.
+* I has sence only if 
+* !!!! Used only for debug needs. !!!!!
+*************************************************************************/
+void fnet_fec_poll(fnet_netif_desc_t netif_desc)
+{
+    fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
+
+    fnet_isr_lock();
+
+    fnet_fec_input(netif);
+
+    fnet_isr_unlock();
+}
 
 /************************************************************************
 * DESCRIPTION: Prints all MII register.
@@ -1268,6 +1309,8 @@ void fnet_fec_debug_mii_print_regs(fnet_netif_t *netif)
         fnet_printf("\tCDCTRL1 = 0x%04X\n", reg_value );
         fnet_fec_mii_read(ethif, FNET_FEC_MII_REG_EDCR, &reg_value);
         fnet_printf("\tEDCR = 0x%04X\n", reg_value );
+/* TODO printing of the RGMII PHY registers */
+#elif FNET_CFG_CPU_S32R274
 #else
         fnet_fec_mii_read(ethif, FNET_FEC_MII_REG_ICR, &reg_value);
         fnet_printf("\tICR = 0x%04X\n", reg_value );

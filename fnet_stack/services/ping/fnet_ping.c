@@ -133,14 +133,14 @@ fnet_return_t fnet_ping_request( struct fnet_ping_params *params )
 #if FNET_CFG_IP4
     if(fnet_ping_if.family == AF_INET)
     {
-        fnet_socket_setopt(fnet_ping_if.socket_foreign, IPPROTO_IP, IP_TTL, (fnet_uint8_t *) &params->ttl, sizeof(params->ttl));
+        fnet_socket_setopt(fnet_ping_if.socket_foreign, IPPROTO_IP, IP_TTL, &params->ttl, sizeof(params->ttl));
     }
 #endif
 
 #if FNET_CFG_IP6
     if(fnet_ping_if.family == AF_INET6)
     {
-        fnet_socket_setopt(fnet_ping_if.socket_foreign, IPPROTO_IPV6, IPV6_UNICAST_HOPS, (fnet_uint8_t *) &params->ttl, sizeof(params->ttl));
+        fnet_socket_setopt(fnet_ping_if.socket_foreign, IPPROTO_IPV6, IPV6_UNICAST_HOPS, &params->ttl, sizeof(params->ttl));
     }
 #endif
 
@@ -222,7 +222,7 @@ static void fnet_ping_poll(void *fnet_ping_if_p)
                 {}
 
             /* Send request.*/
-            fnet_socket_sendto(fnet_ping_if.socket_foreign, (fnet_uint8_t *)(&fnet_ping_if.buffer[0]), (sizeof(*hdr) + ping_if->packet_size), 0u,  &ping_if->target_addr, sizeof(ping_if->target_addr));
+            fnet_socket_sendto(fnet_ping_if.socket_foreign, &fnet_ping_if.buffer[0], (sizeof(*hdr) + ping_if->packet_size), 0u,  &ping_if->target_addr, sizeof(ping_if->target_addr));
             ping_if->packet_count--;
 
             fnet_ping_if.send_time = fnet_timer_get_ticks();
@@ -233,7 +233,7 @@ static void fnet_ping_poll(void *fnet_ping_if_p)
         case  FNET_PING_STATE_WAITING_REPLY:
             /* Receive data */
 
-            received = fnet_socket_recvfrom(ping_if->socket_foreign, (fnet_uint8_t *)(&ping_if->buffer[0]), FNET_PING_BUFFER_SIZE, 0u, &addr, &addr_len );
+            received = fnet_socket_recvfrom(ping_if->socket_foreign, &ping_if->buffer[0], FNET_PING_BUFFER_SIZE, 0u, &addr, &addr_len );
 
             if(received > 0 )
             {
@@ -298,7 +298,7 @@ static void fnet_ping_poll(void *fnet_ping_if_p)
 
                     /* Get socket error.*/
                     option_len = sizeof(sock_err);
-                    fnet_socket_getopt(ping_if->socket_foreign, SOL_SOCKET, SO_ERROR, (fnet_uint8_t *)&sock_err, &option_len);
+                    fnet_socket_getopt(ping_if->socket_foreign, SOL_SOCKET, SO_ERROR, &sock_err, &option_len);
 
                     ping_if->callback(sock_err, ping_if->packet_count, FNET_NULL, ping_if->callback_cookie);
                 }

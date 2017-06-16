@@ -1042,6 +1042,36 @@
       <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/shell/fnet_shell_config.h</locationURI>
     </link>
     <link>
+      <name>fnet_stack/services/sntp</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/sntp/fnet_sntp.c</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/sntp/fnet_sntp.c</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/sntp</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/sntp/fnet_sntp.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/sntp/fnet_sntp.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/sntp</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/services/sntp/fnet_sntp_config.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/services/sntp/fnet_sntp_config.h</locationURI>
+    </link>
+    <link>
       <name>fnet_stack/services/telnet</name>
       <type>2</type>
       <locationURI>virtual:/virtual</locationURI>
@@ -2110,6 +2140,26 @@
       <name>fnet_application/fapp_setget.h</name>
       <type>1</type>
       <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_setget.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_application</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_application/fapp_sntp.c</name>
+      <type>1</type>
+      <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_sntp.c</locationURI>
+    </link>
+    <link>
+      <name>fnet_application</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_application/fapp_sntp.h</name>
+      <type>1</type>
+      <locationURI>PARENT-4-PROJECT_LOC/common/fnet_application/fapp_sntp.h</locationURI>
     </link>
     <link>
       <name>fnet_application</name>

@@ -40,13 +40,13 @@
     #endif
 #endif
 
-static void fnet_cpu_timer_handler_top(fnet_uint32_t cookie);
+static void fnet_cpu_timer_handler_top(void *cookie);
 
 /************************************************************************
 * DESCRIPTION: Top interrupt handler. Increment fnet_current_time
 *              and interrupt flag.
 *************************************************************************/
-static void fnet_cpu_timer_handler_top(fnet_uint32_t cookie )
+static void fnet_cpu_timer_handler_top(void *cookie)
 {
     /* Clear the PIT timer flag. */
     FNET_MK_PIT_TFLG(FNET_CFG_CPU_TIMER_NUMBER) |= FNET_MK_PIT_TFLG_TIF_MASK;

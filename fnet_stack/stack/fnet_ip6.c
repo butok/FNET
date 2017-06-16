@@ -78,7 +78,7 @@ static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_fragment
 static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_routing_header(fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb);
 static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_options (fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb);
 static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_no_next_header (fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb);
-static void fnet_ip6_input_low(fnet_uint32_t cookie );
+static void fnet_ip6_input_low(void *cookie);
 static fnet_uint32_t fnet_ip6_policy_label( const fnet_ip6_addr_t *addr );
 
 #if FNET_CFG_IP6_FRAGMENTATION
@@ -509,7 +509,7 @@ void fnet_ip6_input( fnet_netif_t *netif, fnet_netbuf_t *nb )
 /************************************************************************
 * DESCRIPTION: This function performs handling of incoming IPv6 datagrams.
 *************************************************************************/
-static void fnet_ip6_input_low(fnet_uint32_t cookie )
+static void fnet_ip6_input_low(void *cookie)
 {
     fnet_ip6_header_t   *hdr;
     fnet_netif_t        *netif;

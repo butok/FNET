@@ -218,7 +218,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
     const fnet_char_t   *p;
     fnet_char_t         c;
     fnet_char_t         vstr[33];
-    fnet_char_t         *vstrp;
+    fnet_char_t         *vstrp = FNET_NULL;
     fnet_size_t         vlen = 0u;
     fnet_bool_t         done;
     fnet_size_t         count = 0u;
@@ -533,6 +533,8 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
             case 'u':
                 uval = (fnet_uint32_t)va_arg(arg, fnet_uint32_t);
                 vlen = fnet_serial_printk_mknumstr(vstr, &uval, FNET_FALSE, 10u);
+				
+				vstrp = &vstr[vlen];
 
                 cont_u = FNET_TRUE;
                 cont_xd = FNET_TRUE;

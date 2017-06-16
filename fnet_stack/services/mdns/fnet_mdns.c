@@ -400,13 +400,13 @@ fnet_mdns_desc_t fnet_mdns_init( struct fnet_mdns_params *params )
         mreq.imr_interface = scope_id;
 
         /* Join multicast group. */
-        if(fnet_socket_setopt(mdns_if->socket_listen, IPPROTO_IP, IP_ADD_MEMBERSHIP, (fnet_char_t *)&mreq, sizeof(mreq)) == FNET_ERR)
+        if(fnet_socket_setopt(mdns_if->socket_listen, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) == FNET_ERR)
         {
             FNET_DEBUG_MDNS(FNET_MDNS_ERR_JOIN_MULTICAST);
             goto ERROR_2;
         }
         /* Set IPv4 TTL. */
-        fnet_socket_setopt(mdns_if->socket_listen, IPPROTO_IP, IP_MULTICAST_TTL, (fnet_char_t *) &option, sizeof(option));
+        fnet_socket_setopt(mdns_if->socket_listen, IPPROTO_IP, IP_MULTICAST_TTL, &option, sizeof(option));
     }
 #endif
 #if FNET_CFG_IP6
@@ -418,14 +418,14 @@ fnet_mdns_desc_t fnet_mdns_init( struct fnet_mdns_params *params )
         mreq6.ipv6imr_interface = scope_id;
 
         /* Join multicast group. */
-        if(fnet_socket_setopt(mdns_if->socket_listen, IPPROTO_IPV6, IPV6_JOIN_GROUP, (fnet_char_t *)&mreq6, sizeof(mreq6)) == FNET_ERR)
+        if(fnet_socket_setopt(mdns_if->socket_listen, IPPROTO_IPV6, IPV6_JOIN_GROUP, &mreq6, sizeof(mreq6)) == FNET_ERR)
         {
             FNET_DEBUG_MDNS(FNET_MDNS_ERR_JOIN_MULTICAST);
             goto ERROR_2;
         }
 
         /* Set IPv6 Hop Limit. */
-        fnet_socket_setopt(mdns_if->socket_listen, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, (fnet_char_t *) &option, sizeof(option));
+        fnet_socket_setopt(mdns_if->socket_listen, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, &option, sizeof(option));
     }
 #endif
 
@@ -1625,8 +1625,10 @@ static const fnet_uint8_t *fnet_mdns_process_response(fnet_mdns_if_t *mdns_if, c
             #endif
                 )   /* service instance name */
             {
-                FNET_DEBUG_MDNS("MDNS: RX response for - %s", rr_name);
-
+                #if FNET_CFG_DEBUG_MDNS && FNET_CFG_DEBUG
+                    fnet_mdns_print_qe_name("MDNS: RX response for:", rr_name);
+                #endif
+                
                 /* RFC: In the case of a host
                 probing using query type "ANY" as recommended above, any answer
                 containing a record with that name, of any type, MUST be considered a

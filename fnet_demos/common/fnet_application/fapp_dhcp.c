@@ -53,7 +53,7 @@ static void fapp_dhcp_callback_updated(fnet_dhcp_desc_t dhcp_desc, fnet_netif_de
 static void fapp_dhcp_callback_discover(fnet_dhcp_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
 
 /************************************************************************
-* DESCRIPTION:
+* DESCRIPTION: Ctr+C termination handler.
 ************************************************************************/
 static void fapp_dhcp_on_ctrlc(fnet_shell_desc_t desc)
 {

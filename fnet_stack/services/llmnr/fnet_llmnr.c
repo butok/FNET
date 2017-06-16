@@ -330,7 +330,7 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
         mreq.imr_interface = scope_id;
 
         /* Join multicast group. */
-        if(fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IP, IP_ADD_MEMBERSHIP, (fnet_char_t *)&mreq, sizeof(mreq)) == FNET_ERR)
+        if(fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) == FNET_ERR)
         {
             FNET_DEBUG_LLMNR(FNET_LLMNR_ERR_JOIN_MULTICAST);
             goto ERROR_2;
@@ -340,7 +340,7 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
          * and the TTL field in the IPV4 header MAY be set to any value.
          * However, it is RECOMMENDED that the value 255 be used for
          * compatibility with early implementations of [RFC3927]. */
-        fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IP, IP_MULTICAST_TTL, (fnet_char_t *) &option, sizeof(option));
+        fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IP, IP_MULTICAST_TTL, &option, sizeof(option));
     }
 #endif
 #if FNET_CFG_IP6
@@ -352,7 +352,7 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
         mreq6.ipv6imr_interface = scope_id;
 
         /* Join multicast group. */
-        if(fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IPV6, IPV6_JOIN_GROUP, (fnet_char_t *)&mreq6, sizeof(mreq6)) == FNET_ERR)
+        if(fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IPV6, IPV6_JOIN_GROUP, &mreq6, sizeof(mreq6)) == FNET_ERR)
         {
             FNET_DEBUG_LLMNR(FNET_LLMNR_ERR_JOIN_MULTICAST);
             goto ERROR_2;
@@ -362,7 +362,7 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
          * and the TTL field in the IPV4 header MAY be set to any value.
          * However, it is RECOMMENDED that the value 255 be used for
          * compatibility with early implementations of [RFC3927]. */
-        fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, (fnet_char_t *) &option, sizeof(option));
+        fnet_socket_setopt(llmnr_if->socket_listen, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, &option, sizeof(option));
     }
 #endif
 

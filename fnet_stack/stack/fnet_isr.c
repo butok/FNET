@@ -36,24 +36,24 @@ typedef struct fnet_isr_entry
 {
     struct fnet_isr_entry *next;               /* Next isr in chain */
     fnet_uint32_t vector_number;               /* Vector number */
-    void (*handler_top)(fnet_uint32_t cookie); /* "Critical handler" - it will
+    void (*handler_top)(void *cookie); /* "Critical handler" - it will
                                                 * be called every time on interrupt event,
                                                 * (e.g. user can put here clear flags etc.)*/
 
-    void (*handler_bottom)(fnet_uint32_t cookie); /* "Bottom half handler" - it will be called after
-                                                    *  isr_handler_top() in case NO SW lock
-                                                    *  or on SW unlock.*/
-    fnet_bool_t pended;                           /* indicates interrupt pending */
-    fnet_uint32_t cookie;                         /* Handler Cookie. */
+    void (*handler_bottom)(void *cookie); /* "Bottom half handler" - it will be called after
+                                                   *  isr_handler_top() in case NO SW lock
+                                                   *  or on SW unlock.*/
+    fnet_bool_t     pended;                      /* indicates interrupt pending */
+    void            *cookie;                     /* Handler Cookie. */
 } fnet_isr_entry_t;
 
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
 static fnet_return_t fnet_isr_register(fnet_uint32_t vector_number,
-                                       void (*handler_top)(fnet_uint32_t cookie),
-                                       void (*handler_bottom)(fnet_uint32_t cookie),
-                                       fnet_uint32_t cookie);
+                                       void (*handler_top)(void *cookie),
+                                       void (*handler_bottom)(void *cookie),
+                                       void *cookie);
 
 /************************************************************************
 *     Variables
@@ -114,10 +114,10 @@ void fnet_isr_handler(fnet_uint32_t vector_number)
 *              handler 'fnet_cpu_isr' at the real vector table
 *************************************************************************/
 fnet_return_t fnet_isr_vector_init(fnet_uint32_t vector_number,
-                                   void (*handler_top)(fnet_uint32_t cookie),
-                                   void (*handler_bottom)(fnet_uint32_t cookie),
+                                   void (*handler_top)(void *cookie),
+                                   void (*handler_bottom)(void *cookie),
                                    fnet_uint32_t priority,
-                                   fnet_uint32_t cookie)
+                                   void *cookie)
 {
     fnet_return_t result;
 
@@ -136,7 +136,7 @@ fnet_return_t fnet_isr_vector_init(fnet_uint32_t vector_number,
 /************************************************************************
 * DESCRIPTION: Register the event handler.
 *************************************************************************/
-fnet_event_desc_t fnet_event_init(void (*event_handler)(fnet_uint32_t cookie), fnet_uint32_t cookie)
+fnet_event_desc_t fnet_event_init(void (*event_handler)(void *cookie), void *cookie)
 {
     fnet_uint32_t vector_number = (fnet_uint32_t)(fnet_event_desc_last++);
 
@@ -154,20 +154,20 @@ fnet_event_desc_t fnet_event_init(void (*event_handler)(fnet_uint32_t cookie), f
 * DESCRIPTION: Register 'handler' at the isr table.
 *************************************************************************/
 static fnet_return_t fnet_isr_register(fnet_uint32_t vector_number,
-                                       void (*handler_top)(fnet_uint32_t handler_top_cookie),
-                                       void (*handler_bottom)(fnet_uint32_t handler_bottom_cookie),
-                                       fnet_uint32_t cookie)
+                                       void (*handler_top)(void *handler_top_cookie),
+                                       void (*handler_bottom)(void *handler_bottom_cookie),
+                                       void *cookie)
 {
-    fnet_return_t result;
-    fnet_isr_entry_t *isr_temp;
+    fnet_return_t       result;
+    fnet_isr_entry_t    *isr_temp;
 
     isr_temp = (fnet_isr_entry_t *)fnet_malloc_zero(sizeof(fnet_isr_entry_t));
 
     if (isr_temp)
     {
         isr_temp->vector_number = vector_number;
-        isr_temp->handler_top = (void (*)(fnet_uint32_t handler_top_cookie))handler_top;
-        isr_temp->handler_bottom = (void (*)(fnet_uint32_t handler_bottom_cookie))handler_bottom;
+        isr_temp->handler_top = handler_top;
+        isr_temp->handler_bottom = handler_bottom;
         isr_temp->next = fnet_isr_table;
         isr_temp->cookie = cookie;
         fnet_isr_table = isr_temp;

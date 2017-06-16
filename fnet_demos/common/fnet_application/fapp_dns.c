@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -38,15 +38,15 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, fnet_uint32_t cookie);
+static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, void *cookie);
 static void fapp_dns_on_ctrlc(fnet_shell_desc_t desc);
 
 /************************************************************************
-* DESCRIPTION: Event handler callback on new IP from DHCP client.
+* DESCRIPTION: Event handler callback on resolved IP address.
 ************************************************************************/
-static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, fnet_uint32_t cookie)
+static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, void *cookie)
 {
-    fnet_char_t                ip_str[FNET_IP_ADDR_STR_SIZE_MAX];
+    fnet_char_t         ip_str[FNET_IP_ADDR_STR_SIZE_MAX];
     fnet_shell_desc_t   desc = (fnet_shell_desc_t) cookie;
     fnet_index_t        i;
 
@@ -58,7 +58,7 @@ static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *add
         {
             fnet_shell_printf(desc, FAPP_SHELL_INFO_FORMAT_S, "Resolved address",
                               fnet_inet_ntop(addr_list->resolved_addr.sa_family, addr_list->resolved_addr.sa_data, ip_str, sizeof(ip_str)));
-            fnet_shell_println(desc, "\t TTL=%d", addr_list->resolved_addr_ttl);
+            fnet_shell_println(desc, "\t TTL=%u", addr_list->resolved_addr_ttl);
 
             addr_list++;
         }
@@ -70,7 +70,7 @@ static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *add
 }
 
 /************************************************************************
-* DESCRIPTION:
+* DESCRIPTION: Ctr+C termination handler.
 ************************************************************************/
 static void fapp_dns_on_ctrlc(fnet_shell_desc_t desc)
 {
@@ -84,13 +84,10 @@ static void fapp_dns_on_ctrlc(fnet_shell_desc_t desc)
 ************************************************************************/
 void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
-
     struct fnet_dns_params      dns_params;
     fnet_netif_desc_t           netif = fnet_netif_get_default();
     fnet_char_t                 ip_str[FNET_IP_ADDR_STR_SIZE];
     fnet_index_t                error_param;
-
-    FNET_COMP_UNUSED_ARG(argc);
 
     /* Set DNS client/resolver parameters.*/
     fnet_memset_zero(&dns_params, sizeof(struct fnet_dns_params));
@@ -109,7 +106,6 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
         error_param = 2u;
         goto ERROR_PARAMETER;
     }
-
 
     /**** Define DNS server address.****/
     if(argc == 4u)
@@ -145,10 +141,10 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
 
     dns_params.host_name = argv[1];                     /* Host name to resolve.*/
     dns_params.callback = fapp_dns_callback_resolved;   /* Callback function.*/
-    dns_params.cookie = (fnet_uint32_t)desc;            /* Application-specific parameter
+    dns_params.cookie = desc;                           /* Application-specific parameter
                                                         which will be passed to fapp_dns_callback_resolved().*/
 
-    /* Run DNS cliebt/resolver. */
+    /* Run DNS client/resolver. */
     if(fnet_dns_init(&dns_params) != FNET_ERR)
     {
         fnet_shell_println(desc, FAPP_DELIMITER_STR);

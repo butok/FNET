@@ -2314,6 +2314,18 @@
         </file>
       </group>
       <group>
+        <name>sntp</name>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/sntp/fnet_sntp.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/sntp/fnet_sntp.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/services/sntp/fnet_sntp_config.h</name>
+        </file>
+      </group>
+      <group>
         <name>telnet</name>
         <file>
           <name>$PROJ_DIR$/../../../../../fnet_stack/services/telnet/fnet_telnet.c</name>
@@ -2649,6 +2661,12 @@
     </file>
     <file>
       <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_setget.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_sntp.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_sntp.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_telnet.c</name>

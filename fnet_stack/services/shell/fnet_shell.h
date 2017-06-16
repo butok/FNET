@@ -141,28 +141,19 @@
  ******************************************************************************/
 typedef enum
 {
-    FNET_SHELL_STATE_DISABLED = 0,      /**< @brief The Shell service is not
-                                         * initialized.
-                                         */
-    FNET_SHELL_STATE_INIT,              /**< @brief The Shell service is not
-                                         * initialized.
-                                         */
-    FNET_SHELL_STATE_GET_USER_INPUT,    /**< @brief The Shell service is accepting user commnads.
-                                         */
-    FNET_SHELL_STATE_EXEC_CMD,          /**< @brief The Shell service is executing user commnads.
-                                         */
-    FNET_SHELL_STATE_BLOCKED,           /**< @brief The Shell service is blocked and
-                                         * ignores user commnads.
-                                         */
-    FNET_SHELL_STATE_END_CMD            /**< @brief The Shell service finished command execution.
-                                         */
+    FNET_SHELL_STATE_DISABLED = 0,      /**< @brief The Shell service is not initialized.*/
+    FNET_SHELL_STATE_INIT,              /**< @brief The Shell service is not initialized.*/
+    FNET_SHELL_STATE_GET_USER_INPUT,    /**< @brief The Shell service is accepting user commnads.*/
+    FNET_SHELL_STATE_EXEC_CMD,          /**< @brief The Shell service is executing user commnads.*/
+    FNET_SHELL_STATE_BLOCKED,           /**< @brief The Shell service is blocked and ignores user commnads.*/
+    FNET_SHELL_STATE_END_CMD            /**< @brief The Shell service finished command execution.*/
 } fnet_shell_state_t;
 
 /**************************************************************************/ /*!
  * @brief Shell service descriptor.
  * @see fnet_shell_init()
  ******************************************************************************/
-typedef fnet_int32_t fnet_shell_desc_t;
+typedef void *fnet_shell_desc_t;
 
 /**************************************************************************/ /*!
  * @brief Command callback function prototype.

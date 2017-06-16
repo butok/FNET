@@ -284,7 +284,7 @@ static void fnet_tftp_srv_send_error(struct fnet_tftp_srv_if *tftp_srv_if, fnet_
         tftp_srv_if->packet.packet_error.error_message[0] = 0u;
     }
 
-    fnet_socket_sendto(s, (fnet_uint8_t *)&tftp_srv_if->packet.packet_error, fnet_strlen(error_message) + (2u + 2u + 1u), 0u,
+    fnet_socket_sendto(s, &tftp_srv_if->packet.packet_error, fnet_strlen(error_message) + (2u + 2u + 1u), 0u,
                        dest_addr, sizeof(*dest_addr));
 }
 
@@ -296,7 +296,7 @@ static void fnet_tftp_srv_send_data(struct fnet_tftp_srv_if *tftp_srv_if)
     /* Send data. */
     tftp_srv_if->packet.packet_data.opcode = FNET_HTONS(FNET_TFTP_OPCODE_DATA);
     tftp_srv_if->packet.packet_data.block_number = fnet_htons(tftp_srv_if->block_number_ack);
-    fnet_socket_sendto(tftp_srv_if->socket_transaction, (fnet_uint8_t *)&tftp_srv_if->packet.packet_data, (4u + tftp_srv_if->tx_data_size), 0u,
+    fnet_socket_sendto(tftp_srv_if->socket_transaction, &tftp_srv_if->packet.packet_data, (4u + tftp_srv_if->tx_data_size), 0u,
                        &tftp_srv_if->addr_transaction, sizeof(tftp_srv_if->addr_transaction) );
     /* Reset timeout. */
     tftp_srv_if->last_time = fnet_timer_get_ticks();
@@ -310,7 +310,7 @@ static void fnet_tftp_srv_send_ack(struct fnet_tftp_srv_if *tftp_srv_if)
     /* Send acknowledge. */
     tftp_srv_if->packet.packet_ack.opcode = FNET_HTONS(FNET_TFTP_OPCODE_ACK);
     tftp_srv_if->packet.packet_ack.block_number = fnet_htons(tftp_srv_if->block_number_ack);
-    fnet_socket_sendto(tftp_srv_if->socket_transaction, (fnet_uint8_t *)&tftp_srv_if->packet.packet_ack, sizeof(struct fnet_tftp_packet_ack), 0u,
+    fnet_socket_sendto(tftp_srv_if->socket_transaction, &tftp_srv_if->packet.packet_ack, sizeof(struct fnet_tftp_packet_ack), 0u,
                        &tftp_srv_if->addr_transaction, sizeof(tftp_srv_if->addr_transaction) );
     /* Reset timeout. */
     tftp_srv_if->last_time = fnet_timer_get_ticks();
@@ -367,7 +367,7 @@ static void fnet_tftp_srv_poll( void *fnet_tftp_srv_if_p )
         case FNET_TFTP_SRV_STATE_WAITING_REQUEST:
             addr_len = sizeof(addr);
 
-            received = fnet_socket_recvfrom(tftp_srv_if->socket_listen, (fnet_uint8_t *)&tftp_srv_if->packet.packet_request,
+            received = fnet_socket_recvfrom(tftp_srv_if->socket_listen, &tftp_srv_if->packet.packet_request,
                                             sizeof(struct fnet_tftp_packet_request), 0u,
                                             &addr, &addr_len );
             if(received >= 4)
@@ -509,7 +509,7 @@ static void fnet_tftp_srv_poll( void *fnet_tftp_srv_if_p )
         case  FNET_TFTP_SRV_STATE_HANDLE_REQUEST:
             addr_len = sizeof(addr);
 
-            received = fnet_socket_recvfrom(tftp_srv_if->socket_transaction, (fnet_uint8_t *)&tftp_srv_if->packet.packet_data, sizeof(struct fnet_tftp_packet_data), 0u,
+            received = fnet_socket_recvfrom(tftp_srv_if->socket_transaction, &tftp_srv_if->packet.packet_data, sizeof(struct fnet_tftp_packet_data), 0u,
                                             &addr, &addr_len );
 
             if(received >= 4)

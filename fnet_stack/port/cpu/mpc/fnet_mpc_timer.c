@@ -74,7 +74,7 @@ fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms )
         FNET_MPC_EMIOS_CBDR(FNET_TIMER_NUMBER)  = period_ms * FNET_TIMER_CLKIN_PER_MS;
         FNET_MPC_EMIOS_CCR(FNET_TIMER_NUMBER)   = 0x82020658;
 #else
-#if FNET_CFG_CPU_MPC5744P
+#if FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_S32R274
         /* FRZ = 1 (stopped in Debug mode), MDIS = 0 */
         FNET_MPC_PITRTI_MCR = 0x01;
 #else
@@ -84,6 +84,9 @@ fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms )
 #if FNET_CFG_CPU_MPC5744P
         /* assumes SYS_CLK = 200MHz and MC_CGM_SC_DC0 = 4, then PBRIDGE_CLK is /4 */
         FNET_MPC_PITRTI_LDVAL(FNET_TIMER_NUMBER) = period_ms * (FNET_TIMER_CLKIN_PER_MS / 4);
+#elif FNET_CFG_CPU_S32R274
+      /* assumes SYS_CLK = 120MHz, then PBRIDGE_CLK is /2 */
+      FNET_MPC_PITRTI_LDVAL(FNET_TIMER_NUMBER) = period_ms * (FNET_TIMER_CLKIN_PER_MS/2);   
 #else
         FNET_MPC_PITRTI_LDVAL(FNET_TIMER_NUMBER) = (period_ms * FNET_TIMER_CLKIN_PER_MS) - 1;
 #endif

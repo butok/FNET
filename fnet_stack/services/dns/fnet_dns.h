@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -43,7 +43,7 @@
 * which is set during the DNS-client service initialization.
 * @n
 * The DNS client service is released automatically as soon as the requested host name is
-* fully resolved or an error occurs. Your application code may still continue
+* fully resolved or an error occurs. Your application code may continue
 * to call @ref fnet_poll_service() to handle other services, but this will not have any
 * impact on the DNS client communication until you initialize the next IP address resolving by calling
 * @ref fnet_dns_init() again. @n
@@ -82,11 +82,12 @@ typedef enum
                                     * request to the DNS server.*/
     FNET_DNS_STATE_RX,             /**< @brief The DNS-client service waits a response from the DNS server.*/
     FNET_DNS_STATE_RELEASE          /**< @brief The DNS resolving is completed
-                                    * or received error.*/
+                                    * or timeout is occurred.*/
 } fnet_dns_state_t;
 
 /**************************************************************************/ /*!
- * @brief Initialization parameters for the @ref fnet_dns_init() function.
+ * @brief Resolved address structure provided by @ref fnet_dns_callback_resolved_t 
+ * callback function.
  ******************************************************************************/
 struct fnet_dns_resolved_addr
 {
@@ -101,7 +102,7 @@ struct fnet_dns_resolved_addr
  *
  * @param addr_family       IP address family.@n
  *                          It determines the address pointed to by @c addr.
- * @param addr_list         Pointer to the list of addresses or @ref FNET_NULL if the resolving was failed.
+ * @param addr_list         Pointer to the list of addresses or @ref FNET_NULL if the resolving is failed.
  * @param addr_list_size    Number of resolved addresses in addr_list.
  * @param cookie            User-application specific parameter. It's set during
  *                          the DNS-client service initialization as part of
@@ -109,7 +110,7 @@ struct fnet_dns_resolved_addr
  *
  * @see fnet_dns_resolve(), fnet_dns_params
  ******************************************************************************/
-typedef void(*fnet_dns_callback_resolved_t)(const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, fnet_uint32_t cookie);
+typedef void(*fnet_dns_callback_resolved_t)(const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, void *cookie);
 
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_dns_init() function.
@@ -122,8 +123,8 @@ struct fnet_dns_params
     fnet_address_family_t           addr_family;        /**< @brief Family of the IP Address which is queried.*/
     fnet_dns_callback_resolved_t    callback;            /**< @brief Pointer to the callback function defined by
                                                         * @ref fnet_dns_callback_resolved_t. It is called when the
-                                                        * DNS-client resolving is finished or an error is occurred. */
-    fnet_uint32_t                   cookie;             /**< @brief Optional application-specific parameter. @n
+                                                        * DNS-client resolving is finished or a timeout is occurred. */
+    void                             *cookie;             /**< @brief Optional application-specific parameter. @n
                                                         * It's passed to the @c callback
                                                         * function as input parameter. */
 };
@@ -155,7 +156,8 @@ extern "C" {
  * The resolved IP-address will be passed to the @ref fnet_dns_callback_resolved_t callback function,
  * which is set in @c params. @n
  * The DNS service is released automatically as soon as the
- * resolving is finished or an error is occurred.
+ * resolving is finished or or a timeout is occurred. The timeout equals to 
+ * FNET_CFG_DNS_RETRANSMISSION_TIMEOUT * FNET_CFG_DNS_RETRANSMISSION_MAX seconds.
  *
  ******************************************************************************/
 fnet_return_t fnet_dns_init( struct fnet_dns_params *params );

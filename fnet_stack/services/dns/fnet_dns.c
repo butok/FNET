@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -77,7 +77,7 @@ typedef struct
     fnet_poll_desc_t                service_descriptor;
     fnet_dns_state_t                state;                          /* Current state. */
     fnet_dns_callback_resolved_t    callback;                       /* Callback function. */
-    fnet_uint32_t                   callback_cookie;                /* Callback-handler specific parameter. */
+    void                            *callback_cookie;               /* Callback-handler specific parameter. */
     fnet_time_t                     last_time;                      /* Last receive time, used for timeout detection. */
     fnet_index_t                    iteration;                      /* Current iteration number.*/
     /* Internal buffer used for Message buffer and Resolved addresses.*/
@@ -116,8 +116,7 @@ static fnet_size_t fnet_dns_add_question( fnet_uint8_t *message, fnet_uint16_t t
     fnet_size_t         total_length = 0U;
     fnet_size_t         label_length;
     fnet_dns_q_tail_t   *q_tail;
-    fnet_char_t                *strtok_pos = FNET_NULL;
-
+    fnet_char_t         *strtok_pos = FNET_NULL;
 
     /* Set Question section :
       0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
@@ -232,8 +231,8 @@ fnet_return_t fnet_dns_init( struct fnet_dns_params *params )
     }
 
     /* Set socket options */
-    fnet_socket_setopt(fnet_dns_if.socket_cln, SOL_SOCKET, SO_RCVBUF, (const fnet_uint8_t *)&bufsize_option, sizeof(bufsize_option));
-    fnet_socket_setopt(fnet_dns_if.socket_cln, SOL_SOCKET, SO_SNDBUF, (const fnet_uint8_t *)&bufsize_option, sizeof(bufsize_option));
+    fnet_socket_setopt(fnet_dns_if.socket_cln, SOL_SOCKET, SO_RCVBUF, &bufsize_option, sizeof(bufsize_option));
+    fnet_socket_setopt(fnet_dns_if.socket_cln, SOL_SOCKET, SO_SNDBUF, &bufsize_option, sizeof(bufsize_option));
 
     /* Bind/connect to the server.*/
     FNET_DEBUG_DNS("Connecting to DNS Server.");
@@ -373,11 +372,19 @@ static void fnet_dns_poll( void *fnet_dns_if_p )
                                 {
                                     dns_if->buffer.ip4.resolved_ip4_addr[dns_if->addr_number].ip4_addr = *((fnet_ip4_addr_t *)(&rr_header->rdata));
                                     dns_if->buffer.ip4.resolved_ip4_addr[dns_if->addr_number].ttl = rr_header->ttl;
+                                    if(dns_if->addr_number>=(FNET_DNS_RESOLVED_IP4_MAX-1)) /* Check address number limit */
+                                    {
+                                        break;
+                                    }
                                 }
                                 else /* AF_INET6 */
                                 {
                                     FNET_IP6_ADDR_COPY( (fnet_ip6_addr_t *)(&rr_header->rdata), &dns_if->buffer.ip6.resolved_ip6_addr[dns_if->addr_number].ip6_addr );
                                     dns_if->buffer.ip6.resolved_ip6_addr[dns_if->addr_number].ttl = rr_header->ttl;
+                                    if(dns_if->addr_number>=(FNET_DNS_RESOLVED_IP6_MAX-1)) /* Check address number limit */
+                                    {
+                                        break;
+                                    }
                                 }
                                 dns_if->addr_number++;
                             }
@@ -385,22 +392,22 @@ static void fnet_dns_poll( void *fnet_dns_if_p )
                         }
                     }
                 }
-                /* else = wrong message.*/
+                else /* Wrong message.*/
+                {
+                    break;
+                }
 
-                dns_if->state = FNET_DNS_STATE_RELEASE;
+                dns_if->state = FNET_DNS_STATE_RELEASE; /* Resolved */
             }
-            else if(received == FNET_ERR) /* Check error.*/
+            else /* No data or error. Check timeout */
             {
-                dns_if->state = FNET_DNS_STATE_RELEASE; /* ERROR */
-            }
-            else /* No data. Check timeout */
                 if(fnet_timer_get_interval(dns_if->last_time, fnet_timer_get_ticks()) > ((FNET_CFG_DNS_RETRANSMISSION_TIMEOUT * 1000U) / FNET_TIMER_PERIOD_MS))
                 {
                     dns_if->iteration++;
 
                     if(dns_if->iteration > FNET_CFG_DNS_RETRANSMISSION_MAX)
                     {
-                        dns_if->state = FNET_DNS_STATE_RELEASE; /* ERROR */
+                        dns_if->state = FNET_DNS_STATE_RELEASE; /* Timeout */
                     }
                     else
                     {
@@ -409,48 +416,49 @@ static void fnet_dns_poll( void *fnet_dns_if_p )
                 }
                 else
                 {}
+            }
             break;
         /*---- RELEASE -------------------------------------------------*/
         case FNET_DNS_STATE_RELEASE:
-        {
-            struct fnet_dns_resolved_addr   *addr_list = FNET_NULL;
-
-            fnet_dns_release();
-
-            /* Fill fnet_dns_resolved_addr */
-            if(dns_if->addr_number > 0u)
             {
-                if(dns_if->addr_family  == AF_INET)
-                {
-                    for(i = 0u; i < dns_if->addr_number; i++)
-                    {
-                        fnet_memset_zero(&dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr, sizeof(dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr));
+                struct fnet_dns_resolved_addr   *addr_list = FNET_NULL;
 
-                        dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr.sa_family = AF_INET;
-                        ((struct sockaddr_in *)(&dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr))->sin_addr.s_addr = dns_if->buffer.ip4.resolved_ip4_addr[i].ip4_addr;
-                        dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr_ttl = dns_if->buffer.ip4.resolved_ip4_addr[i].ttl;
-                    }
-                    addr_list = dns_if->buffer.ip4.resolved_ip4_addr_sock;
-                }
-                else if(dns_if->addr_family == AF_INET6)
-                {
-                    for(i = 0u; i < dns_if->addr_number; i++)
-                    {
-                        fnet_memset_zero(&dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr, sizeof(dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr));
+                fnet_dns_release();
 
-                        dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr.sa_family = AF_INET6;
-                        FNET_IP6_ADDR_COPY(&dns_if->buffer.ip6.resolved_ip6_addr[i].ip6_addr, &((struct sockaddr_in6 *)(&dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr))->sin6_addr.s6_addr);
-                        dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr_ttl = dns_if->buffer.ip6.resolved_ip6_addr[i].ttl;
+                /* Fill fnet_dns_resolved_addr */
+                if(dns_if->addr_number > 0u)
+                {
+                    if(dns_if->addr_family  == AF_INET)
+                    {
+                        for(i = 0u; i < dns_if->addr_number; i++)
+                        {
+                            fnet_memset_zero(&dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr, sizeof(dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr));
+
+                            dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr.sa_family = AF_INET;
+                            ((struct sockaddr_in *)(&dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr))->sin_addr.s_addr = dns_if->buffer.ip4.resolved_ip4_addr[i].ip4_addr;
+                            dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr_ttl = dns_if->buffer.ip4.resolved_ip4_addr[i].ttl;
+                        }
+                        addr_list = dns_if->buffer.ip4.resolved_ip4_addr_sock;
                     }
-                    addr_list = dns_if->buffer.ip6.resolved_ip6_addr_sock;
+                    else if(dns_if->addr_family == AF_INET6)
+                    {
+                        for(i = 0u; i < dns_if->addr_number; i++)
+                        {
+                            fnet_memset_zero(&dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr, sizeof(dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr));
+
+                            dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr.sa_family = AF_INET6;
+                            FNET_IP6_ADDR_COPY(&dns_if->buffer.ip6.resolved_ip6_addr[i].ip6_addr, &((struct sockaddr_in6 *)(&dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr))->sin6_addr.s6_addr);
+                            dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr_ttl = dns_if->buffer.ip6.resolved_ip6_addr[i].ttl;
+                        }
+                        addr_list = dns_if->buffer.ip6.resolved_ip6_addr_sock;
+                    }
+                    else
+                    {}
                 }
-                else
-                {}
+
+                dns_if->callback(addr_list, dns_if->addr_number, dns_if->callback_cookie); /* User Callback.*/
             }
-
-            dns_if->callback(addr_list, dns_if->addr_number, dns_if->callback_cookie); /* User Callback.*/
-        }
-        break;
+            break;
         default:
             break;
     }
