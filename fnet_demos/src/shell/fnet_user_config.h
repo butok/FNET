@@ -83,7 +83,8 @@
 #define FNET_CFG_TELNET                     (1)
 
 /*****************************************************************************
-* Flash Module driver support.
+* Flash Module driver support. It is valid only if a platform-specific 
+* Flash driver is availble (FNET_CFG_CPU_FLASH).
 ******************************************************************************/
 #define FNET_CFG_FLASH                      (1)
 
@@ -91,7 +92,6 @@
 * DNS client/resolver service support.
 ******************************************************************************/
 #define FNET_CFG_DNS                        (1)
-#define FNET_CFG_DNS_RESOLVER               (1)
 
 /*****************************************************************************
 * Link-Local Multicast Name Resolution (LLMNR) server/responder support.

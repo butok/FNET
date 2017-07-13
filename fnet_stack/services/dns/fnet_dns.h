@@ -26,7 +26,7 @@
 
 #define _FNET_DNS_H_
 
-#if FNET_CFG_DNS_RESOLVER || defined(__DOXYGEN__)
+#if FNET_CFG_DNS || defined(__DOXYGEN__)
 
 /*! @addtogroup fnet_dns
 *
@@ -59,7 +59,6 @@
 *
 * Configuration parameters:
 * - @ref FNET_CFG_DNS
-* - @ref FNET_CFG_DNS_RESOLVER
 * - @ref FNET_CFG_DNS_PORT
 * - @ref FNET_CFG_DNS_RETRANSMISSION_MAX
 * - @ref FNET_CFG_DNS_RETRANSMISSION_TIMEOUT
@@ -71,21 +70,6 @@
 /*! @{ */
 
 /**************************************************************************/ /*!
- * @brief DNS-client states.@n
- * Used mainly for debugging purposes.
- ******************************************************************************/
-typedef enum
-{
-    FNET_DNS_STATE_DISABLED = 0,    /**< @brief The DNS-client service is not
-                                    * initialized or is released.*/
-    FNET_DNS_STATE_TX,              /**< @brief The DNS-client service sends the
-                                    * request to the DNS server.*/
-    FNET_DNS_STATE_RX,             /**< @brief The DNS-client service waits a response from the DNS server.*/
-    FNET_DNS_STATE_RELEASE          /**< @brief The DNS resolving is completed
-                                    * or timeout is occurred.*/
-} fnet_dns_state_t;
-
-/**************************************************************************/ /*!
  * @brief Resolved address structure provided by @ref fnet_dns_callback_resolved_t 
  * callback function.
  ******************************************************************************/
@@ -95,6 +79,12 @@ struct fnet_dns_resolved_addr
     fnet_uint32_t               resolved_addr_ttl;  /**< @brief Specifies the time interval (in seconds) that the
                                                     * resolved address may be cached before it should be discarded.*/
 };
+
+/**************************************************************************/ /*!
+ * @brief DNS client descriptor.
+ * @see fnet_dns_init(), fnet_dns_release()
+ ******************************************************************************/
+typedef void* fnet_dns_desc_t;
 
 /**************************************************************************/ /*!
  * @brief Prototype of the DNS-client callback function that is
@@ -140,8 +130,8 @@ extern "C" {
  * @param params     Initialization parameters.
  *
  * @return This function returns:
- *   - @ref FNET_OK if no error occurs.
- *   - @ref FNET_ERR if an error occurs.
+ *   - DNS client descriptor if no error occurs.
+ *   - @c FNET_NULL if an error occurs.
  *
  * @see fnet_dns_params, fnet_dns_callback_resolved_t, fnet_dns_release()
  *
@@ -160,11 +150,13 @@ extern "C" {
  * FNET_CFG_DNS_RETRANSMISSION_TIMEOUT * FNET_CFG_DNS_RETRANSMISSION_MAX seconds.
  *
  ******************************************************************************/
-fnet_return_t fnet_dns_init( struct fnet_dns_params *params );
+fnet_dns_desc_t fnet_dns_init( struct fnet_dns_params *params );
 
 /***************************************************************************/ /*!
  *
  * @brief    Aborts the resolving and releases the DNS-client service.
+ *
+ * @param desc     LLMNR server descriptor to be unregistered.
  *
  * @see fnet_dns_init()
  *
@@ -177,24 +169,24 @@ fnet_return_t fnet_dns_init( struct fnet_dns_params *params );
  * resolving is finished.
  *
  ******************************************************************************/
-void fnet_dns_release(void);
+void fnet_dns_release(fnet_dns_desc_t desc);
 
 /***************************************************************************/ /*!
  *
- * @brief    Retrieves the current state of the DNS-client service (for debugging purposes).
+ * @brief    Detects if the DNS client service is enabled or disabled.
  *
- * @return This function returns the current state of the DNS-client service.
- *   The state is defined by the @ref fnet_dns_state_t.
+ * @param desc     DNS client descriptor
+ *
+ * @return This function returns:
+ *          - @ref FNET_TRUE if the DNS client is successfully initialized.
+ *          - @ref FNET_FALSE if the DNS client is not initialized or is released.
  *
  ******************************************************************************
  *
- * This function returns the current state of the DNS-client service.
- * If the state is @ref FNET_DNS_STATE_DISABLED, the DNS client is not initialized
- * or released.@n
- * It is used mainly for debugging purposes.
+ * This function detects if the DNS client service is initialized or is released.
  *
  ******************************************************************************/
-fnet_dns_state_t fnet_dns_state(void);
+fnet_bool_t fnet_dns_is_enabled(fnet_dns_desc_t desc);
 
 #if defined(__cplusplus)
 }
@@ -202,6 +194,6 @@ fnet_dns_state_t fnet_dns_state(void);
 
 /*! @} */
 
-#endif /* FNET_CFG_DNS_RESOLVER */
+#endif /* FNET_CFG_DNS */
 
 #endif /* _FNET_DNS_H_ */

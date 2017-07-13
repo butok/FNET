@@ -28,7 +28,7 @@
 #include "fapp_dns.h"
 #include "fnet.h"
 
-#if FAPP_CFG_DNS_CMD && FNET_CFG_DNS && FNET_CFG_DNS_RESOLVER
+#if FAPP_CFG_DNS_CMD && FNET_CFG_DNS
 /************************************************************************
 *     Definitions.
 *************************************************************************/
@@ -40,6 +40,8 @@
 *************************************************************************/
 static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, void *cookie);
 static void fapp_dns_on_ctrlc(fnet_shell_desc_t desc);
+
+static fnet_dns_desc_t fapp_dns_desc = 0; /* DNS service descriptor. */
 
 /************************************************************************
 * DESCRIPTION: Event handler callback on resolved IP address.
@@ -75,7 +77,7 @@ static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *add
 static void fapp_dns_on_ctrlc(fnet_shell_desc_t desc)
 {
     /* Terminate DNS service. */
-    fnet_dns_release();
+    fnet_dns_release(fapp_dns_desc);
     fnet_shell_println( desc, FAPP_CANCELLED_STR);
 }
 
@@ -88,6 +90,7 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
     fnet_netif_desc_t           netif = fnet_netif_get_default();
     fnet_char_t                 ip_str[FNET_IP_ADDR_STR_SIZE];
     fnet_index_t                error_param;
+    fnet_dns_desc_t             dns_desc;
 
     /* Set DNS client/resolver parameters.*/
     fnet_memset_zero(&dns_params, sizeof(struct fnet_dns_params));
@@ -145,7 +148,8 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
                                                         which will be passed to fapp_dns_callback_resolved().*/
 
     /* Run DNS client/resolver. */
-    if(fnet_dns_init(&dns_params) != FNET_ERR)
+    dns_desc = fnet_dns_init(&dns_params);
+    if(dns_desc)
     {
         fnet_shell_println(desc, FAPP_DELIMITER_STR);
         fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Resolving", dns_params.host_name);
@@ -153,6 +157,8 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
                            fnet_inet_ntop(dns_params.dns_server_addr.sa_family, dns_params.dns_server_addr.sa_data, ip_str, sizeof(ip_str)));
         fnet_shell_println(desc, FAPP_TOCANCEL_STR);
         fnet_shell_println(desc, FAPP_DELIMITER_STR);
+
+        fapp_dns_desc = dns_desc;
 
         fnet_shell_block(desc, fapp_dns_on_ctrlc); /* Block the shell input.*/
     }
@@ -167,4 +173,4 @@ ERROR_PARAMETER:
     return;
 }
 
-#endif /* FAPP_CFG_DNS_CMD && FNET_CFG_DNS && FNET_CFG_DNS_RESOLVER */
+#endif /* FAPP_CFG_DNS_CMD && FNET_CFG_DNS */

@@ -105,7 +105,7 @@ typedef void(*fnet_sntp_callback_resolved_t)(const fnet_sntp_timestamp_t *timest
  ******************************************************************************/
 struct fnet_sntp_params
 {
-    struct sockaddr                 sntp_server_addr;   /**< @brief Socket address of the remote SNTP server to
+    struct sockaddr                 sntp_server_addr;   /**< @brief Socket address of the remote SNTP/NTP server to
                                                         * connect to. */
     fnet_sntp_callback_resolved_t   callback;          /**< @brief Pointer to the callback function defined by
                                                         * @ref fnet_sntp_callback_resolved_t. It is called when the

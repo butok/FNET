@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,7 +18,7 @@
 *
 **********************************************************************/
 /*!
-* @brief DNS Resolver configuration file.
+* @brief DNS client/resolver configuration file.
 *
 ***************************************************************************/
 
@@ -34,13 +34,23 @@
 /*! @{ */
 
 /**************************************************************************/ /*!
- * @def      FNET_CFG_DNS_RESOLVER
+ * @def      FNET_CFG_DNS
  * @brief    DNS client/resolver support:
  *               - @c 1 = is enabled.
  *               - @b @c 0 = is disabled (Default value).
  ******************************************************************************/
-#ifndef FNET_CFG_DNS_RESOLVER
-    #define FNET_CFG_DNS_RESOLVER                   (0)
+#ifndef FNET_CFG_DNS
+    #define FNET_CFG_DNS                            (0)
+#endif
+
+/**************************************************************************/ /*!
+ * @def     FNET_CFG_DNS_MAX
+ * @brief   Maximum number of the DNS clients that can be run simultaneously. @n
+ *          Default value is @b @c 1.
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_DNS_MAX
+    #define FNET_CFG_DNS_MAX                        (1u)
 #endif
 
 /**************************************************************************/ /*!

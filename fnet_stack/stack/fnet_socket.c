@@ -52,7 +52,7 @@ static void fnet_socket_desc_free(fnet_socket_t desc);
 static fnet_socket_if_t *fnet_socket_desc_find(fnet_socket_t desc);
 static fnet_error_t fnet_socket_addr_check_len(const struct sockaddr *addr, fnet_size_t addr_len);
 #if FNET_CFG_SOCKET_CALLBACK_ON_RX
-static void fnet_socket_is_activity(fnet_uint32_t cookie);
+static void fnet_socket_is_activity(void *cookie);
 #endif
 
 /************************************************************************
@@ -77,7 +77,7 @@ fnet_return_t fnet_socket_init( void )
 * DESCRIPTION: This function is called on the socket activity event.
 *************************************************************************/
 #if FNET_CFG_SOCKET_CALLBACK_ON_RX
-static void fnet_socket_is_activity(fnet_uint32_t cookie)
+static void fnet_socket_is_activity(void *cookie)
 {
     FNET_COMP_UNUSED_ARG(cookie);
 

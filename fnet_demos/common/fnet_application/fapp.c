@@ -55,7 +55,7 @@
     #include "fapp_telnet.h"
 #endif
 
-#if FAPP_CFG_DNS_CMD && FNET_CFG_DNS && FNET_CFG_DNS_RESOLVER
+#if FAPP_CFG_DNS_CMD && FNET_CFG_DNS
     #include "fapp_dns.h"
 #endif
 
@@ -209,7 +209,7 @@ const struct fnet_shell_command fapp_cmd_table [] =
 #if FAPP_CFG_TELNET_CMD && FNET_CFG_TELNET
     { "telnet",     0u, 1u, fapp_telnet_cmd,  "Start Telnet server", "[release]"},
 #endif
-#if FAPP_CFG_DNS_CMD && FNET_CFG_DNS && FNET_CFG_DNS_RESOLVER
+#if FAPP_CFG_DNS_CMD && FNET_CFG_DNS
     { "dns",        2u, 3u, fapp_dns_cmd,     "Resolve IPv4|6 address of <host name>", "<host name> 4|6 [<server ip>]"},
 #endif
 #if FAPP_CFG_LLMNR_CMD && FNET_CFG_LLMNR

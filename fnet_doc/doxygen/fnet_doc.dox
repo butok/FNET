@@ -1742,6 +1742,11 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.9.1
+	- Fixed possible failure during reassembly out of order IPv4 datagrams.
+	- Deprecated FNET_CFG_DNS_RESOLVER, which is covered by existing FNET_CFG_DNS.
+	- Add possibility to run several DNS clients/resolvers simultaneously, defined by FNET_CFG_DNS_MAX.  
+	
 - Version 3.9.0
 	- Added SNTPv4 (Simple Network Time Protocol) client.
 	- Fix possible buffer overflow in the DNS client/resolver.

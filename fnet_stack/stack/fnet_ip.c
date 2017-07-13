@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
 *
@@ -731,9 +731,9 @@ static fnet_netbuf_t *fnet_ip_reassembly( fnet_netbuf_t **nb_ptr )
         /* Trims or discards icoming fragments.*/
         if(frag_ptr != frag_list_ptr->frag_ptr)
         {
-            if((i = (fnet_size_t)(frag_ptr->prev->offset + frag_ptr->prev->total_length - cur_frag_ptr->prev->offset)) != 0u)
+            if((i = (fnet_size_t)(frag_ptr->prev->offset + frag_ptr->prev->total_length - cur_frag_ptr->offset)) != 0u)
             {
-                if(i > cur_frag_ptr->total_length)
+                if(i >= cur_frag_ptr->total_length)
                 {
                     goto DROP_FRAG;
                 }

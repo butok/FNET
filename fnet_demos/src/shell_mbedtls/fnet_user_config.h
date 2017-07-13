@@ -102,7 +102,6 @@
 * DNS client/resolver service support.
 ******************************************************************************/
 #define FNET_CFG_DNS                        (1)
-#define FNET_CFG_DNS_RESOLVER               (1)
 
 /*****************************************************************************
 * Link-Local Multicast Name Resolution (LLMNR) server/responder support.

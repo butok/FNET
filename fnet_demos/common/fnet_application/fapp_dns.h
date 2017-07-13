@@ -29,7 +29,7 @@
 
 #include "fapp_config.h"
 
-#if FAPP_CFG_DNS_CMD && FNET_CFG_DNS && FNET_CFG_DNS_RESOLVER
+#if FAPP_CFG_DNS_CMD && FNET_CFG_DNS
 
 #if defined(__cplusplus)
 extern "C" {

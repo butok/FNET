@@ -23,7 +23,7 @@
 ***************************************************************************/
 #include "fnet.h"
 
-#if FNET_CFG_DNS_RESOLVER
+#if FNET_CFG_DNS
 
 #include "fnet_dns_prv.h"
 
@@ -36,6 +36,17 @@
 /************************************************************************
 *     Definitions
 *************************************************************************/
+/************************************************************************
+* DNS-client states.
+*************************************************************************/
+typedef enum
+{
+    FNET_DNS_STATE_DISABLED = 0,    /* The DNS-client service is not initialized or is released.*/
+    FNET_DNS_STATE_TX,              /* The DNS-client service sends the request to the DNS server.*/
+    FNET_DNS_STATE_RX,              /* The DNS-client service waits a response from the DNS server.*/
+    FNET_DNS_STATE_RELEASE          /* The DNS resolving is completed or timeout is occurred.*/
+} fnet_dns_state_t;
+
 #define FNET_DNS_ERR_PARAMS            "ERROR: Wrong input parameters."
 #define FNET_DNS_ERR_SOCKET_CREATION   "ERROR: Socket creation error."
 #define FNET_DNS_ERR_SOCKET_CONNECT    "ERROR: Socket Error during connect."
@@ -103,9 +114,9 @@ typedef struct
 }
 fnet_dns_if_t;
 
-
 /* DNS-client interface */
-static fnet_dns_if_t fnet_dns_if;
+static fnet_dns_if_t    dns_if_list[FNET_CFG_DNS_MAX];
+static fnet_uint16_t    dns_id;
 
 /************************************************************************
 * DESCRIPTION: Initializes DNS client service and starts the host
@@ -168,18 +179,19 @@ static fnet_size_t fnet_dns_add_question( fnet_uint8_t *message, fnet_uint16_t t
     return (total_length + sizeof(fnet_dns_q_tail_t));
 }
 
-
 /************************************************************************
 * DESCRIPTION: Initializes DNS client service and starts the host
 *              name resolving.
 ************************************************************************/
-fnet_return_t fnet_dns_init( struct fnet_dns_params *params )
+fnet_dns_desc_t fnet_dns_init( struct fnet_dns_params *params )
 {
     const fnet_uint32_t bufsize_option = FNET_DNS_MESSAGE_SIZE;
     fnet_size_t         total_length;
     fnet_size_t         host_name_length;
     struct sockaddr     remote_addr;
     fnet_dns_header_t   *header;
+    fnet_dns_if_t       *dns_if = FNET_NULL;
+    fnet_index_t        i;
 
     /* Check input parameters. */
     if((params == 0)
@@ -193,26 +205,39 @@ fnet_return_t fnet_dns_init( struct fnet_dns_params *params )
         goto ERROR;
     }
 
-    /* Check if DNS service is free.*/
-    if(fnet_dns_if.state != FNET_DNS_STATE_DISABLED)
+    /* Try to find free DNS client descriptor. */
+    for(i = 0u; i < FNET_CFG_DNS_MAX; i++)
     {
+        if(dns_if_list[i].state == FNET_DNS_STATE_DISABLED)
+        {
+            dns_if = &dns_if_list[i];
+            break;
+        }
+    }
+
+    if(dns_if == FNET_NULL)
+    {
+        /* No free DNS descriptor. */
         FNET_DEBUG_DNS(FNET_DNS_ERR_IS_INITIALIZED);
         goto ERROR;
     }
 
+    /* Reset interface structure. */
+    fnet_memset_zero(dns_if, sizeof(fnet_dns_if_t));
+
     /* Save input parmeters.*/
-    fnet_dns_if.callback = params->callback;
-    fnet_dns_if.callback_cookie = params->cookie;
-    fnet_dns_if.addr_family = params->addr_family;
-    fnet_dns_if.addr_number = 0u;
+    dns_if->callback = params->callback;
+    dns_if->callback_cookie = params->cookie;
+    dns_if->addr_family = params->addr_family;
+    dns_if->addr_number = 0u;
 
     if(params->addr_family == AF_INET)
     {
-        fnet_dns_if.dns_type = FNET_HTONS(FNET_DNS_TYPE_A);
+        dns_if->dns_type = FNET_HTONS(FNET_DNS_TYPE_A);
     }
     else if(params->addr_family == AF_INET6)
     {
-        fnet_dns_if.dns_type = FNET_HTONS(FNET_DNS_TYPE_AAAA);
+        dns_if->dns_type = FNET_HTONS(FNET_DNS_TYPE_AAAA);
     }
     else
     {
@@ -220,19 +245,20 @@ fnet_return_t fnet_dns_init( struct fnet_dns_params *params )
         goto ERROR;
     }
 
-    fnet_dns_if.iteration = 0U;  /* Reset iteration counter.*/
-    fnet_dns_if.id++;           /* Change query ID.*/
+    dns_if->iteration = 0U;     /* Reset iteration counter.*/
+    dns_id++;                   /* Increment global query ID */
+    dns_if->id = dns_id;        /* Save query ID.*/
 
     /* Create socket */
-    if((fnet_dns_if.socket_cln = fnet_socket(params->dns_server_addr.sa_family, SOCK_DGRAM, 0u)) == FNET_NULL)
+    if((dns_if->socket_cln = fnet_socket(params->dns_server_addr.sa_family, SOCK_DGRAM, 0u)) == FNET_NULL)
     {
         FNET_DEBUG_DNS(FNET_DNS_ERR_SOCKET_CREATION);
         goto ERROR;
     }
 
     /* Set socket options */
-    fnet_socket_setopt(fnet_dns_if.socket_cln, SOL_SOCKET, SO_RCVBUF, &bufsize_option, sizeof(bufsize_option));
-    fnet_socket_setopt(fnet_dns_if.socket_cln, SOL_SOCKET, SO_SNDBUF, &bufsize_option, sizeof(bufsize_option));
+    fnet_socket_setopt(dns_if->socket_cln, SOL_SOCKET, SO_RCVBUF, &bufsize_option, sizeof(bufsize_option));
+    fnet_socket_setopt(dns_if->socket_cln, SOL_SOCKET, SO_SNDBUF, &bufsize_option, sizeof(bufsize_option));
 
     /* Bind/connect to the server.*/
     FNET_DEBUG_DNS("Connecting to DNS Server.");
@@ -243,14 +269,14 @@ fnet_return_t fnet_dns_init( struct fnet_dns_params *params )
         remote_addr.sa_port = FNET_CFG_DNS_PORT;
     }
 
-    if(fnet_socket_connect(fnet_dns_if.socket_cln, &remote_addr, sizeof(remote_addr)) == FNET_ERR)
+    if(fnet_socket_connect(dns_if->socket_cln, &remote_addr, sizeof(remote_addr)) == FNET_ERR)
     {
         FNET_DEBUG_DNS(FNET_DNS_ERR_SOCKET_CONNECT);
         goto ERROR_1;
     }
 
     /* ==== Build message. ==== */
-    fnet_memset_zero(fnet_dns_if.buffer.message, sizeof(fnet_dns_if.buffer.message)); /* Clear buffer.*/
+    fnet_memset_zero(dns_if->buffer.message, sizeof(dns_if->buffer.message)); /* Clear buffer.*/
 
     /* Set header fields:
       0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
@@ -269,9 +295,9 @@ fnet_return_t fnet_dns_init( struct fnet_dns_params *params )
     +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
     */
 
-    header = (fnet_dns_header_t *)fnet_dns_if.buffer.message;
+    header = (fnet_dns_header_t *)dns_if->buffer.message;
 
-    header->id = fnet_dns_if.id;            /* Set ID. */
+    header->id = dns_if->id;            /* Set ID. */
 
     header->flags = FNET_HTONS(FNET_DNS_HEADER_FLAGS_RD); /* Recursion Desired.*/
 
@@ -281,25 +307,25 @@ fnet_return_t fnet_dns_init( struct fnet_dns_params *params )
 
 
     total_length = sizeof(fnet_dns_header_t);
-    total_length += fnet_dns_add_question( &fnet_dns_if.buffer.message[total_length], fnet_dns_if.dns_type, params->host_name);
-    fnet_dns_if.message_size = total_length;
+    total_length += fnet_dns_add_question( &dns_if->buffer.message[total_length], dns_if->dns_type, params->host_name);
+    dns_if->message_size = total_length;
 
     /* Register DNS service. */
-    fnet_dns_if.service_descriptor = fnet_poll_service_register(fnet_dns_poll, (void *) &fnet_dns_if);
-    if(fnet_dns_if.service_descriptor == 0)
+    dns_if->service_descriptor = fnet_poll_service_register(fnet_dns_poll, dns_if);
+    if(dns_if->service_descriptor == FNET_NULL)
     {
         FNET_DEBUG_DNS(FNET_DNS_ERR_SERVICE);
         goto ERROR_1;
     }
 
-    fnet_dns_if.state = FNET_DNS_STATE_TX; /* => Send request. */
+    dns_if->state = FNET_DNS_STATE_TX; /* => Send request. */
 
-    return FNET_OK;
+    return (fnet_dns_desc_t)dns_if;
+
 ERROR_1:
-    fnet_socket_close(fnet_dns_if.socket_cln);
-
+    fnet_socket_close(dns_if->socket_cln);
 ERROR:
-    return FNET_ERR;
+    return FNET_NULL;
 }
 
 /************************************************************************
@@ -340,7 +366,7 @@ static void fnet_dns_poll( void *fnet_dns_if_p )
 
             if(received > 0 )
             {
-                header = (fnet_dns_header_t *)fnet_dns_if.buffer.message;
+                header = (fnet_dns_header_t *)dns_if->buffer.message;
 
                 if((header->id == dns_if->id) && /* Check the ID.*/
                    ((header->flags & FNET_DNS_HEADER_FLAGS_QR) == FNET_DNS_HEADER_FLAGS_QR)) /* Is response.*/
@@ -423,7 +449,7 @@ static void fnet_dns_poll( void *fnet_dns_if_p )
             {
                 struct fnet_dns_resolved_addr   *addr_list = FNET_NULL;
 
-                fnet_dns_release();
+                fnet_dns_release(fnet_dns_if_p);
 
                 /* Fill fnet_dns_resolved_addr */
                 if(dns_if->addr_number > 0u)
@@ -468,26 +494,41 @@ static void fnet_dns_poll( void *fnet_dns_if_p )
 * DESCRIPTION: This function aborts the resolving and releases
 * the DNS-client service.
 ************************************************************************/
-void fnet_dns_release( void )
+void fnet_dns_release( fnet_dns_desc_t desc )
 {
-    if(fnet_dns_if.state != FNET_DNS_STATE_DISABLED)
+    fnet_dns_if_t *dns_if = (fnet_dns_if_t *)desc;
+
+    if(dns_if && (dns_if->state != FNET_DNS_STATE_DISABLED))
     {
         /* Close socket. */
-        fnet_socket_close(fnet_dns_if.socket_cln);
+        fnet_socket_close(dns_if->socket_cln);
 
         /* Unregister the tftp service. */
-        fnet_poll_service_unregister( fnet_dns_if.service_descriptor );
+        fnet_poll_service_unregister( dns_if->service_descriptor );
 
-        fnet_dns_if.state = FNET_DNS_STATE_DISABLED;
+        dns_if->state = FNET_DNS_STATE_DISABLED;
     }
 }
 
 /************************************************************************
-* DESCRIPTION: This function returns a current state of the DNS client.
+* DESCRIPTION: This function returns FNET_TRUE if the DNS client
+*              is enabled/initialised.
 ************************************************************************/
-fnet_dns_state_t fnet_dns_state( void )
+fnet_bool_t fnet_dns_is_enabled(fnet_dns_desc_t desc)
 {
-    return fnet_dns_if.state;
+    fnet_dns_if_t   *dns_if = (fnet_dns_if_t *) desc;
+    fnet_bool_t     result;
+
+    if(dns_if)
+    {
+        result = (dns_if->state == FNET_DNS_STATE_DISABLED) ? FNET_FALSE : FNET_TRUE;
+    }
+    else
+    {
+        result = FNET_FALSE;
+    }
+
+    return result;
 }
 
-#endif /* FNET_CFG_DNS_RESOLVER */
+#endif /* FNET_CFG_DNS */

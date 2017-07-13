@@ -83,7 +83,7 @@ extern "C" {
  *
  * @return This function returns:
  *   - LLMNR server descriptor if no error occurs.
- *   - @c 0 if an error occurs.
+ *   - @c FNET_NULL if an error occurs.
  *
  * @see fnet_llmnr_release(), fnet_llmnr_params
  *

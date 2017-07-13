@@ -78,7 +78,6 @@ static const fnet_ip6_addr_t fnet_llmnr_ip6_multicast_addr = FNET_IP6_ADDR_INIT(
  * compatibility with early implementations of [RFC3927]. */
 #define FNET_LLMNR_IP_TTL              (255u)
 
-
 /************************************************************************
 *    [RFC 4795 2.1.1.]  LLMNR Header Format
 *************************************************************************
@@ -270,7 +269,7 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
         }
     }
 
-    if(llmnr_if == 0)
+    if(llmnr_if == FNET_NULL)
     {
         /* No free LLMNR descriptor. */
         FNET_DEBUG_LLMNR(FNET_LLMNR_ERR_IS_INITIALIZED);
@@ -382,7 +381,7 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
 ERROR_2:
     fnet_socket_close(llmnr_if->socket_listen);
 ERROR_1:
-    return 0;
+    return FNET_NULL;
 }
 
 /************************************************************************

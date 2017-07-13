@@ -379,17 +379,6 @@
 #endif
 
 /**************************************************************************/ /*!
- * @def      FNET_CFG_DNS
- * @brief    DNS IPv4 address support, by network interface:
- *               - @c 1 = is enabled.
- *               - @b @c 0 = is disabled (Default value).@n
- * @showinitializer
- ******************************************************************************/
-#ifndef FNET_CFG_DNS
-    #define FNET_CFG_DNS                    (0)
-#endif
-
-/**************************************************************************/ /*!
  * @def      FNET_CFG_ARP_TABLE_SIZE
  * @brief    Maximum number of entries in the ARP table, by network interface.
  * @showinitializer
@@ -397,7 +386,6 @@
 #ifndef FNET_CFG_ARP_TABLE_SIZE
     #define FNET_CFG_ARP_TABLE_SIZE         (10U)
 #endif
-
 
 /**************************************************************************/ /*!
  * @def     FNET_CFG_ARP_EXPIRE_TIMEOUT
@@ -798,7 +786,6 @@
     #define FNET_CFG_DEBUG_TRACE_TCP    (0)
 #endif
 
-
 /******************************************************************************
  * Obsolete configuration parameters
  ******************************************************************************/
@@ -823,7 +810,6 @@
 #ifdef FNET_CFG_ETH_MTU
     #error "FNET_CFG_ETH_MTU parameter is obsolete."
 #endif
-
 #ifdef FNET_CFG_ETH0_IP4_ADDR
     #error "FNET_CFG_ETH0_IP4_ADDR parameter is obsolete. It is user application parameter now."
 #endif
@@ -851,11 +837,9 @@
 #ifdef FNET_CFG_DEFAULT_IF
     #error "FNET_CFG_DEFAULT_IF parameter is obsolete. It is user application parameter now."
 #endif
-#ifdef FAPP_CFG_HEAP_SIZE
-    #error "FAPP_CFG_HEAP_SIZE parameter is obsolete. It is user application parameter now."
+#ifdef FNET_CFG_HEAP_SIZE
+    #error "FNET_CFG_HEAP_SIZE parameter is obsolete. It is user application parameter now."
 #endif
-
-
 
 /*! @} */
 
