@@ -70,7 +70,7 @@
 /*! @{ */
 
 /**************************************************************************/ /*!
- * @brief Resolved address structure provided by @ref fnet_dns_callback_resolved_t 
+ * @brief Resolved address structure provided by @ref fnet_dns_callback_resolved_t
  * callback function.
  ******************************************************************************/
 struct fnet_dns_resolved_addr
@@ -84,7 +84,7 @@ struct fnet_dns_resolved_addr
  * @brief DNS client descriptor.
  * @see fnet_dns_init(), fnet_dns_release()
  ******************************************************************************/
-typedef void* fnet_dns_desc_t;
+typedef void *fnet_dns_desc_t;
 
 /**************************************************************************/ /*!
  * @brief Prototype of the DNS-client callback function that is
@@ -146,7 +146,7 @@ extern "C" {
  * The resolved IP-address will be passed to the @ref fnet_dns_callback_resolved_t callback function,
  * which is set in @c params. @n
  * The DNS service is released automatically as soon as the
- * resolving is finished or or a timeout is occurred. The timeout equals to 
+ * resolving is finished or or a timeout is occurred. The timeout equals to
  * FNET_CFG_DNS_RETRANSMISSION_TIMEOUT * FNET_CFG_DNS_RETRANSMISSION_MAX seconds.
  *
  ******************************************************************************/

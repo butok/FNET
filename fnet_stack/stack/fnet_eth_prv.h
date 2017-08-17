@@ -75,7 +75,7 @@ typedef struct fnet_eth_if
     void                            *eth_prv;           /* Points to Ethernet driver-specific control data structure. */
     fnet_index_t                    eth_mac_number;     /* MAC module number [0-1]. */
     void                            ( *eth_output)(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb); /* Ethernet driver output.*/
-#if FNET_CFG_MULTICAST  
+#if FNET_CFG_MULTICAST
     void                            ( *eth_multicast_join)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);    /* Ethernet driver join multicast group.*/
     void                            ( *eth_multicast_leave)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);   /* Ethernet driver leave multicast group.*/
 #endif /* FNET_CFG_MULTICAST */

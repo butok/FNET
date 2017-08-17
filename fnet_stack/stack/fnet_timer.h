@@ -82,7 +82,7 @@ typedef fnet_uint32_t fnet_time_t;
  *
  ******************************************************************************/
 fnet_time_t fnet_timer_get_ticks( void );
- 
+
 /***************************************************************************/ /*!
  *
  * @brief    Gets the timer counter value in seconds.

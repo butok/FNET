@@ -602,8 +602,11 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
     struct fnet_http_uri    uri;
     fnet_index_t            i;
     struct fnet_http_if     *http_if = 0;
-    const struct linger     linger_option = { .l_onoff = FNET_TRUE, 
-                                              .l_linger = 4 /*sec*/};
+    const struct linger     linger_option =
+    {
+        .l_onoff = FNET_TRUE,
+        .l_linger = 4 /*sec*/
+    };
 
     if((params == 0) || (params->root_path == 0) || (params->index_path == 0))
     {
@@ -652,15 +655,15 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
     if(local_addr.sa_port == 0u)
     {
         /* Aply the default port.*/
-    #if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
+#if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
         if(params->tls_params)
         {
             local_addr.sa_port = FNET_CFG_HTTP_TLS_PORT;
         }
         else
-    #endif
+#endif
         {
-            local_addr.sa_port = FNET_CFG_HTTP_PORT; 
+            local_addr.sa_port = FNET_CFG_HTTP_PORT;
         }
     }
 
@@ -735,7 +738,7 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
     if(params->tls_params)
     {
         struct fnet_tls_params tls_params;
-        
+
         tls_params.certificate_buffer = params->tls_params->certificate_buffer;
         tls_params.certificate_buffer_size = params->tls_params->certificate_buffer_size;
         tls_params.private_key_buffer = params->tls_params->private_key_buffer;

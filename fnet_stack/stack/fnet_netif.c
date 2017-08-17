@@ -25,12 +25,11 @@
 ***************************************************************************/
 
 #include "fnet.h"
-#include "fnet_ip_prv.h"
+#include "fnet_ip4_prv.h"
 #include "fnet_ip6_prv.h"
 #include "fnet_netif_prv.h"
 #include "fnet_eth_prv.h"
 #include "fnet_nd6.h"
-#include "fnet_ip6_prv.h"
 #include "fnet_stack_prv.h"
 
 #if FNET_CFG_NETIF_IP6_ADDR_MAX < 2u
@@ -304,7 +303,7 @@ fnet_return_t fnet_netif_init(fnet_netif_desc_t netif_desc, fnet_uint8_t *hw_add
             {
                 result = _fnet_netif_set_hw_addr(netif, hw_addr, hw_addr_size);
             }
-            
+
             if(result == FNET_OK)
             {
                 /* Interface-Type specific initialisation. */
@@ -320,10 +319,10 @@ fnet_return_t fnet_netif_init(fnet_netif_desc_t netif_desc, fnet_uint8_t *hw_add
                 }
             }
         }
-        
-        if(result == FNET_OK) 
+
+        if(result == FNET_OK)
         {
-            if(fnet_netif_default == FNET_NULL) 
+            if(fnet_netif_default == FNET_NULL)
             {
                 /* Set default interface, if it is not done yet.*/
                 fnet_netif_default = netif;
@@ -355,7 +354,7 @@ void fnet_netif_release(fnet_netif_desc_t netif_desc)
         {
             netif->netif_api->netif_release(netif);
         }
-       
+
         /* Remove from the interface list.*/
         fnet_stack_mutex_lock();
 
@@ -434,7 +433,7 @@ void fnet_netif_set_ip4_addr( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipad
         netif->ip4_addr_conflict = FNET_FALSE; /* Clear IPv4 address duplication flag.*/
 
         if(subnet_mask == INADDR_ANY)
-        { 
+        {
             /* No subnet mask assigned, so do it automatically.*/
             if(FNET_IP4_CLASS_A(netif->ip4_addr.address))
             {
@@ -1416,7 +1415,7 @@ fnet_return_t fnet_netif_bind_ip6_addr_prv(fnet_netif_t *netif, const fnet_ip6_a
                  * independently of whether they are obtained via stateless
                  * autoconfiguration or DHCPv6.
                  */
-                fnet_nd6_dad_start(netif , if_addr_ptr);
+                fnet_nd6_dad_start(netif, if_addr_ptr);
             }
             else
             {

@@ -150,8 +150,8 @@ fnet_return_t fnet_cpu_flash_erase(void *flash_addr, fnet_size_t bytes)
         flash_addr = ((fnet_uint8_t *)flash_addr + FNET_CFG_CPU_FLASH_PAGE_SIZE);
         n_pages --;
     }
-	
-	/* TBD check if it was erased */
+
+    /* TBD check if it was erased */
 
     return FNET_OK;
 }

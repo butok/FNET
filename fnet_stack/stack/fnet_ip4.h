@@ -19,13 +19,13 @@
 *
 **********************************************************************/
 /*!
-* @brief IP protocol API.
+* @brief IPv4 protocol API.
 *
 ***************************************************************************/
 
-#ifndef _FNET_IP_H_
+#ifndef _FNET_IP4_H_
 
-#define _FNET_IP_H_
+#define _FNET_IP4_H_
 
 /*! @addtogroup fnet_socket */
 /*! @{ */
@@ -64,47 +64,12 @@ typedef fnet_uint32_t fnet_ip4_addr_t;
 #define FNET_IP4_ADDR_LINK_LOCAL_BROADCAST   FNET_IP4_ADDR_INIT(169,254,255,255)
 
 /************************************************************************
-*    Definitions for options.
-*************************************************************************/
-/* The type field is divided into three internal fields:*/
-#define IPOPT_COPIED(t)   ((t)&0x80U)    /* 1-bit copied flag */
-#define IPOPT_CLASS (t)   ((t)&0x60U)    /* 2-bit class field */
-#define IPOPT_NUMBER(t)   ((t)&0x1fU)    /* 5-bit number field */
-/* Class field: */
-#define IPOPT_CONTROL     (0x00U)        /* control */
-#define IPOPT_RESERVED1   (0x20U)        /* reserved */
-#define IPOPT_DEBMEAS     (0x40U)        /* debugging and measurement */
-#define IPOPT_RESERVED2   (0x60U)        /* reserved */
-/* Currently defined IP options */
-#define IPOPT_EOL         (0U)           /* end of option list */
-#define IPOPT_NOP         (1U)           /* no operation */
-
-#define IPOPT_RR          (7U)           /* record  route */
-#define IPOPT_TS          (68U)          /* timestamp */
-#define IPOPT_SECURITY    (130U)         /* basic security */
-#define IPOPT_LSRR        (131U)         /* loose source and record route */
-#define IPOPT_SATID       (136U)         /* stream id */
-#define IPOPT_SSRR        (137U)         /* strict source and record route */
-
-#define IPOPT_TYPE        (0U)
-#define IPOPT_LENGTH      (1U)
-#define IPOPT_OFFSET      (2U)
-#define IPOPT_OFFSET_MIN  (4U)           /* minimum value of 'offset'*/
-
-/************************************************************************
 *    Definitions for IP type of service.
 *************************************************************************/
-#define IP_TOS_NORMAL      (0x0U)
-#define IP_TOS_LOWDELAY    (0x10U)
-#define IP_TOS_THROUGHPUT  (0x08U)
-#define IP_TOS_RELIABILITY (0x04U)
-
-/************************************************************************
-*    Timestamp option
-*************************************************************************/
-#define IPOPT_TS_FLAG_TSONLY     (0U)    /* Record timestamps.*/
-#define IPOPT_TS_FLAG_TSANDADDR  (1U)    /* Record addresses and timestamps.*/
-#define IPOPT_TS_FLAG_TSPRESPEC  (3U)    /* Record timestamps only at the prespecified systems.*/
+#define FNET_IP4_TOS_NORMAL      (0x0U)
+#define FNET_IP4_TOS_LOWDELAY    (0x10U)
+#define FNET_IP4_TOS_THROUGHPUT  (0x08U)
+#define FNET_IP4_TOS_RELIABILITY (0x04U)
 
 /************************************************************************
 *    Definitions of five different classes.

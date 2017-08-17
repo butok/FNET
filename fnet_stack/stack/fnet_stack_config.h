@@ -260,7 +260,7 @@
  *               - @c 1 = is enabled.
  *               - @b @c 0 = is disabled (Default value).@n
  *           @n
- *           Asserts check that the given condition is true, otherwise it prints error message 
+ *           Asserts check that the given condition is true, otherwise it prints error message
  *           and stops the program execution. By default, it is disabled.
  * @showinitializer
  ******************************************************************************/
@@ -758,12 +758,12 @@
     #define FNET_CFG_DEBUG_TRACE        (0)
 #endif
 
-#ifndef FNET_CFG_DEBUG_TRACE_IP
-    #define FNET_CFG_DEBUG_TRACE_IP     (0)
+#ifndef FNET_CFG_DEBUG_TRACE_IP4
+    #define FNET_CFG_DEBUG_TRACE_IP4    (0)
 #endif
 
-#ifndef FNET_CFG_DEBUG_TRACE_ICMP
-    #define FNET_CFG_DEBUG_TRACE_ICMP   (0)
+#ifndef FNET_CFG_DEBUG_TRACE_ICMP4
+    #define FNET_CFG_DEBUG_TRACE_ICMP4  (0)
 #endif
 
 #ifndef FNET_CFG_DEBUG_TRACE_IGMP

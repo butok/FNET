@@ -159,7 +159,7 @@ void fnet_mempool_free( fnet_mempool_desc_t mpool, void *ap )
             }
         }
 
-        
+
         if((fnet_mempool_unit_header_t *)((fnet_uint32_t)bp + bp->size * mempool->unit_size) == p->ptr)
         {
             /* Join blocks.*/

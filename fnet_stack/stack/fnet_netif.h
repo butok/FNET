@@ -29,7 +29,7 @@
 
 #define _FNET_NETIF_H_
 
-#include "fnet_ip.h"
+#include "fnet_ip4.h"
 #include "fnet_ip6.h"
 #include "fnet_eth.h"
 #include "fnet_socket.h"
@@ -1012,7 +1012,7 @@ fnet_netif_desc_t fnet_netif_get_by_sockaddr( const struct sockaddr *addr );
  *
  ******************************************************************************
  *
- * This function initializes network interface defined by @c netif_desc and 
+ * This function initializes network interface defined by @c netif_desc and
  * adds it to the FNET stack.@n
  * FNET declares descriptors for Ethernet interfaces (FNET_CPU_ETH0_IF, FNET_CPU_ETH1_IF).
  * @note Loop-back interface (if set FNET_CFG_LOOPBACK) is initialized automatically during stack initialization.
@@ -1030,7 +1030,7 @@ fnet_return_t fnet_netif_init(fnet_netif_desc_t netif_desc, fnet_uint8_t *hw_add
  *
  ******************************************************************************
  *
- * This function releases network interface defined by @c netif_desc and 
+ * This function releases network interface defined by @c netif_desc and
  * removes it from the FNET stack.@n
  * FNET declares descriptors for Ethernet interfaces (FNET_CPU_ETH0_IF, FNET_CPU_ETH1_IF).
  * @note fnet_release() automatically releases all initialized interfaces.
@@ -1050,8 +1050,8 @@ void fnet_netif_release(fnet_netif_desc_t netif_desc);
  *
  ******************************************************************************
  *
- * This function determines if the @c netif interface is initialized and 
- * added to the FNET stack using ref fnet_netif_init(). 
+ * This function determines if the @c netif interface is initialized and
+ * added to the FNET stack using ref fnet_netif_init().
  *
  ******************************************************************************/
 fnet_bool_t fnet_netif_is_initialized(fnet_netif_desc_t netif_desc);

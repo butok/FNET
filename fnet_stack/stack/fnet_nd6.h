@@ -722,7 +722,7 @@ void fnet_nd6_router_solicitation_send(struct fnet_netif *netif);
 void fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
 void fnet_nd6_redirect_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
 void fnet_nd6_redirect_addr(struct fnet_netif *if_ptr, const fnet_ip6_addr_t **destination_addr_p);
-void fnet_nd6_dad_start(struct fnet_netif *netif , struct fnet_netif_ip6_addr *addr_info);
+void fnet_nd6_dad_start(struct fnet_netif *netif, struct fnet_netif_ip6_addr *addr_info);
 void fnet_nd6_rd_start(struct fnet_netif *netif);
 void fnet_nd6_debug_print_prefix_list(struct fnet_netif *netif);
 #if FNET_CFG_ND6_RDNSS && FNET_CFG_DNS

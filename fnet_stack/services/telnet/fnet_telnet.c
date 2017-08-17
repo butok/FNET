@@ -97,9 +97,9 @@ typedef enum
                                          * for client socket.*/
     FNET_TELNET_STATE_RECEIVING,        /* Ready to receive data from a Telnet client. */
     FNET_TELNET_STATE_IAC,              /* Received IAC symbol. */
-    FNET_TELNET_STATE_DONT ,            /* Prepare to send DON'T. */
-    FNET_TELNET_STATE_WONT ,            /* Prepare to send WON'T. */
-    FNET_TELNET_STATE_SKIP ,            /* Ignore next received character.*/
+    FNET_TELNET_STATE_DONT,             /* Prepare to send DON'T. */
+    FNET_TELNET_STATE_WONT,             /* Prepare to send WON'T. */
+    FNET_TELNET_STATE_SKIP,             /* Ignore next received character.*/
     FNET_TELNET_STATE_CLOSING           /* Closing Telnet session.*/
 } fnet_telnet_state_t;
 
@@ -515,10 +515,11 @@ fnet_telnet_desc_t fnet_telnet_init( struct fnet_telnet_params *params )
     struct fnet_telnet_if   *telnet_if = 0;
 
     /* Socket options. */
-    const struct linger     linger_option = {
-                                                .l_onoff = FNET_TRUE, /* on */
-                                                .l_linger = 4  /*seconds*/
-                                        };
+    const struct linger     linger_option =
+    {
+        .l_onoff = FNET_TRUE, /* on */
+        .l_linger = 4  /*seconds*/
+    };
     const fnet_size_t       bufsize_option = FNET_CFG_TELNET_SOCKET_BUF_SIZE;
     const fnet_int32_t      keepalive_option = 1;
     const fnet_int32_t      keepcnt_option = FNET_TELNET_TCP_KEEPCNT;

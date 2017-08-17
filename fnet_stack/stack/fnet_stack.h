@@ -32,7 +32,7 @@
 #include "fnet_stdlib.h"
 #include "fnet_socket.h"
 #include "fnet_inet.h"
-#include "fnet_ip.h"
+#include "fnet_ip4.h"
 #include "fnet_ip6.h"
 #include "fnet_netif.h"
 #include "fnet_timer.h"

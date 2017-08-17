@@ -533,8 +533,8 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
             case 'u':
                 uval = (fnet_uint32_t)va_arg(arg, fnet_uint32_t);
                 vlen = fnet_serial_printk_mknumstr(vstr, &uval, FNET_FALSE, 10u);
-				
-				vstrp = &vstr[vlen];
+
+                vstrp = &vstr[vlen];
 
                 cont_u = FNET_TRUE;
                 cont_xd = FNET_TRUE;
@@ -637,7 +637,7 @@ fnet_size_t fnet_printf(const fnet_char_t *format, ... )
 {
     va_list     ap;
     fnet_size_t result;
-    
+
     /* Initialize the pointer to the variable length argument list. */
     va_start(ap, format);
     result = fnet_serial_vprintf(FNET_SERIAL_STREAM_DEFAULT, format, ap);

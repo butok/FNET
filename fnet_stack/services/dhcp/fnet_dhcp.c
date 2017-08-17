@@ -900,7 +900,7 @@ static void fnet_dhcp_change_state( fnet_dhcp_if_t *dhcp, fnet_dhcp_state_t stat
 #endif /* !FNET_CFG_DHCP_BOOTP */
         case FNET_DHCP_STATE_DISABLED:
 #if !FNET_CFG_DHCP_BOOTP
-            /* Graceful shutdown. Sends the RELEASE message. Frees the allocated resources.*/ 
+            /* Graceful shutdown. Sends the RELEASE message. Frees the allocated resources.*/
             if(dhcp->current_options.public_options.ip_address.s_addr)  /* If address was obtained before.*/
             {
                 fnet_dhcp_send_message(dhcp);                           /* Send RELEASE */
@@ -1280,7 +1280,7 @@ fnet_dhcp_desc_t fnet_dhcp_init( fnet_netif_desc_t netif, struct fnet_dhcp_param
         goto ERROR_1;
     }
 
-    if(fnet_netif_get_hw_addr(netif, dhcp_if->macaddr, sizeof(fnet_mac_addr_t))!= FNET_OK)
+    if(fnet_netif_get_hw_addr(netif, dhcp_if->macaddr, sizeof(fnet_mac_addr_t)) != FNET_OK)
     {
         goto ERROR_1;
     }

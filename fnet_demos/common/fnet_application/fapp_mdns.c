@@ -32,15 +32,18 @@
 #if (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP
 #include "fapp_http.h"
 static const fnet_mdns_txt_key_t *fapp_mdns_service_get_txt(void);
-static  fnet_mdns_service_desc_t fapp_mdns_http_service_desc = 0; /* HTTP service descriptor. */ 
+static  fnet_mdns_service_desc_t fapp_mdns_http_service_desc = 0; /* HTTP service descriptor. */
 static const fnet_mdns_service_t fapp_mdns_http_service = {.service_type =  "_http._tcp", .service_port = FNET_CFG_HTTP_PORT, .service_get_txt = fapp_mdns_service_get_txt};        /* HTTP service parameters.*/
 #if FNET_CFG_HTTP_TLS
-static  fnet_mdns_service_desc_t fapp_mdns_http_tls_service_desc = 0; /* HTTPS service descriptor. */ 
+static  fnet_mdns_service_desc_t fapp_mdns_http_tls_service_desc = 0; /* HTTPS service descriptor. */
 static const fnet_mdns_service_t fapp_mdns_http_tls_service = {.service_type =  "_https._tcp", .service_port = FNET_CFG_HTTP_TLS_PORT, .service_get_txt = fapp_mdns_service_get_txt};   /* HTTPS service parameters.*/
 #endif
 
-const fnet_mdns_txt_key_t fapp_mdns_txt_key_http_table[] = {{.key_name= "path", .key_value ="/index.html"},
-                                                            {0, 0} /* End of the table.*/};
+const fnet_mdns_txt_key_t fapp_mdns_txt_key_http_table[] =
+{
+    {.key_name = "path", .key_value = "/index.html"},
+    {0, 0} /* End of the table.*/
+};
 #endif
 
 static fnet_mdns_desc_t fapp_mdns_desc = 0; /* MDNS service descriptor. */
@@ -86,10 +89,10 @@ void fapp_mdns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 
             fapp_mdns_desc = mdns_desc;
 
-        #if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP    
+#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
             /* Register HTTP server to mDNS SD, if availble.*/
             fapp_mdns_service_register_http();
-        #endif
+#endif
         }
         else
         {

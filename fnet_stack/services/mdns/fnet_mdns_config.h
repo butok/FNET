@@ -92,7 +92,7 @@
  * @brief    mDNS Service Tpe Enumeration (RFC6763) support:
  *               - @c 1 = is enabled (Default value).
  *               - @b @c 0 = is disabled .
- *         
+ *
  *           @note: RFC6763: for problem diagnosis and network management tools, it may
  *           be useful for network administrators to find the list of advertised
  *           service types on the network, even if those Service Names are just

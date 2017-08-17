@@ -1327,9 +1327,9 @@
       <locationURI>virtual:/virtual</locationURI>
     </link>
     <link>
-      <name>fnet_stack/stack/fnet_icmp.c</name>
+      <name>fnet_stack/stack/fnet_icmp4.c</name>
       <type>1</type>
-      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_icmp.c</locationURI>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_icmp4.c</locationURI>
     </link>
     <link>
       <name>fnet_stack/stack</name>
@@ -1337,9 +1337,9 @@
       <locationURI>virtual:/virtual</locationURI>
     </link>
     <link>
-      <name>fnet_stack/stack/fnet_icmp.h</name>
+      <name>fnet_stack/stack/fnet_icmp4.h</name>
       <type>1</type>
-      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_icmp.h</locationURI>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_icmp4.h</locationURI>
     </link>
     <link>
       <name>fnet_stack/stack</name>
@@ -1417,9 +1417,9 @@
       <locationURI>virtual:/virtual</locationURI>
     </link>
     <link>
-      <name>fnet_stack/stack/fnet_ip.h</name>
+      <name>fnet_stack/stack/fnet_ip_prv.h</name>
       <type>1</type>
-      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_ip.h</locationURI>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_ip_prv.h</locationURI>
     </link>
     <link>
       <name>fnet_stack/stack</name>
@@ -1427,9 +1427,29 @@
       <locationURI>virtual:/virtual</locationURI>
     </link>
     <link>
-      <name>fnet_stack/stack/fnet_ip_prv.h</name>
+      <name>fnet_stack/stack/fnet_ip4.c</name>
       <type>1</type>
-      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_ip_prv.h</locationURI>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_ip4.c</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/stack</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/stack/fnet_ip4.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_ip4.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/stack</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/stack/fnet_ip4_prv.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/stack/fnet_ip4_prv.h</locationURI>
     </link>
     <link>
       <name>fnet_stack/stack</name>

@@ -65,16 +65,11 @@ static const fnet_socket_prot_if_t fnet_raw_socket_api =
 
 fnet_prot_if_t fnet_raw_prot_if =
 {
-    0,                      /* Pointer to the head of the protocol's socket list.*/
-    AF_SUPPORTED,           /* Address domain family.*/
-    SOCK_RAW,               /* Socket type used for.*/
-    0,                      /* Protocol number.*/
-    0,                      /* Protocol initialization function.*/
-    fnet_raw_release,       /* Protocol release function.*/
-    fnet_raw_input,         /* Protocol input function,.*/
-    0,                      /* Protocol input control function.*/
-    0,                      /* protocol drain function.*/
-    &fnet_raw_socket_api    /* Socket API */
+    .family = AF_SUPPORTED,             /* Address domain family.*/
+    .type = SOCK_RAW,                   /* Socket type used for.*/
+    .prot_release = fnet_raw_release,   /* Protocol release function.*/
+    .prot_input = fnet_raw_input,       /* Protocol input function,.*/
+    .socket_api = &fnet_raw_socket_api  /* Socket API */
 };
 
 /************************************************************************
@@ -102,18 +97,18 @@ static fnet_error_t fnet_raw_output(  struct sockaddr *src_addr, const struct so
 #if FNET_CFG_IP4
     if(dest_addr->sa_family == AF_INET)
     {
-        error = fnet_ip_output(netif, ((struct sockaddr_in *)(src_addr))->sin_addr.s_addr,
-                               ((const struct sockaddr_in *)(dest_addr))->sin_addr.s_addr,
-                               protocol_number,
-                               sockoption->ip_opt.tos,
+        error = fnet_ip4_output(netif, ((struct sockaddr_in *)(src_addr))->sin_addr.s_addr,
+                                ((const struct sockaddr_in *)(dest_addr))->sin_addr.s_addr,
+                                protocol_number,
+                                sockoption->ip4_opt.tos,
 #if FNET_CFG_MULTICAST
-                               (fnet_uint8_t)((FNET_IP4_ADDR_IS_MULTICAST(((const struct sockaddr_in *)(dest_addr))->sin_addr.s_addr) ? sockoption->ip_opt.ttl_multicast : sockoption->ip_opt.ttl)),
+                                (fnet_uint8_t)((FNET_IP4_ADDR_IS_MULTICAST(((const struct sockaddr_in *)(dest_addr))->sin_addr.s_addr) ? sockoption->ip4_opt.ttl_multicast : sockoption->ip4_opt.ttl)),
 #else
-                               sockoption->ip_opt.ttl,
+                                sockoption->ip4_opt.ttl,
 #endif /* FNET_CFG_MULTICAST */
-                               nb, FNET_FALSE, sockoption->so_dontroute,
-                               0
-                              );
+                                nb, FNET_FALSE, sockoption->so_dontroute,
+                                0
+                               );
     }
 #endif
 
@@ -147,7 +142,7 @@ void fnet_raw_input(fnet_netif_t *netif, struct sockaddr *foreign_addr,  struct 
 #if FNET_CFG_IP4
         if(foreign_addr->sa_family == AF_INET)
         {
-            protocol_number = (fnet_uint32_t)((fnet_ip_header_t *)(ip_nb->data_ptr))->protocol;
+            protocol_number = (fnet_uint32_t)((fnet_ip4_header_t *)(ip_nb->data_ptr))->protocol;
         }
         else
 #endif
@@ -314,8 +309,8 @@ BAD:
 static fnet_return_t fnet_raw_attach( fnet_socket_if_t *sk )
 {
 #if FNET_CFG_IP4
-    sk->options.ip_opt.ttl = FNET_RAW_TTL;
-    sk->options.ip_opt.tos = 0u;
+    sk->options.ip4_opt.ttl = FNET_RAW_TTL;
+    sk->options.ip4_opt.tos = 0u;
 #endif
 
 #if FNET_CFG_IP6

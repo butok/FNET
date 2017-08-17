@@ -151,21 +151,22 @@
 *END*----------------------------------------------------------------------*/
 
 void fnet_mpc5744p_dcache_enable(
-   void
-){ /* Body */
-   register fnet_uint32_t i;
-   /* Read L1CSR0 */
-   E200CORE_SPR_GET(i,E200CORE_L1CSR0); 
-   /* enable copy-back mode,enable cache */
-   i |= E200CORE_L1CSR0_CE | E200CORE_L1CSR0_CWM;
-   /* Memory Synchronize */
-   E200CORE_SYNC();
-   /* Instruction Synchronize */
-   E200CORE_ISYNC();
-   /* Write to L1CSR0 */
-   E200CORE_SPR_SET(E200CORE_L1CSR0,i);      
-   /* Instruction Synchronize */
-   E200CORE_ISYNC();
+    void
+)  /* Body */
+{
+    register fnet_uint32_t i;
+    /* Read L1CSR0 */
+    E200CORE_SPR_GET(i, E200CORE_L1CSR0);
+    /* enable copy-back mode,enable cache */
+    i |= E200CORE_L1CSR0_CE | E200CORE_L1CSR0_CWM;
+    /* Memory Synchronize */
+    E200CORE_SYNC();
+    /* Instruction Synchronize */
+    E200CORE_ISYNC();
+    /* Write to L1CSR0 */
+    E200CORE_SPR_SET(E200CORE_L1CSR0, i);
+    /* Instruction Synchronize */
+    E200CORE_ISYNC();
 } /* Endbody */
 
 /*FUNCTION*-------------------------------------------------------------------
@@ -178,19 +179,20 @@ void fnet_mpc5744p_dcache_enable(
 *END*----------------------------------------------------------------------*/
 
 void fnet_mpc5744p_dcache_disable(
-   void
-){ /* Body */
-   register fnet_uint32_t val;
+    void
+)  /* Body */
+{
+    register fnet_uint32_t val;
 
-   E200CORE_SPR_GET(val,E200CORE_L1CSR0); /* L1CSR0 */
-   val &= ~E200CORE_L1CSR0_CE;
-   /* Memory Synchronize */
-   E200CORE_SYNC();
-   /* Instruction Synchronize */
-   E200CORE_ISYNC();
-   E200CORE_SPR_SET(E200CORE_L1CSR0,val);
-   /* Instruction Synchronize */
-   E200CORE_ISYNC();
+    E200CORE_SPR_GET(val, E200CORE_L1CSR0); /* L1CSR0 */
+    val &= ~E200CORE_L1CSR0_CE;
+    /* Memory Synchronize */
+    E200CORE_SYNC();
+    /* Instruction Synchronize */
+    E200CORE_ISYNC();
+    E200CORE_SPR_SET(E200CORE_L1CSR0, val);
+    /* Instruction Synchronize */
+    E200CORE_ISYNC();
 } /* Endbody */
 
 #endif

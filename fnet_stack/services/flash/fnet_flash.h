@@ -106,7 +106,7 @@ fnet_return_t fnet_flash_erase( void *flash_addr, fnet_size_t bytes);
  *
  * This function copies the number of @c bytes bytes from the location
  * pointed by @c src directly to the Flash memory pointed by @c flash_addr.
- * If the flash write-cache is enabled (@ref FNET_CFG_FLASH_CACHE), 
+ * If the flash write-cache is enabled (@ref FNET_CFG_FLASH_CACHE),
  * after last data block is copyed, application must call fnet_flash_flush(0 to be
  * sure that all data were writen to the flash.
  *

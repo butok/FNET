@@ -189,7 +189,7 @@ static void fnet_ftfl_command( fnet_uint8_t command, fnet_uint32_t *address, con
         FNET_MK_FTFL_FCCOB5 = (fnet_uint8_t)(*(data + 2));  /* Data Byte 1.*/
         FNET_MK_FTFL_FCCOB6 = (fnet_uint8_t)(*(data + 1));  /* Data Byte 2.*/
         FNET_MK_FTFL_FCCOB7 = (fnet_uint8_t)(*data);        /* Data Byte 3.*/
-    #if FNET_CFG_CPU_FLASH_PROGRAM_SIZE == 8u /* K70 */
+#if FNET_CFG_CPU_FLASH_PROGRAM_SIZE == 8u /* K70 */
         if(command == FNET_MK_FNET_FTFL_FCCOB0_CMD_PROGRAM_PHRASE)
         {
             FNET_MK_FTFL_FCCOB8 = (fnet_uint8_t)(*(data + 7));
@@ -197,7 +197,7 @@ static void fnet_ftfl_command( fnet_uint8_t command, fnet_uint32_t *address, con
             FNET_MK_FTFL_FCCOBA = (fnet_uint8_t)(*(data + 5));
             FNET_MK_FTFL_FCCOBB = (fnet_uint8_t)(*(data + 4));
         }
-    #endif
+#endif
     }
 
 #if FNET_MK_FLASH_RAM_SECTION
@@ -265,7 +265,7 @@ fnet_return_t fnet_cpu_flash_write( fnet_uint8_t *dest, const fnet_uint8_t *data
 #if FNET_CFG_CPU_FLASH_VERIFY
     {
         fnet_size_t      i;
-           
+
 #if 0 /* Old code.*/
         for(i = 0; i < FNET_CFG_CPU_FLASH_PROGRAM_SIZE; i++)
         {

@@ -53,13 +53,13 @@
  * @brief TLS context descriptor.
  * @see fnet_tls_init()
  ******************************************************************************/
-typedef void* fnet_tls_desc_t;
+typedef void *fnet_tls_desc_t;
 
 /**************************************************************************/ /*!
  * @brief TLS socket descriptor.
  * @see fnet_tls_socket()
  ******************************************************************************/
-typedef void* fnet_tls_socket_t;
+typedef void *fnet_tls_socket_t;
 
 #if 0 /* Not supported yet.*/
 /**************************************************************************/ /*!
@@ -78,7 +78,7 @@ typedef enum
 struct fnet_tls_params
 {
 #if 0 /* Not supported yet.*/
-    fnet_tls_role_t     role;                       /**< @brief TLS role. Client or server. */          
+    fnet_tls_role_t     role;                       /**< @brief TLS role. Client or server. */
 #endif
     const fnet_uint8_t  *certificate_buffer;        /**< @brief Buffer holding the Client or Server Certificate data, in PEM or DER format. */
     fnet_size_t         certificate_buffer_size;    /**< @brief Size of the certificate buffer (including the terminating null byte for PEM data). */
@@ -142,7 +142,7 @@ void fnet_tls_release(fnet_tls_desc_t tls_desc);
  *
  * @return This function returns:
  *   - TLS socket descriptor, if no error occurs.
- *   - @ref FNET_NULL if an error occurs. 
+ *   - @ref FNET_NULL if an error occurs.
  *
  * @see fnet_tls_socket_close(), fnet_tls_init()
  *
@@ -215,13 +215,13 @@ fnet_int32_t fnet_tls_socket_recv(fnet_tls_socket_t tls_sock, fnet_uint8_t *buf,
  * @return This function returns:
  *   - The total number of bytes sent, if no error occurs.
  *     It can be less than the number indicated by @c len.
- *   - @ref FNET_ERR if an error occurs. 
+ *   - @ref FNET_ERR if an error occurs.
  *
  * @see fnet_tls_socket()
  *
  ******************************************************************************
  *
- * This function sends data over TLS layer. @n 
+ * This function sends data over TLS layer. @n
  * The number of actually sent bytes can be between @c 0 and the requested length, depending on
  * buffer availability on both client and server machines.@n
  * If the function returns FNET_ERR the current TLS connection must be closed.

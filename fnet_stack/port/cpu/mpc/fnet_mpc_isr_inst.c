@@ -55,7 +55,7 @@ fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t pr
     {
 #if FNET_CFG_CPU_INDEX==0
 #if FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_S32R274
-    	FNET_MPC_INTC_PSR(vector_number) = (unsigned short int)(0x8000 | priority);
+        FNET_MPC_INTC_PSR(vector_number) = (unsigned short int)(0x8000 | priority);
 #else
         FNET_MPC_INTC_PSR(vector_number) = (unsigned char)(0xF & priority);
 #endif

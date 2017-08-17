@@ -29,7 +29,7 @@
 
 #include "fnet_ip6_prv.h"
 #include "fnet_ip_prv.h"
-#include "fnet_icmp.h"
+#include "fnet_icmp4.h"
 #include "fnet_checksum.h"
 #include "fnet_timer_prv.h"
 #include "fnet_socket_prv.h"
@@ -578,9 +578,9 @@ static void fnet_ip6_input_low(void *cookie)
 
 #if FNET_CFG_CPU_ETH_HW_RX_PROTOCOL_CHECKSUM
             if((netif->features & FNET_NETIF_FEATURE_HW_RX_PROTOCOL_CHECKSUM) &&
-               ((hdr->next_header == FNET_IP_PROTOCOL_ICMP) ||
-                (hdr->next_header == FNET_IP_PROTOCOL_UDP) ||
-                (hdr->next_header == FNET_IP_PROTOCOL_TCP)) )
+               ((hdr->next_header == FNET_PROT_ICMP4) ||
+                (hdr->next_header == FNET_PROT_UDP) ||
+                (hdr->next_header == FNET_PROT_TCP)) )
             {
                 nb->flags |= FNET_NETBUF_FLAG_HW_PROTOCOL_CHECKSUM;
             }

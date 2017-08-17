@@ -143,7 +143,7 @@ static const fnet_eth_prot_if_t fnet_eth_prot_if_list[] =
     },
     {   /* IPv4 */
         FNET_HTONS(FNET_ETH_TYPE_IP4),  /* Protocol number */
-        fnet_ip_input                   /* Protocol input function.*/
+        fnet_ip4_input                   /* Protocol input function.*/
     }
 #endif /* FNET_CFG_IP4 */
 #if FNET_CFG_IP6
@@ -392,7 +392,7 @@ void fnet_eth_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet
     * MAC address to use as a destination address. Broadcasts and
     * multicasts are special, all other addresses are looked up in the
     * ARP table. */
-    if(fnet_ip_addr_is_broadcast (dest_ip_addr, netif))
+    if(fnet_ip4_addr_is_broadcast (dest_ip_addr, netif))
     {
         fnet_memcpy (destination_addr, fnet_eth_broadcast, sizeof(fnet_mac_addr_t));
     }

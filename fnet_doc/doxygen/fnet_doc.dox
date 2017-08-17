@@ -1742,10 +1742,16 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.9.2
+	- Fixed possible wrong sending of TCP ACK, thanks to Richard Green.
+	- Renamed IPv4-specific files and definitions from "ip|IP" to "ip4|IP4".
+	- Renamed ICMPv4-specific files and definitions from "icmp|ICMP" to "icmp4|ICMP4".
+	- Cleaned code style using "Auristic Style v3.0.1" 
+	
 - Version 3.9.1
-	- Fixed possible failure during reassembly out of order IPv4 datagrams.
+	- Fixed possible failure during reassembly of out of order IPv4 datagrams.
 	- Deprecated FNET_CFG_DNS_RESOLVER, which is covered by existing FNET_CFG_DNS.
-	- Add possibility to run several DNS clients/resolvers simultaneously, defined by FNET_CFG_DNS_MAX.  
+	- Added possibility to run several DNS clients/resolvers simultaneously, defined by FNET_CFG_DNS_MAX.  
 	
 - Version 3.9.0
 	- Added SNTPv4 (Simple Network Time Protocol) client.
@@ -2447,6 +2453,7 @@ which includes all service-specific configuration files.
 *		- @ref fnet_flash_config.h = Flash-Driver-specific configuration.
 *		- @ref fnet_fs_config.h = File-System-Interface-specific configuration.
 *		- @ref fnet_ping_config.h = PING-service-specific configuration.
+*		- @ref fnet_sntp_config.h = SNTP-Client-specific configuration.
 *		- @ref fnet_serial_config.h = Serial library configuration.
 *		- @ref fnet_shell_config.h = Shell-specific configuration.
 *		- @ref fnet_telnet_config.h = Telnet-Server-specific configuration.
@@ -2708,6 +2715,15 @@ which includes all service-specific configuration files.
 */
 
 /*! 
+*	@defgroup fnet_sntp_config SNTP Client Configuration Parameters
+*	@ingroup fnet_services_config 
+*	This section describes the parameters specific to the SNTP Client.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+
+/*! 
 *	@defgroup fnet_serial_config Serial Library Configuration Parameters
 *	@ingroup fnet_services_config 
 *	This section describes the parameters specific to the Serial Library.
@@ -2878,6 +2894,11 @@ which includes all service-specific configuration files.
 
 /*! 
 *	@defgroup fnet_ping PING service API
+*	@ingroup services_api 
+*/
+
+/*! 
+*	@defgroup fnet_sntp SNTP client API
 *	@ingroup services_api 
 */
 

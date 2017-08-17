@@ -69,7 +69,7 @@ struct fnet_llmnr_params
  * @brief LLMNR server descriptor.
  * @see fnet_llmnr_init(), fnet_llmnr_release()
  ******************************************************************************/
-typedef void* fnet_llmnr_desc_t;
+typedef void *fnet_llmnr_desc_t;
 
 #if defined(__cplusplus)
 extern "C" {

@@ -37,7 +37,7 @@ struct fapp_netif_init_param
     fnet_ip4_addr_t     netif_ip4_gateway;
 #if FNET_CFG_DNS
     fnet_ip4_addr_t     netif_ip4_dns;
-#endif     
+#endif
 };
 
 /* Default address parameters.*/
@@ -81,7 +81,7 @@ fnet_return_t fapp_netif_init( void )
     /***********************************
      * Initialize all IFs.
      ************************************/
-    for(i=0; i < (sizeof(fapp_netif_init_param_list)/sizeof(fapp_netif_init_param_list[0])); i++)
+    for(i = 0; i < (sizeof(fapp_netif_init_param_list) / sizeof(fapp_netif_init_param_list[0])); i++)
     {
         result = fnet_netif_init(fapp_netif_init_param_list[i].netif_desc, fapp_netif_init_param_list[i].netif_mac_addr, sizeof(fnet_mac_addr_t));
         if(result == FNET_ERR)

@@ -28,9 +28,8 @@
 #include "fnet_prot.h"
 #include "fnet_tcp.h"
 #include "fnet_udp.h"
-#include "fnet_ip_prv.h"
 #include "fnet_netif_prv.h"
-#include "fnet_icmp.h"
+#include "fnet_icmp4.h"
 #include "fnet_icmp6.h"
 #include "fnet_igmp.h"
 #include "fnet_raw.h"
@@ -45,25 +44,22 @@
 static fnet_prot_if_t *const fnet_prot_if_list[] =
 {
 #if FNET_CFG_IP4
-    &fnet_icmp_prot_if      /* ICMP */
+    &fnet_icmp4_prot_if,      /* ICMP */
 #endif
 #if FNET_CFG_IP6
-#if FNET_CFG_IP4
-    ,
-#endif
-    &fnet_icmp6_prot_if    /* ICMPv6 */
+    &fnet_icmp6_prot_if,    /* ICMPv6 */
 #endif
 #if FNET_CFG_TCP
-    , &fnet_tcp_prot_if     /* TCP */
+    &fnet_tcp_prot_if,     /* TCP */
 #endif
 #if FNET_CFG_UDP
-    , &fnet_udp_prot_if     /* UDP */
+    &fnet_udp_prot_if,     /* UDP */
 #endif
 #if FNET_CFG_IGMP && FNET_CFG_IP4
-    , &fnet_igmp_prot_if    /* IGMP */
+    &fnet_igmp_prot_if,    /* IGMP */
 #endif
 #if FNET_CFG_RAW
-    , &fnet_raw_prot_if    /* IGMP */
+    &fnet_raw_prot_if,    /* RAW */
 #endif
 
     /* ADD HERE YOUR TRANSPORT LAYER PROTOCOL */
@@ -95,7 +91,7 @@ fnet_return_t fnet_prot_init( void )
     }
 
 #if FNET_CFG_IP4
-    if(fnet_ip_init() == FNET_ERR)
+    if(fnet_ip4_init() == FNET_ERR)
     {
         result = FNET_ERR;
         goto ERROR;
@@ -133,7 +129,7 @@ void fnet_prot_release( void )
     }
 
 #if FNET_CFG_IP4
-    fnet_ip_release();
+    fnet_ip4_release();
 #endif
 
 #if FNET_CFG_IP6
@@ -185,7 +181,7 @@ void fnet_prot_drain( void )
     }
 
 #if FNET_CFG_IP4
-    fnet_ip_drain();
+    fnet_ip4_drain();
 #endif
 
 #if FNET_CFG_IP6

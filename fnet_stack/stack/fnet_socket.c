@@ -52,7 +52,7 @@ static void fnet_socket_desc_free(fnet_socket_t desc);
 static fnet_socket_if_t *fnet_socket_desc_find(fnet_socket_t desc);
 static fnet_error_t fnet_socket_addr_check_len(const struct sockaddr *addr, fnet_size_t addr_len);
 #if FNET_CFG_SOCKET_CALLBACK_ON_RX
-static void fnet_socket_is_activity(void *cookie);
+    static void fnet_socket_is_activity(void *cookie);
 #endif
 
 /************************************************************************
@@ -558,7 +558,7 @@ fnet_return_t fnet_socket_connect( fnet_socket_t s, struct sockaddr *name, fnet_
                 {
                     fnet_netif_t *netif;
 
-                    if((netif = fnet_ip_route(((struct sockaddr_in *)(&foreign_addr))->sin_addr.s_addr)) == 0)
+                    if((netif = fnet_ip4_route(((struct sockaddr_in *)(&foreign_addr))->sin_addr.s_addr)) == 0)
                     {
                         error = FNET_ERR_NETUNREACH; /* No route. */
                         goto ERROR_SOCK;
@@ -672,7 +672,7 @@ fnet_return_t fnet_socket_bind( fnet_socket_t s, const struct sockaddr *name, fn
                 }
             }
 
-            fnet_socket_ip_addr_copy(name , &sock->local_addr);
+            fnet_socket_ip_addr_copy(name, &sock->local_addr);
 
             if((name->sa_port == 0u) && (sock->protocol_interface->type != SOCK_RAW))
             {
@@ -726,30 +726,25 @@ fnet_return_t fnet_socket_close( fnet_socket_t s )
     if((sock = fnet_socket_desc_find(s)) != 0)
     {
 
-#if FNET_CFG_MULTICAST && FNET_CFG_IP4
-        /* Leave all IPv4 multicast groups.*/
+#if FNET_CFG_MULTICAST
+        /* Leave all IPv4 & IPv6 multicast groups.*/
         {
             fnet_index_t i;
+
             for(i = 0u; i < FNET_CFG_MULTICAST_SOCKET_MAX; i++)
             {
+#if FNET_CFG_IP4
                 if (sock->ip4_multicast_entry[i] != FNET_NULL)
                 {
-                    fnet_ip_multicast_leave_entry(sock->ip4_multicast_entry[i]);
+                    fnet_ip4_multicast_leave_entry(sock->ip4_multicast_entry[i]);
                 }
-            }
-        }
 #endif
-
-#if FNET_CFG_MULTICAST && FNET_CFG_IP6
-        /* Leave all IPv6 multicast groups.*/
-        {
-            fnet_index_t i;
-            for(i = 0u; i < FNET_CFG_MULTICAST_SOCKET_MAX; i++)
-            {
+#if FNET_CFG_IP6
                 if (sock->ip6_multicast_entry[i] != FNET_NULL)
                 {
                     fnet_ip6_multicast_leave_entry(sock->ip6_multicast_entry[i]);
                 }
+#endif
             }
         }
 #endif
@@ -1793,7 +1788,7 @@ fnet_bool_t fnet_socket_addr_is_broadcast(const struct sockaddr *addr, fnet_neti
     {
         if((addr->sa_family & AF_INET) != 0u)
         {
-            result = fnet_ip_addr_is_broadcast( ((const struct sockaddr_in *)addr)->sin_addr.s_addr, netif );
+            result = fnet_ip4_addr_is_broadcast( ((const struct sockaddr_in *)addr)->sin_addr.s_addr, netif );
         }
     }
 #else
@@ -1926,7 +1921,7 @@ fnet_netif_t *fnet_socket_addr_route(const struct sockaddr *dest_addr)
         {
 #if FNET_CFG_IP4
             case AF_INET:
-                result = fnet_ip_route(((const struct sockaddr_in *)dest_addr)->sin_addr.s_addr);
+                result = fnet_ip4_route(((const struct sockaddr_in *)dest_addr)->sin_addr.s_addr);
                 break;
 #endif
 #if FNET_CFG_IP6

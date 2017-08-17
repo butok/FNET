@@ -28,7 +28,7 @@
 
 #include "fnet.h"
 #include "fnet_checksum.h"
-#include "fnet_ip.h"
+#include "fnet_ip4.h"
 
 static fnet_uint32_t fnet_checksum_nb(fnet_netbuf_t *nb, fnet_size_t length);
 

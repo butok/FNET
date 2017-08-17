@@ -1,5 +1,5 @@
 /**************************************************************************
-* 
+*
 * Copyright 2016 by Andrey Butok, Gordon Jahn and Gary Kerr.
 *                        NXP Semiconductor, Inc.
 *
@@ -42,8 +42,8 @@
 #define  FNET_CFG_CPU_TIMER_NUMBER_MAX  (2)
 
 /*****************************************************************************
- *  Max priority. 
- ******************************************************************************/ 
+ *  Max priority.
+ ******************************************************************************/
 #define FNET_CFG_CPU_VECTOR_PRIORITY_MAX                (31)
 
 
@@ -66,26 +66,26 @@
 /* The platform does not have second Ethernet Module.*/
 #define FNET_CFG_CPU_ETH1        		(0)
 
-/* Defines the maximum number of incoming frames that may 
+/* Defines the maximum number of incoming frames that may
  *           be buffered by the Ethernet module.*/
 #ifndef FNET_CFG_CPU_ETH_RX_BUFS_MAX
-#define FNET_CFG_CPU_ETH_RX_BUFS_MAX    (4)
+    #define FNET_CFG_CPU_ETH_RX_BUFS_MAX    (4)
 #endif
 
 /* On-chip Flash size.*/
 #define FNET_CFG_CPU_FLASH_SIZE         (1024 * 1024 * 2)   /* 2 MB */
 
 /* SRAM size.*/
-#define FNET_CFG_CPU_SRAM_SIZE          (1024 * 1024 * 3 / 2)        /* 1.5 MB */  
+#define FNET_CFG_CPU_SRAM_SIZE          (1024 * 1024 * 3 / 2)        /* 1.5 MB */
 
 /* PIT channel to use as timer */
 #ifndef FNET_CFG_CPU_TIMER_NUMBER
-	#define FNET_CFG_CPU_TIMER_NUMBER           (0)   /* Can be any PIT channel, use 0 for default */
+    #define FNET_CFG_CPU_TIMER_NUMBER           (0)   /* Can be any PIT channel, use 0 for default */
 #endif
 
 /* S32R274 has cache memory */
-#ifndef FNET_CFG_CPU_CACHE  
-	#define FNET_CFG_CPU_CACHE            	(0)
-#endif    
+#ifndef FNET_CFG_CPU_CACHE
+    #define FNET_CFG_CPU_CACHE            	(0)
+#endif
 
 #endif /* _FNET_S32R274_CONFIG_H_ */

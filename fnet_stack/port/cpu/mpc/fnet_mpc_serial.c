@@ -127,15 +127,15 @@ static inline void fnet_cpu_serial_gpio_init(fnet_int32_t port_number)
             break;
         case 0:
         default:
-               /* LINFlex 1 is connected to UART->USB converter on S32R274 daughtercard
-                  NOT CONNECTED ON S32R274-RADAR
-               PD[11]    MSCR[59]   TXD      LIN1 O      SRC[1:0]=00    OBE=1    ODE=0    SMC=0    APC=0    IBE=0    HYS=0    PUS=0    PUE=0    INV=0    SSS=0010
-               PF[15]    MSCR[95]   RXD      LIN1 I      SRC[1:0]=00    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=0    INV=0    SSS=0000
-               */
-               FNET_S32R274_GPIO_MSCR(18)  = 0x02000001;    /* Set to LIN0_TXD */
-               FNET_S32R274_GPIO_MSCR(95)  = 0x00080000;    /* Set to LIN0_RXD */
+            /* LINFlex 1 is connected to UART->USB converter on S32R274 daughtercard
+               NOT CONNECTED ON S32R274-RADAR
+            PD[11]    MSCR[59]   TXD      LIN1 O      SRC[1:0]=00    OBE=1    ODE=0    SMC=0    APC=0    IBE=0    HYS=0    PUS=0    PUE=0    INV=0    SSS=0010
+            PF[15]    MSCR[95]   RXD      LIN1 I      SRC[1:0]=00    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=0    INV=0    SSS=0000
+            */
+            FNET_S32R274_GPIO_MSCR(18)  = 0x02000001;    /* Set to LIN0_TXD */
+            FNET_S32R274_GPIO_MSCR(95)  = 0x00080000;    /* Set to LIN0_RXD */
 
-               FNET_S32R274_GPIO_IMCR(63) = 0x00000003;
+            FNET_S32R274_GPIO_IMCR(63) = 0x00000003;
             break;
     }
 #endif
@@ -203,7 +203,7 @@ void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
     FNET_S32R274_GPIO_MSCR(95)  = 0x00080000;    /* Set to LIN1_RXD */
 
     FNET_S32R274_GPIO_IMCR(63) = 0x00000003;
-#endif     
+#endif
 
 #if FNET_CFG_CPU_MPC5668G
 

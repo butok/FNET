@@ -420,12 +420,12 @@ void fnet_cpu_isr(void);
 
 struct fnet_netif; /* Forward declaration.*/
 #if FNET_CFG_CPU_ETH0
-    extern struct fnet_netif fnet_cpu_eth0_if;
-    #define FNET_CPU_ETH0_IF ((fnet_netif_desc_t)(&fnet_cpu_eth0_if))
+extern struct fnet_netif fnet_cpu_eth0_if;
+#define FNET_CPU_ETH0_IF ((fnet_netif_desc_t)(&fnet_cpu_eth0_if))
 #endif
 #if FNET_CFG_CPU_ETH1
-    extern struct fnet_netif  fnet_cpu_eth1_if;
-    #define FNET_CPU_ETH1_IF ((fnet_netif_desc_t)(&fnet_cpu_eth1_if))
+extern struct fnet_netif  fnet_cpu_eth1_if;
+#define FNET_CPU_ETH1_IF ((fnet_netif_desc_t)(&fnet_cpu_eth1_if))
 #endif
 
 #if defined(__cplusplus)

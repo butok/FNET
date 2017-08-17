@@ -188,7 +188,7 @@ void fnet_stack_mutex_lock(void)
     {
         if(fnet_mutex_api->mutex_lock)
         {
-           fnet_mutex_api->mutex_lock(&fnet_stack_mutex);
+            fnet_mutex_api->mutex_lock(&fnet_stack_mutex);
         }
     }
 }

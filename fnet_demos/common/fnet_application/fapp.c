@@ -295,7 +295,7 @@ static fnet_shell_desc_t fapp_shell_desc = 0; /* Shell descriptor. */
 
 /******************************************************************************
  *  Testing of mutex nesting conflict.
- *  Used only for testing needs. 
+ *  Used only for testing needs.
  ******************************************************************************/
 #if FNET_CFG_MULTITHREADING && FAPP_CFG_TEST_MUTEX_CONFLICT
 static  fnet_return_t fapp_test_mutex_init( fnet_mutex_t *counter);
@@ -305,7 +305,8 @@ static void fapp_test_mutex_unlock( fnet_mutex_t *counter );
 const fnet_mutex_api_t fapp_test_mutex_api = {.mutex_init = fapp_test_mutex_init,
                                               .mutex_free = fapp_test_mutex_free,
                                               .mutex_lock = fapp_test_mutex_lock,
-                                              .mutex_unlock = fapp_test_mutex_unlock};
+                                              .mutex_unlock = fapp_test_mutex_unlock
+                                             };
 
 #endif
 
@@ -589,13 +590,13 @@ static void fapp_init(void)
         /* Initialize network interfaces.*/
         if(fapp_netif_init() == FNET_OK)
         {
-    #if FAPP_CFG_PARAMS_READ_FLASH
+#if FAPP_CFG_PARAMS_READ_FLASH
             /* During bootup, the most recently stored customer configuration data will be read and used to configure the interfaces.*/
             if(fapp_params_from_flash() == FNET_OK)
             {
                 fnet_printf(FAPP_PARAMS_LOAD_STR);
             }
-    #endif
+#endif
 
             /* Check if we have atleast one initoalized networking interface.*/
             if(fnet_netif_get_default() == FNET_NULL)
@@ -603,9 +604,9 @@ static void fapp_init(void)
                 fnet_printf(FAPP_NET_ERR);
             }
 
-    #if (FAPP_CFG_EXP_CMD && FNET_CFG_FS) || ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP)
+#if (FAPP_CFG_EXP_CMD && FNET_CFG_FS) || ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP)
             fapp_fs_mount(); /* Init FS and mount FS Image. */
-    #endif
+#endif
 
             /* Init main shell. */
             shell_params.shell = &fapp_shell;
@@ -774,7 +775,7 @@ void fapp_print_netif_addr(fnet_shell_desc_t desc, fnet_address_family_t family,
                 fnet_shell_printf(desc, FAPP_SHELL_INFO_FORMAT_S, "IPv6 Address", ip_str);
                 if(print_type)
                 {
-                    fnet_shell_println(desc, " <%s> ScopeID:%d", fapp_netif_ip_addr_type_str[addr_info.type] , fnet_netif_get_scope_id(netif));
+                    fnet_shell_println(desc, " <%s> ScopeID:%d", fapp_netif_ip_addr_type_str[addr_info.type], fnet_netif_get_scope_id(netif));
                 }
                 else
                 {
@@ -1134,7 +1135,7 @@ void fapp_addr_callback_updated(fnet_shell_desc_t desc, fnet_netif_desc_t netif)
 
 /******************************************************************************
  *  Testing of mutex nesting conflict.
- *  Used only for testing needs. 
+ *  Used only for testing needs.
  ******************************************************************************/
 #if FNET_CFG_MULTITHREADING && FAPP_CFG_TEST_MUTEX_CONFLICT
 

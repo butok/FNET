@@ -33,6 +33,7 @@
 #include "fnet_tcp.h"
 #include "fnet_checksum.h"
 #include "fnet_prot.h"
+#include "fnet_ip_prv.h"
 
 /************************************************************************
 *     Definitions
@@ -140,32 +141,31 @@ static fnet_timer_desc_t fnet_tcp_slowtimer;
  ******************************************************************************/
 static const fnet_socket_prot_if_t fnet_tcp_socket_api =
 {
-    FNET_TRUE,                    /* TRUE = connection required by protocol.*/
-    fnet_tcp_attach,      /* A new socket has been created.*/
-    fnet_tcp_close,
-    fnet_tcp_connect,
-    fnet_tcp_accept,
-    fnet_tcp_rcv,
-    fnet_tcp_snd,
-    fnet_tcp_shutdown,
-    fnet_tcp_setsockopt,
-    fnet_tcp_getsockopt,
-    fnet_tcp_listen
+    .con_req = FNET_TRUE,                   /* TRUE = connection required by protocol.*/
+    .prot_attach = fnet_tcp_attach,
+    .prot_detach = fnet_tcp_close,
+    .prot_connect = fnet_tcp_connect,
+    .prot_accept = fnet_tcp_accept,
+    .prot_rcv = fnet_tcp_rcv,
+    .prot_snd = fnet_tcp_snd,
+    .prot_shutdown = fnet_tcp_shutdown,
+    .prot_setsockopt = fnet_tcp_setsockopt,
+    .prot_getsockopt = fnet_tcp_getsockopt,
+    .prot_listen = fnet_tcp_listen
 };
 
 /* Protocol structure.*/
 fnet_prot_if_t fnet_tcp_prot_if =
 {
-    0,
-    AF_SUPPORTED,           /* Protocol domain.*/
-    SOCK_STREAM,            /* Socket type.*/
-    FNET_IP_PROTOCOL_TCP,   /* Protocol number.*/
-    fnet_tcp_init,
-    fnet_tcp_release,
-    fnet_tcp_input,
-    fnet_tcp_control_input, /* Control input (from below).*/
-    fnet_tcp_drain,
-    &fnet_tcp_socket_api    /* Socket API */
+    .family = AF_SUPPORTED,             /* Protocol domain.*/
+    .type = SOCK_STREAM,                /* Socket type.*/
+    .protocol = FNET_PROT_TCP,          /* Protocol number.*/
+    .prot_init = fnet_tcp_init,         /* Protocol initialization function.*/
+    .prot_release = fnet_tcp_release,   /* Protocol release function.*/
+    .prot_input = fnet_tcp_input,       /* Protocol input function.*/
+    .prot_control_input = fnet_tcp_control_input, /* Control input */
+    .prot_drain = fnet_tcp_drain,       /* Protocol drain function. */
+    .socket_api = &fnet_tcp_socket_api  /* Socket API */
 };
 
 /************************************************************************
@@ -255,7 +255,7 @@ static void fnet_tcp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  stru
     else
 #endif
     {
-        checksum = fnet_checksum_pseudo_start( nb, FNET_HTONS((fnet_uint16_t)FNET_IP_PROTOCOL_TCP), (fnet_uint16_t)nb->total_length );
+        checksum = fnet_checksum_pseudo_start( nb, FNET_HTONS((fnet_uint16_t)FNET_PROT_TCP), (fnet_uint16_t)nb->total_length );
         checksum = fnet_checksum_pseudo_end( checksum, &src_addr->sa_data[0], &dest_addr->sa_data[0],
                                              (fnet_size_t)((dest_addr->sa_family == AF_INET) ? sizeof(fnet_ip4_addr_t) : sizeof(fnet_ip6_addr_t)) );
     }
@@ -425,8 +425,8 @@ static fnet_return_t fnet_tcp_attach( fnet_socket_if_t *sk )
 
     /* Set the IP options.*/
 #if FNET_CFG_IP4
-    sk->options.ip_opt.ttl = FNET_TCP_TTL_DEFAULT;
-    sk->options.ip_opt.tos = 0u;
+    sk->options.ip4_opt.ttl = FNET_TCP_TTL_DEFAULT;
+    sk->options.ip4_opt.tos = 0u;
 #endif
 
 #if FNET_CFG_IP6
@@ -1689,7 +1689,7 @@ static fnet_bool_t fnet_tcp_inputsk( fnet_socket_if_t *sk, fnet_netbuf_t *insegm
                 }
             }
             else
-            /* Process the simultaneous open.*/
+                /* Process the simultaneous open.*/
             {
                 /* Reinitialize the retrasmission timer.*/
                 cb->tcpcb_timers.retransmission = cb->tcpcb_rto;
@@ -1924,6 +1924,7 @@ static fnet_bool_t fnet_tcp_dataprocess( fnet_socket_if_t *sk, fnet_netbuf_t *in
     fnet_bool_t         delflag = FNET_TRUE;
     fnet_uint32_t       seq;
     fnet_uint32_t       tcp_ack = fnet_ntohl(FNET_TCP_ACK(insegment));
+    fnet_uint8_t        insegment_flags = FNET_TCP_FLAGS(insegment);
 
     /* Reinitialize the keepalive timer.*/
     if(sk->options.so_keepalive == FNET_TRUE)
@@ -1953,7 +1954,7 @@ static fnet_bool_t fnet_tcp_dataprocess( fnet_socket_if_t *sk, fnet_netbuf_t *in
               advertised window in the last incoming acknowledgment.*/
         if((cb->tcpcb_sndseq != cb->tcpcb_rcvack) && (sk->send_buffer.count != 0u) &&
            ((insegment->total_length - (fnet_size_t)FNET_TCP_LENGTH(insegment)) == 0u) &&
-           ((FNET_TCP_FLAGS(insegment) & (FNET_TCP_SGT_FIN | FNET_TCP_SGT_SYN)) == 0u))
+           ((insegment_flags & (FNET_TCP_SGT_FIN | FNET_TCP_SGT_SYN)) == 0u))
         {
             /* Increase the timer of repeated acknowledgments.*/
             cb->tcpcb_fastretrcounter++;
@@ -2102,7 +2103,7 @@ static fnet_bool_t fnet_tcp_dataprocess( fnet_socket_if_t *sk, fnet_netbuf_t *in
 
     /* Acknowledgment of the final segment must be send immediatelly.*/
     if(((*ackparam & FNET_TCP_AP_FIN_ACK) != 0u)
-       || ((FNET_TCP_FLAGS(insegment) & FNET_TCP_SGT_PSH) != 0u))
+       || ((insegment_flags & FNET_TCP_SGT_PSH) != 0u))
     {
         fnet_tcp_sendack(sk);
     }
@@ -3222,9 +3223,9 @@ static fnet_error_t fnet_tcp_sendseg(struct fnet_tcp_segment *segment)
     if( 0
 #if FNET_CFG_IP4
         || ( (segment->dest_addr.sa_family == AF_INET)
-             && ((netif = fnet_ip_route(((struct sockaddr_in *)(&segment->dest_addr))->sin_addr.s_addr)) != FNET_NULL)
+             && ((netif = fnet_ip4_route(((struct sockaddr_in *)(&segment->dest_addr))->sin_addr.s_addr)) != FNET_NULL)
              && (netif->features & FNET_NETIF_FEATURE_HW_TX_PROTOCOL_CHECKSUM)
-             && (fnet_ip_will_fragment(netif, nb->total_length) == FNET_FALSE) /* Fragmented packets are not inspected.*/  )
+             && (fnet_ip4_will_fragment(netif, nb->total_length) == FNET_FALSE) /* Fragmented packets are not inspected.*/  )
 #endif
 #if FNET_CFG_IP6
         || ( (segment->dest_addr.sa_family == AF_INET6)
@@ -3240,7 +3241,7 @@ static fnet_error_t fnet_tcp_sendseg(struct fnet_tcp_segment *segment)
     else
 #endif /* FNET_CFG_CPU_ETH_HW_TX_IP_CHECKSUM */
     {
-        FNET_TCP_CHECKSUM(nb) = fnet_checksum_pseudo_start(nb, FNET_HTONS((fnet_uint16_t)FNET_IP_PROTOCOL_TCP), (fnet_uint16_t)nb->total_length);
+        FNET_TCP_CHECKSUM(nb) = fnet_checksum_pseudo_start(nb, FNET_HTONS((fnet_uint16_t)FNET_PROT_TCP), (fnet_uint16_t)nb->total_length);
         checksum_p = &FNET_TCP_CHECKSUM(nb);
     }
 #endif /* FNET_CFG_UDP_CHECKSUM */
@@ -3248,14 +3249,14 @@ static fnet_error_t fnet_tcp_sendseg(struct fnet_tcp_segment *segment)
 #if FNET_CFG_IP4
     if(segment->dest_addr.sa_family == AF_INET)
     {
-        error = fnet_ip_output(netif, ((struct sockaddr_in *)(&segment->src_addr))->sin_addr.s_addr,
-                               ((struct sockaddr_in *)(&segment->dest_addr))->sin_addr.s_addr,
-                               FNET_IP_PROTOCOL_TCP,
-                               (fnet_uint8_t)(segment->sockoption ? segment->sockoption->ip_opt.tos : 0u),
-                               (fnet_uint8_t)(segment->sockoption ? segment->sockoption->ip_opt.ttl : FNET_TCP_TTL_DEFAULT),
-                               nb, FNET_FALSE,
-                               (segment->sockoption ? segment->sockoption->so_dontroute : FNET_FALSE),
-                               checksum_p);
+        error = fnet_ip4_output(netif, ((struct sockaddr_in *)(&segment->src_addr))->sin_addr.s_addr,
+                                ((struct sockaddr_in *)(&segment->dest_addr))->sin_addr.s_addr,
+                                FNET_PROT_TCP,
+                                (fnet_uint8_t)(segment->sockoption ? segment->sockoption->ip4_opt.tos : 0u),
+                                (fnet_uint8_t)(segment->sockoption ? segment->sockoption->ip4_opt.ttl : FNET_TCP_TTL_DEFAULT),
+                                nb, FNET_FALSE,
+                                (segment->sockoption ? segment->sockoption->so_dontroute : FNET_FALSE),
+                                checksum_p);
     }
     else
 #endif
@@ -3265,7 +3266,7 @@ static fnet_error_t fnet_tcp_sendseg(struct fnet_tcp_segment *segment)
             error = fnet_ip6_output( netif,
                                      &((struct sockaddr_in6 *)(&segment->src_addr))->sin6_addr.s6_addr,
                                      &((struct sockaddr_in6 *)(&segment->dest_addr))->sin6_addr.s6_addr,
-                                     FNET_IP_PROTOCOL_TCP,
+                                     FNET_PROT_TCP,
                                      (fnet_uint8_t)(segment->sockoption ? segment->sockoption->ip6_opt.hops_unicast : 0u /*default*/),
                                      nb,
                                      checksum_p );
@@ -3426,7 +3427,7 @@ static fnet_error_t fnet_tcp_senddataseg( fnet_socket_if_t *sk, void *options, f
     }
 
 #if FNET_CFG_IP4
-    tmp = fnet_ip_maximum_packet(((struct sockaddr_in *)(&sk->foreign_addr))->sin_addr.s_addr);
+    tmp = fnet_ip4_maximum_packet(((struct sockaddr_in *)(&sk->foreign_addr))->sin_addr.s_addr);
 #else /* TBD */
     tmp = 0u;
 #endif
@@ -3822,7 +3823,6 @@ static void fnet_tcp_getopt( fnet_socket_if_t *sk, fnet_netbuf_t *segment )
 /************************************************************************
 * DESCRIPTION: This function sets the options of the synchronized (SYN )
 *              segment.
-* RETURNS: None.
 *************************************************************************/
 static void fnet_tcp_setsynopt( fnet_socket_if_t *sk, fnet_uint8_t *options, fnet_uint8_t *optionlen )
 {
@@ -3833,18 +3833,17 @@ static void fnet_tcp_setsynopt( fnet_socket_if_t *sk, fnet_uint8_t *options, fne
     /* If 0, detect MSS based on interface MTU minus "TCP,IP header size".*/
     if(cb->tcpcb_rcvmss == 0u)
     {
-#if FNET_CFG_IP4 /* TBD*/
+#if FNET_CFG_IP4
         fnet_netif_t *netif;
 
-        if((netif = fnet_ip_route(((struct sockaddr_in *)(&sk->foreign_addr))->sin_addr.s_addr)) != 0)
+        if((netif = fnet_ip4_route(((struct sockaddr_in *)(&sk->foreign_addr))->sin_addr.s_addr)) != 0)
         {
             cb->tcpcb_rcvmss = (fnet_uint16_t)(netif->netif_mtu - 40u); /* MTU - [TCP,IP header size].*/
         }
 #else
-        cb->tcpcb_rcvmss = 0; /* TBD create FNET*/
-#endif /* FNET_CFG_IP4 */ /* TBD */
+        cb->tcpcb_rcvmss = 0;
+#endif /* FNET_CFG_IP4 */
     }
-
 
     /* Set the MSS option.*/
     *((fnet_uint32_t *)(options + *optionlen)) = fnet_htonl((fnet_uint32_t)(cb->tcpcb_rcvmss | FNET_TCP_MSS_HEADER));
@@ -3854,14 +3853,11 @@ static void fnet_tcp_setsynopt( fnet_socket_if_t *sk, fnet_uint8_t *options, fne
     *((fnet_uint32_t *)(options + *optionlen))
         = fnet_htonl((fnet_uint32_t)((cb->tcpcb_recvscale | FNET_TCP_WINDOW_HEADER) << 8));
     *optionlen += FNET_TCP_WINDOW_SIZE;
-
 }
 
 /************************************************************************
 * DESCRIPTION: This function performs the initialization depend on
 *              options of the synchronized (SYN) segment.
-*
-* RETURNS: None.
 *************************************************************************/
 static void fnet_tcp_getsynopt( fnet_socket_if_t *sk )
 {

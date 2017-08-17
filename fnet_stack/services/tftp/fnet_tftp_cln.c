@@ -131,7 +131,7 @@ typedef struct
         struct fnet_tftp_packet_data    packet_data;
         struct fnet_tftp_packet_ack     packet_ack;
         struct fnet_tftp_packet_error   packet_error;
-    }packet;
+    } packet;
     fnet_size_t packet_size;
     fnet_size_t tx_data_size;
 }

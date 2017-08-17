@@ -28,7 +28,7 @@
 #if FNET_CFG_LOOPBACK
 
 #include "fnet_loop.h"
-#include "fnet_ip_prv.h"
+#include "fnet_ip4_prv.h"
 #include "fnet_ip6_prv.h"
 
 #if (FNET_CFG_LOOPBACK_MTU < 200u)
@@ -39,10 +39,10 @@
 *     Function Prototypes
 *************************************************************************/
 #if FNET_CFG_IP4
-static void fnet_loop_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb);
+    static void fnet_loop_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb);
 #endif
 #if FNET_CFG_IP6
-static void fnet_loop_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr, const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb);
+    static void fnet_loop_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr, const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb);
 #endif
 static fnet_return_t fnet_loop_init( fnet_netif_t *netif );
 
@@ -83,7 +83,7 @@ static void fnet_loop_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_ad
     /* MTU check */
     if (nb->total_length <= netif->netif_mtu)
     {
-        fnet_ip_input(netif, nb);
+        fnet_ip4_input(netif, nb);
     }
     else
     {

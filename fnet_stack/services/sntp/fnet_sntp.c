@@ -79,7 +79,7 @@ typedef enum
 } fnet_sntp_state_t;
 
 /************************************************************************
-*    NTP Packet Header [RFC4330] 
+*    NTP Packet Header [RFC4330]
 *************************************************************************
                            1                   2                   3
        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9  0  1
@@ -120,7 +120,7 @@ typedef enum
 FNET_COMP_PACKED_BEGIN
 typedef struct
 {
-    fnet_uint8_t    li_vn_mode FNET_COMP_PACKED;                /*[0-1] Leap Indicator (LI); [2-4] Version Number (VN); [5-7] Mode. */ 
+    fnet_uint8_t    li_vn_mode FNET_COMP_PACKED;                /*[0-1] Leap Indicator (LI); [2-4] Version Number (VN); [5-7] Mode. */
     fnet_uint8_t    stratum FNET_COMP_PACKED;                   /* Stratum.*/
     fnet_uint8_t    poll FNET_COMP_PACKED;                      /* Poll Interval.*/
     fnet_uint8_t    precision FNET_COMP_PACKED;                 /* Precision.*/
@@ -154,8 +154,8 @@ fnet_sntp_if_t;
 /* SNTP-client interface */
 static fnet_sntp_if_t fnet_sntp_if;
 
-static const fnet_uint8_t fnet_sntp_year_days[FNET_SNTP_MONTHS_IN_YEAR]={31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-static const fnet_uint8_t fnet_sntp_leap_year_days[FNET_SNTP_MONTHS_IN_YEAR]={31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+static const fnet_uint8_t fnet_sntp_year_days[FNET_SNTP_MONTHS_IN_YEAR] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+static const fnet_uint8_t fnet_sntp_leap_year_days[FNET_SNTP_MONTHS_IN_YEAR] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 static void fnet_sntp_poll(void *fnet_sntp_if_p);
 
@@ -276,12 +276,12 @@ static void fnet_sntp_poll( void *fnet_sntp_if_p )
 
             /* Server reply check */
             if((received == sizeof(sntp_if->message))                                                           /* Check message size */
-                && ((sntp_if->message.li_vn_mode & FNET_SNTP_HEADER_MODE) == FNET_SNTP_HEADER_MODE_SERVER)      /* Server reply */
-                && ((sntp_if->message.li_vn_mode & FNET_SNTP_HEADER_LI) != FNET_SNTP_HEADER_LI_ALARM_CONDITION) /* Clock is synchronized */
-                && (sntp_if->message.stratum >= FNET_SNTP_HEADER_STRATUM_PRIMARY_REFERENCE)                     /* Stratum min/max check */
-                && (sntp_if->message.stratum <= FNET_SNTP_HEADER_STRATUM_SECONDARY_REFERENCE_MAX)
-                && (sntp_if->message.transmit_timestamp[0] != 0) && (sntp_if->message.transmit_timestamp[1] != 0) /* Nonzero timestamp */
-                )
+               && ((sntp_if->message.li_vn_mode & FNET_SNTP_HEADER_MODE) == FNET_SNTP_HEADER_MODE_SERVER)      /* Server reply */
+               && ((sntp_if->message.li_vn_mode & FNET_SNTP_HEADER_LI) != FNET_SNTP_HEADER_LI_ALARM_CONDITION) /* Clock is synchronized */
+               && (sntp_if->message.stratum >= FNET_SNTP_HEADER_STRATUM_PRIMARY_REFERENCE)                     /* Stratum min/max check */
+               && (sntp_if->message.stratum <= FNET_SNTP_HEADER_STRATUM_SECONDARY_REFERENCE_MAX)
+               && (sntp_if->message.transmit_timestamp[0] != 0) && (sntp_if->message.transmit_timestamp[1] != 0) /* Nonzero timestamp */
+              )
             {
                 /* Save timestamp */
                 sntp_if->timestamp.seconds = fnet_ntohl(sntp_if->message.transmit_timestamp[0]);
@@ -310,20 +310,20 @@ static void fnet_sntp_poll( void *fnet_sntp_if_p )
             break;
         /*---- RELEASE -------------------------------------------------*/
         case FNET_SNTP_STATE_RELEASE:
+        {
+            fnet_sntp_timestamp_t   *timestamp = FNET_NULL;
+
+            fnet_sntp_release();
+
+            /* Check resolved timestamp */
+            if(sntp_if->timestamp.seconds || sntp_if->timestamp.seconds_fraction)
             {
-                fnet_sntp_timestamp_t   *timestamp = FNET_NULL;
-
-                fnet_sntp_release();
-
-                /* Check resolved timestamp */
-                if(sntp_if->timestamp.seconds || sntp_if->timestamp.seconds_fraction)
-                {
-                    timestamp = &sntp_if->timestamp;
-                }
-
-                sntp_if->callback(timestamp, sntp_if->callback_cookie); /* User Callback.*/
+                timestamp = &sntp_if->timestamp;
             }
-            break;
+
+            sntp_if->callback(timestamp, sntp_if->callback_cookie); /* User Callback.*/
+        }
+        break;
         default:
             break;
     }
@@ -364,10 +364,10 @@ void fnet_sntp_timestamp2utc(const fnet_sntp_timestamp_t *timestamp, fnet_sntp_u
 
         /* RFC4330: a convenient way to extend the useful life of NTP timestamps is the following
         convention: If bit 0 is set, the UTC time is in the range 1968-
-        2036, and UTC time is reckoned from 0h 0m 0s UTC on 1 January 
+        2036, and UTC time is reckoned from 0h 0m 0s UTC on 1 January
         1900.  If bit 0 is not set, the time is in the range 2036-2104 and
         UTC time is reckoned from 6h 28m 16s UTC on 7 February 2036.*/
-        seconds = (fnet_uint64_t)timestamp->seconds  + ((timestamp->seconds & 0x80000000) ? 0x0 : 0xffffffff); 
+        seconds = (fnet_uint64_t)timestamp->seconds  + ((timestamp->seconds & 0x80000000) ? 0x0 : 0xffffffff);
 
         utc->second = seconds % FNET_SNTP_SECONDS_IN_MINUTE;
 
@@ -377,9 +377,9 @@ void fnet_sntp_timestamp2utc(const fnet_sntp_timestamp_t *timestamp, fnet_sntp_u
 
         days = seconds / (FNET_SNTP_SECONDS_IN_MINUTE * FNET_SNTP_MINUTES_IN_HOUR * FNET_SNTP_HOURS_IN_DAY);
 
-        utc->year = (days/FNET_SNTP_DAYS_IN_4_YEARS)*4 + ((days%FNET_SNTP_DAYS_IN_4_YEARS)/FNET_SNTP_DAYS_IN_YEAR);
-        
-        days = days - (((utc->year/4)*FNET_SNTP_DAYS_IN_4_YEARS) + ((utc->year%4)*FNET_SNTP_DAYS_IN_YEAR)); /* Days in last year. */
+        utc->year = (days / FNET_SNTP_DAYS_IN_4_YEARS) * 4 + ((days % FNET_SNTP_DAYS_IN_4_YEARS) / FNET_SNTP_DAYS_IN_YEAR);
+
+        days = days - (((utc->year / 4) * FNET_SNTP_DAYS_IN_4_YEARS) + ((utc->year % 4) * FNET_SNTP_DAYS_IN_YEAR)); /* Days in last year. */
 
         if((utc->year % 4) == 0) /* Leap year */
         {
@@ -390,7 +390,7 @@ void fnet_sntp_timestamp2utc(const fnet_sntp_timestamp_t *timestamp, fnet_sntp_u
             year_days = fnet_sntp_year_days;
         }
 
-        for(months=0; months<FNET_SNTP_MONTHS_IN_YEAR; months++)
+        for(months = 0; months < FNET_SNTP_MONTHS_IN_YEAR; months++)
         {
             if(days >= year_days[months])
             {
@@ -401,9 +401,9 @@ void fnet_sntp_timestamp2utc(const fnet_sntp_timestamp_t *timestamp, fnet_sntp_u
                 break;
             }
         }
-        
-        utc->month = months+1;
-        utc->day = days+1;
+
+        utc->month = months + 1;
+        utc->day = days + 1;
         utc->year += 1900; /* UTC time is reckoned from 0h 0m 0s UTC on 1 January 1900 */
     }
 }

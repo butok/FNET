@@ -66,8 +66,8 @@ static void fapp_fs_exit_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_ch
 static const fnet_char_t FAPP_FS_PROMPT_STR_HEADER[] = "EXP:";
 static const fnet_char_t FAPP_FS_PROMPT_STR_TRAILER[] = "> ";
 static fnet_char_t FAPP_FS_PROMPT_STR [FAPP_FS_DIR_PATH_MAX +
-                                       sizeof(FAPP_FS_PROMPT_STR_HEADER) +
-                                       sizeof(FAPP_FS_PROMPT_STR_TRAILER)];
+                                                            sizeof(FAPP_FS_PROMPT_STR_HEADER) +
+                                                            sizeof(FAPP_FS_PROMPT_STR_TRAILER)];
 
 /* Current path */
 static fnet_char_t fapp_fs_current_path[FAPP_FS_DIR_PATH_MAX + 1U] = {FNET_FS_SPLITTER, '\0', 0};

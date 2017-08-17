@@ -28,7 +28,7 @@
 
 #define _FNET_SOCKET_H_
 
-#include "fnet_ip.h"
+#include "fnet_ip4.h"
 #include "fnet_ip6.h"
 
 /*! @addtogroup fnet_socket
@@ -167,7 +167,7 @@ typedef fnet_uint32_t   fnet_scope_id_t;
  * @showinitializer
  ******************************************************************************/
 #if FNET_CFG_IP6
-    #define FNET_SA_DATA_SIZE       (sizeof(struct in6_addr)) 
+    #define FNET_SA_DATA_SIZE       (sizeof(struct in6_addr))
 #else /* IPv4 */
     #define FNET_SA_DATA_SIZE       (sizeof(struct in_addr))
 #endif
@@ -623,13 +623,13 @@ typedef enum
 
     /* IPv4 level (IPPROTO_IP) options */
 
-    IP_TOS      , /**< @brief  This option defines the IPv4 TOS
+    IP_TOS, /**< @brief  This option defines the IPv4 TOS
                         *   (type-of-service) field for outgoing datagrams.
                         */
-    IP_TTL ,  /**< @brief  This option defines the IPv4 TTL
+    IP_TTL,  /**< @brief  This option defines the IPv4 TTL
                         *   (time-to-live) vlaue for outgoing datagrams.
                         */
-    IP_MULTICAST_TTL ,     /**< @brief This option allows to change IPv4 "time to live" (TTL)
+    IP_MULTICAST_TTL,     /**< @brief This option allows to change IPv4 "time to live" (TTL)
                                  * value for outgoing multicast datagrams.
                                  * Otherwise, multicast datagrams are sent with a default value of 1,
                                  * to prevent them to be forwarded beyond the local network.@n
@@ -682,7 +682,7 @@ struct linger
 /**************************************************************************/ /*!
  * @brief Socket descriptor.
  ******************************************************************************/
-typedef void* fnet_socket_t;
+typedef void *fnet_socket_t;
 
 /**************************************************************************/ /*!
  * @brief The flags parameters for receiving and sending functions
@@ -841,9 +841,9 @@ fnet_return_t fnet_socket_bind( fnet_socket_t s, const struct sockaddr *name, fn
  * more than one connection request at a time. @n
  * An application can call @ref fnet_socket_listen() more than once on the same socket.
  * If there are more pending connections than the new backlog value,
- * the excess pending connections will be reset and dropped. 
- * Once pending connections accepted by application using fnet_socket_accept(), 
- * they are removed from backlog.  
+ * the excess pending connections will be reset and dropped.
+ * Once pending connections accepted by application using fnet_socket_accept(),
+ * they are removed from backlog.
  ******************************************************************************/
 fnet_return_t fnet_socket_listen( fnet_socket_t s, fnet_size_t backlog );
 

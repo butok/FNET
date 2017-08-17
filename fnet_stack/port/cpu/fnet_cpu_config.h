@@ -275,12 +275,12 @@
 /*********** S32R274 ********************/
 
 #if FNET_CFG_CPU_S32R274 /* Racerunner Ultra */
-	#ifdef FNET_CPU_STR
-		#error More than one CPU selected FNET_CPU_XXXX
-	#endif
+    #ifdef FNET_CPU_STR
+        #error More than one CPU selected FNET_CPU_XXXX
+    #endif
 
-	#include "port/cpu/mpc/fnet_s32r274_config.h"
-	#define FNET_CPU_STR    "S32R274"
+    #include "port/cpu/mpc/fnet_s32r274_config.h"
+    #define FNET_CPU_STR    "S32R274"
 #endif
 
 /*********** NXP's LPC ********************/

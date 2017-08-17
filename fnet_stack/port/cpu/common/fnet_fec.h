@@ -103,20 +103,20 @@
         * must always be evenly divisible by 16.*/
         #define FNET_FEC_RX_BUF_DIV         (16U)
     #elif FNET_CFG_CPU_S32R274
-         /* RRUs ENET = 50MHz */
-         #define FNET_FEC_CLOCK_KHZ  50000
-         /* Transmit buffer descriptor queue. This pointer 
-          * must be 64-bit aligned; however, it is recommended it be 
-          * made 512-bit aligned (evenly divisible by 64).*/
-         #define FNET_FEC_BUF_DESC_DIV       (16U)
-         /* The transmit buffer pointer, containing the address 
-          * of the associated data buffer, 
-          * must always be evenly divisible by 64.*/
-          #define FNET_FEC_TX_BUF_DIV         (64U)
-         /* The receive buffer pointer, containing the address 
-          * of the associated data buffer, 
-          * must always be evenly divisible by 64.*/
-          #define FNET_FEC_RX_BUF_DIV         (64U)
+        /* RRUs ENET = 50MHz */
+        #define FNET_FEC_CLOCK_KHZ  50000
+        /* Transmit buffer descriptor queue. This pointer
+        * must be 64-bit aligned; however, it is recommended it be
+        * made 512-bit aligned (evenly divisible by 64).*/
+        #define FNET_FEC_BUF_DESC_DIV       (16U)
+        /* The transmit buffer pointer, containing the address
+        * of the associated data buffer,
+        * must always be evenly divisible by 64.*/
+        #define FNET_FEC_TX_BUF_DIV         (64U)
+        /* The receive buffer pointer, containing the address
+        * of the associated data buffer,
+        * must always be evenly divisible by 64.*/
+        #define FNET_FEC_RX_BUF_DIV         (64U)
     #else
         #define FNET_FEC_CLOCK_KHZ  (FNET_CPU_CLOCK_KHZ)
         /* Transmit buffer descriptor queue. This pointer
@@ -168,7 +168,7 @@
     #define FNET_FEC_MII_REG_CDCTRL1     (0x001BU)   /* CD Test Control Register and BIST Extensions Register */
     #define FNET_FEC_MII_REG_EDCR        (0x001DU)   /* Energy Detect Control Register */
 #elif FNET_CFG_CPU_S32R274
-   /* TODO define vendor-specific PHY registers for KSZ9031RNX */
+    /* TODO define vendor-specific PHY registers for KSZ9031RNX */
 #else
     #define FNET_FEC_MII_REG_ICR         (0x0010U)   /* Interrupt Control Register */
     #define FNET_FEC_MII_REG_PSR         (0x0011U)   /* Proprietary Status Register */
@@ -266,11 +266,11 @@ typedef struct
     volatile fnet_uint32_t reserved13[3];
     volatile fnet_uint32_t TACC;               /* Transmit Accelerator Function Configuration, offset: 0x1C0 */
     volatile fnet_uint32_t RACC;               /* Receive Accelerator Function Configuration, offset: 0x1C4 */
-    #if FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_S32R274
-        volatile fnet_uint32_t reserved14[15];
-    #else
-		volatile fnet_uint32_t reserved14[14];
-	#endif
+#if FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_S32R274
+    volatile fnet_uint32_t reserved14[15];
+#else
+    volatile fnet_uint32_t reserved14[14];
+#endif
 #else /* MCF || MPC */
     volatile fnet_uint32_t reserved14[29];
 #endif
@@ -279,7 +279,7 @@ typedef struct
     /* Ethernet Management Information Base (MIB) Block Counters:*/
 #if !FNET_CFG_CPU_MPC5744P && !FNET_CFG_CPU_S32R274
     volatile fnet_uint32_t RMON_T_DROP;
-#endif  
+#endif
     volatile fnet_uint32_t RMON_T_PACKETS;
     volatile fnet_uint32_t RMON_T_BC_PKT;
     volatile fnet_uint32_t RMON_T_MC_PKT;
@@ -299,9 +299,9 @@ typedef struct
     volatile fnet_uint32_t RMON_T_OCTETS;
 #if FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_S32R274
     volatile fnet_uint32_t reserved15[1];
-#else     
+#else
     volatile fnet_uint32_t IEEE_T_DROP;
-#endif 
+#endif
     volatile fnet_uint32_t IEEE_T_FRAME_OK;
     volatile fnet_uint32_t IEEE_T_1COL;
     volatile fnet_uint32_t IEEE_T_MCOL;
@@ -312,9 +312,9 @@ typedef struct
     volatile fnet_uint32_t IEEE_T_CSERR;
 #if FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_S32R274
     volatile fnet_uint32_t reserved16[1];
-#else     
+#else
     volatile fnet_uint32_t IEEE_T_SQE;
-#endif     
+#endif
     volatile fnet_uint32_t IEEE_T_FDXFC;
     volatile fnet_uint32_t IEEE_T_OCTETS_OK;
     volatile fnet_uint32_t reserved17[3];
@@ -415,7 +415,7 @@ fnet_fec_reg_t;
     #define FNET_FEC_ECR_SPEED          (0x00000020U)
     #define FNET_FEC_ECR_DBGEN          (0x00000040U)
     #define FNET_FEC_ECR_STOPEN         (0x00000080U)
-    #define FNET_FEC_ECR_DBSWP          (0x00000100U)     
+    #define FNET_FEC_ECR_DBSWP          (0x00000100U)
 #endif
 /* Bit definitions and macros for FNET_MCF_FEC_MMFR */
 #define FNET_FEC_MMFR_DATA(x)            (((x)&0x0000FFFFU)<<0U)

@@ -146,14 +146,14 @@
 
 #ifndef FAPP_CFG_MEM_REGION_LIST
 #if FNET_CFG_FLASH && FNET_CFG_CPU_FLASH
-    #define FAPP_CFG_MEM_REGION_LIST                {.description = "FLASH", \
-                                                        .address = FNET_CFG_CPU_FLASH_ADDRESS + FAPP_CFG_BOOTLOADER_SIZE, /* Reseved for bootloader */\
-                                                        .size = FNET_CFG_CPU_FLASH_SIZE - FAPP_CFG_BOOTLOADER_SIZE - FAPP_CFG_FLASH_PARAMS_SIZE, /* Reseved for bootloader and parameters */ \
-                                                        .memcpy = fnet_flash_memcpy, \
-                                                        .erase = fnet_flash_erase, \
-                                                        .flush = fnet_flash_flush},
+#define FAPP_CFG_MEM_REGION_LIST                {.description = "FLASH", \
+            .address = FNET_CFG_CPU_FLASH_ADDRESS + FAPP_CFG_BOOTLOADER_SIZE, /* Reseved for bootloader */\
+                       .size = FNET_CFG_CPU_FLASH_SIZE - FAPP_CFG_BOOTLOADER_SIZE - FAPP_CFG_FLASH_PARAMS_SIZE, /* Reseved for bootloader and parameters */ \
+                               .memcpy = fnet_flash_memcpy, \
+                                         .erase = fnet_flash_erase, \
+                                                 .flush = fnet_flash_flush},
 #else
-    #define FAPP_CFG_MEM_REGION_LIST
+#define FAPP_CFG_MEM_REGION_LIST
 #endif
 #endif
 
@@ -163,11 +163,11 @@
 
 /* Block size reserved for application parameters stored in flash.*/
 #ifndef FAPP_CFG_FLASH_PARAMS_SIZE
-#define FAPP_CFG_FLASH_PARAMS_SIZE      FNET_CFG_CPU_FLASH_PAGE_SIZE
+    #define FAPP_CFG_FLASH_PARAMS_SIZE      FNET_CFG_CPU_FLASH_PAGE_SIZE
 #endif
 /* Pointer to application parameters stored in flash.*/
 #ifndef FAPP_CFG_FLASH_PARAMS_ADDRESS
-#define FAPP_CFG_FLASH_PARAMS_ADDRESS   (FNET_CFG_CPU_FLASH_ADDRESS + FNET_CFG_CPU_FLASH_SIZE - FAPP_CFG_FLASH_PARAMS_SIZE) /* Last sector of the flash.*/
+    #define FAPP_CFG_FLASH_PARAMS_ADDRESS   (FNET_CFG_CPU_FLASH_ADDRESS + FNET_CFG_CPU_FLASH_SIZE - FAPP_CFG_FLASH_PARAMS_SIZE) /* Last sector of the flash.*/
 #endif
 
 /* Default interface.*/
@@ -611,16 +611,16 @@
 /**************************************************************************/ /*!
  * @brief    Defines the default MAC address of the Ethernet-0 interface.
  *           At runtime, it can be changed by @ref fnet_netif_set_hw_addr().
- *           It must be unique on local network. 
+ *           It must be unique on local network.
  ******************************************************************************/
 #ifndef FAPP_CFG_CPU_ETH0_MAC_ADDR
-    #define FAPP_CFG_CPU_ETH0_MAC_ADDR         FNET_MAC_ADDR_INIT(0x00, 0x11, 0x22, 0x33, 0x44, 0x55) 
+    #define FAPP_CFG_CPU_ETH0_MAC_ADDR         FNET_MAC_ADDR_INIT(0x00, 0x11, 0x22, 0x33, 0x44, 0x55)
 #endif
 
 /**************************************************************************/ /*!
  * @brief    Defines the default MAC address of the Ethernet-1 interface.
  *           At runtime, it can be changed by @ref fnet_netif_set_hw_addr().
- *           It must be unique on local network. 
+ *           It must be unique on local network.
  ******************************************************************************/
 #ifndef FAPP_CFG_CPU_ETH1_MAC_ADDR
     #define FAPP_CFG_CPU_ETH1_MAC_ADDR        FNET_MAC_ADDR_INIT(0x22, 0x33, 0x44, 0x55, 0x66, 0x77)
@@ -695,7 +695,7 @@
  *               - @b @c 1 = is enabled.
  *               - @c 0 = is disabled (Default value).@n
  * Valid only if FNET_CFG_MULTITHREADING is 1.
- * @note Used only for testing needs. 
+ * @note Used only for testing needs.
  ******************************************************************************/
 #ifndef FAPP_CFG_TEST_MUTEX_CONFLICT
     #define FAPP_CFG_TEST_MUTEX_CONFLICT    0

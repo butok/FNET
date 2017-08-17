@@ -2419,10 +2419,10 @@
         <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_eth_prv.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_icmp.c</name>
+        <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_icmp4.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_icmp.h</name>
+        <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_icmp4.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_icmp6.c</name>
@@ -2446,10 +2446,16 @@
         <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_ip.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_ip.h</name>
+        <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_ip_prv.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_ip_prv.h</name>
+        <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_ip4.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_ip4.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_ip4_prv.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_ip6.c</name>

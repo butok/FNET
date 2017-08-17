@@ -27,7 +27,7 @@
 #if FNET_CFG_PING
 
 #include "stack/fnet_checksum.h"
-#include "stack/fnet_icmp.h"
+#include "stack/fnet_icmp4.h"
 #include "stack/fnet_ip6_prv.h"
 
 #if FNET_CFG_DEBUG_PING && FNET_CFG_DEBUG
@@ -50,7 +50,7 @@
 #define FNET_PING_ERR_IS_INITIALIZED    "ERROR: PING is already initialized."
 #define FNET_PING_ERR_GETSOCKNAME       "ERROR: Socket getsockname error."
 
-#define FNET_PING_BUFFER_SIZE   (sizeof(fnet_icmp_echo_header_t) + FNET_CFG_PING_PACKET_MAX)
+#define FNET_PING_BUFFER_SIZE   (sizeof(fnet_icmp4_echo_header_t) + FNET_CFG_PING_PACKET_MAX)
 
 static void fnet_ping_poll(void *fnet_ping_if_p);
 
@@ -172,7 +172,7 @@ ERROR:
 static void fnet_ping_poll(void *fnet_ping_if_p)
 {
     fnet_int32_t            received;
-    fnet_icmp_echo_header_t *hdr;
+    fnet_icmp4_echo_header_t *hdr;
     fnet_ping_if_t          *ping_if = (fnet_ping_if_t *)fnet_ping_if_p;
     struct sockaddr         addr;
     fnet_size_t             addr_len = sizeof(addr);
@@ -182,11 +182,11 @@ static void fnet_ping_poll(void *fnet_ping_if_p)
         /*===================================*/
         case FNET_PING_STATE_SENDING_REQUEST:
             /* Build message.*/
-            hdr = (fnet_icmp_echo_header_t *)&fnet_ping_if.buffer[0];
+            hdr = (fnet_icmp4_echo_header_t *)&fnet_ping_if.buffer[0];
 
             /* Fill ICMP Echo request header.*/
             fnet_memset_zero(hdr, sizeof(*hdr));
-            hdr->header.type = (fnet_uint8_t)((fnet_ping_if.family == AF_INET) ? FNET_ICMP_ECHO : FNET_ICMP6_TYPE_ECHO_REQ);
+            hdr->header.type = (fnet_uint8_t)((fnet_ping_if.family == AF_INET) ? FNET_ICMP4_ECHO : FNET_ICMP6_TYPE_ECHO_REQ);
             hdr->identifier = FNET_CFG_PING_IDENTIFIER;
             fnet_ping_if.sequence_number++;
             hdr->sequence_number = fnet_htons(fnet_ping_if.sequence_number);
@@ -239,8 +239,7 @@ static void fnet_ping_poll(void *fnet_ping_if_p)
             {
                 fnet_uint16_t  checksum = 0u;
 
-                hdr = (fnet_icmp_echo_header_t *)(ping_if->buffer);
-
+                hdr = (fnet_icmp4_echo_header_t *)(ping_if->buffer);
 
                 /* Check checksum.*/
 #if FNET_CFG_IP4
@@ -266,7 +265,7 @@ static void fnet_ping_poll(void *fnet_ping_if_p)
 
                 /* Check header.*/
                 if( checksum
-                    || (hdr->header.type != ((addr.sa_family == AF_INET) ? FNET_ICMP_ECHOREPLY : FNET_ICMP6_TYPE_ECHO_REPLY))
+                    || (hdr->header.type != ((addr.sa_family == AF_INET) ? FNET_ICMP4_ECHOREPLY : FNET_ICMP6_TYPE_ECHO_REPLY))
                     || (hdr->identifier != FNET_CFG_PING_IDENTIFIER)
                     || (hdr->sequence_number != fnet_htons(ping_if->sequence_number)) )
                 {

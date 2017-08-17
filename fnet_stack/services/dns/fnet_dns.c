@@ -398,7 +398,7 @@ static void fnet_dns_poll( void *fnet_dns_if_p )
                                 {
                                     dns_if->buffer.ip4.resolved_ip4_addr[dns_if->addr_number].ip4_addr = *((fnet_ip4_addr_t *)(&rr_header->rdata));
                                     dns_if->buffer.ip4.resolved_ip4_addr[dns_if->addr_number].ttl = rr_header->ttl;
-                                    if(dns_if->addr_number>=(FNET_DNS_RESOLVED_IP4_MAX-1)) /* Check address number limit */
+                                    if(dns_if->addr_number >= (FNET_DNS_RESOLVED_IP4_MAX - 1)) /* Check address number limit */
                                     {
                                         break;
                                     }
@@ -407,7 +407,7 @@ static void fnet_dns_poll( void *fnet_dns_if_p )
                                 {
                                     FNET_IP6_ADDR_COPY( (fnet_ip6_addr_t *)(&rr_header->rdata), &dns_if->buffer.ip6.resolved_ip6_addr[dns_if->addr_number].ip6_addr );
                                     dns_if->buffer.ip6.resolved_ip6_addr[dns_if->addr_number].ttl = rr_header->ttl;
-                                    if(dns_if->addr_number>=(FNET_DNS_RESOLVED_IP6_MAX-1)) /* Check address number limit */
+                                    if(dns_if->addr_number >= (FNET_DNS_RESOLVED_IP6_MAX - 1)) /* Check address number limit */
                                     {
                                         break;
                                     }
@@ -446,45 +446,45 @@ static void fnet_dns_poll( void *fnet_dns_if_p )
             break;
         /*---- RELEASE -------------------------------------------------*/
         case FNET_DNS_STATE_RELEASE:
+        {
+            struct fnet_dns_resolved_addr   *addr_list = FNET_NULL;
+
+            fnet_dns_release(fnet_dns_if_p);
+
+            /* Fill fnet_dns_resolved_addr */
+            if(dns_if->addr_number > 0u)
             {
-                struct fnet_dns_resolved_addr   *addr_list = FNET_NULL;
-
-                fnet_dns_release(fnet_dns_if_p);
-
-                /* Fill fnet_dns_resolved_addr */
-                if(dns_if->addr_number > 0u)
+                if(dns_if->addr_family  == AF_INET)
                 {
-                    if(dns_if->addr_family  == AF_INET)
+                    for(i = 0u; i < dns_if->addr_number; i++)
                     {
-                        for(i = 0u; i < dns_if->addr_number; i++)
-                        {
-                            fnet_memset_zero(&dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr, sizeof(dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr));
+                        fnet_memset_zero(&dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr, sizeof(dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr));
 
-                            dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr.sa_family = AF_INET;
-                            ((struct sockaddr_in *)(&dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr))->sin_addr.s_addr = dns_if->buffer.ip4.resolved_ip4_addr[i].ip4_addr;
-                            dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr_ttl = dns_if->buffer.ip4.resolved_ip4_addr[i].ttl;
-                        }
-                        addr_list = dns_if->buffer.ip4.resolved_ip4_addr_sock;
+                        dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr.sa_family = AF_INET;
+                        ((struct sockaddr_in *)(&dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr))->sin_addr.s_addr = dns_if->buffer.ip4.resolved_ip4_addr[i].ip4_addr;
+                        dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr_ttl = dns_if->buffer.ip4.resolved_ip4_addr[i].ttl;
                     }
-                    else if(dns_if->addr_family == AF_INET6)
-                    {
-                        for(i = 0u; i < dns_if->addr_number; i++)
-                        {
-                            fnet_memset_zero(&dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr, sizeof(dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr));
-
-                            dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr.sa_family = AF_INET6;
-                            FNET_IP6_ADDR_COPY(&dns_if->buffer.ip6.resolved_ip6_addr[i].ip6_addr, &((struct sockaddr_in6 *)(&dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr))->sin6_addr.s6_addr);
-                            dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr_ttl = dns_if->buffer.ip6.resolved_ip6_addr[i].ttl;
-                        }
-                        addr_list = dns_if->buffer.ip6.resolved_ip6_addr_sock;
-                    }
-                    else
-                    {}
+                    addr_list = dns_if->buffer.ip4.resolved_ip4_addr_sock;
                 }
+                else if(dns_if->addr_family == AF_INET6)
+                {
+                    for(i = 0u; i < dns_if->addr_number; i++)
+                    {
+                        fnet_memset_zero(&dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr, sizeof(dns_if->buffer.ip4.resolved_ip4_addr_sock[i].resolved_addr));
 
-                dns_if->callback(addr_list, dns_if->addr_number, dns_if->callback_cookie); /* User Callback.*/
+                        dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr.sa_family = AF_INET6;
+                        FNET_IP6_ADDR_COPY(&dns_if->buffer.ip6.resolved_ip6_addr[i].ip6_addr, &((struct sockaddr_in6 *)(&dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr))->sin6_addr.s6_addr);
+                        dns_if->buffer.ip6.resolved_ip6_addr_sock[i].resolved_addr_ttl = dns_if->buffer.ip6.resolved_ip6_addr[i].ttl;
+                    }
+                    addr_list = dns_if->buffer.ip6.resolved_ip6_addr_sock;
+                }
+                else
+                {}
             }
-            break;
+
+            dns_if->callback(addr_list, dns_if->addr_number, dns_if->callback_cookie); /* User Callback.*/
+        }
+        break;
         default:
             break;
     }

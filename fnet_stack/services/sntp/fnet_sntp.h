@@ -91,7 +91,7 @@ typedef struct
  * @brief Prototype of the SNTP-client callback function that is
  * called when the SNTP client has completed the timestamp resolving.
  *
- * @param timestamp         Pointer to the received timestamp or @ref FNET_NULL if the resolving is failed. 
+ * @param timestamp         Pointer to the received timestamp or @ref FNET_NULL if the resolving is failed.
  * @param cookie            User-application specific parameter. It's set during
  *                          the SNTP-client service initialization as part of
  *                          @ref fnet_sntp_params.
@@ -142,7 +142,7 @@ extern "C" {
  * The resolved timestamp will be passed to the @ref fnet_sntp_callback_resolved_t callback function,
  * which is set in @c params. @n
  * The SNTP service is released automatically as soon as the
- * resolving is finished or a timeout is occurred. The timeout equals to 
+ * resolving is finished or a timeout is occurred. The timeout equals to
  * FNET_CFG_SNTP_RETRANSMISSION_TIMEOUT * FNET_CFG_SNTP_RETRANSMISSION_MAX seconds.
  *
  ******************************************************************************/
@@ -169,14 +169,14 @@ void fnet_sntp_release(void);
  *
  * @brief    Converts the SNTP timestamp to the Coordinated Universal Time (UTC).
  *
- * @param timestamp     SNTP timestamp. 
- * @param utc           UTC time. 
+ * @param timestamp     SNTP timestamp.
+ * @param utc           UTC time.
  *
  * @see fnet_sntp_callback_resolved_t
  *
  ******************************************************************************
  *
- * This function converts the SNTP timestamp to the Coordinated Universal Time (UTC). 
+ * This function converts the SNTP timestamp to the Coordinated Universal Time (UTC).
  * The SNTP timestamp is provided by the SNTP-client callback function.
  *
  ******************************************************************************/

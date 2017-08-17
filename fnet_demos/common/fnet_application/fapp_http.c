@@ -33,12 +33,12 @@
 #include "fapp_mdns.h"
 
 #if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP_TLS && FNET_CFG_TLS
-#include "mbedtls/certs.h"
-fnet_http_desc_t fapp_http_tls_desc = 0; /* HTTPS server descriptor. */
+    #include "mbedtls/certs.h"
+    fnet_http_desc_t fapp_http_tls_desc = 0; /* HTTPS server descriptor. */
 #endif
 
-#if FAPP_CFG_HTTP_CMD 
-fnet_http_desc_t fapp_http_desc = 0;    /* HTTP server descriptor. */
+#if FAPP_CFG_HTTP_CMD
+    fnet_http_desc_t fapp_http_desc = 0;    /* HTTP server descriptor. */
 #endif
 
 static fnet_size_t fapp_http_string_buffer_respond(fnet_uint8_t *buffer, fnet_size_t buffer_size, fnet_bool_t *eof, fnet_uint32_t *cookie);
@@ -368,7 +368,7 @@ static fnet_return_t fapp_http_post_receive (fnet_http_session_t session, fnet_u
 
 #endif /*FNET_CFG_HTTP_POST*/
 
-#if FAPP_CFG_HTTP_CMD 
+#if FAPP_CFG_HTTP_CMD
 /************************************************************************
 * DESCRIPTION: Releases HTTP server.
 *************************************************************************/
@@ -416,10 +416,10 @@ void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 
             fapp_http_desc = http_desc;
 
-        #if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS    
+#if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS
             /* Register HTTP server in mDNS SD.*/
             fapp_mdns_service_register_http();
-        #endif
+#endif
 
         }
         else
@@ -431,11 +431,11 @@ void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
     {
         fapp_http_release();
 
-    #if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS    
+#if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS
         /* Unregister HTTP server from mDNS SD.*/
         fapp_mdns_service_unregister_http();
-    #endif
-     }
+#endif
+    }
     else
     {
         fnet_shell_println(desc, FAPP_PARAM_ERR, argv[1]);
@@ -461,7 +461,7 @@ void fapp_http_tls_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
     struct fnet_http_params         params;
     fnet_http_desc_t                http_tls_desc;
     struct fnet_http_tls_params     tls_params;
-    
+
     if(argc == 1u) /* By default is "init".*/
     {
         fnet_memset_zero(&params, sizeof(struct fnet_http_params));
@@ -499,10 +499,10 @@ void fapp_http_tls_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
 
             fapp_http_tls_desc = http_tls_desc;
 
-        #if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS    
+#if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS
             /* Register HTTPS server in mDNS SD.*/
             fapp_mdns_service_register_http_tls();
-        #endif
+#endif
 
         }
         else
@@ -514,11 +514,11 @@ void fapp_http_tls_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
     {
         fapp_http_tls_release();
 
-    #if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS    
+#if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS
         /* Unregister HTTPS server from mDNS SD.*/
         fapp_mdns_service_unregister_http_tls();
-    #endif
-     }
+#endif
+    }
     else
     {
         fnet_shell_println(desc, FAPP_PARAM_ERR, argv[1]);
@@ -531,10 +531,10 @@ void fapp_http_tls_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
 *************************************************************************/
 void fapp_http_info(fnet_shell_desc_t desc)
 {
-#if FAPP_CFG_HTTP_CMD 
+#if FAPP_CFG_HTTP_CMD
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "HTTP Server", fapp_is_enabled_str[fnet_http_is_enabled(fapp_http_desc)]);
 #endif
-#if FAPP_CFG_HTTP_TLS_CMD 
+#if FAPP_CFG_HTTP_TLS_CMD
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "HTTPS Server", fapp_is_enabled_str[fnet_http_is_enabled(fapp_http_tls_desc)]);
 #endif
 }

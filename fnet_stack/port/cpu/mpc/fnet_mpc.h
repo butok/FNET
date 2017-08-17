@@ -36,20 +36,20 @@
     * The basic data types.
     *
     *********************************************************************/
-	typedef unsigned char fnet_uint8_t;         /*  8 bits */
-	typedef unsigned short int fnet_uint16_t;   /* 16 bits */
-	typedef unsigned long int fnet_uint32_t;    /* 32 bits */
-	typedef unsigned long long fnet_uint64_t;   /* 64 bits */
+    typedef unsigned char fnet_uint8_t;         /*  8 bits */
+    typedef unsigned short int fnet_uint16_t;   /* 16 bits */
+    typedef unsigned long int fnet_uint32_t;    /* 32 bits */
+    typedef unsigned long long fnet_uint64_t;   /* 64 bits */
 
-	typedef signed char fnet_int8_t;            /*  8 bits */
-	typedef signed short int fnet_int16_t;      /* 16 bits */
-	typedef signed long int fnet_int32_t;       /* 32 bits */
-	typedef signed long long fnet_int64_t;      /* 64 bits */
+    typedef signed char fnet_int8_t;            /*  8 bits */
+    typedef signed short int fnet_int16_t;      /* 16 bits */
+    typedef signed long int fnet_int32_t;       /* 32 bits */
+    typedef signed long long fnet_int64_t;      /* 64 bits */
 
-	typedef volatile fnet_uint8_t fnet_vuint8_t;     /*  8 bits */
-	typedef volatile fnet_uint16_t fnet_vuint16_t;   /* 16 bits */
-	typedef volatile fnet_uint32_t fnet_vuint32_t;   /* 32 bits */
-	typedef volatile fnet_uint64_t fnet_vuint64_t;   /* 64 bits */
+    typedef volatile fnet_uint8_t fnet_vuint8_t;     /*  8 bits */
+    typedef volatile fnet_uint16_t fnet_vuint16_t;   /* 16 bits */
+    typedef volatile fnet_uint32_t fnet_vuint32_t;   /* 32 bits */
+    typedef volatile fnet_uint64_t fnet_vuint64_t;   /* 64 bits */
 
     /*********************************************************************
     *
@@ -106,7 +106,7 @@
         #define FNET_MPC_INTC_IACKR_PRC0    (*(fnet_vuint32_t *)(void *)(FNET_MPC_INTC_BASE_ADDR + 0x020))
         #define FNET_MPC_INTC_EOIR_PRC0     (*(fnet_vuint32_t *)(void *)(FNET_MPC_INTC_BASE_ADDR + 0x030))
         #define FNET_MPC_INTC_PSR(x)         (*(fnet_vuint16_t *)(void *)(FNET_MPC_INTC_BASE_ADDR + 0x60 + ((x)*2)))
-   #else
+    #else
         #define FNET_MPC_INTC_CPR_PRC0     	(*(fnet_vuint32_t *)(void *)(&FNET_MPC_INTC_BASE_ADDR[0x008]))
         #define FNET_MPC_INTC_CPR_PRC1     	(*(fnet_vuint32_t *)(void *)(&FNET_MPC_INTC_BASE_ADDR[0x00C]))
         #define FNET_MPC_INTC_IACKR_PRC0    (*(fnet_vuint32_t *)(void *)(&FNET_MPC_INTC_BASE_ADDR[0x010]))
@@ -300,28 +300,28 @@
 
     #endif
 
-#if FNET_CFG_CPU_S32R274
+    #if FNET_CFG_CPU_S32R274
 
-    #define FNET_MPC_LIN_BASE (0xFFE90000UL)
+        #define FNET_MPC_LIN_BASE (0xFFE90000UL)
 
-    #define FNET_MPC_LIN_OFFSET_CR1       (fnet_vuint32_t) (0x0)
-    #define FNET_MPC_LIN_OFFSET_UARTCR    (fnet_vuint32_t) (0x10)
-    #define FNET_MPC_LIN_OFFSET_UARTSR    (fnet_vuint32_t) (0x14)
-    #define FNET_MPC_LIN_OFFSET_LINIBRR   (fnet_vuint32_t) (0x28)
-    #define FNET_MPC_LIN_OFFSET_LINFBRR   (fnet_vuint32_t) (0x24)
-    #define FNET_MPC_LIN_OFFSET_LINIER    (fnet_vuint32_t) (0x04)
-    #define FNET_MPC_LIN_OFFSET_BDRL      (fnet_vuint32_t) (0x38)
-    #define FNET_MPC_LIN_OFFSET_BDRM      (fnet_vuint32_t) (0x3C)
+        #define FNET_MPC_LIN_OFFSET_CR1       (fnet_vuint32_t) (0x0)
+        #define FNET_MPC_LIN_OFFSET_UARTCR    (fnet_vuint32_t) (0x10)
+        #define FNET_MPC_LIN_OFFSET_UARTSR    (fnet_vuint32_t) (0x14)
+        #define FNET_MPC_LIN_OFFSET_LINIBRR   (fnet_vuint32_t) (0x28)
+        #define FNET_MPC_LIN_OFFSET_LINFBRR   (fnet_vuint32_t) (0x24)
+        #define FNET_MPC_LIN_OFFSET_LINIER    (fnet_vuint32_t) (0x04)
+        #define FNET_MPC_LIN_OFFSET_BDRL      (fnet_vuint32_t) (0x38)
+        #define FNET_MPC_LIN_OFFSET_BDRM      (fnet_vuint32_t) (0x3C)
 
-    #define FNET_MPC_LIN_CR1(x)     (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_CR1 + ((x)*0x4000)))
-    #define FNET_MPC_LIN_UARTCR(x)  (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_UARTCR + ((x)*0x4000)))
-    #define FNET_MPC_LIN_UARTSR(x)  (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_UARTSR + ((x)*0x4000)))
-    #define FNET_MPC_LIN_LINIBRR(x) (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_LINIBRR + ((x)*0x4000)))
-    #define FNET_MPC_LIN_LINFBRR(x) (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_LINFBRR + ((x)*0x4000)))
-    #define FNET_MPC_LIN_LINIER(x)  (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_LINIER + ((x)*0x4000)))
-    #define FNET_MPC_LIN_BDRL(x)    (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_BDRL + ((x)*0x4000)))
-    #define FNET_MPC_LIN_BDRM(x)    (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_BDRM + ((x)*0x4000)))
-#endif
+        #define FNET_MPC_LIN_CR1(x)     (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_CR1 + ((x)*0x4000)))
+        #define FNET_MPC_LIN_UARTCR(x)  (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_UARTCR + ((x)*0x4000)))
+        #define FNET_MPC_LIN_UARTSR(x)  (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_UARTSR + ((x)*0x4000)))
+        #define FNET_MPC_LIN_LINIBRR(x) (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_LINIBRR + ((x)*0x4000)))
+        #define FNET_MPC_LIN_LINFBRR(x) (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_LINFBRR + ((x)*0x4000)))
+        #define FNET_MPC_LIN_LINIER(x)  (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_LINIER + ((x)*0x4000)))
+        #define FNET_MPC_LIN_BDRL(x)    (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_BDRL + ((x)*0x4000)))
+        #define FNET_MPC_LIN_BDRM(x)    (*(fnet_vuint32_t *)(void*)(FNET_MPC_LIN_BASE + FNET_MPC_LIN_OFFSET_BDRM + ((x)*0x4000)))
+    #endif
     /*********************************************************************
     *
     * System Integration Unit (SIU)
@@ -360,9 +360,9 @@
     #if FNET_CFG_CPU_MPC5744P /* Panther SIUL2 module */
         #define FNET_MPC5744_GPIO_MSCR(x)       (*(fnet_vuint32_t *)(void *)(FNET_SIUL2_BASE_ADDR + 0x240UL + ((x)*4)))
         #define FNET_MPC5744_GPIO_IMCR(x)       (*(fnet_vuint32_t *)(void *)(FNET_SIUL2_BASE_ADDR + 0xA40UL + ((x)*4)))
-	#elif FNET_CFG_CPU_S32R274 /* RRU SIUL2 module */
-		#define FNET_S32R274_GPIO_MSCR(x)       (*(fnet_vuint32_t *)(void *)(FNET_SIUL2_BASE_ADDR + 0x240UL + ((x)*4)))
-		#define FNET_S32R274_GPIO_IMCR(x)       (*(fnet_vuint32_t *)(void *)(FNET_SIUL2_BASE_ADDR + 0xA40UL + ((x)*4)))    
+    #elif FNET_CFG_CPU_S32R274 /* RRU SIUL2 module */
+        #define FNET_S32R274_GPIO_MSCR(x)       (*(fnet_vuint32_t *)(void *)(FNET_SIUL2_BASE_ADDR + 0x240UL + ((x)*4)))
+        #define FNET_S32R274_GPIO_IMCR(x)       (*(fnet_vuint32_t *)(void *)(FNET_SIUL2_BASE_ADDR + 0xA40UL + ((x)*4)))
     #else
         #define FNET_MPC_GPIO_PCR(x)      (*(fnet_vuint16_t *)(void *)(((fnet_vuint16_t*)(void*)FNET_SIUL_BASE_ADDR) + 0x20 + x))
     #endif

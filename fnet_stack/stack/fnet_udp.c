@@ -26,10 +26,10 @@
 
 #include "fnet.h"
 #include "fnet_udp.h"
-#include "fnet_ip_prv.h"
 #include "fnet_checksum.h"
 #include "fnet_prot.h"
-#include "fnet_icmp.h"
+#include "fnet_icmp4.h"
+#include "fnet_ip_prv.h"
 
 #if FNET_CFG_UDP
 
@@ -62,31 +62,26 @@ static fnet_error_t fnet_udp_output(struct sockaddr *src_addr, const struct sock
  ************************************************************************/
 static const fnet_socket_prot_if_t fnet_udp_socket_api =
 {
-    FNET_FALSE,              /* Flag that protocol is connection oriented.*/
-    fnet_udp_attach,        /* Protocol "attach" function.*/
-    fnet_udp_detach,        /* Protocol "detach" function.*/
-    fnet_udp_connect,       /* Protocol "connect" function.*/
-    0,                      /* Protocol "accept" function.*/
-    fnet_udp_rcv,           /* Protocol "receive" function.*/
-    fnet_udp_snd,           /* Protocol "send" function.*/
-    fnet_udp_shutdown,      /* Protocol "shutdown" function.*/
-    fnet_ip_setsockopt,     /* Protocol "setsockopt" function.*/
-    fnet_ip_getsockopt,     /* Protocol "getsockopt" function.*/
-    0                       /* Protocol "listen" function.*/
+    .con_req = FNET_FALSE,                  /* Flag that protocol is connection oriented.*/
+    .prot_attach = fnet_udp_attach,         /* Protocol "attach" function.*/
+    .prot_detach = fnet_udp_detach,         /* Protocol "detach" function.*/
+    .prot_connect = fnet_udp_connect,       /* Protocol "connect" function.*/
+    .prot_rcv = fnet_udp_rcv,               /* Protocol "receive" function.*/
+    .prot_snd = fnet_udp_snd,               /* Protocol "send" function.*/
+    .prot_shutdown = fnet_udp_shutdown,     /* Protocol "shutdown" function.*/
+    .prot_setsockopt = fnet_ip_setsockopt,  /* Protocol "setsockopt" function.*/
+    .prot_getsockopt = fnet_ip_getsockopt,  /* Protocol "getsockopt" function.*/
 };
 
 fnet_prot_if_t fnet_udp_prot_if =
 {
-    0,                      /* Pointer to the head of the protocol's socket list.*/
-    AF_SUPPORTED,           /* Address domain family.*/
-    SOCK_DGRAM,             /* Socket type used for.*/
-    FNET_IP_PROTOCOL_UDP,   /* Protocol number.*/
-    0,                      /* Protocol initialization function.*/
-    fnet_udp_release,       /* Protocol release function.*/
-    fnet_udp_input,         /* Protocol input function.*/
-    fnet_udp_control_input, /* Protocol input control function.*/
-    0,                      /* protocol drain function.*/
-    &fnet_udp_socket_api    /* Socket API */
+    .family = AF_SUPPORTED,             /* Address domain family.*/
+    .type = SOCK_DGRAM,                 /* Socket type used for.*/
+    .protocol = FNET_PROT_UDP,          /* Protocol number.*/
+    .prot_release = fnet_udp_release,   /* Protocol release function.*/
+    .prot_input = fnet_udp_input,       /* Protocol input function.*/
+    .prot_control_input = fnet_udp_control_input, /* Protocol input control function.*/
+    .socket_api = &fnet_udp_socket_api  /* Socket API */
 };
 
 /************************************************************************
@@ -148,9 +143,9 @@ static fnet_error_t fnet_udp_output(  struct sockaddr *src_addr, const struct so
     if( 0
 #if FNET_CFG_IP4
         || ( (dest_addr->sa_family == AF_INET)
-             && ((netif = fnet_ip_route(((struct sockaddr_in *)(dest_addr))->sin_addr.s_addr)) != FNET_NULL)
+             && ((netif = fnet_ip4_route(((struct sockaddr_in *)(dest_addr))->sin_addr.s_addr)) != FNET_NULL)
              && (netif->features & FNET_NETIF_FEATURE_HW_TX_PROTOCOL_CHECKSUM)
-             && (fnet_ip_will_fragment(netif, nb->total_length) == FNET_FALSE) /* Fragmented packets are not inspected.*/  )
+             && (fnet_ip4_will_fragment(netif, nb->total_length) == FNET_FALSE) /* Fragmented packets are not inspected.*/  )
 #endif
 #if FNET_CFG_IP6
         || ( (dest_addr->sa_family == AF_INET6)
@@ -166,7 +161,7 @@ static fnet_error_t fnet_udp_output(  struct sockaddr *src_addr, const struct so
     else
 #endif /* FNET_CFG_CPU_ETH_HW_TX_IP_CHECKSUM */
     {
-        udp_header->checksum = fnet_checksum_pseudo_start( nb, FNET_HTONS((fnet_uint16_t)FNET_IP_PROTOCOL_UDP), (fnet_uint16_t)nb->total_length );
+        udp_header->checksum = fnet_checksum_pseudo_start( nb, FNET_HTONS((fnet_uint16_t)FNET_PROT_UDP), (fnet_uint16_t)nb->total_length );
         checksum_p = &udp_header->checksum;
     }
 #endif /* FNET_CFG_UDP_CHECKSUM */
@@ -174,18 +169,18 @@ static fnet_error_t fnet_udp_output(  struct sockaddr *src_addr, const struct so
 #if FNET_CFG_IP4
     if(dest_addr->sa_family == AF_INET)
     {
-        error = fnet_ip_output(netif,
-                               ((const struct sockaddr_in *)(src_addr))->sin_addr.s_addr,
-                               ((const struct sockaddr_in *)(dest_addr))->sin_addr.s_addr,
-                               FNET_IP_PROTOCOL_UDP, sockoption->ip_opt.tos,
+        error = fnet_ip4_output(netif,
+                                ((const struct sockaddr_in *)(src_addr))->sin_addr.s_addr,
+                                ((const struct sockaddr_in *)(dest_addr))->sin_addr.s_addr,
+                                FNET_PROT_UDP, sockoption->ip4_opt.tos,
 #if FNET_CFG_MULTICAST
-                               (fnet_uint8_t)((FNET_IP4_ADDR_IS_MULTICAST(((const struct sockaddr_in *)(dest_addr))->sin_addr.s_addr) ? sockoption->ip_opt.ttl_multicast : sockoption->ip_opt.ttl)),
+                                (fnet_uint8_t)((FNET_IP4_ADDR_IS_MULTICAST(((const struct sockaddr_in *)(dest_addr))->sin_addr.s_addr) ? sockoption->ip4_opt.ttl_multicast : sockoption->ip4_opt.ttl)),
 #else
-                               sockoption->ip_opt.ttl,
+                                sockoption->ip4_opt.ttl,
 #endif /* FNET_CFG_MULTICAST */
-                               nb, FNET_UDP_DF, sockoption->so_dontroute,
-                               checksum_p
-                              );
+                                nb, FNET_UDP_DF, sockoption->so_dontroute,
+                                checksum_p
+                               );
     }
     else
 #endif
@@ -195,7 +190,7 @@ static fnet_error_t fnet_udp_output(  struct sockaddr *src_addr, const struct so
             error = fnet_ip6_output( netif,
                                      fnet_socket_addr_is_unspecified(src_addr) ? FNET_NULL : & ((struct sockaddr_in6 *)(src_addr))->sin6_addr.s6_addr,
                                      &((const struct sockaddr_in6 *)(dest_addr))->sin6_addr.s6_addr,
-                                     FNET_IP_PROTOCOL_UDP,
+                                     FNET_PROT_UDP,
                                      FNET_IP6_ADDR_IS_MULTICAST(&((const struct sockaddr_in6 *)(dest_addr))->sin6_addr.s6_addr) ? sockoption->ip6_opt.hops_multicast : sockoption->ip6_opt.hops_unicast,
                                      nb,
                                      checksum_p
@@ -248,7 +243,7 @@ static void fnet_udp_input(fnet_netif_t *netif, struct sockaddr *foreign_addr,  
             {
                 fnet_uint16_t sum;
 
-                sum = fnet_checksum_pseudo_start( nb, FNET_HTONS((fnet_uint16_t)FNET_IP_PROTOCOL_UDP), (fnet_uint16_t)udp_length );
+                sum = fnet_checksum_pseudo_start( nb, FNET_HTONS((fnet_uint16_t)FNET_PROT_UDP), (fnet_uint16_t)udp_length );
                 sum = fnet_checksum_pseudo_end( sum, &foreign_addr->sa_data[0], &local_addr->sa_data[0],
                                                 (fnet_size_t)((local_addr->sa_family == AF_INET) ? sizeof(fnet_ip4_addr_t) : sizeof(fnet_ip6_addr_t)));
 
@@ -378,7 +373,7 @@ static void fnet_udp_input(fnet_netif_t *netif, struct sockaddr *foreign_addr,  
             }
             else /* For unicast datagram.*/
             {
-                sock = fnet_socket_lookup(fnet_udp_prot_if.head, local_addr, foreign_addr, FNET_IP_PROTOCOL_UDP);
+                sock = fnet_socket_lookup(fnet_udp_prot_if.head, local_addr, foreign_addr, FNET_PROT_UDP);
 
                 if(sock)
                 {
@@ -399,7 +394,7 @@ static void fnet_udp_input(fnet_netif_t *netif, struct sockaddr *foreign_addr,  
 #if FNET_CFG_IP4
                     if(local_addr->sa_family == AF_INET)
                     {
-                        fnet_icmp_error(netif, FNET_ICMP_UNREACHABLE, FNET_ICMP_UNREACHABLE_PORT, ip_nb);
+                        fnet_icmp4_error(netif, FNET_ICMP4_UNREACHABLE, FNET_ICMP4_UNREACHABLE_PORT, ip_nb);
                     }
                     else
 #endif
@@ -433,11 +428,11 @@ static void fnet_udp_input(fnet_netif_t *netif, struct sockaddr *foreign_addr,  
 static fnet_return_t fnet_udp_attach( fnet_socket_if_t *sk )
 {
 #if FNET_CFG_IP4
-    sk->options.ip_opt.ttl = FNET_UDP_TTL;
+    sk->options.ip4_opt.ttl = FNET_UDP_TTL;
 #if FNET_CFG_MULTICAST
-    sk->options.ip_opt.ttl_multicast = FNET_UDP_TTL_MULTICAST;
+    sk->options.ip4_opt.ttl_multicast = FNET_UDP_TTL_MULTICAST;
 #endif /* FNET_CFG_MULTICAST */
-    sk->options.ip_opt.tos = 0u;
+    sk->options.ip4_opt.tos = 0u;
 #endif
 
 #if FNET_CFG_IP6

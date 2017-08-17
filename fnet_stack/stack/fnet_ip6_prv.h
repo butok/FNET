@@ -28,7 +28,6 @@
 #define _FNET_IP6_PRV_H_
 
 #include "fnet.h"
-#include "fnet_ip.h"
 #include "fnet_ip6.h"
 #include "fnet_netif.h"
 #include "fnet_netif_prv.h"

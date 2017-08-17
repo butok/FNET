@@ -425,21 +425,21 @@ typedef enum
 {
     FNET_FLASH_ERR_NOTERASED      = (-2),  /**< @brief memory not erased.
                                            */
-    FNET_FLASH_ERR_WRITEFAILED    = (-3),  /**< @brief 
+    FNET_FLASH_ERR_WRITEFAILED    = (-3),  /**< @brief
                                            */
 
 
-    FNET_FLASH_ERR_DST_UNALIGNED  = (-5),  /**< @brief 
+    FNET_FLASH_ERR_DST_UNALIGNED  = (-5),  /**< @brief
                                            */
-    FNET_FLASH_ERR_VERIFY         = (-6),  /**< @brief 
+    FNET_FLASH_ERR_VERIFY         = (-6),  /**< @brief
                                            */
-    FNET_FLASH_ERR_NOTBLANK       = (-7),  /**< @brief 
+    FNET_FLASH_ERR_NOTBLANK       = (-7),  /**< @brief
                                            */
-    FNET_FLASH_ERR_LOCK_OP        = (-8),  /**< @brief error on 
+    FNET_FLASH_ERR_LOCK_OP        = (-8),  /**< @brief error on
                                            */
-    FNET_FLASH_ERR_INIT           = (-9),  /**< @brief error on 
+    FNET_FLASH_ERR_INIT           = (-9),  /**< @brief error on
                                            */
-    FNET_FLASH_ERR_ERASE          = (-10),  /**< @brief error on 
+    FNET_FLASH_ERR_ERASE          = (-10),  /**< @brief error on
                                            */
 } fnet_flash_error_t;
 
@@ -954,7 +954,7 @@ static fnet_int32_t fnet_cpu_flash_init(
 static fnet_int32_t fnet_cpu_flash_unlock(
     PSSD_CONFIG pSSDConfig
 );
-static  SSD_CONFIG* fnet_cpu_flash_init_SSD(
+static  SSD_CONFIG *fnet_cpu_flash_init_SSD(
     void
 );
 
@@ -978,8 +978,8 @@ static fnet_uint8_t fnet_cpu_flash_block_find(
 
     for (i = 0; i < NUM_BLOCK_ALL; i++)
     {
-       if((BLOCK_START_ADDRS[i] == (fnet_uint32_t)flash_addr) )
-       {
+        if((BLOCK_START_ADDRS[i] == (fnet_uint32_t)flash_addr) )
+        {
             blockID = i;
             break;
         }
@@ -1053,25 +1053,25 @@ static fnet_int32_t fnet_cpu_flash_unlock(
     returnCode = pSetLock(pSSDConfig, C55_BLOCK_LOW, 0x00000000L);
     if (C55_OK != returnCode)
     {
-         return FNET_FLASH_ERR_LOCK_OP;
+        return FNET_FLASH_ERR_LOCK_OP;
     }
 
     returnCode = pSetLock(pSSDConfig, C55_BLOCK_MID, 0x00000000L);
     if (C55_OK != returnCode)
     {
-         return FNET_FLASH_ERR_LOCK_OP;
+        return FNET_FLASH_ERR_LOCK_OP;
     }
 
     returnCode = pSetLock(pSSDConfig, C55_BLOCK_HIGH, 0x00000003L);
     if (C55_OK != returnCode)
     {
-         return FNET_FLASH_ERR_LOCK_OP;
+        return FNET_FLASH_ERR_LOCK_OP;
     }
 
     returnCode = pSetLock(pSSDConfig, C55_BLOCK_256K_FIRST, 0x00000000L);
     if (C55_OK != returnCode)
     {
-         return FNET_FLASH_ERR_LOCK_OP;
+        return FNET_FLASH_ERR_LOCK_OP;
     }
 
 
@@ -1081,16 +1081,16 @@ static fnet_int32_t fnet_cpu_flash_unlock(
     returnCode = pGetLock(pSSDConfig, C55_BLOCK_UTEST, &blkLockState);
     if (C55_OK != returnCode)
     {
-         return FNET_FLASH_ERR_LOCK_OP;
+        return FNET_FLASH_ERR_LOCK_OP;
     }
 
     if (!(blkLockState & 0x00000001))
     {
-         returnCode = pSetLock(pSSDConfig, C55_BLOCK_UTEST, 0x1);
-         if (C55_OK != returnCode)
-         {
-             return FNET_FLASH_ERR_LOCK_OP;
-         }
+        returnCode = pSetLock(pSSDConfig, C55_BLOCK_UTEST, 0x1);
+        if (C55_OK != returnCode)
+        {
+            return FNET_FLASH_ERR_LOCK_OP;
+        }
     }
 
     return FNET_OK;
@@ -1102,7 +1102,7 @@ static fnet_int32_t fnet_cpu_flash_unlock(
 *
 * DESCRIPTION:
 ************************************************************************/
-static SSD_CONFIG* fnet_cpu_flash_init_SSD(
+static SSD_CONFIG *fnet_cpu_flash_init_SSD(
     void
 )
 {
@@ -1156,14 +1156,14 @@ static fnet_int32_t fnet_cpu_flash_init(
     returnCode = pFlashInit(pSSDConfig);
     if (C55_OK != returnCode)
     {
-         return FNET_FLASH_ERR_INIT;
+        return FNET_FLASH_ERR_INIT;
     }
 
     /* Flash unlock blocks, except reserved*/
     returnCode = fnet_cpu_flash_unlock(pSSDConfig);
     if (returnCode)
     {
-         return FNET_FLASH_ERR_LOCK_OP;
+        return FNET_FLASH_ERR_LOCK_OP;
     }
 
     return FNET_OK;
@@ -1246,7 +1246,7 @@ fnet_return_t fnet_cpu_flash_erase(
         n -= bytes;
 
         /*incr. address for next erase loop*/
-        addr = (fnet_uint8_t*)addr + bytes;
+        addr = (fnet_uint8_t *)addr + bytes;
     }
 
     //RestoreFlashControllerCache(FLASH_PFCR1 ,pflash_pfcr1);
@@ -1407,12 +1407,12 @@ static IN_RAM_CODE fnet_uint32_t WaitOperationFinish(
 
  ****************************************************************************/
 static IN_RAM_CODE fnet_uint32_t App_FlashErase( PSSD_CONFIG pSSDConfig,
-    fnet_uint8_t      eraseOption,
-    fnet_uint32_t     lowBlockSelect,
-    fnet_uint32_t     midBlockSelect,
-    fnet_uint32_t     highBlockSelect,
-    N256K_BLOCK_SEL   n256KBlockSelect
-)
+        fnet_uint8_t      eraseOption,
+        fnet_uint32_t     lowBlockSelect,
+        fnet_uint32_t     midBlockSelect,
+        fnet_uint32_t     highBlockSelect,
+        N256K_BLOCK_SEL   n256KBlockSelect
+                                               )
 {
     fnet_uint32_t returnCode;
     fnet_uint32_t result;

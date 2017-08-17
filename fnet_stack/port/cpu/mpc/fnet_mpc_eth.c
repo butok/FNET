@@ -99,75 +99,75 @@ void fnet_eth_io_init()
     FNET_MPC_GPIO_PCR(49) = 0x906;     /* Set to FEC_RX_ER  */
 #endif
 
-#if FNET_CFG_CPU_S32R274 /* RRU - RGMII */ 
+#if FNET_CFG_CPU_S32R274 /* RRU - RGMII */
 
     /*
     NOT USED FOR RGMII PH[5]    MSCR[117]   COL      FEC I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
     NOT USED FOR RGMII PH[4]    MSCR[116]   CRS      FEC I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
-    
+
     PG[9]    MSCR[105]   MDC      ENET O      SRC[1:0]=11    OBE=1    ODE=0    SMC=0    APC=0    IBE=0    HYS=0    PUS=0    PUE=1    INV=0    SSS=0011
     PG[8]    MSCR[104]   MDIO     ENET I/O    SRC[1:0]=11    OBE=1    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=0    INV=0    SSS=0011
-    
+
     PH[13]   MSCR[125]   RX_CLK   ENET I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
-    
+
     PD[5]    MSCR[53]    RX_D0    ENET I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
     PD[6]    MSCR[54]    RX_D1    ENET I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
     PH[4]    MSCR[116]   RX_D2    ENET I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
     PH[5]    MSCR[117]   RX_D3    ENET I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
-    
+
     PD[2]    MSCR[50]    RX_DV    ENET I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
     NOT USED FOR RGMII PI[1]    MSCR[129]   RX_ER    ENET I      SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
-    
+
     PG[11]   MSCR[107]   TX_CLK   ENET 0      SRC[1:0]=11    OBE=1    ODE=0    SMC=0    APC=0    IBE=0    HYS=0    PUS=0    PUE=0    INV=0    SSS=0010
-    
+
     PD[0]    MSCR[48]   TX_D0    ENET O      SRC[1:0]=11    OBE=1    ODE=0    SMC=0    APC=0    IBE=0    HYS=0    PUS=0    PUE=0    INV=0    SSS=0110
     PD[3]    MSCR[51]   TX_D1    ENET O      SRC[1:0]=11    OBE=1    ODE=0    SMC=0    APC=0    IBE=0    HYS=0    PUS=0    PUE=0    INV=0    SSS=0110
     PD[4]    MSCR[52]    TX_D2    ENET O      SRC[1:0]=11    OBE=1    ODE=0    SMC=0    APC=0    IBE=0    HYS=0    PUS=0    PUE=0    INV=0    SSS=0110
     PG[10]   MSCR[106]   TX_D3    ENET O      SRC[1:0]=11    OBE=1    ODE=0    SMC=0    APC=0    IBE=0    HYS=0    PUS=0    PUE=0    INV=0    SSS=0011
-   
+
     PE[15]   MSCR[47]   TX_EN    ENET O      SRC[1:0]=11    OBE=1    ODE=0    SMC=0    APC=0    IBE=0    HYS=0    PUS=0    PUE=0    INV=0    SSS=0110
-    
+
     PI[2]    MSCR[130]  ENET_REF_CLK ENET I  SRC[1:0]=11    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000
-    */  
+    */
     //FNET_S32R274_GPIO_MSCR(117) = 0x30090000;    /* Set to ENET_COL    */
     //FNET_S32R274_GPIO_MSCR(116) = 0x30090000;    /* Set to ENET_CRS    */
-    
+
     FNET_S32R274_GPIO_MSCR(105)  = 0x32000003;    /* Set to ENET_MDC    */
     FNET_S32R274_GPIO_MSCR(104) = 0x32080003;    /* Set to ENET_MDIO   */
-    
+
     FNET_S32R274_GPIO_MSCR(125)  = 0x30080000;    /* Set to ENET_RX_CLK */
 
     FNET_S32R274_GPIO_IMCR(90) = 0x00000002;
-    
+
     FNET_S32R274_GPIO_MSCR(53)  = 0x30080000;    /* Set to ENET_RX_D0  */
     FNET_S32R274_GPIO_MSCR(54)  = 0x30080000;    /* Set to ENET_RX_D1  */
     FNET_S32R274_GPIO_MSCR(116) = 0x30080000;    /* Set to ENET_RX_D2  */
     FNET_S32R274_GPIO_MSCR(117) = 0x30080000;    /* Set to ENET_RX_D3  */
-    
+
     FNET_S32R274_GPIO_MSCR(50)  = 0x30080000;    /* Set to ENET_RX_DV  */
 
-    FNET_S32R274_GPIO_IMCR(91) = 0x00000001;    
+    FNET_S32R274_GPIO_IMCR(91) = 0x00000001;
     //FNET_S32R274_GPIO_MSCR(129) = 0x30090000;    /* Set to ENET_RX_ER  */
-    
+
     FNET_S32R274_GPIO_MSCR(107) = 0x32000002;    /* Set to ENET_TX_CLK */
-    
+
     FNET_S32R274_GPIO_MSCR(48) = 0x32000004;    /* Set to ENET_TX_D0  */
     FNET_S32R274_GPIO_MSCR(51) = 0x32000004;    /* Set to ENET_TX_D1  */
     FNET_S32R274_GPIO_MSCR(52)  = 0x32000004;    /* Set to ENET_TX_D2  */
     FNET_S32R274_GPIO_MSCR(106) = 0x32000003;    /* Set to ENET_TX_D3  */
-    
+
     FNET_S32R274_GPIO_MSCR(47) = 0x32000004;    /* Set to ENET_TX_EN  */
-    
+
     FNET_S32R274_GPIO_MSCR(130) = 0x30080000;    /* Set to ENET_REF_CLK  */
 
-    
-    FNET_S32R274_GPIO_MSCR(79)    =(0x32080003); //TIMER1
-    FNET_S32R274_GPIO_MSCR(80)    =(0x32080003); //TIMER2
-    FNET_S32R274_GPIO_MSCR(118)   =(0x30080000); //COL
-    FNET_S32R274_GPIO_MSCR(119)   =(0x30080000); //CRS
-    FNET_S32R274_GPIO_MSCR(120)   =(0x30080000); //RXER
-    FNET_S32R274_GPIO_MSCR(121)   =(0x32000004); //TXER
-#endif  
+
+    FNET_S32R274_GPIO_MSCR(79)    = (0x32080003); //TIMER1
+    FNET_S32R274_GPIO_MSCR(80)    = (0x32080003); //TIMER2
+    FNET_S32R274_GPIO_MSCR(118)   = (0x30080000); //COL
+    FNET_S32R274_GPIO_MSCR(119)   = (0x30080000); //CRS
+    FNET_S32R274_GPIO_MSCR(120)   = (0x30080000); //RXER
+    FNET_S32R274_GPIO_MSCR(121)   = (0x32000004); //TXER
+#endif
 #if FNET_CFG_CPU_MPC5744P /* Panther */
     /*
         PH[5]    MSCR[117]   COL      FEC I      SRC[1:0]=00    OBE=0    ODE=0    SMC=0    APC=0    IBE=1    HYS=0    PUS=0    PUE=1    INV=0    SSS=0000

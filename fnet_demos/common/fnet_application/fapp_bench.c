@@ -487,8 +487,11 @@ static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
 {
     fnet_int32_t            send_result;
     fnet_char_t             ip_str[FNET_IP_ADDR_STR_SIZE];
-    const struct linger     linger_option = {.l_onoff = FNET_TRUE, 
-                                             .l_linger = 4 };
+    const struct linger     linger_option =
+    {
+        .l_onoff = FNET_TRUE,
+        .l_linger = 4
+    };
     const fnet_size_t       bufsize_option = FAPP_BENCH_SOCKET_BUF_SIZE;
     const fnet_int32_t      keepalive_option = 1;
     const fnet_int32_t      keepcnt_option = FAPP_BENCH_TCP_KEEPCNT;

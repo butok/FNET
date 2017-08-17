@@ -34,7 +34,7 @@
 #define FNET_FEC_HW_TX_PROTOCOL_CHECKSUM_FIX       (1)
 
 #if FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM && FNET_FEC_HW_TX_PROTOCOL_CHECKSUM_FIX
-    #include "stack/fnet_icmp.h"
+    #include "stack/fnet_icmp4.h"
     #include "stack/fnet_udp.h"
     #include "stack/fnet_tcp.h"
 #endif
@@ -42,7 +42,7 @@
 /******************************************************************************
  * FEC module RX interrupt support:
  *               - 1 = is enabled (Default value).
- *               - 0 = is disabled. Only for debug needs. 
+ *               - 0 = is disabled. Only for debug needs.
  *                     fnet_fec_poll() should be called periodically.
  ******************************************************************************/
 #ifndef FNET_CFG_FEC_INTERRUPT_ENABLE
@@ -90,7 +90,7 @@ void fnet_fec_debug_mii_print_regs(fnet_netif_t *netif) ;
         __attribute__((section(".uncacheable")))
     #endif
 
-    fnet_fec_if_t fnet_fec0_if  
+    fnet_fec_if_t fnet_fec0_if
 
     #if FNET_CFG_COMP_IAR  && FNET_CFG_CPU_CACHE && !FNET_CFG_CPU_CACHE_INVALIDATE
         @".uncacheable"
@@ -106,7 +106,7 @@ void fnet_fec_debug_mii_print_regs(fnet_netif_t *netif) ;
     #endif
 
     fnet_fec_if_t fnet_fec1_if
-  
+
     #if FNET_CFG_COMP_IAR  && FNET_CFG_CPU_CACHE && !FNET_CFG_CPU_CACHE_INVALIDATE
         @".uncacheable"
     #endif
@@ -269,7 +269,7 @@ static fnet_return_t fnet_fec_init(fnet_netif_t *netif)
 #endif /* FNET_CFG_CPU_ETH_RMII */
 #if FNET_CFG_CPU_S32R274
                           | FNET_FEC_RCR_RGMII_EN /* TBD: make it configurable */
-#endif 
+#endif
 #if FNET_CFG_CPU_ETH_PROMISCUOUS
                           | FNET_FEC_RCR_PROM /* Enable promiscuous mode.*/
 #endif
@@ -346,10 +346,10 @@ static fnet_return_t fnet_fec_init(fnet_netif_t *netif)
 #if FNET_CFG_CPU_MPC564xBC || FNET_CFG_CPU_MPC5668G || FNET_CFG_CPU_MPC5566 || FNET_MCF /* Older platforms.*/
         /* MDC formula defined in the corresponding MCU Reference Manual looks like : (SYS_CLK / PREDIV) x (1 / MII_SPEED) = MDC */
         ethif->reg_phy->MSCR = FNET_FEC_MSCR_MII_SPEED((FNET_FEC_CLOCK_KHZ / FNET_FEC_MII_CLOCK_KHZ) + (fnet_uint32_t)(((FNET_FEC_CLOCK_KHZ % FNET_FEC_MII_CLOCK_KHZ) != 0U) ? 1U : 0U));
-    #elif FNET_CFG_CPU_S32R274
+#elif FNET_CFG_CPU_S32R274
         //ethif->reg_phy->MSCR = FNET_FEC_MSCR_MII_SPEED((FNET_FEC_CLOCK_KHZ/FNET_FEC_MII_CLOCK_KHZ) - 1U) & ~1U;
         ethif->reg_phy->MSCR = 0x16; //TBD make it result of calculation
-	#else  /* FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_MCF54418 || FNET_CFG_CPU_MK60N512 || FNET_CFG_CPU_MK60DN512 || FNET_CFG_CPU_MK64FN1 || FNET_CFG_CPU_MK66FN2 || FNET_CFG_CPU_MK70FN1 || FNET_CFG_CPU_MK60FN1 */
+#else  /* FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_MCF54418 || FNET_CFG_CPU_MK60N512 || FNET_CFG_CPU_MK60DN512 || FNET_CFG_CPU_MK64FN1 || FNET_CFG_CPU_MK66FN2 || FNET_CFG_CPU_MK70FN1 || FNET_CFG_CPU_MK60FN1 */
         /* MDC formula defined in the corresponding MCU Reference Manual looks like : (SYS_CLK / PREDIV) x (1 / ((MII_SPEED + 1)) = MDC */
         ethif->reg_phy->MSCR = FNET_FEC_MSCR_MII_SPEED((FNET_FEC_CLOCK_KHZ / FNET_FEC_MII_CLOCK_KHZ) - (fnet_uint32_t)(((FNET_FEC_CLOCK_KHZ % FNET_FEC_MII_CLOCK_KHZ) != 0U) ? 0U : 1U));
 #endif
@@ -360,12 +360,12 @@ static fnet_return_t fnet_fec_init(fnet_netif_t *netif)
 #endif
 
         /* Enable FEC */
-    #if FNET_CFG_CPU_S32R274
+#if FNET_CFG_CPU_S32R274
         ethif->reg->ECR = FNET_FEC_ECR_ETHER_EN | FNET_FEC_ECR_SPEED;
-    #else
+#else
         ethif->reg->ECR = FNET_FEC_ECR_ETHER_EN;
-    #endif
-       
+#endif
+
 
 #if FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER
         fnet_fec_phy_discover_addr(ethif, ethif->phy_addr);
@@ -664,13 +664,13 @@ static void fnet_fec_checksum_clear(fnet_uint16_t type, fnet_uint8_t *datagram, 
     fnet_uint8_t    *prot_hdr;
 
     /* IPv4 */
-    if((type == FNET_ETH_TYPE_IP4) && (datagram_size >= sizeof(fnet_ip_header_t)))
+    if((type == FNET_ETH_TYPE_IP4) && (datagram_size >= sizeof(fnet_ip4_header_t)))
     {
         /* If NOT fragmented. The MF bit or fragment offset are zero.*/
-        if((((fnet_ip_header_t *)ip_hdr)->flags_fragment_offset & ~FNET_HTONS(FNET_IP_DF)) == 0)
+        if((((fnet_ip4_header_t *)ip_hdr)->flags_fragment_offset & ~FNET_HTONS(FNET_IP4_DF)) == 0)
         {
-            ip_hdr_size = (fnet_size_t)((((fnet_ip_header_t *)ip_hdr)->version__header_length & 0x0F) << 2);
-            protocol = ((fnet_ip_header_t *)ip_hdr)->protocol;
+            ip_hdr_size = (fnet_size_t)((((fnet_ip4_header_t *)ip_hdr)->version__header_length & 0x0F) << 2);
+            protocol = ((fnet_ip4_header_t *)ip_hdr)->protocol;
         }
     }
     /* IPv6 */
@@ -690,15 +690,15 @@ static void fnet_fec_checksum_clear(fnet_uint16_t type, fnet_uint8_t *datagram, 
         /* Clear checksum field.*/
         switch(protocol)
         {
-            case FNET_IP_PROTOCOL_ICMP:
-                if(datagram_size >= (ip_hdr_size + sizeof(fnet_icmp_header_t))) /*Check length.*/
-                    ((fnet_icmp_header_t *)(prot_hdr))->checksum = 0;
+            case FNET_PROT_ICMP4:
+                if(datagram_size >= (ip_hdr_size + sizeof(fnet_icmp4_header_t))) /*Check length.*/
+                    ((fnet_icmp4_header_t *)(prot_hdr))->checksum = 0;
                 break;
-            case FNET_IP_PROTOCOL_UDP:
+            case FNET_PROT_UDP:
                 if(datagram_size >= (ip_hdr_size + sizeof(fnet_udp_header_t))) /*Check length.*/
                     ((fnet_udp_header_t *)(prot_hdr))->checksum = 0;
                 break;
-            case FNET_IP_PROTOCOL_TCP:
+            case FNET_PROT_TCP:
                 if(datagram_size >= (ip_hdr_size + sizeof(fnet_tcp_header_t))) /*Check length.*/
                     ((fnet_tcp_header_t *)(prot_hdr))->checksum = 0;
                 break;
@@ -1239,7 +1239,7 @@ void fnet_fec_multicast_leave(fnet_netif_t *netif, fnet_mac_addr_t multicast_add
 
 /************************************************************************
 * DESCRIPTION: This function polls fec driver.
-* I has sence only if 
+* I has sence only if
 * !!!! Used only for debug needs. !!!!!
 *************************************************************************/
 void fnet_fec_poll(fnet_netif_desc_t netif_desc)
@@ -1309,7 +1309,7 @@ void fnet_fec_debug_mii_print_regs(fnet_netif_t *netif)
         fnet_printf("\tCDCTRL1 = 0x%04X\n", reg_value );
         fnet_fec_mii_read(ethif, FNET_FEC_MII_REG_EDCR, &reg_value);
         fnet_printf("\tEDCR = 0x%04X\n", reg_value );
-/* TODO printing of the RGMII PHY registers */
+        /* TODO printing of the RGMII PHY registers */
 #elif FNET_CFG_CPU_S32R274
 #else
         fnet_fec_mii_read(ethif, FNET_FEC_MII_REG_ICR, &reg_value);

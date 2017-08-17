@@ -85,8 +85,8 @@ fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms )
         /* assumes SYS_CLK = 200MHz and MC_CGM_SC_DC0 = 4, then PBRIDGE_CLK is /4 */
         FNET_MPC_PITRTI_LDVAL(FNET_TIMER_NUMBER) = period_ms * (FNET_TIMER_CLKIN_PER_MS / 4);
 #elif FNET_CFG_CPU_S32R274
-      /* assumes SYS_CLK = 120MHz, then PBRIDGE_CLK is /2 */
-      FNET_MPC_PITRTI_LDVAL(FNET_TIMER_NUMBER) = period_ms * (FNET_TIMER_CLKIN_PER_MS/2);   
+        /* assumes SYS_CLK = 120MHz, then PBRIDGE_CLK is /2 */
+        FNET_MPC_PITRTI_LDVAL(FNET_TIMER_NUMBER) = period_ms * (FNET_TIMER_CLKIN_PER_MS / 2);
 #else
         FNET_MPC_PITRTI_LDVAL(FNET_TIMER_NUMBER) = (period_ms * FNET_TIMER_CLKIN_PER_MS) - 1;
 #endif

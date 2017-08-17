@@ -36,7 +36,7 @@
 
 #include "fnet.h"
 
-#if FNET_CFG_TLS 
+#if FNET_CFG_TLS
 
 #if FNET_CFG_DEBUG_TLS && FNET_CFG_DEBUG
     #define FNET_DEBUG_TLS   FNET_DEBUG
@@ -130,7 +130,7 @@ fnet_tls_desc_t fnet_tls_init(struct fnet_tls_params *params)
 
     /* Set all the fields to zero */
     fnet_memset_zero(tls_if, sizeof(*tls_if));
-    
+
     /* Initialize an SSL configuration context */
     mbedtls_ssl_config_init(&tls_if->ssl_config);
 #if defined(MBEDTLS_SSL_CACHE_C)
@@ -163,7 +163,7 @@ fnet_tls_desc_t fnet_tls_init(struct fnet_tls_params *params)
             goto ERROR_1;
         }
     }
-    
+
     /* Seed and setup entropy source for future reseeds.  */
     if (mbedtls_ctr_drbg_seed(&tls_if->ctr_drbg_context, mbedtls_entropy_func, &tls_if->entropy_context, custom, sizeof(custom)) != 0)
     {
@@ -178,7 +178,7 @@ fnet_tls_desc_t fnet_tls_init(struct fnet_tls_params *params)
 
     /* Set the random number generator callback */
     mbedtls_ssl_conf_rng(&tls_if->ssl_config, mbedtls_ctr_drbg_random, &tls_if->ctr_drbg_context);
- 
+
 #if defined(MBEDTLS_SSL_CACHE_C)
     /* Set the session cache callbacks (server-side only) */
     mbedtls_ssl_conf_session_cache( &tls_if->ssl_config, &tls_if->cache_context, mbedtls_ssl_cache_get, mbedtls_ssl_cache_set );
@@ -216,16 +216,16 @@ ERROR:
 ************************************************************************/
 void fnet_tls_release(fnet_tls_desc_t tls_desc)
 {
-    struct fnet_tls_if  *tls_if = (struct fnet_tls_if  *)tls_desc;
+    struct fnet_tls_if  *tls_if = (struct fnet_tls_if *)tls_desc;
 
     if(tls_if && (tls_if->is_enabled == FNET_TRUE ) )
     {
         mbedtls_x509_crt_free(&tls_if->x509_crt);
         mbedtls_pk_free(&tls_if->pk_context);
         mbedtls_ssl_config_free(&tls_if->ssl_config);
-    #if defined(MBEDTLS_SSL_CACHE_C)
+#if defined(MBEDTLS_SSL_CACHE_C)
         mbedtls_ssl_cache_free(&tls_if->cache_context);
-    #endif
+#endif
         mbedtls_ctr_drbg_free(&tls_if->ctr_drbg_context);
         mbedtls_entropy_free(&tls_if->entropy_context);
 
@@ -239,7 +239,7 @@ void fnet_tls_release(fnet_tls_desc_t tls_desc)
 ************************************************************************/
 fnet_tls_socket_t fnet_tls_socket(fnet_tls_desc_t tls_desc, fnet_socket_t sock)
 {
-    struct fnet_tls_if  *tls_if = (struct fnet_tls_if  *)tls_desc;
+    struct fnet_tls_if  *tls_if = (struct fnet_tls_if *)tls_desc;
     fnet_tls_socket_t   result = FNET_NULL;
     fnet_index_t        i;
     mbedtls_ssl_context *tls_socket = FNET_NULL;
@@ -275,7 +275,7 @@ fnet_tls_socket_t fnet_tls_socket(fnet_tls_desc_t tls_desc, fnet_socket_t sock)
                         if(res == 0)
                         {
                             /* Handshake is complete.*/
-                            result = tls_socket; 
+                            result = tls_socket;
                         }
                         else if ((res != MBEDTLS_ERR_SSL_WANT_READ) && (res != MBEDTLS_ERR_SSL_WANT_WRITE))
                         {
@@ -287,8 +287,8 @@ fnet_tls_socket_t fnet_tls_socket(fnet_tls_desc_t tls_desc, fnet_socket_t sock)
                     }
                     while((res == MBEDTLS_ERR_SSL_WANT_READ) || (res == MBEDTLS_ERR_SSL_WANT_WRITE));
                 }
-#else  /* Handshake postponed to recv() */ 
-                result = tls_socket; 
+#else  /* Handshake postponed to recv() */
+                result = tls_socket;
 #endif
             }
         }

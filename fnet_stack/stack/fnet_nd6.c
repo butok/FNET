@@ -29,7 +29,6 @@
 #include "fnet_nd6.h"
 #include "fnet_icmp6.h"
 #include "fnet_netif_prv.h"
-#include "fnet_ip_prv.h"
 #include "fnet_ip6_prv.h"
 #include "fnet_checksum.h"
 #include "fnet_mld.h"
@@ -1070,7 +1069,7 @@ void fnet_nd6_neighbor_solicitation_receive(struct fnet_netif *netif, fnet_ip6_a
                     }
                     else
                     {
-                        fnet_nd6_dad_failed(netif , target_if_addr_info); /* => DAD is failed. */
+                        fnet_nd6_dad_failed(netif, target_if_addr_info);  /* => DAD is failed. */
                         /* MUST be silently discarded, if the Target Address is a "tentative"
                          * address on which Duplicate Address Detection is being performed [ADDRCONF].*/
                     }
@@ -2072,7 +2071,7 @@ static void fnet_nd6_dad_timer(fnet_netif_t *netif )
 /************************************************************************
 * DESCRIPTION: Called when DAD is failed.
 *************************************************************************/
-static void fnet_nd6_dad_failed(fnet_netif_t *netif , fnet_netif_ip6_addr_t *addr_info)
+static void fnet_nd6_dad_failed(fnet_netif_t *netif, fnet_netif_ip6_addr_t *addr_info)
 {
     fnet_ip6_addr_t             if_ip6_address;
 

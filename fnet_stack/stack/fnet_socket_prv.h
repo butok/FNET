@@ -37,7 +37,7 @@
 #endif
 
 #include "fnet_netbuf.h"
-#include "fnet_ip_prv.h"
+#include "fnet_ip4_prv.h"
 #include "fnet_ip6_prv.h"
 
 /************************************************************************
@@ -81,10 +81,10 @@ typedef struct
 typedef struct
 {
 #if FNET_CFG_IP4
-    fnet_ip_sockopt_t   ip_opt;         /**< IP options.*/
+    fnet_ip4_sockopt_t  ip4_opt;        /**< IPv4 options.*/
 #endif
 #if FNET_CFG_IP6
-    fnet_ip6_sockopt_t  ip6_opt;        /**< IP options.*/
+    fnet_ip6_sockopt_t  ip6_opt;        /**< IPv6 options.*/
 #endif
 #if FNET_CFG_TCP
     fnet_tcp_sockopt_t  tcp_opt;        /**< TCP options.*/
@@ -148,17 +148,17 @@ typedef struct _fnet_socket_if_t
  ******************************************************************************/
 typedef struct fnet_socket_prot_if
 {
-    fnet_bool_t  con_req;                                                                                       /* Flag that protocol is connection oriented.*/
-    fnet_return_t  (*prot_attach)(fnet_socket_if_t *sk);                                                           /* Protocol "attach" function. */
-    fnet_return_t  (*prot_detach)(fnet_socket_if_t *sk);                                                           /* Protocol "detach" function. */
-    fnet_return_t  (*prot_connect)(fnet_socket_if_t *sk, struct sockaddr *foreign_addr);                           /* Protocol "connect" function. */
-    fnet_socket_if_t *( *prot_accept)(fnet_socket_if_t *sk);                                                          /* Protocol "accept" function. */
-    fnet_int32_t  (*prot_rcv)(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct sockaddr *foreign_addr );        /* Protocol "receive" function. */
-    fnet_int32_t  (*prot_snd)(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct sockaddr *foreign_addr );  /* Protocol "send" function. */
-    fnet_return_t  (*prot_shutdown)(fnet_socket_if_t *sk, fnet_sd_flags_t how);                                                        /* Protocol "shutdown" function. */
-    fnet_return_t  (*prot_setsockopt)(fnet_socket_if_t *sk, fnet_protocol_t level, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen);       /* Protocol "setsockopt" function. */
-    fnet_return_t  (*prot_getsockopt)(fnet_socket_if_t *sk, fnet_protocol_t level, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen);            /* Protocol "getsockopt" function. */
-    fnet_return_t  (*prot_listen)(fnet_socket_if_t *sk, fnet_size_t backlog);                                                      /* Protocol "listen" function.*/
+    fnet_bool_t     con_req;                                                                                        /* Flag that protocol is connection oriented.*/
+    fnet_return_t   (*prot_attach)(fnet_socket_if_t *sk);                                                           /* Protocol "attach" function. */
+    fnet_return_t   (*prot_detach)(fnet_socket_if_t *sk);                                                           /* Protocol "detach" function. */
+    fnet_return_t   (*prot_connect)(fnet_socket_if_t *sk, struct sockaddr *foreign_addr);                           /* Protocol "connect" function. */
+    fnet_socket_if_t *( *prot_accept)(fnet_socket_if_t *sk);                                                        /* Protocol "accept" function. */
+    fnet_int32_t    (*prot_rcv)(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct sockaddr *foreign_addr );        /* Protocol "receive" function. */
+    fnet_int32_t    (*prot_snd)(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct sockaddr *foreign_addr );  /* Protocol "send" function. */
+    fnet_return_t   (*prot_shutdown)(fnet_socket_if_t *sk, fnet_sd_flags_t how);                                    /* Protocol "shutdown" function. */
+    fnet_return_t   (*prot_setsockopt)(fnet_socket_if_t *sk, fnet_protocol_t level, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen); /* Protocol "setsockopt" function. */
+    fnet_return_t   (*prot_getsockopt)(fnet_socket_if_t *sk, fnet_protocol_t level, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen);      /* Protocol "getsockopt" function. */
+    fnet_return_t   (*prot_listen)(fnet_socket_if_t *sk, fnet_size_t backlog);                                      /* Protocol "listen" function.*/
 } fnet_socket_prot_if_t;
 
 #if FNET_CFG_SOCKET_CALLBACK_ON_RX
@@ -186,8 +186,6 @@ fnet_return_t fnet_socket_buffer_append_record( fnet_socket_buffer_t *sb, fnet_n
 fnet_int32_t fnet_socket_buffer_read_address( fnet_socket_buffer_t *sb, fnet_uint8_t *buf, fnet_size_t len, struct sockaddr *foreign_addr, fnet_bool_t remove );
 fnet_size_t fnet_socket_buffer_read_record( fnet_socket_buffer_t *sb, fnet_uint8_t *buf, fnet_size_t len, fnet_bool_t remove );
 void fnet_socket_buffer_release( fnet_socket_buffer_t *sb );
-fnet_return_t fnet_ip_setsockopt( fnet_socket_if_t *sock, fnet_protocol_t level, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen );
-fnet_return_t fnet_ip_getsockopt( fnet_socket_if_t *sock, fnet_protocol_t level, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen );
 fnet_bool_t fnet_socket_addr_is_broadcast(const struct sockaddr *addr, fnet_netif_t *netif);
 void fnet_socket_ip_addr_copy(const struct sockaddr *from_addr, struct sockaddr *to_addr);
 void fnet_socket_addr_copy(const struct sockaddr *from_addr, struct sockaddr *to_addr);

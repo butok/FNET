@@ -45,7 +45,7 @@
 
 /**************************************************************************/ /*!
  * @def     FNET_CFG_TLS_MAX
- * @brief   Maximum number of the TLS contexts that can be initialized 
+ * @brief   Maximum number of the TLS contexts that can be initialized
  *          simultaneously, using fnet_tls_init(). @n
  *          Default value is @b @c 1.
  * @showinitializer

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -48,7 +48,7 @@ fnet_prot_if_t fnet_icmp6_prot_if =
     0,                      /* Pointer to the head of the protocol's socket list.*/
     AF_INET6,               /* Address domain family.*/
     SOCK_UNSPEC,            /* Socket type used for.*/
-    FNET_IP_PROTOCOL_ICMP6, /* Protocol number.*/
+    FNET_PROT_ICMP6,        /* Protocol number.*/
     0,                      /* Protocol initialization function.*/
     0,                      /* Protocol release function.*/
     fnet_icmp6_input,       /* Protocol input function,.*/
@@ -91,7 +91,7 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
 #endif /* FNET_CFG_LOOPBACK */
 
         /* Verify the checksum. */
-        sum = fnet_checksum_pseudo_start( nb, FNET_HTONS((fnet_uint16_t)FNET_IP_PROTOCOL_ICMP6), (fnet_uint16_t)nb->total_length );
+        sum = fnet_checksum_pseudo_start( nb, FNET_HTONS((fnet_uint16_t)FNET_PROT_ICMP6), (fnet_uint16_t)nb->total_length );
         sum = fnet_checksum_pseudo_end( sum, (fnet_uint8_t *)src_ip, (fnet_uint8_t *)dest_ip, sizeof(fnet_ip6_addr_t) );
         if(sum)
         {
@@ -280,10 +280,10 @@ void fnet_icmp6_output( struct fnet_netif *netif, const fnet_ip6_addr_t *src_ip,
     /* Checksum calculation.*/
     hdr->checksum = 0u;
 
-    hdr->checksum = fnet_checksum_pseudo_start(nb, FNET_HTONS((fnet_uint16_t)FNET_IP_PROTOCOL_ICMP6), (fnet_uint16_t)nb->total_length);
+    hdr->checksum = fnet_checksum_pseudo_start(nb, FNET_HTONS((fnet_uint16_t)FNET_PROT_ICMP6), (fnet_uint16_t)nb->total_length);
     checksum_p = &hdr->checksum;
 
-    fnet_ip6_output(netif, src_ip, dest_ip, FNET_IP_PROTOCOL_ICMP6, hop_limit, nb, checksum_p);
+    fnet_ip6_output(netif, src_ip, dest_ip, FNET_PROT_ICMP6, hop_limit, nb, checksum_p);
 }
 
 /************************************************************************
@@ -317,7 +317,7 @@ void fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t
          *******************************************************************/
         /* (e.1) An ICMPv6 error message. */
         /* (e.2) An ICMPv6 REDIRECT message [IPv6-DISC].*/
-        if (ip6_header->next_header == FNET_IP_PROTOCOL_ICMP6) /* TBD Extension header case.*/
+        if (ip6_header->next_header == FNET_PROT_ICMP6) /* TBD Extension header case.*/
         {
             /* Make sure the packet has at least a 'TYPE' field */
             if (ip6_header->length == 0u)

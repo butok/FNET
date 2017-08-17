@@ -79,10 +79,10 @@ struct fapp_tftp_rx_handler_bin_context
         {
             fnet_uint32_t address	FNET_COMP_PACKED;
             fnet_uint32_t size 		FNET_COMP_PACKED;
-        }fields  					FNET_COMP_PACKED;
+        } fields  					FNET_COMP_PACKED;
 
         fnet_uint8_t bytes[FAPP_TFTP_BIN_HEADER_SIZE]	FNET_COMP_PACKED;
-    }header	FNET_COMP_PACKED;
+    } header	FNET_COMP_PACKED;
     fnet_index_t header_index 		    FNET_COMP_PACKED;
     fapp_tftp_handler_bin_state_t state FNET_COMP_PACKED;
 };
@@ -151,7 +151,7 @@ struct fapp_tftp_rx_handler_srec_context
             fnet_uint8_t data[255] FNET_COMP_PACKED; 	/* Address + Data */
         } fields	FNET_COMP_PACKED;
         fnet_uint8_t bytes[255 + 1]	FNET_COMP_PACKED;
-    }record	FNET_COMP_PACKED;
+    } record	FNET_COMP_PACKED;
 };
 FNET_COMP_PACKED_END
 
@@ -269,7 +269,7 @@ typedef struct
         struct fapp_tftp_tx_handler_srec_context tx_srec;
         struct fapp_tftp_rx_handler_hex_context  rx_hex;
         struct fapp_tftp_tx_handler_hex_context  tx_hex;
-    }context;
+    } context;
     const struct image_type *current_type;
     fnet_size_t image_size;
 } fapp_tftp_handler_control_t;

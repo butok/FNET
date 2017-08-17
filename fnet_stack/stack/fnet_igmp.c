@@ -65,16 +65,10 @@ static void fnet_igmp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  str
 ************************************************************************/
 fnet_prot_if_t fnet_igmp_prot_if =
 {
-    0,                      /* Pointer to the head of the protocol's socket list.*/
-    AF_INET,                /* Address domain family.*/
-    SOCK_UNSPEC,            /* Socket type used for.*/
-    FNET_IP_PROTOCOL_IGMP,  /* Protocol number.*/
-    0,                      /* Protocol initialization function.*/
-    0,                      /* Protocol release function.*/
-    fnet_igmp_input,        /* Protocol input function.*/
-    0,                      /* Protocol input control function.*/
-    0,                      /* protocol drain function.*/
-    0                       /* Socket API */
+    .family = AF_INET,              /* Address domain family.*/
+    .type = SOCK_UNSPEC,            /* Socket type used for.*/
+    .protocol = FNET_PROT_IGMP,     /* Protocol number.*/
+    .prot_input = fnet_igmp_input,  /* Protocol input function.*/
 };
 
 /************************************************************************
@@ -130,10 +124,10 @@ static void fnet_igmp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  str
                 /* Find all joined-groups for this interface.*/
                 for(i = 0u; i < FNET_CFG_MULTICAST_MAX; i++)
                 {
-                    if((fnet_ip_multicast_list[i].user_counter > 0) && (fnet_ip_multicast_list[i].netif == netif))
+                    if((fnet_ip4_multicast_list[i].user_counter > 0) && (fnet_ip4_multicast_list[i].netif == netif))
                     {
                         /* Send report.*/
-                        fnet_igmp_join(netif, fnet_ip_multicast_list[i].group_addr );
+                        fnet_igmp_join(netif, fnet_ip4_multicast_list[i].group_addr );
                     }
                 }
             }
@@ -144,10 +138,10 @@ static void fnet_igmp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  str
                 /* Find specific group.*/
                 for(i = 0u; i < FNET_CFG_MULTICAST_MAX; i++)
                 {
-                    if((fnet_ip_multicast_list[i].user_counter > 0) && (fnet_ip_multicast_list[i].netif == netif) && (fnet_ip_multicast_list[i].group_addr == hdr->group_addr))
+                    if((fnet_ip4_multicast_list[i].user_counter > 0) && (fnet_ip4_multicast_list[i].netif == netif) && (fnet_ip4_multicast_list[i].group_addr == hdr->group_addr))
                     {
                         /* Send report.*/
-                        fnet_igmp_join(netif, fnet_ip_multicast_list[i].group_addr );
+                        fnet_igmp_join(netif, fnet_ip4_multicast_list[i].group_addr );
                         break;
                     }
                 }
@@ -193,7 +187,7 @@ void fnet_igmp_join( fnet_netif_t *netif, fnet_ip4_addr_t  group_addr )
         /* RFC 1112: A Report is sent with an IP destination address equal to the
          * host group address being reported, and with an IP time-to-live of 1.
          */
-        fnet_ip_output(netif, INADDR_ANY, group_addr /*dest_addr*/, FNET_IP_PROTOCOL_IGMP, FNET_IGMP_TOS, FNET_IGMP_TTL, nb_header, FNET_FALSE, FNET_FALSE, 0);
+        fnet_ip4_output(netif, INADDR_ANY, group_addr /*dest_addr*/, FNET_PROT_IGMP, FNET_IGMP_TOS, FNET_IGMP_TTL, nb_header, FNET_FALSE, FNET_FALSE, 0);
     }
 }
 
@@ -228,10 +222,9 @@ void fnet_igmp_leave( fnet_netif_t *netif, fnet_ip4_addr_t  group_addr )
         igmp_header->checksum = fnet_checksum(nb_header, nb_header->total_length);
 
         /* RFC 1112: A Report is sent with an IP destination address equal to the
-         * host group address being reported, and with an IP time-to-live of 1.
-         */
+         * host group address being reported, and with an IP time-to-live of 1.*/
 
-        fnet_ip_output(netif, INADDR_ANY, dest_ip /*dest_addr*/, FNET_IP_PROTOCOL_IGMP, FNET_IGMP_TOS, FNET_IGMP_TTL, nb_header, FNET_FALSE, FNET_FALSE, 0);
+        fnet_ip4_output(netif, INADDR_ANY, dest_ip /*dest_addr*/, FNET_PROT_IGMP, FNET_IGMP_TOS, FNET_IGMP_TTL, nb_header, FNET_FALSE, FNET_FALSE, 0);
     }
 #endif /* FNET_CFG_IGMP_VERSION */
 }

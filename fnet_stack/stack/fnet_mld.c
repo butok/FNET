@@ -26,7 +26,6 @@
 
 #if FNET_CFG_MLD & FNET_CFG_IP6
 
-#include "fnet_ip_prv.h"
 #include "fnet_mld.h"
 #include "fnet_checksum.h"
 
@@ -38,7 +37,7 @@
 #define FNET_MLD_HOP_LIMIT                   (1)             /* IPv6 Hop Limit for MLD is 1.*/
 
 /* IPv6 Router Alert option in a Hop-by_Hop Options header.*/
-static const fnet_mld_ra_option_header_t mld_ra_option = {FNET_IP_PROTOCOL_ICMP6 /* Next Header */
+static const fnet_mld_ra_option_header_t mld_ra_option = {FNET_PROT_ICMP6 /* Next Header */
                                                           , 0                     /* Length-8 */
                                                           , {FNET_IP6_OPTION_TYPE_ROUTER_ALERT, 2} /* Router Alert Option. */
                                                           , FNET_IP6_OPTION_TYPE_ROUTER_ALERT_VALUE_MLD   /* Router Alert Option value. */
@@ -120,7 +119,7 @@ static void fnet_mld_send(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet
 
                 /* Checksum calculation.*/
                 mld_header->icmp6_header.checksum = 0;
-                mld_header->icmp6_header.checksum = fnet_checksum_pseudo_start(nb, FNET_HTONS((fnet_uint16_t)FNET_IP_PROTOCOL_ICMP6), (fnet_uint16_t)nb->total_length);
+                mld_header->icmp6_header.checksum = fnet_checksum_pseudo_start(nb, FNET_HTONS((fnet_uint16_t)FNET_PROT_ICMP6), (fnet_uint16_t)nb->total_length);
                 checksum_p = &mld_header->icmp6_header.checksum;
 
                 /* Concatanate Hop-by_Hop Options with MLD header. */
