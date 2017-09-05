@@ -33,6 +33,7 @@
 #include "fnet_raw.h"
 #include "fnet_stack_prv.h"
 #include "fnet_ip_prv.h"
+#include "fnet_igmp.h"
 
 /* Check max/min. values.*/
 #if (FNET_IP4_MAX_PACKET > 65535U)

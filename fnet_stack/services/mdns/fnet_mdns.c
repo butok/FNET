@@ -61,7 +61,9 @@
                                                                     or some other external event happens that might cause a group of
                                                                     hosts to all send synchronized probes.*/
 
-#define FNET_MDNS_SHARED_RESPONSE_DELAY    (120)                   /* Delay for shared response. Random amount of time selected with uniform random distribution in the range 20-120 ms. */
+/* Delay for shared response. Random amount of time selected with uniform random distribution in the range 20-120 ms. */
+#define FNET_MDNS_SHARED_RESPONSE_DELAY_MIN (20)                    /* Minimum delay for shared response 20 ms.*/
+#define FNET_MDNS_SHARED_RESPONSE_DELAY_MAX (120)                   /* Maximum delay for shared response 120 ms.*/
 
 #define FNET_MDNS_ANNOUNCE_COUNT           (2)                     /* The Multicast DNS responder MUST send at least two unsolicited responses. */
 #define FNET_MDNS_ANNOUNCE_INTERVAL        (1000)                  /* one second apart. */
@@ -168,13 +170,14 @@ typedef struct fnet_mdns_if
     fnet_size_t                 name_length;                                    /* Length of the service name without index postfix */
     char                        host_name[FNET_MDNS_HOST_NAME_LEN_MAX + 1];     /* Parsed "name" containing only legal symbols, optionally appended with host_name_count */
     fnet_uint32_t               host_name_count;                                /* Count of try device name */
-    char                        service_name[FNET_MDNS_HOST_NAME_LEN_MAX + 1];  /* Service name, optionally appended with host_name_count */
+    char                        service_name[FNET_MDNS_HOST_NAME_LEN_MAX + 1];  /* Service name, optionally appended with service_name_count */
+    fnet_uint32_t               service_name_count;                             /* Count of try service name */
     fnet_uint32_t               probe_count;                                    /* Number of sent probe queries without name conflict.*/
     fnet_uint32_t               announce_count;                                 /* Count of sent annoncemnts */
     fnet_socket_t               socket_listen;                                  /* Listening socket.*/
     fnet_uint32_t               probe_wait_timestamp;                           /* Last Conflict timestamp. */
     fnet_uint32_t               probe_wait_interval;                            /* Lenghth of time before next probe attempt. */
-    fnet_uint32_t               send_timestamp;                                 /* Last Send timestamp.*/
+    fnet_time_t                 send_timestamp;                                 /* Last Send timestamp.*/
     fnet_uint8_t                buffer[FNET_MDNS_PACKET_SIZE];                  /* TX/RX Data buffer. */
     fnet_uint16_t               offset_host_name;                               /* Pointer to host name. Offset from the start of the DNS message. Used for Domain Name Compression. */
     fnet_bool_t                 is_truncated;                                   /* RFC6762:In query messages, if the TC bit is set, it means that additional Known-Answer records may be following shortly.  A responder SHOULD
@@ -185,7 +188,8 @@ typedef struct fnet_mdns_if
                                                                                 * where the answer is a member of a shared resource record set, each
                                                                                 * responder SHOULD delay its response by a random amount of time
                                                                                 * selected with uniform random distribution in the range 20-120 ms.  */
-    fnet_uint32_t               is_shared_timestamp;                            /* Timestamp of shared response query.*/
+    fnet_time_t                 is_shared_timestamp;                            /* Timestamp of shared response query.*/
+    fnet_time_t                 is_shared_response_delay;                       /* Random time to wait between HK_IP_MDNS_SHARED_RESPONSE_DELAY_MIN and HK_IP_MDNS_SHARED_RESPONSE_DELAY_MAX */
     struct sockaddr             remote_address;                                 /* Remote address.*/
     fnet_address_family_t       response_address_family;                        /* Address family used in mDNS response.*/
     fnet_mdns_query_type_t      response_type;                                  /* Response type used in mDNS response.*/
@@ -244,7 +248,8 @@ static void fnet_mdns_send_response(fnet_mdns_if_t *mdns_if, fnet_uint32_t ttl);
 static fnet_uint8_t *fnet_mdns_add_rr_header(fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_mdns_rr_type_t type, fnet_bool_t flush, fnet_uint32_t ttl, fnet_uint16_t data_length);
 static void fnet_mdns_send(fnet_mdns_if_t *mdns_if, fnet_address_family_t address_family, fnet_uint8_t *buffer, fnet_uint32_t send_size);
 static void fnet_mdns_update_name(fnet_mdns_if_t *mdns_if, const fnet_char_t *name);
-static void fnet_mdns_update_name_counter(fnet_mdns_if_t *mdns_if);
+static void fnet_mdns_update_host_name_counter(fnet_mdns_if_t *mdns_if);
+static void fnet_mdns_update_service_name_counter(fnet_mdns_if_t *mdns_if);
 static void fnet_mdns_change_state(fnet_mdns_if_t *mdns_if, fnet_mdns_state_t state);
 static void fnet_mdns_recv(fnet_mdns_if_t *mdns_if);
 static void fnet_mdns_send_probe(fnet_mdns_if_t *mdns_if);
@@ -271,6 +276,7 @@ static fnet_int32_t fnet_mdns_cmp_rr(fnet_uint8_t *our_rr, const fnet_uint8_t **
 static fnet_mdns_query_type_t fnet_mdns_get_query_type(fnet_uint16_t type);
 static void fnet_mdns_process_duplicate_answer(fnet_mdns_if_t *mdns_if, const fnet_uint8_t *an_ptr, const fnet_uint8_t *packet, fnet_uint32_t packet_size);
 static fnet_bool_t fnet_mdns_is_our_host_name(fnet_mdns_if_t *mdns_if, char *host_name);
+static fnet_bool_t fnet_mdns_is_our_service_name(fnet_mdns_if_t *mdns_if, char *service_name);
 static fnet_mdns_service_if_t *fnet_mdns_get_service_by_name(fnet_mdns_if_t *mdns_if, char *service_name);
 static fnet_mdns_service_if_t *fnet_mdns_get_service_by_type(fnet_mdns_if_t *mdns_if, char *service_name);
 static void fnet_mdns_send_announcement(fnet_mdns_if_t *mdns_if, fnet_uint32_t ttl);
@@ -621,9 +627,9 @@ static void fnet_mdns_update_name(fnet_mdns_if_t *mdns_if, const fnet_char_t *na
     FNET_DEBUG_MDNS("MDNS: Host-name set to (%s).", mdns_if->host_name);
 }
 /************************************************************************
-* DESCRIPTION: Update counter of host and service name.
+* DESCRIPTION: Update counter of host.
 ************************************************************************/
-static void fnet_mdns_update_name_counter(fnet_mdns_if_t *mdns_if)
+static void fnet_mdns_update_host_name_counter(fnet_mdns_if_t *mdns_if)
 {
     FNET_ASSERT(mdns_if != NULL);
 
@@ -634,15 +640,36 @@ static void fnet_mdns_update_name_counter(fnet_mdns_if_t *mdns_if)
     if(mdns_if->host_name_count > 0)
     {
         fnet_snprintf(&mdns_if->host_name[mdns_if->name_length], (sizeof(mdns_if->host_name) - mdns_if->name_length), "-%d", mdns_if->host_name_count);
-        fnet_snprintf(&mdns_if->service_name[mdns_if->name_length], (sizeof(mdns_if->service_name) - mdns_if->name_length), " %d", mdns_if->host_name_count);
     }
-    else
+    else /* 0 */
     {
         mdns_if->host_name[mdns_if->name_length] = '\0';
-        mdns_if->service_name[mdns_if->name_length] = '\0';
     }
 
     FNET_DEBUG_MDNS("MDNS: Host-name set to (%s).", mdns_if->host_name);
+}
+
+/************************************************************************
+* DESCRIPTION: Update counter of service name.
+************************************************************************/
+static void fnet_mdns_update_service_name_counter(fnet_mdns_if_t *mdns_if)
+{
+    FNET_ASSERT(mdns_if != NULL);
+
+    /* Update name counter. */
+    mdns_if->service_name_count++;
+
+    /* Change name to device (count) */
+    if(mdns_if->service_name_count > 0)
+    {
+        fnet_snprintf(&mdns_if->service_name[mdns_if->name_length], (sizeof(mdns_if->service_name) - mdns_if->name_length), " %d", mdns_if->service_name_count);
+    }
+    else /* 0 */
+    {
+        mdns_if->service_name[mdns_if->name_length] = '\0';
+    }
+
+    FNET_DEBUG_MDNS("MDNS: Service-name set to (%s).", mdns_if->service_name);
 }
 
 
@@ -714,7 +741,7 @@ static void fnet_mdns_poll( void *fnet_mdns_if_p )
                     * to more than one of those queries to have the opportunity to
                     * aggregate all of its answers into a single response message.*/
                     if( (mdns_if->is_shared == FNET_TRUE) &&
-                        ((fnet_timer_get_ms() - mdns_if->is_shared_timestamp) > FNET_MDNS_SHARED_RESPONSE_DELAY) )
+                        ((fnet_timer_get_ms() - mdns_if->is_shared_timestamp) > mdns_if->is_shared_response_delay) )
                     {
                         mdns_if->is_shared = FNET_FALSE; /* REST FLAG.*/
                     }
@@ -1031,6 +1058,18 @@ static const fnet_uint8_t *fnet_mdns_process_query(fnet_mdns_if_t *mdns_if, fnet
                                     {
                                         mdns_if->is_shared = FNET_TRUE;
                                         mdns_if->is_shared_timestamp = fnet_timer_get_ms();
+                                        /* Calculated shared response delay */
+                                        #if 0 /* Original */
+                                        mdns_if->is_shared_response_delay = FNET_MDNS_SHARED_RESPONSE_DELAY_MIN + (fnet_rand()% (FNET_MDNS_SHARED_RESPONSE_DELAY_MAX - FNET_MDNS_SHARED_RESPONSE_DELAY_MIN));
+                                        #else /* To workaround BCT warning */
+                                        mdns_if->is_shared_response_delay += (FNET_MDNS_SHARED_RESPONSE_DELAY_MAX - FNET_MDNS_SHARED_RESPONSE_DELAY_MIN)/4;
+                                        mdns_if->is_shared_response_delay = mdns_if->is_shared_response_delay % FNET_MDNS_SHARED_RESPONSE_DELAY_MAX;
+                                        if(mdns_if->is_shared_response_delay < FNET_MDNS_SHARED_RESPONSE_DELAY_MIN)
+                                        {
+                                           mdns_if->is_shared_response_delay += FNET_MDNS_SHARED_RESPONSE_DELAY_MIN;
+                                        }
+                                        fnet_println("%d", mdns_if->is_shared_response_delay);
+                                        #endif
                                     }
                                 }
                             }
@@ -1061,9 +1100,10 @@ static const fnet_uint8_t *fnet_mdns_process_query(fnet_mdns_if_t *mdns_if, fnet
                     }
                     break;
                     case FNET_MDNS_STATE_PROBING:
+                    case FNET_MDNS_STATE_PROBING_WAIT:
                         /* Compare received hostname with my_device.local or my_device._hap._tcp.local*/
                         if(fnet_mdns_is_our_host_name(mdns_if, qe_name)
-                           || fnet_mdns_get_service_by_name(mdns_if, qe_name))
+                           || fnet_mdns_is_our_service_name(mdns_if, qe_name))
                         {
 #if FNET_CFG_DEBUG_MDNS && FNET_CFG_DEBUG
                             fnet_mdns_print_qe_name("MDNS: RX Probe for:", qe_name);
@@ -1626,17 +1666,18 @@ static const fnet_uint8_t *fnet_mdns_process_response(fnet_mdns_if_t *mdns_if, c
         {
             rr_header = (fnet_mdns_rr_header_t *)ptr;
             ptr += sizeof(fnet_mdns_rr_header_t) + fnet_htons(rr_header->data_length);
+            
+            /* Compare received name with our names */
+            fnet_bool_t is_our_host_name = fnet_mdns_is_our_host_name(mdns_if, rr_name);
+            fnet_bool_t is_our_service_name = fnet_mdns_is_our_service_name(mdns_if, rr_name);
 
-            /* Compare received hostname with my_device.local */
-            if( (fnet_mdns_is_our_host_name(mdns_if, rr_name)
-                 || fnet_mdns_get_service_by_name(mdns_if, rr_name))
-                && ( rr_header->rr_class == FNET_HTONS((FNET_MDNS_HEADER_CLASS_IN | FNET_MDNS_HEADER_CACHE_FLUSH)) )
+            if( (is_our_host_name || is_our_service_name)
 #if 0 /* Cause of Test warnings.*/
                 && ((rr_header->type == FNET_HTONS(FNET_MDNS_RR_SRV)) ||
                     (rr_header->type == FNET_HTONS(FNET_MDNS_RR_A)) ||
                     (rr_header->type == FNET_HTONS(FNET_MDNS_RR_AAAA)))
 #endif
-              )   /* service instance name */
+              ) 
             {
 #if FNET_CFG_DEBUG_MDNS && FNET_CFG_DEBUG
                 fnet_mdns_print_qe_name("MDNS: RX response for:", rr_name);
@@ -1648,9 +1689,18 @@ static const fnet_uint8_t *fnet_mdns_process_response(fnet_mdns_if_t *mdns_if, c
                 conflicting response and handled accordingly.*/
 
                 /* If in Probing state, change name and try again */
-                if((mdns_if->state == FNET_MDNS_STATE_PROBING))
+                if((mdns_if->state == FNET_MDNS_STATE_PROBING)
+                ||(mdns_if->state == FNET_MDNS_STATE_PROBING_WAIT))
                 {
-                    fnet_mdns_update_name_counter(mdns_if); /* Regenerate name.*/
+                    /* Regenerate names.*/
+                    if(is_our_host_name)
+                    {
+                        fnet_mdns_update_host_name_counter(mdns_if);
+                    }
+                    if(is_our_service_name)
+                    {
+                        fnet_mdns_update_service_name_counter(mdns_if);
+                    }
                 }
 
                 /* RFC: If fifteen conflicts occur within any ten-second period, then the
@@ -1686,101 +1736,93 @@ static void fnet_mdns_recv(fnet_mdns_if_t *mdns_if)
     fnet_mdns_header_t      *mdns_header;
     fnet_uint32_t           cnt = 0;
     const fnet_uint8_t      *ptr;
-    fnet_index_t                     i;
+    fnet_index_t            i;
     fnet_size_t             addr_len;
 
-    /* Receive UDP data */
-    addr_len = sizeof(mdns_if->remote_address);
-    received = fnet_socket_recvfrom( mdns_if->socket_listen, mdns_if->buffer, sizeof(mdns_if->buffer), 0u, &mdns_if->remote_address, &addr_len );
-    if(received > 0)
+    if(mdns_if->state != FNET_MDNS_STATE_DISABLED)
     {
-        switch(mdns_if->state)
+        /* Receive UDP data */
+        addr_len = sizeof(mdns_if->remote_address);
+        received = fnet_socket_recvfrom( mdns_if->socket_listen, mdns_if->buffer, sizeof(mdns_if->buffer), 0u, &mdns_if->remote_address, &addr_len );
+        if(received > 0)
         {
-            case FNET_MDNS_STATE_PROBING:
-            case FNET_MDNS_STATE_ANNOUNCING:
-            case FNET_MDNS_STATE_WAITING_REQUEST:
-                /* Received MDNS header */
-                if(received > sizeof(fnet_mdns_header_t))
+            /* Received MDNS header */
+            if(received > sizeof(fnet_mdns_header_t))
+            {
+                mdns_header = (fnet_mdns_header_t *)&mdns_if->buffer[0];
+            
+                char *hostname = (char *)&mdns_if->buffer[sizeof(fnet_mdns_header_t)];
+            
+                /* Query */
+                if( ((mdns_header->flags & FNET_HTONS(FNET_MDNS_HEADER_FLAGS_QR)) == 0)       /* Query.*/
+                    && ((mdns_header->flags & FNET_HTONS(FNET_MDNS_HEADER_FLAGS_OPCODE)) == 0) ) /* Standard Query */
                 {
-                    mdns_header = (fnet_mdns_header_t *)&mdns_if->buffer[0];
-
-                    char *hostname = (char *)&mdns_if->buffer[sizeof(fnet_mdns_header_t)];
-
-                    /* Query */
-                    if( ((mdns_header->flags & FNET_HTONS(FNET_MDNS_HEADER_FLAGS_QR)) == 0)       /* Query.*/
-                        && ((mdns_header->flags & FNET_HTONS(FNET_MDNS_HEADER_FLAGS_OPCODE)) == 0) ) /* Standard Query */
+                    if(mdns_if->remote_address.sa_port != FNET_MDNS_PORT)
                     {
-                        if(mdns_if->remote_address.sa_port != FNET_MDNS_PORT)
+                        mdns_if->is_legacy_unicast = FNET_TRUE;
+                    }
+                    else
+                    {
+                        mdns_if->is_legacy_unicast = FNET_FALSE;
+                    }
+            
+                    if( (mdns_header->flags & FNET_HTONS(FNET_MDNS_HEADER_FLAGS_TC)) == 0)       /* Trancation.*/
+                    {
+                        mdns_if->is_truncated = FNET_FALSE;
+                    }
+                    else
+                    {
+                        mdns_if->is_truncated = FNET_TRUE;
+                    }
+            
+                    ptr = (fnet_uint8_t *)hostname;
+                    for(i = 0; i < fnet_htons(mdns_header->qdcount); i++)
+                    {
+                        ptr = fnet_mdns_process_query(mdns_if, mdns_if->remote_address.sa_family, ptr, mdns_if->buffer, received);
+                        if(ptr == NULL)
                         {
-                            mdns_if->is_legacy_unicast = FNET_TRUE;
-                        }
-                        else
-                        {
-                            mdns_if->is_legacy_unicast = FNET_FALSE;
-                        }
-
-                        if( (mdns_header->flags & FNET_HTONS(FNET_MDNS_HEADER_FLAGS_TC)) == 0)       /* Trancation.*/
-                        {
-                            mdns_if->is_truncated = FNET_FALSE;
-                        }
-                        else
-                        {
-                            mdns_if->is_truncated = FNET_TRUE;
-                        }
-
-                        ptr = (fnet_uint8_t *)hostname;
-                        for(i = 0; i < fnet_htons(mdns_header->qdcount); i++)
-                        {
-                            ptr = fnet_mdns_process_query(mdns_if, mdns_if->remote_address.sa_family, ptr, mdns_if->buffer, received);
-                            if(ptr == NULL)
-                            {
-                                return;
-                            }
-                        }
-
-                        /* Duplicate Suppression.*/
-                        if(mdns_if->response_type != FNET_MDNS_QUERY_NONE)
-                        {
-                            const fnet_uint8_t           *an_ptr;
-
-                            an_ptr = fnet_mdns_get_an(mdns_if->buffer, received);
-
-                            /* Eliminate duplicated answers */
-                            if(an_ptr)
-                            {
-                                fnet_mdns_process_duplicate_answer(mdns_if, an_ptr, mdns_if->buffer, received);
-                            }
+                            return;
                         }
                     }
-                    /* Response */
-                    else if( ( ((mdns_header->flags & FNET_HTONS(FNET_MDNS_HEADER_FLAGS_QR)) != 0) &&      /* Response.*/
-                               (mdns_header->qdcount == 0)) &&
-                             ( (mdns_header->nscount > 0)
-                               || (mdns_header->arcount > 0)
-                               || (mdns_header->ancount > 0))
-                           )
+            
+                    /* Duplicate Suppression.*/
+                    if(mdns_if->response_type != FNET_MDNS_QUERY_NONE)
                     {
-                        cnt = fnet_htons(mdns_header->nscount) + fnet_htons(mdns_header->arcount) + fnet_htons(mdns_header->ancount) + fnet_htons(mdns_header->qdcount);
-
-                        ptr = (fnet_uint8_t *)hostname;
-                        for(i = 0; (i < cnt) && (ptr < (mdns_if->buffer + received)); i++)
+                        const fnet_uint8_t           *an_ptr;
+            
+                        an_ptr = fnet_mdns_get_an(mdns_if->buffer, received);
+            
+                        /* Eliminate duplicated answers */
+                        if(an_ptr)
                         {
-                            ptr = fnet_mdns_process_response(mdns_if, ptr, mdns_if->buffer, received);
-                            if(ptr == NULL)
-                            {
-                                break;
-                            }
+                            fnet_mdns_process_duplicate_answer(mdns_if, an_ptr, mdns_if->buffer, received);
                         }
                     }
                 }
-                break;
-            case FNET_MDNS_STATE_PROBING_WAIT:
-            default:
-                /* Ignore packet. */
-                break;
+                /* Response */
+                else if( ( ((mdns_header->flags & FNET_HTONS(FNET_MDNS_HEADER_FLAGS_QR)) != 0) &&      /* Response.*/
+                        (mdns_header->qdcount == 0)) &&
+                        ( (mdns_header->nscount > 0)
+                        || (mdns_header->arcount > 0)
+                        || (mdns_header->ancount > 0))
+                    )
+                {
+                    cnt = fnet_htons(mdns_header->nscount) + fnet_htons(mdns_header->arcount) + fnet_htons(mdns_header->ancount) + fnet_htons(mdns_header->qdcount);
+            
+                    ptr = (fnet_uint8_t *)hostname;
+                    for(i = 0; (i < cnt) && (ptr < (mdns_if->buffer + received)); i++)
+                    {
+                        ptr = fnet_mdns_process_response(mdns_if, ptr, mdns_if->buffer, received);
+                        if(ptr == NULL)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            
         }
     }
-
 }
 
 /************************************************************************
@@ -2812,6 +2854,16 @@ static fnet_bool_t fnet_mdns_is_our_host_name(fnet_mdns_if_t *mdns_if, char *hos
     FNET_ASSERT(mdns_if != NULL);
 
     return fnet_mdns_cmp_rr_name(host_name, "", mdns_if->host_name);
+}
+
+/************************************************************************
+* DESCRIPTION:  Determines if service_name is our service name.
+************************************************************************/
+static fnet_bool_t fnet_mdns_is_our_service_name(fnet_mdns_if_t *mdns_if, char *service_name)
+{
+    FNET_ASSERT(mdns_if != NULL);
+
+    return (fnet_mdns_get_service_by_name(mdns_if, service_name) ? FNET_TRUE : FNET_FALSE);
 }
 
 /************************************************************************

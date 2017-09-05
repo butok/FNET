@@ -259,21 +259,32 @@ void fnet_isr_unlock(void)
 
     if (fnet_locked == 1u)
     {
-        isr_temp = fnet_isr_table;
+        fnet_bool_t again;
 
-        while (isr_temp != 0)
+        do
         {
-            if (isr_temp->pended == FNET_TRUE)
-            {
-                isr_temp->pended = FNET_FALSE;
+            again = FNET_FALSE;
 
-                if (isr_temp->handler_bottom)
+            isr_temp = fnet_isr_table;
+
+            while (isr_temp != 0)
+            {
+                if (isr_temp->pended == FNET_TRUE)
                 {
-                    isr_temp->handler_bottom(isr_temp->cookie);
+                    isr_temp->pended = FNET_FALSE;
+
+                    if (isr_temp->handler_bottom)
+                    {
+                        isr_temp->handler_bottom(isr_temp->cookie);
+                        /* It could happen that some new SW events were scheduled during ISR bottom handler
+                           processing. So process them all again in the next round. */
+                        again = FNET_TRUE;
+                    }
+
                 }
+                isr_temp = isr_temp->next;
             }
-            isr_temp = isr_temp->next;
-        }
+        } while(again);
     }
 
     --fnet_locked;

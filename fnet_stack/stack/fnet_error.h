@@ -58,7 +58,7 @@ typedef enum
                                      *   that cannot be completed immediately. It is a non-fatal error
                                      *   and the operation should be retried later.@n
                                      *   For example, it is normal for the @ref FNET_ERR_AGAIN to be reported as
-                                     *   the result from the @ref fnet_socket_connect() calling on a @ref SOCK_STREAM socket,
+                                     *   the result from the @ref fnet_socket_accept() calling on a @ref SOCK_STREAM socket,
                                      *   since some time must elapse for the connection to be established.
                                      */
     FNET_ERR_BOUNDREQ       = (-5),  /**< @brief The socket has not been bound with @ref fnet_socket_bind().@n

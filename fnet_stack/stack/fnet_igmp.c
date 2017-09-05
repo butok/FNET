@@ -47,7 +47,7 @@
 *     Definitions
 *************************************************************************/
 #define FNET_IGMP_TTL                   (1)             /* IP time-to-live is 1.*/
-#define FNET_IGMP_TOS                   (IP_TOS_NORMAL) /* The TOS of IGMP messages.*/
+#define FNET_IGMP_TOS                   (FNET_IP4_TOS_NORMAL) /* The TOS of IGMP messages.*/
 
 /************************************************************************
 *     Function Prototypes

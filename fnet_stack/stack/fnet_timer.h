@@ -38,7 +38,7 @@
 /**************************************************************************/ /*!
  * @brief Timer period in milliseconds (period of one timer tick).
  ******************************************************************************/
-#define FNET_TIMER_PERIOD_MS        (100U) /* Do not change it.*/
+#define FNET_TIMER_PERIOD_MS        (10U) /* Do not change it.*/
 
 /**************************************************************************/ /*!
  * @brief Number of timer ticks in one hour.

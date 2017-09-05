@@ -1742,6 +1742,12 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.9.3
+	- Fixed all mDNS warnings in the Bonjour Conformance test.
+	- Improved SW event response, thanks to Michal Hanak.
+	- Reduced default timer period to 10ms, for better time precision.
+	- Other minor fixes.
+	
 - Version 3.9.2
 	- Fixed possible wrong sending of TCP ACK, thanks to Richard Green.
 	- Renamed IPv4-specific files and definitions from "ip|IP" to "ip4|IP4".

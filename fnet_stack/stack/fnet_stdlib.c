@@ -29,7 +29,7 @@
 
 #include "fnet.h"
 
-static fnet_uint32_t fnet_rand_value;  /* Used by fnet_rand()*/
+static fnet_uint32_t fnet_rand_seed;  /* Used by fnet_rand()*/
 
 #if !FNET_CFG_OVERLOAD_MEMCPY
 /************************************************************************
@@ -765,8 +765,18 @@ CONT:
 *************************************************************************/
 fnet_uint32_t fnet_rand(void)
 {
-    fnet_rand_value = fnet_rand_value * 1103515245u + 12345u;
-    return((fnet_uint32_t)(fnet_rand_value >> 16u) % (FNET_RAND_MAX + 1u));
+#if 0 /* original */
+    fnet_rand_seed = fnet_rand_seed * 1103515245u + 12345u;
+    return((fnet_uint32_t)(fnet_rand_seed >> 16u) % (FNET_RAND_MAX + 1u));
+#else /* Park-Miller minimum random number generator (Comm ACM Oct 1988 p1192-1201, Vol 31 Num 10) */
+    fnet_uint64_t const a    = 16807;      /* 7^5 (a primitive root modulo M31) */
+    fnet_uint64_t const m    = 2147483647; /* 2^31-1 (a Mersenne prime M31) */
+    fnet_uint64_t tmp;
+
+    tmp = fnet_rand_seed * a;
+    fnet_rand_seed = (fnet_uint32_t)(tmp % m);
+    return(fnet_rand_seed);
+#endif
 }
 
 /************************************************************************
@@ -774,5 +784,5 @@ fnet_uint32_t fnet_rand(void)
 *************************************************************************/
 void fnet_srand(fnet_uint32_t seed)
 {
-    fnet_rand_value += seed;
+    fnet_rand_seed += seed;
 }
