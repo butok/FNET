@@ -126,8 +126,6 @@ ERROR:
     return (FNET_ERR);
 }
 
-#if (FNET_CFG_CPU_ETH0 ||FNET_CFG_CPU_ETH1)
-
 /* Number of initialised ethernet devices.*/
 static fnet_index_t fnet_eth_number = 0U;
 
@@ -620,4 +618,3 @@ void fnet_eth_trace(fnet_uint8_t *str, fnet_eth_header_t *eth_hdr)
 
 #endif /* FNET_CFG_DEBUG_TRACE_ETH */
 
-#endif /* FNET_CFG_ETH */

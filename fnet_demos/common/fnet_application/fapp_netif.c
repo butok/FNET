@@ -65,9 +65,10 @@ struct fapp_netif_init_param fapp_netif_init_param_list[] =
 #if FNET_CFG_DNS
         .netif_ip4_dns = FAPP_CFG_ETH1_IP4_DNS,
 #endif
-    }
+    },
 #endif
     /* Here put your new network interfaces.*/
+    {.netif_desc = FNET_NULL} /* END */
 };
 
 /************************************************************************
@@ -81,18 +82,21 @@ fnet_return_t fapp_netif_init( void )
     /***********************************
      * Initialize all IFs.
      ************************************/
-    for(i = 0; i < (sizeof(fapp_netif_init_param_list) / sizeof(fapp_netif_init_param_list[0])); i++)
+    for(i = 0; fapp_netif_init_param_list[i].netif_desc; i++)
     {
         result = fnet_netif_init(fapp_netif_init_param_list[i].netif_desc, fapp_netif_init_param_list[i].netif_mac_addr, sizeof(fnet_mac_addr_t));
         if(result == FNET_ERR)
         {
             break;
         }
-        fnet_netif_set_ip4_addr(fapp_netif_init_param_list[i].netif_desc, fapp_netif_init_param_list[i].netif_ip4_addr, fapp_netif_init_param_list[i].netif_ip4_subnet_mask);
-        fnet_netif_set_ip4_gateway(fapp_netif_init_param_list[i].netif_desc, fapp_netif_init_param_list[i].netif_ip4_gateway);
-#if FNET_CFG_DNS
-        fnet_netif_set_ip4_dns(fapp_netif_init_param_list[i].netif_desc, fapp_netif_init_param_list[i].netif_ip4_dns);
-#endif
+        else
+        {
+            fnet_netif_set_ip4_addr(fapp_netif_init_param_list[i].netif_desc, fapp_netif_init_param_list[i].netif_ip4_addr, fapp_netif_init_param_list[i].netif_ip4_subnet_mask);
+            fnet_netif_set_ip4_gateway(fapp_netif_init_param_list[i].netif_desc, fapp_netif_init_param_list[i].netif_ip4_gateway);
+        #if FNET_CFG_DNS
+            fnet_netif_set_ip4_dns(fapp_netif_init_param_list[i].netif_desc, fapp_netif_init_param_list[i].netif_ip4_dns);
+        #endif
+        }
     }
 
     fnet_netif_set_default(FAPP_CFG_DEFAULT_IF); /* Set default interface.*/

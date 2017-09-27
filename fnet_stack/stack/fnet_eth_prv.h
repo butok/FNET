@@ -29,8 +29,6 @@
 
 #include "fnet.h"
 
-#if (FNET_CFG_CPU_ETH0 ||FNET_CFG_CPU_ETH1)
-
 #include "fnet_eth.h"
 #include "fnet_arp_prv.h"
 #include "fnet_netif_prv.h"
@@ -141,7 +139,5 @@ void fnet_eth_trace(fnet_uint8_t *str, fnet_eth_header_t *eth_hdr);
 #if defined(__cplusplus)
 }
 #endif
-
-#endif /* FNET_CFG_ETH */
 
 #endif /* _FNET_ETHERNET_PRV_H_ */

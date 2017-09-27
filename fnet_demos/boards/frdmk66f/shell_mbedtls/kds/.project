@@ -147,6 +147,16 @@
       <locationURI>virtual:/virtual</locationURI>
     </link>
     <link>
+      <name>startup/fsl_sbrk.c</name>
+      <type>1</type>
+      <locationURI>PARENT-4-PROJECT_LOC/common/startup/MK66F18/fsl_sbrk.c</locationURI>
+    </link>
+    <link>
+      <name>startup</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
       <name>startup/fsl_smc.c</name>
       <type>1</type>
       <locationURI>PARENT-4-PROJECT_LOC/common/startup/MK66F18/fsl_smc.c</locationURI>

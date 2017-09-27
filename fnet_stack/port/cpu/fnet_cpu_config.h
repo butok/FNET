@@ -541,8 +541,8 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_CPU_ETH0
  * @brief    Ethernet-0 interface:
- *               - @b @c 1 = is enabled (default value). .
- *               - @c 0 = is disabled. @n
+ *               - @b @c 1 = is enabled (default value).
+ *               - @c 0 = is disabled.
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_ETH0
@@ -622,7 +622,7 @@
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_ETH0_MTU
     #if FNET_CFG_CPU_ETH0
-        #define FNET_CFG_CPU_ETH0_MTU            (1500u)
+        #define FNET_CFG_CPU_ETH0_MTU            (FNET_ETH_MTU)
     #else
         #define FNET_CFG_CPU_ETH0_MTU            (0u)
     #endif
@@ -636,7 +636,7 @@
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_ETH1_MTU
     #if FNET_CFG_CPU_ETH1
-        #define FNET_CFG_CPU_ETH1_MTU            (1500u)
+        #define FNET_CFG_CPU_ETH1_MTU            (FNET_ETH_MTU)
     #else
         #define FNET_CFG_CPU_ETH1_MTU            (0u)
     #endif

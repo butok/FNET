@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -84,6 +84,13 @@
 #endif
 
 #include "fapp_netif.h"
+
+#if FAPP_CFG_FREERTOS
+/* FreeRTOS kernel includes. */
+#include "FreeRTOS.h"
+#include "task.h"
+#include "event_groups.h"
+#endif
 
 /************************************************************************
 *     Definitions.
@@ -292,6 +299,11 @@ static const struct fnet_shell fapp_shell =
 
 static fnet_shell_desc_t fapp_shell_desc = 0; /* Shell descriptor. */
 
+#if FAPP_CFG_FREERTOS
+/* RX activity event. */
+#define FAPP_FREERTOS_EVENT_RX  (0x1)  
+static EventGroupHandle_t fapp_freertos_event_group;
+#endif
 
 /******************************************************************************
  *  Testing of mutex nesting conflict.
@@ -684,7 +696,7 @@ static void fapp_release(fnet_shell_desc_t desc)
 #endif /* FAPP_CFG_REINIT_CMD */
 
 /************************************************************************
-* DESCRIPTION: main() of the shell demo.
+* DESCRIPTION: Bare-metal main() of the shell demo.
 ************************************************************************/
 void fapp_main(void)
 {
@@ -694,8 +706,98 @@ void fapp_main(void)
     while(1)
     {
         fnet_poll_service();
+
+    #if FAPP_CFG_FREERTOS /* FrerRTOS task sleep */
+        {
+        #if 0 /* Sleep for some time. More simple code. */
+            vTaskDelay(FAPP_CFG_FREERTOS_TASK_POLL_PERIOD/portTICK_PERIOD_MS);
+        #else /* Sleep for some time or for RX event */
+            /* Wait a maximum of FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS ms for either any bit to be set within
+                the event group.  Clear the bits before exiting. */
+            xEventGroupWaitBits(
+                        fapp_freertos_event_group,   /* The event group being tested. */
+                        FAPP_FREERTOS_EVENT_RX, /* The bits within the event group to wait for. */
+                        pdTRUE,        /* BIT_0 & BIT_4 should be cleared before returning. */
+                        pdFALSE,       /* Don't wait for both bits, either bit will do. */
+                        FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS/portTICK_PERIOD_MS );/* Ticks to wait for either bit to be set. */
+
+            /* Returned because Socket RX event or ticks passed.*/
+        #endif
+        }
+    #endif
     }
 }
+
+
+#if FAPP_CFG_FREERTOS
+
+/************************************************************************
+* DESCRIPTION: Socket RX callback.
+************************************************************************/
+static void fapp_socket_rx_callback(void)
+{
+    BaseType_t xHigherPriorityTaskWoken;
+
+    if(xEventGroupSetBitsFromISR(fapp_freertos_event_group, FAPP_FREERTOS_EVENT_RX, &xHigherPriorityTaskWoken)!= pdFAIL)
+    {
+        /* If xHigherPriorityTaskWoken is now set to pdTRUE then a context
+        switch should be requested.  The macro used is port specific and will
+        be either portYIELD_FROM_ISR() or portEND_SWITCHING_ISR() - refer to
+        the documentation page for the port being used. */
+        portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+    }
+}
+
+/************************************************************************
+* DESCRIPTION: FreeRTOS task.
+************************************************************************/
+static void fapp_task(void *params)
+{
+	/* FNET demo application */
+    fapp_main();
+}
+
+/************************************************************************
+* DESCRIPTION: Main entry point of the FreeRTOS shell demo.
+************************************************************************/
+void fapp_main_freertos( void ) 
+{
+    /* Create FNET demo application task */
+    if(xTaskCreate(
+            fapp_task,  /* pointer to the task */
+            FAPP_CFG_NAME, /* task name for kernel awareness debugging */
+            FAPP_CFG_FREERTOS_TASK_STACK_SIZE/sizeof(portSTACK_TYPE), /* task stack size */
+            NULL, /* optional task startup argument */
+            FAPP_CFG_FREERTOS_TASK_PRIORITY,  /* initial priority */
+            NULL /* optional task handle to create */
+        ) != pdPASS)
+    {
+        fnet_println("Failed to create FreeRTOS task."); /* Probably out of memory */
+    }
+    else
+    {
+        /* Attempt to create the event group. */
+        fapp_freertos_event_group = xEventGroupCreate();
+
+        /* Was the event group created successfully? */
+        if( fapp_freertos_event_group == NULL )
+        {
+            /* The event group was not created because there was insufficient heap available. */
+            fnet_println("Failed to create FreeRTOS event group.");
+        }
+        else
+        {
+            /* Registers the "socket layer activity" event handler.*/
+            fnet_socket_set_callback_on_rx(fapp_socket_rx_callback);
+
+            fnet_println("Starting scheduler.");
+            vTaskStartScheduler();
+
+            /* The code should never reach here. */ 
+        }
+    }
+}
+#endif
 
 /************************************************************************
 * DESCRIPTION: Print detailed address information about default

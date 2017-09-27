@@ -27,7 +27,7 @@
 
 #include "fnet.h"
 
-#if (FNET_CFG_CPU_ETH0 || FNET_CFG_CPU_ETH1) && FNET_CFG_IP4
+#if FNET_CFG_IP4
 
 #include "fnet_arp_prv.h"
 #include "fnet_eth_prv.h"
@@ -614,6 +614,6 @@ static void fnet_arp_trace(fnet_uint8_t *str, fnet_arp_header_t *arp_hdr)
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
 }
 
-#endif /* FNET_CFG_DEBUG_TRACE_ETH */
+#endif /* FNET_CFG_IP4 */
 
 #endif

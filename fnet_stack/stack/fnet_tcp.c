@@ -822,7 +822,7 @@ static fnet_int32_t fnet_tcp_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_
         /* Check maximum allocated memory chunck */
         malloc_max = fnet_malloc_max_netbuf();
 
-        if(malloc_max < (fnet_size_t) (FNET_CFG_CPU_ETH0_MTU + FNET_CFG_CPU_ETH0_MTU / 2u)) /* TBD I do not like it ????*/
+        if(malloc_max < (fnet_size_t) (FNET_ETH_MTU + FNET_ETH_MTU / 2u)) /* TBD I do not like it ????*/
         {
             freespace = 0u;
         }

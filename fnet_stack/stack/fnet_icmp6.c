@@ -64,8 +64,10 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
 {
     fnet_icmp6_header_t     *hdr;
     fnet_uint16_t           sum;
-    fnet_ip6_addr_t         *src_ip;
-    fnet_ip6_addr_t         *dest_ip;
+    fnet_ip6_addr_t         *src_ip_rx;
+    fnet_ip6_addr_t         *dest_ip_rx;
+    fnet_ip6_addr_t         *src_ip_tx;
+    fnet_ip6_addr_t         *dest_ip_tx;
     fnet_prot_notify_t      prot_cmd;
     fnet_bool_t             discard_flag = FNET_FALSE;
 
@@ -79,8 +81,12 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
 
         hdr = (fnet_icmp6_header_t *)nb->data_ptr;
 
-        dest_ip = &((struct sockaddr_in6 *)(dest_addr))->sin6_addr.s6_addr;
-        src_ip = &((struct sockaddr_in6 *)(src_addr))->sin6_addr.s6_addr;
+        dest_ip_rx = &((struct sockaddr_in6 *)(dest_addr))->sin6_addr.s6_addr;
+        src_ip_rx = &((struct sockaddr_in6 *)(src_addr))->sin6_addr.s6_addr;
+
+        /* Swap source and destination addresses.*/
+        dest_ip_tx = src_ip_rx;
+        src_ip_tx = dest_ip_rx;
 
         /* Drop Multicast loopback.*/
 #if FNET_CFG_LOOPBACK
@@ -92,7 +98,7 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
 
         /* Verify the checksum. */
         sum = fnet_checksum_pseudo_start( nb, FNET_HTONS((fnet_uint16_t)FNET_PROT_ICMP6), (fnet_uint16_t)nb->total_length );
-        sum = fnet_checksum_pseudo_end( sum, (fnet_uint8_t *)src_ip, (fnet_uint8_t *)dest_ip, sizeof(fnet_ip6_addr_t) );
+        sum = fnet_checksum_pseudo_end( sum, (fnet_uint8_t *)src_ip_rx, (fnet_uint8_t *)dest_ip_rx, sizeof(fnet_ip6_addr_t) );
         if(sum)
         {
             goto DISCARD;
@@ -107,32 +113,32 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
              * Neighbor Solicitation.
              **************************/
             case FNET_ICMP6_TYPE_NEIGHBOR_SOLICITATION:
-                fnet_nd6_neighbor_solicitation_receive(netif, src_ip, dest_ip, nb, ip6_nb);
+                fnet_nd6_neighbor_solicitation_receive(netif, src_ip_rx, dest_ip_rx, nb, ip6_nb);
                 break;
             /**************************
              * Neighbor Advertisemnt.
              **************************/
             case FNET_ICMP6_TYPE_NEIGHBOR_ADVERTISEMENT:
-                fnet_nd6_neighbor_advertisement_receive(netif, src_ip, dest_ip, nb, ip6_nb);
+                fnet_nd6_neighbor_advertisement_receive(netif, src_ip_rx, dest_ip_rx, nb, ip6_nb);
                 break;
             /**************************
              * Router Advertisemnt.
              **************************/
             case FNET_ICMP6_TYPE_ROUTER_ADVERTISEMENT:
-                fnet_nd6_router_advertisement_receive(netif, src_ip, dest_ip, nb, ip6_nb);
+                fnet_nd6_router_advertisement_receive(netif, src_ip_rx, dest_ip_rx, nb, ip6_nb);
                 break;
             /**************************
              * Router Advertisemnt.
              **************************/
             case FNET_ICMP6_TYPE_REDIRECT:
-                fnet_nd6_redirect_receive(netif, src_ip, dest_ip, nb, ip6_nb);
+                fnet_nd6_redirect_receive(netif, src_ip_rx, dest_ip_rx, nb, ip6_nb);
                 break;
 #if FNET_CFG_MLD
             /**************************
              * Multicast Listener Query.
              **************************/
             case FNET_ICMP6_TYPE_MULTICAST_LISTENER_QUERY:
-                fnet_mld_query_receive(netif, src_ip, dest_ip, nb, ip6_nb);
+                fnet_mld_query_receive(netif, src_ip_rx, dest_ip_rx, nb, ip6_nb);
                 break;
 #endif
             /**************************
@@ -146,13 +152,13 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
                 /* RFC4443: the source address of the reply MUST be a unicast
                  * address belonging to the interface on which
                  * the Echo Request message was received.*/
-                if(FNET_IP6_ADDR_IS_MULTICAST(dest_ip))
+                if(FNET_IP6_ADDR_IS_MULTICAST(dest_ip_rx))
                 {
-                    dest_ip = FNET_NULL;
+                    src_ip_tx = FNET_NULL;
                 }
 
                 /* Swap source and destination addresses.*/
-                fnet_icmp6_output(netif, dest_ip/*ipsrc*/, src_ip/*ipdest*/, 0u, nb);
+                fnet_icmp6_output(netif, src_ip_tx, dest_ip_tx, 0u, nb);
                 fnet_netbuf_free_chain(ip6_nb);
                 break;
 #if FNET_CFG_IP6_PMTU_DISCOVERY
@@ -293,8 +299,10 @@ void fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t
 {
     fnet_ip6_header_t       *ip6_header;
     fnet_icmp6_err_header_t *icmp6_err_header;
-    fnet_ip6_addr_t         *src_ip;
-    const fnet_ip6_addr_t   *dest_ip;
+    const fnet_ip6_addr_t   *src_ip_rx;
+    const fnet_ip6_addr_t   *dest_ip_rx;
+    const fnet_ip6_addr_t   *src_ip_tx;
+    const fnet_ip6_addr_t   *dest_ip_tx;
     fnet_netbuf_t           *nb_header;
 
     if(origin_nb)
@@ -307,8 +315,12 @@ void fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t
 
         ip6_header = (fnet_ip6_header_t *)origin_nb->data_ptr;
 
-        src_ip = &ip6_header->source_addr;
-        dest_ip = &ip6_header->destination_addr;
+        src_ip_rx = &ip6_header->source_addr;
+        dest_ip_rx = &ip6_header->destination_addr;
+
+        /* Swap source and destination addresses.*/
+        src_ip_tx = dest_ip_rx;
+        dest_ip_tx = src_ip_rx;
 
         /*******************************************************************
          * RFC 4443:
@@ -343,7 +355,7 @@ void fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t
          * (e.4) A packet sent as a link-layer multicast (the exceptions
          * from e.3 apply to this case, too).
          */
-        if(FNET_IP6_ADDR_IS_MULTICAST(dest_ip)
+        if(FNET_IP6_ADDR_IS_MULTICAST(dest_ip_rx)
            && (!( (type == FNET_ICMP6_TYPE_PACKET_TOOBIG)
                   || ((type == FNET_ICMP6_TYPE_PARAM_PROB) && (code == FNET_ICMP6_CODE_PP_OPTION)))) )
         {
@@ -351,10 +363,10 @@ void fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t
         }
         else
         {
-            if(FNET_IP6_ADDR_IS_MULTICAST(dest_ip))
+            if(FNET_IP6_ADDR_IS_MULTICAST(dest_ip_rx))
             {
                 /* We may not use multicast address as source. Get real source address. */
-                dest_ip = fnet_ip6_select_src_addr(netif, src_ip /*dest*/);
+                src_ip_tx = fnet_ip6_select_src_addr(netif, src_ip_rx /*dest*/);
             }
         }
 
@@ -370,7 +382,7 @@ void fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t
          * multicast address, or an address known by the ICMP message
          * originator to be an IPv6 anycast address.
          */
-        if(FNET_IP6_ADDR_IS_MULTICAST(src_ip) || FNET_IP6_ADDR_EQUAL(&fnet_ip6_addr_any, src_ip))
+        if(FNET_IP6_ADDR_IS_MULTICAST(src_ip_rx) || FNET_IP6_ADDR_EQUAL(&fnet_ip6_addr_any, src_ip_rx))
         {
             goto FREE_NB;
         }
@@ -390,7 +402,7 @@ void fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t
         origin_nb = fnet_netbuf_concat(nb_header, origin_nb);
 
         /* Swap source and destination addresses.*/
-        fnet_icmp6_output( netif, dest_ip/*ipsrc*/, src_ip/*ipdest*/, 0u, origin_nb);
+        fnet_icmp6_output( netif, src_ip_tx, dest_ip_tx, 0u, origin_nb);
 
         return;
 

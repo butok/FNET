@@ -46,6 +46,13 @@
 #define FNET_MAC_ADDR_STR_SIZE       (18)
 
 /**************************************************************************/ /*!
+ * @def     FNET_ETH_MTU
+ * @brief   The largest allowed MTU by Ethernet at the network layer.
+ * @showinitializer
+ ******************************************************************************/
+#define FNET_ETH_MTU                (1500u)
+
+/**************************************************************************/ /*!
  * @brief Media Access Control (MAC) address  type.
  ******************************************************************************/
 typedef fnet_uint8_t fnet_mac_addr_t[6]; /* MAC address type.*/

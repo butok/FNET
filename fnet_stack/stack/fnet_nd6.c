@@ -2260,25 +2260,28 @@ void fnet_nd6_debug_print_prefix_list( struct fnet_netif *netif )
         netif = (fnet_netif_t *)fnet_netif_get_by_number(0u); /* Get the first one.*/
     }
 
-    nd6_if = netif->nd6_if_ptr;
-
-    if (nd6_if)
+    if(netif)
     {
-        fnet_println("Prefix List:");
-        for(i = 0u; i < FNET_ND6_PREFIX_LIST_SIZE; i++)
+        nd6_if = netif->nd6_if_ptr;
+
+        if (nd6_if)
         {
-            if(nd6_if->prefix_list[i].state != FNET_ND6_PREFIX_STATE_NOTUSED)
+            fnet_println("Prefix List:");
+            for(i = 0u; i < FNET_ND6_PREFIX_LIST_SIZE; i++)
             {
-                fnet_char_t numaddr[FNET_IP6_ADDR_STR_SIZE] = {0};
-                entry = &nd6_if->prefix_list[i];
+                if(nd6_if->prefix_list[i].state != FNET_ND6_PREFIX_STATE_NOTUSED)
+                {
+                    fnet_char_t numaddr[FNET_IP6_ADDR_STR_SIZE] = {0};
+                    entry = &nd6_if->prefix_list[i];
 
-                fnet_inet_ntop(AF_INET6, (fnet_uint8_t *)entry->prefix.addr, numaddr, sizeof(numaddr));
+                    fnet_inet_ntop(AF_INET6, (fnet_uint8_t *)entry->prefix.addr, numaddr, sizeof(numaddr));
 
-                /* Print entry.*/
-                fnet_println("[%d] %s /%d State(%d) LifeTime(%d)[%d]", i, numaddr, entry->prefix_length, entry->state,  entry->lifetime, entry->creation_time);
+                    /* Print entry.*/
+                    fnet_println("[%d] %s /%d State(%d) LifeTime(%d)[%d]", i, numaddr, entry->prefix_length, entry->state,  entry->lifetime, entry->creation_time);
+                }
             }
-        }
 
+        }
     }
 }
 

@@ -65,8 +65,10 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
 {
     fnet_icmp4_header_t     *hdr;
     fnet_prot_notify_t      prot_cmd;
-    fnet_ip4_addr_t         src_ip;
-    fnet_ip4_addr_t         dest_ip;
+    fnet_ip4_addr_t         src_ip_rx;
+    fnet_ip4_addr_t         dest_ip_rx;
+    fnet_ip4_addr_t         src_ip_tx;
+    fnet_ip4_addr_t         dest_ip_tx;
 
     fnet_netbuf_free_chain(ip4_nb); /* Not used.*/
 
@@ -79,16 +81,20 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
 
         hdr = (fnet_icmp4_header_t *)nb->data_ptr;
 
-        src_ip = ((struct sockaddr_in *)(src_addr))->sin_addr.s_addr;
-        dest_ip = ((struct sockaddr_in *)(dest_addr))->sin_addr.s_addr;
+        src_ip_rx = ((struct sockaddr_in *)(src_addr))->sin_addr.s_addr;
+        dest_ip_rx = ((struct sockaddr_in *)(dest_addr))->sin_addr.s_addr;
+
+        /* Swap source and destination addresses.*/
+        src_ip_tx = dest_ip_rx;
+        dest_ip_tx = src_ip_rx;
 
         if(
 #if FNET_CFG_CPU_ETH_HW_RX_PROTOCOL_CHECKSUM || FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM
             ((nb->flags & FNET_NETBUF_FLAG_HW_PROTOCOL_CHECKSUM) == 0) &&
 #endif
             (fnet_checksum(nb, nb->total_length))
-            || (fnet_ip4_addr_is_broadcast(src_ip, netif))
-            || FNET_IP4_ADDR_IS_MULTICAST(src_ip))
+            || (fnet_ip4_addr_is_broadcast(src_ip_rx, netif))
+            || FNET_IP4_ADDR_IS_MULTICAST(src_ip_rx))
         {
             goto DISCARD;
         }
@@ -104,15 +110,14 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
                 if((nb->total_length < sizeof(fnet_icmp4_echo_header_t)) ||
                    /* An ICMP Echo Request destined to an IP broadcast or IP
                    * multicast address MAY be silently discarded.(RFC1122)*/
-                   (fnet_ip4_addr_is_broadcast(dest_ip, netif)) || FNET_IP4_ADDR_IS_MULTICAST(dest_ip))
+                   (fnet_ip4_addr_is_broadcast(dest_ip_rx, netif)) || FNET_IP4_ADDR_IS_MULTICAST(dest_ip_rx))
                 {
                     goto DISCARD;
                 }
 
                 hdr->type = FNET_ICMP4_ECHOREPLY;
 
-                /* Swap source and destination addresses.*/
-                fnet_icmp4_output(netif, dest_ip, src_ip, nb);
+                fnet_icmp4_output(netif, src_ip_tx, dest_ip_tx, nb);
                 break;
 #if 0 /* Optional functionality.*/
             /************************
@@ -136,7 +141,7 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
 
                 dest_ip = netif->ip4_addr.address;
 
-                fnet_icmp4_output(netif, dest_ip, src_ip, nb);
+                fnet_icmp4_output(netif, src_ip_tx, dest_ip_tx, nb);
                 break;
             /************************
              * Address Mask Query
@@ -156,7 +161,7 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
 
                 dest_ip = netif->ip4_addr.address;
 
-                fnet_icmp4_output(netif, dest_ip, src_ip, nb);
+                fnet_icmp4_output(netif, src_ip_tx, dest_ip_tx, nb);
                 break;
 #endif
             /**************************

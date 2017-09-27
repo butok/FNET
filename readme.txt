@@ -50,10 +50,13 @@ FNET project directory structure:
 	|              |                    the "Shell" demo, but it`s modified to be able to
 	|              |                    work with the FNET Bootloader.
 	|              |-- shell_mbedtls  - Example application used for the HTTPS server demonstration.
-	|                                   This demo has the same features as the "Shell" demo,
-	|                                   but in addition it includes the mbedTLS library.
+	|              |                    This demo has the same features as the "Shell" demo,
+	|              |                    but in addition it includes the mbedTLS library.
+	|              |-- shell_freertos - Example application using FreeRTOS.
+	|                                   This demo has the same features as the "Shell" demo.
 	|-- fnet_tools                - FNET tools.
 	|-- third_party               - Optional, third-party libraries.
-	|    |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
+		 |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
+		 |-- freertos-x.x.x         - FreeRTOS, used by the shell_freertos example.
 
 

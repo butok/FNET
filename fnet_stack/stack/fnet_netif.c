@@ -309,11 +309,9 @@ fnet_return_t fnet_netif_init(fnet_netif_desc_t netif_desc, fnet_uint8_t *hw_add
                 /* Interface-Type specific initialisation. */
                 switch(netif->netif_api->netif_type)
                 {
-#if (FNET_CFG_CPU_ETH0 ||FNET_CFG_CPU_ETH1)
                     case (FNET_NETIF_TYPE_ETHERNET):
                         result = fnet_eth_init(netif);
                         break;
-#endif
                     default:
                         break;
                 }

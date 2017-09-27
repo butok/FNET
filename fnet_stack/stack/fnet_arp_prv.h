@@ -30,7 +30,7 @@
 
 #include "fnet.h"
 
-#if (FNET_CFG_CPU_ETH0 ||FNET_CFG_CPU_ETH1) && FNET_CFG_IP4
+#if FNET_CFG_IP4
 
 #include "fnet_netif_prv.h"
 #include "fnet_eth.h"
@@ -108,6 +108,6 @@ void fnet_arp_drain( fnet_netif_t *netif );
 }
 #endif
 
-#endif
+#endif /* FNET_CFG_IP4 */
 
 #endif /* _FNET_ARP_PRV_H_ */

@@ -62,7 +62,7 @@ preferred way to configure stack features). @n
 	- IAR: Embedded Workbench for ARM, version 7.6
 	- GCC: Kinetis Design Studio, version 3.0 
 	
-- Bare-metal TCP/IP stack. No underlying RTOS is required, although it can be used with it.
+- Bare-metal TCP/IP stack. No underlying RTOS is required, although it can be used with it. FreeRTOS example is provided.
 - Non-blocking Socket API (DGRAM, STREAM, RAW).
 - Core Protocols:
 	- @b TCP (Transmission Control Protocol).
@@ -194,11 +194,14 @@ fnet                        - FNET root directory.
 |              |                    the "Shell" demo, but it`s modified to be able to
 |              |                    work with the FNET Bootloader.
 |              |-- shell_mbedtls  - Example application used for the HTTPS server demonstration.
-|                                   This demo has the same features as the "Shell" demo,
-|                                   but in addition it includes the mbedTLS library.
+|              |                    This demo has the same features as the "Shell" demo,
+|              |                    but in addition it includes the mbedTLS library.
+|              |-- shell_freertos - Example application using FreeRTOS.
+|                                   This demo has the same features as the "Shell" demo.
 |-- fnet_tools                - FNET tools.
 |-- third_party               - Optional, third-party libraries.
-|    |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
+     |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
+     |-- freertos-x.x.x         - FreeRTOS, used by the shell_freertos example.
               
 @endverbatim
 */
@@ -208,13 +211,14 @@ fnet                        - FNET root directory.
 @page demos FNET Demo Applications
 *- @subpage quick_start_shell
 *- @subpage quick_start_shell_mbedtls
+*- @subpage quick_start_shell_freertos
 *- @subpage quick_start_boot
 *- @subpage quick_start_benchmark 
 
 The FNET project supplied with several demo applications. They can be used for demonstration of FNET features or as an example of FNET User-API usage. @n
 It is recommended to use them as starting point for your new applications.@n 
 Project files are placed in @verbatim fnet\fnet_demos\boards\<board_name>\<demo_name>\<compiler_name>\ @endverbatim
-There are four types of demo projects:
+There are six types of demo projects:
 - @c shell - This is the main demo application. @n 
   The "Shell" demo allows to view/change various system parameters (e.g. IP address, subnet mask), to explore mounted file systems, to run DHCP and DNS clients, HTTP and Telnet servers, via a serial-terminal application. @n
   More information can be found in @ref quick_start_shell.
@@ -227,6 +231,9 @@ There are four types of demo projects:
 - @c shell_mbedtls - This is the example application used for the HTTPS server demonstration.
   This demo has the same features as the "Shell" demo, but in addition it includes the mbedTLS library.@n
   More information can be found in @ref quick_start_shell_mbedtls.
+- @c shell_freertos - This is the example application using FreeRTOS.
+  This demo has the same features as the "Shell" demo, but in addition it includes FreeRTOS.@n
+  More information can be found in @ref quick_start_shell_freertos.
 - @c benchmark - This is the TCP/UDP Throughput Benchmark application. @n
   More information can be found in @ref quick_start_benchmark.
 
@@ -239,26 +246,30 @@ The following table summarizes the supported demo applications, platforms and co
  <th ALIGN=CENTER>Bootloader</th>
  <th ALIGN=CENTER>Benchmark</th>
  <th ALIGN=CENTER>Shell mbedTLS</th>
+ <th ALIGN=CENTER>Shell FreeRTOS</th>
  </tr>
 <tr>
  <td class="fnet_td_grey">MK64FN1M (Kinetis)</td>
- <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td> 
+ <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">MK66FN2M (Kinetis)</td>
- <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">MK60DN512 (Kinetis)</td>
- <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.6<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
+ <td ALIGN=CENTER>-</td> 
  <td ALIGN=CENTER>-</td> 
  </tr>
 </table>
@@ -785,9 +796,32 @@ https:// [fe80::211:22ff:fe33:4455]
   
 @note
 - The application project includes mbedTLS library (https://tls.mbed.org/).
-  Its source code is located in fnet/third_party/mbedtls-2.4.0/.
-- mbedTLS FNET application configuration parameter are in the fnet_mdedtls_user_config.h file.@n
+  Its source code is located in fnet/third_party/mbedtls-x.x.x/.
+- mbedTLS FNET application configuration parameters are in the fnet_mdedtls_user_config.h file.@n
 - The MBEDTLS_CONFIG_FILE definition is set to "fnet_mbedtls_user_config.h" in preprocessor project options.
+
+*/
+
+//********************************************************************
+//************************* Shell FreeRTOS Demo Quick Start **********
+//********************************************************************
+
+/*!
+* @page quick_start_shell_freertos FNET Shell FreeRTOS Demo Quick Start
+
+- This application has absolutely the same features and behavior as the Shell demo application. 
+  So follow steps described in @ref quick_start_shell.
+- In addition, the application:
+	- runs in FreeRTOS task.
+	- polls application protocol with a period.
+	- has additional application parameters:
+		- FAPP_CFG_FREERTOS_TASK_PRIORITY - FreeRTOS task priority
+		- FAPP_CFG_FREERTOS_TASK_STACK_SIZE - FreeRTOS task stack size
+		- FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS - Polling period for calling the fnet_poll_service() function.
+  
+@note
+- The application project includes FreeRTOS. Its source code is located in fnet/third_party/freertos-x.x.x/.
+- FreeRTOS FNET application configuration parameters are in the FreeRTOSConfig.h file.
 
 */
 
@@ -1742,6 +1776,10 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 3.9.4
+	- Added Shell example using FreeRTOS.
+	- Fixed minor issues, found by the Coverity tool.
+	
 - Version 3.9.3
 	- Fixed all mDNS warnings in the Bonjour Conformance test.
 	- Improved SW event response, thanks to Michal Hanak.

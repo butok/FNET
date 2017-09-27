@@ -106,7 +106,7 @@ static void fnet_shell_poll( void *shell_if_p )
     const struct fnet_shell *shell = ((struct fnet_shell_if *)shell_if_p)->shell;
     fnet_int32_t            ch;
     fnet_index_t            argc;
-    fnet_char_t             *argv[FNET_CFG_SHELL_ARGS_MAX + 1u]; /* One extra for 0 terminator.*/
+    fnet_char_t             *argv[FNET_CFG_SHELL_ARGS_MAX + 1u]={0}; /* One extra for 0 terminator.*/
 
     switch(shell_if->state)
     {

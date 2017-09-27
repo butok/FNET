@@ -120,4 +120,3 @@
 #define FNET_CFG_LINK                       (1)
 
 #endif /* _FNET_USER_CONFIG_H_ */
-

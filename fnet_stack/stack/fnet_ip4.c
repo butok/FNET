@@ -66,7 +66,7 @@ static void fnet_ip4_input_low(void *cookie);
 static fnet_bool_t fnet_ip4_addr_is_onlink(fnet_netif_t *netif, fnet_ip4_addr_t addr);
 
 #if FNET_CFG_IP4_FRAGMENTATION
-    static fnet_netbuf_t *fnet_ip4_reassembly( fnet_netbuf_t **nb_ptr );
+    static void fnet_ip4_reassembly( fnet_netbuf_t **nb_ptr );
     static void fnet_ip4_frag_list_add( fnet_ip4_frag_list_t **head, fnet_ip4_frag_list_t *fl );
     static void fnet_ip4_frag_list_del( fnet_ip4_frag_list_t **head, fnet_ip4_frag_list_t *fl );
     static void fnet_ip4_frag_add( fnet_ip4_frag_header_t *FNET_COMP_PACKED_VAR *head, fnet_ip4_frag_header_t *frag, fnet_ip4_frag_header_t *frag_prev );
@@ -292,8 +292,6 @@ fnet_error_t fnet_ip4_output( fnet_netif_t *netif,    fnet_ip4_addr_t src_ip, fn
         ipheader = (fnet_ip4_header_t *)nb->data_ptr;
 
         nb_prev = nb;
-
-        total_length = fnet_ntohs(ipheader->total_length);
 
         /* Go through the whole data segment after first fragment.*/
         for (offset = (header_length + frag_length); offset < total_length; offset += frag_length)
@@ -561,7 +559,8 @@ static void fnet_ip4_input_low(void *cookie)
             if((hdr->flags_fragment_offset & ~FNET_HTONS(FNET_IP4_DF)) != 0u) /* the MF bit or fragment offset is nonzero.*/
             {
 #if FNET_CFG_IP4_FRAGMENTATION
-                if((nb = fnet_ip4_reassembly(&nb)) == 0)
+                fnet_ip4_reassembly(&nb);
+                if(nb == FNET_NULL)
                 {
                     continue;
                 }
@@ -634,7 +633,7 @@ static void fnet_ip4_input_low(void *cookie)
 *************************************************************************/
 #if FNET_CFG_IP4_FRAGMENTATION
 
-static fnet_netbuf_t *fnet_ip4_reassembly( fnet_netbuf_t **nb_ptr )
+static void fnet_ip4_reassembly( fnet_netbuf_t **nb_ptr )
 {
     fnet_ip4_frag_list_t     *frag_list_ptr;
     fnet_ip4_frag_header_t   *frag_ptr;
@@ -646,11 +645,10 @@ static fnet_netbuf_t *fnet_ip4_reassembly( fnet_netbuf_t **nb_ptr )
     fnet_size_t             hdr_length;
 
     /* For this algorithm the all datagram must reside in contiguous area of memory.*/
-    if(fnet_netbuf_pullup(nb_ptr, (*nb_ptr)->total_length) == FNET_ERR)
+    if(fnet_netbuf_pullup(&nb, nb->total_length) == FNET_ERR)
     {
         goto DROP_FRAG;
     }
-    nb = *nb_ptr;
 
     iphdr = (fnet_ip4_header_t *)nb->data_ptr;
 
@@ -809,12 +807,14 @@ static fnet_netbuf_t *fnet_ip4_reassembly( fnet_netbuf_t **nb_ptr )
     fnet_ip4_frag_list_del(&ip_frag_list_head, frag_list_ptr);
     fnet_free(frag_list_ptr);
 
-    return (nb);
+goto EXIT;
 
 DROP_FRAG:
     fnet_netbuf_free_chain(nb);
 NEXT_FRAG:
-    return (FNET_NULL);
+    nb = FNET_NULL;
+EXIT:    
+    *nb_ptr =  nb;
 }
 #endif /* FNET_CFG_IP4_FRAGMENTATION */
 

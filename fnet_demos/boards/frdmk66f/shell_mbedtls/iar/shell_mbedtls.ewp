@@ -1976,6 +1976,9 @@
       <name>$PROJ_DIR$/../../../../common/startup/MK66F18/fsl_device_registers.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$/../../../../common/startup/MK66F18/fsl_sbrk.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$/../../../../common/startup/MK66F18/fsl_smc.c</name>
     </file>
     <file>

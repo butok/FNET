@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -34,7 +34,10 @@
 extern "C" {
 #endif
 
-void fapp_main( void ); /* Main entry point of the shell demo. */
+void fapp_main( void ); /* Main entry point of the bare-metal shell demo. */
+#if FAPP_CFG_FREERTOS
+void fapp_main_freertos( void ); /* Main entry point of the FreeRTOS shell demo. */
+#endif
 
 #if defined(__cplusplus)
 }

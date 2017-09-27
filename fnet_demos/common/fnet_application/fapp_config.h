@@ -122,6 +122,44 @@
     #define FAPP_CFG_LINK_UNCONNECT_SCRIPT ""
 #endif
 
+/**************************************************************************/ /*!
+ * @def      FAPP_CFG_FREERTOS
+ * @brief    FreeRTOS support:
+ *               - @c 1 = is enabled.
+ *               - @c 0 = is disabled (bare-metal).
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FAPP_CFG_FREERTOS
+    #define FAPP_CFG_FREERTOS                   (0)
+#endif
+
+/**************************************************************************/ /*!
+ * @def      FAPP_CFG_FREERTOS_TASK_PRIORITY
+ * @brief    FreeRTOS task priority
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FAPP_CFG_FREERTOS_TASK_PRIORITY
+    #define FAPP_CFG_FREERTOS_TASK_PRIORITY     (configMAX_PRIORITIES - 3)
+#endif
+
+/**************************************************************************/ /*!
+ * @def      FAPP_CFG_FREERTOS_TASK_STACK_SIZE
+ * @brief    FreeRTOS task stack size
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FAPP_CFG_FREERTOS_TASK_STACK_SIZE
+    #define FAPP_CFG_FREERTOS_TASK_STACK_SIZE   (0x2000)
+#endif
+
+/**************************************************************************/ /*!
+ * @def      FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS
+ * @brief    Polling period for calling the fnet_poll_service() function.
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS
+    #define FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS (1) /* ms */
+#endif
+
 /* FNET-Application TCP/IP stack default parameters. */
 /**************************************************************************/ /*!
  * @brief    Descriptor of a default network interface set during application initialisation.@n
