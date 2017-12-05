@@ -16,9 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Shell Demo implementation (SNTP client).
+***************************************************************************
+*
+* FNET Shell Demo implementation (SNTP client).
 *
 ***************************************************************************/
 
@@ -38,7 +38,7 @@
 *     Function Prototypes
 *************************************************************************/
 static void fapp_sntp_callback_resolved (const fnet_sntp_timestamp_t *timestamp, void *cookie);
-static void fapp_sntp_on_ctrlc(fnet_shell_desc_t desc);
+static void fapp_sntp_on_ctrlc(fnet_shell_desc_t desc, void *cookie);
 
 /************************************************************************
 * DESCRIPTION: Event handler callback on resolved time over SNTP.
@@ -64,7 +64,7 @@ static void fapp_sntp_callback_resolved (const fnet_sntp_timestamp_t *timestamp,
 /************************************************************************
 * DESCRIPTION: Ctr+C termination handler.
 ************************************************************************/
-static void fapp_sntp_on_ctrlc(fnet_shell_desc_t desc)
+static void fapp_sntp_on_ctrlc(fnet_shell_desc_t desc, void *cookie)
 {
     /* Terminate SNTP service. */
     fnet_sntp_release();
@@ -106,7 +106,7 @@ void fapp_sntp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
         fnet_shell_println(desc, FAPP_TOCANCEL_STR);
         fnet_shell_println(desc, FAPP_DELIMITER_STR);
 
-        fnet_shell_block(desc, fapp_sntp_on_ctrlc); /* Block the shell input.*/
+        fnet_shell_block(desc, fapp_sntp_on_ctrlc, FNET_NULL); /* Block the shell input.*/
     }
     else
     {

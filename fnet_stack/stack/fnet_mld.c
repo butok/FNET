@@ -16,9 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief MLD protocol implementation.
+***************************************************************************
+*
+*  MLD protocol implementation.
 *
 ***************************************************************************/
 
@@ -28,6 +28,7 @@
 
 #include "fnet_mld.h"
 #include "fnet_checksum.h"
+#include "fnet_prot.h"
 
 /* TBD Random delay timers */
 
@@ -37,13 +38,11 @@
 #define FNET_MLD_HOP_LIMIT                   (1)             /* IPv6 Hop Limit for MLD is 1.*/
 
 /* IPv6 Router Alert option in a Hop-by_Hop Options header.*/
-static const fnet_mld_ra_option_header_t mld_ra_option = {FNET_PROT_ICMP6 /* Next Header */
-                                                          , 0                     /* Length-8 */
-                                                          , {FNET_IP6_OPTION_TYPE_ROUTER_ALERT, 2} /* Router Alert Option. */
-                                                          , FNET_IP6_OPTION_TYPE_ROUTER_ALERT_VALUE_MLD   /* Router Alert Option value. */
-                                                          , {FNET_IP6_OPTION_TYPE_PADN, 0}
-                                                         };       /* Padding. */
-
+static const fnet_mld_ra_option_header_t mld_ra_option = {  .next_header = FNET_PROT_ICMP6,         /* Next Header */
+                                                            .hdr_ext_length = 0,                     /* Length-8 */
+                                                            .ra_option_header = {.type = FNET_IP6_OPTION_TYPE_ROUTER_ALERT, .data_length = 2},  /* Router Alert Option. */
+                                                            .ra_option_value = FNET_IP6_OPTION_TYPE_ROUTER_ALERT_VALUE_MLD,                     /* Router Alert Option value. */
+                                                            .padn_option_header = {.type = FNET_IP6_OPTION_TYPE_PADN, .data_length = 0}         /* Padding. */};       
 
 static void fnet_mld_send( fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet_uint8_t type);
 
@@ -171,7 +170,6 @@ static void fnet_mld_send(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet
 *************************************************************************/
 void fnet_mld_query_receive(fnet_netif_t *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb)
 {
-
     fnet_mld_header_t               *mld_packet = nb->data_ptr;
     fnet_size_t                     mld_packet_size = nb->total_length;
     fnet_ip6_header_t               *ip6_packet = (fnet_ip6_header_t *)ip6_nb->data_ptr;

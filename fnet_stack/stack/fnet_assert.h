@@ -16,9 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET assert macros.
+***************************************************************************
+*
+*  FNET assert macros.
 *
 ***************************************************************************/
 #ifndef _FNET_ASSERT_H_

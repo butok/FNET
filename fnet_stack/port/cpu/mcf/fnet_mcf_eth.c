@@ -17,15 +17,15 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ /*!
+***************************************************************************
 *
-* @brief Ethernet driver implementation.
+*  Ethernet driver implementation.
 *
 ***************************************************************************/
 
 #include "fnet.h"
 #if FNET_MCF && (FNET_CFG_CPU_ETH0 ||FNET_CFG_CPU_ETH1)
-#include "cpu/common/fnet_fec.h"
+#include "port/cpu/netif/fec/fnet_fec.h"
 
 #if FNET_CFG_CPU_ETH0
 /************************************************************************
@@ -80,11 +80,9 @@ fnet_netif_t fnet_cpu_eth1_if =
 #endif /*FNET_CFG_CPU_ETH0*/
 
 /************************************************************************
-* NAME: fnet_eth_io_init
-*
 * DESCRIPTION: Ethernet IO initialization.
 *************************************************************************/
-#if !FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT
+#if FNET_CFG_CPU_ETH_IO_INIT
 void fnet_eth_io_init()
 {
 
@@ -164,13 +162,10 @@ void fnet_eth_io_init()
     FNET_MCF5441X_GPIO_PODR_G &= ~FNET_MCF5441X_GPIO_PODR_G_PODR_G4; 	/* Clear GPIO4 pin to enable RMMI1 on the QS3VH16233PAG QUICKSWITCH*/
 
 #endif /* FNET_CFG_CPU_MCF54418 */
-
 }
-#endif /*!FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT*/
+#endif /*FNET_CFG_CPU_ETH_IO_INIT*/
 
 /************************************************************************
-* NAME: fnet_eth_phy_init
-*
 * DESCRIPTION: Ethernet Physical Transceiver initialization and/or reset.
 *************************************************************************/
 void fnet_eth_phy_init(fnet_fec_if_t *ethif)

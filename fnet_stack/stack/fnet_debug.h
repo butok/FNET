@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Private. Debug definitions.
+***************************************************************************
+*
+*  Private. Debug definitions.
 *
 ***************************************************************************/
 
@@ -33,7 +33,13 @@ extern "C" {
 
 #if FNET_CFG_DEBUG
 
+#ifndef FNET_DEBUG
 #define FNET_DEBUG(...) fnet_println(__VA_ARGS__)
+#endif
+
+#ifndef FNET_DEBUG_PRINTF
+#define FNET_DEBUG_PRINTF(...) fnet_printf(__VA_ARGS__)
+#endif
 
 #if FNET_CFG_DEBUG_STACK && FNET_CFG_DEBUG
 extern fnet_size_t fnet_dbg_stack_max;
@@ -42,6 +48,7 @@ extern fnet_size_t fnet_dbg_stack_max;
 #else
 
 #define FNET_DEBUG(...) do{}while(0)
+#define FNET_DEBUG_PRINTF(...) do{}while(0)
 
 #endif
 

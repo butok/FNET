@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Shell Demo implementation (DNS Resolver).
+***************************************************************************
+*
+* FNET Shell Demo implementation (DNS Resolver).
 *
 ***************************************************************************/
 
@@ -39,7 +39,7 @@
 *     Function Prototypes
 *************************************************************************/
 static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, void *cookie);
-static void fapp_dns_on_ctrlc(fnet_shell_desc_t desc);
+static void fapp_dns_on_ctrlc(fnet_shell_desc_t desc, void *cookie);
 
 static fnet_dns_desc_t fapp_dns_desc = 0; /* DNS service descriptor. */
 
@@ -74,7 +74,7 @@ static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *add
 /************************************************************************
 * DESCRIPTION: Ctr+C termination handler.
 ************************************************************************/
-static void fapp_dns_on_ctrlc(fnet_shell_desc_t desc)
+static void fapp_dns_on_ctrlc(fnet_shell_desc_t desc, void *cookie)
 {
     /* Terminate DNS service. */
     fnet_dns_release(fapp_dns_desc);
@@ -130,7 +130,7 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
         else
 #endif
 #if FNET_CFG_IP4
-            if( (((struct sockaddr_in *)(&dns_params.dns_server_addr))->sin_addr.s_addr = fnet_netif_get_ip4_dns(netif)) != (fnet_ip4_addr_t)0)
+            if( (((struct fnet_sockaddr_in *)(&dns_params.dns_server_addr))->sin_addr.s_addr = fnet_netif_get_ip4_dns(netif)) != (fnet_ip4_addr_t)0)
             {
                 dns_params.dns_server_addr.sa_family = AF_INET;
             }
@@ -160,7 +160,7 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
 
         fapp_dns_desc = dns_desc;
 
-        fnet_shell_block(desc, fapp_dns_on_ctrlc); /* Block the shell input.*/
+        fnet_shell_block(desc, fapp_dns_on_ctrlc, FNET_NULL); /* Block the shell input.*/
     }
     else
     {

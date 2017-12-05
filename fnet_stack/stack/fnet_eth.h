@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Ethernet platform independent API definitions.
+***************************************************************************
+*
+* Ethernet platform independent API definitions.
 *
 ***************************************************************************/
 
@@ -69,6 +69,24 @@ typedef fnet_uint8_t fnet_mac_addr_t[6]; /* MAC address type.*/
  * @brief Converts the standard notation @c a:b:c:d:e:f to fnet_mac_addr_t value.
  ******************************************************************************/
 #define FNET_MAC_ADDR_INIT(a, b, c, d, e, f)   { (a), (b), (c), (d), (e), (f) }
+
+/* MAC address is multicast. */
+#define FNET_MAC_ADDR_IS_MULTICAST(a)	((((a)[0]) == 0x01U)?FNET_TRUE:FNET_FALSE)
+
+/* MAC address is broadcast. */
+#define FNET_MAC_ADDR_IS_BROADCAST(a)	(((((a)[0]) == 0xFFU) && \
+                                        (((a)[1]) == 0xFFU)&& \
+                                        (((a)[1]) == 0xFFU)&& \
+                                        (((a)[1]) == 0xFFU)&& \
+                                        (((a)[1]) == 0xFFU)&& \
+                                        (((a)[1]) == 0xFFU))? FNET_TRUE:FNET_FALSE)
+/* Copying address. */
+#define FNET_MAC_ADDR_COPY(from_addr, to_addr)  \
+    (fnet_memcpy(&to_addr[0], &from_addr[0], sizeof(fnet_mac_addr_t)))
+
+/* Useful mac addresses */
+extern const fnet_mac_addr_t fnet_eth_null_addr;
+extern const fnet_mac_addr_t fnet_eth_broadcast;
 
 /******************************************************************************
 *     Function Prototypes

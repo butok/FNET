@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************//*!
+***************************************************************************
 *
-* @brief Lowest level routines for ColdFire.
+*  Lowest level routines for ColdFire.
 *
 ***************************************************************************/
 #include "port/compiler/fnet_comp_asm.h"

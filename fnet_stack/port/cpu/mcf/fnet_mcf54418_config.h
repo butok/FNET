@@ -16,10 +16,9 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *
-**********************************************************************/
-/*!
+***************************************************************************
 *
-* @brief MCF54481 specific configuration file.
+*  MCF54481 specific configuration file.
 *
 ***************************************************************************/
 

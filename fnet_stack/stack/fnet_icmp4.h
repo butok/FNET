@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Private. ICMPv4 protocol function definitions, data structures, etc.
+***************************************************************************
+*
+*  Private. ICMPv4 protocol function definitions, data structures, etc.
 *
 ***************************************************************************/
 

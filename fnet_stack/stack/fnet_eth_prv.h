@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Private. Ethernet platform independent API functions.
+***************************************************************************
+*
+*  Private. Ethernet platform independent API functions.
 *
 ***************************************************************************/
 
@@ -72,29 +72,22 @@ typedef struct fnet_eth_if
 {
     void                            *eth_prv;           /* Points to Ethernet driver-specific control data structure. */
     fnet_index_t                    eth_mac_number;     /* MAC module number [0-1]. */
-    void                            ( *eth_output)(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb); /* Ethernet driver output.*/
+    void                            ( *eth_output)(fnet_netif_t *netif, fnet_netbuf_t *nb); /* Ethernet driver output.*/
 #if FNET_CFG_MULTICAST
     void                            ( *eth_multicast_join)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);    /* Ethernet driver join multicast group.*/
     void                            ( *eth_multicast_leave)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);   /* Ethernet driver leave multicast group.*/
 #endif /* FNET_CFG_MULTICAST */
     /* Internal parameters.*/
+#if 0  /* Done by fnet_netif_is_connected()*/
     fnet_timer_desc_t               eth_timer;          /* Optional ETH timer.*/
+#endif
 #if FNET_CFG_IP4
     fnet_arp_if_t                   arp_if;             /* ARP interface.*/
 #endif
 #if FNET_CFG_IP6
     fnet_nd6_if_t                   nd6_if;             /* ND inteface.*/
 #endif
-#if !FNET_CFG_CPU_ETH_MIB
-    struct fnet_netif_statistics    eth_statistics;     /* Statistic counters.*/
-#endif
 } fnet_eth_if_t;
-
-/************************************************************************
-*     Global Data Structures
-*************************************************************************/
-extern const fnet_mac_addr_t fnet_eth_null_addr;
-extern const fnet_mac_addr_t fnet_eth_broadcast;
 
 /************************************************************************
 *     Function Prototypes
@@ -113,7 +106,7 @@ void fnet_eth_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet
 #endif
 
 void fnet_eth_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb );
-void fnet_eth_prot_input( fnet_netif_t *netif, fnet_netbuf_t *nb, fnet_uint16_t protocol );
+void fnet_eth_input( fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t frame_size);
 
 #if FNET_CFG_MULTICAST
 #if FNET_CFG_IP4
@@ -131,7 +124,7 @@ void fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr
 #endif
 
 #if FNET_CFG_DEBUG_TRACE_ETH && FNET_CFG_DEBUG_TRACE
-void fnet_eth_trace(fnet_uint8_t *str, fnet_eth_header_t *eth_hdr);
+void fnet_eth_trace(fnet_char_t *str, fnet_eth_header_t *eth_hdr);
 #else
 #define fnet_eth_trace(str, eth_hdr)    do{}while(0)
 #endif

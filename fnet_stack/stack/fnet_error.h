@@ -17,10 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
+***************************************************************************
 *
-* @brief Socket error API definitions.
+*  Socket error API definitions.
 *
 ***************************************************************************/
 #ifndef _FNET_ERROR_H_

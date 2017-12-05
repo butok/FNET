@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2016 by Andrey Butok. FNET Community.
+* Copyright 2016-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -16,10 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
+***************************************************************************
 *
-* @brief Network-interface initialization.
+*  Network-interface initialization.
 *
 ***************************************************************************/
 
@@ -32,7 +31,13 @@ extern "C" {
 #endif
 
 /* Network-interface initialization. */
-fnet_return_t fapp_netif_init( void );
+fnet_return_t fapp_netif_init( fnet_shell_desc_t desc );
+void fapp_netif_info_print( fnet_shell_desc_t desc, fnet_netif_desc_t netif);
+void fapp_netif_addr_print( fnet_shell_desc_t desc, fnet_address_family_t family, fnet_netif_desc_t netif, fnet_bool_t print_type);
+void fapp_netif_info_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
+void fapp_netif_stat_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
+
+extern const fnet_char_t *const fapp_netif_connection_state_str[];
 
 #if defined(__cplusplus)
 }

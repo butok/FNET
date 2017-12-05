@@ -18,9 +18,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Network interface implementation.
+***************************************************************************
+*
+*  FNET Network interface implementation.
 *
 ***************************************************************************/
 
@@ -100,7 +100,7 @@ void fnet_netif_drain( void )
 /************************************************************************
 * DESCRIPTION: Returns a network interface given its name.
 *************************************************************************/
-fnet_netif_desc_t fnet_netif_get_by_name( fnet_char_t *name )
+fnet_netif_desc_t fnet_netif_get_by_name( const fnet_char_t *name )
 {
     fnet_netif_t        *netif;
     fnet_netif_desc_t   result = (fnet_netif_desc_t)FNET_NULL;
@@ -178,7 +178,7 @@ fnet_netif_desc_t fnet_netif_get_by_ip4_addr( fnet_ip4_addr_t addr )
 /************************************************************************
 * DESCRIPTION: Returns a network interface based on socket address.
 *************************************************************************/
-fnet_netif_desc_t fnet_netif_get_by_sockaddr( const struct sockaddr *addr )
+fnet_netif_desc_t fnet_netif_get_by_sockaddr( const struct fnet_sockaddr *addr )
 {
     fnet_netif_desc_t result = (fnet_netif_desc_t)FNET_NULL;
 
@@ -188,12 +188,12 @@ fnet_netif_desc_t fnet_netif_get_by_sockaddr( const struct sockaddr *addr )
         {
 #if FNET_CFG_IP4
             case AF_INET:
-                result = fnet_netif_get_by_ip4_addr( ((const struct sockaddr_in *)addr)->sin_addr.s_addr);
+                result = fnet_netif_get_by_ip4_addr( ((const struct fnet_sockaddr_in *)addr)->sin_addr.s_addr);
                 break;
 #endif /* FNET_CFG_IP4 */
 #if FNET_CFG_IP6
             case AF_INET6:
-                result = fnet_netif_get_by_ip6_addr( &((const struct sockaddr_in6 *)addr)->sin6_addr.s6_addr);
+                result = fnet_netif_get_by_ip6_addr( &((const struct fnet_sockaddr_in6 *)addr)->sin6_addr.s6_addr);
                 break;
 #endif /* FNET_CFG_IP6 */
             default:
@@ -309,6 +309,7 @@ fnet_return_t fnet_netif_init(fnet_netif_desc_t netif_desc, fnet_uint8_t *hw_add
                 /* Interface-Type specific initialisation. */
                 switch(netif->netif_api->netif_type)
                 {
+                    case (FNET_NETIF_TYPE_WIFI):
                     case (FNET_NETIF_TYPE_ETHERNET):
                         result = fnet_eth_init(netif);
                         break;
@@ -430,7 +431,7 @@ void fnet_netif_set_ip4_addr( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipad
         netif->ip4_addr.address_type = FNET_NETIF_IP_ADDR_TYPE_MANUAL; /* Adress is set manually. */
         netif->ip4_addr_conflict = FNET_FALSE; /* Clear IPv4 address duplication flag.*/
 
-        if(subnet_mask == INADDR_ANY)
+        if(ipaddr && (subnet_mask == INADDR_ANY))
         {
             /* No subnet mask assigned, so do it automatically.*/
             if(FNET_IP4_CLASS_A(netif->ip4_addr.address))
@@ -482,9 +483,9 @@ void fnet_netif_set_ip4_addr( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipad
             netif->ip4_addr.subnetbroadcast = netif->ip4_addr.address | (~netif->ip4_addr.subnetmask);     /* subnet broadcast address*/
         }
 
-        if(netif->netif_api->netif_set_addr_notify)
+        if(netif->netif_api->netif_change_addr_notify)
         {
-            netif->netif_api->netif_set_addr_notify(netif);
+            netif->netif_api->netif_change_addr_notify(netif);
         }
 
         fnet_isr_unlock();
@@ -544,7 +545,7 @@ fnet_ip4_addr_t fnet_netif_get_ip4_addr( fnet_netif_desc_t netif_desc )
 {
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
 
-    return netif ? (netif->ip4_addr.address) : 0u;
+    return netif ? (netif->ip4_addr.address) : INADDR_ANY;
 }
 #endif /* FNET_CFG_IP4 */
 
@@ -556,7 +557,7 @@ fnet_ip4_addr_t fnet_netif_get_ip4_subnet_mask( fnet_netif_desc_t netif_desc )
 {
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
 
-    return netif ? (netif->ip4_addr.subnetmask) : 0u;
+    return netif ? (netif->ip4_addr.subnetmask) : INADDR_ANY;
 }
 #endif /* FNET_CFG_IP4 */
 
@@ -568,7 +569,7 @@ fnet_ip4_addr_t fnet_netif_get_ip4_gateway( fnet_netif_desc_t netif_desc )
 {
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
 
-    return netif ? (netif->ip4_addr.gateway) : 0u;
+    return netif ? (netif->ip4_addr.gateway) : INADDR_ANY;
 }
 #endif /* FNET_CFG_IP4 */
 
@@ -580,7 +581,7 @@ fnet_ip4_addr_t fnet_netif_get_ip4_dns( fnet_netif_desc_t netif_desc )
 {
     fnet_netif_t *netif = (fnet_netif_t *)netif_desc;
 
-    return netif ? (netif->ip4_addr.dns) : 0u;
+    return netif ? (netif->ip4_addr.dns) : INADDR_ANY;
 }
 #endif /* FNET_CFG_DNS && FNET_CFG_IP4*/
 
@@ -878,10 +879,28 @@ fnet_bool_t fnet_netif_is_connected( fnet_netif_desc_t netif_desc )
 
         if(fnet_timer_get_interval(netif->is_connected_timestamp, current_time) > (FNET_NETIF_IS_CONNECTED_PERIOD / FNET_TIMER_PERIOD_MS))
         {
+            fnet_bool_t     connection_flag = netif->is_connected;
+
             result = netif->netif_api->netif_is_connected(netif);
             /* Save last state.*/
             netif->is_connected = result;
             netif->is_connected_timestamp = current_time;
+
+            if(result != connection_flag) /* Is any change in connection. */
+            {
+                if(connection_flag == FNET_FALSE)  /* =>Connected. */
+                {
+                #if FNET_CFG_IP4
+                    if(netif->netif_api->netif_change_addr_notify)
+                    {
+                        netif->netif_api->netif_change_addr_notify(netif); /* Send ARP announcement*/
+                    }
+                #endif
+                #if FNET_CFG_IP6
+                    fnet_nd6_rd_start(netif); /* Restart IPv6 router discovery */
+                #endif
+                }
+            }
         }
         else
         {
@@ -1391,8 +1410,7 @@ fnet_return_t fnet_netif_bind_ip6_addr_prv(fnet_netif_t *netif, const fnet_ip6_a
             {
                 /* An address on which the Duplicate Address Detection procedure is
                  * applied is said to be tentative until the procedure has completed
-                 * successfully.
-                 */
+                 * successfully.*/
                 if_addr_ptr->state = FNET_NETIF_IP6_ADDR_STATE_TENTATIVE;
 
                 /* Get&Set the solicited-node multicast group-address for assigned ip_addr. */
@@ -1419,6 +1437,7 @@ fnet_return_t fnet_netif_bind_ip6_addr_prv(fnet_netif_t *netif, const fnet_ip6_a
             {
                 if_addr_ptr->state = FNET_NETIF_IP6_ADDR_STATE_PREFERRED;
             }
+            result = FNET_OK;
         }
     }
 

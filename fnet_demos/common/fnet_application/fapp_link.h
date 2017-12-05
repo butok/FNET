@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2016 by Andrey Butok. FNET Community.
+* Copyright 2016-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -16,9 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Shell Demo (Link).
+***************************************************************************
+*
+*  FNET Shell Demo (Link).
 *
 ***************************************************************************/
 
@@ -35,9 +35,9 @@
 extern "C" {
 #endif
 
-void fapp_link_init(fnet_shell_desc_t desc);
+void fapp_link_init(fnet_shell_desc_t desc, fnet_netif_desc_t netif);
 void fapp_link_release(void);
-void fapp_link_info(fnet_shell_desc_t desc);
+void fapp_link_info(fnet_shell_desc_t desc, fnet_netif_desc_t  netif);
 
 #if defined(__cplusplus)
 }

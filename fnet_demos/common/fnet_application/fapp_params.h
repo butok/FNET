@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Application parameters.
+***************************************************************************
+*
+*  FNET Application parameters.
 *
 ***************************************************************************/
 #ifndef _FAPP_PARAMS_H_
@@ -32,7 +32,7 @@
  * @brief Parameters-version string.@n
  * It defines version of the parameter structure saved in a persistent storage.
  ******************************************************************************/
-#define FAPP_PARAMS_VERSION                 "07" /* Changed on any change in the param. structures.*/
+#define FAPP_PARAMS_VERSION                 "08" /* Changed on any change in any parameter structure.*/
 
 /**************************************************************************/ /*!
  * @brief Signature string value.@n
@@ -68,6 +68,18 @@
  * @ref fapp_params_fnet structure.
  ******************************************************************************/
 #define FAPP_PARAMS_NETIF_NAME_SIZE          (FNET_NETIF_NAMELEN)
+
+/**************************************************************************/ /*!
+ * @brief The maximum length of the @c ssid field of the
+ * @ref fapp_params_wifi structure.
+ ******************************************************************************/
+#define FAPP_PARAMS_WIFI_SSID_SIZE          (FNET_WIFI_SSID_SIZE)
+
+/**************************************************************************/ /*!
+ * @brief The maximum length of the @c passphrase field of the
+ * @ref fapp_params_wifi structure.
+ ******************************************************************************/
+#define FAPP_PARAMS_WIFI_PASSPHRASE_SIZE    (FNET_WIFI_PASSPHRASE_SIZE_MAX)
 
 /**************************************************************************/ /*!
  * @brief Boot mode.
@@ -157,7 +169,7 @@ struct fapp_params_boot
  ******************************************************************************/
 struct fapp_params_tftp
 {
-    struct sockaddr                 server_addr;        /**< @brief This is the default TFTP server
+    struct fnet_sockaddr            server_addr;        /**< @brief This is the default TFTP server
                                                       * socket address to be used for network download
                                                       * if no address is provided to the "tftp"
                                                       * shell command.*/
@@ -177,20 +189,29 @@ struct fapp_params_tftp
 };
 
 /**************************************************************************/ /*!
+ * @brief Application parameters structure used to save the Wi-Fi
+ * specific configuration to a persistent storage.
+ ******************************************************************************/
+struct fapp_params_wifi
+{
+    fnet_char_t     ssid[FAPP_PARAMS_WIFI_SSID_SIZE];               /**< @brief Wi-Fi SSID (Subscription Service Identifier), also called Wireless Network Name. @n
+                                                                    It can be up to 32 alphanumeric character unique identifier (zero-terminated string).*/
+    fnet_char_t     passphrase[FAPP_PARAMS_WIFI_PASSPHRASE_SIZE];   /**< @brief Alphanumeric pass-phrase. Also called Pre-Shared Key (PSK). @n
+                                                                    It can be between 8 and 63 characters or 64 hexadecimal digits (zero-terminated).*/
+};
+
+/**************************************************************************/ /*!
  * @brief Main application  parameter structure used to save the
  * application specific configuration to a persistent storage.
  ******************************************************************************/
 struct fapp_params_flash
 {
-    fnet_char_t signature[FAPP_PARAMS_SIGNATURE_SIZE]; /**< @brief Signature string.@n
-                                                 * It's used for simple check if configuration
-                                                 * structure is present in a persistent storage.*/
-    struct fapp_params_fnet fnet_params;        /**< @brief FNET TCP/IP stack specific
-                                                 * configuration parameters.*/
-    struct fapp_params_boot boot_params;        /**< @brief Bootloader specific
-                                                 * configuration parameters*/
-    struct fapp_params_tftp tftp_params;        /**< @brief TFTP loader specific
-                                                 * configuration parameters.*/
+    fnet_char_t signature[FAPP_PARAMS_SIGNATURE_SIZE];  /**< @brief Signature string.@n
+                                                        * It's used for simple check if configuration structure is present in a persistent storage.*/
+    struct fapp_params_fnet fnet_params;                /**< @brief FNET TCP/IP stack specific configuration parameters.*/
+    struct fapp_params_boot boot_params;                /**< @brief Bootloader specific configuration parameters*/
+    struct fapp_params_tftp tftp_params;                /**< @brief TFTP loader specific configuration parameters.*/
+    struct fapp_params_wifi wifi_params;                /**< @brief Wi-Fi specific configuration parameters.*/
 };
 
 #endif /* _FAPP_PARAMS_H_ */

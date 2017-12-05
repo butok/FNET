@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,8 +17,8 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
+***************************************************************************
+*
 * @brief FNET Shell Demo API.
 *
 ***************************************************************************/
@@ -33,8 +33,7 @@ extern "C" {
 
 #include "fapp_config.h"
 
-#if FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD || FAPP_CFG_SETGET_CMD_TYPE
-
+#if FAPP_CFG_TFTPC_CMD || FAPP_CFG_TFTPCUP_CMD || FAPP_CFG_TFTP_CMD || FAPP_CFG_SETGET_CMD_TYPE
 
 /********************** RAW **************************************/
 /* RAW Rx handler control structure. */
@@ -287,14 +286,14 @@ const struct image_type *fapp_tftp_image_type_by_index (fapp_params_tftp_file_ty
 const struct image_type *fapp_tftp_image_type_by_name (fnet_char_t *name);
 #endif
 
-#if FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD
-void fapp_tftp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
+#if FAPP_CFG_TFTPC_CMD || FAPP_CFG_TFTPCUP_CMD
+void fapp_tftp_cln_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 #endif
 
-#if FAPP_CFG_TFTPS_CMD
-void fapp_tftps_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
-void fapp_tftps_info( fnet_shell_desc_t desc );
-void fapp_tftps_release( void );
+#if FAPP_CFG_TFTP_CMD
+void fapp_tftp_srv_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
+void fapp_tftp_srv_info( fnet_shell_desc_t desc );
+void fapp_tftp_srv_release( void );
 #endif
 
 #if defined(__cplusplus)

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -16,9 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Private. Kinetis Peripheral Registers definitions.
+***************************************************************************
+*
+*  Private. Kinetis Peripheral Registers definitions.
 *
 ***************************************************************************/
 
@@ -988,8 +988,10 @@ typedef struct FNET_MK_PORT_MemMap
 /* PCR Bit Fields */
 #define FNET_MK_PORT_PCR_PS_MASK                         0x1u
 #define FNET_MK_PORT_PCR_PS_SHIFT                        0
+#define FNET_MK_PORT_PCR_PS(x)                           (((uint32_t)(((uint32_t)(x)) << FNET_MK_PORT_PCR_PS_SHIFT)) & FNET_MK_PORT_PCR_PS_MASK)
 #define FNET_MK_PORT_PCR_PE_MASK                         0x2u
 #define FNET_MK_PORT_PCR_PE_SHIFT                        1
+#define FNET_MK_PORT_PCR_PE(x)                           (((fnet_uint32_t)(((uint32_t)(x)) << FNET_MK_PORT_PCR_PE_SHIFT))&FNET_MK_PORT_PCR_PE_MASK)
 #define FNET_MK_PORT_PCR_SRE_MASK                        0x4u
 #define FNET_MK_PORT_PCR_SRE_SHIFT                       2
 #define FNET_MK_PORT_PCR_PFE_MASK                        0x10u

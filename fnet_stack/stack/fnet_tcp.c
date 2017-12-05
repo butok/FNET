@@ -18,9 +18,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief TCP protocol implementation.
+***************************************************************************
+*
+*  TCP protocol implementation.
 *
 ***************************************************************************/
 
@@ -41,8 +41,8 @@
 struct fnet_tcp_segment
 {
     fnet_socket_option_t    *sockoption;
-    struct sockaddr         src_addr;
-    struct sockaddr         dest_addr;
+    struct fnet_sockaddr    src_addr;
+    struct fnet_sockaddr    dest_addr;
     fnet_uint32_t           seq;
     fnet_uint32_t           ack;
     fnet_uint8_t            flags;
@@ -60,14 +60,14 @@ static void fnet_tcp_slowtimo( fnet_uint32_t cookie );
 static void fnet_tcp_fasttimo( fnet_uint32_t cookie );
 static void fnet_tcp_slowtimosk( fnet_socket_if_t *sk );
 static void fnet_tcp_fasttimosk( fnet_socket_if_t *sk );
-static fnet_bool_t fnet_tcp_inputsk( fnet_socket_if_t *sk, fnet_netbuf_t *insegment, struct sockaddr *src_addr,  struct sockaddr *dest_addr);
+static fnet_bool_t fnet_tcp_inputsk( fnet_socket_if_t *sk, fnet_netbuf_t *insegment, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr);
 static void fnet_tcp_initconnection( fnet_socket_if_t *sk );
 static fnet_bool_t fnet_tcp_dataprocess( fnet_socket_if_t *sk, fnet_netbuf_t *insegment, fnet_flag_t *ackparam );
 static fnet_error_t fnet_tcp_sendheadseg( fnet_socket_if_t *sk, fnet_uint8_t flags, void *options, fnet_uint8_t optlen );
 static fnet_error_t fnet_tcp_senddataseg( fnet_socket_if_t *sk, void *options, fnet_uint8_t optlen, fnet_size_t datasize );
 static fnet_uint32_t fnet_tcp_getrcvwnd( fnet_socket_if_t *sk );
 static fnet_error_t fnet_tcp_sendseg( struct fnet_tcp_segment *segment);
-static void fnet_tcp_sendrst( fnet_socket_option_t *sockoption, fnet_netbuf_t *insegment, struct sockaddr *src_addr,  struct sockaddr *dest_addr);
+static void fnet_tcp_sendrst( fnet_socket_option_t *sockoption, fnet_netbuf_t *insegment, struct fnet_sockaddr *src_addr, struct fnet_sockaddr *dest_addr);
 static void fnet_tcp_sendrstsk( fnet_socket_if_t *sk );
 static void fnet_tcp_sendack( fnet_socket_if_t *sk );
 static void fnet_tcp_abortsk( fnet_socket_if_t *sk );
@@ -81,7 +81,7 @@ static void fnet_tcp_ktimeo( fnet_socket_if_t *sk );
 static void fnet_tcp_ptimeo( fnet_socket_if_t *sk );
 static fnet_bool_t fnet_tcp_hit( fnet_uint32_t startpos, fnet_uint32_t endpos, fnet_uint32_t pos );
 static fnet_bool_t fnet_tcp_addinpbuf( fnet_socket_if_t *sk, fnet_netbuf_t *insegment, fnet_flag_t *ackparam );
-static fnet_socket_if_t *fnet_tcp_findsk( struct sockaddr *src_addr,  struct sockaddr *dest_addr );
+static fnet_socket_if_t *fnet_tcp_findsk( struct fnet_sockaddr *src_addr, struct fnet_sockaddr *dest_addr );
 static void fnet_tcp_addpartialsk( fnet_socket_if_t *mainsk, fnet_socket_if_t *partialsk );
 static void fnet_tcp_movesk2incominglist( fnet_socket_if_t *sk );
 static void fnet_tcp_closesk( fnet_socket_if_t *sk );
@@ -99,14 +99,14 @@ static fnet_bool_t fnet_tcp_sendanydata( fnet_socket_if_t *sk, fnet_bool_t oneex
 static void fnet_tcp_finprocessing( fnet_socket_if_t *sk, fnet_uint32_t ack );
 static fnet_return_t fnet_tcp_init( void );
 static void fnet_tcp_release( void );
-static void fnet_tcp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb);
-static void fnet_tcp_control_input(fnet_prot_notify_t command, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb);
+static void fnet_tcp_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr, struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb);
+static void fnet_tcp_control_input(fnet_prot_notify_t command, struct fnet_sockaddr *src_addr, struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb);
 static fnet_return_t fnet_tcp_attach( fnet_socket_if_t *sk );
 static fnet_return_t fnet_tcp_close( fnet_socket_if_t *sk );
-static fnet_return_t fnet_tcp_connect( fnet_socket_if_t *sk, struct sockaddr *foreign_addr);
+static fnet_return_t fnet_tcp_connect( fnet_socket_if_t *sk, struct fnet_sockaddr *foreign_addr);
 static fnet_socket_if_t *fnet_tcp_accept( fnet_socket_if_t *listensk );
-static fnet_int32_t fnet_tcp_rcv( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct sockaddr *foreign_addr);
-static fnet_int32_t fnet_tcp_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct sockaddr *foreign_addr);
+static fnet_int32_t fnet_tcp_rcv( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct fnet_sockaddr *foreign_addr);
+static fnet_int32_t fnet_tcp_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *foreign_addr);
 static fnet_return_t fnet_tcp_shutdown( fnet_socket_if_t *sk, fnet_sd_flags_t how );
 static fnet_return_t fnet_tcp_setsockopt( fnet_socket_if_t *sk, fnet_protocol_t level, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen );
 static fnet_return_t fnet_tcp_getsockopt( fnet_socket_if_t *sk, fnet_protocol_t level, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen );
@@ -230,7 +230,7 @@ static void fnet_tcp_release( void )
 *
 * RETURNS: FNET_OK.
 *************************************************************************/
-static void fnet_tcp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb)
+static void fnet_tcp_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr, struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb)
 {
     fnet_socket_if_t   *sk;
     fnet_uint16_t   checksum;
@@ -328,7 +328,7 @@ DROP:
 /************************************************************************
 * DESCRIPTION: This function process ICMP errors.
 *************************************************************************/
-static void fnet_tcp_control_input(fnet_prot_notify_t command, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb)
+static void fnet_tcp_control_input(fnet_prot_notify_t command, struct fnet_sockaddr *src_addr, struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb)
 {
     fnet_tcp_header_t   *tcp_header;    /* Pointer to the TCP header.*/
     fnet_socket_if_t       *sk;            /* Pointer to the socket.*/
@@ -538,7 +538,7 @@ static fnet_return_t fnet_tcp_close( fnet_socket_if_t *sk )
 * RETURNS: If no error occurs, this function returns FNET_OK. Otherwise
 *          it returns FNET_ERR.
 *************************************************************************/
-static fnet_return_t fnet_tcp_connect( fnet_socket_if_t *sk, struct sockaddr *foreign_addr)
+static fnet_return_t fnet_tcp_connect( fnet_socket_if_t *sk, struct fnet_sockaddr *foreign_addr)
 {
     fnet_tcp_control_t  *cb;
     fnet_uint8_t        options[FNET_TCP_MAX_OPT_SIZE];
@@ -653,7 +653,7 @@ static fnet_socket_if_t *fnet_tcp_accept( fnet_socket_if_t *listensk )
 * RETURNS: If no error occurs, this function returns the length
 *          of the received data. Otherwise, it returns FNET_ERR.
 *************************************************************************/
-static fnet_int32_t fnet_tcp_rcv( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct sockaddr *foreign_addr)
+static fnet_int32_t fnet_tcp_rcv( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct fnet_sockaddr *foreign_addr)
 {
     fnet_tcp_control_t  *cb = (fnet_tcp_control_t *)sk->protocol_control;
     fnet_bool_t         flag_remove; /* Remove flag. 1 means that the data must be deleted
@@ -784,7 +784,7 @@ ERROR:
 *          of the data that is added to the output buffer.
 *          Otherwise, it returns FNET_ERR.
 *************************************************************************/
-static fnet_int32_t fnet_tcp_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct sockaddr *foreign_addr)
+static fnet_int32_t fnet_tcp_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *foreign_addr)
 {
     fnet_tcp_control_t  *cb = (fnet_tcp_control_t *)sk->protocol_control;
     fnet_netbuf_t       *netbuf;
@@ -1248,7 +1248,7 @@ static fnet_return_t fnet_tcp_listen( fnet_socket_if_t *sk, fnet_size_t backlog 
         fnet_tcp_initconnection(sk);
 
         /* Foreign address must be any.*/
-        ((struct sockaddr_in *)(&sk->foreign_addr))->sin_addr.s_addr = INADDR_ANY;
+        ((struct fnet_sockaddr_in *)(&sk->foreign_addr))->sin_addr.s_addr = INADDR_ANY;
         sk->foreign_addr.sa_port = 0u;
         sk->foreign_addr.sa_family = AF_INET;
         sk->con_limit = backlog;
@@ -1389,7 +1389,7 @@ static void fnet_tcp_initconnection( fnet_socket_if_t *sk )
 * RETURNS: TRUE if the input segment must be deleted. Otherwise
 *          this function returns FALSE.
 *************************************************************************/
-static fnet_bool_t fnet_tcp_inputsk( fnet_socket_if_t *sk, fnet_netbuf_t *insegment, struct sockaddr *src_addr,  struct sockaddr *dest_addr)
+static fnet_bool_t fnet_tcp_inputsk( fnet_socket_if_t *sk, fnet_netbuf_t *insegment, struct fnet_sockaddr *src_addr, struct fnet_sockaddr *dest_addr)
 {
     fnet_tcp_control_t  *cb = (fnet_tcp_control_t *)sk->protocol_control;
     fnet_tcp_control_t  *pcb;                   /* Pointer to the partial control block.*/
@@ -2101,6 +2101,11 @@ static fnet_bool_t fnet_tcp_dataprocess( fnet_socket_if_t *sk, fnet_netbuf_t *in
     else
     {}
 
+    if((*ackparam & FNET_TCP_AP_SEND_WITH_DELAY) != 0u)
+    {
+        cb->tcpcb_timers.delayed_ack = 1u; /* Delay 200 ms*/
+    }
+
     /* Acknowledgment of the final segment must be send immediatelly.*/
     if(((*ackparam & FNET_TCP_AP_FIN_ACK) != 0u)
        || ((insegment_flags & FNET_TCP_SGT_PSH) != 0u))
@@ -2154,11 +2159,6 @@ static fnet_bool_t fnet_tcp_dataprocess( fnet_socket_if_t *sk, fnet_netbuf_t *in
     {
         fnet_tcp_sendack(sk);
         return delflag;
-    }
-
-    if((*ackparam & FNET_TCP_AP_SEND_WITH_DELAY) != 0u)
-    {
-        cb->tcpcb_timers.delayed_ack = 1u; /* Delay 200 ms*/
     }
 
     return delflag;
@@ -2935,15 +2935,12 @@ static void fnet_tcp_fasttimosk( fnet_socket_if_t *sk )
         {
             cb->tcpcb_timers.delayed_ack--;
 
-            if(!cb->tcpcb_timers.delayed_ack)
+            if(!cb->tcpcb_timers. delayed_ack)
             {
-                cb->tcpcb_timers.delayed_ack = FNET_TCP_TIMER_OFF;
                 fnet_tcp_sendack(sk);
-                return;
             }
         }
     }
-
 }
 
 /************************************************************************
@@ -3223,13 +3220,13 @@ static fnet_error_t fnet_tcp_sendseg(struct fnet_tcp_segment *segment)
     if( 0
 #if FNET_CFG_IP4
         || ( (segment->dest_addr.sa_family == AF_INET)
-             && ((netif = fnet_ip4_route(((struct sockaddr_in *)(&segment->dest_addr))->sin_addr.s_addr)) != FNET_NULL)
+             && ((netif = fnet_ip4_route(((struct fnet_sockaddr_in *)(&segment->dest_addr))->sin_addr.s_addr)) != FNET_NULL)
              && (netif->features & FNET_NETIF_FEATURE_HW_TX_PROTOCOL_CHECKSUM)
              && (fnet_ip4_will_fragment(netif, nb->total_length) == FNET_FALSE) /* Fragmented packets are not inspected.*/  )
 #endif
 #if FNET_CFG_IP6
         || ( (segment->dest_addr.sa_family == AF_INET6)
-             && (netif || ((netif = fnet_ip6_route(&((struct sockaddr_in6 *)(&segment->src_addr))->sin6_addr.s6_addr, &((struct sockaddr_in6 *)(&segment->dest_addr))->sin6_addr.s6_addr)) != FNET_NULL ) )
+             && (netif || ((netif = fnet_ip6_route(&((struct fnet_sockaddr_in6 *)(&segment->src_addr))->sin6_addr.s6_addr, &((struct fnet_sockaddr_in6 *)(&segment->dest_addr))->sin6_addr.s6_addr)) != FNET_NULL ) )
              && (netif->features & FNET_NETIF_FEATURE_HW_TX_PROTOCOL_CHECKSUM)
              && (fnet_ip6_will_fragment(netif, nb->total_length) == FNET_FALSE) /* Fragmented packets are not inspected.*/  )
 #endif
@@ -3249,8 +3246,8 @@ static fnet_error_t fnet_tcp_sendseg(struct fnet_tcp_segment *segment)
 #if FNET_CFG_IP4
     if(segment->dest_addr.sa_family == AF_INET)
     {
-        error = fnet_ip4_output(netif, ((struct sockaddr_in *)(&segment->src_addr))->sin_addr.s_addr,
-                                ((struct sockaddr_in *)(&segment->dest_addr))->sin_addr.s_addr,
+        error = fnet_ip4_output(netif, ((struct fnet_sockaddr_in *)(&segment->src_addr))->sin_addr.s_addr,
+                                ((struct fnet_sockaddr_in *)(&segment->dest_addr))->sin_addr.s_addr,
                                 FNET_PROT_TCP,
                                 (fnet_uint8_t)(segment->sockoption ? segment->sockoption->ip4_opt.tos : 0u),
                                 (fnet_uint8_t)(segment->sockoption ? segment->sockoption->ip4_opt.ttl : FNET_TCP_TTL_DEFAULT),
@@ -3264,8 +3261,8 @@ static fnet_error_t fnet_tcp_sendseg(struct fnet_tcp_segment *segment)
         if(segment->dest_addr.sa_family == AF_INET6)
         {
             error = fnet_ip6_output( netif,
-                                     &((struct sockaddr_in6 *)(&segment->src_addr))->sin6_addr.s6_addr,
-                                     &((struct sockaddr_in6 *)(&segment->dest_addr))->sin6_addr.s6_addr,
+                                     &((struct fnet_sockaddr_in6 *)(&segment->src_addr))->sin6_addr.s6_addr,
+                                     &((struct fnet_sockaddr_in6 *)(&segment->dest_addr))->sin6_addr.s6_addr,
                                      FNET_PROT_TCP,
                                      (fnet_uint8_t)(segment->sockoption ? segment->sockoption->ip6_opt.hops_unicast : 0u /*default*/),
                                      nb,
@@ -3374,11 +3371,10 @@ static fnet_error_t fnet_tcp_sendheadseg( fnet_socket_if_t *sk, fnet_uint8_t fla
     segment.optlen = optlen;
     segment.data = 0;
 
-    error = fnet_tcp_sendseg(&segment);
-
-
     /* Turn off the delayed acknowledgment timer.*/
     cb->tcpcb_timers.delayed_ack = FNET_TCP_TIMER_OFF;
+
+    error = fnet_tcp_sendseg(&segment);
 
     cb->tcpcb_newfreercvsize = 0u;
 
@@ -3427,7 +3423,7 @@ static fnet_error_t fnet_tcp_senddataseg( fnet_socket_if_t *sk, void *options, f
     }
 
 #if FNET_CFG_IP4
-    tmp = fnet_ip4_maximum_packet(((struct sockaddr_in *)(&sk->foreign_addr))->sin_addr.s_addr);
+    tmp = fnet_ip4_maximum_packet(((struct fnet_sockaddr_in *)(&sk->foreign_addr))->sin_addr.s_addr);
 #else /* TBD */
     tmp = 0u;
 #endif
@@ -3526,10 +3522,11 @@ static fnet_error_t fnet_tcp_senddataseg( fnet_socket_if_t *sk, void *options, f
     segment.optlen = optlen;
     segment.data = data;
 
-    error = fnet_tcp_sendseg(&segment);
-
     /* Turn off the delayed acknowledgment timer.*/
     cb->tcpcb_timers.delayed_ack = FNET_TCP_TIMER_OFF;
+
+    error = fnet_tcp_sendseg(&segment);
+
     cb->tcpcb_newfreercvsize = 0u;
 
     /* Set the new sequence number.*/
@@ -3602,7 +3599,7 @@ static void fnet_tcp_sendack( fnet_socket_if_t *sk )
 * RETURNS: None.
 *************************************************************************/
 static void fnet_tcp_sendrst( fnet_socket_option_t *sockoption, fnet_netbuf_t *insegment,
-                              struct sockaddr *src_addr,  struct sockaddr *dest_addr)
+                              struct fnet_sockaddr *src_addr, struct fnet_sockaddr *dest_addr)
 {
     struct fnet_tcp_segment segment;
 
@@ -3836,7 +3833,7 @@ static void fnet_tcp_setsynopt( fnet_socket_if_t *sk, fnet_uint8_t *options, fne
 #if FNET_CFG_IP4
         fnet_netif_t *netif;
 
-        if((netif = fnet_ip4_route(((struct sockaddr_in *)(&sk->foreign_addr))->sin_addr.s_addr)) != 0)
+        if((netif = fnet_ip4_route(((struct fnet_sockaddr_in *)(&sk->foreign_addr))->sin_addr.s_addr)) != 0)
         {
             cb->tcpcb_rcvmss = (fnet_uint16_t)(netif->netif_mtu - 40u); /* MTU - [TCP,IP header size].*/
         }
@@ -3888,7 +3885,7 @@ static void fnet_tcp_getsynopt( fnet_socket_if_t *sk )
 * RETURNS: If the socket is found this function returns the pointer to the
 *          socket. Otherwise, this function returns 0.
 *************************************************************************/
-static fnet_socket_if_t *fnet_tcp_findsk( struct sockaddr *src_addr,  struct sockaddr *dest_addr )
+static fnet_socket_if_t *fnet_tcp_findsk( struct fnet_sockaddr *src_addr, struct fnet_sockaddr *dest_addr )
 {
     fnet_socket_if_t   *listensk = 0;
     fnet_socket_if_t   *sk;
@@ -4168,11 +4165,10 @@ static fnet_uint32_t fnet_tcp_getsize( fnet_uint32_t pos1, fnet_uint32_t pos2 )
 #if FNET_CFG_DEBUG_TRACE_TCP && FNET_CFG_DEBUG_TRACE
 void fnet_tcp_trace(fnet_uint8_t *str, fnet_tcp_header_t *tcp_hdr)
 {
-
     fnet_printf(FNET_SERIAL_ESC_FG_GREEN"%s", str); /* Print app-specific header.*/
-    fnet_println("[TCP header]"FNET_SERIAL_ESC_FG_BLACK);
+    fnet_println("[TCP header]"FNET_SERIAL_ESC_ATTR_RESET);
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
-    fnet_println("|(SrcPort)                 "FNET_SERIAL_ESC_FG_BLUE"%3u"FNET_SERIAL_ESC_FG_BLACK" |(DestPort)                 "FNET_SERIAL_ESC_FG_BLUE"%3u"FNET_SERIAL_ESC_FG_BLACK" |",
+    fnet_println("|(SrcPort)                 "FNET_SERIAL_ESC_FG_BLUE"%3u"FNET_SERIAL_ESC_ATTR_RESET" |(DestPort)                 "FNET_SERIAL_ESC_FG_BLUE"%3u"FNET_SERIAL_ESC_ATTR_RESET" |",
                  fnet_ntohs(tcp_hdr->source_port),
                  fnet_ntohs(tcp_hdr->destination_port));
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");

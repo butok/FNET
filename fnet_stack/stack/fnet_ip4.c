@@ -18,9 +18,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief IP protocol implementation.
+***************************************************************************
+*
+*  IP protocol implementation.
 *
 ***************************************************************************/
 
@@ -457,17 +457,17 @@ static fnet_bool_t fnet_ip4_addr_is_onlink(fnet_netif_t *netif, fnet_ip4_addr_t 
 /************************************************************************
 * DESCRIPTION: Prepare sockets addreses for upper protocol.
 *************************************************************************/
-void fnet_ip4_set_socket_addr(fnet_netif_t *netif, fnet_ip4_header_t *ip_hdr, struct sockaddr *src_addr,  struct sockaddr *dest_addr )
+void fnet_ip4_set_socket_addr(fnet_netif_t *netif, fnet_ip4_header_t *ip_hdr, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr )
 {
-    fnet_memset_zero(src_addr, sizeof(struct sockaddr));
+    fnet_memset_zero(src_addr, sizeof(struct fnet_sockaddr));
     src_addr->sa_family = AF_INET;
     src_addr->sa_scope_id = netif->scope_id;
-    ((struct sockaddr_in *)(src_addr))->sin_addr.s_addr = ip_hdr->source_addr;
+    ((struct fnet_sockaddr_in *)(src_addr))->sin_addr.s_addr = ip_hdr->source_addr;
 
-    fnet_memset_zero(dest_addr, sizeof(struct sockaddr));
+    fnet_memset_zero(dest_addr, sizeof(struct fnet_sockaddr));
     dest_addr->sa_family = AF_INET;
     dest_addr->sa_scope_id = netif->scope_id;
-    ((struct sockaddr_in *)(dest_addr))->sin_addr.s_addr = ip_hdr->desination_addr;
+    ((struct fnet_sockaddr_in *)(dest_addr))->sin_addr.s_addr = ip_hdr->desination_addr;
 }
 
 /************************************************************************
@@ -494,16 +494,16 @@ void fnet_ip4_input( fnet_netif_t *netif, fnet_netbuf_t *nb )
 *************************************************************************/
 static void fnet_ip4_input_low(void *cookie)
 {
-    fnet_ip4_header_t   *hdr;
-    fnet_netbuf_t       *ip4_nb;
-    fnet_prot_if_t      *protocol;
-    fnet_netif_t        *netif;
-    fnet_netbuf_t       *nb;
-    fnet_ip4_addr_t     destination_addr;
-    fnet_size_t         total_length;
-    fnet_size_t         header_length;
-    struct sockaddr     src_addr;
-    struct sockaddr     dest_addr;
+    fnet_ip4_header_t       *hdr;
+    fnet_netbuf_t           *ip4_nb;
+    fnet_prot_if_t          *protocol;
+    fnet_netif_t            *netif;
+    fnet_netbuf_t           *nb;
+    fnet_ip4_addr_t         destination_addr;
+    fnet_size_t             total_length;
+    fnet_size_t             header_length;
+    struct fnet_sockaddr    src_addr;
+    struct fnet_sockaddr    dest_addr;
 
     FNET_COMP_UNUSED_ARG(cookie);
 
@@ -1259,7 +1259,7 @@ fnet_error_t fnet_ip4_setsockopt(struct _fnet_socket_if_t  *sock, fnet_socket_op
         {
             fnet_index_t                    i;
             fnet_ip4_multicast_list_entry_t **multicast_entry = FNET_NULL;
-            const struct ip_mreq            *mreq = (const struct ip_mreq *)optval;
+            const struct fnet_ip_mreq       *mreq = (const struct fnet_ip_mreq *)optval;
             fnet_netif_t                    *netif;
 
 
@@ -1272,7 +1272,7 @@ fnet_error_t fnet_ip4_setsockopt(struct _fnet_socket_if_t  *sock, fnet_socket_op
                 netif = (fnet_netif_t *)fnet_netif_get_by_scope_id(mreq->imr_interface);
             }
 
-            if((optlen != sizeof(struct ip_mreq)) /* Check size.*/
+            if((optlen != sizeof(struct fnet_ip_mreq)) /* Check size.*/
                || (netif == FNET_NULL) /* Found IF.*/
                || (!FNET_IP4_ADDR_IS_MULTICAST(mreq->imr_multiaddr.s_addr)) /* Check if the address is multicast.*/
                || (!(sock->protocol_interface)) || (sock->protocol_interface->type != SOCK_DGRAM )
@@ -1368,7 +1368,7 @@ static void fnet_ip4_trace(fnet_uint8_t *str, fnet_ip4_header_t *ip_hdr)
     fnet_uint8_t ip_str[FNET_IP4_ADDR_STR_SIZE];
 
     fnet_printf(FNET_SERIAL_ESC_FG_GREEN"%s", str); /* Print app-specific header.*/
-    fnet_println("[IPv4 header]"FNET_SERIAL_ESC_FG_BLACK);
+    fnet_println("[IPv4 header]"FNET_SERIAL_ESC_ATTR_RESET);
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
     fnet_println("|(V) %2d |(HL)%2d |(TOS)     0x%02x |(L)                      %5u |",
                  FNET_IP_HEADER_GET_VERSION(ip_hdr),
@@ -1381,16 +1381,16 @@ static void fnet_ip4_trace(fnet_uint8_t *str, fnet_ip4_header_t *ip_hdr)
                  fnet_ntohs(FNET_IP_HEADER_GET_FLAG(ip_hdr)) >> 15,
                  fnet_ntohs(FNET_IP_HEADER_GET_OFFSET(ip_hdr)));
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
-    fnet_println("|(TTL)      %3u |(Proto)    "FNET_SERIAL_ESC_FG_BLUE"%3u"FNET_SERIAL_ESC_FG_BLACK" |(Cheksum)               0x%04x |",
+    fnet_println("|(TTL)      %3u |(Proto)    "FNET_SERIAL_ESC_FG_BLUE"%3u"FNET_SERIAL_ESC_ATTR_RESET" |(Cheksum)               0x%04x |",
                  ip_hdr->ttl,
                  ip_hdr->protocol,
                  fnet_ntohs(ip_hdr->checksum));
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
-    fnet_println("|(Src)                                          "FNET_SERIAL_ESC_FG_BLUE"%15s"FNET_SERIAL_ESC_FG_BLACK" |",
-                 fnet_inet_ntoa(*(struct in_addr *)(&ip_hdr->source_addr), ip_str));
+    fnet_println("|(Src)                                          "FNET_SERIAL_ESC_FG_BLUE"%15s"FNET_SERIAL_ESC_ATTR_RESET" |",
+                 fnet_inet_ntoa(*(struct fnet_in_addr *)(&ip_hdr->source_addr), ip_str));
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
-    fnet_println("|(Dest)                                         "FNET_SERIAL_ESC_FG_BLUE"%15s"FNET_SERIAL_ESC_FG_BLACK" |",
-                 fnet_inet_ntoa(*(struct in_addr *)(&ip_hdr->desination_addr), ip_str));
+    fnet_println("|(Dest)                                         "FNET_SERIAL_ESC_FG_BLUE"%15s"FNET_SERIAL_ESC_ATTR_RESET" |",
+                 fnet_inet_ntoa(*(struct fnet_in_addr *)(&ip_hdr->desination_addr), ip_str));
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
 
 }

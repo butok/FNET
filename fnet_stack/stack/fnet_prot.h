@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Private. Transport protocol interface definitions.
+***************************************************************************
+*
+*  Private. Transport protocol interface definitions.
 *
 ***************************************************************************/
 
@@ -68,8 +68,8 @@ typedef struct fnet_prot_if
     fnet_uint32_t           protocol;                   /* Protocol number.*/
     fnet_return_t           (*prot_init)( void );       /* (Optional) Protocol initialization function.*/
     void                    (*prot_release)( void );    /* (Optional) Protocol release function.*/
-    void                    (*prot_input)(fnet_netif_t *netif, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb); /* Protocol input function.*/
-    void                    (*prot_control_input)(fnet_prot_notify_t command, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb);  /* (Optional) Protocol input control function.*/
+    void                    (*prot_input)(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb); /* Protocol input function.*/
+    void                    (*prot_control_input)(fnet_prot_notify_t command, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb);  /* (Optional) Protocol input control function.*/
     void                    (*prot_drain)( void );      /* (Optional) Protocol drain function. */
     const fnet_socket_prot_if_t *socket_api;            /* (Optional) Pointer to Socket API structure.*/
 } fnet_prot_if_t;

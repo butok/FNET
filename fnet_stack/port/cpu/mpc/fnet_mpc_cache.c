@@ -16,9 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ /*!
+***************************************************************************
 *
-* @brief MPC-specific cache invalidation.
+*  MPC-specific cache invalidation.
 *
 ***************************************************************************/
 #include "fnet.h"

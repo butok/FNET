@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,15 +17,16 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Shell Demo implementation.
+***************************************************************************
+*
+*  FNET Shell Demo implementation.
 *
 ***************************************************************************/
 
 #include "fapp.h"
 #include "fapp_prv.h"
 #include "fapp_telnet.h"
+#include "fapp_netif.h"
 
 #if FAPP_CFG_SETGET_CMD
     #include "fapp_setget.h"
@@ -42,7 +43,7 @@ const struct fnet_shell fapp_telnet_shell =
 {
     fapp_cmd_table, /* You may replace by your own command table.*/
     FAPP_TELNET_PROMPT_STR,     /* prompt_str */
-    fapp_shell_init,            /* shell_init */
+    fapp_shell_on_init,            /* shell_init */
 };
 
 static fnet_telnet_desc_t fapp_telnet_desc = 0; /* Telnet descriptor. */
@@ -75,7 +76,7 @@ void fapp_telnet_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **a
         {
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             fnet_shell_println(desc, " Telnet Server started.");
-            fapp_print_netif_addr(desc, AF_SUPPORTED, fnet_netif_get_default(), FNET_FALSE);
+            fapp_netif_addr_print(desc, AF_SUPPORTED, fnet_netif_get_default(), FNET_FALSE);
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
 
             fapp_telnet_desc = telnet_desc;

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -16,9 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Shell Demo implementation (Ping).
+***************************************************************************
+*
+*  FNET Shell Demo implementation (Ping).
 *
 ***************************************************************************/
 
@@ -41,13 +41,13 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fapp_ping_callback(fnet_error_t result, fnet_size_t packet_count, struct sockaddr *target_addr, fnet_uint32_t cookie);
-static void fapp_ping_on_ctrlc(fnet_shell_desc_t desc);
+static void fapp_ping_callback(fnet_error_t result, fnet_size_t packet_count, struct fnet_sockaddr *target_addr, void *cookie);
+static void fapp_ping_on_ctrlc(fnet_shell_desc_t desc, void *cookie);
 
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static void fapp_ping_callback (fnet_error_t result, fnet_size_t packet_count, struct sockaddr *target_addr, fnet_uint32_t cookie)
+static void fapp_ping_callback (fnet_error_t result, fnet_size_t packet_count, struct fnet_sockaddr *target_addr, void *cookie)
 {
     fnet_char_t                ip_str[FNET_IP_ADDR_STR_SIZE];
     fnet_shell_desc_t   desc = (fnet_shell_desc_t)cookie;
@@ -74,7 +74,7 @@ static void fapp_ping_callback (fnet_error_t result, fnet_size_t packet_count, s
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static void fapp_ping_on_ctrlc(fnet_shell_desc_t desc)
+static void fapp_ping_on_ctrlc(fnet_shell_desc_t desc, void *cookie)
 {
     /* Release PING. */
     fnet_ping_release();
@@ -94,7 +94,7 @@ void fapp_ping_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 
     fnet_memset_zero(&ping_params, sizeof(ping_params));
 
-    ping_params.cookie = (fnet_uint32_t)desc;
+    ping_params.cookie = desc;
     ping_params.callback = fapp_ping_callback;
     ping_params.packet_size = FAPP_PING_DEFAULT_SIZE;
     ping_params.timeout = FAPP_PING_DEFAULT_TIMEOUT;
@@ -210,7 +210,7 @@ void fapp_ping_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
             fnet_shell_println(desc, FAPP_TOCANCEL_STR);
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
 
-            fnet_shell_block(desc, fapp_ping_on_ctrlc); /* Block shell. */
+            fnet_shell_block(desc, fapp_ping_on_ctrlc, FNET_NULL); /* Block shell. */
         }
         else
         {
@@ -226,9 +226,3 @@ ERROR_PARAMETER:
 }
 
 #endif /* FAPP_CFG_PING_CMD || FAPP_CFG_PING6_CMD */
-
-
-
-
-
-

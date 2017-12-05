@@ -48,9 +48,9 @@
     #define FAPP_CFG_ETH0_IP4_DNS       (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
 #endif
 
-/*  "dhcp" command.*/
-#define FAPP_CFG_DHCP_CMD               (1)
-#define FAPP_CFG_DHCP_CMD_DISCOVER_MAX  (3)
+/*  "dhcpc" command.*/
+#define FAPP_CFG_DHCPC_CMD              (1)
+#define FAPP_CFG_DHCPC_CMD_DISCOVER_MAX (3)
 
 /*  "autoip" command.*/
 #define FAPP_CFG_AUTOIP_CMD             (1)
@@ -112,14 +112,13 @@
  * memory duiring flashing of the application. */
 #define FAPP_CFG_PARAMS_REWRITE_FLASH    (1)
 
-#if 0 /* On startup script.*/
-    #define FAPP_CFG_STARTUP_SCRIPT_ENABLED	 (1)
-    #define FAPP_CFG_STARTUP_SCRIPT          "http;"     /* For example "http; telnet" */
+#if 0 /* Startup script.*/
+    #define FAPP_CFG_STARTUP_SCRIPT         "http;"     /* For example "http; telnet" */
 #endif
 
 /* On connect/unconnect scripts:*/
-#define FAPP_CFG_LINK_CONNECT_SCRIPT     "dhcp autoip; mdns; llmnr;"
-#define FAPP_CFG_LINK_UNCONNECT_SCRIPT   "mdns release; llmnr release; dhcp release; autoip release;"
+#define FAPP_CFG_LINK_CONNECT_SCRIPT        "dhcpc autoip -n %s; mdns -n %s; llmnr -n %s;"
+#define FAPP_CFG_LINK_DISCONNECT_SCRIPT     "mdns -n %s release; llmnr -n %s release; dhcpc -n %s release; autoip -n %s release;"
 
 #endif /* _FAPP_USER_CONFIG_H_ */
 

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,13 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ /*!
+***************************************************************************
 *
-* @file fnet_config.h
-*
-* @author Andrey Butok
-*
-* @brief Main FNET default configuration file.
+*  Main FNET default configuration file.
 *
 ***************************************************************************/
 
@@ -43,9 +39,9 @@
     #include "fnet_doxygen_user_config.h"       /* Configuration used during generation of documentation.*/
 #endif
 
-#include "port/compiler/fnet_comp_config.h"      /* Default compiler specific configuration. */
-#include "port/cpu/fnet_cpu_config.h"            /* Default platform configuration. */
-#include "stack/fnet_stack_config.h"        /* Default TCP/IP stack configuration. */
-#include "services/fnet_services_config.h"  /* Default services configuration. */
+#include "port/compiler/fnet_comp_config.h"     /* Default compiler specific configuration. */
+#include "port/cpu/fnet_cpu_config.h"           /* Default platform configuration. */
+#include "stack/fnet_stack_config.h"            /* Default TCP/IP stack configuration. */
+#include "service/fnet_service_config.h"        /* Default service configuration. */
 
 #endif /* _FNET_CONFIG_H_ */

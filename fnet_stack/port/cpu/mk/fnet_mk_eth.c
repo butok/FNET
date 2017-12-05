@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -16,16 +16,16 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Ethernet driver interafce.
+***************************************************************************
+*
+*  Ethernet driver interafce.
 *
 ***************************************************************************/
 
 #include "fnet.h"
-#if FNET_MK && (FNET_CFG_CPU_ETH0 ||FNET_CFG_CPU_ETH1)
+#if FNET_MK && FNET_CFG_CPU_ETH0
 
-#include "port/cpu/common/fnet_fec.h"
+#include "port/cpu/netif/fec/fnet_fec.h"
 
 /************************************************************************
 * Ethernet interface structure.
@@ -50,11 +50,9 @@ fnet_netif_t fnet_cpu_eth0_if =
 };
 
 /************************************************************************
-* NAME: fnet_eth_io_init
-*
 * DESCRIPTION: Ethernet IO initialization.
 *************************************************************************/
-#if !FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT
+#if FNET_CFG_CPU_ETH_IO_INIT
 void fnet_eth_io_init(void)
 {
     FNET_MK_PORT_MemMapPtr pctl;
@@ -137,16 +135,22 @@ void fnet_eth_io_init(void)
     /*Allow concurrent access to MPU controller. Example: ENET uDMA to SRAM, otherwise bus error*/
     FNET_MK_MPU_CESR = 0u;  /* MPU is disabled. All accesses from all bus masters are allowed.*/
 }
-#endif /*!FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT*/
+#endif /*!FNET_CFG_CPU_ETH_IO_INIT*/
 
 /************************************************************************
-* NAME: fnet_eth_phy_init
-*
 * DESCRIPTION: Ethernet Physical Transceiver initialization and/or reset.
 *************************************************************************/
 void fnet_eth_phy_init(fnet_fec_if_t *ethif)
 {
     FNET_COMP_UNUSED_ARG(ethif);
 }
+
+/* If vector table is in ROM, pre-installed FNET ISR for ENET Receive Frame interrupt*/
+#if !FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
+void ENET_Receive_IRQHandler (void)
+{
+    FNET_ISR_HANDLER();
+}
+#endif
 
 #endif /* FNET_MK && FNET_CFG_ETH */

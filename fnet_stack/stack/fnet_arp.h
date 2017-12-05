@@ -16,9 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief ARP protocol Public API
+***************************************************************************
+*
+* ARP protocol Public API
 *
 ***************************************************************************/
 
@@ -27,7 +27,6 @@
 #define _FNET_ARP_H_
 
 #if FNET_CFG_IP4 || defined(__DOXYGEN__)
-
 
 /*! @addtogroup fnet_arp
 * Address Resolution Protocol (ARP)

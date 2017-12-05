@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ /*!
+***************************************************************************
 *
-* @brief ColdFire Flash Module driver.
+*  ColdFire Flash Module driver.
 *
 ***************************************************************************/
 #include "fnet.h"

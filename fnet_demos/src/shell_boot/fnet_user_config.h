@@ -1,9 +1,6 @@
-/**********************************************************************/
-/*!
+/***************************************************************************
 *
-* @file fnet_user_config.h
-*
-* @brief FNET User configuration file.
+* FNET User configuration file.
 * It should be used to change any default configuration parameter.
 *
 ***************************************************************************/
@@ -63,7 +60,7 @@
 /*****************************************************************************
 * DHCP Client service support.
 ******************************************************************************/
-#define FNET_CFG_DHCP               (1)
+#define FNET_CFG_DHCP_CLN           (1)
 
 /*****************************************************************************
 * Auto-IP service support.
@@ -114,4 +111,3 @@
 #define FNET_CFG_LINK                       (1)
 
 #endif /* _FNET_USER_CONFIG_H_ */
-

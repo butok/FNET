@@ -6,10 +6,10 @@ FNET project directory structure:
 	fnet                        - FNET root directory.
 	|-- fnet_stack                - FNET TCP/IP stack.
 	|    |-- stack                  - FNET TCP/IP stack platform-independent source code.
-	|    |-- services               - FNET Services.
+	|    |-- service                - FNET Services.
 	|    |    |-- autoip              - Auto-IP service.
-	|    |    |-- dhcp                - DHCP/BOOTP client service.
-	|    |    |-- dns                 - DNS client/resolver service.
+	|    |    |-- dhcp                - DHCPv4 client and server.
+	|    |    |-- dns                 - DNS client/resolver.
 	|    |    |-- flash               - Flash  Memory driver.
 	|    |    |-- fs                  - File System driver.
 	|    |    |-- http                - HTTP Server service.
@@ -21,12 +21,14 @@ FNET project directory structure:
 	|    |    |-- serial              - Serial Input/Output driver.
 	|    |    |-- shell               - Command Shell service.
 	|    |    |-- sntp                - SNTP client.
-	|    |    |-- telnet              - TELNET server service.
-	|    |    |-- tftp                - TFTP server and client services.
+	|    |    |-- telnet              - TELNET server.
+	|    |    |-- tftp                - TFTP server and client.
 	|    |    |-- tls                 - TLS library.
 	|    |-- port                   - FNET port-specific source code.
 	|         |-- cpu                 - FNET platform-specific source code.
-	|         |    |-- common           - Common platform-specific source code.
+	|         |    |-- netif            - Platform-specific network interface drivers.
+	|         |    |    |-- fec           - FEC/ENET Ethernet module driver.
+	|         |    |    |-- qca           - QCA4002 Wi-Fi module driver, using "third_party/qca-x.x.x".
 	|         |    |-- mcf              - ColdFire-specific source code.
 	|         |    |-- mk               - Kinetis-specific source code.
 	|         |    |-- mpc              - Power Architecture-specific source code.
@@ -53,10 +55,12 @@ FNET project directory structure:
 	|              |                    This demo has the same features as the "Shell" demo,
 	|              |                    but in addition it includes the mbedTLS library.
 	|              |-- shell_freertos - Example application using FreeRTOS.
-	|                                   This demo has the same features as the "Shell" demo.
-	|-- fnet_tools                - FNET tools.
+	|              |                    This demo has the same features as the "Shell" demo.
+	|              |-- shell_freertos_wifi_qca - Example application used for the Wi-Fi interface demonstration.
+	|                                           It has the same features as the "Shell FreeRTOS" demo,
+	|                                           but in addition it supports the Wi-Fi network interface using the Qualcomm QCA4002 module (GT202 board).
+	|-- fnet_tools                - FNET PC tools.
 	|-- third_party               - Optional, third-party libraries.
 		 |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
 		 |-- freertos-x.x.x         - FreeRTOS, used by the shell_freertos example.
-
-
+		 |-- qca-x.x.x              - Qualcomm QCA4002/4 driver, used by shell_freertos_wifi_qca example.

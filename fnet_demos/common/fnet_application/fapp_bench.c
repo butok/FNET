@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,15 +17,16 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Shell Demo implementation.
+***************************************************************************
+*
+*  FNET Shell Demo implementation.
 *
 ***************************************************************************/
 
 #include "fapp.h"
 #include "fapp_prv.h"
 #include "fapp_bench.h"
+#include "fapp_netif.h"
 
 #if FAPP_CFG_BENCH_CMD
 
@@ -79,7 +80,7 @@ static struct fapp_bench_t fapp_bench;
 struct fapp_bench_tx_params
 {
     fnet_shell_desc_t desc;
-    struct sockaddr foreign_addr;
+    struct fnet_sockaddr foreign_addr;
     fnet_size_t packet_size;
     fnet_size_t packet_number;
     fnet_index_t iteration_number;
@@ -90,7 +91,7 @@ struct fapp_bench_tx_params
 *************************************************************************/
 static void fapp_bench_print_results (fnet_shell_desc_t desc);
 static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t family);
-static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t family, struct sockaddr *multicast_address /* optional, set to 0*/);
+static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t family, struct fnet_sockaddr *multicast_address /* optional, set to 0*/);
 static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params);
 static void fapp_bench_udp_tx (struct fapp_bench_tx_params *params);
 
@@ -126,18 +127,20 @@ static void fapp_bench_print_results (fnet_shell_desc_t desc)
 ************************************************************************/
 static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t family)
 {
-    struct sockaddr     local_addr;
+    struct fnet_sockaddr local_addr;
     fnet_int32_t        received;
     fnet_char_t         ip_str[FNET_IP_ADDR_STR_SIZE];
-    struct linger       linger_option = {FNET_TRUE, /*l_onoff*/
-               4  /*l_linger*/
-    };
+    struct fnet_linger  linger_option = 
+                        {
+                            .l_onoff = FNET_TRUE,
+                            .l_linger = 4
+                        };
     fnet_size_t         bufsize_option = FAPP_BENCH_SOCKET_BUF_SIZE;
     fnet_int32_t        keepalive_option = 1;
     fnet_int32_t        keepcnt_option = FAPP_BENCH_TCP_KEEPCNT;
     fnet_int32_t        keepintvl_option = FAPP_BENCH_TCP_KEEPINTVL;
     fnet_int32_t        keepidle_option = FAPP_BENCH_TCP_KEEPIDLE;
-    struct sockaddr     foreign_addr;
+    struct fnet_sockaddr foreign_addr;
     fnet_size_t         addr_len;
     fnet_bool_t         exit_flag = FNET_FALSE;
 
@@ -148,7 +151,7 @@ static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
     fapp_bench.socket_listen = fnet_socket(family, SOCK_STREAM, 0u);
     if(fapp_bench.socket_listen == FNET_NULL)
     {
-        FNET_DEBUG("BENCH: Socket creation error.");
+        FNET_DEBUG("BENCH: Socket creation error.\r\n");
         goto ERROR_1;
     }
 
@@ -160,7 +163,7 @@ static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
 
     if(fnet_socket_bind(fapp_bench.socket_listen, &local_addr, sizeof(local_addr)) == FNET_ERR)
     {
-        FNET_DEBUG("BENCH: Socket bind error.");
+        FNET_DEBUG("BENCH: Socket bind error.\r\n");
         goto ERROR_2;
     }
 
@@ -180,14 +183,14 @@ static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
         (fnet_socket_setopt (fapp_bench.socket_listen, IPPROTO_TCP, TCP_KEEPIDLE, &keepidle_option, sizeof(keepidle_option)) == FNET_ERR)
     )
     {
-        FNET_DEBUG("BENCH: Socket setsockopt error.\n");
+        FNET_DEBUG("BENCH: Socket setsockopt error.\r\n");
         goto ERROR_2;
     }
 
     /* Listen. */
     if(fnet_socket_listen(fapp_bench.socket_listen, 1) == FNET_ERR)
     {
-        FNET_DEBUG("BENCH: Socket listen error.\n");
+        FNET_DEBUG("BENCH: Socket listen error.\r\n");
         goto ERROR_2;
     }
 
@@ -195,7 +198,7 @@ static void fapp_bench_tcp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
     fnet_shell_println(desc, FAPP_DELIMITER_STR);
     fnet_shell_println(desc, " TCP RX Test");
     fnet_shell_println(desc, FAPP_DELIMITER_STR);
-    fapp_print_netif_addr(desc, family, fnet_netif_get_default(), FNET_FALSE);
+    fapp_netif_addr_print(desc, family, fnet_netif_get_default(), FNET_FALSE);
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "Local Port", FNET_NTOHS(FAPP_BENCH_PORT));
     fnet_shell_println(desc, FAPP_TOCANCEL_STR);
     fnet_shell_println(desc, FAPP_DELIMITER_STR);
@@ -261,13 +264,13 @@ ERROR_1:
 /************************************************************************
 * DESCRIPTION: Start Benchmark UDP server.
 ************************************************************************/
-static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t family, struct sockaddr *multicast_address /* optional, set to 0*/)
+static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t family, struct fnet_sockaddr *multicast_address /* optional, set to 0*/)
 {
-    struct sockaddr         local_addr;
+    struct fnet_sockaddr    local_addr;
     const fnet_size_t       bufsize_option = FAPP_BENCH_SOCKET_BUF_SIZE;
-    fnet_int32_t            received;
+    fnet_ssize_t            received;
     fnet_char_t             ip_str[FNET_IP_ADDR_STR_SIZE];
-    struct sockaddr         addr;
+    struct fnet_sockaddr    addr;
     fnet_size_t             addr_len;
     fnet_bool_t             is_first = FNET_TRUE;
     fnet_bool_t             exit_flag = FNET_FALSE;
@@ -277,7 +280,7 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
     fapp_bench.socket_listen = fnet_socket(family, SOCK_DGRAM, 0u);
     if(fapp_bench.socket_listen == FNET_NULL)
     {
-        FNET_DEBUG("BENCH: Socket creation error.\n");
+        FNET_DEBUG("BENCH: Socket creation error.\r\n");
         goto ERROR_1;
     }
 
@@ -289,7 +292,7 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
 
     if(fnet_socket_bind(fapp_bench.socket_listen, &local_addr, sizeof(local_addr)) == FNET_ERR)
     {
-        FNET_DEBUG("BENCH: Socket bind error.\n");
+        FNET_DEBUG("BENCH: Socket bind error.\r\n");
         goto ERROR_2;
     }
 
@@ -301,7 +304,7 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
         (fnet_socket_setopt(fapp_bench.socket_listen, SOL_SOCKET, SO_SNDBUF, &bufsize_option, sizeof(bufsize_option)) == FNET_ERR)
     )
     {
-        FNET_DEBUG("BENCH: Socket setsockopt error.\n");
+        FNET_DEBUG("BENCH: Socket setsockopt error.\r\n");
         goto ERROR_2;
     }
 
@@ -312,15 +315,15 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
 #if FNET_CFG_IP4
         if(multicast_address->sa_family == AF_INET)
         {
-            struct ip_mreq mreq; /* Multicast group information.*/
+            struct fnet_ip_mreq mreq; /* Multicast group information.*/
 
-            mreq.imr_multiaddr.s_addr = ((struct sockaddr_in *)multicast_address)->sin_addr.s_addr;
+            mreq.imr_multiaddr.s_addr = ((struct fnet_sockaddr_in *)multicast_address)->sin_addr.s_addr;
             mreq.imr_interface = 0; /* Default Interface.*/
 
             /* Join multicast group. */
             if(fnet_socket_setopt(fapp_bench.socket_listen, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) == FNET_ERR)
             {
-                FNET_DEBUG("BENCH: Joining to multicast group is failed.\n");
+                FNET_DEBUG("BENCH: Joining to multicast group is failed.\r\n");
                 goto ERROR_2;
             }
         }
@@ -328,15 +331,15 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
 #if FNET_CFG_IP6
         if(multicast_address->sa_family == AF_INET6)
         {
-            struct ipv6_mreq mreq6; /* Multicast group information.*/
+            struct fnet_ipv6_mreq mreq6; /* Multicast group information.*/
 
-            FNET_IP6_ADDR_COPY(&((struct sockaddr_in6 *)multicast_address)->sin6_addr.s6_addr, &mreq6.ipv6imr_multiaddr.s6_addr);
-            mreq6.ipv6imr_interface = ((struct sockaddr_in6 *)multicast_address)->sin6_scope_id;
+            FNET_IP6_ADDR_COPY(&((struct fnet_sockaddr_in6 *)multicast_address)->sin6_addr.s6_addr, &mreq6.ipv6imr_multiaddr.s6_addr);
+            mreq6.ipv6imr_interface = ((struct fnet_sockaddr_in6 *)multicast_address)->sin6_scope_id;
 
             /* Join multicast group. */
             if(fnet_socket_setopt(fapp_bench.socket_listen, IPPROTO_IPV6, IPV6_JOIN_GROUP, &mreq6, sizeof(mreq6)) == FNET_ERR)
             {
-                FNET_DEBUG("BENCH: Joining to multicast group is failed.\n");
+                FNET_DEBUG("BENCH: Joining to multicast group is failed.\r\n");
                 goto ERROR_2;
             }
         }
@@ -347,7 +350,7 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
     fnet_shell_println(desc, FAPP_DELIMITER_STR);
     fnet_shell_println(desc, " UDP RX Test" );
     fnet_shell_println(desc, FAPP_DELIMITER_STR);
-    fapp_print_netif_addr(desc, family, fnet_netif_get_default(), FNET_FALSE);
+    fapp_netif_addr_print(desc, family, fnet_netif_get_default(), FNET_FALSE);
     if(multicast_address)
     {
         fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Multicast Group", fnet_inet_ntop(multicast_address->sa_family, (fnet_uint8_t *)(multicast_address->sa_data), ip_str, sizeof(ip_str)) );
@@ -395,9 +398,9 @@ static void fapp_bench_udp_rx (fnet_shell_desc_t desc, fnet_address_family_t fam
                         fnet_uint32_t ack_bytes = fnet_htonl(fapp_bench.bytes);
 
                         /* Send several times, just to be sure that it is received/not lost.*/
-                        fnet_socket_sendto(fapp_bench.socket_listen, &ack_bytes, sizeof(ack_bytes), 0, (struct sockaddr *)&addr, sizeof(addr));
-                        fnet_socket_sendto(fapp_bench.socket_listen, &ack_bytes, sizeof(ack_bytes), 0, (struct sockaddr *)&addr, sizeof(addr));
-                        fnet_socket_sendto(fapp_bench.socket_listen, &ack_bytes, sizeof(ack_bytes), 0, (struct sockaddr *)&addr, sizeof(addr));
+                        fnet_socket_sendto(fapp_bench.socket_listen, &ack_bytes, sizeof(ack_bytes), 0, (struct fnet_sockaddr *)&addr, sizeof(addr));
+                        fnet_socket_sendto(fapp_bench.socket_listen, &ack_bytes, sizeof(ack_bytes), 0, (struct fnet_sockaddr *)&addr, sizeof(addr));
+                        fnet_socket_sendto(fapp_bench.socket_listen, &ack_bytes, sizeof(ack_bytes), 0, (struct fnet_sockaddr *)&addr, sizeof(addr));
 
                         /* Print benchmark results.*/
                         fapp_bench_print_results (desc);
@@ -455,8 +458,8 @@ void fapp_benchrx_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **
     /* UDP */
     else if(((argc == 2) || (argc == 3)) && fnet_strcasecmp("udp", argv[1]) == 0)
     {
-        struct sockaddr multicast_address;
-        struct sockaddr *multicast_address_p = FNET_NULL;
+        struct fnet_sockaddr multicast_address;
+        struct fnet_sockaddr *multicast_address_p = FNET_NULL;
 
         if(argc == 3) /* Multicast group address.*/
         {
@@ -485,19 +488,19 @@ void fapp_benchrx_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **
 ************************************************************************/
 static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
 {
-    fnet_int32_t            send_result;
-    fnet_char_t             ip_str[FNET_IP_ADDR_STR_SIZE];
-    const struct linger     linger_option =
-    {
-        .l_onoff = FNET_TRUE,
-        .l_linger = 4
-    };
+    fnet_ssize_t                send_result;
+    fnet_char_t                 ip_str[FNET_IP_ADDR_STR_SIZE];
+    const struct fnet_linger    linger_option =
+                                {
+                                    .l_onoff = FNET_TRUE,
+                                    .l_linger = 4
+                                };
     const fnet_size_t       bufsize_option = FAPP_BENCH_SOCKET_BUF_SIZE;
     const fnet_int32_t      keepalive_option = 1;
     const fnet_int32_t      keepcnt_option = FAPP_BENCH_TCP_KEEPCNT;
     const fnet_int32_t      keepintvl_option = FAPP_BENCH_TCP_KEEPINTVL;
     const fnet_int32_t      keepidle_option = FAPP_BENCH_TCP_KEEPIDLE;
-    struct sockaddr         foreign_addr;
+    struct fnet_sockaddr    foreign_addr;
     fnet_bool_t             exit_flag = FNET_FALSE;
     fnet_int32_t            sock_err ;
     fnet_size_t             option_len;
@@ -532,7 +535,7 @@ static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
         fapp_bench.socket_foreign = fnet_socket(family, SOCK_STREAM, 0u);
         if(fapp_bench.socket_foreign == FNET_NULL)
         {
-            FNET_DEBUG("BENCH: Socket creation error.\n");
+            FNET_DEBUG("BENCH: Socket creation error.\r\n");
             iterations = 0;
             goto ERROR_1;
         }
@@ -553,7 +556,7 @@ static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
             (fnet_socket_setopt (fapp_bench.socket_foreign, IPPROTO_TCP, TCP_KEEPIDLE, &keepidle_option, sizeof(keepidle_option)) == FNET_ERR)
         )
         {
-            FNET_DEBUG("BENCH: Socket setsockopt error.\n");
+            FNET_DEBUG("BENCH: Socket setsockopt error.\r\n");
             iterations = 0;
             goto ERROR_2;
         }
@@ -563,7 +566,7 @@ static void fapp_bench_tcp_tx (struct fapp_bench_tx_params *params)
 
         fnet_memcpy(&foreign_addr, &params->foreign_addr, sizeof(foreign_addr));
 
-        fnet_socket_connect(fapp_bench.socket_foreign, (struct sockaddr *)(&foreign_addr), sizeof(foreign_addr));
+        fnet_socket_connect(fapp_bench.socket_foreign, (struct fnet_sockaddr *)(&foreign_addr), sizeof(foreign_addr));
 
         do
         {
@@ -647,15 +650,15 @@ ERROR_1:
 ************************************************************************/
 static void fapp_bench_udp_tx (struct fapp_bench_tx_params *params)
 {
-    fnet_int32_t            send_result;
-    fnet_char_t            ip_str[FNET_IP_ADDR_STR_SIZE];
-    fnet_index_t            i;
-    fnet_int32_t            received;
-    const struct linger     linger_option = {FNET_TRUE, /*l_onoff*/
+    fnet_int32_t                send_result;
+    fnet_char_t                 ip_str[FNET_IP_ADDR_STR_SIZE];
+    fnet_index_t                i;
+    fnet_ssize_t                received;
+    const struct fnet_linger    linger_option = {FNET_TRUE, /*l_onoff*/
               4  /*l_linger*/
     };
     const fnet_size_t       bufsize_option = FAPP_BENCH_SOCKET_BUF_SIZE;
-    struct sockaddr         foreign_addr;
+    struct fnet_sockaddr    foreign_addr;
     fnet_bool_t             exit_flag = FNET_FALSE;
     fnet_int32_t            sock_err;
     fnet_size_t             option_len;
@@ -688,7 +691,7 @@ static void fapp_bench_udp_tx (struct fapp_bench_tx_params *params)
         fapp_bench.socket_foreign = fnet_socket(family, SOCK_DGRAM, 0u);
         if(fapp_bench.socket_foreign == FNET_NULL)
         {
-            FNET_DEBUG("BENCH: Socket creation error.\n");
+            FNET_DEBUG("BENCH: Socket creation error.\r\n");
             iterations = 0;
             goto ERROR_1;
         }
@@ -701,7 +704,7 @@ static void fapp_bench_udp_tx (struct fapp_bench_tx_params *params)
             (fnet_socket_setopt(fapp_bench.socket_foreign, SOL_SOCKET, SO_SNDBUF, &bufsize_option, sizeof(bufsize_option)) == FNET_ERR)
         )
         {
-            FNET_DEBUG("BENCH: Socket setsockopt error.\n");
+            FNET_DEBUG("BENCH: Socket setsockopt error.\r\n");
             iterations = 0;
             goto ERROR_2;
         }

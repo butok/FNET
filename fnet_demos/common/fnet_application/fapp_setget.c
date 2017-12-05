@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Application Shell Set/Get routines.
+***************************************************************************
+*
+*  FNET Application Shell Set/Get routines.
 *
 ***************************************************************************/
 
@@ -105,18 +105,25 @@
     static void fapp_set_cmd_raw(fnet_shell_desc_t desc, fnet_char_t *value );
     static void fapp_get_cmd_raw(fnet_shell_desc_t desc);
 #endif
-
 #if FNET_CFG_IP4
     static void fapp_set_ip(fnet_shell_desc_t desc, fnet_char_t *value, void (*set_ip)( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ipaddr ));
     static void fapp_get_ip(fnet_shell_desc_t desc, fnet_ip4_addr_t (*get_address)( fnet_netif_desc_t netif_desc ));
 #endif
+#if FAPP_CFG_SETGET_CMD_SSID
+    static void fapp_set_cmd_ssid(fnet_shell_desc_t desc, fnet_char_t *value );
+    static void fapp_get_cmd_ssid(fnet_shell_desc_t desc);
+#endif
+#if FAPP_CFG_SETGET_CMD_PASSPHRASE
+    static void fapp_set_cmd_passphrase(fnet_shell_desc_t desc, fnet_char_t *value );
+    static void fapp_get_cmd_passphrase(fnet_shell_desc_t desc);
+#endif
 
 /************************************************************************
-*     The set/show parameterr's entry control data structure definition.
+*     The set/show parameter's entry control data structure definition.
 *************************************************************************/
 typedef struct
 {
-    fnet_char_t *option;
+    fnet_char_t *name;
     void (*set)(fnet_shell_desc_t desc, fnet_char_t *value);
     void (*get)(fnet_shell_desc_t desc);
     fnet_char_t *syntax;
@@ -129,55 +136,61 @@ fapp_setget_cmd_t;
 static const fapp_setget_cmd_t fapp_setget_cmd_table [] =
 {
 #if FAPP_CFG_SETGET_CMD_NETIF
-    { "netif", fapp_set_cmd_netif, fapp_get_cmd_netif, "<default-if name>" },
+    { .name = "netif", .set = fapp_set_cmd_netif, .get = fapp_get_cmd_netif, .syntax = "<default-if name>" },
 #endif
 #if FAPP_CFG_SETGET_CMD_IP && FNET_CFG_IP4
-    { "ip", fapp_set_cmd_ip, fapp_get_cmd_ip, "<default-if IPv4 address>" },
+    { .name = "ip", .set = fapp_set_cmd_ip, .get = fapp_get_cmd_ip, .syntax = "<default-if IPv4 address>" },
 #endif
 #if FAPP_CFG_SETGET_CMD_NETMASK && FNET_CFG_IP4
-    { "netmask", fapp_set_cmd_netmask, fapp_get_cmd_netmask, "<default-if IPv4 netmask address>" },
+    { .name = "netmask", .set = fapp_set_cmd_netmask, .get = fapp_get_cmd_netmask, .syntax = "<default-if IPv4 netmask address>" },
 #endif
 #if FAPP_CFG_SETGET_CMD_GATEWAY && FNET_CFG_IP4
-    { "gateway", fapp_set_cmd_gateway, fapp_get_cmd_gateway, "<default-if IPv4 gateway address>" },
+    { .name = "gateway", .set = fapp_set_cmd_gateway, .get = fapp_get_cmd_gateway, .syntax = "<default-if IPv4 gateway address>" },
 #endif
 #if FAPP_CFG_SETGET_CMD_MAC
-    { "mac", fapp_set_cmd_mac, fapp_get_cmd_mac, "<default-if Ethernet address>" },
+    { .name = "mac", .set = fapp_set_cmd_mac, .get = fapp_get_cmd_mac, .syntax = "<default-if Ethernet address>" },
 #endif
 #if FAPP_CFG_SETGET_CMD_HOSTNAME
-    { "host", fapp_set_cmd_hostname, fapp_get_cmd_hostname, "<host name>" },
+    { .name = "host", .set = fapp_set_cmd_hostname, .get = fapp_get_cmd_hostname, .syntax = "<host name>" },
 #endif
 
     /* DNS set/get parameters. */
 #if FAPP_CFG_SETGET_CMD_DNS && FNET_CFG_DNS && FNET_CFG_IP4
-    { "dns", fapp_set_cmd_dns, fapp_get_cmd_dns, "<DNS server IP address>" },
+    { .name = "dns", .set = fapp_set_cmd_dns, .get = fapp_get_cmd_dns, .syntax = "<DNS server IP address>" },
 #endif
 
     /* Bootloader set/get parameters. */
 #if FAPP_CFG_SETGET_CMD_BOOT
-    { "boot", fapp_set_cmd_boot, fapp_get_cmd_boot, "<stop|go|script>" },
+    { .name = "boot", .set = fapp_set_cmd_boot, .get = fapp_get_cmd_boot, .syntax = "<stop|go|script>" },
 #endif
 #if FAPP_CFG_SETGET_CMD_DELAY
-    { "delay", fapp_set_cmd_bootdelay, fapp_get_cmd_bootdelay, "<seconds>" },
+    { .name = "delay", .set = fapp_set_cmd_bootdelay, .get = fapp_get_cmd_bootdelay, .syntax = "<seconds>" },
 #endif
 #if FAPP_CFG_SETGET_CMD_SCRIPT
-    { "script", fapp_set_cmd_bootscript, fapp_get_cmd_bootscript, "<command script>" },
+    { .name = "script", .set = fapp_set_cmd_bootscript, .get = fapp_get_cmd_bootscript, .syntax = "<command script>" },
 #endif
 #if FAPP_CFG_SETGET_CMD_RAW
-    { "raw", fapp_set_cmd_raw, fapp_get_cmd_raw, "0x<address>" },
+    { .name = "raw", .set = fapp_set_cmd_raw, .get = fapp_get_cmd_raw, .syntax = "0x<address>" },
 #endif
 
     /* TFTP set/get parameters */
 #if FAPP_CFG_SETGET_CMD_TFTP
-    { "tftp", fapp_set_cmd_tftp, fapp_get_cmd_tftp, "<TFTP server IP address>" },
+    { .name = "tftp", .set = fapp_set_cmd_tftp, .get = fapp_get_cmd_tftp, .syntax = "<TFTP server IP address>" },
 #endif
 #if FAPP_CFG_SETGET_CMD_IMAGE
-    { "image", fapp_set_cmd_image, fapp_get_cmd_image, "<Image-file name to load with TFTP>" },
+    { .name = "image", .set = fapp_set_cmd_image, .get = fapp_get_cmd_image, .syntax = "<Image-file name to load with TFTP>" },
 #endif
 #if FAPP_CFG_SETGET_CMD_TYPE
-    { "type", fapp_set_cmd_image_type, fapp_get_cmd_image_type, "<srec|hex|bin|raw>" },
+    { .name = "type", .set = fapp_set_cmd_image_type, .get = fapp_get_cmd_image_type, .syntax = "<srec|hex|bin|raw>" },
 #endif
 #if FAPP_CFG_SETGET_CMD_GO
-    { "go", fapp_set_cmd_go, fapp_get_cmd_go, "0x<entry point address>" },
+    { .name = "go", .set = fapp_set_cmd_go, .get = fapp_get_cmd_go, .syntax = "0x<entry point address>" },
+#endif
+#if FAPP_CFG_SETGET_CMD_SSID
+    { .name = "ssid", .set = fapp_set_cmd_ssid, .get = fapp_get_cmd_ssid, .syntax = "<wifi ssid>" },
+#endif
+#if FAPP_CFG_SETGET_CMD_PASSPHRASE
+    { .name = "passphrase", .set = fapp_set_cmd_passphrase, .get = fapp_get_cmd_passphrase, .syntax = "<wifi passphrase>" },
 #endif
 };
 
@@ -225,7 +238,7 @@ static void fapp_set_ip(fnet_shell_desc_t desc, fnet_char_t *value, void (*set_i
 {
     fnet_ip4_addr_t addr;
 
-    if(fnet_inet_aton(value, (struct in_addr *) &addr) == FNET_OK)
+    if(fnet_inet_aton(value, (struct fnet_in_addr *) &addr) == FNET_OK)
     {
         set_ip(fnet_netif_get_default(), addr);
     }
@@ -242,8 +255,8 @@ static void fapp_set_ip(fnet_shell_desc_t desc, fnet_char_t *value, void (*set_i
 #if FNET_CFG_IP4
 static void fapp_get_ip(fnet_shell_desc_t desc, fnet_ip4_addr_t (*get_address)( fnet_netif_desc_t netif_desc ))
 {
-    fnet_char_t            ip_str[FNET_IP4_ADDR_STR_SIZE];
-    struct in_addr  addr;
+    fnet_char_t             ip_str[FNET_IP4_ADDR_STR_SIZE];
+    struct fnet_in_addr     addr;
 
     addr.s_addr = get_address(fnet_netif_get_default());
     fnet_inet_ntoa(addr, ip_str);
@@ -259,7 +272,7 @@ static void fapp_set_cmd_ip(fnet_shell_desc_t desc, fnet_char_t *value )
 {
     fnet_ip4_addr_t addr;
 
-    if(fnet_inet_aton(value, (struct in_addr *) &addr) == FNET_OK)
+    if(fnet_inet_aton(value, (struct fnet_in_addr *) &addr) == FNET_OK)
     {
         fnet_netif_set_ip4_addr(fnet_netif_get_default(), addr, INADDR_ANY);
     }
@@ -309,7 +322,7 @@ static void fapp_set_cmd_netmask(fnet_shell_desc_t desc, fnet_char_t *value )
     fnet_ip4_addr_t addr;
     fnet_netif_desc_t netif = fnet_netif_get_default();
 
-    if(fnet_inet_aton(value, (struct in_addr *) &addr) == FNET_OK)
+    if(fnet_inet_aton(value, (struct fnet_in_addr *) &addr) == FNET_OK)
     {
         fnet_netif_set_ip4_addr(netif, fnet_netif_get_ip4_addr(netif), addr);
     }
@@ -486,7 +499,7 @@ static void fapp_get_cmd_bootdelay(fnet_shell_desc_t desc)
 #if FAPP_CFG_SETGET_CMD_TFTP
 static void fapp_set_cmd_tftp(fnet_shell_desc_t desc, fnet_char_t *value )
 {
-    struct sockaddr s_addr;
+    struct fnet_sockaddr s_addr;
 
     if(fnet_inet_ptos(value, &s_addr) == FNET_ERR)
     {
@@ -612,6 +625,49 @@ static void fapp_get_cmd_raw(fnet_shell_desc_t desc)
     fnet_shell_println(desc, FAPP_GET_XOPT_FORMAT, fapp_params_tftp_config.file_raw_address);
 }
 #endif
+
+/************************************************************************
+* DESCRIPTION: Sets Wi-Fi SSID, used by the Wi-Fi connect command.
+************************************************************************/
+#if FAPP_CFG_SETGET_CMD_SSID
+static void fapp_set_cmd_ssid(fnet_shell_desc_t desc, fnet_char_t *value )
+{
+    (void)desc;
+    fnet_strncpy(fapp_params_wifi_config.ssid, value, FAPP_PARAMS_WIFI_SSID_SIZE);
+}
+#endif
+
+/************************************************************************
+* DESCRIPTION: Gets Wi-Fi SSID, used by the Wi-Fi connect command.
+************************************************************************/
+#if FAPP_CFG_SETGET_CMD_SSID
+static void fapp_get_cmd_ssid(fnet_shell_desc_t desc)
+{
+    fnet_shell_println(desc, FAPP_GET_SOPT_FORMAT, fapp_params_wifi_config.ssid);
+}
+#endif
+
+/************************************************************************
+* DESCRIPTION: Sets Wi-Fi passphrase, used by the Wi-Fi connect command.
+************************************************************************/
+#if FAPP_CFG_SETGET_CMD_PASSPHRASE
+static void fapp_set_cmd_passphrase(fnet_shell_desc_t desc, fnet_char_t *value )
+{
+    (void)desc;
+    fnet_strncpy(fapp_params_wifi_config.passphrase, value, FAPP_PARAMS_WIFI_PASSPHRASE_SIZE);
+}
+#endif
+
+/************************************************************************
+* DESCRIPTION: Gets Wi-Fi passphrase, used by the Wi-Fi connect command.
+************************************************************************/
+#if FAPP_CFG_SETGET_CMD_PASSPHRASE
+static void fapp_get_cmd_passphrase(fnet_shell_desc_t desc)
+{
+    fnet_shell_println(desc, FAPP_GET_SOPT_FORMAT, fapp_params_wifi_config.passphrase);
+}
+#endif
+
 /************************************************************************
 * DESCRIPTION: Sets system options.
 ************************************************************************/
@@ -625,7 +681,7 @@ void fapp_set_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
 
         for (index = 0U; index < FAPP_SET_CMD_NUM; ++index)
         {
-            fnet_shell_println(desc, FAPP_SET_OPT_FORMAT, fapp_setget_cmd_table[index].option, fapp_setget_cmd_table[index].syntax);
+            fnet_shell_println(desc, FAPP_SET_OPT_FORMAT, fapp_setget_cmd_table[index].name, fapp_setget_cmd_table[index].syntax);
         }
     }
     else if(argc != 3u)
@@ -636,11 +692,11 @@ void fapp_set_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
     {
         for (index = 0U; index < FAPP_SET_CMD_NUM; index++)
         {
-            if(fnet_strcasecmp(fapp_setget_cmd_table[index].option, argv[1]) == 0)
+            if(fnet_strcasecmp(fapp_setget_cmd_table[index].name, argv[1]) == 0)
             {
                 fapp_setget_cmd_table[index].set(desc, argv[2]);
                 /* Print the result value. */
-                fnet_shell_printf(desc, FAPP_GET_OPT_FORMAT, fapp_setget_cmd_table[index].option);
+                fnet_shell_printf(desc, FAPP_GET_OPT_FORMAT, fapp_setget_cmd_table[index].name);
                 fapp_setget_cmd_table[index].get(desc);
                 goto EXIT;
             }
@@ -663,7 +719,7 @@ void fapp_get_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
     {
         for (index = 0U; index < FAPP_SET_CMD_NUM; ++index)
         {
-            fnet_shell_printf(desc, FAPP_GET_OPT_FORMAT, fapp_setget_cmd_table[index].option);
+            fnet_shell_printf(desc, FAPP_GET_OPT_FORMAT, fapp_setget_cmd_table[index].name);
             fapp_setget_cmd_table[index].get(desc);
         }
     }
@@ -672,9 +728,9 @@ void fapp_get_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
 
         for (index = 0U; index < FAPP_SET_CMD_NUM; index++)
         {
-            if(fnet_strcasecmp(fapp_setget_cmd_table[index].option, argv[1]) == 0)
+            if(fnet_strcasecmp(fapp_setget_cmd_table[index].name, argv[1]) == 0)
             {
-                fnet_shell_printf(desc, FAPP_GET_OPT_FORMAT, fapp_setget_cmd_table[index].option);
+                fnet_shell_printf(desc, FAPP_GET_OPT_FORMAT, fapp_setget_cmd_table[index].name);
                 fapp_setget_cmd_table[index].get(desc);
                 return;
             }

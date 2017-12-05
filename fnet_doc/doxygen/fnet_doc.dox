@@ -1,8 +1,7 @@
-/**********************************************************************//*!
+/**************************************************************************
 *
-* @file fnet_doc.dox
-* @author Andrey Butok
-* @brief FNET documentation framework, for Doxygen.
+* FNET documentation framework, for Doxygen.
+* Andrey Butok
 *
 ***************************************************************************/
 
@@ -57,11 +56,10 @@ preferred way to configure stack features). @n
 		- ColdFire: MCF51CN128, MCF5282, MCF52235, MCF54418, MCF52259
 		- PowerPC: MPC5668G, MPC5566, MPC564xBC, MPC5744P, S32R274.
 		- Kinetis: MK70FN1M, MK60FN1M.
- 
+		- LPC: LPC54628.
 - Supported Compilers:
-	- IAR: Embedded Workbench for ARM, version 7.6
+	- IAR: Embedded Workbench for ARM, version 7.8
 	- GCC: Kinetis Design Studio, version 3.0 
-	
 - Bare-metal TCP/IP stack. No underlying RTOS is required, although it can be used with it. FreeRTOS example is provided.
 - Non-blocking Socket API (DGRAM, STREAM, RAW).
 - Core Protocols:
@@ -79,7 +77,8 @@ preferred way to configure stack features). @n
 		- IPv6 Stateless Address Autoconfiguration.
 		- Path MTU Discovery for IPv6
 - Network Interfaces:
-	- Ethernet.
+	- Ethernet (FEC/ENET module).
+	- Wi-Fi (QCA4002 module).
 	- Loopback.
 - Services:
 	- @b HTTP server:
@@ -89,7 +88,7 @@ preferred way to configure stack features). @n
 		- Basic access authentication.
 		- HTTP over TLS (HTTPS).
 	- @b TELNET server. 
-	- @b DHCP/BOOTP client.
+	- @b DHCPv4 client and server.
 	- @b Auto-IP service. Passed "Phase 1, Link-Local Address Allocation", Bonjour Conformance Test suite Version 1.3.1.
 	- @b DNS client/resolver.
 	- @b Link-Detection service.
@@ -108,7 +107,10 @@ preferred way to configure stack features). @n
 	- @ref quick_start_boot "GUI Throughput Benchmark Tool".
 - Applications:
 	- @ref quick_start_boot "TFTP Bootloader".
-	- @ref quick_start_shell "Shell Application".
+	- @ref quick_start_shell "Shell Application, bare-metal".
+	- @ref quick_start_shell_freertos "Shell Application, using FreeRTOS".
+	- @ref quick_start_shell_mbedtls "Shell Application, using mbedTLS".
+	- @ref quick_start_shell_freertos_wifi_qca "Shell Application, using Wi-Fi QCA4002 interface".
 	- @ref quick_start_boot "TCP/UDP Throughput Benchmark Application".
 - Source-code based User documentation, by Doxygen.
 - RFC list supported by the FNET stack: 
@@ -124,7 +126,7 @@ preferred way to configure stack features). @n
 	- RFC 1350 - TFTP client and server.
 	- RFC 1945 - HTTP v 1.0 server.
 	- RFC 1981 - Path MTU Discovery for IPv6.
-	- RFC 2131 - DHCP IPv4 client.
+	- RFC 2131 - DHCP IPv4 client and server.
 	- RFC 2236 - IGMPv2.
 	- RFC 2460 - IPv6.
 	- RFC 3927 - Dynamic Configuration of IPv4 Link-Local.
@@ -133,8 +135,6 @@ preferred way to configure stack features). @n
 	- RFC 4862 - IPv6 Stateless Address Autoconfiguration.
 	- RFC 4443 - ICMPv6.
 	- RFC 4795 - Link-Local Multicast Name Resolution (LLMNR) server.
-
-
 */
 
 //*************************STRUCTURE************************************
@@ -150,10 +150,10 @@ The current version of the FNET project has the following directory structure:
 fnet                        - FNET root directory.
 |-- fnet_stack                - FNET TCP/IP stack.
 |    |-- stack                  - FNET TCP/IP stack platform-independent source code.
-|    |-- services               - FNET Services.
+|    |-- service                - FNET Services.
 |    |    |-- autoip              - Auto-IP service.
-|    |    |-- dhcp                - DHCP/BOOTP client service.
-|    |    |-- dns                 - DNS client/resolver service.
+|    |    |-- dhcp                - DHCPv4 client and server.
+|    |    |-- dns                 - DNS client/resolver.
 |    |    |-- flash               - Flash  Memory driver.
 |    |    |-- fs                  - File System driver.
 |    |    |-- http                - HTTP Server service.
@@ -165,12 +165,14 @@ fnet                        - FNET root directory.
 |    |    |-- serial              - Serial Input/Output driver.
 |    |    |-- shell               - Command Shell service.
 |    |    |-- sntp                - SNTP client.
-|    |    |-- telnet              - TELNET server service.
-|    |    |-- tftp                - TFTP server and client services.
+|    |    |-- telnet              - TELNET server.
+|    |    |-- tftp                - TFTP server and client.
 |    |    |-- tls                 - TLS library.
 |    |-- port                   - FNET port-specific source code.
 |         |-- cpu                 - FNET platform-specific source code.
-|         |    |-- common           - Common platform-specific source code.
+|         |    |-- netif            - Platform-specific network interface drivers.
+|         |    |    |-- fec           - FEC/ENET Ethernet module driver.
+|         |    |    |-- qca           - QCA4002 Wi-Fi module driver, using "third_party/qca-x.x.x".
 |         |    |-- mcf              - ColdFire-specific source code.
 |         |    |-- mk               - Kinetis-specific source code.
 |         |    |-- mpc              - Power Architecture-specific source code.
@@ -197,11 +199,15 @@ fnet                        - FNET root directory.
 |              |                    This demo has the same features as the "Shell" demo,
 |              |                    but in addition it includes the mbedTLS library.
 |              |-- shell_freertos - Example application using FreeRTOS.
-|                                   This demo has the same features as the "Shell" demo.
-|-- fnet_tools                - FNET tools.
+|              |                    This demo has the same features as the "Shell" demo.
+|              |-- shell_freertos_wifi_qca - Example application used for the Wi-Fi interface demonstration.
+|                                           It has the same features as the "Shell FreeRTOS" demo,
+|                                           but in addition it supports the Wi-Fi network interface using the Qualcomm QCA4002 module (GT202 board).
+|-- fnet_tools                - FNET PC tools.
 |-- third_party               - Optional, third-party libraries.
      |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
      |-- freertos-x.x.x         - FreeRTOS, used by the shell_freertos example.
+	 |-- qca-x.x.x              - Qualcomm QCA4002/4 driver, used by shell_freertos_wifi_qca example.
               
 @endverbatim
 */
@@ -212,6 +218,7 @@ fnet                        - FNET root directory.
 *- @subpage quick_start_shell
 *- @subpage quick_start_shell_mbedtls
 *- @subpage quick_start_shell_freertos
+*- @subpage quick_start_shell_freertos_wifi_qca
 *- @subpage quick_start_boot
 *- @subpage quick_start_benchmark 
 
@@ -234,6 +241,9 @@ There are six types of demo projects:
 - @c shell_freertos - This is the example application using FreeRTOS.
   This demo has the same features as the "Shell" demo, but in addition it includes FreeRTOS.@n
   More information can be found in @ref quick_start_shell_freertos.
+- @c shell_freertos_wifi_qca - This is the example application using Wi-Fi network interface.
+  This demo has the same features as the "Shell FreeRTOS" demo, but in addition it includes Wi-Fi QCA4002 network interface.@n
+  More information can be found in @ref quick_start_shell_freertos_wifi_qca.
 - @c benchmark - This is the TCP/UDP Throughput Benchmark application. @n
   More information can be found in @ref quick_start_benchmark.
 
@@ -247,6 +257,7 @@ The following table summarizes the supported demo applications, platforms and co
  <th ALIGN=CENTER>Benchmark</th>
  <th ALIGN=CENTER>Shell mbedTLS</th>
  <th ALIGN=CENTER>Shell FreeRTOS</th>
+ <th ALIGN=CENTER>Shell FreeRTOS QCA Wi-Fi</th>
  </tr>
 <tr>
  <td class="fnet_td_grey">MK64FN1M (Kinetis)</td>
@@ -254,6 +265,7 @@ The following table summarizes the supported demo applications, platforms and co
  <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
  <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
  <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
+ <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td> 
  <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td> 
  </tr>
 <tr>
@@ -263,6 +275,7 @@ The following table summarizes the supported demo applications, platforms and co
  <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
  <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
  <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td> 
+ <td ALIGN=CENTER>-</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">MK60DN512 (Kinetis)</td>
@@ -270,6 +283,7 @@ The following table summarizes the supported demo applications, platforms and co
  <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
  <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
  <td ALIGN=CENTER>-</td> 
+ <td ALIGN=CENTER>-</td>
  <td ALIGN=CENTER>-</td> 
  </tr>
 </table>
@@ -324,126 +338,112 @@ Follow these steps to run the FNET Shell demo application:
 - Compile, load (or flash) the application to the board and run the project.
 - In your terminal program window you should see the FNET application Shell welcome message:
 @verbatim
-Parameters loaded from Flash.
-
 ************************************************
  FNET Shell Application
 ************************************************
  FNET TCP/IP Stack for MK64FN1
- Version 3.7.0
- Built Nov  9 2016 at 15:34:08 by IAR
-************************************************
- Interface        : eth0
- IPv4 Address     : 0.0.0.0 <manual>
- IPv6 Address     : fe80::211:22ff:fe33:4455 <autoconfigurable> ScopeID:1
- IPv4 Subnet mask : 255.0.0.0
- IPv4 Gateway     : 0.0.0.0
- IPv4 DNS         : 0.0.0.0
- MAC Address      : 00:11:22:33:44:55
- MTU              : 1500
- Link Status      : unconnected
- Free Heap        : 30272
- HTTP Server      : disabled
- DHCP Client      : disabled
- AUTOIP Service   : disabled
- TELNET Server    : disabled
- LLMNR Server     : disabled
- MDNS Server      : disabled
+ Version 4.0.0
+ Built Oct 26 2017 at 13:14:08 by IAR
 
  Enter 'help' for command list.
 ************************************************
-
+[FAPP] Application parameters loaded from Flash.
 SHELL>
 @endverbatim
 
-- Shell application monitors network interface connection status using Link-Detection service (enabled by @ref FNET_CFG_LINK).
-  Whenever the network interface indicates that it has been connected, application begins the auto-configuration process using DHCPv4.
-  If DHCPv4 server has not been discovered on local network, the application start Auto-IP service. 
-  Whenever the network interface indicates that it has been disconnected, the application disables bound protocols on this interface. @n
-  @note On connect/unconnect scripts are defined by @c FAPP_CFG_LINK_CONNECT_SCRIPT and @c FAPP_CFG_LINK_UNCONNECT_SCRIPT in fapp_user_config.h
+- The Shell application monitors the network interface connection status using the Link-Detection service (enabled by @ref FNET_CFG_LINK).
+  Whenever a network interface indicates that it has been connected, the application begins the auto-configuration process using DHCPv4.
+  If the DHCPv4 server has not been discovered on local network, the application starts the Auto-IP service. 
+  Whenever the network interface indicates that it has been disconnected, the application disables all bound protocols on this interface. @n
+  @note On connect/disconnect scripts are defined by @c FAPP_CFG_LINK_CONNECT_SCRIPT and @c FAPP_CFG_LINK_DISCONNECT_SCRIPT in fapp_user_config.h
   
   So if network cable is connected, in your terminal program window you should see:
 @verbatim
-eth0: connected => Script: dhcp autoip; mdns; llmnr;
+[LINK] eth0: connected => Script: dhcpc autoip -n eth0; mdns -n eth0; llmnr -n eth0;
 ************************************************
  DHCPv4 Client started.
+ Interface            : eth0
 ************************************************
 Press [Ctr+C] to cancel.
-DHCP: Discovering...
-DHCP: Discovering...
-DHCP: Discovering...
-Cancelled
-************************************************
- Auto-IP service started.
-************************************************
-Press [Ctr+C] to cancel.
-AutoIP: Probing...
-AutoIP: Probing...
-AutoIP: Probing...
+[DHCP] Discovering...
 
 ************************************************
  IPv4 parameters updated :
 ************************************************
- Interface        : eth0
- IPv4 Address     : 169.254.71.33 <autoconfigurable>
- IPv6 Address     : fe80::204:9fff:fe13:1845 <autoconfigurable> ScopeID:1
- IPv4 Subnet mask : 255.255.0.0
- IPv4 Gateway     : 0.0.0.0
- IPv4 DNS         : 0.0.0.0
+Ethernet Interface <default>:
+ Name                 : eth0
+ ScopeID              : 1
+ Media State          : connected
+ IPv4 Address         : 192.168.0.102 <dhcp>
+ IPv6 Address         : fe80::211:22ff:fe33:4455 <autoconfigurable>
+ IPv4 Subnet mask     : 255.255.255.0
+ IPv4 Gateway         : 192.168.0.1
+ IPv4 DNS             : 192.168.0.1
+ DHCP Client          : on
+ DHCP Server Address  : 192.168.0.1
+ AUTOIP Service       : off
+ LLMNR Server         : off
+ MDNS Server          : off
+
 ************************************************
  mDNS server started.
- Name             : fnet
+ Interface            : eth0
+ Host Name            : fnet
 ************************************************
 ************************************************
  LLMNR server started.
- Host Name        : fnet
+ Interface            : eth0
+ Host Name            : fnet
 ************************************************
 SHELL>
 @endverbatim
-- There is additional possibility to start any other service (http, telnet etc.) automatically during power-up by setting the @c FAPP_CFG_STARTUP_SCRIPT_ENABLED parameter to @c 1 and setting the FAPP_CFG_STARTUP_SCRIPT parameter to command line string.
-- You may start mDNS server (if not started already during start-up), which allows name resolution for hosts on the same local link. It is natively supported by Apple OSs and named "Bonjour".@n
+- There is an additional possibility to start any other service (http, telnet etc.) automatically during power-up by setting the @c FAPP_CFG_STARTUP_SCRIPT parameter to a command line string.
+- You may start the mDNS server (if not started already during start-up), which allows the name resolution for hosts on the same local link. It is natively supported by Apple OSs and named "Bonjour".@n
   If HTTP server is enabled, the application registers the "_http._tcp.local" service in mDNS server. So the HTTP server can be discoverable by in MacOS Safari browser using Bonjour.
 @verbatim
 SHELL> mdns
 ************************************************
  mDNS server started.
- Name             : fnet
+ Interface            : eth0
+ Host Name            : fnet
 ************************************************
 @endverbatim
-- You may start LLMNR server (if not started already during start-up), which allows name resolution for hosts on the same local link. It is natively supported by Windows OSs.
+- You may start LLMNR server (if not started already during start-up), which allows the name resolution for hosts on the same local link. It is natively supported by Windows OSs.
 @verbatim
 SHELL> llmnr
 ************************************************
  LLMNR server started.
- Host Name        : fnet
+ Interface            : eth0
+ Host Name            : fnet
 ************************************************
 @endverbatim
-So you can use "fnet" instead of IP address to find this node on local network. 
+So you can use the host name "fnet" instead of an IP address to find this node on the local network. 
 
 - The Main Shell is now ready to accept user commands. Try @c help command to display a list of all the commands available within the shell:
 @verbatim
-SHELL> help
->   help                                 - Display this help message
->    set [<parameter> <value>]           - Set parameter
->    get [<parameter>]                   - Get parameters
->   bind <IP6 address>                   - Bind IPv6 Address
-> unbind <IP6 address>                   - Unbind IPv6 Address
->   info                                 - Show interface info
->   stat                                 - Show network statistics
->   dhcp [release|autoip]                - Start DHCP client
-> autoip [release]                       - Start Auto-IP service
->   http [release]                       - Start HTTP Server
->    exp                                 - File Explorer submenu...
-> telnet [release]                       - Start Telnet Server
->    dns <host name> 4|6 [<server ip>]   - Resolve IPv4|6 address of <host name>
->  llmnr [release]                       - Start LLMNR Server
->   mdns [release]                       - Start MDNS Server
->   save                                 - Save parameters to the FLASH
->  reset                                 - Reset the board
->   ping [-c <count>][-i <seconds>]
-        [-p <pattern>][-s <size>]
-        [-h <hoplimit/ttl>] <ip>        - Send ICMP ECHO requests
+>      help                                    - Display this help message
+>       set [<parameter> <value>]              - Set parameter
+>       get [<parameter>]                      - Get parameters
+>      bind [-n <if name>] <IP6 address>       - Bind IPv6 Address
+>    unbind [-n <if name>] <IP6 address>       - Unbind IPv6 Address
+>      info [-n <if name>]                     - Show interface info
+>      stat [-n <if name>]                     - Show interface statistics
+>     dhcpc [-n <if name>] [release|autoip]    - Start DHCPv4 client
+>    autoip [-n <if name>] [release]           - Start Auto-IP service
+>      http [release]                          - Start HTTP server
+>       exp                                    - File Explorer submenu...
+>    telnet [release]                          - Start Telnet server
+>       dns <host name> 4|6 [<server ip>]      - Resolve IPv4|6 address of <host name>
+>     llmnr [-n <if name>] [release]           - Start LLMNR server
+>      mdns [-n <if name>] [release]           - Start MDNS server
+>      sntp <server ip>                        - Resolve time over SNTP
+>      save                                    - Save parameters to the FLASH
+>     reset                                    - Reset the board
+>      ping [-c <count>][-i <seconds>]
+                [-p <pattern>][-s <size>]
+                [-h <hoplimit/ttl>] <ip>        - Send ICMP ECHO requests
 SHELL>
+
 @endverbatim
 - All computers, connected to an Ethernet network running the IPv4 protocol, need several network-specific parameters:
 	- IPv4 address for the system;
@@ -452,61 +452,110 @@ SHELL>
 - You are able to change the default network parameters manually:
 	- By using Shell commands: 
 @verbatim
-set address <board IP address>
-set gateway <gateway IP address>
-set netmask <netmask IP address>
-set mac <ethernet MAC address>
+set address <default-if IPv4 address>
+set gateway <default-if IPv4 gateway address>
+set netmask <default-if IPv4 netmask address>
+set mac <default-if Ethernet address>
 @endverbatim
-	- By changing the default values in the @a fnet_user_config.h source file. @n
+	- By changing the default values in the @a fapp_user_config.h source file. @n
 	  Your local system administrator is able to assign a unique IPv4 address for the board, and also provide you with the IPv4 addresses 
 	  of the gateway and the netmask.
 - You may start the DHCP IPv4 client (if not started already during start-up) to obtain the address parameters automatically from your network DHCPv4 server:
 @verbatim
-SHELL> dhcp
-Press [Ctr+C] to cancel.
-DHCP: Discovering...
-
+SHELL> dhcpc
 ************************************************
- DHCP has updated/renewed parameters:
-************************************************
- Interface        : eth0
- IP address       : 10.171.88.141
- Subnet mask      : 255.255.254.0
- Gateway          : 10.171.88.254
- DNS              : 10.171.88.254
-SHELL>
-@endverbatim
-- You may also also start (if not started during start-up) the Auto-IP service to obtain automatically the IPv4 link-local address within the
- 169.254/16 prefix that is valid for communication with other devices
-  connected to the same physical (or logical) link:
-@verbatim
-SHELL> autoip
-************************************************
- Auto-IP service started.
+ DHCPv4 Client started.
+ Interface            : eth0
 ************************************************
 Press [Ctr+C] to cancel.
-AutoIP: Probing...
-AutoIP: Probing...
-AutoIP: Probing...
+[DHCP] Discovering...
 
 ************************************************
  IPv4 parameters updated :
 ************************************************
- Interface        : eth0
- IPv4 Address     : 169.254.53.98 <autoconfigurable>
- IPv4 Subnet mask : 255.255.0.0
- IPv4 Gateway     : 0.0.0.0
- IPv4 DNS         : 0.0.0.0
+Ethernet Interface <default>:
+ Name                 : eth0
+ ScopeID              : 1
+ Media State          : connected
+ IPv4 Address         : 192.168.0.102 <dhcp>
+ IPv6 Address         : fe80::211:22ff:fe33:4455 <autoconfigurable>
+ IPv4 Subnet mask     : 255.255.255.0
+ IPv4 Gateway         : 192.168.0.1
+ IPv4 DNS             : 192.168.0.1
+ DHCP Client          : on
+ DHCP Server Address  : 192.168.0.1
+ AUTOIP Service       : off
+ LLMNR Server         : off
+ MDNS Server          : off
+ 
+SHELL>
 @endverbatim
-@note You may start Auto-IP service automatically, if no DHCPv4 server was discovered, by adding the @c autoip parameter to the @c dhcp command.
+- You may also start (if not started during start-up) the Auto-IP service to obtain automatically the IPv4 link-local address within the
+ 169.254/16 prefix that is valid for communication with other devices connected to the same physical (or logical) link:
+@verbatim
+SHELL> autoip
+************************************************
+ Auto-IPv4 service started.
+ Interface            : eth0
+************************************************
+Press [Ctr+C] to cancel.
+[AUTOIP] Probing...
+[AUTOIP] Probing...
+[AUTOIP] Probing...
+
+************************************************
+ IPv4 parameters updated :
+************************************************
+Ethernet Interface <default>:
+ Name                 : eth0
+ ScopeID              : 1
+ Media State          : connected
+ IPv4 Address         : 169.254.67.77 <autoconfigurable>
+ IPv6 Address         : fe80::211:22ff:fe33:4455 <autoconfigurable>
+ IPv4 Subnet mask     : 255.255.0.0
+ IPv4 Gateway         : 192.168.0.1
+ IPv4 DNS             : 192.168.0.1
+ DHCP Client          : off
+ AUTOIP Service       : on
+ LLMNR Server         : on
+ MDNS Server          : on
+
+SHELL>
+@endverbatim
+@note You may start Auto-IP service automatically, if no DHCPv4 server was discovered, by adding the @c autoip parameter to the @c dhcpc command.
 
 - You may enter the @c save command to save the all run-time parameters to non-volatile memory (it is located in the last erase page of the on-chip flash memory).
 @verbatim
 SHELL> save
-Parameters saved
+Application parameters saved
 SHELL>
 @endverbatim
 @note The @c save command does not save the @c ip parameter in case it was allocated by a DHCP server to avoid IPv4 address conflict during the system startup.
+- You may get an information about all initialized network interfaces by typing the @c info command into your terminal program window. @n
+In your terminal program window you should see: 
+@verbatim
+SHELL> info
+Ethernet Interface <default>:
+ Name                 : eth0
+ ScopeID              : 1
+ Media State          : connected
+ IPv4 Address         : 192.168.0.102 <dhcp>
+ IPv6 Address         : fe80::211:22ff:fe33:4455 <autoconfigurable>
+ IPv4 Subnet mask     : 255.255.255.0
+ IPv4 Gateway         : 192.168.0.1
+ IPv4 DNS             : 192.168.0.1
+ DHCP Client          : on
+ DHCP Server Address  : 192.168.0.1
+ AUTOIP Service       : off
+ LLMNR Server         : on
+ MDNS Server          : on
+
+Services:
+ HTTP Server          : off
+ HTTPS Server         : off
+ TELNET Server        : off
+SHELL>
+@endverbatim
 - You should now be able to "ping" the board from one of your workstations. The ping program is a very useful diagnostic tool used to check that the board`s IP information is properly configured. 
 - The ping tool can be used from the command-line environment on the host PC: 
 @verbatim ping <your_board_IP_adress> @endverbatim 
@@ -540,25 +589,26 @@ Approximate round trip times in milli-seconds:
     Minimum = 0ms, Maximum = 0ms, Average = 0ms
 
 @endverbatim
-- The PING application can be started from the board, by typing the command @c ping into your terminal program window. @n
+- The PING application can be started also from the board, by typing the command @c ping into your terminal program window. @n
 In your terminal program window you should see: 
 @verbatim
-SHELL> ping 192.168.0.5
+SHELL> ping 192.168.0.1
 ************************************************
  PING
 ************************************************
- Remote IP addr   : 192.168.0.5
- Message Size     : 63
- Num. of messages : 4
- Pattern          : 0
- Hoplimit (TTL)   : 64
+ Remote IP addr       : 192.168.0.1
+ Message Size         : 63
+ Num. of messages     : 4
+ Pattern              : 0
+ Hoplimit (TTL)       : 64
 Press [Ctr+C] to cancel.
 ************************************************
-Reply from 192.168.0.5
-Reply from 192.168.0.5
-Reply from 192.168.0.5
-Reply from 192.168.0.5
-SHELL>@endverbatim
+Reply from 192.168.0.1
+Reply from 192.168.0.1
+Reply from 192.168.0.1
+Reply from 192.168.0.1
+SHELL>
+@endverbatim
 
 - In the next step, you can run the HTTP Server on the board, by typing the command @c http into your terminal program window. @n
 In your terminal program window you should see: 
@@ -590,7 +640,7 @@ In your terminal program window you should see:
 @verbatim
 SHELL> telnet
 ************************************************
- Telnet Server started.
+ Telnet server started.
  IPv4 Address     : 192.168.0.22
  IPv6 Address     : fe80::204:9fff:fe12:4938
 ************************************************
@@ -628,7 +678,7 @@ Press [Ctr+C] to cancel.
 @note
 Be sure that the @c dns parameter is set to correct IP address of the DNS server on your network. It can be set manually by the @c set command or can be obtained automatically by the DHCP IPv4 client service. 
 
-- If you need to get know current date and time, you may use SNTP client, by typing the command @c sntp @c \<server ip\> @c 4|6 into the command shell window. @n
+- If you need to get know the current date and time, you may use SNTP client, by typing the command @c sntp @c \<server ip\> @c 4|6 into the command shell window. @n
 For example, you may use public pool of NTP servers addressed by "pool.ntp.org". Use the "dns" command to resolve its IP addresses.
 @verbatim
 SHELL> dns pool.ntp.org 4
@@ -707,63 +757,54 @@ Follow these steps to run the FNET Shell demo application:
 - Compile, load (or flash) the application to the board and run the project.
 - In your terminal program window you should see the FNET application welcome message:
 @verbatim
-Parameters loaded from Flash.
-
-Parameters loaded from Flash.
-
 ************************************************
  FNET Shell Application (mbedTLS)
 ************************************************
  FNET TCP/IP Stack for MK64FN1
- Version 3.8.0
- Built Jan  6 2017 at 12:19:47 by IAR
-************************************************
- Interface        : eth0
- IPv4 Address     : 0.0.0.0 <manual>
- IPv6 Address     : fe80::211:22ff:fe33:4455 <autoconfigurable> ScopeID:1
- IPv4 Subnet mask : 255.0.0.0
- IPv4 Gateway     : 0.0.0.0
- IPv4 DNS         : 0.0.0.0
- MAC Address      : 00:11:22:33:44:55
- MTU              : 1500
- Link Status      : unconnected
- Free Heap        : 30272
- HTTP Server      : disabled
- HTTPS Server     : disabled
- DHCP Client      : disabled
- AUTOIP Service   : disabled
- TELNET Server    : disabled
- LLMNR Server     : disabled
- MDNS Server      : disabled
+ Version 4.0.0
+ Built Oct 26 2017 at 14:14:13 by IAR
 
  Enter 'help' for command list.
 ************************************************
-
+[FAPP] Application parameters loaded from Flash.
 SHELL>
-eth0: connected => Script: dhcp autoip; mdns; llmnr;
+[LINK] eth0: connected => Script: dhcpc autoip -n eth0; mdns -n eth0; llmnr -n eth0;
 ************************************************
  DHCPv4 Client started.
+ Interface            : eth0
 ************************************************
 Press [Ctr+C] to cancel.
-DHCP: Discovering...
+[DHCP] Discovering...
 
 ************************************************
  IPv4 parameters updated :
 ************************************************
- Interface        : eth0
- IPv4 Address     : 192.168.0.103 <dhcp>
- IPv6 Address     : fe80::211:22ff:fe33:4455 <autoconfigurable> ScopeID:1
- IPv4 Subnet mask : 255.255.255.0
- IPv4 Gateway     : 192.168.0.1
- IPv4 DNS         : 192.168.0.1
+Ethernet Interface <default>:
+ Name                 : eth0
+ ScopeID              : 1
+ Media State          : connected
+ IPv4 Address         : 192.168.0.102 <dhcp>
+ IPv6 Address         : fe80::211:22ff:fe33:4455 <autoconfigurable>
+ IPv4 Subnet mask     : 255.255.255.0
+ IPv4 Gateway         : 192.168.0.1
+ IPv4 DNS             : 192.168.0.1
+ DHCP Client          : on
+ DHCP Server Address  : 192.168.0.1
+ AUTOIP Service       : off
+ LLMNR Server         : off
+ MDNS Server          : off
+
 ************************************************
  mDNS server started.
- Name             : fnet
+ Interface            : eth0
+ Host Name            : fnet
 ************************************************
 ************************************************
  LLMNR server started.
- Host Name        : fnet
+ Interface            : eth0
+ Host Name            : fnet
 ************************************************
+SHELL>
 @endverbatim
 
 - This application has absolutely the same features and behavior as the Shell demo application. 
@@ -789,15 +830,15 @@ https:// [fe80::211:22ff:fe33:4455]
 @endverbatim
 - Depending on the used Web browser, you may get a warning message about that there is a problem with the security certificate. 
   It occurs because the demo HTTPS server uses the test security certificate which was not signed by a trusted certificate authority.
-  But a real application should use a valid certificate acquire from one of trusted certificate authorities.@n
+  But a real application should use a valid certificate acquired from one of trusted certificate authorities.@n
   So just ignore this warning and continue to the website.
 - You should see a Web page served by the FNET HTTPS server.
-  The HTTPS server uses the same Web pages as the normal HTTP server but transfered over TLS protocol set.
+  The HTTPS server uses the same Web pages as the normal HTTP server but transfered over the TLS protocol set.
   
 @note
 - The application project includes mbedTLS library (https://tls.mbed.org/).
   Its source code is located in fnet/third_party/mbedtls-x.x.x/.
-- mbedTLS FNET application configuration parameters are in the fnet_mdedtls_user_config.h file.@n
+- The mbedTLS FNET application configuration parameters are in the fnet_mdedtls_user_config.h file.@n
 - The MBEDTLS_CONFIG_FILE definition is set to "fnet_mbedtls_user_config.h" in preprocessor project options.
 
 */
@@ -815,8 +856,8 @@ https:// [fe80::211:22ff:fe33:4455]
 	- runs in FreeRTOS task.
 	- polls application protocol with a period.
 	- has additional application parameters:
-		- FAPP_CFG_FREERTOS_TASK_PRIORITY - FreeRTOS task priority
-		- FAPP_CFG_FREERTOS_TASK_STACK_SIZE - FreeRTOS task stack size
+		- FAPP_CFG_FREERTOS_TASK_PRIORITY - FreeRTOS task priority.
+		- FAPP_CFG_FREERTOS_TASK_STACK_SIZE - FreeRTOS task stack size.
 		- FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS - Polling period for calling the fnet_poll_service() function.
   
 @note
@@ -826,10 +867,272 @@ https:// [fe80::211:22ff:fe33:4455]
 */
 
 //********************************************************************
+//**************** Shell FreeRTOS WiFi QCA Demo Quick Start **********
+//********************************************************************
+
+/*!
+* @page quick_start_shell_freertos_wifi_qca FNET Shell FreeRTOS Wi-Fi Demo Quick Start
+
+@section fnet_requirements_shell_freertos_wifi_qca Requirements
+
+Tools used during this quick start:
+- Supported IDE.
+- Terminal program (Tera Term Pro v4.63 http://ttssh2.sourceforge.jp).
+- WEB browser.
+- FNET project source code, coming with this document.
+- GT202-GC3013-FRDM4-KIT board (https://www.arrow.com/en/products/gt202-gc3013-frdm4-kit/longthink-technology-hk-limited)
+	
+
+@section fnet_stepbystep_shell_freertos_wifi_qca Step by step
+
+Follow these steps to run the FNET Shell demo application: 
+- Prepare your evaluation board according to your board User Manual.
+- Use USB or RS-232 male/female DB-9 serial cable to connect your PC (through COM port) to the evaluation board.
+- You may connect the evaluation board to an Ethernet network, but it is not required if you are going to use Wi-Fi only interface.
+- Power the board up. 
+- Invoke the terminal program on the PC to which the evaluation board is connected and configure it to:
+      - Bits per second: 115200.
+      - Data bits: 8.
+      - Parity: none.
+      - Stop bits: 1.
+      - Flow control: None. 	
+	@n @n
+      @image html fnet_serial_setup.jpg "Serial port setup"
+
+- Launch IDE.
+- Open the project:
+@verbatim fnet\fnet_demos\boards\<board_name>\shell_mbedtls\<compiler_name>\
+@endverbatim
+@note So far, it is was tested only with frdmk64f board.
+
+- In the IDE, choose a project target you want to compile.
+- Compile, load (or flash) the application to the board and run the project.
+- In your terminal program window you should see the FNET application welcome message:
+@verbatim
+[FREERTOS] Starting scheduler.
+
+************************************************
+ FNET Shell Application (FreeRTOS-WIFI)
+************************************************
+ FNET TCP/IP Stack for MK64FN1
+ Version 4.0.0
+ Built Oct 27 2017 at 13:18:30 by IAR
+
+ Enter 'help' for command list.
+************************************************
+[QCA] Initialized
+[QCA] Firmware version 3.3.5.9999
+[FAPP] Application parameters loaded from Flash.
+SHELL>
+@endverbatim
+- If you have connected the Ethernet interface to a local link, you should see in the terminal window:
+@verbatim
+[LINK] eth0: connected => Script: dhcpc autoip -n eth0; mdns -n eth0; llmnr -n eth0;
+************************************************
+ DHCPv4 Client started.
+ Interface            : eth0
+************************************************
+Press [Ctr+C] to cancel.
+[DHCP] Discovering...
+
+************************************************
+ IPv4 parameters updated :
+************************************************
+Ethernet Interface:
+ Name                 : eth0
+ ScopeID              : 1
+ Media State          : connected
+ IPv4 Address         : 192.168.0.102 <dhcp>
+ IPv6 Address         : fe80::211:22ff:fe33:4455 <autoconfigurable>
+ IPv4 Subnet mask     : 255.255.255.0
+ IPv4 Gateway         : 192.168.0.1
+ IPv4 DNS             : 192.168.0.1
+ DHCP Client          : on
+ DHCP Server Address  : 192.168.0.1
+ AUTOIP Service       : off
+ LLMNR Server         : off
+ MDNS Server          : off
+
+************************************************
+ mDNS server started.
+ Interface            : eth0
+ Host Name            : fnet
+************************************************
+************************************************
+ LLMNR server started.
+ Interface            : eth0
+ Host Name            : fnet
+************************************************
+SHELL>
+@endverbatim
+- This application has absolutely the same features and behavior as the Shell demo application. 
+  So before next steps, read about it in @ref quick_start_shell. @n In addition this demo has Wi-Fi specific shell commands:
+@verbatim
+>   connect [<ssid> [<passphrase>]]            - Connect to Wi-Fi access point
+>disconnect                                    - Turn off the Wi-Fi interface radio
+>        ap [<ssid> [<passphrase> [wpa|wpa2]]] - Turn on Wi-Fi Access Point
+@endverbatim
+- You may get an information about all initialized network interfaces by typing the @c info command into your terminal program window. @n
+In your terminal program window you should see: 
+@verbatim
+SHELL> info
+Wi-Fi Interface <default>:
+ Name                 : wifi
+ ScopeID              : 2
+ Media State          : disconnected
+ IPv4 Address         : 0.0.0.0 <manual>
+ IPv6 Address         : fe80::865d:d7ff:fe49:e5a <autoconfigurable>
+ IPv4 Subnet mask     : 0.0.0.0
+ IPv4 Gateway         : 0.0.0.0
+ IPv4 DNS             : 0.0.0.0
+ DHCP Client          : off
+ AUTOIP Service       : off
+ LLMNR Server         : off
+ MDNS Server          : off
+
+Ethernet Interface:
+ Name                 : eth0
+ ScopeID              : 1
+ Media State          : connected
+ IPv4 Address         : 192.168.0.102 <dhcp>
+ IPv6 Address         : fe80::211:22ff:fe33:4455 <autoconfigurable>
+ IPv4 Subnet mask     : 255.255.255.0
+ IPv4 Gateway         : 192.168.0.1
+ IPv4 DNS             : 192.168.0.1
+ DHCP Client          : on
+ DHCP Server Address  : 192.168.0.1
+ AUTOIP Service       : off
+ LLMNR Server         : on
+ MDNS Server          : on
+
+Services:
+ HTTP Server          : off
+ TELNET Server        : off
+SHELL>
+@endverbatim
+- So far, the Wi-Fi media interlace is disconnected.
+- The Wi-Fi interface supports Station or Access Point modes.
+- To start Wi-Fi connection in the station mode, try @verbatim connect [<ssid> [<passphrase>]] @endverbatim. Use your Wi-Fi router SSID name and a pass-phrase if it is secured by WPA/WPA2. @n
+In your terminal program window you should see: 
+@verbatim
+SHELL> connect test password
+[QCA] (MODE) Station
+[QCA] Scanning for SSID "test"...
+[QCA] Scan result count:1
+         ssid = test
+         bssid = 0:18:e7:8c:45:26
+         channel = 11
+         indicator = 22
+         security = YES
+         RSN/WPA2=  { PSK } { AES }
+         WPA=  { PSK } { AES }
+[QCA] Connecting to "test"...
+SHELL> [QCA] (EVENT) CLIENT connected
+[QCA] (EVENT) 4 way handshake success
+
+[LINK] wifi: connected => Script: dhcpc autoip -n wifi; mdns -n wifi; llmnr -n wifi;
+************************************************
+ DHCPv4 Client started.
+ Interface            : wifi
+************************************************
+Press [Ctr+C] to cancel.
+[DHCP] Discovering...
+
+************************************************
+ IPv4 parameters updated :
+************************************************
+Wi-Fi Interface <default>:
+ Name                 : wifi
+ ScopeID              : 2
+ Media State          : connected
+ Wi-Fi mode           : station
+ IPv4 Address         : 192.168.0.105 <dhcp>
+ IPv6 Address         : fe80::865d:d7ff:fe49:e5a <autoconfigurable>
+ IPv4 Subnet mask     : 255.255.255.0
+ IPv4 Gateway         : 192.168.0.1
+ IPv4 DNS             : 192.168.0.1
+ DHCP Client          : on
+ DHCP Server Address  : 192.168.0.1
+ AUTOIP Service       : off
+ LLMNR Server         : off
+ MDNS Server          : off
+
+************************************************
+ mDNS server started.
+ Interface            : wifi
+ Host Name            : fnet
+************************************************
+************************************************
+ LLMNR server started.
+ Interface            : wifi
+ Host Name            : fnet
+************************************************
+SHELL>
+@endverbatim
+- The \<ssid\> and \<passphrase\> arguments of the @c connect shell command may be omitted. By default, they are defined by the "ssid" and "passphrase" application parameters.
+@verbatim
+SHELL> get
+	...
+ ssid    : test
+ passphrase: password
+@endverbatim
+Their initial values are defined by the @c FAPP_CFG_PARAMS_WIFI_SSID and @c FAPP_CFG_PARAMS_WIFI_WPA_PASSPHRASE configuration parameters.
+- To start Wi-Fi access point, try @verbatim ap [\<ssid\> [\<passphrase\> [wpa|wpa2]]] @endverbatim @n
+In your terminal program window you should see: 
+@verbatim
+SHELL> ap
+[QCA] (MODE) Access Point
+************************************************
+ Switching to Wi-Fi access point mode:
+ SSID                 : FNET
+ Passphrase           :
+************************************************
+SHELL> [QCA] (EVENT) AP connected
+
+[LINK] wifi: connected => Script: dhcp -n wifi; mdns -n wifi; llmnr -n wifi;
+************************************************
+ DHCPv4 server started.
+ Interface            : wifi
+************************************************
+************************************************
+ mDNS server started.
+ Interface            : wifi
+ Host Name            : fnet
+************************************************
+************************************************
+ LLMNR server started.
+ Interface            : wifi
+ Host Name            : fnet
+************************************************
+@endverbatim
+- The application starts DHCPv4 server automatically for Wi-Fi access point mode.
+- After that, you may connect to "FNET" Wi-Fi access point.
+- You may print the DHCPv4 server address pool status using "dhcp pool" command:
+@verbatim
+SHELL> dhcp pool
+ DHCPv4 Server Pool:
+        [0] 192.168.0.2 = 2c:0e:3d:40:1d:bf (44 sec)
+@endverbatim	
+- To turn off the Wi-Fi interface radio use the @c disconnect shell command. In your terminal program window you should see: 
+@verbatim
+SHELL> disconnect
+SHELL> [QCA] (EVENT) AP disconnect
+
+[LINK] wifi: disconnected => Script: dhcp -n wifi release; llmnr -n wifi release; dhcpc -n wifi release;
+SHELL>
+@endverbatim
+
+@note
+- The application project includes QCA4002 SDK, with some modification to support on-chip stack. Its source code is located in fnet/third_party/qca-x.x.x/.
+- The Wi-Fi interface connect/disconnect scripts, in the access point operation mode, are defined by @c FAPP_CFG_LINK_CONNECT_WIFI_ACCESS_POINT_SCRIPT and @c FAPP_CFG_LINK_DISCONNECT_WIFI_ACCESS_POINT_SCRIPT.
+- The DHCPv4 server interface address parameters are defined by FAPP_CFG_DHCP_CMD_IP4_ADDR, FAPP_CFG_DHCP_CMD_IP4_MASK, FAPP_CFG_DHCP_CMD_IP4_GW and FAPP_CFG_DHCP_CMD_IP4_DNS.
+*/
+
+//********************************************************************
 //************************* Bootloader Quick Start *******************
 //********************************************************************
 /*!
-* @page quick_start_boot FNET Bootloader Quick Start
+* @page quick_start_boot FNET TFTP Bootloader Quick Start
 
 @section fnet_requirements_boot Requirements
 
@@ -887,53 +1190,53 @@ Follow these steps to run the FNET Bootloader:
 
 @subsection fnet_stepbystep_tftp_client TFTP firmware client
 
-
 - Reset the board, press the RESET button on the board.
 - In your terminal program window you should see the FNET Bootloader welcome message:
 @verbatim
-Parameters loaded from Flash.
-
-*******************************************
+************************************************
  FNET Bootloader
 ************************************************
- FNET TCP/IP Stack for MCF52259
- Version 2.0.0
- Built Oct 12 2012 at 15:00:04 by CW
-************************************************
- Interface        : eth0
- IPv4 Address     : 192.168.0.22 <manual>
- IPv4 Subnet mask : 255.255.255.0
- IPv4 Gateway     : 0.0.0.0
- MAC Address      : 00:04:9f:14:59:56
- Link Status      : connected
- TX Packets       : 2
- RX Packets       : 0
- Free Heap        : 14128
- DHCP Client      : disabled
- TFTP Server      : disabled
+ FNET TCP/IP Stack for MK64FN1
+ Version 4.0.0
+ Built Oct 26 2017 at 16:32:22 by IAR
 
  Enter 'help' for command list.
 ************************************************
-
-Startup script: tftps
+[FAPP] Application parameters loaded from Flash.
+Startup script: tftp
 ************************************************
  TFTP Server started.
- IPv4 Address     : 192.168.0.22
+ IPv4 Address         : 192.168.0.22
 ************************************************
 BOOT>
 @endverbatim
+- Look at the network interface parameters using the @c info shell command:
+@verbatim
+BOOT> info
+Ethernet Interface <default>:
+ Name                 : eth0
+ ScopeID              : 1
+ Media State          : connected
+ IPv4 Address         : 192.168.0.22 <manual>
+ IPv4 Subnet mask     : 255.255.255.0
+ IPv4 Gateway         : 0.0.0.0
+ DHCP Client          : off
 
+Services:
+ TFTP Server          : on
+BOOT>
+@endverbatim
 - The Bootloader is now ready to accept user commands. Enter the @c help command to display a list of all commands available within the shell of the Bootloader:
 @verbatim
 BOOT> help
 >   help                                 - Display this help message
 >    set [<parameter> <value>]           - Set parameter
 >    get [<parameter>]                   - Get parameters
->   info                                 - Show detailed status
->   dhcp [release]                       - Start DHCP client
->   tftp [<image name>[<server ip>[<type>]]]- TFTP firmware loader
-> tftpup [<image name>[<server ip>[<type>]]]- TFTP firmware uploader
->  tftps [release]                       - TFTP firmware server
+>   info [-n <if name>]                  - Show interface info
+>  dhcpc [-n <if name>] [release|autoip] - Start DHCP client
+>  tftpc [<image name>[<server ip>[<type>]]]- TFTP firmware loader
+>tftpcup [<image name>[<server ip>[<type>]]]- TFTP firmware uploader
+>   tftp [release]                       - TFTP firmware server
 >    mem                                 - Show memory map
 >  erase all|[0x<erase address> <bytes>] - Erase flash memory
 >   save                                 - Save parameters to the FLASH
@@ -948,12 +1251,11 @@ get
  ip      : 192.168.0.22
  netmask : 255.255.255.0
  gateway : 0.0.0.0
- mac     : 00:04:9f:14:59:56
+ mac     : 00:11:22:33:44:55
  boot    : stop
  delay   : 5
- script  : dhcp; erase all; tftp; set boot go; save; go
- raw     : 0x0
- tftp    : 192.168.0.5
+ script  : dhcpc; erase all; tftpc; set boot go; save; go
+ tftp    : 192.168.0.200
  image   : fnet_firmware.srec
  type    : srec
  go      : 0x0
@@ -964,17 +1266,16 @@ BOOT>
 @verbatim
 BOOT> set
 Valid 'set' options:
- ip      : <board IP address>
- netmask : <netmask IP address>
- gateway : <gateway IP address>
- mac     : <ethernet address>
+ ip      : <default-if IPv4 address>
+ netmask : <default-if IPv4 netmask address>
+ gateway : <default-if IPv4 gateway address>
+ mac     : <default-if Ethernet address>
  boot    : <stop|go|script>
  delay   : <seconds>
  script  : <command script>
- raw     : 0x<address>
  tftp    : <TFTP server IP address>
  image   : <Image-file name to load with TFTP>
- type    : <srec|bin|raw>
+ type    : <srec|hex|bin|raw>
  go      : 0x<entry point address>
 BOOT> 
 @endverbatim
@@ -992,8 +1293,8 @@ BOOT>
 	- @c script : The command script is automatically executed when the @c boot parameter is set to the @c script value and the initial countdown is not interrupted. This script may contain any command supported by the application shell. The commands must be split by semicolon operator.
 	- @c go : Default entry point address to start execution at.  It is used by the bootloader in the @c go booting mode as the default entry point. Also it is used as the default address for the @c go shell command if no address is provided as an argument. @n
 NOTE: This parameter is updated by the TFTP loader automatically if the type parameter is set to the @c srec value. The S-record file format contains the entry point information.
-	- @c tftp : This is the default TFTP server IP address to be used for network download if no address is provided for the @c tftp shell command.
-	- @c image : This is the default file name to download if no file name is provided for the @c tftp shell command.
+	- @c tftp : This is the default TFTP server IP address to be used for network download if no address is provided for the @c tftpc shell command.
+	- @c image : This is the default file name to download if no file name is provided for the @c tftpc shell command.
 	- @c type : Type of the file to download by the TFTP loader:
 		- @c srec = S-record file (default type). This file format contains both the address data as well as the entry point information.
 		- @c hex = Intel HEX file. This file format does not contain the entry point, so @c go parameter must be set additionally.
@@ -1009,8 +1310,8 @@ BOOT>
 
 - For example, to change the @c script parameter (use the backslash-escape symbol before each semicolon):
 @verbatim
-BOOT> set script 'erase all\; tftp\; set boot go\; save\; reset'
- script  : erase all; tftp; set boot go; save; reset
+BOOT> set script 'erase all\; tftpc\; set boot go\; save\; reset'
+ script  : erase all; tftpc; set boot go; save; reset
 BOOT>
 @endverbatim
 
@@ -1024,7 +1325,7 @@ BOOT>
 - Enter the @c save command to save all run-time parameters to a non-volatile memory (it is located in the last erase page of the on-chip flash memory).
 @verbatim
 BOOT> save
-Parameters saved
+Application parameters saved
 BOOT>
 @endverbatim
 NOTE: The @c save command does not save the @c ip parameter in case it was allocated by a DHCP IPv4 server to avoid IPv4 address conflict during the system startup.
@@ -1032,10 +1333,10 @@ NOTE: The @c save command does not save the @c ip parameter in case it was alloc
 - Reset the board, press the RESET button on the board. On reset, the Bootloader will start in @c script booting mode.@n
 Let`s analyze the script parameter value of the example provided above:
 @verbatim
-dhcp; erase all; tftp; set boot go; save; go
+dhcpc; erase all; tftpc; set boot go; save; go
 @endverbatim
 This script has the following steps:
-    -# @c dhcp = starts DHCP client service and tries to update the IPv4 parameters (@c ip, @c gateway and @c netmask) from DHCP server. If the DHCP service will fail to retrieve the IP parameter from a DHCP server, the bootloder will continue with the old IP settings.
+    -# @c dhcpc = starts DHCP client service on the default interface and tries to update the IPv4 parameters (@c ip, @c gateway and @c netmask) from DHCP server. If the DHCP service will fail to retrieve the IP parameter from a DHCP server, the bootloder will continue with the old IP settings.
     -# @c erase @c all = erases all Flash memory blocks. To see the memory map enter the @c mem command: @verbatim
 BOOT> mem
 
@@ -1045,7 +1346,7 @@ BOOT> mem
 
 BOOT>
 @endverbatim
-    -# tftp = downloads the image-file (the file name defined by the @c image parameter) from the TFTP server (the server ip address defined by the @c tftp parameter), loads it to the Flash memory, checks if the written data are correct. Also, it checks a checksum and updates the @c go parameter if the type is set to the @c srec value. @n If the TFTP loading is failed, the bootloader will print an error message, stop script execution, and stay in the bootloader shell waiting for user actions (reset or parameters change).
+    -# tftpc = downloads the image-file (the file name defined by the @c image parameter) from the TFTP server (the server ip address defined by the @c tftp parameter), loads it to the Flash memory, checks if the written data are correct. Also, it checks a checksum and updates the @c go parameter if the type is set to the @c srec value. @n If the TFTP loading is failed, the bootloader will print an error message, stop script execution, and stay in the bootloader shell waiting for user actions (reset or parameters change).
     -# @c set @c boot @c go = Changes the bootloder booting mode to the @c go mode.
     -# @c save = Saves all run-time parameters to persistent memory to be available during the next startup. @n
         NOTE: The @c save command does not save the @c ip parameter in case it was allocated by a DHCP server to avoid IP address conflict during the system startup.
@@ -1053,91 +1354,103 @@ BOOT>
 
 - On reset, in the terminal window you should see:
 @verbatim
-Parameters loaded from Flash.
-
 ************************************************
  FNET Bootloader
 ************************************************
- FNET TCP/IP Stack for MCF52259
- Version 2.0.0
- Built Oct 12 2012 at 15:00:04 by CW
-************************************************
- Interface        : eth0
- IPv4 Address     : 192.168.0.22 <manual>
- IPv4 Subnet mask : 255.255.255.0
- IPv4 Gateway     : 0.0.0.0
- MAC Address      : 00:04:9f:14:59:56
- Link Status      : connected
- TX Packets       : 3
- RX Packets       : 0
- Free Heap        : 14128
- DHCP Client      : disabled
- TFTP Server      : disabled
+ FNET TCP/IP Stack for MK64FN1
+ Version 4.0.0dev
+ Built Oct 26 2017 at 16:48:56 by IAR
 
  Enter 'help' for command list.
 ************************************************
+[FAPP] Application parameters loaded from Flash.
 Press any key to stop (script):   0
 
-dhcp; erase all; tftp; set boot go; save; go
+dhcpc; erase all; tftpc; set boot go; save; go
+************************************************
+ DHCPv4 Client started.
+ Interface            : eth0
+************************************************
 Press [Ctr+C] to cancel.
-Sending DHCP discover...
+[DHCP] Discovering...
 
 ************************************************
- DHCP has updated/renewed parameters:
+ IPv4 parameters updated :
 ************************************************
- Interface    : eth0
- IP address   : 10.171.88.220
- Subnet mask  : 255.255.254.0
- Gateway      : 10.171.88.254
+Ethernet Interface <default>:
+ Name                 : eth0
+ ScopeID              : 1
+ Media State          : connected
+ IPv4 Address         : 192.168.0.102 <dhcp>
+ IPv4 Subnet mask     : 255.255.255.0
+ IPv4 Gateway         : 192.168.0.1
+ DHCP Client          : on
+ DHCP Server Address  : 192.168.0.1
 
-Cancelled
 Erasing...
- 0x00000000 to 0x0000bfff skipped
- 0x0000c000 to 0x0007efff erased
- 0x0007f000 to 0x0007ffff skipped
+ 0x0000d000 to 0x000fefff erased
 Press [Ctr+C] to cancel.
-TFTP downloading 'fnet_firmware.srec'c) from 192.168.0.5 : -
-Entry point set to 0x00019d14
+TFTP downloading 'fnet_firmware.srec' (srec) from 192.168.0.200 : \
+Entry point set to 0x0002703d
 
-TFTP completed (270204 bytes)
+TFTP completed (307618 bytes)
  boot    : go
-Parameters saved
-go 0x00019d14
-
-
-Parameters loaded from Flash.
+Application parameters saved
+go 0x0002703d
 
 ************************************************
  FNET Shell Demo (bootloader aware)
 ************************************************
- FNET TCP/IP Stack for MCF52259
- Version 2.0.0
- Built Oct  5 2012 at 13:52:57 by CW
-************************************************
- Interface        : eth0
- IPv4 Address     : 192.168.0.22 <manual>
- IPv6 Address     : fe80::204:9fff:fe13:5250 <autoconfigurable>
- IPv4 Subnet mask : 255.255.255.0
- IPv4 Gateway     : 0.0.0.0
- IPv4 DNS         : 0.0.0.0
- MAC Address      : 00:04:9f:14:59:56
- Link Status      : connected
- TX Packets       : 5
- RX Packets       : 0
- Free Heap        : 30320
- HTTP Server      : disabled
- DHCP Client      : disabled
- TELNET Server    : disabled
+ FNET TCP/IP Stack for MK64FN1
+ Version 4.0.0dev
+ Built Oct 26 2017 at 16:17:57 by IAR
 
  Enter 'help' for command list.
 ************************************************
+[FAPP] Application parameters loaded from Flash.
+SHELLB>
+[LINK] eth0: connected => Script: dhcpc autoip -n eth0; mdns -n eth0; llmnr -n eth0;
+************************************************
+ DHCPv4 Client started.
+ Interface            : eth0
+************************************************
+Press [Ctr+C] to cancel.
+[DHCP] Discovering...
 
+************************************************
+ IPv4 parameters updated :
+************************************************
+Ethernet Interface <default>:
+ Name                 : eth0
+ ScopeID              : 1
+ Media State          : connected
+ IPv4 Address         : 192.168.0.102 <dhcp>
+ IPv6 Address         : fe80::211:22ff:fe33:4455 <autoconfigurable>
+ IPv4 Subnet mask     : 255.255.255.0
+ IPv4 Gateway         : 192.168.0.1
+ IPv4 DNS             : 192.168.0.1
+ DHCP Client          : on
+ DHCP Server Address  : 192.168.0.1
+ AUTOIP Service       : off
+ LLMNR Server         : off
+ MDNS Server          : off
+
+************************************************
+ mDNS server started.
+ Interface            : eth0
+ Host Name            : fnet
+************************************************
+************************************************
+ LLMNR server started.
+ Interface            : eth0
+ Host Name            : fnet
+************************************************
 SHELLB> 
 @endverbatim
 - Now the Bootloader is in the @c go mode and every time on the system reset it will start the loaded application automatically.
 
 @note
-- The @c tftpup command is useful for the firmware backup before it gets overwritten in the Flash memory. This feature enables to restore the system in case the new firmware has issues. @n
+- The @c tftpcup command is useful for the firmware backup before it gets overwritten in the Flash memory. This feature enables to restore the system in case the new firmware has issues. @n
 This command uploads content of the on-chip Flash memory, except FNET Bootloader reserved blocks, to the TFTP server. The TFTP server IP address is defined by the @c tftp parameter.  The image-file name on the remote TFTP server is defined by the @c image parameter. Format of the created file (S-record, CodeWarrior binary or raw binary) is defined by @c type parameter. 
 - The Bootloder is able to run in IPv6 mode, by disabling IPv4 and enabling IPv6 in @c fnet_user_config.h.
 
@@ -1147,22 +1460,22 @@ The TFTP server is started automatically during the bootloader start-up in norma
 - You may check TFTP server status, enter @c info command:
 @verbatim
 BOOT> info
- Interface        : eth0
- IPv4 Address     : 192.168.0.22 <manual>
- IPv4 Subnet mask : 255.255.255.0
- IPv4 Gateway     : 0.0.0.0
- MAC Address      : 00:04:9F:14:38:50
- Link status      : connected
- TX Packets       : 5
- RX Packets       : 144
- DHCP client      : disabled
- TFTP server      : enabled
-BOOT> 
+Ethernet Interface <default>:
+ Name                 : eth0
+ ScopeID              : 1
+ Media State          : connected
+ IPv4 Address         : 192.168.0.22 <manual>
+ IPv4 Subnet mask     : 255.255.255.0
+ IPv4 Gateway         : 192.168.0.1
+ DHCP Client          : off
+
+Services:
+ TFTP Server          : off 
 @endverbatim
  
-- If the TFTP server is stopped, you may enter the @c tftps command to start it:
+- If the TFTP server is stopped, you may enter the @c tftp command to start it:
 @verbatim
-BOOT> tftps
+BOOT> tftp
 ************************************************
  TFTP Server started.
  IPv4 Address     : 192.168.0.22
@@ -1203,37 +1516,54 @@ TFTP completed (234244 bytes)
 Parameters saved
 go 0x00019638
 
-
-Parameters loaded from Flash.
-
 ************************************************
  FNET Shell Demo (bootloader aware)
 ************************************************
- FNET TCP/IP Stack for MCF52259
- Version 2.0.0
- Built Oct  5 2012 at 13:52:57 by CW
-************************************************
- Interface        : eth0
- IPv4 Address     : 192.168.0.22 <manual>
- IPv6 Address     : fe80::204:9fff:fe13:5250 <autoconfigurable>
- IPv4 Subnet mask : 255.255.255.0
- IPv4 Gateway     : 0.0.0.0
- IPv4 DNS         : 0.0.0.0
- MAC Address      : 00:04:9f:14:59:56
- Link Status      : connected
- TX Packets       : 5
- RX Packets       : 0
- Free Heap        : 30320
- HTTP Server      : disabled
- DHCP Client      : disabled
- AUTOIP Service   : disabled
- TELNET Server    : disabled
- LLMNR Server     : disabled
+ FNET TCP/IP Stack for MK64FN1
+ Version 4.0.0dev
+ Built Oct 26 2017 at 16:17:57 by IAR
 
  Enter 'help' for command list.
 ************************************************
+[FAPP] Application parameters loaded from Flash.
+SHELLB>
+[LINK] eth0: connected => Script: dhcpc autoip -n eth0; mdns -n eth0; llmnr -n eth0;
+************************************************
+ DHCPv4 Client started.
+ Interface            : eth0
+************************************************
+Press [Ctr+C] to cancel.
+[DHCP] Discovering...
 
-SHELLB> 
+************************************************
+ IPv4 parameters updated :
+************************************************
+Ethernet Interface <default>:
+ Name                 : eth0
+ ScopeID              : 1
+ Media State          : connected
+ IPv4 Address         : 192.168.0.102 <dhcp>
+ IPv6 Address         : fe80::211:22ff:fe33:4455 <autoconfigurable>
+ IPv4 Subnet mask     : 255.255.255.0
+ IPv4 Gateway         : 192.168.0.1
+ IPv4 DNS             : 192.168.0.1
+ DHCP Client          : on
+ DHCP Server Address  : 192.168.0.1
+ AUTOIP Service       : off
+ LLMNR Server         : off
+ MDNS Server          : off
+
+************************************************
+ mDNS server started.
+ Interface            : eth0
+ Host Name            : fnet
+************************************************
+************************************************
+ LLMNR server started.
+ Interface            : eth0
+ Host Name            : fnet
+************************************************
+SHELLB>
 @endverbatim
 	- Finally you should receive message about successfully transmitted image file:
 	       @n @n
@@ -1242,16 +1572,17 @@ SHELLB>
 	- Be sure that the TFTP server is enabled:
 	@verbatim
 BOOT> info
- Interface        : eth0
- IP address       : 10.171.88.22 (set manually)
- Subnet mask      : 255.255.255.0
- Gateway          : 10.171.88.254
- MAC address      : 00:04:9F:11:20:42
- Link status      : connected
- TX Packets       : 4
- RX Packets       : 128
- DHCP client      : disabled
- TFTP server      : enabled
+Ethernet Interface <default>:
+ Name                 : eth0
+ ScopeID              : 1
+ Media State          : connected
+ IPv4 Address         : 192.168.0.22 <manual>
+ IPv4 Subnet mask     : 255.255.255.0
+ IPv4 Gateway         : 192.168.0.1
+ DHCP Client          : off
+
+Services:
+ TFTP Server          : on 
 BOOT>
 	@endverbatim
 	- Set parameters of the TFTP Client:
@@ -1355,30 +1686,16 @@ or on http://fbench.sf.net
 - Reset the board, press the RESET button on the board.
 - In your terminal program window you should see the FNET Benchmark welcome message:
 @verbatim
-Parameters loaded from Flash.
-
 ************************************************
  FNET Throughput Benchmark
 ************************************************
- FNET TCP/IP Stack for MCF52259
- Version 2.0.0
- Built Oct 12 2012 at 15:49:35 by CW
-************************************************
- Interface        : eth0
- IPv4 Address     : 192.168.0.22 <manual>
- IPv6 Address     : fe80::204:9fff:fe15:4931 <autoconfigurable>
- IPv4 Subnet mask : 255.255.255.0
- IPv4 Gateway     : 0.0.0.0
- MAC Address      : 00:04:9f:15:49:31
- Link Status      : connected
- TX Packets       : 4
- RX Packets       : 0
- Free Heap        : 36464
- DHCP Client      : disabled
+ FNET TCP/IP Stack for MK64FN1
+ Version 4.0.0
+ Built Oct 27 2017 at 09:43:23 by IAR
 
  Enter 'help' for command list.
 ************************************************
-
+[FAPP] Application parameters loaded from Flash.
 BENCH> 
 @endverbatim
 
@@ -1388,12 +1705,13 @@ BENCH> help
 >   help                                 - Display this help message
 >    set [<parameter> <value>]           - Set parameter
 >    get [<parameter>]                   - Get parameters
->   info                                 - Show detailed status
->   dhcp [release]                       - Start DHCP client
+>   info [-n <if name>]                  - Show interface info
+>   stat [-n <if name>]                  - Show network statistics
+>  dhcpc [-n <if name>] [release|autoip] - Start DHCP client
 >   save                                 - Save parameters to the FLASH
 >  reset                                 - Reset the board
->benchrx [tcp|udp]                       - Receiver Benchmark
->benchtx <receiver IP>[tcp|udp[<message size>
+>benchrx [tcp|udp [<multicast ip>]         - Receiver Benchmark
+>benchtx <remote ip>[tcp|udp[<message size>
         [<number of messages>[<number of iterations>]]]- Transmitter Benchmark
 BENCH>
 @endverbatim
@@ -1552,7 +1870,7 @@ The amount of data, received by the remote side, is putted to square brackets. I
 /*! 
 @page how_to_add_fnet Add FNET Stack to an existing project
 
-The FNET Stack is self-sufficient. It does not use any external software library. That is why adding the FNET TCP/IP stack 
+The FNET Stack is self-sufficient. It does not require any external software libraries. That is why adding the FNET TCP/IP stack 
 to an existing project is a simple task. @n
 @n
 To add the FNET TCP/IP stack code to your project, follow the steps below:
@@ -1606,7 +1924,7 @@ int main(void)
     }
 }
 @endcode
--# Now you should be able to start using the FNET TCP/IP stack and services. See @ref stack_api and @ref services_api chapters for a detailed description of the programmer's interface. @n
+-# Now you should be able to start using the FNET TCP/IP stack and services. See @ref stack_api and @ref fnet_service chapters for a detailed description of the programmer's interface. @n
 Also it's highly recommended to look at provided @c fnet_demos examples, especially the @c shell demo. You may use them as a reference.
 
 @note 
@@ -1776,6 +2094,48 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 4.0.0
+	- Added WiFi network interface support:
+		- Added Qualcomm/Atheros WiFi QCA4002 (GT202 board) support. Enabled by FNET_CFG_CPU_WIFI.
+		  Core driver is in the third_party\qca-x.x.x directory. 
+		- Added shell_freertos_wifi_qca example for K64.
+		- Added fnet_wifi_connect(), fnet_wifi_access_point() and fnet_wifi_disconnect().
+	- Added DHCPv4 server. 
+	- Added basic support for the LPC54628 platform (Aruba).
+	- Added fnet_ prefix to the sockaddr, sockaddr_in, sockaddr_in6, in_addr, in6_addr, ip_mreq, ipv6_mreq and linger types.
+	- Added FNET_CFG_TIMER_POLL_AUTOMATIC enables/disables automatic timer polling inside FNET.
+	- Added fnet_timer_poll() timer polling function, for the case when FNET_CFG_TIMER_POLL_AUTOMATIC is disabled.
+	- Moved network interface drivers to "port\cpu\netif" directory (FEC/ENET and QCA).
+	- Added FNET_CPU_NETIF_NUMBER which defines number of supported network interfaces.
+	- Added "fnet_\<service_name\>_get_by_netif()" which looks for a \<service_name\> assigned to the specified network interface.
+	- Added fnet_mdns_service_get_by_type() which looks for a registered mDNS application service according to the specified type.
+	- Added "cookie" parameter to the fnet_shell_block() function.
+	- Renamed:
+		- DHCP Client files and definitions from "dhcp|DHCP" to "dhcp_cln|DHCP_CLN".
+		- "services" folder to "service".
+		- fnet_poll_desc_t to fnet_service_desc_t.
+		- fnet_poll_service() to fnet_service_poll().
+		- fnet_poll_service_[register|unregister]() to fnet_service_[register|unregister]()
+	- Merged fnet_poll.c/h to fnet_service.c/h.
+	- Added fnet_ssize_t, signed integer type representing the size in bytes.
+	- Added FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM which enables/disables RAM vector table support.
+	- Added FNET_CFG_CPU_[SERIAL|ETH|WIFI]_IO_INIT which enables/disables Input/Output pin initialization.
+	- Fixed nested calling of fnet_shell_script().
+	- Fixed possible sending of duplicate TCP ACK.
+	- Updated shell demo application:
+		- Added "dhcp [-n <if name>] [release|pool]" DHCPv4 server command.
+		- Added "connect", "disconnect" and "ap" Shell Wi-Fi commands.
+		- Added separate link script for Wi-Fi interface in access mode, defined by FAPP_CFG_LINK_(CONNECT|DISCONNECT)_WIFI_ACCESS_POINT_SCRIPT.
+		- Added optional [-n \<if name\>] parameter to all interface specific shell commands.
+		- Changed naming approach for client and server shell commands. Protocol client command name is \<protocol_name\>'c' and protocol server command name is \<protocol_name> (e.g. "dhcpc" and "dhcp").  
+		- Common application shell code moved from fapp.c to separate fapp_shell.c
+		- Deprecated FAPP_CFG_STARTUP_SCRIPT_ENABLED, covered by existing FAPP_CFG_STARTUP_SCRIPT.
+	- Fixed fnet_socket_bind(), ignored scope_id.
+	- Fixed fnet_netif_bind_ip6_addr().
+	- Switched to IANA ephemeral port range [49152 to 65535].
+	- Deprecated FNET_CFG_\<service_name\>_MAX, covered by already existing FNET_CFG_<service_name>.
+	- Deprecated FAPP_CFG_DEFAULT_IF, covered by existing FAPP_CFG_PARAMS_NETIF_NAME.
+	
 - Version 3.9.4
 	- Added Shell example using FreeRTOS.
 	- Fixed minor issues, found by the Coverity tool.
@@ -2123,9 +2483,9 @@ FNET public releases:
 	- Updated FreeRTOS specific code. Thanks to Christophe Graulle.
 	- Added basic BOOTP protocol support, as special mode of DHCP client service. Thanks to Peter Baertschi.
  	- New configuration parameters:
-		- @ref FNET_CFG_DHCP_BOOTP defines DHCP or BOOTP protocol to be used.
-		- @ref FNET_CFG_DHCP_PORT_CLIENT defines DHCP client port number.
-		- @ref FNET_CFG_DHCP_PORT_SERVER defines DHCP server port number.
+		- FNET_CFG_DHCP_BOOTP defines DHCP or BOOTP protocol to be used.
+		- FNET_CFG_DHCP_PORT_CLIENT defines DHCP client port number.
+		- FNET_CFG_DHCP_PORT_SERVER defines DHCP server port number.
 
 - Version 2.2.0:
 	- Added support of the Qorivva Power Architecture:
@@ -2308,7 +2668,7 @@ FNET public releases:
 	- Added the @ref FNET_CFG_TELNET_SHELL_ECHO user-configuration option that defines the Echo in the Telnet shell.
 	- Updated structure of the application parameters, used by the FNET demo applications.
 	- Updated the FNET ROM file-system image structure and the "FNET File System Generation Tool", to make the file-system image file more portable between different compilers.
-	-  The "fnet.h" header file gives full access to the whole FNET user-API, including the services API.
+	- The "fnet.h" header file gives full access to the whole FNET user-API, including the service API.
 	- Other minor changes/fixes.
 
 - Version 0.8.1:
@@ -2489,7 +2849,7 @@ FNET public releases:
 * 	- @ref fnet_cpu_config.h = The main platform configuration file, 
 which includes all platform-specific configuration files.
 * 		- fnet_<platform>_config.h = Platform-specific default configuration parameters.
-* 	- @ref fnet_services_config.h = Service-specific configuration file 
+* 	- @ref fnet_service_config.h = Service-specific configuration file 
 which includes all service-specific configuration files. 
 *		- @ref fnet_http_config.h = HTTP-Server-specific configuration.
 *		- @ref fnet_dhcp_config.h = DHCP-Client-specific configuration.
@@ -2663,27 +3023,33 @@ which includes all service-specific configuration files.
 *     The user may override and change the default values in the 
 *     application-specific configuration file @c fnet_user_config.h.
 */
-
 /*! 
-*	@defgroup fnet_services_config Service-Specific Configuration Parameters
+*	@defgroup fnet_service_config Service-Specific Configuration Parameters
 *	@ingroup fnet_config
 *	This section describes the parameters specific to the FNET TCP/IP services.
 *	@n
 *   The user may override and change the default values in the application-specific 
 *   configuration file @c fnet_user_config.h.
 */
-
 /*! 
-*	@defgroup fnet_dhcp_config DHCP Client Configuration Parameters
-*	@ingroup fnet_services_config 
-*	This section describes the parameters specific to the DHCP client.
+*	@defgroup fnet_dhcp_cln_config DHCPv4 Client Configuration Parameters
+*	@ingroup fnet_service_config 
+*	This section describes the parameters specific to the DHCPv4 client.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+/*! 
+*	@defgroup fnet_dhcp_srv_config DHCPv4 Server Configuration Parameters
+*	@ingroup fnet_service_config 
+*	This section describes the parameters specific to the DHCPv4 server.
 *	@n
 *   The user may override and change the default values in the application-specific 
 *   configuration file @c fnet_user_config.h.
 */
 /*! 
 *	@defgroup fnet_autoip_config Auto-IP Service Configuration Parameters
-*	@ingroup fnet_services_config 
+*	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the Auto-IP Service.
 *	@n
 *   The user may override and change the default values in the application-specific 
@@ -2691,7 +3057,7 @@ which includes all service-specific configuration files.
 */
 /*! 
 *	@defgroup fnet_dns_config DNS Client Configuration Parameters
-*	@ingroup fnet_services_config 
+*	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the DNS client.
 *	@n
 *   The user may override and change the default values in the application-specific 
@@ -2700,7 +3066,7 @@ which includes all service-specific configuration files.
 
 /*! 
 *	@defgroup fnet_link_config Link-Detection Service Configuration Parameters
-*	@ingroup fnet_services_config 
+*	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the Link-Detection Service.
 *	@n
 *   The user may override and change the default values in the application-specific 
@@ -2709,7 +3075,7 @@ which includes all service-specific configuration files.
 
 /*! 
 *	@defgroup fnet_llmnr_config LLMNR Server Configuration Parameters
-*	@ingroup fnet_services_config 
+*	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the LLMNR server.
 *	@n
 *   The user may override and change the default values in the application-specific 
@@ -2717,7 +3083,7 @@ which includes all service-specific configuration files.
 */
 /*! 
 *	@defgroup fnet_mdns_config MDNS Server Configuration Parameters
-*	@ingroup fnet_services_config 
+*	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the MDNS server.
 *	@n
 *   The user may override and change the default values in the application-specific 
@@ -2725,7 +3091,7 @@ which includes all service-specific configuration files.
 */
 /*! 
 *	@defgroup fnet_flash_config Flash Driver Configuration Parameters
-*	@ingroup fnet_services_config 
+*	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the Flash driver.
 *	@n
 *   The user may override and change the default values in the application-specific 
@@ -2733,7 +3099,7 @@ which includes all service-specific configuration files.
 */
 /*! 
 *	@defgroup fnet_fs_config File System Configuration Parameters
-*	@ingroup fnet_services_config 
+*	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the File System library.
 *	@n
 *   The user may override and change the default values in the application-specific 
@@ -2742,7 +3108,7 @@ which includes all service-specific configuration files.
 
 /*! 
 *	@defgroup fnet_http_config HTTP Server Configuration Parameters
-*	@ingroup fnet_services_config 
+*	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the HTTP Server.
 *	@n
 *   The user may override and change the default values in the application-specific 
@@ -2751,7 +3117,7 @@ which includes all service-specific configuration files.
 
 /*! 
 *	@defgroup fnet_ping_config PING Service Configuration Parameters
-*	@ingroup fnet_services_config 
+*	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the PING Service.
 *	@n
 *   The user may override and change the default values in the application-specific 
@@ -2760,7 +3126,7 @@ which includes all service-specific configuration files.
 
 /*! 
 *	@defgroup fnet_sntp_config SNTP Client Configuration Parameters
-*	@ingroup fnet_services_config 
+*	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the SNTP Client.
 *	@n
 *   The user may override and change the default values in the application-specific 
@@ -2769,7 +3135,7 @@ which includes all service-specific configuration files.
 
 /*! 
 *	@defgroup fnet_serial_config Serial Library Configuration Parameters
-*	@ingroup fnet_services_config 
+*	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the Serial Library.
 *	@n
 *   The user may override and change the default values in the application-specific 
@@ -2778,7 +3144,7 @@ which includes all service-specific configuration files.
 
 /*! 
 *	@defgroup fnet_shell_config Shell Service Configuration Parameters
-*	@ingroup fnet_services_config 
+*	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the Shell Service.
 *	@n
 *   The user may override and change the default values in the application-specific 
@@ -2787,7 +3153,7 @@ which includes all service-specific configuration files.
 
 /*! 
 *	@defgroup fnet_telnet_config Telnet Server Configuration Parameters
-*	@ingroup fnet_services_config 
+*	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the Telnet Server.
 *	@n
 *   The user may override and change the default values in the application-specific 
@@ -2796,7 +3162,7 @@ which includes all service-specific configuration files.
 
 /*! 
 *	@defgroup fnet_tftp_config TFTP Server and Client Configuration Parameters
-*	@ingroup fnet_services_config 
+*	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the TFTP Server and Client.
 *	@n
 *   The user may override and change the default values in the application-specific 
@@ -2804,7 +3170,7 @@ which includes all service-specific configuration files.
 */
 /*! 
 *	@defgroup fnet_tls_config TLS (Transport Layer Security) Configuration Parameters
-*	@ingroup fnet_services_config 
+*	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the TLS (Transport Layer Security).
 *	@n
 *   The user may override and change the default values in the application-specific 
@@ -2852,6 +3218,12 @@ which includes all service-specific configuration files.
 */
 
 /*! 
+*	@defgroup fnet_netif_wifi Wi-Fi Interface API
+*	@ingroup fnet_netif 
+*	This section describes API that is only for Wi-Fi network interfaces. 
+*/
+
+/*! 
 *	@defgroup fnet_arp ARP cache API
 *	@ingroup stack_api
 */
@@ -2877,13 +3249,13 @@ which includes all service-specific configuration files.
 */
 
 
-//----------------------SERVICES API----------------------------------
+//----------------------SERVICE API----------------------------------
 /*! 
-* @defgroup services_api FNET Services API
+* @defgroup fnet_service FNET Service API
 * Services are built on top of the core FNET TCP/IP stack. @n
 * Their use is purely optional, user may completely recreate the same functionality 
 * with an application-level code. @n
-* To gain access to the FNET TCP/IP services API, the application only 
+* To gain access to the FNET TCP/IP service API, the application only 
 * needs to include the main header file @c fnet.h:
 * @code 
 * #include "fnet.h";
@@ -2894,63 +3266,53 @@ which includes all service-specific configuration files.
 */
 
 /*! 
-*	@defgroup fnet_polling Polling Mechanism API
-*	@ingroup services_api 
-*/
-
-/*! 
 *	@defgroup fnet_http HTTP server API
-*	@ingroup services_api 
+*	@ingroup fnet_service 
 */
 /*! 
 *	@defgroup fnet_telnet TELNET server API
-*	@ingroup services_api 
+*	@ingroup fnet_service 
 */
-
 /*! 
-*	@defgroup fnet_dhcp DHCP/BOOTP client API
-*	@ingroup services_api 
+*	@defgroup fnet_dhcp_cln DHCPv4/BOOTP client API
+*	@ingroup fnet_service 
 */
-
+/*! 
+*	@defgroup fnet_dhcp_srv DHCPv4 server API
+*	@ingroup fnet_service 
+*/
 /*! 
 *	@defgroup fnet_dns DNS client/resolver API
-*	@ingroup services_api 
+*	@ingroup fnet_service 
 */
 /*! 
 *	@defgroup fnet_autoip AUTOIP service API
-*	@ingroup services_api 
+*	@ingroup fnet_service 
 */
-
 /*! 
 *	@defgroup fnet_link Link-Detection service API
-*	@ingroup services_api 
+*	@ingroup fnet_service 
 */
-
 /*! 
 *	@defgroup fnet_llmnr LLMNR server/responder API
-*	@ingroup services_api 
+*	@ingroup fnet_service 
 */
-
 /*! 
 *	@defgroup fnet_mdns MDNS (Bonjour) server/responder API
-*	@ingroup services_api 
+*	@ingroup fnet_service 
 */
-
 /*! 
 *	@defgroup fnet_ping PING service API
-*	@ingroup services_api 
+*	@ingroup fnet_service 
 */
-
 /*! 
 *	@defgroup fnet_sntp SNTP client API
-*	@ingroup services_api 
+*	@ingroup fnet_service 
 */
-
 /*! 
 *	@defgroup fnet_tftp TFTP API
-*	@ingroup services_api 
+*	@ingroup fnet_service 
 */
-
 /*! 
 *	@defgroup fnet_tftp_cln TFTP client API
 *	@ingroup fnet_tftp 
@@ -2962,31 +3324,27 @@ which includes all service-specific configuration files.
 */
 /*! 
 *	@defgroup fnet_tls TLS API
-*	@ingroup services_api 
+*	@ingroup fnet_service 
 */
 /*! 
 *	@defgroup fnet_cfm Flash driver API
-*	@ingroup services_api 
+*	@ingroup fnet_service 
 */
-
 /*! 
 *	@defgroup fnet_fs File System API
-*	@ingroup services_api 
+*	@ingroup fnet_service 
 */
-
 /*! 
 *	@defgroup fnet_fs_rom ROM File System API
 *	@ingroup fnet_fs 
 */
-
 /*! 
 *	@defgroup fnet_shell Shell service API
-*	@ingroup services_api 
+*	@ingroup fnet_service 
 */
-
 /*! 
 *	@defgroup fnet_serial Serial Input/Output library API
-*	@ingroup services_api 
+*	@ingroup fnet_service 
 */
 
 

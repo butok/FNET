@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief IPv6 Neighbor Discovery implementation.
+***************************************************************************
+*
+*  IPv6 Neighbor Discovery implementation.
 *
 ***************************************************************************/
 
@@ -1964,10 +1964,12 @@ DROP:
 *************************************************************************/
 void fnet_nd6_rd_start(struct fnet_netif *netif)
 {
-    netif->nd6_if_ptr->rd_transmit_counter = FNET_ND6_MAX_RTR_SOLICITATIONS - 1u;
-    netif->nd6_if_ptr->rd_time = fnet_timer_get_ms();  /* Save send time.*/
-    fnet_nd6_router_solicitation_send(netif);
-
+    if(netif->nd6_if_ptr)
+    {
+        netif->nd6_if_ptr->rd_transmit_counter = FNET_ND6_MAX_RTR_SOLICITATIONS - 1u;
+        netif->nd6_if_ptr->rd_time = fnet_timer_get_ms();  /* Save send time.*/
+        fnet_nd6_router_solicitation_send(netif);
+    }
     /* TBD Randomise first send.*/
 }
 

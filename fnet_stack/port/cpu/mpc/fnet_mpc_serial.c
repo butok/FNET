@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ /*!
+***************************************************************************
 *
-* @brief MPC Serial port I/O functions.
+*  MPC Serial port I/O functions.
 *
 ***************************************************************************/
 #include "fnet.h"
@@ -80,7 +80,7 @@ fnet_int32_t fnet_cpu_serial_getchar (fnet_index_t port_number)
     return FNET_ERR;
 }
 
-/********************************************************************/
+#if FNET_CFG_CPU_SERIAL_IO_INIT
 static inline void fnet_cpu_serial_gpio_init(fnet_int32_t port_number)
 {
     /* Enable the proper UART pins */
@@ -139,7 +139,6 @@ static inline void fnet_cpu_serial_gpio_init(fnet_int32_t port_number)
             break;
     }
 #endif
-
 #if FNET_CFG_CPU_MPC564xBC
     switch (port_number)
     {
@@ -187,6 +186,7 @@ static inline void fnet_cpu_serial_gpio_init(fnet_int32_t port_number)
     }
 #endif
 }
+#endif /* FNET_CFG_CPU_SERIAL_IO_INIT */
 
 /********************************************************************/
 void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
@@ -197,12 +197,8 @@ void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
      */
 
     /* Init GPIO.*/
+#if FNET_CFG_CPU_SERIAL_IO_INIT	
     fnet_cpu_serial_gpio_init(port_number);
-#if FNET_CFG_CPU_S32R274
-    FNET_S32R274_GPIO_MSCR(18)  = 0x02000002;    /* Set to LIN1_TXD */
-    FNET_S32R274_GPIO_MSCR(95)  = 0x00080000;    /* Set to LIN1_RXD */
-
-    FNET_S32R274_GPIO_IMCR(63) = 0x00000003;
 #endif
 
 #if FNET_CFG_CPU_MPC5668G

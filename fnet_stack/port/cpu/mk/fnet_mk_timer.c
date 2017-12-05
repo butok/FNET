@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -16,9 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Kinetis specific SW timers implementation.
+***************************************************************************
+*
+*  Kinetis specific SW timers implementation.
 *
 ***************************************************************************/
 
@@ -44,7 +44,7 @@ static void fnet_cpu_timer_handler_top(void *cookie);
 
 /************************************************************************
 * DESCRIPTION: Top interrupt handler. Increment fnet_current_time
-*              and interrupt flag.
+*              and clear interrupt flag.
 *************************************************************************/
 static void fnet_cpu_timer_handler_top(void *cookie)
 {
@@ -68,10 +68,11 @@ fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms )
     fnet_return_t result;
     fnet_uint32_t timeout;
 
-    /* Imstall interrupt handler and enable interrupt in NVIC.
+    /* Install interrupt handler and enable interrupt in NVIC.
     */
     result = fnet_isr_vector_init(FNET_CFG_CPU_TIMER_VECTOR_NUMBER, fnet_cpu_timer_handler_top,
-                                  fnet_timer_handler_bottom, FNET_CFG_CPU_TIMER_VECTOR_PRIORITY, 0u);
+                                    fnet_timer_handler_bottom, 
+                                    FNET_CFG_CPU_TIMER_VECTOR_PRIORITY, 0u);
     if(result == FNET_OK)
     {
         /* Initialize the PIT timer to generate an interrupt every period_ms */
@@ -105,5 +106,30 @@ void fnet_cpu_timer_release( void )
      */
     fnet_isr_vector_release(FNET_CFG_CPU_TIMER_VECTOR_NUMBER);
 }
+
+/* If vector table is in ROM, pre-install FNET ISR for the Timer Event interrupt*/
+#if !FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
+#if FNET_CFG_CPU_TIMER_NUMBER == 0
+void PIT0_IRQHandler (void)
+{
+    FNET_ISR_HANDLER();
+}
+#elif FNET_CFG_CPU_TIMER_NUMBER == 1
+void PIT1_IRQHandler (void)
+{
+    FNET_ISR_HANDLER();
+}
+#elif FNET_CFG_CPU_TIMER_NUMBER == 2
+void PIT2_IRQHandler (void)
+{
+    FNET_ISR_HANDLER();
+}
+#elif FNET_CFG_CPU_TIMER_NUMBER == 3
+void PIT3_IRQHandler (void)
+{
+    FNET_ISR_HANDLER();
+}
+#endif
+#endif
 
 #endif /*FNET_MK*/

@@ -18,10 +18,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
+***************************************************************************
 *
-* @brief FNET Network interface API.
+*  FNET Network interface API.
 *
 ***************************************************************************/
 
@@ -46,8 +45,9 @@
  ******************************************************************************/
 typedef enum
 {
-    FNET_NETIF_TYPE_OTHER,      /**< @brief Unspecified interface.*/
+    FNET_NETIF_TYPE_OTHER = 0,  /**< @brief Unspecified interface.*/
     FNET_NETIF_TYPE_ETHERNET,   /**< @brief Ethernet interface.*/
+    FNET_NETIF_TYPE_WIFI,       /**< @brief Wi-Fi interface.*/
     FNET_NETIF_TYPE_LOOPBACK    /**< @brief Loopback interface.*/
 } fnet_netif_type_t;
 
@@ -179,12 +179,11 @@ extern "C" {
  * interface matching the @c name parameter (for example "eth0", "loop").
  *
  ******************************************************************************/
-fnet_netif_desc_t fnet_netif_get_by_name( fnet_char_t *name );
+fnet_netif_desc_t fnet_netif_get_by_name( const fnet_char_t *name );
 
 /***************************************************************************/ /*!
  *
  * @brief    Looks for a network interface according to its number.
- *
  *
  * @param n       Number of a network interface (from zero).
  *
@@ -201,7 +200,6 @@ fnet_netif_desc_t fnet_netif_get_by_name( fnet_char_t *name );
  *
  ******************************************************************************/
 fnet_netif_desc_t fnet_netif_get_by_number( fnet_index_t n );
-
 
 /***************************************************************************/ /*!
  *
@@ -254,7 +252,7 @@ void fnet_netif_get_name( fnet_netif_desc_t netif_desc, fnet_char_t *name, fnet_
  *
  * @param netif_desc     Network interface descriptor to be assigned as default.
  *
- * @see fnet_netif_get_default(), FNET_CFG_DEFAULT_IF
+ * @see fnet_netif_get_default()
  *
  ******************************************************************************
  *
@@ -273,7 +271,7 @@ void fnet_netif_set_default( fnet_netif_desc_t netif_desc );
  *
  * @return   This function returns the descriptor of the default network interface.
  *
- * @see fnet_netif_set_default(), FNET_CFG_DEFAULT_IF
+ * @see fnet_netif_set_default()
  *
  ******************************************************************************
  *
@@ -378,18 +376,18 @@ void fnet_netif_set_ip4_gateway( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t g
 
 /***************************************************************************/ /*!
  *
- * @brief    Retrieves a gateway IP address of the specified network interface.
+ * @brief    Retrieves a gateway IPv4 address of the specified network interface.
  *
  * @param netif_desc  Network interface descriptor.
  *
- * @return       This function returns the gateway IP address of the @c netif
+ * @return       This function returns the gateway IPv4 address of the @c netif
  *               interface.
  *
  * @see fnet_netif_set_ip4_gateway()
  *
  ******************************************************************************
  *
- * This function returns the gateway IP address of the @c netif interface.
+ * This function returns the gateway IPv address of the @c netif interface.
  *
  ******************************************************************************/
 fnet_ip4_addr_t fnet_netif_get_ip4_gateway( fnet_netif_desc_t netif_desc );
@@ -398,17 +396,17 @@ fnet_ip4_addr_t fnet_netif_get_ip4_gateway( fnet_netif_desc_t netif_desc );
 #if FNET_CFG_DNS || defined(__DOXYGEN__)
 /***************************************************************************/ /*!
  *
- * @brief    Sets the DNS server IP address of the specified network interface.
+ * @brief    Sets the DNS server IPv4 address of the specified network interface.
  *
  * @param netif_desc     Network interface descriptor.
  *
- * @param dns       The DNS server IP address of the network interface.
+ * @param dns       The DNS server IPv4 address of the network interface.
  *
  * @see fnet_netif_get_ip4_dns(), FNET_CFG_DNS
  *
  ******************************************************************************
  *
- * This function sets the DNS server IP address of the @c netif interface
+ * This function sets the DNS server IPv4 address of the @c netif interface
  * to the @c dns value. @n
  * It is present only if @ref FNET_CFG_DNS is set to 1.
  *
@@ -444,11 +442,11 @@ fnet_ip4_addr_t fnet_netif_get_ip4_dns( fnet_netif_desc_t netif_desc );
  * @param netif_desc     Network interface descriptor.
  *
  * @param hw_addr        Buffer containing the hardware address
- *                      (for the @ref FNET_NETIF_TYPE_ETHERNET interface type,
+ *                      (for the @ref FNET_NETIF_TYPE_ETHERNET and FNET_NETIF_TYPE_WIFI interface type,
  *                       it contains the MAC address).
  *
- * @param hw_addr_size   Size of the hardware address in the @c hw_addr (for the @ref
- *                       FNET_NETIF_TYPE_ETHERNET interface type, it
+ * @param hw_addr_size   Size of the hardware address in the @c hw_addr (for @ref
+ *                       FNET_NETIF_TYPE_ETHERNET and FNET_NETIF_TYPE_WIFI interface types, it
  *                       equals @c 6).
  *
  * @return This function returns:
@@ -461,7 +459,7 @@ fnet_ip4_addr_t fnet_netif_get_ip4_dns( fnet_netif_desc_t netif_desc );
  *
  * This function sets the hardware address of the @c netif interface
  * to the @c hw_addr value.@n
- * For the @ref FNET_NETIF_TYPE_ETHERNET interface type, this hardware address is
+ * For @ref FNET_NETIF_TYPE_ETHERNET and FNET_NETIF_TYPE_WIFI interface types, this hardware address is
  * the MAC address.
  *
  ******************************************************************************/
@@ -474,11 +472,11 @@ fnet_return_t fnet_netif_set_hw_addr( fnet_netif_desc_t netif_desc, fnet_uint8_t
  * @param netif_desc     Network interface descriptor.
  *
  * @param hw_addr        Buffer that receives a hardware address
- *                      (for @ref FNET_NETIF_TYPE_ETHERNET interface type,
+ *                      (for @ref FNET_NETIF_TYPE_ETHERNET and and FNET_NETIF_TYPE_WIFI interface types,
  *                       it will contain the MAC address).
  *
  * @param hw_addr_size   Size of the hardware address in the @c hw_addr (for the @ref
- *                       FNET_NETIF_TYPE_ETHERNET interface type, it
+ *                       FNET_NETIF_TYPE_ETHERNET and and FNET_NETIF_TYPE_WIFI interface types, it
  *                       equals @c 6).
  *
  * @return This function returns:
@@ -564,7 +562,7 @@ void fnet_netif_set_ip4_addr_type( fnet_netif_desc_t netif_desc, fnet_netif_ip_a
  * @param netif_desc  Network interface descriptor.
  *
  * @return       This function returns:
- *   - @c FNET_FALSE if the network link is unconnected.
+ *   - @c FNET_FALSE if the network link is disconnected.
  *   - @c FNET_TRUE if the network link is connected.
  *
  ******************************************************************************
@@ -953,7 +951,6 @@ fnet_size_t fnet_netif_get_mtu(fnet_netif_desc_t netif_desc);
  *
  * @brief    Looks for a network interface according to the specified Scope ID.
  *
- *
  * @param scope_id       The Scope ID of a network interface.
  *
  * @return This function returns:
@@ -975,7 +972,6 @@ fnet_netif_desc_t fnet_netif_get_by_scope_id(fnet_scope_id_t scope_id);
  * @brief    Looks for a network interface according to the specified socket
  *           address.
  *
- *
  * @param addr       The socket address of a network interface.
  *
  * @return This function returns:
@@ -990,7 +986,7 @@ fnet_netif_desc_t fnet_netif_get_by_scope_id(fnet_scope_id_t scope_id);
  * interface matching the specified socket address.
  *
  ******************************************************************************/
-fnet_netif_desc_t fnet_netif_get_by_sockaddr( const struct sockaddr *addr );
+fnet_netif_desc_t fnet_netif_get_by_sockaddr( const struct fnet_sockaddr *addr );
 
 /***************************************************************************/ /*!
  *

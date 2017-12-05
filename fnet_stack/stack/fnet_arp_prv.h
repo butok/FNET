@@ -17,10 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
+***************************************************************************
 *
-* @brief Private. ARP protocol function definitions, data structures, etc.
+* Private. ARP protocol function definitions, data structures, etc.
 *
 ***************************************************************************/
 

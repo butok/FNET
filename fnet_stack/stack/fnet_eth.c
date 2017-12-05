@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Ethernet platform independent API functions .
+***************************************************************************
+*
+* Ethernet platform independent API functions.
 *
 ***************************************************************************/
 
@@ -186,39 +186,79 @@ static const fnet_eth_prot_if_t fnet_eth_prot_if_list[] =
         (mac_addr)[5] = (ip6_addr)->addr[15];  \
     }while(0)
 
+#if 0  /* Done by fnet_netif_is_connected()*/
 #define FNET_ETH_TIMER_PERIOD (500U) /*ms*/
+#endif
 
 /******************************************************************************
 *     Function Prototypes
 *******************************************************************************/
+#if 0  /* Done by fnet_netif_is_connected()*/
 static void fnet_eth_timer(fnet_uint32_t cookie );
+#endif
 
 /************************************************************************
-* DESCRIPTION: Eth. network-layer input function.
+* DESCRIPTION: Eth. input function.
 *************************************************************************/
-void fnet_eth_prot_input( fnet_netif_t *netif, fnet_netbuf_t *nb, fnet_uint16_t protocol )
+void fnet_eth_input( fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t frame_size)
 {
-    fnet_index_t i;
+    fnet_index_t        i;
+    fnet_eth_header_t   *ethheader = (fnet_eth_header_t *)frame; /* Point to the ethernet header.*/
+    fnet_mac_addr_t     local_mac_addr;
+    fnet_netbuf_t       *nb = 0;
+    fnet_uint16_t       protocol_type;
 
-    if(netif && nb)
+    if(netif && frame && (frame_size > sizeof(fnet_eth_header_t)))
     {
-        /* Find Network-layer protocol.*/
-        for(i = 0U; i < FNET_ETH_PROT_IF_LIST_SIZE; i++)
+        if(fnet_netif_get_hw_addr(netif, local_mac_addr, sizeof(local_mac_addr)) != FNET_OK)
         {
-            if( protocol == fnet_eth_prot_if_list[i].protocol)
+            goto DROP;
+        }
+        /* Just ignore our own "bounced" frames.*/
+        if(!fnet_memcmp(ethheader->source_addr, local_mac_addr, sizeof(local_mac_addr)))
+        {
+            goto DROP;
+        }
+                
+        fnet_eth_trace("\nRX", ethheader); /* Print ETH header.*/
+        
+        nb = fnet_netbuf_from_buf( ((fnet_uint8_t *)ethheader + sizeof(fnet_eth_header_t)),
+                                (frame_size - sizeof(fnet_eth_header_t)), FNET_TRUE );
+        if(nb)
+        {
+            if(FNET_MAC_ADDR_IS_BROADCAST(ethheader->destination_addr))    /* Broadcast */
             {
-                /* Call the protocol-input function.*/
-                fnet_eth_prot_if_list[i].input(netif, nb);
-                break;
+                nb->flags |= FNET_NETBUF_FLAG_BROADCAST;
+            }
+        
+            if(FNET_MAC_ADDR_IS_MULTICAST(ethheader->destination_addr)) /* Multicast */
+            {
+                nb->flags |= FNET_NETBUF_FLAG_MULTICAST;
+            }
+        
+            /* Network-layer input (IPv4/6, ARP).*/
+            protocol_type = ethheader->type;
+
+            /* Find Network-layer protocol.*/
+            for(i = 0U; i < FNET_ETH_PROT_IF_LIST_SIZE; i++)
+            {
+                if(protocol_type == fnet_eth_prot_if_list[i].protocol)
+                {
+                    /* Call the protocol-input function.*/
+                    fnet_eth_prot_if_list[i].input(netif, nb);
+                    break;
+                }
+            }
+
+            if(i == FNET_ETH_PROT_IF_LIST_SIZE)
+            {
+                /* No protocol found */
+                fnet_netbuf_free_chain(nb);
             }
         }
-
-        if(i == FNET_ETH_PROT_IF_LIST_SIZE)
-        {
-            /* No procol found */
-            fnet_netbuf_free_chain(nb);
-        }
     }
+DROP:
+    return;
 }
 
 /************************************************************************
@@ -226,7 +266,39 @@ void fnet_eth_prot_input( fnet_netif_t *netif, fnet_netbuf_t *nb, fnet_uint16_t 
 *************************************************************************/
 void fnet_eth_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb )
 {
-    ((fnet_eth_if_t *)(netif->netif_prv))->eth_output(netif, type, dest_addr, nb);
+    fnet_eth_header_t   *eth_header;
+    fnet_netbuf_t       *nb_header;
+    fnet_eth_if_t       *eth_if = (fnet_eth_if_t *)(netif->netif_prv);
+
+    /* Check MTU */
+    if(nb->total_length > netif->netif_mtu)
+    {
+        goto DROP;
+    }
+
+    /* Construct Eth header */
+    if((nb_header = fnet_netbuf_new(sizeof(fnet_eth_header_t), FNET_TRUE)) == 0)
+    {
+        goto DROP;
+    }
+    eth_header = (fnet_eth_header_t *)nb_header->data_ptr;
+
+    if(fnet_netif_get_hw_addr(netif, eth_header->source_addr, sizeof(eth_header->source_addr)) != FNET_OK)
+    {
+        goto DROP;
+    }
+    fnet_memcpy (eth_header->destination_addr, dest_addr, sizeof(eth_header->destination_addr));
+    eth_header->type = fnet_htons(type);
+
+    nb = fnet_netbuf_concat(nb_header, nb);
+
+    /* Ethernet driver output */
+    eth_if->eth_output(netif, nb);
+
+    return;
+DROP:
+    fnet_netbuf_free_chain(nb);
+    return;
 }
 
 /************************************************************************
@@ -239,10 +311,6 @@ fnet_return_t fnet_eth_init( fnet_netif_t *netif)
 
     if(eth_if)
     {
-#if !FNET_CFG_CPU_ETH_MIB
-        /* Clear Ethernet statistics. */
-        fnet_memset_zero(&eth_if->statistics, sizeof(struct fnet_netif_statistics));
-#endif
 
 #if FNET_CFG_IP4
         result = fnet_arp_init(netif, &eth_if->arp_if); /* Init ARP for this interface.*/
@@ -293,8 +361,9 @@ fnet_return_t fnet_eth_init( fnet_netif_t *netif)
                 fnet_nd6_rd_start(netif);
             }
 #endif /* FNET_CFG_IP6 */
-
+#if 0  /* Done by fnet_netif_is_connected()*/
             eth_if->eth_timer = fnet_timer_new((FNET_ETH_TIMER_PERIOD / FNET_TIMER_PERIOD_MS), fnet_eth_timer, (fnet_uint32_t)netif);
+#endif
 
             fnet_eth_number++;
         }
@@ -321,7 +390,9 @@ void fnet_eth_release( fnet_netif_t *netif)
 
 #endif /* FNET_CFG_IP6 */
 
+#if 0  
     fnet_timer_free(((fnet_eth_if_t *)(netif->netif_prv))->eth_timer);
+#endif
 
 #if FNET_CFG_IP4
     fnet_arp_release(netif);
@@ -364,19 +435,14 @@ void fnet_eth_change_addr_notify(fnet_netif_t *netif)
 /************************************************************************
 * DESCRIPTION:
 *************************************************************************/
+#if 0  /* Done by fnet_netif_is_connected()*/
 static void fnet_eth_timer(fnet_uint32_t cookie )
 {
     fnet_netif_t    *netif = (fnet_netif_t *) cookie;
-    fnet_bool_t     connection_flag = netif->is_connected;
 
-    if(fnet_netif_is_connected(netif) != connection_flag) /* Is any change in connection. */
-    {
-        if(connection_flag == FNET_FALSE)  /* =>Connected. */
-        {
-            fnet_eth_change_addr_notify(netif);
-        }
-    }
+    fnet_netif_is_connected(netif);
 }
+#endif
 
 /************************************************************************
 * DESCRIPTION: Ethernet IPv4 output function.
@@ -413,7 +479,6 @@ void fnet_eth_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet
             fnet_arp_resolve(netif, dest_ip_addr, nb);
             goto EXIT;
         }
-
     }
 
     /* Send Ethernet frame. */
@@ -549,11 +614,17 @@ EXIT:
 *************************************************************************/
 void fnet_eth_multicast_leave_ip4(fnet_netif_t *netif, fnet_ip4_addr_t multicast_addr )
 {
+    FNET_ASSERT(netif != FNET_NULL);
+    FNET_ASSERT(netif->netif_prv != FNET_NULL);
+
     fnet_mac_addr_t mac_addr;
+    
+    if(((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_leave)
+    {
+        FNET_ETH_MULTICAST_IP4_TO_MAC(multicast_addr, mac_addr);
 
-    FNET_ETH_MULTICAST_IP4_TO_MAC(multicast_addr, mac_addr);
-
-    ((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_leave(netif, mac_addr);
+        ((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_leave(netif, mac_addr);
+    }
 }
 
 /************************************************************************
@@ -561,11 +632,17 @@ void fnet_eth_multicast_leave_ip4(fnet_netif_t *netif, fnet_ip4_addr_t multicast
 *************************************************************************/
 void fnet_eth_multicast_join_ip4(fnet_netif_t *netif, fnet_ip4_addr_t  multicast_addr )
 {
+    FNET_ASSERT(netif != FNET_NULL);
+    FNET_ASSERT(netif->netif_prv != FNET_NULL);
+
     fnet_mac_addr_t mac_addr;
 
-    FNET_ETH_MULTICAST_IP4_TO_MAC(multicast_addr, mac_addr);
+    if(((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_join)
+    {
+        FNET_ETH_MULTICAST_IP4_TO_MAC(multicast_addr, mac_addr);
 
-    ((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_join(netif, mac_addr);
+        ((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_join(netif, mac_addr);
+    }
 }
 #endif /* FNET_CFG_IP4 */
 
@@ -575,11 +652,17 @@ void fnet_eth_multicast_join_ip4(fnet_netif_t *netif, fnet_ip4_addr_t  multicast
 *************************************************************************/
 void fnet_eth_multicast_leave_ip6(fnet_netif_t *netif, fnet_ip6_addr_t *multicast_addr )
 {
+    FNET_ASSERT(netif != FNET_NULL);
+    FNET_ASSERT(netif->netif_prv != FNET_NULL);
+
     fnet_mac_addr_t mac_addr;
+    
+    if(((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_leave)
+    {
+        FNET_ETH_MULTICAST_IP6_TO_MAC(multicast_addr, mac_addr);
 
-    FNET_ETH_MULTICAST_IP6_TO_MAC(multicast_addr, mac_addr);
-
-    ((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_leave(netif, mac_addr);
+        ((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_leave(netif, mac_addr);
+    }
 }
 
 /************************************************************************
@@ -587,11 +670,17 @@ void fnet_eth_multicast_leave_ip6(fnet_netif_t *netif, fnet_ip6_addr_t *multicas
 *************************************************************************/
 void fnet_eth_multicast_join_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t  *multicast_addr )
 {
+    FNET_ASSERT(netif != FNET_NULL);
+    FNET_ASSERT(netif->netif_prv != FNET_NULL);
+
     fnet_mac_addr_t mac_addr;
 
-    FNET_ETH_MULTICAST_IP6_TO_MAC(multicast_addr, mac_addr);
+    if(((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_join)
+    {
+        FNET_ETH_MULTICAST_IP6_TO_MAC(multicast_addr, mac_addr);
 
-    ((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_join(netif, mac_addr);
+        ((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_join(netif, mac_addr);
+    }
 }
 #endif /* FNET_CFG_IP6 */
 
@@ -601,16 +690,16 @@ void fnet_eth_multicast_join_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t  *mu
 * DESCRIPTION: Prints an Ethernet header. For debug needs only.
 *************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_ETH && FNET_CFG_DEBUG_TRACE
-void fnet_eth_trace(fnet_uint8_t *str, fnet_eth_header_t *eth_hdr)
+void fnet_eth_trace(fnet_char_t *str, fnet_eth_header_t *eth_hdr)
 {
-    fnet_uint8_t mac_str[FNET_MAC_ADDR_STR_SIZE];
+    fnet_char_t mac_str[FNET_MAC_ADDR_STR_SIZE];
 
     fnet_printf(FNET_SERIAL_ESC_FG_GREEN"%s", str); /* Print app-specific header.*/
-    fnet_println("[ETH header]"FNET_SERIAL_ESC_FG_BLACK);
+    fnet_println("[ETH header]"FNET_SERIAL_ESC_ATTR_RESET);
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+/\\/\\/\\/-+");
-    fnet_println("|(Dest)                                                "FNET_SERIAL_ESC_FG_BLUE"%17s"FNET_SERIAL_ESC_FG_BLACK" |", fnet_mac_to_str(eth_hdr->destination_addr, mac_str));
+    fnet_println("|(Dest)                                                "FNET_SERIAL_ESC_FG_BLUE"%17s"FNET_SERIAL_ESC_ATTR_RESET" |", fnet_mac_to_str(eth_hdr->destination_addr, mac_str));
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+/\\/\\/\\/-+");
-    fnet_println("|(Src)                                                 "FNET_SERIAL_ESC_FG_BLUE"%17s"FNET_SERIAL_ESC_FG_BLACK" |", fnet_mac_to_str(eth_hdr->source_addr, mac_str));
+    fnet_println("|(Src)                                                 "FNET_SERIAL_ESC_FG_BLUE"%17s"FNET_SERIAL_ESC_ATTR_RESET" |", fnet_mac_to_str(eth_hdr->source_addr, mac_str));
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+/\\/\\/\\/-+");
     fnet_println("|(Type)                  0x%04x |", fnet_ntohs(eth_hdr->type));
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");

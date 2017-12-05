@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ 
-/*!
-* @brief Compiler-specific definitions that resolve
+***************************************************************************
+*
+* Compiler-specific definitions that resolve
 * differences between different assemblers.
 *
 ***************************************************************************/
@@ -125,7 +125,7 @@ FNET_COMP_ASM_DC32 MACRO value
     #define FNET_COMP_ASM_CODE  RSEG CODE 
 #endif      
 
-#if FNET_MK      
+#if FNET_MK || FNET_LPC     
     #define FNET_COMP_ASM_CODE  RSEG .text:CODE
 #endif          
 

@@ -17,12 +17,11 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Main include header for FNET project.
+***************************************************************************
+*
+*  Main include header for FNET projects.
 *
 ***************************************************************************/
-
 
 #ifndef _FNET_H_
 
@@ -32,10 +31,10 @@
 #include "port/compiler/fnet_comp.h"
 #include "port/cpu/fnet_cpu.h"
 #include "stack/fnet_stack.h"
-#include "services/fnet_services.h"
+#include "service/fnet_service.h"
 
 /*! @addtogroup fnet_define
-* These definitions are used for reference purposes only.
+* These definitions are used for reference purpose only.
 * @n
 */
 /*! @{*/
@@ -75,7 +74,7 @@
  *        string.
  * @showinitializer
  ******************************************************************************/
-#define FNET_VERSION            "3.9.4"
+#define FNET_VERSION            "4.0.0"
 
 /*! @} */
 

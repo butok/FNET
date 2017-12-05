@@ -16,8 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ /*!
-* @brief CPU-specific API implementation.
+***************************************************************************
+*
+* CPU-specific API implementation.
 *
 ***************************************************************************/
 

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Shell Demo API.
+***************************************************************************
+*
+*  FNET Shell Demo API.
 *
 ***************************************************************************/
 
@@ -29,20 +29,24 @@
 
 #include "fapp_config.h"
 
-#if FAPP_CFG_DHCP_CMD
-
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-void fapp_dhcp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
-void fapp_dhcp_info(fnet_shell_desc_t desc);
-void fapp_dhcp_release(void);
+#if FAPP_CFG_DHCPC_CMD && FNET_CFG_DHCP_CLN && FNET_CFG_IP4
+void fapp_dhcp_cln_cmd(fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv);
+void fapp_dhcp_cln_info(fnet_shell_desc_t desc, fnet_netif_desc_t  netif);
+void fapp_dhcp_cln_release(void);
+#endif
+
+#if FAPP_CFG_DHCP_CMD && FNET_CFG_DHCP_SRV && FNET_CFG_IP4
+void fapp_dhcp_srv_cmd(fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv);
+void fapp_dhcp_srv_info(fnet_shell_desc_t desc, fnet_netif_desc_t  netif);
+void fapp_dhcp_srv_release(void);
+#endif
 
 #if defined(__cplusplus)
 }
-#endif
-
 #endif
 
 #endif /* _FAPP_DHCP_H_ */

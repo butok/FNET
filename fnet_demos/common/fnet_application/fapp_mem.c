@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,14 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
+***************************************************************************
 *
-* @file fapp_mem.c
-*
-* @author Andrey Butok
-*
-* @brief FNET Shell Demo implementation.
+*  FNET Shell Demo implementation.
 *
 ***************************************************************************/
 
@@ -32,7 +27,7 @@
 #include "fapp_prv.h"
 #include "fapp_mem.h"
 
-#if FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD || FAPP_CFG_ERASE_CMD || FAPP_CFG_MEM_CMD
+#if FAPP_CFG_TFTPC_CMD || FAPP_CFG_TFTPCUP_CMD || FAPP_CFG_TFTP_CMD || FAPP_CFG_ERASE_CMD || FAPP_CFG_MEM_CMD
 
 /************************************************************************
 *     Definitions.
@@ -294,4 +289,4 @@ void fapp_mem_erase_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t
 }
 #endif
 
-#endif /* FAPP_CFG_TFTP_CMD || FAPP_CFG_TFTPUP_CMD || FAPP_CFG_TFTPS_CMD || FAPP_CFG_ERASE_CMD || FAPP_CFG_MEM_CMD */
+#endif /* FAPP_CFG_TFTPC_CMD || FAPP_CFG_TFTPCUP_CMD || FAPP_CFG_TFTP_CMD || FAPP_CFG_ERASE_CMD || FAPP_CFG_MEM_CMD */

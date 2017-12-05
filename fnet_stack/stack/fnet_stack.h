@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Main including header for the FNET TCP/IP stack.
+***************************************************************************
+*
+*  Main including header for the FNET TCP/IP stack.
 *
 ***************************************************************************/
 
@@ -38,6 +38,7 @@
 #include "fnet_timer.h"
 #include "fnet_debug.h"
 #include "fnet_eth.h"
+#include "fnet_wifi.h"
 #include "fnet_isr.h"
 #include "fnet_netbuf.h"
 #include "fnet_arp.h"

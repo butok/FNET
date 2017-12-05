@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -16,9 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Kinetis Serial port I/O functions.
+***************************************************************************
+*
+*  Kinetis Serial port I/O functions.
 *
 ***************************************************************************/
 
@@ -66,16 +66,9 @@ fnet_int32_t fnet_cpu_serial_getchar (fnet_index_t port_number)
     return FNET_ERR;
 }
 
-/********************************************************************/
-void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
+#if FNET_CFG_CPU_SERIAL_IO_INIT	
+static inline void fnet_cpu_serial_gpio_init(fnet_index_t port_number)
 {
-    fnet_uint32_t			sysclk; /* UART module Clock in kHz.*/
-    FNET_MK_UART_MemMapPtr  uartch;
-    fnet_uint16_t 			sbr;
-    fnet_uint16_t 			brfa;
-    fnet_uint8_t 		    temp;
-
-
     /* Enable the pins for the selected UART */
     /* Enable the clock to the selected UART */
     switch(port_number)
@@ -194,6 +187,22 @@ void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
             FNET_MK_SIM_SCGC1 |= FNET_MK_SIM_SCGC1_UART5_MASK;
             break;
     }
+}
+#endif /* FNET_CFG_CPU_SERIAL_IO_INIT */
+
+/********************************************************************/
+void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
+{
+    fnet_uint32_t			sysclk; /* UART module Clock in kHz.*/
+    FNET_MK_UART_MemMapPtr  uartch;
+    fnet_uint16_t 			sbr;
+    fnet_uint16_t 			brfa;
+    fnet_uint8_t 		    temp;
+
+#if FNET_CFG_CPU_SERIAL_IO_INIT	
+    /* Init GPIO.*/
+	fnet_cpu_serial_gpio_init(port_number);
+#endif
 
 
     /* UART0 and UART1 are clocked from the core clock, but all other UARTs are

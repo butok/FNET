@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
 *
@@ -18,10 +18,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
+***************************************************************************
 *
-* @brief ARP protocol implementation.
+* ARP protocol implementation.
 *
 ***************************************************************************/
 
@@ -582,7 +581,7 @@ static void fnet_arp_trace(fnet_uint8_t *str, fnet_arp_header_t *arp_hdr)
     fnet_uint8_t ip_str[FNET_IP4_ADDR_STR_SIZE];
 
     fnet_printf(FNET_SERIAL_ESC_FG_GREEN "%s", str); /* Print app-specific header.*/
-    fnet_println("[ARP header]" FNET_SERIAL_ESC_FG_BLACK);
+    fnet_println("[ARP header]" FNET_SERIAL_ESC_ATTR_RESET);
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
     fnet_println("|(HWType)                0x%04x |(PrType)                0x%04x |", fnet_ntohs(arp_hdr->hard_type), fnet_ntohs(arp_hdr->prot_type));
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
@@ -592,25 +591,25 @@ static void fnet_arp_trace(fnet_uint8_t *str, fnet_arp_header_t *arp_hdr)
         "-+/\\/\\/\\/-+");
     fnet_println(
         "|(SenderHWAddr)                                       "
-        " " FNET_SERIAL_ESC_FG_BLUE "%17s" FNET_SERIAL_ESC_FG_BLACK " |",
+        " " FNET_SERIAL_ESC_FG_BLUE "%17s" FNET_SERIAL_ESC_ATTR_RESET " |",
         fnet_mac_to_str(arp_hdr->sender_hard_addr, mac_str));
     fnet_println(
         "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
         "-+/\\/\\/\\/-+");
-    fnet_println("|(SenderPrAddr)                                 " FNET_SERIAL_ESC_FG_BLUE "%15s" FNET_SERIAL_ESC_FG_BLACK " |",
-                 fnet_inet_ntoa(*(struct in_addr *)(&arp_hdr->sender_prot_addr), ip_str));
+    fnet_println("|(SenderPrAddr)                                 " FNET_SERIAL_ESC_FG_BLUE "%15s" FNET_SERIAL_ESC_ATTR_RESET " |",
+                 fnet_inet_ntoa(*(struct fnet_in_addr *)(&arp_hdr->sender_prot_addr), ip_str));
     fnet_println(
         "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
         "-+/\\/\\/\\/-+");
     fnet_println(
         "|(TargetHWAddr)                                       "
-        " " FNET_SERIAL_ESC_FG_BLUE "%17s" FNET_SERIAL_ESC_FG_BLACK " |",
+        " " FNET_SERIAL_ESC_FG_BLUE "%17s" FNET_SERIAL_ESC_ATTR_RESET " |",
         fnet_mac_to_str(arp_hdr->target_hard_addr, mac_str));
     fnet_println(
         "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
         "-+/\\/\\/\\/-+");
-    fnet_println("|(TargetPrAddr)                                 " FNET_SERIAL_ESC_FG_BLUE "%15s" FNET_SERIAL_ESC_FG_BLACK " |",
-                 fnet_inet_ntoa(*(struct in_addr *)(&arp_hdr->targer_prot_addr), ip_str));
+    fnet_println("|(TargetPrAddr)                                 " FNET_SERIAL_ESC_FG_BLUE "%15s" FNET_SERIAL_ESC_ATTR_RESET " |",
+                 fnet_inet_ntoa(*(struct fnet_in_addr *)(&arp_hdr->targer_prot_addr), ip_str));
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
 }
 

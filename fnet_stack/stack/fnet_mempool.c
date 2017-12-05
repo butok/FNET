@@ -17,12 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
+***************************************************************************
 *
-* @file fnet_mempool.c
-*
-* @brief FNET memory pool functions.
+*  FNET memory pool functions.
 *
 ***************************************************************************/
 
@@ -354,7 +351,7 @@ fnet_size_t fnet_mempool_free_mem_status( fnet_mempool_desc_t mpool)
     {
         total_size += t_mem->size - 1/* header correction*/;
 #if 0
-        FNET_DEBUG("%d,", t_mem->size * sizeof(FNET_ALLOC_HDR_T));
+        FNET_DEBUG("%d,\r\n", t_mem->size * sizeof(FNET_ALLOC_HDR_T));
 #endif
 
         while(t_mem->ptr != mempool->free_ptr)
@@ -362,7 +359,7 @@ fnet_size_t fnet_mempool_free_mem_status( fnet_mempool_desc_t mpool)
             t_mem = t_mem->ptr;
             total_size += t_mem->size - 1/* header correction*/;
 #if 0
-            FNET_DEBUG("%d,", t_mem->size * sizeof(FNET_ALLOC_HDR_T));
+            FNET_DEBUG("%d,\r\n", t_mem->size * sizeof(FNET_ALLOC_HDR_T));
             * /
 #endif
         }
@@ -394,7 +391,7 @@ fnet_size_t fnet_mempool_malloc_max( fnet_mempool_desc_t mpool )
 
         max = t_mem->size - 1 /* header correction*/;
 #if 0
-        FNET_DEBUG("%d,", t_mem->size * sizeof(FNET_ALLOC_HDR_T));
+        FNET_DEBUG("%d,\r\n", t_mem->size * sizeof(FNET_ALLOC_HDR_T));
 #endif
 
         while((t_mem->ptr) && (t_mem->ptr != mempool->free_ptr))
@@ -406,11 +403,11 @@ fnet_size_t fnet_mempool_malloc_max( fnet_mempool_desc_t mpool )
                 max = t_mem->size - 1 /* header correction*/;
             }
 #if 0
-            FNET_DEBUG("%d,", t_mem->size * sizeof(FNET_ALLOC_HDR_T));
+            FNET_DEBUG("%d,\r\n", t_mem->size * sizeof(FNET_ALLOC_HDR_T));
 #endif
         }
 #if 0
-        FNET_DEBUG("");
+        FNET_DEBUG("\r\n");
 #endif
     }
 

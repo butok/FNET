@@ -16,9 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Shell Demo (mDNS).
+***************************************************************************
+*
+*  FNET Shell Demo (mDNS).
 *
 ***************************************************************************/
 
@@ -32,10 +32,8 @@
 #if (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP
 #include "fapp_http.h"
 static const fnet_mdns_txt_key_t *fapp_mdns_service_get_txt(void);
-static  fnet_mdns_service_desc_t fapp_mdns_http_service_desc = 0; /* HTTP service descriptor. */
 static const fnet_mdns_service_t fapp_mdns_http_service = {.service_type =  "_http._tcp", .service_port = FNET_CFG_HTTP_PORT, .service_get_txt = fapp_mdns_service_get_txt};        /* HTTP service parameters.*/
 #if FNET_CFG_HTTP_TLS
-static  fnet_mdns_service_desc_t fapp_mdns_http_tls_service_desc = 0; /* HTTPS service descriptor. */
 static const fnet_mdns_service_t fapp_mdns_http_tls_service = {.service_type =  "_https._tcp", .service_port = FNET_CFG_HTTP_TLS_PORT, .service_get_txt = fapp_mdns_service_get_txt};   /* HTTPS service parameters.*/
 #endif
 
@@ -46,21 +44,24 @@ const fnet_mdns_txt_key_t fapp_mdns_txt_key_http_table[] =
 };
 #endif
 
-static fnet_mdns_desc_t fapp_mdns_desc = 0; /* MDNS service descriptor. */
-
 /************************************************************************
 * DESCRIPTION: Releases mDNS server.
 *************************************************************************/
 void fapp_mdns_release(void)
 {
-    fnet_mdns_release(fapp_mdns_desc);
-    fapp_mdns_desc = 0;
-#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
-    fapp_mdns_http_service_desc = 0;
-#endif
-#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP && FNET_CFG_HTTP_TLS
-    fapp_mdns_http_tls_service_desc = 0;
-#endif
+    fnet_netif_desc_t   netif;
+    fnet_index_t        i;
+    fnet_mdns_desc_t    mdns;
+
+    /* Release all MDNS servers.*/
+    for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
+    {
+        mdns = fnet_mdns_get_by_netif(netif);
+        if(mdns)
+        {
+            fnet_mdns_release(mdns);
+        }
+    }
 }
 
 /************************************************************************
@@ -68,45 +69,75 @@ void fapp_mdns_release(void)
 *************************************************************************/
 void fapp_mdns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
+    fnet_netif_desc_t           netif = fnet_netif_get_default(); /* By default is "default" netif*/
+    fnet_bool_t                 init = FNET_TRUE; /* By default is "init".*/
+    fnet_index_t                i;
     struct fnet_mdns_params     params;
-    fnet_mdns_desc_t            mdns_desc;
 
-    if(argc == 1u) /* By default is "init".*/
+    /* [-n <if name>] [release] */
+    for(i = 1u; i < argc; i++)
+    {
+        if (!fnet_strcmp(argv[i], "-n")) /*[-n <if name>] */
+        {
+            i++;
+            if(i < argc)
+            {
+                netif = fnet_netif_get_by_name(argv[i]);
+            }
+            else
+            {
+                goto ERROR_PARAMETER;
+            }
+        }
+        else if (!fnet_strcmp(argv[i], FAPP_COMMAND_RELEASE)) /* [release] */
+        {
+            init = FNET_FALSE;
+        }
+        else/* Wrong parameter.*/
+        {
+            goto ERROR_PARAMETER;
+        }
+    }
+
+    if(init == FNET_TRUE) 
     {
         /* Init parameters.*/
         fnet_memset_zero(&params, sizeof(params));
-        params.netif_desc = fnet_netif_get_default();
+        params.netif_desc = netif;
         params.name = fapp_params_host_name;
 
         /* Start mDNS server */
-        mdns_desc = fnet_mdns_init(&params);
-        if(mdns_desc)
+        if(fnet_mdns_init(&params))
         {
+            fnet_char_t netif_name[FNET_NETIF_NAMELEN];
+
+            fnet_netif_get_name(netif, netif_name, sizeof(netif_name));
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             fnet_shell_println(desc, " mDNS server started.");
-            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Name", params.name );
+            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Interface", netif_name );
+            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Host Name", params.name );
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
 
-            fapp_mdns_desc = mdns_desc;
-
 #if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
-            /* Register HTTP server to mDNS SD, if availble.*/
+            /* Register HTTP server to mDNS-SD, if availble.*/
             fapp_mdns_service_register_http();
 #endif
         }
         else
         {
-            fnet_shell_println(desc, FAPP_INIT_ERR, "mDNS");
+            fnet_shell_println(desc, FAPP_INIT_ERR, "MDNS");
         }
     }
-    else if((argc == 2u) && (fnet_strcasecmp(&FAPP_COMMAND_RELEASE[0], argv[1]) == 0)) /* [release] */
+    else /* [release] */
     {
-        fapp_mdns_release();
+        fnet_mdns_release(fnet_mdns_get_by_netif(netif));
     }
-    else
-    {
-        fnet_shell_println(desc, FAPP_PARAM_ERR, argv[1]);
-    }
+
+    return;
+
+ERROR_PARAMETER:
+    fnet_shell_println(desc, FAPP_PARAM_ERR, argv[i]);
+    return;
 }
 
 #if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
@@ -122,14 +153,16 @@ static const fnet_mdns_txt_key_t *fapp_mdns_service_get_txt(void)
 void fapp_mdns_service_register_http( void )
 {
 #if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
-    if(fapp_mdns_desc)
+    fnet_netif_desc_t   netif;
+    fnet_index_t        i;
+    fnet_mdns_desc_t    mdns;
+
+    for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
     {
-        if(fapp_http_desc) /* If HTTP server is started.*/
+        mdns = fnet_mdns_get_by_netif(netif);
+        if(mdns)
         {
-            if(fapp_mdns_http_service_desc == 0) /* If HTTP service is not registered yet.*/
-            {
-                fapp_mdns_http_service_desc = fnet_mdns_service_register(fapp_mdns_desc, &fapp_mdns_http_service);
-            }
+            fnet_mdns_service_register(mdns, &fapp_mdns_http_service);
         }
     }
 #endif
@@ -141,14 +174,16 @@ void fapp_mdns_service_register_http( void )
 void fapp_mdns_service_register_http_tls( void )
 {
 #if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP && FNET_CFG_HTTP_TLS
-    if(fapp_mdns_desc)
+    fnet_netif_desc_t   netif;
+    fnet_index_t        i;
+    fnet_mdns_desc_t    mdns;
+
+    for(i=0; netif = fnet_netif_get_by_number(i); i++)
     {
-        if(fapp_http_tls_desc) /* If HTTPS server is started.*/
+        mdns = fnet_mdns_get_by_netif(netif);
+        if(mdns)
         {
-            if(fapp_mdns_http_tls_service_desc == 0) /* If HTTP service is not registered yet.*/
-            {
-                fapp_mdns_http_tls_service_desc = fnet_mdns_service_register(fapp_mdns_desc, &fapp_mdns_http_tls_service);
-            }
+            fnet_mdns_service_register(mdns, &fapp_mdns_http_tls_service);
         }
     }
 #endif
@@ -160,12 +195,23 @@ void fapp_mdns_service_register_http_tls( void )
 void fapp_mdns_service_unregister_http( void )
 {
 #if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
-    if(fapp_mdns_desc)
+    fnet_netif_desc_t   netif;
+    fnet_index_t        i;
+    fnet_mdns_desc_t    mdns;
+
+    for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
     {
-        if(fapp_mdns_http_service_desc) /* If HTTP service is registered.*/
+        mdns = fnet_mdns_get_by_netif(netif);
+        if(mdns)
         {
-            fnet_mdns_service_unregister(fapp_mdns_http_service_desc);
-            fapp_mdns_http_service_desc = 0;
+            fnet_mdns_service_desc_t service_desc;
+            
+            service_desc = fnet_mdns_service_get_by_type(mdns, fapp_mdns_http_service.service_type);
+            /* If HTTP service is registered.*/
+            if(service_desc)
+            {
+                fnet_mdns_service_unregister(service_desc); 
+            }
         }
     }
 #endif
@@ -177,12 +223,23 @@ void fapp_mdns_service_unregister_http( void )
 void fapp_mdns_service_unregister_http_tls( void )
 {
 #if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP && FNET_CFG_HTTP_TLS
-    if(fapp_mdns_desc)
+    fnet_netif_desc_t   netif;
+    fnet_index_t        i;
+    fnet_mdns_desc_t    mdns;
+
+    for(i=0; netif = fnet_netif_get_by_number(i); i++)
     {
-        if(fapp_mdns_http_tls_service_desc) /* If HTTP service is registered.*/
+        mdns = fnet_mdns_get_by_netif(netif);
+        if(mdns)
         {
-            fnet_mdns_service_unregister(fapp_mdns_http_tls_service_desc);
-            fapp_mdns_http_tls_service_desc = 0;
+            fnet_mdns_service_desc_t service_desc;
+            
+            service_desc = fnet_mdns_service_get_by_type(mdns, fapp_mdns_http_tls_service.service_type);
+            /* If HTTP service is registered.*/
+            if(service_desc)
+            {
+                fnet_mdns_service_unregister(service_desc); 
+            }
         }
     }
 #endif
@@ -190,24 +247,63 @@ void fapp_mdns_service_unregister_http_tls( void )
 
 /************************************************************************
 * DESCRIPTION:   Manual Name Change test.
-*                It used only for Bonjour Conformance Testing.
+*                It is used only for Bonjour Conformance Testing.
 *************************************************************************/
 void fapp_mdns_change_name_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
-    if(fapp_mdns_desc) /* If mdns is initialized */
+    fnet_netif_desc_t           netif = fnet_netif_get_default(); /* By default is "default" netif*/
+    fnet_index_t                i;
+
+    /* [-n <if name>] */
+    for(i = 1u; i < argc; i++)
     {
+        if (!fnet_strcmp(argv[i], "-n")) /*[-n <if name>] */
+        {
+            i++;
+            if(i < argc)
+            {
+                netif = fnet_netif_get_by_name(argv[i]);
+            }
+            else
+            {
+                goto ERROR_PARAMETER;
+            }
+        }
+        else/* Wrong parameter.*/
+        {
+            goto ERROR_PARAMETER;
+        }
+    }
+
+    if(fnet_mdns_get_by_netif(netif))
+    {
+        fnet_char_t netif_name[FNET_NETIF_NAMELEN];
+        fnet_char_t script[FAPP_CFG_SHELL_MAX_LINE_LENGTH];
+
+        fnet_netif_get_name(netif, netif_name, sizeof(netif_name));
+
         /* Change service name to "New - Bonjour Service Name"
          * It is required by Manual Name Change test, for Bonjour Conformance Testing.*/
-        fnet_shell_script(desc, "mdns release; set host 'New - Bonjour Service Name'; mdns");
+        fnet_snprintf(script, sizeof(script), "mdns -n %s release; set host 'New - Bonjour Service Name'; mdns -n %s", netif_name, netif_name);
+        if(fnet_shell_script(desc, script) == FNET_ERR)
+        {
+            fnet_shell_println(desc, "Script error!");
+        }
     }
+
+    return;
+
+ERROR_PARAMETER:
+    fnet_shell_println(desc, FAPP_PARAM_ERR, argv[i]);
+    return;
 }
 
 /************************************************************************
 * DESCRIPTION: Print service state.
 *************************************************************************/
-void fapp_mdns_info(fnet_shell_desc_t desc)
+void fapp_mdns_info(fnet_shell_desc_t desc, fnet_netif_desc_t  netif)
 {
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "MDNS Server", fapp_is_enabled_str[fnet_mdns_is_enabled(fapp_mdns_desc)]);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "MDNS Server", fapp_is_enabled_str[fnet_mdns_is_enabled(fnet_mdns_get_by_netif(netif))]);
 }
 
 #endif /* FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS */

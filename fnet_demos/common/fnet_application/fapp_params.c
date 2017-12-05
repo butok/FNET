@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Shell Demo implementation.
+***************************************************************************
+*
+*  FNET Shell Demo implementation.
 *
 ***************************************************************************/
 
@@ -65,27 +65,35 @@ static const struct fapp_params_flash fapp_params_config
 #endif
     =
 {
-    FAPP_PARAMS_SIGNATURE,
+    .signature = FAPP_PARAMS_SIGNATURE,
+    .fnet_params =
     {
-        FAPP_CFG_PARAMS_NETIF_NAME, /* Default interface */
-        FAPP_CFG_PARAMS_IP_ADDR,    /* address */
-        FAPP_CFG_PARAMS_IP_MASK,    /* netmask */
-        FAPP_CFG_PARAMS_IP_GW,      /* gateway */
-        FAPP_CFG_PARAMS_IP_DNS,     /* DNS */
-        FAPP_CFG_PARAMS_MAC_ADDR,   /* MAC address */
-        FAPP_CFG_PARAMS_HOST_NAME   /* Host name*/
+        .netif_name = FAPP_CFG_PARAMS_NETIF_NAME, /* Default interface */
+        .address = FAPP_CFG_PARAMS_IP_ADDR,    
+        .netmask = FAPP_CFG_PARAMS_IP_MASK,    
+        .gateway = FAPP_CFG_PARAMS_IP_GW,      
+        .dns = FAPP_CFG_PARAMS_IP_DNS,     
+        .mac = FAPP_CFG_PARAMS_MAC_ADDR,   
+        .host_name = FAPP_CFG_PARAMS_HOST_NAME  
     },
+    .boot_params =
     {
-        FAPP_CFG_PARAMS_BOOT_MODE,          /* boot */
-        FAPP_CFG_PARAMS_BOOT_DELAY,         /* boot_delay */
-        FAPP_CFG_PARAMS_BOOT_GO_ADDRESS,    /* go_address */
-        FAPP_CFG_PARAMS_BOOT_SCRIPT         /* boot_script */
+        .mode = FAPP_CFG_PARAMS_BOOT_MODE,
+        .delay = FAPP_CFG_PARAMS_BOOT_DELAY, 
+        .go_address = FAPP_CFG_PARAMS_BOOT_GO_ADDRESS,
+        .script = FAPP_CFG_PARAMS_BOOT_SCRIPT
     },
+    .tftp_params =
     {
-        FAPP_CFG_PARAMS_TFTP_SERVER,            /* tftp_ip */
-        FAPP_CFG_PARAMS_TFTP_FILE_TYPE,         /* image_type */
-        FAPP_CFG_PARAMS_TFTP_FILE_RAW_ADDRESS,  /* raw_address */
-        FAPP_CFG_PARAMS_TFTP_FILE_NAME,         /* image */
+        .server_addr = FAPP_CFG_PARAMS_TFTP_SERVER,
+        .file_type = FAPP_CFG_PARAMS_TFTP_FILE_TYPE,
+        .file_raw_address = FAPP_CFG_PARAMS_TFTP_FILE_RAW_ADDRESS,
+        .file_name = FAPP_CFG_PARAMS_TFTP_FILE_NAME
+    },
+    .wifi_params =
+    {
+        .ssid = FAPP_CFG_PARAMS_WIFI_SSID,
+        .passphrase = FAPP_CFG_PARAMS_WIFI_WPA_PASSPHRASE
     }
 };
 #endif /* FAPP_CFG_PARAMS_REWRITE_FLASH */
@@ -99,20 +107,28 @@ fnet_char_t fapp_params_host_name[FAPP_PARAMS_HOST_NAME_SIZE] = FAPP_CFG_PARAMS_
 #if FAPP_CFG_PARAMS_BOOT
 struct fapp_params_boot fapp_params_boot_config =
 {
-    FAPP_CFG_PARAMS_BOOT_MODE,          /* mode */
-    FAPP_CFG_PARAMS_BOOT_DELAY,         /* delay */
-    FAPP_CFG_PARAMS_BOOT_GO_ADDRESS,    /* go_address */
-    FAPP_CFG_PARAMS_BOOT_SCRIPT         /* boot_script */
+    .mode = FAPP_CFG_PARAMS_BOOT_MODE,
+    .delay = FAPP_CFG_PARAMS_BOOT_DELAY,
+    .go_address = FAPP_CFG_PARAMS_BOOT_GO_ADDRESS,
+    .script = FAPP_CFG_PARAMS_BOOT_SCRIPT
 };
 #endif
 
 #if FAPP_CFG_PARAMS_TFTP
 struct fapp_params_tftp fapp_params_tftp_config =
 {
-    FAPP_CFG_PARAMS_TFTP_SERVER,            /* tftp_ip */
-    FAPP_CFG_PARAMS_TFTP_FILE_TYPE,         /* image_type */
-    FAPP_CFG_PARAMS_TFTP_FILE_RAW_ADDRESS,  /* raw_address */
-    FAPP_CFG_PARAMS_TFTP_FILE_NAME,         /* image */
+    .server_addr = FAPP_CFG_PARAMS_TFTP_SERVER,
+    .file_type = FAPP_CFG_PARAMS_TFTP_FILE_TYPE,
+    .file_raw_address = FAPP_CFG_PARAMS_TFTP_FILE_RAW_ADDRESS,
+    .file_name = FAPP_CFG_PARAMS_TFTP_FILE_NAME
+};
+#endif
+
+#if FAPP_CFG_PARAMS_WIFI
+struct fapp_params_wifi fapp_params_wifi_config =
+{
+    .ssid = FAPP_CFG_PARAMS_WIFI_SSID,
+    .passphrase = FAPP_CFG_PARAMS_WIFI_WPA_PASSPHRASE
 };
 #endif
 
@@ -164,6 +180,10 @@ fnet_return_t fapp_params_to_flash(void)
     /* TFTP parameters*/
 #if FAPP_CFG_PARAMS_TFTP
     fnet_memcpy(&fapp_params_ram.tftp_params, &fapp_params_tftp_config, sizeof(struct fapp_params_tftp)  );
+#endif
+    /* Wi-Fi parameters*/
+#if FAPP_CFG_PARAMS_WIFI
+    fnet_memcpy(&fapp_params_ram.wifi_params, &fapp_params_wifi_config, sizeof(struct fapp_params_wifi)  );
 #endif
 
     /**** Erase one paage allocated for configuration parameters.****/
@@ -226,6 +246,9 @@ fnet_return_t fapp_params_from_flash(void)
 #endif
 #if FAPP_CFG_PARAMS_TFTP
         fapp_params_tftp_config = fnet_params->tftp_params; /* TFTP loader parameters. */
+#endif
+#if FAPP_CFG_PARAMS_WIFI
+        fapp_params_wifi_config = fnet_params->wifi_params; /* Wi-Fi parameters. */
 #endif
 
         result = FNET_OK;

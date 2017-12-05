@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief IGMPv1/v2 protocol implementation.
+***************************************************************************
+*
+*  IGMPv1/v2 protocol implementation.
 *
 ***************************************************************************/
 
@@ -52,7 +52,7 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fnet_igmp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip4_nb);
+static void fnet_igmp_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip4_nb);
 
 #if FNET_CFG_DEBUG_TRACE_IGMP && FNET_CFG_DEBUG_TRACE
     static void fnet_igmp_trace(fnet_uint8_t *str, fnet_igmp_header_t *icmpp_hdr);
@@ -74,7 +74,7 @@ fnet_prot_if_t fnet_igmp_prot_if =
 /************************************************************************
 * DESCRIPTION: IGMP input function.
 *************************************************************************/
-static void fnet_igmp_input(fnet_netif_t *netif, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip4_nb)
+static void fnet_igmp_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip4_nb)
 {
     fnet_igmp_header_t  *hdr;
     fnet_index_t        i;
@@ -238,15 +238,15 @@ static void fnet_igmp_trace(fnet_uint8_t *str, fnet_igmp_header_t *igmp_hdr)
     fnet_uint8_t ip_str[FNET_IP4_ADDR_STR_SIZE];
 
     fnet_printf(FNET_SERIAL_ESC_FG_GREEN"%s", str); /* Print app-specific header.*/
-    fnet_println("[IGMP header]"FNET_SERIAL_ESC_FG_BLACK);
+    fnet_println("[IGMP header]"FNET_SERIAL_ESC_ATTR_RESET);
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
-    fnet_println("|(Type)    "FNET_SERIAL_ESC_FG_BLUE"0x%2x"FNET_SERIAL_ESC_FG_BLACK" |(Res Time) %3u |(Cheksum)               0x%04x |",
+    fnet_println("|(Type)    "FNET_SERIAL_ESC_FG_BLUE"0x%2x"FNET_SERIAL_ESC_ATTR_RESET" |(Res Time) %3u |(Cheksum)               0x%04x |",
                  igmp_hdr->type,
                  igmp_hdr->max_resp_time,
                  fnet_ntohs(igmp_hdr->checksum));
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
-    fnet_println("|(Group Addr)                                   "FNET_SERIAL_ESC_FG_BLUE"%15s"FNET_SERIAL_ESC_FG_BLACK" |",
-                 fnet_inet_ntoa(*(struct in_addr *)(&igmp_hdr->group_addr), ip_str));
+    fnet_println("|(Group Addr)                                   "FNET_SERIAL_ESC_FG_BLUE"%15s"FNET_SERIAL_ESC_ATTR_RESET" |",
+                 fnet_inet_ntoa(*(struct fnet_in_addr *)(&igmp_hdr->group_addr), ip_str));
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
 
 }

@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief IPv6 protocol API.
+***************************************************************************
+*
+*  IPv6 protocol API.
 *
 ***************************************************************************/
 
@@ -57,7 +57,7 @@ FNET_COMP_PACKED_END
 /******************************************************************
 * Constants
 *******************************************************************/
-#define FNET_IP6_HEADSIZE        40u     /* IPv6 Header size.  */
+#define FNET_IP6_HEAD_SIZE       40u     /* IPv6 Header size.  */
 
 #define FNET_IP6_DEFAULT_MTU     1280u   /* Minimum IPv6 datagram size which    
                                          * must be supported by all IPv6 hosts */

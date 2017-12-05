@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Shell Demo (HTTP Server Shell interface).
+***************************************************************************
+*
+*  FNET Shell Demo (HTTP Server Shell interface).
 *
 ***************************************************************************/
 
@@ -31,6 +31,7 @@
 #include "fapp_http.h"
 #include "fapp_fs.h"
 #include "fapp_mdns.h"
+#include "fapp_netif.h"
 
 #if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP_TLS && FNET_CFG_TLS
     #include "mbedtls/certs.h"
@@ -206,7 +207,7 @@ static fnet_return_t fapp_http_ssi_echo_handle(fnet_char_t *query, fnet_uint32_t
         {
 #if FNET_CFG_IP4
             fnet_ip4_addr_t ip_adr = fnet_netif_get_ip4_addr(netif);
-            fnet_inet_ntoa(*(struct in_addr *)( &ip_adr), ip_str);
+            fnet_inet_ntoa(*(struct fnet_in_addr *)( &ip_adr), ip_str);
             fnet_snprintf((fnet_char_t *)fapp_http_ssi_buffer, sizeof(fapp_http_ssi_buffer), "%s", ip_str);
 #else
             fnet_snprintf(fapp_http_ssi_buffer, sizeof(fapp_http_ssi_buffer), "...");
@@ -216,7 +217,7 @@ static fnet_return_t fapp_http_ssi_echo_handle(fnet_char_t *query, fnet_uint32_t
         {
 #if FNET_CFG_IP4
             fnet_ip4_addr_t ip_adr = fnet_netif_get_ip4_subnet_mask(netif);
-            fnet_inet_ntoa(*(struct in_addr *)( &ip_adr), ip_str);
+            fnet_inet_ntoa(*(struct fnet_in_addr *)( &ip_adr), ip_str);
             fnet_snprintf((fnet_char_t *)fapp_http_ssi_buffer, sizeof(fapp_http_ssi_buffer), "%s", ip_str);
 #else
             fnet_snprintf(fapp_http_ssi_buffer, sizeof(fapp_http_ssi_buffer), "...");
@@ -226,7 +227,7 @@ static fnet_return_t fapp_http_ssi_echo_handle(fnet_char_t *query, fnet_uint32_t
         {
 #if FNET_CFG_IP4
             fnet_ip4_addr_t ip_adr = fnet_netif_get_ip4_gateway(netif);
-            fnet_inet_ntoa(*(struct in_addr *)( &ip_adr), ip_str);
+            fnet_inet_ntoa(*(struct fnet_in_addr *)( &ip_adr), ip_str);
             fnet_snprintf((fnet_char_t *)fapp_http_ssi_buffer, sizeof(fapp_http_ssi_buffer), "%s", ip_str);
 #else
             fnet_snprintf(fapp_http_ssi_buffer, sizeof(fapp_http_ssi_buffer), "...");
@@ -411,7 +412,7 @@ void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
         {
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             fnet_shell_println(desc, " HTTP server started.");
-            fapp_print_netif_addr(desc, AF_SUPPORTED, fnet_netif_get_default(), FNET_FALSE);
+            fapp_netif_addr_print(desc, AF_SUPPORTED, fnet_netif_get_default(), FNET_FALSE);
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
 
             fapp_http_desc = http_desc;
@@ -494,7 +495,7 @@ void fapp_http_tls_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
         {
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             fnet_shell_println(desc, " HTTPS server started.");
-            fapp_print_netif_addr(desc, AF_SUPPORTED, fnet_netif_get_default(), FNET_FALSE);
+            fapp_netif_addr_print(desc, AF_SUPPORTED, fnet_netif_get_default(), FNET_FALSE);
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
 
             fapp_http_tls_desc = http_tls_desc;

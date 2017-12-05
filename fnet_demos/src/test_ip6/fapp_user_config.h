@@ -14,9 +14,9 @@
 #define FAPP_CFG_NAME                   "FNET Shell Application"
 #define FAPP_CFG_SHELL_PROMPT           "shell> \r\n shell>"
 
-/*  "dhcp" command.*/
-//#define FAPP_CFG_DHCP_CMD               (1)
-//#define FAPP_CFG_DHCP_CMD_DISCOVER_MAX  (5)
+/*  "dhcpc" command.*/
+//#define FAPP_CFG_DHCPC_CMD               (1)
+//#define FAPP_CFG_DHCPC_CMD_DISCOVER_MAX  (5)
 
 /*  "set/get" command.*/
 #define FAPP_CFG_SETGET_CMD_IP          (1)
@@ -63,7 +63,6 @@
 
 //DM
 #if 0 /* To run HTTP and Telnet server on startup set to 1. */
-    #define FAPP_CFG_STARTUP_SCRIPT_ENABLED (1)
     #define FAPP_CFG_STARTUP_SCRIPT         "bind fe80::1111"
 #endif
 

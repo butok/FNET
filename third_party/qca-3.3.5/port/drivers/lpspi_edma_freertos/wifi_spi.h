@@ -1,0 +1,79 @@
+/*
+ * Copyright (c) 2016, NXP Semiconductor, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * o Redistributions of source code must retain the above copyright notice, this list
+ *   of conditions and the following disclaimer.
+ *
+ * o Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * o Neither the name of NXP Semiconductor, Inc. nor the names of its
+ *   contributors may be used tom  endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#ifndef __WIFI_DSPI_H__
+#define __WIFI_DSPI_H__
+
+#include <stdint.h>
+#include "fsl_lpspi.h"
+#include "fsl_dmamux.h"
+#include "fsl_edma.h"
+#include "fsl_lpspi_edma.h"
+
+/* can be extended in future */
+typedef struct {
+    struct {
+        uint32_t enabled;
+        DMA_Type *dma_base;
+        int32_t dma_rx_chnl;
+        int32_t dma_im_chnl;
+        int32_t dma_tx_chnl;
+        uint32_t dma_irq_prio;
+        DMAMUX_Type *dmamux_base;
+        dma_request_source_t dmamux_rx_req;
+        dma_request_source_t dmamux_tx_req;
+    } dma_mode;
+    struct  {
+        uint32_t enabled;
+        uint32_t spi_irq_prio;
+#if ((defined FSL_FEATURE_SOC_INTMUX_COUNT) && (FSL_FEATURE_SOC_INTMUX_COUNT))
+        INTMUX_Type *intmux_base;
+#endif
+        uint32_t intmux_chnl;
+    } irq_mode;
+    struct  {
+        LPSPI_Type *base;
+        uint32_t clk_hz;
+        uint32_t xfer_cs;
+        uint32_t baudrate;
+        uint32_t irq_threshold;
+        lpspi_master_config_t config;
+    } spi;
+} WIFIDRVS_SPI_config_t;
+
+/* prototypes */
+A_STATUS WIFIDRVS_SPI_Init(WIFIDRVS_SPI_config_t *config);
+A_STATUS WIFIDRVS_SPI_Deinit(WIFIDRVS_SPI_config_t *config);
+A_STATUS WIFIDRVS_SPI_InOutToken(uint32_t OutToken, uint8_t DataSize, uint32_t *pInToken);
+A_STATUS WIFIDRVS_SPI_InOutBuffer(uint8_t *pBuffer, uint16_t length, uint8_t doRead, boolean sync);
+A_STATUS WIFIDRVS_SPI_GetDefaultConfig(WIFIDRVS_SPI_config_t *config);
+A_STATUS WIFIDRVS_SPI_GetSPIConfig(lpspi_master_config_t *user_config, uint32_t baudrate, lpspi_which_pcs_t cs);
+
+#endif

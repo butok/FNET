@@ -18,9 +18,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Address-conversion functions.
+***************************************************************************
+*
+*  Address-conversion functions.
 *
 ***************************************************************************/
 
@@ -41,7 +41,7 @@ static fnet_return_t fnet_inet_pton_ip4(const fnet_char_t *str, fnet_ip4_addr_t 
 * DESCRIPTION:The function converts an (IPv4) Internet network address
 *             into a string in Internet standard dotted format.
 *************************************************************************/
-fnet_char_t *fnet_inet_ntoa( struct in_addr addr, fnet_char_t *res_str )
+fnet_char_t *fnet_inet_ntoa( struct fnet_in_addr addr, fnet_char_t *res_str )
 {
     return  fnet_inet_ntop_ip4(&addr.s_addr, res_str, FNET_IP4_ADDR_STR_SIZE);
 }
@@ -51,7 +51,7 @@ fnet_char_t *fnet_inet_ntoa( struct in_addr addr, fnet_char_t *res_str )
 *             Internet Protocol dotted address into a suitable binary
 *             representation of the Internet address.
 *************************************************************************/
-fnet_return_t fnet_inet_aton( fnet_char_t *cp, struct in_addr *addr )
+fnet_return_t fnet_inet_aton( fnet_char_t *cp, struct fnet_in_addr *addr )
 {
     return fnet_inet_pton_ip4(cp, &addr->s_addr);
 }
@@ -127,9 +127,9 @@ fnet_return_t fnet_inet_pton(fnet_address_family_t family, const fnet_char_t *st
 
 /************************************************************************
 * DESCRIPTION:The function converts from presentation format (string)
-*	        to struct sockaddr.
+*	        to struct fnet_sockaddr.
 *************************************************************************/
-fnet_return_t fnet_inet_ptos (const fnet_char_t *str, struct sockaddr *addr)
+fnet_return_t fnet_inet_ptos (const fnet_char_t *str, struct fnet_sockaddr *addr)
 {
 #if FNET_CFG_IP4
     if(fnet_inet_pton(AF_INET, str, addr->sa_data, sizeof(addr->sa_data)) == FNET_OK)

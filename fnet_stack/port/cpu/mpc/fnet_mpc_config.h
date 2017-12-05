@@ -16,9 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ /*!
+***************************************************************************
 *
-* @brief MPC-specific default configuration file.
+*  MPC-specific default configuration file.
 *
 ***************************************************************************/
 
@@ -33,6 +33,13 @@
 #include "fnet_config.h"
 
 #if FNET_MPC
+
+    /*******************************************************************************
+     * Timer number used by the FNET. It can range from 0 to FNET_CFG_CPU_TIMER_NUMBER_MAX.
+     ******************************************************************************/
+    #ifndef FNET_CFG_CPU_TIMER_NUMBER
+        #define FNET_CFG_CPU_TIMER_NUMBER           (FNET_CFG_CPU_TIMER_NUMBER_MAX)
+    #endif
 
     /******************************************************************************
     *  Vector number of the Ethernet Receive Frame interrupt.

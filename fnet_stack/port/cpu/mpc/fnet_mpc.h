@@ -1,7 +1,7 @@
 /**************************************************************************
 *
 * Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2011 by Andrey Butok,Gordon Jahn. Freescale Semiconductor, Inc.
+* Copyright 2011 by Andrey Butok, Gordon Jahn. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
 *
@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ /*!
+***************************************************************************
 *
-* @brief MPC Registers definitions.
+*  MPC Registers definitions.
 *
 ***************************************************************************/
 

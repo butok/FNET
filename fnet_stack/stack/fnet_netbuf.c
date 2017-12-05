@@ -18,14 +18,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
+***************************************************************************
 *
-* @file fnet_netbuf.c
-*
-* @author Andrey Butok
-*
-* @brief FNET Buffer and memory management implementation.
+*  FNET Buffer and memory management implementation.
 *
 ***************************************************************************/
 

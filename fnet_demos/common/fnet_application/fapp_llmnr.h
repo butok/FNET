@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2014-2016 by Andrey Butok. FNET Community.
+* Copyright 2014-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -16,9 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Shell Demo (LLMNR Server).
+***************************************************************************
+*
+*  FNET Shell Demo (LLMNR Server).
 *
 ***************************************************************************/
 
@@ -36,7 +36,7 @@ extern "C" {
 #endif
 
 void fapp_llmnr_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
-void fapp_llmnr_info(fnet_shell_desc_t desc);
+void fapp_llmnr_info(fnet_shell_desc_t desc, fnet_netif_desc_t  netif);
 void fapp_llmnr_release(void);
 
 #if defined(__cplusplus)

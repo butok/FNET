@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Private. ICMP protocol function definitions, data structures, etc.
+***************************************************************************
+*
+*  Private. ICMPv6 protocol function definitions, data structures, etc.
 *
 ***************************************************************************/
 #ifndef _FNET_ICMP6_H_

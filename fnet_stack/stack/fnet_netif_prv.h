@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Private. FNET Network interface API.
+***************************************************************************
+*
+*  Private. FNET Network interface API.
 *
 ***************************************************************************/
 
@@ -32,6 +32,7 @@
 #include "fnet_netif.h"
 #include "fnet_eth.h"
 #include "fnet_nd6.h"
+#include "fnet_wifi_prv.h"
 
 /**************************************************************************/ /*!
  * @internal
@@ -109,11 +110,11 @@ typedef struct fnet_netif_api
 #if FNET_CFG_IP4
     void                (*netif_output_ip4)(struct fnet_netif *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb); /* IPv4 Transmit function.*/
 #endif
-    void                (*netif_set_addr_notify)( struct fnet_netif *netif );  /* Address change notification function.*/
-    void                (*netif_drain)( struct fnet_netif *netif );            /* Memory drain function.*/
-    fnet_return_t       (*netif_get_hw_addr)( struct fnet_netif *netif, fnet_uint8_t *hw_addr); /* Change HW address */
-    fnet_return_t       (*netif_set_hw_addr)( struct fnet_netif *netif, fnet_uint8_t *hw_addr); /* Get HW address */
-    fnet_bool_t         (*netif_is_connected)( struct fnet_netif *netif );                      /* Connection state flag*/
+    void                (*netif_change_addr_notify)( struct fnet_netif *netif );    /* Address change notification function.*/
+    void                (*netif_drain)( struct fnet_netif *netif );                 /* Memory drain function.*/
+    fnet_return_t       (*netif_get_hw_addr)( struct fnet_netif *netif, fnet_uint8_t *hw_addr); /* Get HW address (Optional).*/
+    fnet_return_t       (*netif_set_hw_addr)( struct fnet_netif *netif, fnet_uint8_t *hw_addr); /* Set HW address (Optional). */
+    fnet_bool_t         (*netif_is_connected)( struct fnet_netif *netif );                      /* Connection state flag (Optional).*/
     fnet_return_t       (*netif_get_statistics)( struct fnet_netif *netif, struct fnet_netif_statistics *statistics ); /* Get statistics */
 #if FNET_CFG_MULTICAST
 #if FNET_CFG_IP4
@@ -128,6 +129,11 @@ typedef struct fnet_netif_api
 #if FNET_CFG_IP6
     void                (*netif_output_ip6)(struct fnet_netif *netif, const fnet_ip6_addr_t *src_ip_addr,  const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb); /* IPv6 Transmit function.*/
 #endif
+    union                /* Points to interface specific API structure (Optional). For FNET_NETIF_TYPE_WIFI type it points to fnet_wifi_api_t, for other types it is set to NULL */
+    {
+        const fnet_wifi_api_t       *wifi_api;
+        /* Put here new type-specific APIs */
+    };
 } fnet_netif_api_t;
 
 /* Forward declaration.*/
@@ -142,7 +148,7 @@ typedef struct fnet_netif
 {
     fnet_char_t             netif_name[FNET_NETIF_NAMELEN];     /* Network interface name (e.g. "eth0", "loop"). */
     fnet_size_t             netif_mtu;                          /* Maximum transmission unit. */
-    void                    *netif_prv;                         /* Points to interface specific control data structure. It is optional. */
+    void                    *netif_prv;                         /* Points to interface specific control data structure (Optional). */
     const fnet_netif_api_t  *netif_api;                         /* Pointer to Interafce API structure.*/
 
     /* Privat structure fields.*/

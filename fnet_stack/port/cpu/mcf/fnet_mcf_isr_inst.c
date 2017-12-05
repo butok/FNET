@@ -17,8 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ /*!
-* @brief Interrupt service dispatcher implementation.
+***************************************************************************
+*
+*  Interrupt service dispatcher implementation.
 *
 ***************************************************************************/
 
@@ -34,34 +35,38 @@ extern fnet_uint32_t FNET_CFG_CPU_VECTOR_TABLE [1];
 fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t priority)
 {
     fnet_return_t result;
-    fnet_uint32_t *irq_vec;
 
-
-    irq_vec = (fnet_uint32_t *)(FNET_CFG_CPU_VECTOR_TABLE) + vector_number;
-
-    if(*irq_vec != (fnet_uint32_t)FNET_ISR_HANDLER)
+    if(vector_number > 0x40)
     {
-        /* It's not installed yet.*/
-        *irq_vec = (fnet_uint32_t) FNET_ISR_HANDLER;
-    }
+        /* Install FNET ISR into the Vector Table in RAM */
+    #if FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
+        {
+            fnet_uint32_t   *irq_vec;
+			irq_vec = (fnet_uint32_t *)(FNET_CFG_CPU_VECTOR_TABLE) + vector_number;
 
-    if(priority > FNET_CFG_CPU_VECTOR_PRIORITY_MAX)
-    {
-        priority = FNET_CFG_CPU_VECTOR_PRIORITY_MAX;
-    }
+			if(*irq_vec != (fnet_uint32_t)FNET_ISR_HANDLER)
+			{
+				/* It's not installed yet.*/
+				*irq_vec = (fnet_uint32_t) FNET_ISR_HANDLER;
+			}
+        }
+    #endif
 
-    if(*irq_vec == (fnet_uint32_t) FNET_ISR_HANDLER)
-    {
-#if !FNET_CFG_MCF_V1 /* No for MCF Ver.1 */
+		if(priority > FNET_CFG_CPU_VECTOR_PRIORITY_MAX)
+		{
+			priority = FNET_CFG_CPU_VECTOR_PRIORITY_MAX;
+		}
+
+#if !FNET_CFG_MCF_V1 /* Not for MCF Ver.1 */
         /* Set priority. */
         {
             /* Enable interrupt at ColdFire SIM */
-            fnet_int32_t irq_number; /* The irq number NOT the vector number.*/
-            fnet_int32_t div;
+            fnet_uint32_t irq_number; /* The irq number NOT the vector number.*/
+            fnet_uint32_t div;
 
-            irq_number = (fnet_int32_t) (vector_number - 0x40);
+            irq_number = vector_number - 0x40;
             div = irq_number / 32;
-            if((div >= 0) && (div < 2)) /* So far only upto 64 irq_number (INTC0). TBD*/
+            if(div < 2) /* So far only up-to 64 irq_number (INTC0). TBD*/
             {
                 /* Set interrupt level.*/
                 FNET_MCF_INTC0_ICR(irq_number) = (fnet_uint8_t)FNET_MCF_INTC0_ICRn_IL(priority) | FNET_MCF_INTC0_ICRn_IP(7);

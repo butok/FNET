@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ /*!
+***************************************************************************
 *
-* @brief Lowest level ISR routine for MPC.
+*  Lowest level ISR routine for MPC.
 *
 ***************************************************************************/
 

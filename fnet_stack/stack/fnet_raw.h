@@ -16,9 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief RAW socket definitions.
+***************************************************************************
+*
+*  RAW socket definitions.
 *
 ***************************************************************************/
 
@@ -51,7 +51,7 @@ extern fnet_prot_if_t fnet_raw_prot_if;
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void fnet_raw_input(fnet_netif_t *netif, struct sockaddr *foreign_addr,  struct sockaddr *local_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb);
+void fnet_raw_input(fnet_netif_t *netif, struct fnet_sockaddr *foreign_addr,  struct fnet_sockaddr *local_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb);
 #if defined(__cplusplus)
 }
 #endif

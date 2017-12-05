@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ /*!
+***************************************************************************
 *
-* @brief MCF5225x specific configuration file.
+*  MCF5225x specific configuration file.
 *
 ***************************************************************************/
 

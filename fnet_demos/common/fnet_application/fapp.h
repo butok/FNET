@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Shell Demo API.
+***************************************************************************
+*
+*  FNET Shell Demo API.
 *
 ***************************************************************************/
 

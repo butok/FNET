@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -16,14 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
+***************************************************************************
 *
-* @file fnet_mk_config.h
-*
-* @author Andrey Butok
-*
-* @brief Kinetis specific default configuration.
+*  Kinetis specific default configuration.
 *
 ***************************************************************************/
 
@@ -61,6 +56,13 @@
     *  Maximum Timer number that is avaiable on the used platform.
     ******************************************************************************/
     #define  FNET_CFG_CPU_TIMER_NUMBER_MAX              (3u)
+
+    /*******************************************************************************
+     * Timer number used by the FNET. It can range from 0 to FNET_CFG_CPU_TIMER_NUMBER_MAX.
+     ******************************************************************************/
+    #ifndef FNET_CFG_CPU_TIMER_NUMBER
+        #define FNET_CFG_CPU_TIMER_NUMBER           (FNET_CFG_CPU_TIMER_NUMBER_MAX)
+    #endif
 
     /**************************************************************************/ /*!
     *   Vector table address.@n

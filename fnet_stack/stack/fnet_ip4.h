@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief IPv4 protocol API.
+***************************************************************************
+*
+*  IPv4 protocol API.
 *
 ***************************************************************************/
 

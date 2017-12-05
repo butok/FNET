@@ -76,7 +76,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.60.1.11206</state>
+          <state>7.80.2.11970</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -320,6 +320,7 @@
           <state>$PROJ_DIR$/../../../../../third_party/freertos-9.0.0/Source/include</state>
           <state>$PROJ_DIR$/../../../../common/startup/CMSIS</state>
           <state>$PROJ_DIR$/../../../../common/startup</state>
+          <state>$PROJ_DIR$/../../../../common/startup/MK64F12</state>
           <state>$PROJ_DIR$/..</state>
           <state>$PROJ_DIR$/../../../../src/shell_freertos</state>
           <state>$PROJ_DIR$/../../../../../fnet_stack</state>
@@ -661,7 +662,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>17</version>
+        <version>18</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -934,7 +935,7 @@
         </option>
         <option>
           <name>CrcAlgorithm</name>
-          <version>0</version>
+          <version>1</version>
           <state>1</state>
         </option>
         <option>
@@ -949,6 +950,10 @@
         <option>
           <name>IlinkLogCallGraph</name>
           <state>0</state>
+        </option>
+        <option>
+          <name>IlinkIcfFile_AltDefault</name>
+          <state/>
         </option>
       </data>
     </settings>
@@ -1054,7 +1059,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.60.1.11206</state>
+          <state>7.80.2.11970</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -1070,7 +1075,7 @@
         </option>
         <option>
           <name>GenLowLevelInterface</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>GEndianModeBE</name>
@@ -1298,6 +1303,7 @@
           <state>$PROJ_DIR$/../../../../../third_party/freertos-9.0.0/Source/include</state>
           <state>$PROJ_DIR$/../../../../common/startup/CMSIS</state>
           <state>$PROJ_DIR$/../../../../common/startup</state>
+          <state>$PROJ_DIR$/../../../../common/startup/MK64F12</state>
           <state>$PROJ_DIR$/..</state>
           <state>$PROJ_DIR$/../../../../src/shell_freertos</state>
           <state>$PROJ_DIR$/../../../../../fnet_stack</state>
@@ -1638,7 +1644,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>17</version>
+        <version>18</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -1911,7 +1917,7 @@
         </option>
         <option>
           <name>CrcAlgorithm</name>
-          <version>0</version>
+          <version>1</version>
           <state>1</state>
         </option>
         <option>
@@ -1926,6 +1932,10 @@
         <option>
           <name>IlinkLogCallGraph</name>
           <state>0</state>
+        </option>
+        <option>
+          <name>IlinkIcfFile_AltDefault</name>
+          <state/>
         </option>
       </data>
     </settings>
@@ -1978,6 +1988,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$/../../../../common/startup/MK64F12/fsl_device_registers.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$/../../../../common/startup/MK64F12/fsl_port.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$/../../../../common/startup/MK64F12/fsl_sbrk.c</name>
@@ -2142,6 +2155,9 @@
             <name>$PROJ_DIR$/../../../../../fnet_stack/port/cpu/mk/fnet_mk_timer.c</name>
           </file>
           <file>
+            <name>$PROJ_DIR$/../../../../../fnet_stack/port/cpu/mk/fnet_mk_wifi.c</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$/../../../../../fnet_stack/port/cpu/mk/fnet_mk60fn1_config.h</name>
           </file>
           <file>
@@ -2170,13 +2186,25 @@
           <name>$PROJ_DIR$/../../../../../fnet_stack/port/cpu/fnet_cpu_config.h</name>
         </file>
         <group>
-          <name>common</name>
-          <file>
-            <name>$PROJ_DIR$/../../../../../fnet_stack/port/cpu/common/fnet_fec.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$/../../../../../fnet_stack/port/cpu/common/fnet_fec.h</name>
-          </file>
+          <name>netif</name>
+          <group>
+            <name>fec</name>
+            <file>
+              <name>$PROJ_DIR$/../../../../../fnet_stack/port/cpu/netif/fec/fnet_fec.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$/../../../../../fnet_stack/port/cpu/netif/fec/fnet_fec.h</name>
+            </file>
+          </group>
+          <group>
+            <name>qca</name>
+            <file>
+              <name>$PROJ_DIR$/../../../../../fnet_stack/port/cpu/netif/qca/fnet_qca.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$/../../../../../fnet_stack/port/cpu/netif/qca/fnet_qca.h</name>
+            </file>
+          </group>
         </group>
       </group>
       <group>
@@ -2199,275 +2227,281 @@
       <name>$PROJ_DIR$/../../../../../fnet_stack/fnet_config.h</name>
     </file>
     <group>
-      <name>services</name>
+      <name>service</name>
       <file>
-        <name>$PROJ_DIR$/../../../../../fnet_stack/services/fnet_services.h</name>
+        <name>$PROJ_DIR$/../../../../../fnet_stack/service/fnet_service.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$/../../../../../fnet_stack/services/fnet_services_config.h</name>
+        <name>$PROJ_DIR$/../../../../../fnet_stack/service/fnet_service.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$/../../../../../fnet_stack/service/fnet_service_config.h</name>
       </file>
       <group>
         <name>autoip</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/autoip/fnet_autoip.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/autoip/fnet_autoip.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/autoip/fnet_autoip.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/autoip/fnet_autoip.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/autoip/fnet_autoip_config.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/autoip/fnet_autoip_config.h</name>
         </file>
       </group>
       <group>
         <name>dhcp</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/dhcp/fnet_dhcp.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/dhcp/fnet_dhcp.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/dhcp/fnet_dhcp.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/dhcp/fnet_dhcp_cln.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/dhcp/fnet_dhcp_config.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/dhcp/fnet_dhcp_cln.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/dhcp/fnet_dhcp_prv.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/dhcp/fnet_dhcp_srv.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/dhcp/fnet_dhcp_srv.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/dhcp/fnet_dhcp_config.h</name>
         </file>
       </group>
       <group>
         <name>dns</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/dns/fnet_dns.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/dns/fnet_dns.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/dns/fnet_dns.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/dns/fnet_dns.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/dns/fnet_dns_config.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/dns/fnet_dns_config.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/dns/fnet_dns_prv.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/dns/fnet_dns_prv.h</name>
         </file>
       </group>
       <group>
         <name>mdns</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/mdns/fnet_mdns.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/mdns/fnet_mdns.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/mdns/fnet_mdns.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/mdns/fnet_mdns.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/mdns/fnet_mdns_config.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/mdns/fnet_mdns_config.h</name>
         </file>
       </group>
       <group>
         <name>flash</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/flash/fnet_flash.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/flash/fnet_flash.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/flash/fnet_flash.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/flash/fnet_flash.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/flash/fnet_flash_config.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/flash/fnet_flash_config.h</name>
         </file>
       </group>
       <group>
         <name>fs</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/fs/fnet_fs.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/fs/fnet_fs.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/fs/fnet_fs.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/fs/fnet_fs.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/fs/fnet_fs_config.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/fs/fnet_fs_config.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/fs/fnet_fs_prv.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/fs/fnet_fs_prv.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/fs/fnet_fs_rom.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/fs/fnet_fs_rom.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/fs/fnet_fs_rom.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/fs/fnet_fs_rom.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/fs/fnet_fs_root.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/fs/fnet_fs_root.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/fs/fnet_fs_root.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/fs/fnet_fs_root.h</name>
         </file>
       </group>
       <group>
         <name>http</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/http/fnet_http.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/http/fnet_http.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/http/fnet_http.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/http/fnet_http.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/http/fnet_http_auth.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/http/fnet_http_auth.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/http/fnet_http_auth.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/http/fnet_http_auth.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/http/fnet_http_auth_prv.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/http/fnet_http_auth_prv.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/http/fnet_http_cgi.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/http/fnet_http_cgi.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/http/fnet_http_cgi.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/http/fnet_http_cgi.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/http/fnet_http_config.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/http/fnet_http_config.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/http/fnet_http_get.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/http/fnet_http_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/http/fnet_http_post.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/http/fnet_http_post.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/http/fnet_http_post.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/http/fnet_http_post.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/http/fnet_http_prv.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/http/fnet_http_prv.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/http/fnet_http_ssi.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/http/fnet_http_ssi.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/http/fnet_http_ssi.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/http/fnet_http_ssi.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/http/fnet_http_ssi_prv.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/http/fnet_http_ssi_prv.h</name>
         </file>
       </group>
       <group>
         <name>link</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/link/fnet_link.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/link/fnet_link.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/link/fnet_link.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/link/fnet_link.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/link/fnet_link_config.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/link/fnet_link_config.h</name>
         </file>
       </group>
       <group>
         <name>llmnr</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/llmnr/fnet_llmnr.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/llmnr/fnet_llmnr.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/llmnr/fnet_llmnr.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/llmnr/fnet_llmnr.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/llmnr/fnet_llmnr_config.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/llmnr/fnet_llmnr_config.h</name>
         </file>
       </group>
       <group>
         <name>ping</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/ping/fnet_ping.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/ping/fnet_ping.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/ping/fnet_ping.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/ping/fnet_ping.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/ping/fnet_ping_config.h</name>
-        </file>
-      </group>
-      <group>
-        <name>poll</name>
-        <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/poll/fnet_poll.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/poll/fnet_poll.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/ping/fnet_ping_config.h</name>
         </file>
       </group>
       <group>
         <name>serial</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/serial/fnet_serial.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/serial/fnet_serial.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/serial/fnet_serial.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/serial/fnet_serial.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/serial/fnet_serial_config.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/serial/fnet_serial_config.h</name>
         </file>
       </group>
       <group>
         <name>shell</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/shell/fnet_shell.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/shell/fnet_shell.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/shell/fnet_shell.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/shell/fnet_shell.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/shell/fnet_shell_config.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/shell/fnet_shell_config.h</name>
         </file>
       </group>
       <group>
         <name>sntp</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/sntp/fnet_sntp.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/sntp/fnet_sntp.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/sntp/fnet_sntp.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/sntp/fnet_sntp.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/sntp/fnet_sntp_config.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/sntp/fnet_sntp_config.h</name>
         </file>
       </group>
       <group>
         <name>telnet</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/telnet/fnet_telnet.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/telnet/fnet_telnet.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/telnet/fnet_telnet.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/telnet/fnet_telnet.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/telnet/fnet_telnet_config.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/telnet/fnet_telnet_config.h</name>
         </file>
       </group>
       <group>
         <name>tftp</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/tftp/fnet_tftp.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/tftp/fnet_tftp.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/tftp/fnet_tftp_cln.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/tftp/fnet_tftp_cln.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/tftp/fnet_tftp_cln.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/tftp/fnet_tftp_cln.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/tftp/fnet_tftp_config.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/tftp/fnet_tftp_config.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/tftp/fnet_tftp_srv.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/tftp/fnet_tftp_srv.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/tftp/fnet_tftp_srv.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/tftp/fnet_tftp_srv.h</name>
         </file>
       </group>
       <group>
         <name>tls</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/tls/fnet_tls.c</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/tls/fnet_tls.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/tls/fnet_tls.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/tls/fnet_tls.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../fnet_stack/services/tls/fnet_tls_config.h</name>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/tls/fnet_tls_config.h</name>
         </file>
       </group>
     </group>
@@ -2662,6 +2696,15 @@
       <file>
         <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_udp.h</name>
       </file>
+      <file>
+        <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_wifi.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_wifi.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$/../../../../../fnet_stack/stack/fnet_wifi_prv.h</name>
+      </file>
     </group>
   </group>
   <group>
@@ -2775,6 +2818,12 @@
       <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_sntp.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_shell.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_shell.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_telnet.c</name>
     </file>
     <file>
@@ -2785,6 +2834,12 @@
     </file>
     <file>
       <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_tftp.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_wifi.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$/../../../../common/fnet_application/fapp_wifi.h</name>
     </file>
   </group>
 </project>

@@ -17,14 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
+***************************************************************************
 *
-* @file fnet_stack_config.h
-*
-* @author Andrey Butok
-*
-* @brief Main TCP/IP stack default configuration file.
+* Main TCP/IP stack default configuration file.
 *
 ***************************************************************************/
 
@@ -364,7 +359,7 @@
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_MULTICAST_MAX
-    #define FNET_CFG_MULTICAST_MAX          (5u)
+    #define FNET_CFG_MULTICAST_MAX          (10u)
 #endif
 
 /**************************************************************************/ /*!
@@ -616,12 +611,27 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_IP_MAX_PACKET
  * @brief    Maximum size for the IPv4 and IPv6 datagram,
- *           the largest value is 65535. @n
+ *           the largest allowed value is 65535. @n
  *           Default value is 10 KB.
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_IP_MAX_PACKET
     #define FNET_CFG_IP_MAX_PACKET              (10U*1024U)
+#endif
+
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_TIMER_POLL_AUTOMATIC
+ * @brief    Automatic timer polling:
+ *               - @b @c 1 = is enabled (Default value).@n
+ *                          It means that FNET automatically controls all internal protocol timeouts.
+ *               - @b @c 0 = is disabled.@n
+ *                          In this case a user application 
+ *                          must call fnet_timer_poll() periodically.
+ * @see fnet_timer_poll()
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_TIMER_POLL_AUTOMATIC
+    #define FNET_CFG_TIMER_POLL_AUTOMATIC       (1)
 #endif
 
 /**************************************************************************/ /*!
@@ -690,8 +700,12 @@
     #define FNET_CFG_DEBUG_HTTP         (0)
 #endif
 
-#ifndef FNET_CFG_DEBUG_DHCP
-    #define FNET_CFG_DEBUG_DHCP         (0)
+#ifndef FNET_CFG_DEBUG_DHCP_CLN
+    #define FNET_CFG_DEBUG_DHCP_CLN     (0)
+#endif
+
+#ifndef FNET_CFG_DEBUG_DHCP_SRV
+    #define FNET_CFG_DEBUG_DHCP_SRV     (0)
 #endif
 
 #ifndef FNET_CFG_DEBUG_ARP
@@ -752,6 +766,10 @@
 
 #ifndef FNET_CFG_DEBUG_SNTP
     #define FNET_CFG_DEBUG_SNTP        (0)
+#endif
+
+#ifndef FNET_CFG_DEBUG_QCA
+    #define FNET_CFG_DEBUG_QCA         (0)
 #endif
 
 #ifndef FNET_CFG_DEBUG_TRACE

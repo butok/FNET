@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief ICMP protocol implementation.
+***************************************************************************
+*
+*  ICMPv6 protocol implementation.
 *
 ***************************************************************************/
 #include "fnet.h"
@@ -38,7 +38,7 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fnet_icmp6_input(fnet_netif_t *netif, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
+static void fnet_icmp6_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
 
 /************************************************************************
 * Protocol API structure.
@@ -60,7 +60,7 @@ fnet_prot_if_t fnet_icmp6_prot_if =
 /************************************************************************
 * DESCRIPTION: ICMPv6 input function.
 *************************************************************************/
-static void fnet_icmp6_input(fnet_netif_t *netif, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb)
+static void fnet_icmp6_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb)
 {
     fnet_icmp6_header_t     *hdr;
     fnet_uint16_t           sum;
@@ -81,8 +81,8 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
 
         hdr = (fnet_icmp6_header_t *)nb->data_ptr;
 
-        dest_ip_rx = &((struct sockaddr_in6 *)(dest_addr))->sin6_addr.s6_addr;
-        src_ip_rx = &((struct sockaddr_in6 *)(src_addr))->sin6_addr.s6_addr;
+        dest_ip_rx = &((struct fnet_sockaddr_in6 *)(dest_addr))->sin6_addr.s6_addr;
+        src_ip_rx = &((struct fnet_sockaddr_in6 *)(src_addr))->sin6_addr.s6_addr;
 
         /* Swap source and destination addresses.*/
         dest_ip_tx = src_ip_rx;
@@ -90,7 +90,7 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
 
         /* Drop Multicast loopback.*/
 #if FNET_CFG_LOOPBACK
-        if ((netif == FNET_LOOP_IF) && FNET_IP6_ADDR_IS_MULTICAST(dest_ip))
+        if ((netif == FNET_LOOP_IF) && FNET_IP6_ADDR_IS_MULTICAST(dest_ip_rx))
         {
             goto DISCARD;
         }
@@ -242,8 +242,8 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
                     {
                         if(protocol->prot_control_input)
                         {
-                            struct sockaddr     err_src_addr;
-                            struct sockaddr     err_dest_addr;
+                            struct fnet_sockaddr     err_src_addr;
+                            struct fnet_sockaddr     err_dest_addr;
 
                             /* Prepare addreses for upper protocol.*/
                             fnet_ip6_set_socket_addr(netif, ip_header, &err_src_addr, &err_dest_addr );

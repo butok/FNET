@@ -1,11 +1,6 @@
-/**********************************************************************/
-/*!
-*
-* @file fnet_user_config.h
-*
-* @brief FNET User configuration file.
+/***************************************************************************
+* FNET User configuration file.
 * It should be used to change any default configuration parameter.
-*
 ***************************************************************************/
 
 #ifndef _FNET_USER_CONFIG_H_
@@ -63,7 +58,7 @@
 /*****************************************************************************
 * DHCP Client service support.
 ******************************************************************************/
-#define FNET_CFG_DHCP               (1)
+#define FNET_CFG_DHCP_CLN           (1)
 
 /*****************************************************************************
 * Auto-IP service support.
@@ -73,7 +68,7 @@
 /*****************************************************************************
 * HTTP Server service support.
 ******************************************************************************/
-#define FNET_CFG_HTTP                       (1)
+#define FNET_CFG_HTTP                       (2) /* Add possibility to start two HTTP servers (one normal and one over TLS). */
 #define FNET_CFG_HTTP_AUTHENTICATION_BASIC  (1) /* Enable HTTP authentication.*/
 #define FNET_CFG_HTTP_POST                  (1) /* Enable HTTP POST-method support.*/
 
@@ -81,7 +76,6 @@
 * HTTP over TLS (HTTPS) support.
 ******************************************************************************/
 #define FNET_CFG_HTTP_TLS                   (1)
-#define FNET_CFG_HTTP_MAX                   (2u) /* Add possibility to start two HTTP servers (one normal and one over TLS). */
 
 /*****************************************************************************
 * TLS library support.
@@ -125,4 +119,3 @@
 #define FNET_CFG_LINK                       (1)
 
 #endif /* _FNET_USER_CONFIG_H_ */
-

@@ -1,0 +1,126 @@
+//------------------------------------------------------------------------------
+// Copyright (c) 2011-2015 Qualcomm Atheros, Inc.
+// All Rights Reserved.
+// Qualcomm Atheros Confidential and Proprietary.
+//==============================================================================
+// Author(s): ="Atheros"
+//==============================================================================
+
+#ifndef _CONFIG_H_
+#define _CONFIG_H_
+
+#include <mqx.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+#define ENABLE_FPGA_BUILD                              1//1 or 0
+#define USE_4BYTE_REGISTER_ACCESS
+
+#define TARGET_AR4100_REV2 0x30000582 
+#define TARGET_AR400X_REV1 0x31C80997
+#define TARGET_AR400X_REV2 0x31C80002
+#define TARGET_AR400X_REV4 0x32000052    //KF1.1.2
+
+#define ATH_FIRMWARE_TARGET TARGET_AR400X_REV1		//TARGET_AR400X_REV2
+
+
+#define SUPPORT_11N 1
+
+
+
+#define A_LITTLE_ENDIAN 1
+#define A_BIG_ENDIAN 2
+
+/* PORT_NOTE: Set the following DRIVER_CONFIG_... defines according to 
+ * 	the requirements/attributes of the OS and MCU. */
+
+/* DRIVER_CONFIG_INCLUDE_BMI - optionally set to 0 if the driver will 
+ * 	not be used in BMI mode and code space needs to be saved.
+ *  If the driver will be used in BMI for flash reprogram or other then
+ *	this option must be 1.
+ */
+#define DRIVER_CONFIG_INCLUDE_BMI				1//1 or 0
+
+/* DRIVER_CONFIG_DISABLE_ASSERT - set to 1 if assert NOP behavior is 
+ * preferred <not recommended> */
+#define DRIVER_CONFIG_DISABLE_ASSERT 			0//1 or 0
+/* DRIVER_CONFIG_PROFILE_BOOT - can be used to profile driver boot 
+ * process with GPIO's + logic analyzer */
+#define DRIVER_CONFIG_PROFILE_BOOT 				0//1 or 0
+/* DRIVER_CONFIG_ENDIANNESS - set according to host CPU endianness */
+#if PSP_ENDIAN == MQX_BIG_ENDIAN
+#define DRIVER_CONFIG_ENDIANNESS				A_BIG_ENDIAN//A_LITTLE_ENDIAN or A_BIG_ENDIAN
+#else
+#define DRIVER_CONFIG_ENDIANNESS				A_LITTLE_ENDIAN
+#endif
+/* DRIVER_CONFIG_MULTI_TASKING - set according to host OS 
+ * multi-task support */
+#define DRIVER_CONFIG_MULTI_TASKING 		1//1 or 0
+/* DRIVER_CONFIG_IMPLEMENT_RX_FREE_QUEUE - set if driver should 
+ * implement a RX Free Queue */
+#define DRIVER_CONFIG_IMPLEMENT_RX_FREE_QUEUE 	1//1 or 0
+
+/*TCPIP stack offload for AR4001*/
+#define ENABLE_STACK_OFFLOAD                    1//1 or 0
+
+#define T_SELECT_VER1                    	 1//1 or 0
+/* DRIVER_CONFIG_ENABLE_STORE_RECALL - optionally set to zero to reduce 
+ * driver memory footprint. 
+ */
+#define DRIVER_CONFIG_ENABLE_STORE_RECALL                       1//1 or 0  
+	
+#define ENABLE_AP_MODE                      					1 //1 or 0
+
+#define MULTI_SOCKET_SUPPORT									1 //1 or 0
+
+#define MANUFACTURING_SUPPORT                                   1
+#define ENABLE_P2P_MODE                                         1 //1 or 0
+
+/* DRIVER_CONFIG_PROGRAM_MAC_ADDR - optionally add code to allow an application
+ * to program a new mac address to the wifi device.  this code should only 
+ * be included when programming a mac address is required such as during 
+ * production.  otherwise code space can be saved by setting this to 0.
+ */
+#define DRIVER_CONFIG_PROGRAM_MAC_ADDR							1 //1 or 0
+
+/* DRIVER_CONFIG_ENABLE_HOST_FW_DOWNLOAD is used to enable Firmware download
+   from the host. This feature is implemented but kept disable and can be enabled 
+   on need basis. DO NOT EDIT NEXT LINE INCLUDING THE SPACE. BUILD SCRIPT SEARCHES 
+   FOR THIS PATTERN AND UPDATES IT IN BUILD TIME. */
+#define DRIVER_CONFIG_ENABLE_HOST_FW_DOWNLOAD 0 //1 or 0  
+
+#define ENABLE_HTTP_SERVER                      1//1 or 0
+    
+#define ENABLE_HTTP_CLIENT                      1//1 or 0
+
+#define ENABLE_DNS_SERVER                       1//1 or 0
+
+#define ENABLE_DNS_CLIENT                       1//1 or 0
+
+#define ENABLE_SNTP_CLIENT                      1//1 or 0
+
+#define ENABLE_RAW_SOCKET_DEMO                  1//1 or 0
+
+#define WLAN_NUM_OF_DEVICES                        1 //1 or 2
+
+#define ENABLE_ROUTING_CMDS                        1//1 or 0
+#define ENABLE_HTTPS_SERVER                     1//1 or 0
+
+#define ENABLE_HTTPS_CLIENT                     1//1 or 0
+                                                 
+#define ENABLE_SSL                              1//1 or 0
+
+#define ENABLE_SCC_MODE                     1//1 or 0
+#define ENABLE_KF_PERFORMANCE                   1
+
+
+#include "wlan_config.h"
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

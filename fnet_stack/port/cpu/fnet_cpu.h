@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief CPU-specific library API.
+***************************************************************************
+*
+*  CPU-specific library API.
 *
 ***************************************************************************/
 
@@ -398,13 +398,14 @@ void fnet_cpu_isr(void);
 /***************************************************************************/ /*!
  * @def FNET_CPU_ADDR_TO_INSTRUCTION
  *
- * @brief           Adjust value of the instruction address.
+ * @brief           Converts address value to the instruction.
  *
- * @param addr      Instruction address to be adjusted.
+ * @param addr      Address to be adjusted.
  *
+ * @see FNET_CPU_INSTRUCTION_TO_ADDR
  ******************************************************************************
  *
- * This is CPU-specific macro that adjusts the instruction address. @n
+ * This is CPU-specific macro that Converts address value to the instruction address. @n
  * If the current platform is Kinetis, it sets the Thumb bit (bit 0) of
  * the address to 1. @n
  * If the current platform is ColdFire or MPC, it does nothing.
@@ -414,6 +415,22 @@ void fnet_cpu_isr(void);
 #define FNET_CPU_ADDR_TO_INSTRUCTION(addr)    (addr)
 #endif
 
+/***************************************************************************/ /*!
+ * @def FNET_CPU_INSTRUCTION_TO_ADDR
+ *
+ * @brief           Converts instruction to address value.
+ *
+ * @param addr      Instruction to be adjusted.
+ *
+ * @see FNET_CPU_ADDR_TO_INSTRUCTION
+ ******************************************************************************
+ *
+ * This is CPU-specific macro that Converts instruction to address value. @n
+ * If the current platform is Kinetis, it sets the Thumb bit (bit 0) of
+ * the address to 0. @n
+ * If the current platform is ColdFire or MPC, it does nothing.
+ *
+ ******************************************************************************/
 #ifndef FNET_CPU_INSTRUCTION_TO_ADDR
 #define FNET_CPU_INSTRUCTION_TO_ADDR(addr)    (addr)
 #endif
@@ -427,6 +444,16 @@ extern struct fnet_netif fnet_cpu_eth0_if;
 extern struct fnet_netif  fnet_cpu_eth1_if;
 #define FNET_CPU_ETH1_IF ((fnet_netif_desc_t)(&fnet_cpu_eth1_if))
 #endif
+#if FNET_CFG_CPU_WIFI
+extern struct fnet_netif  fnet_cpu_wifi_if;
+#define FNET_CPU_WIFI_IF ((fnet_netif_desc_t)(&fnet_cpu_wifi_if))
+#endif
+
+/***************************************************************************/ /*!
+ * @def FNET_CPU_NETIF_NUMBER
+ * @brief Number of supported network interfaces.
+ ******************************************************************************/
+#define FNET_CPU_NETIF_NUMBER      (FNET_CFG_CPU_ETH0+FNET_CFG_CPU_ETH1+FNET_CFG_CPU_WIFI)
 
 #if defined(__cplusplus)
 }

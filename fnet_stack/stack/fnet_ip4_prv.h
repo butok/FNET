@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Private. IPv4 protocol API.
+***************************************************************************
+*
+*  Private. IPv4 protocol API.
 *
 ***************************************************************************/
 
@@ -169,7 +169,7 @@ fnet_netif_t *fnet_ip4_route( fnet_ip4_addr_t dest_ip );
 fnet_size_t fnet_ip4_maximum_packet( fnet_ip4_addr_t dest_ip );
 void fnet_ip4_drain( void );
 fnet_bool_t fnet_ip4_will_fragment( fnet_netif_t *netif, fnet_size_t protocol_message_size);
-void fnet_ip4_set_socket_addr(fnet_netif_t *netif, fnet_ip4_header_t *ip_hdr, struct sockaddr *src_addr,  struct sockaddr *dest_addr );
+void fnet_ip4_set_socket_addr(fnet_netif_t *netif, fnet_ip4_header_t *ip_hdr, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr );
 struct _fnet_socket_if_t; /* Forward declaration.*/
 fnet_error_t fnet_ip4_getsockopt(struct _fnet_socket_if_t *sock, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen );
 fnet_error_t fnet_ip4_setsockopt(struct _fnet_socket_if_t  *sock, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen );

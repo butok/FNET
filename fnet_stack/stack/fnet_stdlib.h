@@ -17,12 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
+***************************************************************************
 *
-* @file fnet_stdlib.h
-*
-* @brief Standard functions API.
+* Standard functions API.
 *
 ***************************************************************************/
 
@@ -59,6 +56,11 @@
 typedef unsigned long fnet_size_t;
 
 /**************************************************************************/ /*!
+ * @brief Signed integer type representing the size in bytes.
+ ******************************************************************************/
+typedef long fnet_ssize_t;
+
+/**************************************************************************/ /*!
  * @brief Unsigned integer type representing the bit flag.
  ******************************************************************************/
 typedef unsigned int fnet_flag_t;
@@ -78,8 +80,8 @@ typedef char fnet_char_t;
  ******************************************************************************/
 typedef enum
 {
-    FNET_FALSE = 0, /**< @brief FALSE Boolean value.*/
-    FNET_TRUE  = 1  /**< @brief TRUE Boolean value.*/
+    FNET_FALSE = 0, /**< FALSE Boolean value.*/
+    FNET_TRUE  = 1  /**< TRUE Boolean value.*/
 } fnet_bool_t;
 
 /**************************************************************************/ /*!
@@ -87,10 +89,8 @@ typedef enum
  ******************************************************************************/
 typedef enum
 {
-    FNET_OK  = (0), /**< No error.
-                     */
-    FNET_ERR = (-1) /**< There is error.
-                     */
+    FNET_OK  = (0), /**< No error.*/
+    FNET_ERR = (-1) /**< There is error.*/
 } fnet_return_t;
 
 #if defined(__cplusplus)

@@ -18,9 +18,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief ICMP protocol implementation.
+***************************************************************************
+*
+*  ICMPv4 protocol implementation.
 *
 ***************************************************************************/
 
@@ -37,7 +37,7 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fnet_icmp4_input(fnet_netif_t *netif, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip4_nb);
+static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip4_nb);
 static void fnet_icmp4_output( fnet_netif_t *netif, fnet_ip4_addr_t src_ip, fnet_ip4_addr_t dest_ip, fnet_netbuf_t *nb );
 static void fnet_icmp4_notify_protocol(fnet_netif_t *netif, fnet_prot_notify_t prot_cmd, fnet_netbuf_t *nb );
 
@@ -61,7 +61,7 @@ fnet_prot_if_t fnet_icmp4_prot_if =
 /************************************************************************
 * DESCRIPTION: ICMP input function.
 *************************************************************************/
-static void fnet_icmp4_input(fnet_netif_t *netif, struct sockaddr *src_addr,  struct sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip4_nb)
+static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip4_nb)
 {
     fnet_icmp4_header_t     *hdr;
     fnet_prot_notify_t      prot_cmd;
@@ -81,8 +81,8 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct sockaddr *src_addr,  st
 
         hdr = (fnet_icmp4_header_t *)nb->data_ptr;
 
-        src_ip_rx = ((struct sockaddr_in *)(src_addr))->sin_addr.s_addr;
-        dest_ip_rx = ((struct sockaddr_in *)(dest_addr))->sin_addr.s_addr;
+        src_ip_rx = ((struct fnet_sockaddr_in *)(src_addr))->sin_addr.s_addr;
+        dest_ip_rx = ((struct fnet_sockaddr_in *)(dest_addr))->sin_addr.s_addr;
 
         /* Swap source and destination addresses.*/
         src_ip_tx = dest_ip_rx;
@@ -297,8 +297,8 @@ static void fnet_icmp4_notify_protocol(fnet_netif_t *netif, fnet_prot_notify_t p
     {
         if(protocol->prot_control_input)
         {
-            struct sockaddr     err_src_addr;
-            struct sockaddr     err_dest_addr;
+            struct fnet_sockaddr     err_src_addr;
+            struct fnet_sockaddr     err_dest_addr;
 
             /* Prepare addreses for upper protocol.*/
             fnet_ip4_set_socket_addr(netif, ip_header, &err_src_addr,  &err_dest_addr );
@@ -424,9 +424,9 @@ void fnet_icmp4_error( fnet_netif_t *netif, fnet_uint8_t type, fnet_uint8_t code
 void fnet_icmp4_trace(fnet_uint8_t *str, fnet_icmp4_header_t *icmp_hdr)
 {
     fnet_printf(FNET_SERIAL_ESC_FG_GREEN"%s", str); /* Print app-specific header.*/
-    fnet_println("[ICMP4 header]"FNET_SERIAL_ESC_FG_BLACK);
+    fnet_println("[ICMP4 header]"FNET_SERIAL_ESC_ATTR_RESET);
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
-    fnet_println("|(Type)     "FNET_SERIAL_ESC_FG_BLUE"%3u"FNET_SERIAL_ESC_FG_BLACK" |(Code)     %3u |(Cheksum)               0x%04x |",
+    fnet_println("|(Type)     "FNET_SERIAL_ESC_FG_BLUE"%3u"FNET_SERIAL_ESC_ATTR_RESET" |(Code)     %3u |(Cheksum)               0x%04x |",
                  icmp_hdr->type,
                  icmp_hdr->code,
                  fnet_ntohs(icmp_hdr->checksum));

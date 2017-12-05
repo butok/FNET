@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Application parameters private API.
+***************************************************************************
+*
+*  FNET Application parameters private API.
 *
 ***************************************************************************/
 
@@ -39,6 +39,9 @@ extern fnet_char_t fapp_params_host_name[FAPP_PARAMS_HOST_NAME_SIZE];
 #endif
 #if FAPP_CFG_PARAMS_TFTP
     extern struct fapp_params_tftp fapp_params_tftp_config;
+#endif
+#if FAPP_CFG_PARAMS_WIFI
+    extern struct fapp_params_wifi fapp_params_wifi_config;
 #endif
 
 #if defined(__cplusplus)

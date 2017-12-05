@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Neighbor Discovery for IP6 API.
+***************************************************************************
+*
+*  Neighbor Discovery for IP6 API.
 *
 ***************************************************************************/
 

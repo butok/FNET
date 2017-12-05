@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Default platform-specific configuration.
+***************************************************************************
+*
+*  Default platform-specific configuration.
 *
 ***************************************************************************/
 
@@ -53,7 +53,8 @@
  *            - @c FNET_CFG_CPU_MCF5282  = Used platform is MCF5282.
  *            - @c FNET_CFG_CPU_MCF51CN128  = Used platform is MCF51CN128.
  *            - @c FNET_CFG_CPU_MCF54418  = Used platform is MCF54418.
- *            - @c FNET_CFG_CPU_S32R274 = Used platform is S32R274
+ *            - @c FNET_CFG_CPU_S32R274 = Used platform is S32R274.
+ *            - @c FNET_CFG_CPU_LPC54628 = Used platform is LPC54628.
  *            @n @n
  *            Selected processor definition should be only one and must be defined as 1.
  *            All others may be defined but must have the 0 value.
@@ -115,10 +116,8 @@
 #ifndef FNET_CFG_CPU_S32R274
     #define FNET_CFG_CPU_S32R274    (0)
 #endif
-
-/* LPC1788 */
-#ifndef FNET_CFG_CPU_LPC1788
-    #define FNET_CFG_CPU_LPC1788  	(0)
+#ifndef FNET_CFG_CPU_LPC54628
+    #define FNET_CFG_CPU_LPC54628  	(0)
 #endif
 
 /*********** MFC ********************/
@@ -284,13 +283,13 @@
 #endif
 
 /*********** NXP's LPC ********************/
-#if FNET_CFG_CPU_LPC1788 /* NXP's LPC1788 MCU */
+#if FNET_CFG_CPU_LPC54628 /* NXP's LPC54628 MCU */
     #ifdef FNET_CPU_STR
         #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
-    #include "port/cpu/lpc/fnet_lpc_1788_config.h"
-    #define FNET_CPU_STR    "LPC1788"
+    #include "port/cpu/lpc/fnet_lpc54628_config.h"
+    #define FNET_CPU_STR    "LPC54628"
 #endif
 
 /*-----------*/
@@ -382,6 +381,17 @@
 #endif
 
 /**************************************************************************/ /*!
+ * @def      FNET_CFG_CPU_SERIAL_IO_INIT
+ * @brief    Serial module Input/Output pin initialization:
+ *               - @b @c 1 = is enabled (default value).
+ *               - @b @c 0 = is disabled. In this case a user application must do own initialization.
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_CPU_SERIAL_IO_INIT
+    #define FNET_CFG_CPU_SERIAL_IO_INIT   (1)
+#endif
+
+/**************************************************************************/ /*!
  * @def      FNET_CFG_CPU_VECTOR_TABLE
  * @brief    Vector table address.@n
  *           For Kinetis platform, it is used the NVIC vector table register (VTOR).
@@ -389,6 +399,17 @@
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_VECTOR_TABLE
     #define FNET_CFG_CPU_VECTOR_TABLE           __VECTOR_RAM
+#endif
+
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
+ * @brief    Vector table in RAM 
+ *               - @c 1 = is enabled. In this case FNET installs own interrupt service routine into the RAM vector table pointed by @ref FNET_CFG_CPU_VECTOR_TABLE. 
+ *               - @c 0 = is disabled. In this case assumed FNET interrupt service routine fnet_cpu_isr() is preinstalled into the ROM vector table.
+ *                                     @note For Kinetis platform, is used weak symbol overload to preinstall the FNET interrupt service routine.
+ ******************************************************************************/
+#ifndef FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
+    #define FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM (1)
 #endif
 
 /**************************************************************************/ /*!
@@ -418,10 +439,9 @@
  * @brief    Timer number used by the FNET. It can range from 0 to @ref FNET_CFG_CPU_TIMER_NUMBER_MAX.
  *           By default it set to the @ref FNET_CFG_CPU_TIMER_NUMBER_MAX value.
  *           @n @n NOTE: It's ignored for MCF V1.@n
- * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_TIMER_NUMBER
-    #define FNET_CFG_CPU_TIMER_NUMBER           (FNET_CFG_CPU_TIMER_NUMBER_MAX)
+    #error "FNET_CFG_CPU_TIMER_NUMBER is not defined."
 #endif
 
 /**************************************************************************/ /*!
@@ -577,6 +597,15 @@
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_ETH1_NAME
     #define FNET_CFG_CPU_ETH1_NAME            "eth1"
+#endif
+
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_CPU_WIFI_NAME
+ * @brief    Defines name for the Wi-Fi interface.
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_CPU_WIFI_NAME
+    #define FNET_CFG_CPU_WIFI_NAME            "wifi"
 #endif
 
 /**************************************************************************/ /*!
@@ -853,15 +882,36 @@
 #endif
 
 /**************************************************************************/ /*!
- * @def      FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT
- * @brief    Your own alternate implementation for fnet_eth_io_init():
- *               - @c 1 = is enabled.
- *               - @b @c 0 = is disabled (Default value).@n
- *           This function is called during Ethernet driver initalization, used for pin initialization and clock enabling.
+ * @def      FNET_CFG_CPU_ETH_IO_INIT
+ * @brief    Ethernet module Input/Output pin initialization:
+ *               - @b @c 1 = is enabled (default value).
+ *               - @b @c 0 = is disabled. In this case a user application must do own initialization.
  * @showinitializer
  ******************************************************************************/
-#ifndef FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT
-    #define FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT            (0)
+#ifndef FNET_CFG_CPU_ETH_IO_INIT
+    #define FNET_CFG_CPU_ETH_IO_INIT                    (1)
+#endif
+
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_CPU_WIFI
+ * @brief    QCA4002 Wi-Fi module interface:
+ *               - @c 1 = is enabled.
+ *               - @b @c 0 = is disabled (default value).
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_CPU_WIFI
+    #define FNET_CFG_CPU_WIFI        	                (0)
+#endif
+
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_CPU_WIFI_IO_INIT
+ * @brief    WiFi module Input/Output pin initialization:
+ *               - @b @c 1 = is enabled (default value).
+ *               - @b @c 0 = is disabled. In this case a user application must do own initialization.
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_CPU_WIFI_IO_INIT
+    #define FNET_CFG_CPU_WIFI_IO_INIT                   (1)
 #endif
 
 /*! @} */

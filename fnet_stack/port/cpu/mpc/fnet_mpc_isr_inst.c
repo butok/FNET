@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ /*!
+***************************************************************************
 *
-* @brief Interrupt service dispatcher implementation.
+*  Interrupt service dispatcher implementation.
 *
 ***************************************************************************/
 #include "fnet.h"
@@ -35,40 +35,39 @@ extern fnet_uint32_t FNET_CFG_CPU_VECTOR_TABLE [];
 *************************************************************************/
 fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t priority)
 {
-    fnet_return_t result;
-    fnet_uint32_t *irq_vec;
-
-    irq_vec = (unsigned long *) (FNET_CFG_CPU_VECTOR_TABLE) + vector_number;
-
-    if(*irq_vec != (unsigned long)fnet_cpu_isr)
+	
+    /* Install FNET ISR into the Vector Table in RAM */
+#if FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
     {
-        /* It's not installed yet.*/
-        *irq_vec = (unsigned long)fnet_cpu_isr;
+        fnet_uint32_t   *irq_vec;
+
+        irq_vec = (unsigned long *) (FNET_CFG_CPU_VECTOR_TABLE) + vector_number;
+
+        if(*irq_vec != (unsigned long)FNET_ISR_HANDLER)
+        {
+            /* It's not installed yet.*/
+            *irq_vec = (unsigned long)FNET_ISR_HANDLER;
+        }
     }
+#endif
 
     if(priority > FNET_CFG_CPU_VECTOR_PRIORITY_MAX)
     {
         priority = FNET_CFG_CPU_VECTOR_PRIORITY_MAX;
     }
 
-    if(*irq_vec == (unsigned long)fnet_cpu_isr)
-    {
+
 #if FNET_CFG_CPU_INDEX==0
 #if FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_S32R274
-        FNET_MPC_INTC_PSR(vector_number) = (unsigned short int)(0x8000 | priority);
+    FNET_MPC_INTC_PSR(vector_number) = (unsigned short int)(0x8000 | priority);
 #else
-        FNET_MPC_INTC_PSR(vector_number) = (unsigned char)(0xF & priority);
+    FNET_MPC_INTC_PSR(vector_number) = (unsigned char)(0xF & priority);
 #endif
 #else
-        FNET_MPC_INTC_PSR(vector_number) = (unsigned char)(0xC0 | & priority);
+    FNET_MPC_INTC_PSR(vector_number) = (unsigned char)(0xC0 | & priority);
 #endif
 
-        result = FNET_OK;
-    }
-    else
-        result = FNET_ERR;
-
-    return result;
+    return FNET_OK;
 }
 
 #endif

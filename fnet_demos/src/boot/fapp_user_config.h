@@ -56,9 +56,9 @@
 
 #define FAPP_CFG_PREINSTALL_INTERRUPTS  (1)
 
-/*  "dhcp" command.*/
-#define FAPP_CFG_DHCP_CMD               (1)
-#define FAPP_CFG_DHCP_CMD_DISCOVER_MAX  (5)
+/*  "dhcpc" command.*/
+#define FAPP_CFG_DHCPC_CMD               (1)
+#define FAPP_CFG_DHCPC_CMD_DISCOVER_MAX  (5)
 
 /*  "set/get" command.*/
 #define FAPP_CFG_SETGET_CMD_IP          (1)
@@ -68,23 +68,23 @@
 #define FAPP_CFG_SETGET_CMD_BOOT        (1)
 #define FAPP_CFG_SETGET_CMD_DELAY       (1)
 #define FAPP_CFG_SETGET_CMD_SCRIPT      (1)
-#define FAPP_CFG_SETGET_CMD_RAW         (0)
+#define FAPP_CFG_SETGET_CMD_RAW         (1)
 #define FAPP_CFG_SETGET_CMD_TFTP        (1)
-#define FAPP_CFG_SETGET_CMD_IMAGE       (0)
+#define FAPP_CFG_SETGET_CMD_IMAGE       (1)
 #define FAPP_CFG_SETGET_CMD_TYPE        (1)
 #define FAPP_CFG_SETGET_CMD_GO          (1)
 
 /*  "info" command. */
 #define FAPP_CFG_INFO_CMD               (1)
 
+/*  "tftpc" command.*/
+#define FAPP_CFG_TFTPC_CMD              (1)
+
+/*  "tftpcup" command.*/
+#define FAPP_CFG_TFTPCUP_CMD            (1)
+
 /*  "tftp" command.*/
 #define FAPP_CFG_TFTP_CMD               (1)
-
-/*  "tftpup" command.*/
-#define FAPP_CFG_TFTPUP_CMD             (1)
-
-/*  "tftps" command.*/
-#define FAPP_CFG_TFTPS_CMD              (1)
 
 /*  "mem" command.*/
 #define FAPP_CFG_MEM_CMD                (1)
@@ -111,14 +111,16 @@
 
 /* Default parameters values*/
 #define FAPP_CFG_PARAMS_TFTP_FILE_NAME  "fnet_firmware.srec"
+
 /* Remote TFTP Server Address.*/
 #if FNET_CFG_IP4
-    #define FAPP_CFG_PARAMS_TFTP_SERVER     {AF_INET, 0, 0, {192,168,0,100}}
+    #define FAPP_CFG_PARAMS_TFTP_SERVER     {.sa_family = AF_INET, .sa_data = {192,168,0,200}}
 #else /* FNET_CFG_IP6 */
-    #define FAPP_CFG_PARAMS_TFTP_SERVER     {AF_INET6, 0, 0, {0xfe,0x80,0,0,0,0,0,0,0xa0,0x9a,0x5,0x30,0xab,0xf7,0xa8,0xfd}}
+    #define FAPP_CFG_PARAMS_TFTP_SERVER     {.sa_family = AF_INET6, .sa_data = {0xfe,0x80,0,0,0,0,0,0,0xa0,0x9a,0x5,0x30,0xab,0xf7,0xa8,0xfd}}
 #endif
+
 #define FAPP_CFG_PARAMS_BOOT_MODE       FAPP_PARAMS_BOOT_MODE_STOP
-#define FAPP_CFG_PARAMS_BOOT_SCRIPT     "dhcp; erase all; tftp; set boot go; save; go"
+#define FAPP_CFG_PARAMS_BOOT_SCRIPT     "dhcpc; erase all; tftpc; set boot go; save; go"
 
 /* Script on TFTP server "WRITE request" received.*/
 #define FAPP_CFG_TFTPS_ON_WRITE_REQUEST_SCRIPT      "erase all"
@@ -126,8 +128,7 @@
 #define FAPP_CFG_TFTPS_AFTER_WRITE_REQUEST_SCRIPT   "set boot go; save; go"
 
 /* Default startup script.*/
-#define FAPP_CFG_STARTUP_SCRIPT_ENABLED (1)
-#define FAPP_CFG_STARTUP_SCRIPT         "tftps"
+#define FAPP_CFG_STARTUP_SCRIPT         "tftp"
 
 #endif /* _FAPP_USER_CONFIG_H_ */
 

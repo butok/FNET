@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Private. Socket API.
+***************************************************************************
+*
+*  Private. Socket API.
 *
 ***************************************************************************/
 
@@ -44,11 +44,13 @@
 *  Definitions.
 *************************************************************************/
 
-/* A allocated port will always be
- * FNET_SOCKET_PORT_RESERVED < local_port <= FNET_SOCKET_PORT_USERRESERVED (ephemeral port)
- */
-#define FNET_SOCKET_PORT_RESERVED       (1024u)  /* In host byte order.*/
-#define FNET_SOCKET_PORT_USERRESERVED   (5000u)  /* In host byte order.*/
+/*IANA: Port numbers are assigned in various ways, based on three ranges: System
+* Ports (0-1023), User Ports (1024-49151), and the Dynamic and/or Private
+* Ports (49152-65535).
+* So, an allocated port will always be FNET_SOCKET_PORT_EPHEMERAL_BEGIN <= local_port <= FNET_SOCKET_PORT_EPHEMERAL_END (ephemeral port)
+* The Internet Assigned Numbers Authority (IANA) suggests the range 49152 to 65535 for dynamic or private ports.*/
+#define FNET_SOCKET_PORT_EPHEMERAL_BEGIN    (49152u)  /* In host byte order.*/
+#define FNET_SOCKET_PORT_EPHEMERAL_END      (65535u)  /* In host byte order.*/
 
 #define FNET_SOCKET_DESC_RESERVED       (-1)    /* The descriptor is reserved.*/
 
@@ -71,7 +73,7 @@ typedef struct
  ******************************************************************************/
 typedef struct
 {
-    struct sockaddr addr_s;
+    struct fnet_sockaddr addr_s;
 } fnet_socket_buffer_addr_t;
 
 /**************************************************************************/ /*!
@@ -126,8 +128,8 @@ typedef struct _fnet_socket_if_t
     fnet_socket_buffer_t        send_buffer;            /**< Socket buffer for outgoing data.*/
 
     /* Common protocol params.*/
-    struct sockaddr             foreign_addr;           /**< Foreign socket address.*/
-    struct sockaddr             local_addr;             /**< Lockal socket address.*/
+    struct fnet_sockaddr        foreign_addr;           /**< Foreign socket address.*/
+    struct fnet_sockaddr        local_addr;             /**< Lockal socket address.*/
     fnet_socket_option_t        options;                /**< Collection of socket options.*/
 
 #if FNET_CFG_MULTICAST
@@ -151,10 +153,10 @@ typedef struct fnet_socket_prot_if
     fnet_bool_t     con_req;                                                                                        /* Flag that protocol is connection oriented.*/
     fnet_return_t   (*prot_attach)(fnet_socket_if_t *sk);                                                           /* Protocol "attach" function. */
     fnet_return_t   (*prot_detach)(fnet_socket_if_t *sk);                                                           /* Protocol "detach" function. */
-    fnet_return_t   (*prot_connect)(fnet_socket_if_t *sk, struct sockaddr *foreign_addr);                           /* Protocol "connect" function. */
+    fnet_return_t   (*prot_connect)(fnet_socket_if_t *sk, struct fnet_sockaddr *foreign_addr);                           /* Protocol "connect" function. */
     fnet_socket_if_t *( *prot_accept)(fnet_socket_if_t *sk);                                                        /* Protocol "accept" function. */
-    fnet_int32_t    (*prot_rcv)(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct sockaddr *foreign_addr );        /* Protocol "receive" function. */
-    fnet_int32_t    (*prot_snd)(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct sockaddr *foreign_addr );  /* Protocol "send" function. */
+    fnet_int32_t    (*prot_rcv)(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct fnet_sockaddr *foreign_addr );        /* Protocol "receive" function. */
+    fnet_int32_t    (*prot_snd)(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *foreign_addr );  /* Protocol "send" function. */
     fnet_return_t   (*prot_shutdown)(fnet_socket_if_t *sk, fnet_sd_flags_t how);                                    /* Protocol "shutdown" function. */
     fnet_return_t   (*prot_setsockopt)(fnet_socket_if_t *sk, fnet_protocol_t level, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen); /* Protocol "setsockopt" function. */
     fnet_return_t   (*prot_getsockopt)(fnet_socket_if_t *sk, fnet_protocol_t level, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen);      /* Protocol "getsockopt" function. */
@@ -176,20 +178,20 @@ fnet_return_t fnet_socket_init( void );
 void fnet_socket_list_add( fnet_socket_if_t **head, fnet_socket_if_t *s );
 void fnet_socket_list_del( fnet_socket_if_t **head, fnet_socket_if_t *s );
 void fnet_socket_set_error( fnet_socket_if_t *sock, fnet_error_t error );
-fnet_socket_if_t *fnet_socket_lookup( fnet_socket_if_t *head,  struct sockaddr *local_addr, struct sockaddr *foreign_addr, fnet_uint32_t protocol_number);
-fnet_uint16_t  fnet_socket_get_uniqueport(fnet_socket_if_t *head, struct sockaddr *local_addr);
-fnet_bool_t fnet_socket_conflict( fnet_socket_if_t *head,  const struct sockaddr *local_addr, const struct sockaddr *foreign_addr /*optional*/, fnet_bool_t wildcard );
+fnet_socket_if_t *fnet_socket_lookup( fnet_socket_if_t *head,  struct fnet_sockaddr *local_addr, struct fnet_sockaddr *foreign_addr, fnet_uint32_t protocol_number);
+fnet_uint16_t  fnet_socket_get_uniqueport(fnet_socket_if_t *head, struct fnet_sockaddr *local_addr);
+fnet_bool_t fnet_socket_conflict( fnet_socket_if_t *head,  const struct fnet_sockaddr *local_addr, const struct fnet_sockaddr *foreign_addr /*optional*/, fnet_bool_t wildcard );
 fnet_socket_if_t *fnet_socket_copy( fnet_socket_if_t *sock );
 void fnet_socket_release( fnet_socket_if_t **head, fnet_socket_if_t *sock );
-fnet_return_t fnet_socket_buffer_append_address( fnet_socket_buffer_t *sb, fnet_netbuf_t *nb, struct sockaddr *addr);
+fnet_return_t fnet_socket_buffer_append_address( fnet_socket_buffer_t *sb, fnet_netbuf_t *nb, struct fnet_sockaddr *addr);
 fnet_return_t fnet_socket_buffer_append_record( fnet_socket_buffer_t *sb, fnet_netbuf_t *nb );
-fnet_int32_t fnet_socket_buffer_read_address( fnet_socket_buffer_t *sb, fnet_uint8_t *buf, fnet_size_t len, struct sockaddr *foreign_addr, fnet_bool_t remove );
+fnet_int32_t fnet_socket_buffer_read_address( fnet_socket_buffer_t *sb, fnet_uint8_t *buf, fnet_size_t len, struct fnet_sockaddr *foreign_addr, fnet_bool_t remove );
 fnet_size_t fnet_socket_buffer_read_record( fnet_socket_buffer_t *sb, fnet_uint8_t *buf, fnet_size_t len, fnet_bool_t remove );
 void fnet_socket_buffer_release( fnet_socket_buffer_t *sb );
-fnet_bool_t fnet_socket_addr_is_broadcast(const struct sockaddr *addr, fnet_netif_t *netif);
-void fnet_socket_ip_addr_copy(const struct sockaddr *from_addr, struct sockaddr *to_addr);
-void fnet_socket_addr_copy(const struct sockaddr *from_addr, struct sockaddr *to_addr);
-fnet_netif_t *fnet_socket_addr_route(const struct sockaddr *dest_addr);
+fnet_bool_t fnet_socket_addr_is_broadcast(const struct fnet_sockaddr *addr, fnet_netif_t *netif);
+void fnet_socket_ip_addr_copy(const struct fnet_sockaddr *from_addr, struct fnet_sockaddr *to_addr);
+void fnet_socket_addr_copy(const struct fnet_sockaddr *from_addr, struct fnet_sockaddr *to_addr);
+fnet_netif_t *fnet_socket_addr_route(const struct fnet_sockaddr *dest_addr);
 
 #if defined(__cplusplus)
 }

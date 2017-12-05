@@ -2,7 +2,7 @@
 /**************************************************************************
 *
 * Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2011 by Andrey Butok,Gordon Jahn. Freescale Semiconductor, Inc.
+* Copyright 2011 by Andrey Butok, Gordon Jahn. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
 *
@@ -18,15 +18,15 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/ /*!
+***************************************************************************
 *
-* @brief Ethernet driver interafce.
+*  Ethernet driver interafce.
 *
 ***************************************************************************/
 
 #include "fnet.h"
 #if FNET_MPC && (FNET_CFG_CPU_ETH0 ||FNET_CFG_CPU_ETH1)
-#include "port/cpu/common/fnet_fec.h"
+#include "port/cpu/netif/fec/fnet_fec.h"
 
 /************************************************************************
 * Ethernet interface structure.
@@ -51,11 +51,9 @@ fnet_netif_t fnet_cpu_eth0_if =
 };
 
 /************************************************************************
-* NAME: fnet_eth_io_init
-*
 * DESCRIPTION: Ethernet IO initialization.
 *************************************************************************/
-#if !FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT
+#if FNET_CFG_CPU_ETH_IO_INIT
 void fnet_eth_io_init()
 {
 #if FNET_CFG_CPU_MPC5566  /* Viper */
@@ -301,7 +299,7 @@ void fnet_eth_io_init()
     FNET_MPC_GPIO_PCR(11) = 0x106;      /* Set to FEC_RX_ER  */
 #endif
 }
-#endif /*!FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT*/
+#endif /*FNET_CFG_CPU_ETH_IO_INIT*/
 
 /************************************************************************
 * NAME: fnet_eth_phy_init

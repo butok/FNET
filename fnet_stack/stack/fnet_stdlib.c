@@ -18,12 +18,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
+***************************************************************************
 *
-* @file fnet_stdlib.c
-*
-* @brief Standard functions implementation.
+*  Standard functions implementation.
 *
 ***************************************************************************/
 

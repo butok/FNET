@@ -1,8 +1,6 @@
-/**********************************************************************/ /*!
+/***************************************************************************
 *
-* @file fapp_user_config.h
-*
-* @brief FNET Application User configuration file.
+* FNET Application User configuration file.
 * It should be used to change any default configuration parameter of FAPP.
 *
 ***************************************************************************/
@@ -48,8 +46,8 @@
 #endif
 
 /*  "dhcp" command.*/
-#define FAPP_CFG_DHCP_CMD               (1)
-#define FAPP_CFG_DHCP_CMD_DISCOVER_MAX  (5)
+#define FAPP_CFG_DHCPC_CMD              (1)
+#define FAPP_CFG_DHCPC_CMD_DISCOVER_MAX  (5)
 
 /*  "set/get" command.*/
 #define FAPP_CFG_SETGET_CMD_IP          (1)
@@ -90,7 +88,6 @@
 #define FAPP_CFG_PARAMS_REWRITE_FLASH    (1)
 
 #if 0 /* To run servers on startup set to 1. */
-    #define FAPP_CFG_STARTUP_SCRIPT_ENABLED	(1)
     #define FAPP_CFG_STARTUP_SCRIPT "llmnr"     /* For example "http; telnet" */
 #endif
 

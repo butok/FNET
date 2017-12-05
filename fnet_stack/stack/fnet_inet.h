@@ -18,9 +18,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Address-conversion functions API.
+***************************************************************************
+*
+*  Address-conversion functions API.
 *
 ***************************************************************************/
 
@@ -68,7 +68,7 @@ extern "C" {
  * fnet_inet_ntoa() is now considered to be deprecated.
  *
  ******************************************************************************/
-fnet_char_t *fnet_inet_ntoa( struct in_addr addr, fnet_char_t *res_str );
+fnet_char_t *fnet_inet_ntoa( struct fnet_in_addr addr, fnet_char_t *res_str );
 
 /***************************************************************************/ /*!
  *
@@ -101,7 +101,7 @@ fnet_char_t *fnet_inet_ntoa( struct in_addr addr, fnet_char_t *res_str );
  * fnet_inet_aton() is now considered to be deprecated.
  *
  ******************************************************************************/
-fnet_return_t fnet_inet_aton( fnet_char_t *cp, struct in_addr *addr );
+fnet_return_t fnet_inet_aton( fnet_char_t *cp, struct fnet_in_addr *addr );
 
 /***************************************************************************/ /*!
  *
@@ -205,7 +205,7 @@ fnet_return_t fnet_inet_pton (fnet_address_family_t family, const fnet_char_t *s
  * structure.
  *
  ******************************************************************************/
-fnet_return_t fnet_inet_ptos (const fnet_char_t *str, struct sockaddr *addr);
+fnet_return_t fnet_inet_ptos (const fnet_char_t *str, struct fnet_sockaddr *addr);
 
 #if defined(__cplusplus)
 }

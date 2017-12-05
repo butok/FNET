@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -16,9 +16,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Lowest level ISR routine for Kinetis.
+***************************************************************************
+*
+*  Lowest level ISR routine for Kinetis.
 *
 ***************************************************************************/
 
@@ -38,8 +38,6 @@ void fnet_cpu_isr(void)
 
     /* Call FNET isr handler.*/
     fnet_isr_handler((fnet_uint32_t)vector_number );
-
-    return;
 }
 
 #endif /*FNET_MK*/

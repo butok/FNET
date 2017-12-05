@@ -18,9 +18,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief Interrupt service dispatcher implementation.
+***************************************************************************
+*
+*  Interrupt service dispatcher implementation.
 *
 ***************************************************************************/
 

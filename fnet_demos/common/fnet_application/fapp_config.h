@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2017 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 *
 ***************************************************************************
@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Demo Application Configuration.
+***************************************************************************
+*
+* FNET Demo Application Configuration.
 *
 ***************************************************************************/
 #ifndef _FAPP_CONFIG_H_
@@ -106,20 +106,25 @@
 #endif
 
 /* Startup script. */
-#ifndef FAPP_CFG_STARTUP_SCRIPT_ENABLED
-    #define FAPP_CFG_STARTUP_SCRIPT_ENABLED     (0)
-#endif
-
 #ifndef FAPP_CFG_STARTUP_SCRIPT
     #define FAPP_CFG_STARTUP_SCRIPT             ""
 #endif
 
-/* On connect/unconnect scrpts:*/
+/* On connect/unconnect scrpts:
+* @note "%s" will be replaced by the interface name.*/
+/* All interfaces */
 #ifndef FAPP_CFG_LINK_CONNECT_SCRIPT
-    #define FAPP_CFG_LINK_CONNECT_SCRIPT ""
+    #define FAPP_CFG_LINK_CONNECT_SCRIPT        "dhcpc autoip -n %s; mdns -n %s; llmnr -n %s;"    
 #endif
-#ifndef FAPP_CFG_LINK_UNCONNECT_SCRIPT
-    #define FAPP_CFG_LINK_UNCONNECT_SCRIPT ""
+#ifndef FAPP_CFG_LINK_DISCONNECT_SCRIPT
+    #define FAPP_CFG_LINK_DISCONNECT_SCRIPT     "mdns -n %s release; llmnr -n %s release; dhcpc -n %s release; autoip -n %s release;"
+#endif
+/* Wi-Fi interface connect/unconnect scrpts, in the access point operation mode.*/
+#ifndef FAPP_CFG_LINK_CONNECT_WIFI_ACCESS_POINT_SCRIPT
+    #define FAPP_CFG_LINK_CONNECT_WIFI_ACCESS_POINT_SCRIPT      "dhcp -n %s; mdns -n %s; llmnr -n %s;"    
+#endif
+#ifndef FAPP_CFG_LINK_DISCONNECT_WIFI_ACCESS_POINT_SCRIPT
+    #define FAPP_CFG_LINK_DISCONNECT_WIFI_ACCESS_POINT_SCRIPT   "mdns -n %s release; llmnr -n %s release; dhcp -n %s release;"
 #endif
 
 /**************************************************************************/ /*!
@@ -153,29 +158,11 @@
 
 /**************************************************************************/ /*!
  * @def      FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS
- * @brief    Polling period for calling the fnet_poll_service() function.
+ * @brief    Polling period for calling the fnet_service_poll() function.
  * @showinitializer
  ******************************************************************************/
 #ifndef FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS
     #define FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS (1) /* ms */
-#endif
-
-/* FNET-Application TCP/IP stack default parameters. */
-/**************************************************************************/ /*!
- * @brief    Descriptor of a default network interface set during application initialisation.@n
- *           For example, it can be set to FNET_CPU_ETH0_IF, FNET_CPU_ETH1_IF or FNET_LOOP_IF. @n
- *           During run time it can be changed by ref@ fnet_netif_set_default().
- ******************************************************************************/
-#ifndef FAPP_CFG_DEFAULT_IF
-    #if FNET_CFG_CPU_ETH0
-        #define FAPP_CFG_DEFAULT_IF             (FNET_CPU_ETH0_IF)
-    #elif FNET_CFG_CPU_ETH1
-        #define FAPP_CFG_DEFAULT_IF             (FNET_CPU_ETH1_IF)
-    #elif FNET_CFG_LOOPBACK
-        #define FAPP_CFG_DEFAULT_IF             (FNET_LOOP_IF)
-    #else
-        #define FAPP_CFG_DEFAULT_IF             ((fnet_netif_desc_t)FNET_NULL)
-    #endif
 #endif
 
 /************************************************************************
@@ -208,12 +195,14 @@
     #define FAPP_CFG_FLASH_PARAMS_ADDRESS   (FNET_CFG_CPU_FLASH_ADDRESS + FNET_CFG_CPU_FLASH_SIZE - FAPP_CFG_FLASH_PARAMS_SIZE) /* Last sector of the flash.*/
 #endif
 
-/* Default interface.*/
+/* Default interface name .*/
 #ifndef FAPP_CFG_PARAMS_NETIF_NAME
     #if FNET_CFG_CPU_ETH0
         #define FAPP_CFG_PARAMS_NETIF_NAME             FNET_CFG_CPU_ETH0_NAME
     #elif FNET_CFG_CPU_ETH1
         #define FAPP_CFG_PARAMS_NETIF_NAME             FNET_CFG_CPU_ETH1_NAME
+    #elif FNET_CFG_CPU_WIFI
+        #define FAPP_CFG_PARAMS_NETIF_NAME             FNET_CFG_CPU_WIFI_NAME
     #elif FNET_CFG_LOOPBACK
         #define FAPP_CFG_PARAMS_NETIF_NAME             FNET_CFG_LOOPBACK_NAME
     #else
@@ -279,6 +268,25 @@
     #define FAPP_CFG_PARAMS_TFTP_FILE_RAW_ADDRESS    (0)
 #endif
 
+/* Wi-Fi parameters */
+#ifndef FAPP_CFG_PARAMS_WIFI_SSID
+    #define FAPP_CFG_PARAMS_WIFI_SSID               "test"
+#endif
+#ifndef FAPP_CFG_PARAMS_WIFI_WPA_PASSPHRASE
+    #define FAPP_CFG_PARAMS_WIFI_WPA_PASSPHRASE     ""
+#endif
+
+/* Wi-Fi Access Point parameters */
+#ifndef FAPP_CFG_WIFI_AC_SSID
+    #define FAPP_CFG_WIFI_AC_SSID                   "FNET"
+#endif
+#ifndef FAPP_CFG_WIFI_AC_WPA_PASSPHRASE
+    #define FAPP_CFG_WIFI_AC_WPA_PASSPHRASE         ""                  /* Open Wi-Fi */
+#endif
+#ifndef FAPP_CFG_WIFI_AC_WPA_MODE
+    #define FAPP_CFG_WIFI_AC_WPA_MODE               FNET_WIFI_WPA2      /* Open Wi-Fi */
+#endif
+
 /************************************************************************
 *    "info" command.
 *************************************************************************/
@@ -294,22 +302,60 @@
 #endif
 
 /************************************************************************
+*    "dhcpc" command.
+*************************************************************************/
+#ifndef FAPP_CFG_DHCPC_CMD
+    #define FAPP_CFG_DHCPC_CMD           (0)
+#endif
+
+#ifndef FAPP_CFG_DHCPC_CMD_DISCOVER_MAX
+   #define FAPP_CFG_DHCPC_CMD_DISCOVER_MAX  (-1) /* -1 means infinite. */
+#endif
+
+
+/************************************************************************
 *    "dhcp" command.
 *************************************************************************/
 #ifndef FAPP_CFG_DHCP_CMD
     #define FAPP_CFG_DHCP_CMD           (0)
+#endif
 
-    #ifndef FAPP_CFG_DHCP_CMD_DISCOVER_MAX
-        #define FAPP_CFG_DHCP_CMD_DISCOVER_MAX  (-1) /* -1 means infinite. */
-    #endif
+/**************************************************************************/ /*!
+ * @brief    Defines the default IPv4 address for an interface running the DHCP server.
+ ******************************************************************************/
+#ifndef FAPP_CFG_DHCP_CMD_IP4_ADDR
+    #define FAPP_CFG_DHCP_CMD_IP4_ADDR  (FNET_IP4_ADDR_INIT(192U, 168U, 0U, 1U))
+#endif
 
+/**************************************************************************/ /*!
+ * @brief    Defines the default IP Subnetmask for the Wi-Fi interface in Access Point mode.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_addr().
+ ******************************************************************************/
+#ifndef FAPP_CFG_DHCP_CMD_IP4_MASK
+    #define FAPP_CFG_DHCP_CMD_IP4_MASK          (FNET_IP4_ADDR_INIT(255U, 255U, 255U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default Gateway IP address for the Wi-Fi interface in Access Point mode.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_gateway().
+ ******************************************************************************/
+#ifndef FAPP_CFG_DHCP_CMD_IP4_GW
+    #define FAPP_CFG_DHCP_CMD_IP4_GW            (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default DNS IP address for the Wi-Fi interface in Access Point mode.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_dns().
+ ******************************************************************************/
+#ifndef FAPP_CFG_DHCP_CMD_IP4_DNS
+    #define FAPP_CFG_DHCP_CMD_IP4_DNS           (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
 #endif
 
 /************************************************************************
 *    "autoip" command.
 *************************************************************************/
 #ifndef FAPP_CFG_AUTOIP_CMD
-    #define FAPP_CFG_AUTOIP_CMD           (0)
+    #define FAPP_CFG_AUTOIP_CMD         (0)
 #endif
 
 /************************************************************************
@@ -323,7 +369,7 @@
 *    "https" command.
 *************************************************************************/
 #ifndef FAPP_CFG_HTTP_TLS_CMD
-    #define FAPP_CFG_HTTP_TLS_CMD           (0)
+    #define FAPP_CFG_HTTP_TLS_CMD       (0)
 #endif
 
 /************************************************************************
@@ -334,24 +380,24 @@
 #endif
 
 /************************************************************************
-*    "tftp" command.
+*    "tftpc" command.
 *************************************************************************/
-#ifndef FAPP_CFG_TFTP_CMD
-    #define FAPP_CFG_TFTP_CMD           (0)
+#ifndef FAPP_CFG_TFTPC_CMD
+    #define FAPP_CFG_TFTPC_CMD          (0)
 #endif
 
 /************************************************************************
 *    "tftpup" command.
 *************************************************************************/
-#ifndef FAPP_CFG_TFTPUP_CMD
-    #define FAPP_CFG_TFTPUP_CMD         (0)
+#ifndef FAPP_CFG_TFTPCUP_CMD
+    #define FAPP_CFG_TFTPCUP_CMD        (0)
 #endif
 
 /************************************************************************
 *    "tftps" command.
 *************************************************************************/
-#ifndef FAPP_CFG_TFTPS_CMD
-    #define FAPP_CFG_TFTPS_CMD          (0)
+#ifndef FAPP_CFG_TFTP_CMD
+    #define FAPP_CFG_TFTP_CMD           (0)
 #endif
 
 /************************************************************************
@@ -546,6 +592,14 @@
     #define FAPP_CFG_SETGET_CMD_GO      (0)
 #endif
 
+/* Wi-Fi set/get parameters */
+#ifndef FAPP_CFG_SETGET_CMD_SSID
+    #define FAPP_CFG_SETGET_CMD_SSID        (0)
+#endif
+#ifndef FAPP_CFG_SETGET_CMD_PASSPHRASE
+    #define FAPP_CFG_SETGET_CMD_PASSPHRASE  (0)
+#endif
+
 /* DNS set/get parameters */
 #ifndef FAPP_CFG_SETGET_CMD_DNS
     #define FAPP_CFG_SETGET_CMD_DNS     (0)
@@ -558,7 +612,8 @@
         FAPP_CFG_SETGET_CMD_SCRIPT|FAPP_CFG_SETGET_CMD_RAW|\
         FAPP_CFG_SETGET_CMD_TFTP|FAPP_CFG_SETGET_CMD_IMAGE|\
         FAPP_CFG_SETGET_CMD_TYPE|FAPP_CFG_SETGET_CMD_GO|\
-        FAPP_CFG_SETGET_CMD_DNS|FAPP_CFG_SETGET_CMD_HOSTNAME)
+        FAPP_CFG_SETGET_CMD_DNS|FAPP_CFG_SETGET_CMD_HOSTNAME|\
+        FAPP_CFG_SETGET_CMD_SSID|FAPP_CFG_SETGET_CMD_PASSPHRASE)
 #endif
 
 
@@ -571,7 +626,11 @@
 #ifndef FAPP_CFG_PARAMS_TFTP
 #define FAPP_CFG_PARAMS_TFTP            (FAPP_CFG_SETGET_CMD_TFTP|FAPP_CFG_SETGET_CMD_IMAGE|\
         FAPP_CFG_SETGET_CMD_TYPE|FAPP_CFG_SETGET_CMD_GO|\
-        FAPP_CFG_TFTP_CMD|FAPP_CFG_TFTPUP_CMD|FAPP_CFG_TFTPS_CMD)
+        FAPP_CFG_TFTPC_CMD|FAPP_CFG_TFTPCUP_CMD|FAPP_CFG_TFTP_CMD)
+#endif
+
+#ifndef FAPP_CFG_PARAMS_WIFI
+#define FAPP_CFG_PARAMS_WIFI            (FAPP_CFG_SETGET_CMD_SSID|FAPP_CFG_SETGET_CMD_PASSPHRASE)
 #endif
 
 
@@ -620,7 +679,7 @@
 
 /************************************************************************/
 #ifndef FAPP_CFG_SHELL_MAX_LINE_LENGTH
-    #define FAPP_CFG_SHELL_MAX_LINE_LENGTH  (60)
+    #define FAPP_CFG_SHELL_MAX_LINE_LENGTH  (100)
 #endif
 
 /************************************************************************
@@ -729,6 +788,70 @@
 #endif
 
 /**************************************************************************/ /*!
+ * @brief    Defines the default IP address for the Wi-Fi interface.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_addr().
+ ******************************************************************************/
+#ifndef FAPP_CFG_WIFI_IP4_ADDR
+    #define FAPP_CFG_WIFI_IP4_ADDR          (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default IP Subnetmask for the Wi-Fi interface.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_addr().
+ ******************************************************************************/
+#ifndef FAPP_CFG_WIFI_IP4_MASK
+    #define FAPP_CFG_WIFI_IP4_MASK          (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default Gateway IP address for the Wi-Fi interface.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_gateway().
+ ******************************************************************************/
+#ifndef FAPP_CFG_WIFI_IP4_GW
+    #define FAPP_CFG_WIFI_IP4_GW            (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default DNS IP address for the Wi-Fi interface.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_dns().
+ ******************************************************************************/
+#ifndef FAPP_CFG_WIFI_IP4_DNS
+    #define FAPP_CFG_WIFI_IP4_DNS           (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default IP address for the Wi-Fi interface in Access Point mode.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_addr().
+ ******************************************************************************/
+#ifndef FAPP_CFG_WIFI_AP_IP4_ADDR
+    #define FAPP_CFG_WIFI_AP_IP4_ADDR          (FNET_IP4_ADDR_INIT(192U, 168U, 0U, 1U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default IP Subnetmask for the Wi-Fi interface in Access Point mode.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_addr().
+ ******************************************************************************/
+#ifndef FAPP_CFG_WIFI_AP_IP4_MASK
+    #define FAPP_CFG_WIFI_AP_IP4_MASK          (FNET_IP4_ADDR_INIT(255U, 255U, 255U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default Gateway IP address for the Wi-Fi interface in Access Point mode.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_gateway().
+ ******************************************************************************/
+#ifndef FAPP_CFG_WIFI_AP_IP4_GW
+    #define FAPP_CFG_WIFI_AP_IP4_GW            (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
+/**************************************************************************/ /*!
+ * @brief    Defines the default DNS IP address for the Wi-Fi interface in Access Point mode.
+ *           At runtime, it can be changed by @ref fnet_netif_set_ip4_dns().
+ ******************************************************************************/
+#ifndef FAPP_CFG_WIFI_AP_IP4_DNS
+    #define FAPP_CFG_WIFI_AP_IP4_DNS           (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
+#endif
+
+/**************************************************************************/ /*!
  * @brief   Testing of mutex nesting conflict:
  *               - @b @c 1 = is enabled.
  *               - @c 0 = is disabled (Default value).@n
@@ -737,6 +860,11 @@
  ******************************************************************************/
 #ifndef FAPP_CFG_TEST_MUTEX_CONFLICT
     #define FAPP_CFG_TEST_MUTEX_CONFLICT    0
+#endif
+
+
+#ifdef FNET_CFG_HEAP_SIZE
+    #error "FAPP_CFG_DEFAULT_IF parameter is obsolete. It is covered by FAPP_CFG_PARAMS_NETIF_NAME."
 #endif
 
 #endif

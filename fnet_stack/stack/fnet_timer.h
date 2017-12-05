@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET Timer API.
+***************************************************************************
+*
+*  FNET Timer API.
 *
 ***************************************************************************/
 
@@ -38,7 +38,7 @@
 /**************************************************************************/ /*!
  * @brief Timer period in milliseconds (period of one timer tick).
  ******************************************************************************/
-#define FNET_TIMER_PERIOD_MS        (10U) /* Do not change it.*/
+#define FNET_TIMER_PERIOD_MS        (10U) /* It may be 1-100ms */
 
 /**************************************************************************/ /*!
  * @brief Number of timer ticks in one hour.
@@ -169,6 +169,24 @@ fnet_time_t fnet_timer_get_interval( fnet_time_t start, fnet_time_t end );
  *
  ******************************************************************************/
 void fnet_timer_delay( fnet_time_t delay_ticks );
+
+/***************************************************************************/ /*!
+ *
+ * @brief    SW Timer polling function.
+ *
+ * @see FNET_CFG_TIMER_POLL_AUTOMATIC
+ *
+ ******************************************************************************
+ *
+ * This function checks timeouts for TCP, ARP, IP and other stack activities.@n
+ * The user application should call this function periodically, 
+ * after the FNET stack initialization, and only if @ref FNET_CFG_TIMER_POLL_AUTOMATIC is 0.@n
+ * Recommended polling period is 100ms or less.@n
+ * If @ref FNET_CFG_TIMER_POLL_AUTOMATIC is 1, this function is called automatically
+ * by FNET in HW interrupt.
+ *
+ ******************************************************************************/
+void fnet_timer_poll(void);
 
 /*! @} */
 

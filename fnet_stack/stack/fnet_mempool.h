@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief FNET memory pools API.
+***************************************************************************
+*
+*  FNET memory pools API.
 *
 ***************************************************************************/
 

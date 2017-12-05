@@ -18,9 +18,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief SW timer implementation.
+***************************************************************************
+*
+*  SW timer implementation.
 *
 ***************************************************************************/
 
@@ -115,19 +115,36 @@ void fnet_timer_ticks_inc( void )
     fnet_current_time++;
 
 #if FNET_CFG_DEBUG_TIMER && FNET_CFG_DEBUG
-    if((fnet_current_time % 10) == 0)
+    /* Print once per second */
+    if((fnet_current_time % (1000/FNET_TIMER_PERIOD_MS)) == 0)
+    {
         FNET_DEBUG_TIMER("!");
+    }
 #endif
 }
 
 /************************************************************************
 * DESCRIPTION: Handles timer interrupts
 *************************************************************************/
+#if FNET_CFG_TIMER_POLL_AUTOMATIC
 void fnet_timer_handler_bottom(void *cookie)
 {
-    struct fnet_net_timer *timer = fnet_tl_head;
-
     FNET_COMP_UNUSED_ARG(cookie);
+
+    fnet_timer_poll();
+}
+#endif
+
+/************************************************************************
+* DESCRIPTION: Timer polling function.
+*************************************************************************/
+void fnet_timer_poll(void)
+{
+    struct fnet_net_timer *timer;
+
+    fnet_isr_lock();
+
+    timer = fnet_tl_head;
 
     while(timer)
     {
@@ -143,6 +160,8 @@ void fnet_timer_handler_bottom(void *cookie)
 
         timer = timer->next;
     }
+
+    fnet_isr_unlock();
 }
 
 /************************************************************************

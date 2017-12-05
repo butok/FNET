@@ -17,9 +17,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-**********************************************************************/
-/*!
-* @brief IPv6 protocol implementation.
+***************************************************************************
+*
+*  IPv6 protocol implementation.
 *
 ***************************************************************************/
 
@@ -475,17 +475,17 @@ static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_fragment
 /************************************************************************
 * DESCRIPTION: Prepare sockets addreses for upper protocol.
 *************************************************************************/
-void fnet_ip6_set_socket_addr(fnet_netif_t *netif, fnet_ip6_header_t *ip_hdr, struct sockaddr *src_addr,  struct sockaddr *dest_addr )
+void fnet_ip6_set_socket_addr(fnet_netif_t *netif, fnet_ip6_header_t *ip_hdr, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr )
 {
-    fnet_memset_zero(src_addr, sizeof(struct sockaddr));
+    fnet_memset_zero(src_addr, sizeof(struct fnet_sockaddr));
     src_addr->sa_family = AF_INET6;
-    FNET_IP6_ADDR_COPY(&ip_hdr->source_addr, &((struct sockaddr_in6 *)(src_addr))->sin6_addr.s6_addr);
-    ((struct sockaddr_in6 *)(src_addr))->sin6_scope_id = netif->scope_id;
+    FNET_IP6_ADDR_COPY(&ip_hdr->source_addr, &((struct fnet_sockaddr_in6 *)(src_addr))->sin6_addr.s6_addr);
+    ((struct fnet_sockaddr_in6 *)(src_addr))->sin6_scope_id = netif->scope_id;
 
-    fnet_memset_zero(dest_addr, sizeof(struct sockaddr));
+    fnet_memset_zero(dest_addr, sizeof(struct fnet_sockaddr));
     dest_addr->sa_family = AF_INET6;
-    FNET_IP6_ADDR_COPY(&ip_hdr->destination_addr, &((struct sockaddr_in6 *)(dest_addr))->sin6_addr.s6_addr);
-    ((struct sockaddr_in6 *)(dest_addr))->sin6_scope_id = netif->scope_id;
+    FNET_IP6_ADDR_COPY(&ip_hdr->destination_addr, &((struct fnet_sockaddr_in6 *)(dest_addr))->sin6_addr.s6_addr);
+    ((struct fnet_sockaddr_in6 *)(dest_addr))->sin6_scope_id = netif->scope_id;
 }
 
 /************************************************************************
@@ -511,15 +511,15 @@ void fnet_ip6_input( fnet_netif_t *netif, fnet_netbuf_t *nb )
 *************************************************************************/
 static void fnet_ip6_input_low(void *cookie)
 {
-    fnet_ip6_header_t   *hdr;
-    fnet_netif_t        *netif;
-    fnet_netbuf_t       *nb;
-    fnet_prot_if_t      *protocol;
-    fnet_ip6_addr_t     *source_addr;
-    fnet_ip6_addr_t     *destination_addr;
-    fnet_uint16_t       payload_length;
-    struct sockaddr     src_addr;
-    struct sockaddr     dest_addr;
+    fnet_ip6_header_t       *hdr;
+    fnet_netif_t            *netif;
+    fnet_netbuf_t           *nb;
+    fnet_prot_if_t          *protocol;
+    fnet_ip6_addr_t         *source_addr;
+    fnet_ip6_addr_t         *destination_addr;
+    fnet_uint16_t           payload_length;
+    struct fnet_sockaddr    src_addr;
+    struct fnet_sockaddr    dest_addr;
 
     FNET_COMP_UNUSED_ARG(cookie);
 
@@ -1934,7 +1934,7 @@ fnet_error_t fnet_ip6_setsockopt(struct _fnet_socket_if_t *sock, fnet_socket_opt
         {
             fnet_index_t                    i;
             fnet_ip6_multicast_list_entry_t **multicast_entry = FNET_NULL;
-            const struct ipv6_mreq          *mreq = (const struct ipv6_mreq *)optval;
+            const struct fnet_ipv6_mreq     *mreq = (const struct fnet_ipv6_mreq *)optval;
             fnet_netif_t                    *netif;
 
             if(mreq->ipv6imr_interface == 0u)
@@ -1946,7 +1946,7 @@ fnet_error_t fnet_ip6_setsockopt(struct _fnet_socket_if_t *sock, fnet_socket_opt
                 netif = (fnet_netif_t *)fnet_netif_get_by_scope_id(mreq->ipv6imr_interface);
             }
 
-            if((optlen != sizeof(struct ipv6_mreq)) /* Check size.*/
+            if((optlen != sizeof(struct fnet_ipv6_mreq)) /* Check size.*/
                || (netif == FNET_NULL) /* Found IF.*/
                || (!FNET_IP6_ADDR_IS_MULTICAST(&mreq->ipv6imr_multiaddr.s6_addr)) /* Check if the address is multicast.*/
                || (!(sock->protocol_interface)) || (sock->protocol_interface->type != SOCK_DGRAM )
