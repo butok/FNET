@@ -646,6 +646,8 @@ static fnet_return_t fnet_qca_wifi_connect(struct fnet_netif *netif, fnet_wifi_c
                     goto EXIT;
                 }
 
+                A_MDELAY(1000); /* Workaround QCA connection issue */
+
                 /* Connect to an AP with the security configuration by user. */
                 if(qcom_commit(FNET_QCA_DEVICE_ID) != A_OK)
                 {
@@ -778,13 +780,6 @@ static fnet_return_t fnet_qca_wifi_access_point(fnet_netif_t *netif, fnet_wifi_a
                     goto EXIT;
                 }
 
-                /* Commit parameters.*/
-                if(qcom_commit(FNET_QCA_DEVICE_ID) != A_OK)
-                {
-                    FNET_DEBUG_QCA("ERROR: qcom_commit failed\r\n");
-                    goto EXIT;
-                }
-
                 /* Add Information Element (IE) to Probe-Response and Beacon frames.*/
                 if(qcom_set_appie(FNET_QCA_DEVICE_ID, WMI_FRAME_BEACON, params->ie, params->ie_size) != A_OK)
                 {
@@ -795,7 +790,17 @@ static fnet_return_t fnet_qca_wifi_access_point(fnet_netif_t *netif, fnet_wifi_a
                 {
                     FNET_DEBUG_QCA("ERROR: qcom_set_appie failed\r\n");
                     goto EXIT;
+                }    
+
+                A_MDELAY(1000); /* Workaround QCA connection issue */
+
+                /* Commit parameters.*/
+                if(qcom_commit(FNET_QCA_DEVICE_ID) != A_OK)
+                {
+                    FNET_DEBUG_QCA("ERROR: qcom_commit failed\r\n");
+                    goto EXIT;
                 }
+
                 result = FNET_OK;
             }
         }

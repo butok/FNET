@@ -423,6 +423,7 @@ void fapp_main(void)
 /************************************************************************
 * DESCRIPTION: Socket RX callback.
 ************************************************************************/
+#if FNET_CFG_SOCKET_CALLBACK_ON_RX
 static void fapp_socket_rx_callback(void)
 {
     BaseType_t xHigherPriorityTaskWoken;
@@ -436,6 +437,7 @@ static void fapp_socket_rx_callback(void)
         portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
     }
 }
+#endif
 
 /************************************************************************
 * DESCRIPTION: FreeRTOS task.
@@ -476,8 +478,10 @@ void fapp_main_freertos( void )
         }
         else
         {
+        #if FNET_CFG_SOCKET_CALLBACK_ON_RX
             /* Registers the "socket layer activity" event handler.*/
             fnet_socket_set_callback_on_rx(fapp_socket_rx_callback);
+        #endif
 
             fnet_println("[FREERTOS] Starting scheduler.");
             vTaskStartScheduler();

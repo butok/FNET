@@ -135,7 +135,7 @@
 #define FNET_CFG_DEBUG_QCA  1 /* QCA debug messages */
 #define FNET_CFG_DEBUG      1
 
-#if 0 /* You may disbale Ethernet interface.*/
+#if 0 /* You may disable Ethernet interface.*/
 #define FNET_CFG_CPU_ETH0   (0)
 #endif
 

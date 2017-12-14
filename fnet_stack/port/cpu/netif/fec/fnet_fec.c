@@ -73,7 +73,7 @@ static void fnet_fec_phy_discover_addr (fnet_fec_if_t *fec_if, fnet_uint8_t phy_
 void fnet_fec_debug_mii_print_regs(fnet_netif_t *netif) ;
 
 #if FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM && FNET_FEC_HW_TX_PROTOCOL_CHECKSUM_FIX
-    static void fnet_fec_checksum_clear(fnet_uint16_t type, fnet_uint8_t *datagram, fnet_size_t datagram_size);
+    static void fnet_fec_checksum_clear(fnet_uint8_t *datagram, fnet_size_t datagram_size);
 #endif
 #if FNET_CFG_MULTICAST
     static fnet_uint32_t fnet_fec_crc_hash(fnet_mac_addr_t multicast_addr);
@@ -629,15 +629,16 @@ static void fnet_fec_rx_buf_next( fnet_fec_if_t *fec_if)
 * !!!! The checksum field MUST be cleared, otherwise the checksum will be corrupted. !!!!
 *************************************************************************/
 #if FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM && FNET_FEC_HW_TX_PROTOCOL_CHECKSUM_FIX
-static void fnet_fec_checksum_clear(fnet_uint16_t type, fnet_uint8_t *datagram, fnet_size_t datagram_size)
+static void fnet_fec_checksum_clear(fnet_uint8_t *datagram, fnet_size_t datagram_size)
 {
-    fnet_uint8_t    *ip_hdr = datagram;
-    fnet_uint8_t    protocol = 0;
-    fnet_size_t     ip_hdr_size;
-    fnet_uint8_t    *prot_hdr;
+    fnet_eth_header_t   *eth_hdr = (fnet_eth_header_t *)datagram;
+    fnet_uint8_t        *ip_hdr = datagram+sizeof(fnet_eth_header_t);
+    fnet_uint8_t        protocol = 0;
+    fnet_size_t         ip_hdr_size;
+    fnet_uint8_t        *prot_hdr;
 
     /* IPv4 */
-    if((type == FNET_ETH_TYPE_IP4) && (datagram_size >= sizeof(fnet_ip4_header_t)))
+    if((eth_hdr->type == FNET_HTONS(FNET_ETH_TYPE_IP4)) && (datagram_size >= sizeof(fnet_ip4_header_t)))
     {
         /* If NOT fragmented. The MF bit or fragment offset are zero.*/
         if((((fnet_ip4_header_t *)ip_hdr)->flags_fragment_offset & ~FNET_HTONS(FNET_IP4_DF)) == 0)
@@ -647,7 +648,7 @@ static void fnet_fec_checksum_clear(fnet_uint16_t type, fnet_uint8_t *datagram, 
         }
     }
     /* IPv6 */
-    else if((type == FNET_ETH_TYPE_IP6) && (datagram_size >= sizeof(fnet_ip6_header_t)))
+    else if((eth_hdr->type == FNET_HTONS(FNET_ETH_TYPE_IP6)) && (datagram_size >= sizeof(fnet_ip6_header_t)))
     {
         ip_hdr_size = sizeof(fnet_ip6_header_t);
         protocol = ((fnet_ip6_header_t *)ip_hdr)->next_header;
@@ -711,7 +712,7 @@ void fnet_fec_output(fnet_netif_t *netif, fnet_netbuf_t *nb)
          * This is workaround, in case the checksum is not cleared.*/
         if((nb->flags & FNET_NETBUF_FLAG_HW_PROTOCOL_CHECKSUM) == 0)
         {
-            fnet_fec_checksum_clear(type, (tx_buffer + FNET_ETH_HDR_SIZE), (nb->total_length - FNET_ETH_HDR_SIZE));
+            fnet_fec_checksum_clear(tx_buffer, nb->total_length);
         }
 #endif
 

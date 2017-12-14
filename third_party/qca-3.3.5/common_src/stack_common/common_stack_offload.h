@@ -894,9 +894,8 @@ int32_t Api_SSL_loadCert(void *pCxt, SSL_CTX *ctx, SSL_CERT_TYPE_T type, char *n
 int32_t Api_SSL_listCert(void *pCxt, SSL_FILE_NAME_LIST *fileNames);
 #endif
 
-#else // ENABLE_STACK_OFFLOAD
+#endif // ENABLE_STACK_OFFLOAD
 
 A_STATUS restore_power_state(void *pDCxt, int32_t module);
 
-#endif // ENABLE_STACK_OFFLOAD
 #endif

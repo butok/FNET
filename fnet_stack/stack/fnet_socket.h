@@ -1374,6 +1374,8 @@ fnet_bool_t fnet_socket_addr_is_multicast(const struct fnet_sockaddr *addr);
  *
  * @param callback    Pointer to the event-handler callback function.
  *
+ * @see FNET_CFG_SOCKET_CALLBACK_ON_RX
+ *
  ******************************************************************************
  *
  * This function registers the @c handler callback function for
@@ -1381,7 +1383,8 @@ fnet_bool_t fnet_socket_addr_is_multicast(const struct fnet_sockaddr *addr);
  * This event occurs when the socket layer receives any packet for any existing socket.
  * It can be a packet with or without data-payload including ACK, FIN and SYN.@n
  * For example, it can be used to wake-up a sleeping RTOS application waiting for a network activity.
- * To stop the event handling, set @c callback parameter to zero value.
+ * To stop the event handling, set @c callback parameter to zero value. @n
+ * This function is available only if @ref FNET_CFG_SOCKET_CALLBACK_ON_RX is set to @c 1.
  *
  ******************************************************************************/
 void fnet_socket_set_callback_on_rx( void(*callback)(void));

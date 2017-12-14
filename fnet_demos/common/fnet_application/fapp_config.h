@@ -328,24 +328,21 @@
 #endif
 
 /**************************************************************************/ /*!
- * @brief    Defines the default IP Subnetmask for the Wi-Fi interface in Access Point mode.
- *           At runtime, it can be changed by @ref fnet_netif_set_ip4_addr().
+ * @brief    Defines the default IP Subnetmask for an interface running the DHCP server.
  ******************************************************************************/
 #ifndef FAPP_CFG_DHCP_CMD_IP4_MASK
     #define FAPP_CFG_DHCP_CMD_IP4_MASK          (FNET_IP4_ADDR_INIT(255U, 255U, 255U, 0U))
 #endif
 
 /**************************************************************************/ /*!
- * @brief    Defines the default Gateway IP address for the Wi-Fi interface in Access Point mode.
- *           At runtime, it can be changed by @ref fnet_netif_set_ip4_gateway().
+ * @brief    Defines the default Gateway IP address for an interface running the DHCP server.
  ******************************************************************************/
 #ifndef FAPP_CFG_DHCP_CMD_IP4_GW
     #define FAPP_CFG_DHCP_CMD_IP4_GW            (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
 #endif
 
 /**************************************************************************/ /*!
- * @brief    Defines the default DNS IP address for the Wi-Fi interface in Access Point mode.
- *           At runtime, it can be changed by @ref fnet_netif_set_ip4_dns().
+ * @brief    Defines the default DNS IP address for an interface running the DHCP server.
  ******************************************************************************/
 #ifndef FAPP_CFG_DHCP_CMD_IP4_DNS
     #define FAPP_CFG_DHCP_CMD_IP4_DNS           (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))

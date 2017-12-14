@@ -1936,6 +1936,12 @@ static fnet_bool_t fnet_tcp_dataprocess( fnet_socket_if_t *sk, fnet_netbuf_t *in
         cb->tcpcb_timers.keepalive = FNET_TCP_TIMER_OFF;
     }
 
+    /* Reinitialize delayed ACK timer.*/
+    if((*ackparam & FNET_TCP_AP_SEND_WITH_DELAY) != 0u)
+    {
+        cb->tcpcb_timers.delayed_ack = 1u; /* Delay 200 ms*/
+    }
+
     /* Reset the abort timer.*/
     cb->tcpcb_timers.abort = FNET_TCP_TIMER_OFF;
 
@@ -2100,11 +2106,6 @@ static fnet_bool_t fnet_tcp_dataprocess( fnet_socket_if_t *sk, fnet_netbuf_t *in
     }
     else
     {}
-
-    if((*ackparam & FNET_TCP_AP_SEND_WITH_DELAY) != 0u)
-    {
-        cb->tcpcb_timers.delayed_ack = 1u; /* Delay 200 ms*/
-    }
 
     /* Acknowledgment of the final segment must be send immediatelly.*/
     if(((*ackparam & FNET_TCP_AP_FIN_ACK) != 0u)

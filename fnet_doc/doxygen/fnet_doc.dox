@@ -2094,6 +2094,12 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+
+- Version 4.0.1
+	- Fixed fnet_fec_checksum_clear(), when FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM is enabled.
+	- Fixed possible sending of duplicate TCP ACK.
+	- Other minor changes.
+
 - Version 4.0.0
 	- Added WiFi network interface support:
 		- Added Qualcomm/Atheros WiFi QCA4002 (GT202 board) support. Enabled by FNET_CFG_CPU_WIFI.
@@ -2135,6 +2141,7 @@ FNET public releases:
 	- Switched to IANA ephemeral port range [49152 to 65535].
 	- Deprecated FNET_CFG_\<service_name\>_MAX, covered by already existing FNET_CFG_<service_name>.
 	- Deprecated FAPP_CFG_DEFAULT_IF, covered by existing FAPP_CFG_PARAMS_NETIF_NAME.
+	- Many other changes and fixes.
 	
 - Version 3.9.4
 	- Added Shell example using FreeRTOS.
