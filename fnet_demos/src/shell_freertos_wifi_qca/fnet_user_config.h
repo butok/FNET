@@ -132,11 +132,17 @@
 #define FNET_CFG_CPU_WIFI                   (1)
 #define FNET_CFG_TIMER_POLL_AUTOMATIC       (0) /* Disable stack timer in interrupt. Required by the QCA driver, otherwise it causes assert during TX. */
 
-#define FNET_CFG_DEBUG_QCA  1 /* QCA debug messages */
-#define FNET_CFG_DEBUG      1
+#if 1 /* QCA debug messages */
+#define FNET_CFG_DEBUG_QCA                  (1) 
+#define FNET_CFG_DEBUG                      (1)
+#endif
+
+#if 0 /* You may enable Wi-Fi firmware update to the latest version */
+#define FNET_CFG_CPU_WIFI_FW_UPDATE         (1) 
+#endif
 
 #if 0 /* You may disable Ethernet interface.*/
-#define FNET_CFG_CPU_ETH0   (0)
+#define FNET_CFG_CPU_ETH0                   (0)
 #endif
 
 #endif /* _FNET_USER_CONFIG_H_ */

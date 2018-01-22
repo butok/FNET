@@ -117,7 +117,7 @@
  * memory duiring flashing of the application. */
 #define FAPP_CFG_PARAMS_REWRITE_FLASH    (1)
 
-#if 0 /* On startup script.*/
+#if 1 /* On startup script.*/
     #define FAPP_CFG_STARTUP_SCRIPT          "http;"     /* For example "http; telnet" */
 #endif
 
@@ -128,6 +128,7 @@
 /* Wi-Fi parameters */ 
 /* Default network interface set to Wi-Fi */
 #define FAPP_CFG_PARAMS_NETIF_NAME              FNET_CFG_CPU_WIFI_NAME
+/* Default parameters for "connect" command */
 #define FAPP_CFG_PARAMS_WIFI_SSID               "ssid"
 #define FAPP_CFG_PARAMS_WIFI_WPA_PASSPHRASE     "password"
 

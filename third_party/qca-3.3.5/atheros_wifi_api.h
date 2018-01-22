@@ -376,7 +376,7 @@ typedef struct ath_program_flash
 {
     uint8_t *buffer;
     uint32_t load_addr;
-    uint16_t length;
+    uint32_t length; //AB was uint16_t
     uint32_t result;
 } ATH_PROGRAM_FLASH_STRUCT;
 

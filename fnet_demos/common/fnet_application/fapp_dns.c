@@ -89,60 +89,83 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
     struct fnet_dns_params      dns_params;
     fnet_netif_desc_t           netif = fnet_netif_get_default();
     fnet_char_t                 ip_str[FNET_IP_ADDR_STR_SIZE];
-    fnet_index_t                error_param;
     fnet_dns_desc_t             dns_desc;
+    fnet_index_t                i;
 
     /* Set DNS client/resolver parameters.*/
     fnet_memset_zero(&dns_params, sizeof(struct fnet_dns_params));
+    
+    dns_params.addr_family = AF_INET;
 
-    /**** Define addr type to request ****/
-    if (!fnet_strcmp(argv[2], "4"))
+    /* [-n <if name>] [-n <server ip>] [4|6] */
+    for(i = 1u; i < (argc-1) /*avoid the last parameter.*/; i++)
     {
-        dns_params.addr_family = AF_INET;
-    }
-    else if (!fnet_strcmp(argv[2], "6"))
-    {
-        dns_params.addr_family = AF_INET6;
-    }
-    else
-    {
-        error_param = 2u;
-        goto ERROR_PARAMETER;
-    }
-
-    /**** Define DNS server address.****/
-    if(argc == 4u)
-    {
-        if(fnet_inet_ptos(argv[3], &dns_params.dns_server_addr) == FNET_ERR)
+        if (!fnet_strcmp(argv[i], "-n")) /*[-n <if name>] */
         {
-            error_param = 3u;
+            i++;
+            if(i < argc)
+            {
+                netif = fnet_netif_get_by_name(argv[i]);
+            }
+            else
+            {
+                goto ERROR_PARAMETER;
+            }
+        }
+        else if (!fnet_strcmp(argv[i], "-s")) /*[-s <server name>] */
+        {
+            i++;
+            if(i < argc)
+            {
+                if(fnet_inet_ptos(argv[3], &dns_params.dns_server_addr) == FNET_ERR)
+                {
+                    goto ERROR_PARAMETER;
+                }
+            }
+            else
+            {
+                goto ERROR_PARAMETER;
+            }
+        }
+        /* Addr family to request */
+        else if (!fnet_strcmp(argv[2], "4"))
+        {
+            dns_params.addr_family = AF_INET;
+        }
+        else if (!fnet_strcmp(argv[2], "6"))
+        {
+            dns_params.addr_family = AF_INET6;
+        }
+        else/* Wrong parameter.*/
+        {
             goto ERROR_PARAMETER;
         }
     }
-    else /* The DNS server address is not provided by user.*/
+
+    /* The DNS server address is not provided by user.*/
+    if(dns_params.dns_server_addr.sa_family == AF_UNSPEC)
     {
+#if FNET_CFG_IP4 /* IPv4 DNS has higher priority.*/
+        if( (((struct fnet_sockaddr_in *)(&dns_params.dns_server_addr))->sin_addr.s_addr = fnet_netif_get_ip4_dns(netif)) != (fnet_ip4_addr_t)0)
+        {
+            dns_params.dns_server_addr.sa_family = AF_INET;
+        }
+        else
+#endif
 #if FNET_CFG_IP6
-        /* IPv6 DNS has higher priority over IPv4.*/
         if(fnet_netif_get_ip6_dns(netif, 0U, (fnet_ip6_addr_t *)&dns_params.dns_server_addr.sa_data) == FNET_TRUE)
         {
             dns_params.dns_server_addr.sa_family = AF_INET6;
         }
         else
 #endif
-#if FNET_CFG_IP4
-            if( (((struct fnet_sockaddr_in *)(&dns_params.dns_server_addr))->sin_addr.s_addr = fnet_netif_get_ip4_dns(netif)) != (fnet_ip4_addr_t)0)
-            {
-                dns_params.dns_server_addr.sa_family = AF_INET;
-            }
-            else
-#endif
-            {
-                fnet_shell_println(desc, FNET_DNS_UNKNOWN);
-                return;
-            }
+        {
+            fnet_shell_println(desc, FNET_DNS_UNKNOWN);
+            return;
+        }
     }
 
-    dns_params.host_name = argv[1];                     /* Host name to resolve.*/
+    dns_params.host_name = argv[argc-1];                /* Host name to resolve - last parameter.*/
     dns_params.callback = fapp_dns_callback_resolved;   /* Callback function.*/
     dns_params.cookie = desc;                           /* Application-specific parameter
                                                         which will be passed to fapp_dns_callback_resolved().*/
@@ -169,7 +192,7 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
     return;
 
 ERROR_PARAMETER:
-    fnet_shell_println(desc, FAPP_PARAM_ERR, argv[error_param]);
+    fnet_shell_println(desc, FAPP_PARAM_ERR, argv[i]);
     return;
 }
 

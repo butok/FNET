@@ -195,6 +195,29 @@ fnet_return_t fnet_wifi_access_point(fnet_netif_desc_t netif_desc, fnet_wifi_acc
  ******************************************************************************/
 fnet_wifi_op_mode_t fnet_wifi_get_op_mode(fnet_netif_desc_t netif_desc);
 
+/***************************************************************************/ /*!
+ *
+ * @brief    Updates firmware of the Wi-Fi interface.
+ *
+ * @param netif_desc       Network interface descriptor.
+ *
+ * @param fw_buffer        Firmware buffer.
+ *
+ * @param fw_buffer_size   Firmware buffer size.
+ *
+ * @return This function returns:
+ *   - @ref FNET_OK if no error occurs.
+ *   - @ref FNET_ERR if an error occurs.
+ *
+ ******************************************************************************
+ *
+ * This function does firmware update of the Wi-Fi module. @n
+ * It is valid only if FNET_CFG_CPU_WIFI_FW_UPDATE is set.
+ * @note QCA firmware buffer can be found in @verbatim \fnet\third_party\qca-x.x.x\flashotp_x_x_x.h @endverbatim
+ *
+ ******************************************************************************/
+fnet_return_t fnet_wifi_fw_update(fnet_netif_desc_t netif_desc, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size);
+
 #if defined(__cplusplus)
 }
 #endif

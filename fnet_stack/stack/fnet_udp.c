@@ -143,13 +143,13 @@ static fnet_error_t fnet_udp_output(  struct fnet_sockaddr *src_addr, const stru
     if( 0
 #if FNET_CFG_IP4
         || ( (dest_addr->sa_family == AF_INET)
-             && ((netif = fnet_ip4_route(((struct fnet_sockaddr_in *)(dest_addr))->sin_addr.s_addr)) != FNET_NULL)
+             && (netif || ((netif = fnet_ip4_route(((struct fnet_sockaddr_in *)(dest_addr))->sin_addr.s_addr)) != FNET_NULL) )
              && (netif->features & FNET_NETIF_FEATURE_HW_TX_PROTOCOL_CHECKSUM)
              && (fnet_ip4_will_fragment(netif, nb->total_length) == FNET_FALSE) /* Fragmented packets are not inspected.*/  )
 #endif
 #if FNET_CFG_IP6
         || ( (dest_addr->sa_family == AF_INET6)
-             && (netif || (((netif = fnet_ip6_route(&((struct fnet_sockaddr_in6 *)(src_addr))->sin6_addr.s6_addr, &((struct fnet_sockaddr_in6 *)(dest_addr))->sin6_addr.s6_addr))) != FNET_NULL) )
+             && (netif || ((netif = fnet_ip6_route(&((struct fnet_sockaddr_in6 *)(src_addr))->sin6_addr.s6_addr, &((struct fnet_sockaddr_in6 *)(dest_addr))->sin6_addr.s6_addr)) != FNET_NULL) )
              && (netif->features & FNET_NETIF_FEATURE_HW_TX_PROTOCOL_CHECKSUM)
              && (fnet_ip6_will_fragment(netif, nb->total_length) == FNET_FALSE) /* Fragmented packets are not inspected.*/  )
 #endif
@@ -649,13 +649,12 @@ static void fnet_udp_control_input(fnet_prot_notify_t command, struct fnet_socka
         {
             if((fnet_socket_addr_are_equal(&sock->foreign_addr, dest_addr))
                && (sock->foreign_addr.sa_port == udp_header->destination_port)
-               && (sock->local_addr.sa_port != udp_header->source_port)
+               && (sock->local_addr.sa_port == udp_header->source_port)
                && (fnet_socket_addr_are_equal(&sock->local_addr, src_addr)))
             {
-                continue;
+                sock->options.local_error = error;
+                break;
             }
-
-            sock->options.local_error = error;
         }
     }
 }

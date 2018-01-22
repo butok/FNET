@@ -138,25 +138,54 @@ void fnet_ip4_release( void )
 fnet_netif_t *fnet_ip4_route( fnet_ip4_addr_t dest_ip )
 {
     fnet_netif_t    *netif;
-    fnet_netif_t    *res_netif = (fnet_netif_t *)fnet_netif_get_default() ;
+    fnet_netif_t    *res_netif = FNET_NULL;
+    fnet_netif_t    *netif_default = (fnet_netif_t *)fnet_netif_get_default();
 
+    /* Local network */
     for (netif = fnet_netif_list; netif != 0; netif = netif->next)
     {
-        if((dest_ip & netif->ip4_addr.subnetmask) == (netif->ip4_addr.address & netif->ip4_addr.subnetmask))
+        if(netif->ip4_addr.subnetmask && ((dest_ip & netif->ip4_addr.subnetmask) == (netif->ip4_addr.address & netif->ip4_addr.subnetmask)))
         {
             res_netif = netif;
             break;
         }
     }
 
+    /* Public network. Get interface wit a gateway. */
+    if(res_netif == FNET_NULL)
+    {
+        /* Default interface has priority. */
+        if(netif_default && netif_default->ip4_addr.gateway)
+        {
+            res_netif = netif_default;
+        }
+        else
+        {
+            for (netif = fnet_netif_list; netif != 0; netif = netif->next)
+            {
+                /* If there is a gateway */
+                if(netif->ip4_addr.gateway)
+                {
+                    res_netif = netif;
+                    break;
+                }
+            }
+        }
+    }
+
+    /* If there is no proper interface - choose the default one */
+    if(res_netif == FNET_NULL)
+    {
+        res_netif = netif_default;
+    }
+
 #if FNET_CFG_LOOPBACK
     /* Anything sent to one of the host's own IP address is sent to the loopback interface.*/
-    if(dest_ip == res_netif->ip4_addr.address)
+    if(res_netif && (dest_ip == res_netif->ip4_addr.address))
     {
         res_netif = FNET_LOOP_IF;
     }
 #endif /* FNET_CFG_LOOPBACK */
-
 
     return res_netif;
 }

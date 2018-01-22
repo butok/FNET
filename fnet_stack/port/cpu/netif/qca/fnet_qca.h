@@ -56,6 +56,7 @@ extern "C" {
 #endif
 
 void fnet_qca_output(fnet_netif_t *netif, fnet_netbuf_t *nb);
+fnet_return_t fnet_qca_fw_update(fnet_netif_t *netif, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size);
 
 #if defined(__cplusplus)
 }

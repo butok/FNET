@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2017 by Andrey Butok. FNET Community.
+* Copyright 2017-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -37,6 +37,13 @@
 #include <custom_wlan_api.h>
 #include <htc.h>
 #include <atheros_wifi_api.h>
+#include <atheros_wifi_internal.h>
+#include <hw20_apb_map.h>
+#include <hw20_mbox_reg.h>
+#include <hw40_rtc_reg.h>
+#include <targaddrs.h>
+#include <bmi.h>
+#include <bmi_msg.h>
 
 #if FNET_CFG_DEBUG_QCA && FNET_CFG_DEBUG
     #define FNET_DEBUG_QCA   FNET_DEBUG_PRINTF
@@ -47,6 +54,10 @@
 /* FNET does not use QCA off-load stack */
 #if ENABLE_STACK_OFFLOAD
     #error ENABLE_STACK_OFFLOAD must be set to 0 in a_config.h
+#endif
+
+#if !defined(QOSAL_TASK_DESTRUCTION) || (QOSAL_TASK_DESTRUCTION == 0)
+    #error QOSAL_TASK_DESTRUCTION must be set to 1 in a_config.h
 #endif
 
 #define FNET_QCA_DEVICE_ID     0 /* Device ID */
@@ -66,6 +77,9 @@ static fnet_return_t fnet_qca_wifi_disconnect(struct fnet_netif *netif);
 static void fnet_qca_on_connect(uint8_t event, uint8_t devId, char *bssid, uint8_t bssConn);
 static fnet_return_t fnet_qca_get_ssid_info(const char* ssid, WLAN_AUTH_MODE *auth_mode, WLAN_CRYPT_TYPE *encrypt_mode);
 static fnet_wifi_op_mode_t fnet_qca_get_op_mode(struct fnet_netif *netif);
+#if FNET_CFG_CPU_WIFI_FW_UPDATE
+static fnet_return_t fnet_qca_fw_update(fnet_netif_t *netif, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size);
+#endif
 
 /************************************************************************
 *     Global Data Structures
@@ -79,7 +93,10 @@ const fnet_wifi_api_t fnet_qca_wif_api =
     .wifi_connect = fnet_qca_wifi_connect,
     .wifi_access_point = fnet_qca_wifi_access_point,
     .wifi_disconnect =  fnet_qca_wifi_disconnect,
-    .wifi_get_op_mode = fnet_qca_get_op_mode
+    .wifi_get_op_mode = fnet_qca_get_op_mode,
+#if FNET_CFG_CPU_WIFI_FW_UPDATE
+    .wifi_fw_update = fnet_qca_fw_update,
+#endif
 };
 
 /*****************************************************************************
@@ -124,6 +141,11 @@ fnet_qca_if_t fnet_qca_if;
  ******************************************************************************/
 extern const QCA_MAC_IF_STRUCT ATHEROS_WIFI_IF;
 
+extern ATH_CUSTOM_INIT_T ath_custom_init;
+extern uint32_t ar4XXX_boot_param;
+/* To access internal functions */
+extern uint32_t Custom_Api_Mediactl(QCA_CONTEXT_STRUCT_PTR qca_ptr, uint32_t command_id, void *inout_param);
+
 const QCA_IF_STRUCT qca_0 =
 {
     .MAC_IF       = &ATHEROS_WIFI_IF,   /* pointer to MAC interface struct */
@@ -142,7 +164,7 @@ const QCA_PARAM_STRUCT fnet_qca_default_params =
 
 
 /* QCA driver context */
-QCA_CONTEXT_STRUCT          wifiCtx;
+QCA_CONTEXT_STRUCT          wifiCtx; /* TBD: make it part of control structure */
 static WLAN_AUTH_MODE       fnet_qca_auth_mode = WLAN_AUTH_NONE;
 static QCOM_WLAN_DEV_MODE   fnet_qca_dev_mode = QCOM_WLAN_DEV_MODE_STATION;
 
@@ -192,7 +214,14 @@ static fnet_return_t fnet_qca_init(fnet_netif_t *netif)
     FNET_DEBUG_QCA("[QCA] Initialized\r\n");
 
     #if FNET_CFG_DEBUG_QCA && FNET_CFG_DEBUG
+    if((ar4XXX_boot_param & AR4XXX_PARAM_MODE_BMI) == AR4XXX_PARAM_MODE_BMI)
     {
+        FNET_DEBUG_QCA("[QCA] BMI Mode\r\n");
+        /* FW version number in BMI mode is O. */
+    }
+    else
+    {
+        /* Print Firmware version number */
         ATH_VERSION_STR versionstr;
         if(A_FAILED(qcom_get_versionstr(&versionstr)))
         {
@@ -214,7 +243,22 @@ static fnet_return_t fnet_qca_init(fnet_netif_t *netif)
 *************************************************************************/
 static void fnet_qca_release(fnet_netif_t *netif)
 {
-    ATHEROS_WIFI_IF.STOP(&wifiCtx);
+    FNET_ASSERT(netif != FNET_NULL);
+    FNET_ASSERT(netif->netif_prv != FNET_NULL);
+
+    if(fnet_qca_if.netif) /* If initialized */
+    {
+        if((fnet_qca_if.is_connected == FNET_TRUE) 
+            && (fnet_qca_wifi_disconnect(netif) != FNET_OK))
+        {
+                FNET_DEBUG_QCA("ERROR: qcom_disconnect failed\r\n");
+        }
+        ATHEROS_WIFI_IF.STOP(&wifiCtx);
+
+        fnet_qca_if.netif = FNET_NULL;
+    }
+
+    FNET_DEBUG_QCA("[QCA] Release\r\n");
 }
 
 /************************************************************************
@@ -857,7 +901,7 @@ static fnet_return_t fnet_qca_get_statistics(fnet_netif_t *netif, struct fnet_ne
     FNET_ASSERT(netif != FNET_NULL);
     FNET_ASSERT(netif->netif_prv != FNET_NULL);
 
-    fnet_return_t   result = FNET_OK;
+    fnet_return_t   result = FNET_ERR;
     fnet_qca_if_t   *qca_if;
 
     if(netif && (netif->netif_api->netif_type == FNET_NETIF_TYPE_WIFI))
@@ -868,10 +912,6 @@ static fnet_return_t fnet_qca_get_statistics(fnet_netif_t *netif, struct fnet_ne
 
         *statistics = qca_if->statistics;
         result = FNET_OK;
-    }
-    else
-    {
-        result = FNET_ERR;
     }
 
     return result;
@@ -927,6 +967,193 @@ EXIT_2:
     fnet_netbuf_free_chain(nb);
     return;
 }
+
+/************************************************************************
+* DESCRIPTION: QCA reset.
+*************************************************************************/
+fnet_return_t fnet_qca_reset(fnet_netif_t *netif)
+{
+    fnet_qca_if_t   *qca_if;
+    fnet_return_t   result = FNET_ERR;
+
+    if(netif && (netif->netif_api->netif_type == FNET_NETIF_TYPE_WIFI) && netif->netif_prv )
+    {
+        qca_if = (fnet_qca_if_t *)(((fnet_eth_if_t *)(netif->netif_prv))->eth_prv);
+        
+        if(qca_if)
+        {
+
+        }
+    }
+
+EXIT:
+    return result;
+}
+
+
+/*!
+ * @brief Taken from former code, used as a callback to configure BMI
+ */
+static A_STATUS Driver_BMIConfig(void *pCxt)
+{
+    A_DRIVER_CONTEXT *pDCxt = GET_DRIVER_COMMON(pCxt);
+    /* The config is contained within the driver itself */
+    uint32_t param = 0, options = 0, sleep = 0, address = 0;
+    (void)options;
+    (void)sleep;
+
+    if (pDCxt->targetVersion != ATH_FIRMWARE_TARGET && pDCxt->targetVersion != TARGET_AR400X_REV2 &&
+        pDCxt->targetVersion != TARGET_AR400X_REV3 && (pDCxt->targetVersion != TARGET_AR400X_REV4))
+    {
+        /* compatible wifi chip version is decided at compile time */
+        A_ASSERT(0);
+        return A_ERROR;
+    }
+
+    /* Temporarily disable system sleep */
+    address = MBOX_BASE_ADDRESS + LOCAL_SCRATCH_ADDRESS;
+    if (A_OK != BMIReadSOCRegister(pCxt, address, &param))
+    {
+        return A_ERROR;
+    }
+    options = A_LE2CPU32(param);
+    param |= A_CPU2LE32(AR6K_OPTION_SLEEP_DISABLE);
+    if (A_OK != BMIWriteSOCRegister(pCxt, address, param))
+    {
+        return A_ERROR;
+    }
+    address = RTC_BASE_ADDRESS + SYSTEM_SLEEP_ADDRESS;
+    if (A_OK != BMIReadSOCRegister(pCxt, address, &param))
+    {
+        return A_ERROR;
+    }
+    sleep = A_LE2CPU32(param);
+    param |= A_CPU2LE32(WLAN_SYSTEM_SLEEP_DISABLE_SET(1));
+    if (A_OK != BMIReadSOCRegister(pCxt, address, &param))
+    {
+        return A_ERROR;
+    }
+
+    /* Run at 40/44MHz by default */
+    param = CPU_CLOCK_STANDARD_SET(0);
+    address = RTC_BASE_ADDRESS + CPU_CLOCK_ADDRESS;
+    if (A_OK != BMIWriteSOCRegister(pCxt, address, A_CPU2LE32(param)))
+    {
+        return A_ERROR;
+    }
+
+    address = RTC_BASE_ADDRESS + LPO_CAL_ADDRESS;
+    param = LPO_CAL_ENABLE_SET(1);
+    if (A_OK != BMIWriteSOCRegister(pCxt, address, A_CPU2LE32(param)))
+    {
+        return A_ERROR;
+    }
+
+    return A_OK;
+}
+
+/************************************************************************
+* DESCRIPTION: QCA Firmware update.
+*************************************************************************/
+#if FNET_CFG_CPU_WIFI_FW_UPDATE
+fnet_return_t fnet_qca_fw_update(fnet_netif_t *netif, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size)
+{
+    fnet_qca_if_t   *qca_if;
+    fnet_return_t   result = FNET_ERR;
+
+    if(netif && (netif->netif_api->netif_type == FNET_NETIF_TYPE_WIFI) && netif->netif_prv && fw_buffer && fw_buffer_size)
+    {
+        qca_if = (fnet_qca_if_t *)(((fnet_eth_if_t *)(netif->netif_prv))->eth_prv);
+        
+        if(qca_if)
+        {
+            ATH_PROGRAM_FLASH_STRUCT flash_msg;
+            ATH_IOCTL_PARAM_STRUCT inout_param;
+
+            /* Switch to BMI mode */
+            
+            /* Release QCA driver */
+            fnet_qca_release(netif);
+
+            /* Prepare QCA initialization parameters for BMI mode */
+            {
+                ath_custom_init.Driver_BMIConfig = Driver_BMIConfig;
+                ath_custom_init.skipWmi = true;
+                ath_custom_init.exitAtBmi = true;
+
+                ar4XXX_boot_param = AR4XXX_PARAM_MODE_BMI;
+            }
+
+            /* Init QCA driver in BMI mode*/
+            result = fnet_qca_init(netif);
+
+            if(result == FNET_OK)
+            {
+                FNET_DEBUG_QCA("[QCA] Flashing firmware %d bytes ...\r\n", fw_buffer_size);
+
+                /* Load the firmware buffer to QCA */ 
+                fnet_memset_zero(&flash_msg, sizeof(flash_msg));
+                fnet_memset_zero(&inout_param, sizeof(inout_param));
+
+                flash_msg.load_addr = BMI_SEGMENTED_WRITE_ADDR;
+                flash_msg.result = 0;
+                flash_msg.buffer = (uint8_t *)fw_buffer;
+                flash_msg.length = fw_buffer_size;
+
+                inout_param.cmd_id = ATH_PROGRAM_FLASH;
+                inout_param.data = &flash_msg;
+                inout_param.length = sizeof(flash_msg);
+                
+                if (A_OK != Custom_Api_Mediactl(&wifiCtx, QCA_MEDIACTL_VENDOR_SPECIFIC, &inout_param))
+                {
+                    FNET_DEBUG_QCA("[QCA] ERROR: Custom_Api_Mediactl(ATH_PROGRAM_FLASH) failed\r\n");
+                    goto EXIT;
+                }
+
+                /* Execute Flashing */
+                fnet_memset_zero(&flash_msg, sizeof(flash_msg));
+                fnet_memset_zero(&inout_param, sizeof(inout_param));
+
+                flash_msg.load_addr = 0xA02800; /* Address - undocumented reversed-engineered magic number - ??  9-12 Bytes of binary (swaped)*/
+                flash_msg.result = 0x1A0;       /* Option - undocumented reversed-engineered magic number - ?? 46-47 Bytes of binary (not swaped)*/
+                flash_msg.buffer = 0;
+                flash_msg.length = 0;
+
+                inout_param.cmd_id = ATH_EXECUTE_FLASH;
+                inout_param.data = &flash_msg;
+                inout_param.length = sizeof(flash_msg);
+                
+                if (A_OK != Custom_Api_Mediactl(&wifiCtx, QCA_MEDIACTL_VENDOR_SPECIFIC, &inout_param))
+                {
+                    FNET_DEBUG_QCA("[QCA] ERROR: Custom_Api_Mediactl(ATH_EXECUTE_FLASH) failed\r\n");
+                    goto EXIT;
+                }
+
+                FNET_DEBUG_QCA("[QCA] Flashing is done.\r\n");
+            }
+EXIT:
+            /* Switch to the normal mode */
+
+            /* Release driver */
+            fnet_qca_release(netif);
+
+            /* Prepare QCA initialization parameters for normal mode */
+            {
+                ath_custom_init.Driver_BMIConfig = NULL;
+                ath_custom_init.skipWmi = false;
+                ath_custom_init.exitAtBmi = false;
+                
+                ar4XXX_boot_param = AR4XXX_PARAM_MODE_NORMAL;
+            }
+
+            /* Init driver */
+            result = fnet_qca_init(netif);
+        }
+    }
+
+    return result;
+}
+#endif /* FNET_CFG_CPU_WIFI_FW_UPDATE */
 
 /************************************************************************
 * DESCRIPTION: Link status.

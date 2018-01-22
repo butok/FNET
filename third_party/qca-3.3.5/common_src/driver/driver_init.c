@@ -46,6 +46,7 @@
 #if (DRIVER_CONFIG_ENABLE_HOST_FW_DOWNLOAD)
 #include <ath_fw_binary.h>
 #include "hw20_mbox_reg.h"
+#include "hw40_rtc_reg.h"
 #endif /* DRIVER_CONFIG_ENABLE_HOST_FW_DOWNLOAD */
 
 #define HI_OPTION_NUM_DEV_SHIFT 0x9

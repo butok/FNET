@@ -187,6 +187,7 @@
           <state>A_LITTLE_ENDIAN=1</state>
           <state>ENABLE_STACK_OFFLOAD=0</state>
           <state>NON_BLOCKING_RX=1</state>
+          <state>QOSAL_TASK_DESTRUCTION=1</state>
           <state>FRDM_K64F</state>
           <state>FREEDOM</state>
           <state>FNET_CFG_CPU_MK64FN1=1</state>
@@ -1189,6 +1190,7 @@
           <state>A_LITTLE_ENDIAN=1</state>
           <state>ENABLE_STACK_OFFLOAD=0</state>
           <state>NON_BLOCKING_RX=1</state>
+          <state>QOSAL_TASK_DESTRUCTION=1</state>
           <state>FRDM_K64F</state>
           <state>FREEDOM</state>
           <state>FNET_CFG_CPU_MK64FN1=1</state>

@@ -189,7 +189,7 @@ const struct fnet_shell_command fapp_cmd_table [] =
     { .name = "telnet",     .min_args = 0u, .max_args = 1u,     .cmd_ptr = fapp_telnet_cmd,  .description = "Start Telnet server", .syntax = "[release]"},
 #endif
 #if FAPP_CFG_DNS_CMD && FNET_CFG_DNS
-    { .name = "dns",        .min_args = 2u, .max_args = 3u,     .cmd_ptr = fapp_dns_cmd,     .description = "Resolve IPv4|6 address of <host name>", .syntax = "<host name> 4|6 [<server ip>]"},
+    { .name = "dns",        .min_args = 1u, .max_args = 6u,     .cmd_ptr = fapp_dns_cmd,     .description = "Resolve IPv4|6 address of <host name>", .syntax = "[-n <if name>] [-s <server ip>] [4|6] <host name>"},
 #endif
 #if FAPP_CFG_LLMNR_CMD && FNET_CFG_LLMNR
     { .name = "llmnr",      .min_args = 0u, .max_args = 3u,     .cmd_ptr = fapp_llmnr_cmd,    .description = "Start LLMNR server", .syntax = "[-n <if name>] [release]"},
@@ -232,6 +232,9 @@ const struct fnet_shell_command fapp_cmd_table [] =
     { .name = "connect",    .min_args = 0u, .max_args = 2u,     .cmd_ptr = fapp_wifi_connect_cmd,  .description = "Connect to Wi-Fi access point", .syntax = "[<ssid> [<passphrase>]]"},
     { .name = "disconnect", .min_args = 0u, .max_args = 0u,     .cmd_ptr = fapp_wifi_disconnect_cmd,  .description = "Turn off the Wi-Fi interface radio", .syntax = ""},
     { .name = "ap",         .min_args = 0u, .max_args = 3u,     .cmd_ptr = fapp_wifi_ap_cmd,  .description = "Turn on Wi-Fi Access Point", .syntax = "[<ssid> [<passphrase> [wpa|wpa2]]]"},
+#if FNET_CFG_CPU_WIFI_FW_UPDATE
+    { .name = "fw",         .min_args = 0u, .max_args = 0u,     .cmd_ptr = fapp_wifi_fw_cmd,  .description = "Update Wi-Fi firmware", .syntax = ""},
+#endif
 #endif
 #if FNET_CFG_PING && FAPP_CFG_PING6_CMD /*absolutly the same as the "ping" command */
     { .name = "ping6",      .min_args = 1u, .max_args = 14u,    .cmd_ptr = fapp_ping_cmd,   .description = "Send ICMP ECHO requests", .syntax = "[-c <count>][-i <seconds>]\n\r\t[-p <pattern>][-s <size>]\n\r\t[-h <hoplimit/ttl>] <ip>\t"}, /* -s -n should be ignored.*/

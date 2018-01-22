@@ -171,9 +171,10 @@ void fapp_netif_info_print( fnet_shell_desc_t desc, fnet_netif_desc_t netif)
     fnet_char_t             name[FNET_NETIF_NAMELEN];
     fnet_bool_t             is_connected;
     fnet_wifi_op_mode_t     wifi_op_mode;
+    fnet_netif_type_t       netif_type;
 
-    fnet_shell_println(desc, "%s Interface%s:", fapp_netif_type_str[fnet_netif_get_type(netif)], 
-                                                ((netif == fnet_netif_get_default()) ? " <default>":""));
+    netif_type = fnet_netif_get_type(netif);
+    fnet_shell_println(desc, "%s Interface%s:", fapp_netif_type_str[netif_type], ((netif == fnet_netif_get_default()) ? " <default>":""));
 
     fnet_netif_get_name(netif, name, sizeof(name));
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Name", name);
@@ -183,13 +184,29 @@ void fapp_netif_info_print( fnet_shell_desc_t desc, fnet_netif_desc_t netif)
     is_connected = fnet_netif_is_connected(netif);
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Media State", fapp_netif_connection_state_str[is_connected]);
 
-    wifi_op_mode = fnet_wifi_get_op_mode(netif);
-    if(wifi_op_mode)
+    /* Wi-Fi mode */
+    if(netif_type == FNET_NETIF_TYPE_WIFI)
     {
-        fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Wi-Fi mode", fapp_wifi_op_mode[wifi_op_mode]);
+        wifi_op_mode = fnet_wifi_get_op_mode(netif);
+        if(wifi_op_mode)
+        {
+            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Wi-Fi mode", fapp_wifi_op_mode[wifi_op_mode]);
+        }
     }
 
+    /* MAC address */
+    if((netif_type == FNET_NETIF_TYPE_WIFI) || (netif_type == FNET_NETIF_TYPE_ETHERNET))
+    {
+        fnet_char_t     mac_str[FNET_MAC_ADDR_STR_SIZE];
+        fnet_mac_addr_t macaddr;
+
+        fnet_netif_get_hw_addr(netif, macaddr, sizeof(fnet_mac_addr_t));
+        fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "MAC Address", fnet_mac_to_str(macaddr, mac_str));
+    }
+
+    /* IP address information */
     fapp_netif_addr_print(desc, AF_SUPPORTED, netif, FNET_TRUE);
+
 #if FNET_CFG_IP4
     {
         fnet_ip4_addr_t ip_addr;

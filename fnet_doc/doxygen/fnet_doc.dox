@@ -843,6 +843,13 @@ https:// [fe80::211:22ff:fe33:4455]
 
 */
 
+
+
+
+
+
+
+
 //********************************************************************
 //************************* Shell FreeRTOS Demo Quick Start **********
 //********************************************************************
@@ -866,6 +873,13 @@ https:// [fe80::211:22ff:fe33:4455]
 
 */
 
+
+
+
+
+
+
+
 //********************************************************************
 //**************** Shell FreeRTOS WiFi QCA Demo Quick Start **********
 //********************************************************************
@@ -880,7 +894,8 @@ Tools used during this quick start:
 - Terminal program (Tera Term Pro v4.63 http://ttssh2.sourceforge.jp).
 - WEB browser.
 - FNET project source code, coming with this document.
-- GT202-GC3013-FRDM4-KIT board (https://www.arrow.com/en/products/gt202-gc3013-frdm4-kit/longthink-technology-hk-limited)
+- GT202-GC3013-FRDM4-KIT board (https://www.arrow.com/en/products/gt202-gc3013-frdm4-kit/longthink-technology-hk-limited) @n
+  FNET was tested with QCA4002, firmware version 3.3.5 ans 3.3.4.
 	
 
 @section fnet_stepbystep_shell_freertos_wifi_qca Step by step
@@ -1121,12 +1136,36 @@ SHELL> [QCA] (EVENT) AP disconnect
 [LINK] wifi: disconnected => Script: dhcp -n wifi release; llmnr -n wifi release; dhcpc -n wifi release;
 SHELL>
 @endverbatim
+- There is possibility to update the the Wi-Fi module firmware to the latest version. Set FNET_CFG_CPU_WIFI_FW_UPDATE to 1, in the project fnet_user_config.h. @n
+  After that you may try the @c fw  shell command. In your terminal program window you should see: 
+@verbatim
+SHELL> fw
+Wi-Fi FW update. Do not turn off...
+Wi-Fi FW update is completed
+@endverbatim	
+The firmware binary is placed in the @verbatim fnet/third_party/qca-x.x.x/flashotp_x_x_x.h @endverbatim
+
 
 @note
-- The application project includes QCA4002 SDK, with some modification to support on-chip stack. Its source code is located in fnet/third_party/qca-x.x.x/.
+- The application project includes QCA4002 SDK, with some modifications and fixes to support on-chip stack. Its source code is located in fnet/third_party/qca-x.x.x/.
 - The Wi-Fi interface connect/disconnect scripts, in the access point operation mode, are defined by @c FAPP_CFG_LINK_CONNECT_WIFI_ACCESS_POINT_SCRIPT and @c FAPP_CFG_LINK_DISCONNECT_WIFI_ACCESS_POINT_SCRIPT.
 - The DHCPv4 server interface address parameters are defined by FAPP_CFG_DHCP_CMD_IP4_ADDR, FAPP_CFG_DHCP_CMD_IP4_MASK, FAPP_CFG_DHCP_CMD_IP4_GW and FAPP_CFG_DHCP_CMD_IP4_DNS.
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //********************************************************************
 //************************* Bootloader Quick Start *******************
@@ -2095,6 +2134,16 @@ Press any key to continue . . .
 
 FNET public releases:
 
+- Version 4.0.2
+	- Fixed Wi-Fi QCA interface release.
+	- Fixed possible wrong IPv4 address routing on multi-interface systems.
+	- Fixed UDP socket notification about a ICMPv4 reported error. Thanks to Christophe Graulle.
+	- Add Wi-Fi module firmware update:
+		- It is enabled by FNET_CFG_CPU_WIFI_FW_UPATE.
+		- Added fnet_wifi_fw_update().
+		- Added shell command "fw" updating the QCA4002(GT202) firmware to the latest version 3.3.5 
+	- Updated shell "dns" command syntax to "dns [-n <if name>] [-s <server ip>] [4|6] <host name>"
+	
 - Version 4.0.1
 	- Fixed fnet_fec_checksum_clear(), when FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM is enabled.
 	- Fixed possible sending of duplicate TCP ACK.

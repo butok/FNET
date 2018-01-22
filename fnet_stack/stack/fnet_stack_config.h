@@ -484,7 +484,7 @@
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_SOCKET_MAX
-    #define FNET_CFG_SOCKET_MAX                 (10U)
+    #define FNET_CFG_SOCKET_MAX                 (12U)
 #endif
 
 /**************************************************************************/ /*!
@@ -501,8 +501,8 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_SOCKET_CALLBACK_ON_RX
  * @brief    "Socket Rx" event handler callback:
- *               - @c 1 = is supported (Default value).
- *               - @b @c 0 = is not supported.@n
+ *               - @c 1 = is supported.
+ *               - @b @c 0 = is not supported (Default value).@n
  * This event occurs when the socket layer receives any packet for any existing socket.
  * It can be a packet with or without data-payload including ACK, FIN and SYN.@n
  * The user callback is registered by fnet_socket_set_callback_on_rx().

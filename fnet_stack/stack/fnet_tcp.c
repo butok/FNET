@@ -3221,7 +3221,7 @@ static fnet_error_t fnet_tcp_sendseg(struct fnet_tcp_segment *segment)
     if( 0
 #if FNET_CFG_IP4
         || ( (segment->dest_addr.sa_family == AF_INET)
-             && ((netif = fnet_ip4_route(((struct fnet_sockaddr_in *)(&segment->dest_addr))->sin_addr.s_addr)) != FNET_NULL)
+             && (netif || ((netif = fnet_ip4_route(((struct fnet_sockaddr_in *)(&segment->dest_addr))->sin_addr.s_addr)) != FNET_NULL))
              && (netif->features & FNET_NETIF_FEATURE_HW_TX_PROTOCOL_CHECKSUM)
              && (fnet_ip4_will_fragment(netif, nb->total_length) == FNET_FALSE) /* Fragmented packets are not inspected.*/  )
 #endif

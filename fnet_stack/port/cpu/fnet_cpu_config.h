@@ -894,13 +894,25 @@
 
 /**************************************************************************/ /*!
  * @def      FNET_CFG_CPU_WIFI
- * @brief    QCA4002 Wi-Fi module interface:
+ * @brief    Wi-Fi module interface (QCA4002):
  *               - @c 1 = is enabled.
  *               - @b @c 0 = is disabled (default value).
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_WIFI
-    #define FNET_CFG_CPU_WIFI        	                (0)
+    #define FNET_CFG_CPU_WIFI                           (0)
+#endif
+
+/**************************************************************************/ /*!
+ * @def      FNET_CFG_CPU_WIFI_FW_UPDATE
+ * @brief    Wi-Fi module interface firmware update:
+ *               - @c 1 = is enabled.
+ *               - @b @c 0 = is disabled (default value).
+ * @see fnet_wifi_fw_update()
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_CPU_WIFI_FW_UPDATE
+    #define FNET_CFG_CPU_WIFI_FW_UPDATE                 (0)
 #endif
 
 /**************************************************************************/ /*!

@@ -39,6 +39,10 @@ void fapp_wifi_connect_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char
 void fapp_wifi_ap_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 void fapp_wifi_disconnect_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 
+#if FNET_CFG_CPU_WIFI_FW_UPDATE
+void fapp_wifi_fw_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
+#endif
+
 #if defined(__cplusplus)
 }
 #endif

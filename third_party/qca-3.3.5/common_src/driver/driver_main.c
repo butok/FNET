@@ -819,7 +819,8 @@ void Atheros_Driver_Task(void *pCxt)
 #if QOSAL_TASK_DESTRUCTION
     } while (0);
 
-    atheros_wifi_task_id = QOSAL_NULL_TASK_HANDLE;
+    atheros_wifi_task_id = NULL;
+    vTaskDelete(NULL); //AB
 #else
         /* block on this event until a task wants to re-activate the driver thread */
         // qosal_task_suspend(NULL);

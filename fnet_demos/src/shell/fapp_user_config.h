@@ -1,11 +1,7 @@
-/**********************************************************************/
-/*!
-*
-* @file fapp_user_config.h
-*
-* @brief FNET Application User configuration file.
-* It should be used to change any default configuration parameter of FAPP.
-*
+/**************************************************************************
+* FNET Demo Application User configuration file.
+* It should be used to change any default application (APP) configuration 
+* parameter.
 ***************************************************************************/
 
 #ifndef _FAPP_USER_CONFIG_H_

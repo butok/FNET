@@ -552,17 +552,22 @@ fnet_return_t fnet_socket_connect( fnet_socket_t s, struct fnet_sockaddr *name, 
 
         if (fnet_socket_addr_is_unspecified(&local_addr_tmp))
         {
+            fnet_netif_t *netif;
+
+            netif = (fnet_netif_t *)fnet_netif_get_by_scope_id(foreign_addr.sa_scope_id);
+
             switch(local_addr_tmp.sa_family)
             {
 #if FNET_CFG_IP4
                 case AF_INET:
                 {
-                    fnet_netif_t *netif;
-
-                    if((netif = fnet_ip4_route(((struct fnet_sockaddr_in *)(&foreign_addr))->sin_addr.s_addr)) == 0)
+                    if(netif == FNET_NULL)
                     {
-                        error = FNET_ERR_NETUNREACH; /* No route. */
-                        goto ERROR_SOCK;
+                        if((netif = fnet_ip4_route(((struct fnet_sockaddr_in *)(&foreign_addr))->sin_addr.s_addr)) == 0)
+                        {
+                            error = FNET_ERR_NETUNREACH; /* No route. */
+                            goto ERROR_SOCK;
+                        }
                     }
 
                     ((struct fnet_sockaddr_in *)(&local_addr_tmp))->sin_addr.s_addr = netif->ip4_addr.address;
@@ -574,8 +579,7 @@ fnet_return_t fnet_socket_connect( fnet_socket_t s, struct fnet_sockaddr *name, 
                 {
                     const fnet_ip6_addr_t *local_ip6_addr;
                     /* Check if can find a route to the destination.*/
-                    if((local_ip6_addr = fnet_ip6_select_src_addr((fnet_netif_t *)fnet_netif_get_by_scope_id(((struct fnet_sockaddr_in6 *)(&foreign_addr))->sin6_scope_id),
-                                         &((struct fnet_sockaddr_in6 *)(&foreign_addr))->sin6_addr.s6_addr)) == FNET_NULL)
+                    if((local_ip6_addr = fnet_ip6_select_src_addr(netif, &((struct fnet_sockaddr_in6 *)(&foreign_addr))->sin6_addr.s6_addr)) == FNET_NULL)
                     {
                         error = FNET_ERR_NETUNREACH; /* No route. */
                         goto ERROR_SOCK;
@@ -1922,14 +1926,18 @@ fnet_netif_t *fnet_socket_addr_route(const struct fnet_sockaddr *dest_addr)
         {
 #if FNET_CFG_IP4
             case AF_INET:
-                result = fnet_ip4_route(((const struct fnet_sockaddr_in *)dest_addr)->sin_addr.s_addr);
+                /* Check Scope ID.*/
+                if((result = (fnet_netif_t *)fnet_netif_get_by_scope_id(dest_addr->sa_scope_id)) == FNET_NULL)
+                {
+                    result = fnet_ip4_route(((const struct fnet_sockaddr_in *)dest_addr)->sin_addr.s_addr);
+                }
                 break;
 #endif
 #if FNET_CFG_IP6
             case AF_INET6:
 
                 /* Check Scope ID.*/
-                if((result = (fnet_netif_t *)fnet_netif_get_by_scope_id( ((const struct fnet_sockaddr_in6 *)dest_addr)->sin6_scope_id )) == FNET_NULL)
+                if((result = (fnet_netif_t *)fnet_netif_get_by_scope_id(dest_addr->sa_scope_id)) == FNET_NULL)
                 {
                     const fnet_ip6_addr_t   *src_ip;
 

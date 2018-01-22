@@ -41,6 +41,7 @@ typedef struct
     fnet_return_t       (*wifi_access_point)(struct fnet_netif *netif_desc, fnet_wifi_access_point_params_t *params);/* Initializes a Wi-Fi access point.*/
     fnet_return_t       (*wifi_disconnect)(struct fnet_netif *netif);                                                /* Disconnects from a Wi-Fi network.*/
     fnet_wifi_op_mode_t (*wifi_get_op_mode)(struct fnet_netif *netif);                                               /* Retrieves current operation mode of the Wi-Fi interface.*/
+    fnet_return_t       (*wifi_fw_update)(struct fnet_netif *netif, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size); /* Wi-Fi interface firmware update (optional).*/
 } fnet_wifi_api_t;
 
 /************************************************************************

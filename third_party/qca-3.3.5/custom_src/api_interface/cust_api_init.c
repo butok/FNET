@@ -258,12 +258,6 @@ static uint32_t Custom_Api_Shutdown(struct qca_context_struct *qca_ptr)
 {
     void *pCxt = qca_ptr->MAC_CONTEXT_PTR;
 
-#if 1
-    // Notify driver task to reset itself
-    Driver_DestroyThread(pCxt);
-
-// It simply cannot work
-#else //Original version
     if (pCxt != NULL)
     {
         Api_DeInitStart(pCxt);
@@ -283,7 +277,6 @@ static uint32_t Custom_Api_Shutdown(struct qca_context_struct *qca_ptr)
         p_Global_Cxt = NULL;
         qca_ptr->MAC_CONTEXT_PTR = NULL;
     }
-#endif
 
     return (uint32_t)QCA_OK;
 }

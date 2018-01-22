@@ -101,3 +101,21 @@ fnet_wifi_op_mode_t fnet_wifi_get_op_mode(fnet_netif_desc_t netif_desc)
 
     return result;
 }
+/************************************************************************
+* DESCRIPTION: Updates firmware of the Wi-Fi interface.
+*************************************************************************/
+fnet_return_t fnet_wifi_fw_update(fnet_netif_desc_t netif_desc, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size)
+{
+    fnet_return_t   result = FNET_ERR;
+    fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
+
+    if(netif && (netif->netif_api->netif_type == FNET_NETIF_TYPE_WIFI))
+    {
+        if(netif->netif_api->wifi_api && netif->netif_api->wifi_api->wifi_fw_update)
+        {
+            result = netif->netif_api->wifi_api->wifi_fw_update(netif, fw_buffer, fw_buffer_size);
+        }
+    }
+
+    return result;
+}

@@ -1135,7 +1135,6 @@ static const fnet_uint8_t *fnet_mdns_process_query(fnet_mdns_if_t *mdns_if, fnet
                                         {
                                            mdns_if->is_shared_response_delay += FNET_MDNS_SHARED_RESPONSE_DELAY_MIN;
                                         }
-                                        fnet_println("%d", mdns_if->is_shared_response_delay);
                                         #endif
                                     }
                                 }
