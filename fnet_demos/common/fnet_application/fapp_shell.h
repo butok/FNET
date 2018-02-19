@@ -58,6 +58,10 @@ void fapp_help_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
 void fapp_shell_on_init( fnet_shell_desc_t desc );
 void fapp_go_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 
+#if FAPP_CFG_GO_CMD || FAPP_CFG_BOOTLOADER || FAPP_CFG_SETGET_CMD_BOOT
+void fapp_go ( fnet_shell_desc_t desc, fnet_uint32_t address );
+#endif
+
 #if defined(__cplusplus)
 }
 #endif

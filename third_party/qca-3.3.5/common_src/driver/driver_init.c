@@ -137,7 +137,6 @@ static A_STATUS SetupServices(void *pCxt)
 {
     A_STATUS status;
     HTC_SERVICE_CONNECT_REQ connect;
-    A_DRIVER_CONTEXT *pDCxt = GET_DRIVER_COMMON(pCxt);
 
     do
     {
@@ -206,10 +205,10 @@ static A_STATUS SetupServices(void *pCxt)
             break;
         }
 
-        A_ASSERT(pDCxt->ac2EpMapping[WMM_AC_BE] != 0);
-        A_ASSERT(pDCxt->ac2EpMapping[WMM_AC_BK] != 0);
-        A_ASSERT(pDCxt->ac2EpMapping[WMM_AC_VI] != 0);
-        A_ASSERT(pDCxt->ac2EpMapping[WMM_AC_VO] != 0);
+        A_ASSERT(GET_DRIVER_COMMON(pCxt)->ac2EpMapping[WMM_AC_BE] != 0);
+        A_ASSERT(GET_DRIVER_COMMON(pCxt)->ac2EpMapping[WMM_AC_BK] != 0);
+        A_ASSERT(GET_DRIVER_COMMON(pCxt)->ac2EpMapping[WMM_AC_VI] != 0);
+        A_ASSERT(GET_DRIVER_COMMON(pCxt)->ac2EpMapping[WMM_AC_VO] != 0);
     } while (0);
 
     return status;
@@ -223,7 +222,6 @@ static A_STATUS SetupServices(void *pCxt)
  *****************************************************************************/
 uint32_t Driver_DownloadFirmwareBinary(void *pCxt)
 {
-    A_DRIVER_CONTEXT *pDCxt = GET_DRIVER_COMMON(pCxt);
     uint32_t address = 0, param = 0;
 
     /* Temporarily disable system sleep */
@@ -577,6 +575,7 @@ Driver_DeInit(void *pCxt)
     DRIVER_SHARED_RESOURCE_ACCESS_DESTROY(pCxt);
 
     pDCxt->driver_up = false;
+    DRIVER_WAKE_USER(pCxt); //AB
 #if DRIVER_CONFIG_MULTI_TASKING
     A_EVENT_DELETE(&GET_DRIVER_CXT(p_Global_Cxt)->userWakeEvent);
     A_EVENT_DELETE(&GET_DRIVER_CXT(p_Global_Cxt)->driverWakeEvent);

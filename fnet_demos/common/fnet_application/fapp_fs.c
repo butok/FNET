@@ -77,7 +77,7 @@ static fnet_char_t fapp_fs_current_path[FAPP_FS_DIR_PATH_MAX + 1U] = {FNET_FS_SP
 *************************************************************************/
 static const struct fnet_shell_command fapp_fs_cmd_tab [] =
 {
-    { "help", 0, 0, fapp_help_cmd,      "Display this help message.", ""},
+    { "?", 0, 0, fapp_help_cmd,         "Display this help message.", ""},
     { "dir", 0, 0, fapp_fs_dir_cmd,     "Display a list of files & directories.", ""},
     { "cd", 1, 1, fapp_fs_cd_cmd,       "Change the current directory.", "<directory>"},
     { "view", 1, 1, fapp_fs_view_cmd,   "View a text file.", "<file>"},
@@ -108,7 +108,7 @@ static void fapp_fs_init( fnet_shell_desc_t desc )
 
     fnet_shell_println(desc, "\n%s", FAPP_DELIMITER_STR);
     fnet_shell_println(desc, "  File Explorer started.");
-    fnet_shell_println(desc, "  Enter 'help' for command list.");
+    fnet_shell_println(desc, "  Enter '?' for command list.");
     fnet_shell_println(desc, "%s\n", FAPP_DELIMITER_STR);
 }
 

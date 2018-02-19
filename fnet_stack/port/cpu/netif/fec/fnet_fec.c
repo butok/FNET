@@ -451,7 +451,7 @@ static void fnet_fec_release(fnet_netif_t *netif)
 
     fec_if->reg->EIR = 0xFFFFFFFFU;   /* Clear any pending FEC interrupt flags. */
 
-    fnet_isr_vector_release(fec_if->vector_number);
+    fnet_isr_unregister(fec_if->vector_number);
 
     fnet_eth_release(netif); /* Common Ethernet-interface release.*/
 }

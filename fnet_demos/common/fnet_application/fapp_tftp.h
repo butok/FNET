@@ -35,6 +35,8 @@ extern "C" {
 
 #if FAPP_CFG_TFTPC_CMD || FAPP_CFG_TFTPCUP_CMD || FAPP_CFG_TFTP_CMD || FAPP_CFG_SETGET_CMD_TYPE
 
+#include "fapp_params.h"
+
 /********************** RAW **************************************/
 /* RAW Rx handler control structure. */
 struct fapp_tftp_rx_handler_raw_context

@@ -143,18 +143,16 @@ preferred way to configure stack features). @n
 
 The current version of the FNET project has the following directory structure:
 @n
-@n
-@image html fnet_dir_structure.jpg "FNET Directory Structure"
-
 @verbatim
 fnet                        - FNET root directory.
 |-- fnet_stack                - FNET TCP/IP stack.
 |    |-- stack                  - FNET TCP/IP stack platform-independent source code.
 |    |-- service                - FNET Services.
 |    |    |-- autoip              - Auto-IP service.
+|    |    |-- bench               - Benchmark client and server.
 |    |    |-- dhcp                - DHCPv4 client and server.
 |    |    |-- dns                 - DNS client/resolver.
-|    |    |-- flash               - Flash  Memory driver.
+|    |    |-- flash               - Flash Memory driver.
 |    |    |-- fs                  - File System driver.
 |    |    |-- http                - HTTP Server service.
 |    |    |-- link                - Link-Detection service.
@@ -345,7 +343,7 @@ Follow these steps to run the FNET Shell demo application:
  Version 4.0.0
  Built Oct 26 2017 at 13:14:08 by IAR
 
- Enter 'help' for command list.
+ Enter '?' for command list.
 ************************************************
 [FAPP] Application parameters loaded from Flash.
 SHELL>
@@ -419,9 +417,9 @@ SHELL> llmnr
 @endverbatim
 So you can use the host name "fnet" instead of an IP address to find this node on the local network. 
 
-- The Main Shell is now ready to accept user commands. Try @c help command to display a list of all the commands available within the shell:
+- The Main Shell is now ready to accept user commands. Try @c ? command to display a list of all the commands available within the shell:
 @verbatim
->      help                                    - Display this help message
+>         ?                                    - Display this help message
 >       set [<parameter> <value>]              - Set parameter
 >       get [<parameter>]                      - Get parameters
 >      bind [-n <if name>] <IP6 address>       - Bind IPv6 Address
@@ -764,7 +762,7 @@ Follow these steps to run the FNET Shell demo application:
  Version 4.0.0
  Built Oct 26 2017 at 14:14:13 by IAR
 
- Enter 'help' for command list.
+ Enter '?' for command list.
 ************************************************
 [FAPP] Application parameters loaded from Flash.
 SHELL>
@@ -895,8 +893,9 @@ Tools used during this quick start:
 - WEB browser.
 - FNET project source code, coming with this document.
 - GT202-GC3013-FRDM4-KIT board (https://www.arrow.com/en/products/gt202-gc3013-frdm4-kit/longthink-technology-hk-limited) @n
-  FNET was tested with QCA4002, firmware version 3.3.5 ans 3.3.4.
-	
+  @note	- FNET was tested with QCA4002, firmware version 3.0.8, 3.3.4 ans 3.3.5. @n
+		- QCA4002 firmware v3.0.8 (target REV2)	has stability issues. Recommended to use firmware v3.3.5 (target REV4).
+		- GT202 board was tested with frdmk64f rev. D board. It does not work with frdmk64f rev B.
 
 @section fnet_stepbystep_shell_freertos_wifi_qca Step by step
 
@@ -933,7 +932,7 @@ Follow these steps to run the FNET Shell demo application:
  Version 4.0.0
  Built Oct 27 2017 at 13:18:30 by IAR
 
- Enter 'help' for command list.
+ Enter '?' for command list.
 ************************************************
 [QCA] Initialized
 [QCA] Firmware version 3.3.5.9999
@@ -1239,7 +1238,7 @@ Follow these steps to run the FNET Bootloader:
  Version 4.0.0
  Built Oct 26 2017 at 16:32:22 by IAR
 
- Enter 'help' for command list.
+ Enter '?' for command list.
 ************************************************
 [FAPP] Application parameters loaded from Flash.
 Startup script: tftp
@@ -1265,10 +1264,10 @@ Services:
  TFTP Server          : on
 BOOT>
 @endverbatim
-- The Bootloader is now ready to accept user commands. Enter the @c help command to display a list of all commands available within the shell of the Bootloader:
+- The Bootloader is now ready to accept user commands. Enter the @c ? command to display a list of all commands available within the shell of the Bootloader:
 @verbatim
-BOOT> help
->   help                                 - Display this help message
+BOOT> ?
+>      ?                                 - Display this help message
 >    set [<parameter> <value>]           - Set parameter
 >    get [<parameter>]                   - Get parameters
 >   info [-n <if name>]                  - Show interface info
@@ -1400,7 +1399,7 @@ BOOT>
  Version 4.0.0dev
  Built Oct 26 2017 at 16:48:56 by IAR
 
- Enter 'help' for command list.
+ Enter '?' for command list.
 ************************************************
 [FAPP] Application parameters loaded from Flash.
 Press any key to stop (script):   0
@@ -1444,7 +1443,7 @@ go 0x0002703d
  Version 4.0.0dev
  Built Oct 26 2017 at 16:17:57 by IAR
 
- Enter 'help' for command list.
+ Enter '?' for command list.
 ************************************************
 [FAPP] Application parameters loaded from Flash.
 SHELLB>
@@ -1562,7 +1561,7 @@ go 0x00019638
  Version 4.0.0dev
  Built Oct 26 2017 at 16:17:57 by IAR
 
- Enter 'help' for command list.
+ Enter '?' for command list.
 ************************************************
 [FAPP] Application parameters loaded from Flash.
 SHELLB>
@@ -1729,91 +1728,89 @@ or on http://fbench.sf.net
  FNET Throughput Benchmark
 ************************************************
  FNET TCP/IP Stack for MK64FN1
- Version 4.0.0
- Built Oct 27 2017 at 09:43:23 by IAR
+ Version 4.1.0
+ Built Feb 15 2018 at 15:50:38 by IAR
 
- Enter 'help' for command list.
+ Enter '?' for command list.
 ************************************************
 [FAPP] Application parameters loaded from Flash.
-BENCH> 
+BENCH>
 @endverbatim
 
-- The Benchmark application is now ready to accept user commands. Enter the @c help command to display a list of all commands available within the shell of the Benchmark application:
+- The Benchmark application is now ready to accept user commands. Enter the @c ? command to display a list of all commands available within the shell of the Benchmark application:
 @verbatim
-BENCH> help
->   help                                 - Display this help message
->    set [<parameter> <value>]           - Set parameter
->    get [<parameter>]                   - Get parameters
->   info [-n <if name>]                  - Show interface info
->   stat [-n <if name>]                  - Show network statistics
->  dhcpc [-n <if name>] [release|autoip] - Start DHCP client
->   save                                 - Save parameters to the FLASH
->  reset                                 - Reset the board
->benchrx [tcp|udp [<multicast ip>]         - Receiver Benchmark
->benchtx <remote ip>[tcp|udp[<message size>
-        [<number of messages>[<number of iterations>]]]- Transmitter Benchmark
+BENCH> ?
+>         ?                                     - Display this help message
+>       set [<parameter> <value>]               - Set parameter
+>       get [<parameter>]                       - Get parameters
+>      info [-n <if name>]                      - Show interface info
+>      stat [-n <if name>]                      - Show interface statistics
+>     dhcpc [-n <if name>] [release|autoip]     - Start DHCPv4 client
+>    autoip [-n <if name>] [release]            - Start Auto-IP service
+>      save                                     - Save parameters to the FLASH
+>     reset                                     - Reset the board
+>   benchtx [-n <if name>] -a <remote ip> [tcp|udp] [-m <message size>] [-mn <number of messages>] - Benchmark transmitter
+>   benchrx [[-n <if name>] [-a <if ip address>] [tcp|udp]] | release - Benchmark receiver
 BENCH>
 @endverbatim
 
 @subsection fnet_stepbystep_bench_rx Receiver Benchmark
 The Receiver Benchmark command has the following syntax:
 @verbatim
-benchrx [tcp|udp]
+benchrx [[-n <if name>] [-a <if ip address>] [tcp|udp]] | release
 @endverbatim
 - TCP Receiver test:
-	- In the terminal window enter the @c benchrx command:@verbatim
+	- In the terminal window enter the @c benchrx command:
+@verbatim
 BENCH> benchrx
 ************************************************
- TCP RX Test
+ Benchmark server started.
+ IPv4 Address         : 192.168.0.108
+ IPv6 Address         : fe80::211:22ff:fe33:4455
+ Protocol             : TCP
+ Local Port           : 7007
 ************************************************
- IPv4 Address     : 192.168.0.22
- IPv6 Address     : fe80::204:9fff:fe15:4931
- Local Port       : 7007
-Press [Ctr+C] to cancel.
-************************************************
-Waiting. 
+BENCH>
 @endverbatim
 	- In the Benchmark tool choose the TCP protocol and set the remote IP address that is assigned to your board. Changing of other parameters is optional. After parameters are set, press the [Connect/Send] button. @n @n
       @image html fnet_bench_rx_tcp.jpg "TCP RX Test"
 
 	- In your terminal program window you should see:  
 @verbatim
-Receiving from 192.168.0.5:56243
-Results:
-        12720000 bytes in 2.1 seconds = 48457 Kbits/sec
+[BENCH] Receiving from 192.168.0.200 port = 61199
 
-Waiting.
+[BENCH] 12.720000 MBytes in 2.26 Seconds = 45.025 Mbit/sec
 @endverbatim
-	- The test application continues waiting for new tests till you press @c [Ctr+C].
+	- The benchmark server/receiver continues waiting for new tests till you release it by:
+@verbatim
+BENCH> benchrx release
+@endverbatim
 
 - UDP Receiver test:
 	- In the terminal window enter the @c benchrx @c udp command:
 @verbatim
 BENCH> benchrx udp
 ************************************************
- UDP RX Test
+ Benchmark server started.
+ IPv4 Address         : 192.168.0.108
+ IPv6 Address         : fe80::211:22ff:fe33:4455
+ Protocol             : UDP
+ Local Port           : 7007
 ************************************************
- IPv4 Address     : 192.168.0.22
- IPv6 Address     : fe80::204:9fff:fe15:4931
- Local Port       : 7007
-Press [Ctr+C] to cancel.
-************************************************
-Waiting.
+BENCH>
 @endverbatim
 	- In the Benchmark tool choose the UDP protocol and set the remote IP address that is assigned to your board. Changing of other parameters is optional. After parameters are set, press the [Connect/Send] button. @n @n
       @image html fnet_bench_rx_udp.jpg "UDP RX Test"
-      @note 
-The amount of data, received by the remote side, is putted to square brackets. It helps to determine the amount of data was lost during UDP transfer.
-
 	- In your terminal program window you should see:  
 @verbatim
-Receiving from 192.168.0.5:63961
-Results:
-        11936448 bytes in 3.4 seconds = 28085 Kbits/sec
+[BENCH] Receiving from 192.168.0.200 port = 50643
 
-Waiting.
+[BENCH] 12.478321 MBytes in 1.66 Seconds = 60.136 Mbit/sec
 @endverbatim
-	- The test application continues waiting for new tests till you press @c [Ctr+C].
+	- The test application continues waiting for new tests till you release it by:
+@verbatim
+BENCH> benchrx release
+@endverbatim
 
 
 @note 
@@ -1825,34 +1822,29 @@ Waiting.
 @subsection fnet_stepbystep_bench_tx Transmitter Benchmark 
 Transmitter Benchmark command has following syntax:
 @verbatim
-benchtx <receiver IP> [tcp|udp [<message size> [<number of messages> [<number of iterations>]]]
+benchtx [-n <if name>] -a <remote ip> [tcp|udp] [-m <message size>] [-mn <number of messages>]
 @endverbatim
 - TCP Transmitter test:
 	- In the Benchmark tool choose the TCP protocol and the local IP address (if you have several installed networking interface on your PC). Changing of other parameters is optional. After parameters are set, press the [Listen/Receive] button. @n @n
       @image html fnet_bench_tx_tcp.jpg "TCP TX Test"
 
-	- In the terminal window enter the @c benchtx @c <receiver @c IP> command:
+	- In the terminal window enter:
 @verbatim
-BENCH> benchtx 192.168.0.5
+BENCH> benchtx -a 192.168.0.200
 ************************************************
- TCP TX Test
-************************************************
- Remote IP Addr   : 192.168.0.5
- Remote Port      : 7007
- Message Size     : 1472
- Num. of messages : 10000
- Num. of iterations : 1
+ Benchmark client started.
+ Protocol             : TCP
+ Remote IP Addr       : 192.168.0.200
+ Remote Port          : 7007
+ Message Size         : 1472
+ Num. of messages     : 10000
 Press [Ctr+C] to cancel.
 ************************************************
-Connecting.
-Sending.
-Results:
-        14720000 bytes in 3.7 seconds = 31827 Kbits/sec
 
-Test completed.
+[BENCH] 14.720000 MBytes in 2.48 Seconds = 47.483 Mbit/sec
 BENCH>
 @endverbatim
-	- The test application continues waiting for new tests till you press the @c [Stop] button:
+	- The test PC application continues waiting for new tests till you press the @c [Stop] button:
 @n @n
       @image html fnet_bench_tx_tcp_close.jpg "Stop the TCP TX Test"
 
@@ -1860,31 +1852,25 @@ BENCH>
 - UDP Transmitter test:
 	- In the Benchmark tool choose the UDP protocol and the local IP address (if you have several installed networking interface on your PC). Changing of other parameters is optional. After parameters are set, press the [Listen/Receive] button. @n @n
       @image html fnet_bench_tx_udp.jpg "UDP TX Test"
-	- In the terminal window enter the @c benchtx @c <receiver @c IP> @c udp command:
+	- In the terminal window enter:
 @verbatim
-BENCH> benchtx 192.168.0.5 udp
+BENCH> benchtx -a 192.168.0.200 udp
 ************************************************
- UDP TX Test
-************************************************
- Remote IP addr   : 192.168.0.5
- Remote port      : 7007
- Message size     : 1472
- Number of messages : 10000
- Number of iterations : 1
+ Benchmark client started.
+ Protocol             : UDP
+ Remote IP Addr       : 192.168.0.200
+ Remote Port          : 7007
+ Message Size         : 1472
+ Num. of messages     : 10000
 Press [Ctr+C] to cancel.
 ************************************************
-Connecting.
-Sending.
-REMOTE BYTES = 14321088
-Results:
-        14720000 [14321088] bytes in 1.4 seconds = 84114 [81834] Kbits/sec
 
-Test completed.
+[BENCH] 14.720000 MBytes in 1.26 Seconds = 93.459 Mbit/sec
+
 BENCH>
 @endverbatim
-@note 
-The amount of data, received by the remote side, is putted to square brackets. It helps to determine the amount of data was lost during UDP transfer.	
-	- The test application continues waiting for new tests till you press the @c [Stop] button:
+
+	- The test PC application continues waiting for new tests till you press the @c [Stop] button:
 @n @n
       @image html fnet_bench_tx_udp_close.jpg "Stop the UDP TX Test"
 
@@ -2134,12 +2120,24 @@ Press any key to continue . . .
 
 FNET public releases:
 
+- Version 4.1.0
+	- QCA Wi-Fi:
+		- Fixed SSID scanning in the QCA Wi-Fi driver and following failed connection. 
+		- Fixed memory leak and corruption in the QCA Wi-Fi driver release.
+		- Fixed possible data corruption in FNET QCA Wi-Fi adapter.
+		- Added fnet_wifi_fw_get_version() which gets Wi-Fi module firmware version number.
+		- Added Wi-Fi module firmware version number information to the "info" shell command.
+	- Added Benchmark client and server, as services. It has replaced the shell benchmark application.
+	- Renamed the "help" shell command to "?".
+	- Updated FBENCH to v2.0.4.
+	- Other minor fixes.
+
 - Version 4.0.2
 	- Fixed Wi-Fi QCA interface release.
 	- Fixed possible wrong IPv4 address routing on multi-interface systems.
 	- Fixed UDP socket notification about a ICMPv4 reported error. Thanks to Christophe Graulle.
-	- Add Wi-Fi module firmware update:
-		- It is enabled by FNET_CFG_CPU_WIFI_FW_UPATE.
+	- Added Wi-Fi module firmware update:
+		- Enabled by FNET_CFG_CPU_WIFI_FW_UPATE.
 		- Added fnet_wifi_fw_update().
 		- Added shell command "fw" updating the QCA4002(GT202) firmware to the latest version 3.3.5 
 	- Updated shell "dns" command syntax to "dns [-n <if name>] [-s <server ip>] [4|6] <host name>"
@@ -3112,6 +3110,22 @@ which includes all service-specific configuration files.
 *   configuration file @c fnet_user_config.h.
 */
 /*! 
+*	@defgroup fnet_bench_srv_config Benchmark Server Configuration Parameters
+*	@ingroup fnet_service_config 
+*	This section describes the parameters specific to the Benchmark server.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+/*! 
+*	@defgroup fnet_bench_cln_config Benchmark Client Configuration Parameters
+*	@ingroup fnet_service_config 
+*	This section describes the parameters specific to the Benchmark client.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
+/*! 
 *	@defgroup fnet_dns_config DNS Client Configuration Parameters
 *	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the DNS client.
@@ -3346,6 +3360,14 @@ which includes all service-specific configuration files.
 *	@ingroup fnet_service 
 */
 /*! 
+*	@defgroup fnet_bench_srv Benchmark server API
+*	@ingroup fnet_service 
+*/
+/*! 
+*	@defgroup fnet_bench_cln Benchmark client API
+*	@ingroup fnet_service 
+*/
+/*! 
 *	@defgroup fnet_link Link-Detection service API
 *	@ingroup fnet_service 
 */
@@ -3373,7 +3395,6 @@ which includes all service-specific configuration files.
 *	@defgroup fnet_tftp_cln TFTP client API
 *	@ingroup fnet_tftp 
 */
-
 /*! 
 *	@defgroup fnet_tftp_srv TFTP server API
 *	@ingroup fnet_tftp 

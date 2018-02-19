@@ -125,7 +125,7 @@ extern "C" {
 
 /***************************************************************************/ /*!
  *
- * @brief    Initializes DNS client service and starts the host name resolving.
+ * @brief    Initializes the DNS client service and starts the host name resolving.
  *
  * @param params     Initialization parameters.
  *
@@ -156,14 +156,14 @@ fnet_dns_desc_t fnet_dns_init( struct fnet_dns_params *params );
  *
  * @brief    Aborts the resolving and releases the DNS-client service.
  *
- * @param desc     LLMNR server descriptor to be unregistered.
+ * @param desc     DNS client descriptor to be released.
  *
  * @see fnet_dns_init()
  *
  ******************************************************************************
  *
  * This function stops the DNS-client service. It releases all resources
- * used by the service, and unregisters it from the polling list.@n
+ * used by the service, and unregisters it from the service polling list.@n
  * Use this function only in the case of the early termination of the service,
  * because the DNS service is released automatically as soon as the
  * resolving is finished.
@@ -175,7 +175,7 @@ void fnet_dns_release(fnet_dns_desc_t desc);
  *
  * @brief    Detects if the DNS client service is enabled or disabled.
  *
- * @param desc     DNS client descriptor
+ * @param desc     DNS client descriptor.
  *
  * @return This function returns:
  *          - @ref FNET_TRUE if the DNS client is successfully initialized.

@@ -46,7 +46,7 @@
 
 /*  "dhcpc" command.*/
 #define FAPP_CFG_DHCPC_CMD              (1)
-#define FAPP_CFG_DHCPC_CMD_DISCOVER_MAX (3)
+#define FAPP_CFG_DHCPC_CMD_DISCOVER_MAX (5)
 
 /*  "autoip" command.*/
 #define FAPP_CFG_AUTOIP_CMD             (1)

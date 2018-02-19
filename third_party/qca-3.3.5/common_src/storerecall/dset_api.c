@@ -150,6 +150,10 @@ uint32_t qcom_dset_write(HOST_DSET_HANDLE *pDsetHandle,
     if (pDsetHandle->data_ptr == NULL)
         pDsetHandle->data_ptr = A_MALLOC(MAX_DSET_BUFF_SIZE, MALLOC_ID_TEMPORARY);
 
+    //AB
+    if(pDsetHandle->data_ptr == NULL)
+        return A_ERROR;
+
     memcpy(pDsetHandle->data_ptr + DSET_WRITE_HEAD_SIZE, buffer, length);
 
     status = remote_dset_op(DSET_OP_WRITE, pDsetHandle);
@@ -176,6 +180,10 @@ uint32_t qcom_dset_read(HOST_DSET_HANDLE *pDsetHandle,
 
     if (pDsetHandle->data_ptr == NULL)
         pDsetHandle->data_ptr = A_MALLOC(MAX_DSET_BUFF_SIZE, MALLOC_ID_TEMPORARY);
+
+    //AB
+    if(pDsetHandle->data_ptr == NULL)
+        return A_ERROR;
 
     status = remote_dset_op(DSET_OP_READ, pDsetHandle);
     memcpy(buffer, pDsetHandle->data_ptr, length);

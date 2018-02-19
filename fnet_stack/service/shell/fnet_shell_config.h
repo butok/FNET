@@ -68,7 +68,7 @@
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_SHELL_HELP_FORMAT
-    #define FNET_CFG_SHELL_HELP_FORMAT      (">%10s %-35s- %s")
+    #define FNET_CFG_SHELL_HELP_FORMAT      (">%10s %-35s - %s")
 #endif
 
 /*! @} */

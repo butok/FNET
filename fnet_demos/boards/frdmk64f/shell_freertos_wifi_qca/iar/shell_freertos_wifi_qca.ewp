@@ -2320,6 +2320,24 @@
         </file>
       </group>
       <group>
+        <name>bench</name>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/bench/fnet_bench_cln.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/bench/fnet_bench_cln.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/bench/fnet_bench_srv.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/bench/fnet_bench_srv.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/bench/fnet_bench_config.h</name>
+        </file>
+      </group>
+      <group>
         <name>dhcp</name>
         <file>
           <name>$PROJ_DIR$/../../../../../fnet_stack/service/dhcp/fnet_dhcp.c</name>
@@ -2928,6 +2946,12 @@
     </file>
     <file>
       <name>$PROJ_DIR$/../../../../../third_party/qca-3.3.5/qcom_api.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$/../../../../../third_party/qca-3.3.5/qca_firmware.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$/../../../../../third_party/qca-3.3.5/qca_firmware.c</name>
     </file>
     <group>
       <name>common_src</name>

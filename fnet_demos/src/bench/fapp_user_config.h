@@ -1,8 +1,7 @@
-/***************************************************************************
-*
-* FNET Application User configuration file.
-* It should be used to change any default configuration parameter of FAPP.
-*
+/**************************************************************************
+* FNET Demo Application User configuration file.
+* It should be used to change any default application (APP) configuration 
+* parameter.
 ***************************************************************************/
 
 #ifndef _FAPP_USER_CONFIG_H_
@@ -12,9 +11,9 @@
 #define FAPP_CFG_NAME                   "FNET Throughput Benchmark"
 #define FAPP_CFG_SHELL_PROMPT           "BENCH> "
 
-/*!!! Make sure that the network interface MAC address has unique value (FAPP_CFG_CPU_ETH0_MAC_ADDR). !!!*/
+/*!!! Make sure that the network interface  MAC address has unique value (FAPP_CFG_CPU_ETH0_MAC_ADDR). !!!*/
 
-#if 1 /* IPv4 address parameters are set manually */
+#if 0 /* IPv4 address parameters are set automatically by DHCP or AutoIP */
     /*****************************************************************************
     * IP address for the Ethernet interface.
     * At runtime it can be changed by the fnet_netif_set_ip4_addr(),
@@ -45,9 +44,12 @@
     #define FAPP_CFG_ETH0_IP4_DNS       (FNET_IP4_ADDR_INIT(0U, 0U, 0U, 0U))
 #endif
 
-/*  "dhcp" command.*/
+/*  "dhcpc" command.*/
 #define FAPP_CFG_DHCPC_CMD              (1)
-#define FAPP_CFG_DHCPC_CMD_DISCOVER_MAX  (5)
+#define FAPP_CFG_DHCPC_CMD_DISCOVER_MAX (5)
+
+/*  "autoip" command.*/
+#define FAPP_CFG_AUTOIP_CMD             (1)
 
 /*  "set/get" command.*/
 #define FAPP_CFG_SETGET_CMD_IP          (1)
@@ -90,6 +92,10 @@
 #if 0 /* To run servers on startup set to 1. */
     #define FAPP_CFG_STARTUP_SCRIPT "llmnr"     /* For example "http; telnet" */
 #endif
+
+/* On connect/unconnect scripts:*/
+#define FAPP_CFG_LINK_CONNECT_SCRIPT        "dhcpc autoip -n %s"
+#define FAPP_CFG_LINK_DISCONNECT_SCRIPT     "dhcpc -n %s release; autoip -n %s release;"
 
 #endif /* _FAPP_USER_CONFIG_H_ */
 

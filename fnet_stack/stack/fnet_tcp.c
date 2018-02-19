@@ -1250,7 +1250,6 @@ static fnet_return_t fnet_tcp_listen( fnet_socket_if_t *sk, fnet_size_t backlog 
         /* Foreign address must be any.*/
         ((struct fnet_sockaddr_in *)(&sk->foreign_addr))->sin_addr.s_addr = INADDR_ANY;
         sk->foreign_addr.sa_port = 0u;
-        sk->foreign_addr.sa_family = AF_INET;
         sk->con_limit = backlog;
 
         /* Change the state.*/
@@ -1995,7 +1994,7 @@ static fnet_bool_t fnet_tcp_dataprocess( fnet_socket_if_t *sk, fnet_netbuf_t *in
                 fnet_tcp_senddataseg(sk, 0, 0u, (fnet_size_t)cb->tcpcb_sndmss);
                 cb->tcpcb_sndseq = seq;
 
-                /* Acknowledgment is sent in retransmited segment.*/
+                /* Acknowledgment is sent in retransmitted segment.*/
                 *ackparam |= (fnet_flag_t)FNET_TCP_AP_NO_SENDING;
 
                 /* Round trip time can't be measured in this case.*/
@@ -2981,7 +2980,7 @@ static void fnet_tcp_rtimeo( fnet_socket_if_t *sk )
             fnet_tcp_sendheadseg(sk, FNET_TCP_SGT_SYN, options, optionlen);
             break;
         default:
-            /* If FIN segment is sent, it must be retransmited.*/
+            /* If FIN segment is sent, it must be retransmitted.*/
             cb->tcpcb_flags &= ~FNET_TCP_CBF_FIN_SENT;
 
             /* Initialize of the abort timer.*/
@@ -3992,6 +3991,11 @@ static void fnet_tcp_movesk2incominglist( fnet_socket_if_t *sk )
 
     fnet_socket_list_del(&mainsk->partial_con, sk);
     fnet_socket_list_add(&mainsk->incoming_con, sk);
+
+#if FNET_CFG_SOCKET_CALLBACK_ON_RX
+    /* Wake-up user application.*/
+    fnet_event_raise(fnet_socket_event_rx);
+#endif
 }
 
 /***********************************************************************

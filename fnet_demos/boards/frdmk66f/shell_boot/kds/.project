@@ -572,6 +572,56 @@
       <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/service/autoip/fnet_autoip_config.h</locationURI>
     </link>
     <link>
+      <name>fnet_stack/service/bench</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/service/bench/fnet_bench_cln.c</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/service/bench/fnet_bench_cln.c</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/service/bench</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/service/bench/fnet_bench_cln.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/service/bench/fnet_bench_cln.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/service/bench</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/service/bench/fnet_bench_srv.c</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/service/bench/fnet_bench_srv.c</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/service/bench</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/service/bench/fnet_bench_srv.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/service/bench/fnet_bench_srv.h</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/service/bench</name>
+      <type>2</type>
+      <locationURI>virtual:/virtual</locationURI>
+    </link>
+    <link>
+      <name>fnet_stack/service/bench/fnet_bench_config.h</name>
+      <type>1</type>
+      <locationURI>PARENT-5-PROJECT_LOC/fnet_stack/service/bench/fnet_bench_config.h</locationURI>
+    </link>
+    <link>
       <name>fnet_stack/service/dhcp</name>
       <type>2</type>
       <locationURI>virtual:/virtual</locationURI>

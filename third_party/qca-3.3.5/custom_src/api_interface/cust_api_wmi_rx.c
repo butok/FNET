@@ -55,6 +55,8 @@ static void fill_scan_info(void *pCxt, QCA_SCAN_INFO *pScanInfo, WMI_BSS_INFO_HD
 
     if (A_OK == Api_ParseInfoElem(pCxt, bih, len, &scan_summary))
     {
+        A_MEMZERO(pScanInfo, sizeof(QCA_SCAN_INFO)); /* AB */
+
         pScanInfo->channel = scan_summary.channel;
         pScanInfo->rssi = scan_summary.rssi;
         A_MEMCPY(pScanInfo->bssid, scan_summary.bssid, ATH_MAC_LEN);

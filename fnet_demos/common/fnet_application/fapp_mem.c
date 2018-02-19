@@ -149,7 +149,7 @@ FAIL:
 fnet_return_t fapp_mem_flush(void)
 {
     const struct    fapp_mem_region *region = fapp_mem_regions;
-    fnet_return_t   result;
+    fnet_return_t   result = FNET_OK;
 
     while(region->description && region->flush)
     {

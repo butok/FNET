@@ -96,11 +96,13 @@ const fnet_char_t FAPP_PARAM_ERR[] = "Error: Invalid paremeter \'%s\'";
 const fnet_char_t FAPP_INIT_ERR[]  = "Error: %s initialization is failed!";
 const fnet_char_t FAPP_SHELL_INFO_FORMAT_S[]  = " %-20s : %s";
 const fnet_char_t FAPP_SHELL_INFO_FORMAT_D[]  = " %-20s : %u";
-const fnet_char_t FAPP_SHELL_INFO_FORMAT_H[]  = " %-20s : %8x";
+const fnet_char_t FAPP_SHELL_INFO_FORMAT_H[]  = " %-20s : 0x%8x";
 const fnet_char_t FAPP_SHELL_CANCELED_CTRL_C[]  = "Canceled by [Ctrl+C]!";
 
 /* Service release command */
 const fnet_char_t FAPP_COMMAND_RELEASE [] = "release";
+
+#define FAPP_GO_STR             "go 0x%08X"
 
 #define FAPP_SAVE_STR           "Application parameters saved"
 #define FAPP_SAVE_FAILED_STR    "Parameters saving failed!"
@@ -108,11 +110,6 @@ const fnet_char_t FAPP_COMMAND_RELEASE [] = "release";
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-
-#if FAPP_CFG_BOOTLOADER || FAPP_CFG_SETGET_CMD_BOOT
-    static void fapp_boot_mode_go(fnet_shell_desc_t desc);
-    static void fapp_boot_mode_script(fnet_shell_desc_t desc);
-#endif
 #if FAPP_CFG_REINIT_CMD
     void fapp_reinit_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 #endif
@@ -141,7 +138,7 @@ const fnet_char_t FAPP_COMMAND_RELEASE [] = "release";
 *************************************************************************/
 const struct fnet_shell_command fapp_cmd_table [] =
 {
-    { .name = "help",       .min_args = 0u, .max_args = 0u,     .cmd_ptr = fapp_help_cmd,    .description = "Display this help message", .syntax = ""},
+    { .name = "?",       .min_args = 0u, .max_args = 0u,     .cmd_ptr = fapp_help_cmd,    .description = "Display this help message", .syntax = ""},
 #if FAPP_CFG_SETGET_CMD
     { .name = "set",        .min_args = 0u, .max_args = 2u,     .cmd_ptr = fapp_set_cmd,     .description = "Set parameter", .syntax = "[<parameter> <value>]"},
     { .name = "get",        .min_args = 0u, .max_args = 1u,     .cmd_ptr = fapp_get_cmd,     .description = "Get parameters", .syntax = "[<parameter>]" },
@@ -222,8 +219,12 @@ const struct fnet_shell_command fapp_cmd_table [] =
     { .name = "reboot",     .min_args = 0u, .max_args = 0u,     .cmd_ptr = fapp_reset_cmd,   .description = "Reset the board", .syntax = ""},
 #endif
 #if FAPP_CFG_BENCH_CMD
-    { .name = "benchrx",    .min_args = 0u, .max_args = 2u,     .cmd_ptr = fapp_benchrx_cmd, .description = "Receiver Benchmark", .syntax = "[tcp|udp [<multicast ip>]"},
-    { .name = "benchtx",    .min_args = 1u, .max_args = 5u,     .cmd_ptr = fapp_benchtx_cmd, .description = "Transmitter Benchmark", .syntax = "<remote ip>[tcp|udp[<message size>\r\n\t[<number of messages>[<number of iterations>]]]"},
+#if FNET_CFG_BENCH_CLN
+    { .name = "benchtx",    .min_args = 2u, .max_args = 10u,    .cmd_ptr = fapp_bench_cln_cmd, .description = "Benchmark transmitter/client", .syntax = "[-n <if name>] -a <remote ip> [tcp|udp] [-m <message size>] [-mn <number of messages>]"},
+#endif
+#if FNET_CFG_BENCH_SRV
+    { .name = "benchrx",    .min_args = 0u, .max_args = 5u,     .cmd_ptr = fapp_bench_srv_cmd, .description = "Benchmark receiver/server", .syntax = "[[-n <if name>] [-a <if ip address>] [tcp|udp]] | release"},
+#endif
 #endif
 #if FAPP_CFG_REINIT_CMD   /* Used to test FNET release/init only. */
     { "reinit",             .min_args = 0u, .max_args = 0u,     .cmd_ptr = fapp_reinit_cmd,  .description = "Reinit application", .syntax = ""},
@@ -394,7 +395,7 @@ void fapp_shell_on_init( fnet_shell_desc_t desc )
     fnet_shell_println(desc, " %s", FNET_COPYRIGHT);
     fnet_shell_println(desc, " %s", FNET_LICENSE);
 #endif
-    fnet_shell_println(desc, "\n Enter 'help' for command list.");
+    fnet_shell_println(desc, "\n Enter '?' for command list.");
     fnet_shell_println(desc, "%s", FAPP_DELIMITER_STR);
 }
 
@@ -423,6 +424,28 @@ void fapp_go_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
     }
 
     fapp_go(desc, address);
+}
+#endif
+
+/************************************************************************
+* DESCRIPTION:   Jump to application entry point.
+************************************************************************/
+#if FAPP_CFG_GO_CMD || FAPP_CFG_BOOTLOADER || FAPP_CFG_SETGET_CMD_BOOT
+void fapp_go ( fnet_shell_desc_t desc, fnet_uint32_t address )
+{
+    if((fapp_params_boot_config.go_address == 0u) || (*(fnet_uint32_t *)address == 0xffffffffu))
+    {
+        fnet_printf("\nThere is no code on user application startup vector.\n");
+    }
+    else
+    {
+
+        fnet_shell_println(desc, FAPP_GO_STR, address);
+
+        fnet_release(); /* Release the FNET stack.*/
+
+        (( void(*)(void) )FNET_CPU_ADDR_TO_INSTRUCTION(address))(); /* Jump. */
+    }
 }
 #endif
 

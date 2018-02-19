@@ -40,7 +40,7 @@
 /************************************************************************
 *     Events
 *************************************************************************/
-typedef fnet_int32_t fnet_event_desc_t;
+typedef fnet_uint32_t fnet_event_desc_t;
 
 /************************************************************************
 *     Function Prototypes
@@ -51,9 +51,11 @@ extern "C" {
 
 fnet_return_t fnet_isr_vector_init( fnet_uint32_t vector_number, void (*handler_top)(void *cookie), void (*handler_bottom)(void *cookie), fnet_uint32_t priority, void *cookie );
 fnet_event_desc_t fnet_event_init(void (*event_handler)(void *cookie), void *cookie);
+void fnet_event_release(fnet_event_desc_t event_desc);
 void fnet_event_raise(fnet_event_desc_t event_number);
-void fnet_isr_vector_release(fnet_uint32_t vector_number);
+void fnet_isr_unregister(fnet_uint32_t vector_number);
 void fnet_isr_lock(void);
+fnet_bool_t fnet_isr_locked(void);
 void fnet_isr_unlock(void);
 void fnet_isr_init(void);
 void fnet_isr_handler(fnet_uint32_t vector_number);

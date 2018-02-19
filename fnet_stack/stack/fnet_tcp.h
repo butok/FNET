@@ -111,7 +111,7 @@ extern struct fnet_prot_if fnet_tcp_prot_if;
 /************************************************************************
 *    Maximal window size
 *************************************************************************/
-#define FNET_TCP_MAXWIN             (4u*1024u)/*(0xffff)*/
+#define FNET_TCP_MAXWIN             (12u*1024u)/* RFC:(0xffff)*/
 
 /************************************************************************
 *    Maximal value of the sequence number

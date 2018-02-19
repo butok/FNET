@@ -276,7 +276,7 @@ Api_DeInitFinish(void *pCxt)
         /* 2 - remove driver from system */
         DRIVER_REMOVE(pCxt);
         /* 3 - De-initialize context */
-        Driver_ContextDeInit(pCxt);
+//AB     Driver_ContextDeInit(pCxt);
 
         /*4 - Deinitialize socket context*/
         SOCKET_CONTEXT_DEINIT();

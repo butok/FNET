@@ -39,6 +39,8 @@ void fapp_main( void ); /* Main entry point of the bare-metal shell demo. */
 void fapp_main_freertos( void ); /* Main entry point of the FreeRTOS shell demo. */
 #endif
 
+void fapp_poll(void);
+
 #if defined(__cplusplus)
 }
 #endif

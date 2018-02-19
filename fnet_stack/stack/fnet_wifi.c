@@ -101,6 +101,26 @@ fnet_wifi_op_mode_t fnet_wifi_get_op_mode(fnet_netif_desc_t netif_desc)
 
     return result;
 }
+
+/************************************************************************
+* DESCRIPTION: Retrieves firmware version number of the Wi-Fi interface module.
+*************************************************************************/
+fnet_uint32_t fnet_wifi_fw_get_version(fnet_netif_desc_t netif_desc)
+{
+    fnet_uint32_t   result = 0;
+    fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
+
+    if(netif && (netif->netif_api->netif_type == FNET_NETIF_TYPE_WIFI))
+    {
+        if(netif->netif_api->wifi_api && netif->netif_api->wifi_api->wifi_fw_get_version)
+        {
+            result = netif->netif_api->wifi_api->wifi_fw_get_version(netif);
+        }
+    }
+
+    return result;
+}
+
 /************************************************************************
 * DESCRIPTION: Updates firmware of the Wi-Fi interface.
 *************************************************************************/

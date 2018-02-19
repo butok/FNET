@@ -40,6 +40,8 @@ typedef struct
     struct fnet_netif_statistics    statistics;     /* Statistic counters.*/
     fnet_bool_t                     is_connected;   /* Link status. */
     fnet_netif_t                    *netif;         /* Netif. */
+    void                            *pReq;          /* Input request */
+    fnet_event_desc_t               input_event;    /* Input event */
 } fnet_qca_if_t;
 
 /* QCA interface control data structure.*/
@@ -56,7 +58,6 @@ extern "C" {
 #endif
 
 void fnet_qca_output(fnet_netif_t *netif, fnet_netbuf_t *nb);
-fnet_return_t fnet_qca_fw_update(fnet_netif_t *netif, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size);
 
 #if defined(__cplusplus)
 }

@@ -8,9 +8,10 @@ FNET project directory structure:
 	|    |-- stack                  - FNET TCP/IP stack platform-independent source code.
 	|    |-- service                - FNET Services.
 	|    |    |-- autoip              - Auto-IP service.
+	|    |    |-- bench               - Benchmark client and server.
 	|    |    |-- dhcp                - DHCPv4 client and server.
 	|    |    |-- dns                 - DNS client/resolver.
-	|    |    |-- flash               - Flash  Memory driver.
+	|    |    |-- flash               - Flash Memory driver.
 	|    |    |-- fs                  - File System driver.
 	|    |    |-- http                - HTTP Server service.
 	|    |    |-- link                - Link-Detection service.

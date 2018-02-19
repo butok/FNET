@@ -187,7 +187,7 @@ fnet_return_t fnet_inet_pton (fnet_address_family_t family, const fnet_char_t *s
  *
  * @param str        Null-terminated character string that contains the text
  *                   representation of the IP address to convert to socket-address
- *                   structure.
+ *                   structure. The @c sa_port is set to zero.
  *
  * @param addr       Pointer to a socket-address structure to be filled.
 

@@ -196,7 +196,7 @@ static void fnet_dhcp_cln_parse_options(fnet_dhcp_cln_message_t *message, struct
 static void fnet_dhcp_cln_send_message(fnet_dhcp_cln_if_t *dhcp);
 static fnet_ssize_t fnet_dhcp_cln_receive_message( fnet_dhcp_cln_if_t *dhcp, struct fnet_dhcp_cln_options_in *options);
 static void fnet_dhcp_cln_apply_params(fnet_dhcp_cln_if_t *dhcp);
-static void fnet_dhcp_cln_change_state(fnet_dhcp_cln_if_t *dhcp, fnet_dhcp_cln_state_t state);
+static void fnet_dhcp_cln_set_state(fnet_dhcp_cln_if_t *dhcp, fnet_dhcp_cln_state_t state);
 static void fnet_dhcp_cln_poll(void *fnet_dhcp_cln_if_p);
 
 #if FNET_CFG_DEBUG_DHCP_CLN && FNET_CFG_DEBUG/* Debug functions */
@@ -648,7 +648,7 @@ static fnet_ssize_t fnet_dhcp_cln_receive_message( fnet_dhcp_cln_if_t *dhcp, str
 /************************************************************************
 * DESCRIPTION: Change state of DHCP client.
 ************************************************************************/
-static void fnet_dhcp_cln_change_state( fnet_dhcp_cln_if_t *dhcp, fnet_dhcp_cln_state_t state )
+static void fnet_dhcp_cln_set_state( fnet_dhcp_cln_if_t *dhcp, fnet_dhcp_cln_state_t state )
 {
     dhcp->state = state;
 
@@ -759,7 +759,7 @@ static void fnet_dhcp_cln_apply_params(fnet_dhcp_cln_if_t *dhcp)
 #endif
     fnet_netif_set_ip4_addr_type(dhcp->netif, FNET_NETIF_IP_ADDR_TYPE_DHCP);
 
-    fnet_dhcp_cln_change_state(dhcp, FNET_DHCP_CLN_STATE_BOUND); /* => BOUND */
+    fnet_dhcp_cln_set_state(dhcp, FNET_DHCP_CLN_STATE_BOUND); /* => BOUND */
     /* Rise event. */
     if(dhcp->callback_updated)
     {
@@ -839,7 +839,7 @@ static void fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
         case FNET_DHCP_CLN_STATE_INIT:
             /* Todo: The client SHOULD wait a random time between one and ten seconds to
             * desynchronize the use of DHCP at startup. */
-            fnet_dhcp_cln_change_state(dhcp, FNET_DHCP_CLN_STATE_SELECTING); /* => SELECTING */
+            fnet_dhcp_cln_set_state(dhcp, FNET_DHCP_CLN_STATE_SELECTING); /* => SELECTING */
             if(dhcp->callback_discover)
             {
                 dhcp->callback_discover((fnet_dhcp_cln_desc_t)dhcp, dhcp->netif, dhcp->callback_discover_cookie);
@@ -852,7 +852,7 @@ static void fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
 
             if(res == FNET_DHCP_CLN_IS_TIMEOUT)
             {
-                fnet_dhcp_cln_change_state(dhcp, FNET_DHCP_CLN_STATE_INIT); /* => INIT */
+                fnet_dhcp_cln_set_state(dhcp, FNET_DHCP_CLN_STATE_INIT); /* => INIT */
             }
 
 #if FNET_CFG_DHCP_CLN_BOOTP
@@ -870,7 +870,7 @@ static void fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
             else if((res > 0) && (options.private_options.message_type == FNET_DHCP_OPTION_MSG_TYPE_OFFER))
             {
                 dhcp->offered_options = options;                          /* Save offered options */
-                fnet_dhcp_cln_change_state(dhcp, FNET_DHCP_CLN_STATE_REQUESTING); /* => REQUESTING */
+                fnet_dhcp_cln_set_state(dhcp, FNET_DHCP_CLN_STATE_REQUESTING); /* => REQUESTING */
             }
             else
             {}
@@ -893,7 +893,7 @@ static void fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
                 /* If T1 expired. */
                 if(fnet_timer_get_interval(dhcp->lease_obtained_time, fnet_timer_get_ticks()) > dhcp->state_timeout)
                 {
-                    fnet_dhcp_cln_change_state(dhcp, dhcp->state_timeout_next_state); /* => INIT */
+                    fnet_dhcp_cln_set_state(dhcp, dhcp->state_timeout_next_state); /* => INIT */
                 }
             }
             else
@@ -905,7 +905,7 @@ static void fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
 
 #if !FNET_CFG_DHCP_CLN_BOOTP  /* DHCP */
         case FNET_DHCP_CLN_STATE_INIT_REBOOT: /*---- INIT_REBOOT -----------------------------*/
-            fnet_dhcp_cln_change_state(dhcp, FNET_DHCP_CLN_STATE_REBOOTING); /* => REBOOTING */
+            fnet_dhcp_cln_set_state(dhcp, FNET_DHCP_CLN_STATE_REBOOTING); /* => REBOOTING */
             if(dhcp->callback_discover)
             {
                 dhcp->callback_discover((fnet_dhcp_cln_desc_t)dhcp, dhcp->netif, dhcp->callback_discover_cookie);
@@ -980,7 +980,7 @@ static void fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
                         if(dhcp->in_params.probe_addr)
                         {
                             /* The client SHOULD probe the newly received address, e.g., with ARP.*/
-                            fnet_dhcp_cln_change_state(dhcp, FNET_DHCP_CLN_STATE_PROBING);    /* => PROBING */
+                            fnet_dhcp_cln_set_state(dhcp, FNET_DHCP_CLN_STATE_PROBING);    /* => PROBING */
                         }
                         else
                         {
@@ -990,7 +990,7 @@ static void fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
                     }
                     else if(options.private_options.message_type == FNET_DHCP_OPTION_MSG_TYPE_NAK) /* NAK */
                     {
-                        fnet_dhcp_cln_change_state(dhcp, FNET_DHCP_CLN_STATE_INIT);    /* => INIT */
+                        fnet_dhcp_cln_set_state(dhcp, FNET_DHCP_CLN_STATE_INIT);    /* => INIT */
                     }
                     else
                     {}
@@ -1000,7 +1000,7 @@ static void fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
             }
             else
             {
-                fnet_dhcp_cln_change_state(dhcp, dhcp->state_timeout_next_state);
+                fnet_dhcp_cln_set_state(dhcp, dhcp->state_timeout_next_state);
             }
             break;
         /*---- REQUESTING -----------------------------------------------*/
@@ -1018,7 +1018,7 @@ static void fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
                     /* Address Conflict is detected.*/
                     fnet_dhcp_cln_send_message(dhcp); /* Send DECLINE.*/
 
-                    fnet_dhcp_cln_change_state(dhcp, FNET_DHCP_CLN_STATE_INIT);    /* => INIT */
+                    fnet_dhcp_cln_set_state(dhcp, FNET_DHCP_CLN_STATE_INIT);    /* => INIT */
                 }
             }
             else
@@ -1143,7 +1143,7 @@ fnet_dhcp_cln_desc_t fnet_dhcp_cln_init(struct fnet_dhcp_cln_params *params )
 #endif
     }
 
-    fnet_dhcp_cln_change_state(dhcp_if, state);
+    fnet_dhcp_cln_set_state(dhcp_if, state);
 
     dhcp_if->is_enabled = FNET_TRUE;
 
@@ -1165,7 +1165,7 @@ void fnet_dhcp_cln_release(fnet_dhcp_cln_desc_t desc)
 
     if(dhcp_if && (dhcp_if->is_enabled == FNET_TRUE))
     {
-        fnet_dhcp_cln_change_state(dhcp_if, FNET_DHCP_CLN_STATE_DISABLED); /* => DISABLED */
+        fnet_dhcp_cln_set_state(dhcp_if, FNET_DHCP_CLN_STATE_DISABLED); /* => DISABLED */
     }
 }
 

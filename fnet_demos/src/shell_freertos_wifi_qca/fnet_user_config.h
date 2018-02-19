@@ -137,7 +137,7 @@
 #define FNET_CFG_DEBUG                      (1)
 #endif
 
-#if 0 /* You may enable Wi-Fi firmware update to the latest version */
+#if 1 /* You may enable Wi-Fi firmware update to the latest version */
 #define FNET_CFG_CPU_WIFI_FW_UPDATE         (1) 
 #endif
 

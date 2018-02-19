@@ -178,7 +178,7 @@ void fapp_mdns_service_register_http_tls( void )
     fnet_index_t        i;
     fnet_mdns_desc_t    mdns;
 
-    for(i=0; netif = fnet_netif_get_by_number(i); i++)
+    for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
     {
         mdns = fnet_mdns_get_by_netif(netif);
         if(mdns)
@@ -227,7 +227,7 @@ void fapp_mdns_service_unregister_http_tls( void )
     fnet_index_t        i;
     fnet_mdns_desc_t    mdns;
 
-    for(i=0; netif = fnet_netif_get_by_number(i); i++)
+    for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
     {
         mdns = fnet_mdns_get_by_netif(netif);
         if(mdns)

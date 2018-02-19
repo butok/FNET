@@ -37,6 +37,7 @@
 #include "fapp_telnet.h"
 #include "fapp_tftp.h"
 #include "fapp_netif.h"
+#include "fapp_bench.h"
 
 /************************************************************************
 *     Definitions.
@@ -170,7 +171,6 @@ void fapp_netif_info_print( fnet_shell_desc_t desc, fnet_netif_desc_t netif)
 {
     fnet_char_t             name[FNET_NETIF_NAMELEN];
     fnet_bool_t             is_connected;
-    fnet_wifi_op_mode_t     wifi_op_mode;
     fnet_netif_type_t       netif_type;
 
     netif_type = fnet_netif_get_type(netif);
@@ -184,13 +184,24 @@ void fapp_netif_info_print( fnet_shell_desc_t desc, fnet_netif_desc_t netif)
     is_connected = fnet_netif_is_connected(netif);
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Media State", fapp_netif_connection_state_str[is_connected]);
 
-    /* Wi-Fi mode */
+    /* Wi-Fi specific information */
     if(netif_type == FNET_NETIF_TYPE_WIFI)
     {
+        fnet_wifi_op_mode_t     wifi_op_mode;
+        fnet_uint32_t           wifi_version;
+
+        /* Operation mode. */
         wifi_op_mode = fnet_wifi_get_op_mode(netif);
         if(wifi_op_mode)
         {
-            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Wi-Fi mode", fapp_wifi_op_mode[wifi_op_mode]);
+            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Wi-Fi Mode", fapp_wifi_op_mode[wifi_op_mode]);
+        }
+
+        /* Firmware version number. */
+        wifi_version = fnet_wifi_fw_get_version(netif);
+        if(wifi_version)
+        {
+            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_H, "Wi-Fi FW Version", wifi_version);
         }
     }
 
@@ -256,6 +267,11 @@ void fapp_netif_info_print( fnet_shell_desc_t desc, fnet_netif_desc_t netif)
 void fapp_netif_addr_print(fnet_shell_desc_t desc, fnet_address_family_t family, fnet_netif_desc_t netif, fnet_bool_t print_type)
 {
     fnet_char_t    ip_str[FNET_IP_ADDR_STR_SIZE] = {0};
+
+    if(netif == FNET_NULL)
+    {
+        netif = fnet_netif_get_default();
+    }
 
 #if FNET_CFG_IP4
     if((family & AF_INET) == AF_INET)
@@ -355,6 +371,7 @@ void fapp_netif_info_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t
         }
     }
 
+#if ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP) || (FAPP_CFG_TELNET_CMD && FNET_CFG_TELNET) || (FAPP_CFG_TFTP_CMD && FNET_CFG_TFTP_SRV) || (FAPP_CFG_BENCH_CMD && FNET_CFG_BENCH_SRV)
     fnet_shell_println(desc, "Services:");
     /* General services.*/
     #if (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP
@@ -368,6 +385,11 @@ void fapp_netif_info_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t
     #if FAPP_CFG_TFTP_CMD && FNET_CFG_TFTP_SRV
         fapp_tftp_srv_info(desc);
     #endif
+
+    #if FAPP_CFG_BENCH_CMD && FNET_CFG_BENCH_SRV
+        fapp_bench_srv_info(desc);
+    #endif
+#endif
 
     return;
 

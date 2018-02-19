@@ -104,7 +104,7 @@ void fnet_cpu_timer_release( void )
 
     /* Uninstall interrupt handler.
      */
-    fnet_isr_vector_release(FNET_CFG_CPU_TIMER_VECTOR_NUMBER);
+    fnet_isr_unregister(FNET_CFG_CPU_TIMER_VECTOR_NUMBER);
 }
 
 /* If vector table is in ROM, pre-install FNET ISR for the Timer Event interrupt*/

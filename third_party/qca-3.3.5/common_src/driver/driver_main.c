@@ -814,7 +814,7 @@ void Atheros_Driver_Task(void *pCxt)
             }
 
             Driver_DeInit(pCxt);
-            DRIVER_WAKE_USER(pCxt);
+//AB        DRIVER_WAKE_USER(pCxt);
         }
 #if QOSAL_TASK_DESTRUCTION
     } while (0);

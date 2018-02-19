@@ -157,7 +157,7 @@ static void fnet_dhcp_srv_set_lease_time(fnet_dhcp_srv_if_t *dhcp_srv_if, fnet_d
 static fnet_int32_t fnet_dhcp_srv_get_addr_pool(fnet_dhcp_srv_if_t *dhcp_srv_if, fnet_dhcp_header_t  *dhcp_header, fnet_mac_addr_t *client_identifier, fnet_ip4_addr_t requested_ip_address);
 static void fnet_dhcp_srv_set_lease_time(fnet_dhcp_srv_if_t *dhcp_srv_if, fnet_dhcp_srv_addr_pool_t  *ip_addr_pool, const fnet_dhcp_srv_options_t *options);
 static fnet_uint8_t *fnet_dhcp_srv_add_option(fnet_uint8_t *option_buffer, fnet_size_t option_buffer_size, fnet_uint8_t option_code, fnet_uint8_t option_length,  const void *option_value);
-static void fnet_dhcp_srv_send_message(fnet_dhcp_srv_if_t *dhcp_if, fnet_ip4_addr_t server_identifier, fnet_uint8_t message_type, fnet_dhcp_srv_options_t *rx_options, fnet_index_t addr_pool_index);
+static void fnet_dhcp_srv_send_message(fnet_dhcp_srv_if_t *dhcp_if, fnet_ip4_addr_t server_identifier, fnet_uint8_t message_type, fnet_dhcp_srv_options_t *rx_options, fnet_int32_t addr_pool_index);
 static fnet_int32_t fnet_dhcp_srv_get_addr_pool_free(fnet_dhcp_srv_if_t *dhcp_srv_if);
 
 /************************************************************************
@@ -270,7 +270,7 @@ fnet_dhcp_srv_desc_t fnet_dhcp_srv_init(struct fnet_dhcp_srv_params *params)
     dhcp_srv_if->socket_srv = fnet_socket(local_addr.sa_family, SOCK_DGRAM, 0u);
     if(dhcp_srv_if->socket_srv == FNET_NULL)
     {
-        FNET_DEBUG_DHCP_SRV(FNET_MDNS_ERR_SOCKET_CREATION);
+        FNET_DEBUG_DHCP_SRV(FNET_DHCP_SRV_ERR_SOCKET_CREATION);
         goto ERROR_1;
     }
 
@@ -612,7 +612,7 @@ static void fnet_dhcp_srv_poll( void *fnet_dhcp_srv_if_p )
 /************************************************************************
 * DESCRIPTION: Send DHCPv4 client message.
 ************************************************************************/
-static void fnet_dhcp_srv_send_message(fnet_dhcp_srv_if_t *dhcp_if, fnet_ip4_addr_t server_identifier, fnet_uint8_t message_type, fnet_dhcp_srv_options_t *rx_options, fnet_index_t addr_pool_index)
+static void fnet_dhcp_srv_send_message(fnet_dhcp_srv_if_t *dhcp_if, fnet_ip4_addr_t server_identifier, fnet_uint8_t message_type, fnet_dhcp_srv_options_t *rx_options, fnet_int32_t addr_pool_index)
 {
     FNET_ASSERT(dhcp_if != FNET_NULl);
     FNET_ASSERT(rx_options != FNET_NULl);

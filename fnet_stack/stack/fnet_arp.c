@@ -86,7 +86,7 @@ fnet_return_t fnet_arp_init(fnet_netif_t *netif, fnet_arp_if_t *arpif)
         {
             /* Install event Handler. */
             arpif->arp_event = fnet_event_init(fnet_arp_ip4_addr_conflict, netif);
-            if (arpif->arp_event != FNET_ERR)
+            if (arpif->arp_event)
             {
                 result = FNET_OK;
             }
@@ -103,9 +103,12 @@ void fnet_arp_release(fnet_netif_t *netif)
 {
     fnet_arp_if_t *arpif = netif->arp_if_ptr;
 
-    fnet_timer_free(arpif->arp_tmr);
+    if(arpif)
+    {
+        fnet_timer_free(arpif->arp_tmr);
 
-    arpif->arp_tmr = 0;
+        arpif->arp_tmr = 0;
+    }
 }
 
 /************************************************************************

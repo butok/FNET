@@ -138,15 +138,25 @@ fnet_return_t fnet_isr_vector_init(fnet_uint32_t vector_number,
 *************************************************************************/
 fnet_event_desc_t fnet_event_init(void (*event_handler)(void *cookie), void *cookie)
 {
-    fnet_uint32_t vector_number = (fnet_uint32_t)(fnet_event_desc_last++);
+    fnet_event_desc_t   result = 0;
+    fnet_uint32_t       vector_number = (fnet_uint32_t)(fnet_event_desc_last++);
 
-    if (fnet_isr_register(vector_number, 0, event_handler, cookie) == FNET_ERR)
+    if (fnet_isr_register(vector_number, 0, event_handler, cookie) == FNET_OK)
     {
-        return FNET_ERR;
+        result = (fnet_event_desc_t)vector_number;
     }
-    else
+
+    return result;
+}
+
+/************************************************************************
+* DESCRIPTION: Release event handler.
+*************************************************************************/
+void fnet_event_release(fnet_event_desc_t event_desc)
+{
+    if(event_desc)
     {
-        return (fnet_event_desc_t)vector_number;
+        fnet_isr_unregister((fnet_uint32_t) event_desc);
     }
 }
 
@@ -188,7 +198,7 @@ static fnet_return_t fnet_isr_register(fnet_uint32_t vector_number,
 *              destroys info about old interrupt handler and removes
 *              information from 'fnet_isr_table' queue
 *************************************************************************/
-void fnet_isr_vector_release(fnet_uint32_t vector_number)
+void fnet_isr_unregister(fnet_uint32_t vector_number)
 {
     fnet_isr_entry_t *isr_temp;
 
@@ -324,6 +334,23 @@ void fnet_isr_unlock(void)
     }
 }
 #endif
+
+/************************************************************************
+* DESCRIPTION: Checks if is locked
+*************************************************************************/
+fnet_bool_t fnet_isr_locked(void)
+{
+    fnet_bool_t result;
+    if(fnet_locked == 0)
+    {
+        result = FNET_FALSE;
+    }
+    else
+    {
+        result = FNET_TRUE;
+    }
+    return result;
+}
 
 /************************************************************************
 * DESCRIPTION: This function raise registerted event.

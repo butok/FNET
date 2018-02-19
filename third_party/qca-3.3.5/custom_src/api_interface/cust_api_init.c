@@ -224,12 +224,19 @@ static uint32_t Custom_Api_Initialize(QCA_CONTEXT_STRUCT_PTR qca_ptr)
 
     if (error != QCA_OK)
     {
+#if 0 //AB 
         if (p_Global_Cxt != NULL)
         {
             A_FREE(GET_DRIVER_COMMON(p_Global_Cxt), MALLOC_ID_CONTEXT);
             A_FREE(p_Global_Cxt, MALLOC_ID_CONTEXT);
+            p_Global_Cxt = NULL; //AB
             return error;
         }
+#else
+        /* Clean */
+        Custom_Api_Shutdown(qca_ptr);
+        return error;
+#endif
     }
     else
     {
@@ -261,6 +268,10 @@ static uint32_t Custom_Api_Shutdown(struct qca_context_struct *qca_ptr)
     if (pCxt != NULL)
     {
         Api_DeInitStart(pCxt);
+        
+        /* 3 - De-initialize context */
+        Driver_ContextDeInit(pCxt); //AB
+
 #if DRIVER_CONFIG_MULTI_TASKING
         Driver_DestroyThread(pCxt);
 #else
@@ -273,9 +284,9 @@ static uint32_t Custom_Api_Shutdown(struct qca_context_struct *qca_ptr)
             A_FREE(GET_DRIVER_COMMON(pCxt), MALLOC_ID_CONTEXT);
         }
 
+        qca_ptr->MAC_CONTEXT_PTR = NULL;
         A_FREE(pCxt, MALLOC_ID_CONTEXT);
         p_Global_Cxt = NULL;
-        qca_ptr->MAC_CONTEXT_PTR = NULL;
     }
 
     return (uint32_t)QCA_OK;

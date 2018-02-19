@@ -2805,6 +2805,17 @@ A_STATUS qcom_raw_mode_send_pkt(QCOM_RAW_MODE_PARAM_t *ppara)
     return error;
 }
 
+A_STATUS qcom_get_version(ATH_VERSION *version) //AB
+{
+    ATH_IOCTL_PARAM_STRUCT param;
+
+    param.cmd_id = ATH_GET_VERSION;
+    param.data = version;
+    param.length = sizeof(ATH_VERSION);
+
+    return custom_qapi(0, ATH_GET_VERSION, &param);
+}
+
 A_STATUS qcom_get_versionstr(ATH_VERSION_STR *versionstr)
 {
     ATH_IOCTL_PARAM_STRUCT param;

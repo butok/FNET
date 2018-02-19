@@ -41,7 +41,7 @@
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_SERVICE_MAX
-    #define FNET_CFG_SERVICE_MAX   (11u)
+    #define FNET_CFG_SERVICE_MAX   (12u)
 #endif
 
 #include "service/dhcp/fnet_dhcp_config.h"
@@ -60,6 +60,7 @@
 #include "service/mdns/fnet_mdns_config.h"
 #include "service/flash/fnet_flash_config.h"
 #include "service/link/fnet_link_config.h"
+#include "service/bench/fnet_bench_config.h"
 
 /*! @} */
 

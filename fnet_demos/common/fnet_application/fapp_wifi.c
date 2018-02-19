@@ -148,13 +148,8 @@ void fapp_wifi_disconnect_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_c
 #if FNET_CFG_CPU_WIFI_FW_UPDATE
 
 /* Wi-Fi firmware image */
-#if 1  /* v3.3.5 */
-    #include <flashotp_3_3_5.h>
-    #define FAPP_WIFI_FW_IMAGE  flashotp_3_3_5
-#else /* v3.3.4 */
-    #include <flashotp_3_3_4.h>
-    #define FAPP_WIFI_FW_IMAGE  flashotp_3_3_4
-#endif
+#include <qca_firmware.h>
+#define FAPP_WIFI_FW_IMAGE QCA_FW_BUFFER
 
 /************************************************************************
 * DESCRIPTION: Wi-Fi firmware update.
@@ -169,6 +164,7 @@ void fapp_wifi_fw_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **
 
     fnet_shell_println(desc, "Wi-Fi FW update is %s", (result == FNET_OK)?"completed":"failed");
 }
-#endif
+
+#endif /* FNET_CFG_CPU_WIFI_FW_UPDATE */
 
 #endif /* FNET_CFG_CPU_WIFI */

@@ -108,7 +108,6 @@ static void fapp_link_script_add_netif_name(fnet_char_t *script_out, fnet_size_t
     /* Very rude. TBD better way */
     fnet_snprintf(script_out, script_out_size, script_in, 
                 netif_name, netif_name, netif_name, netif_name, netif_name, netif_name, netif_name, netif_name, netif_name, netif_name);
-
 }
 
 /************************************************************************

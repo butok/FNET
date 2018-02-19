@@ -197,6 +197,23 @@ fnet_wifi_op_mode_t fnet_wifi_get_op_mode(fnet_netif_desc_t netif_desc);
 
 /***************************************************************************/ /*!
  *
+ * @brief    Retrieves firmware version number of the Wi-Fi interface module.
+ *
+ * @param netif_desc       Network interface descriptor.
+ *
+ * @return This function returns:
+ *   - firmware version number if no error occurs.
+ *   - @c 0 if an error occurs or Wi-Fi driver is not able to provide a version number.
+ *
+ ******************************************************************************
+ *
+ * This function gets a version number of a firmware running on the Wi-Fi module.
+ *
+ ******************************************************************************/
+fnet_uint32_t fnet_wifi_fw_get_version(fnet_netif_desc_t netif_desc);
+
+/***************************************************************************/ /*!
+ *
  * @brief    Updates firmware of the Wi-Fi interface.
  *
  * @param netif_desc       Network interface descriptor.

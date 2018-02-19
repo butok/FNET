@@ -2250,6 +2250,24 @@
         </file>
       </group>
       <group>
+        <name>bench</name>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/bench/fnet_bench_cln.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/bench/fnet_bench_cln.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/bench/fnet_bench_srv.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/bench/fnet_bench_srv.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../fnet_stack/service/bench/fnet_bench_config.h</name>
+        </file>
+      </group>
+      <group>
         <name>dhcp</name>
         <file>
           <name>$PROJ_DIR$/../../../../../fnet_stack/service/dhcp/fnet_dhcp.c</name>

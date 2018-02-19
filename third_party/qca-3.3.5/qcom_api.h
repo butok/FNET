@@ -593,6 +593,7 @@ A_STATUS qcom_param_set(
     uint8_t device_id, uint16_t grp_id, uint16_t param_id, void *data, uint32_t data_length, boolean wait_for_status);
 
 A_STATUS qcom_get_versionstr(ATH_VERSION_STR *versionstr);
+A_STATUS qcom_get_version(ATH_VERSION *version); //AB
 A_STATUS qcom_set_appie(uint8_t device_id, uint8_t mgmtType, uint8_t *appie, uint8_t ieLen);
 
 #endif

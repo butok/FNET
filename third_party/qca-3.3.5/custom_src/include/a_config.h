@@ -143,7 +143,9 @@ extern "C" {
    from the host. This feature is implemented but kept disable and can be enabled
    on need basis. DO NOT EDIT NEXT LINE INCLUDING THE SPACE. BUILD SCRIPT SEARCHES
    FOR THIS PATTERN AND UPDATES IT IN BUILD TIME. */
+#ifndef DRIVER_CONFIG_ENABLE_HOST_FW_DOWNLOAD
 #define DRIVER_CONFIG_ENABLE_HOST_FW_DOWNLOAD 0 // 1 or 0
+#endif
 
 #define ENABLE_HTTP_SERVER 1 // 1 or 0
 

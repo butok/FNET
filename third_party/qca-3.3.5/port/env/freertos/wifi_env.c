@@ -44,7 +44,9 @@ void *a_malloc(int32_t size, uint8_t id)
     void *addr;
 
     addr = (void *)pvPortMalloc(size);
+#if 0 //AB
     assert(addr);
+#endif
     if (addr != NULL)
     {
         /*FIXME: !!!*/

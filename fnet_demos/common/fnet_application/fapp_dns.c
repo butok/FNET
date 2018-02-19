@@ -88,7 +88,7 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
 {
     struct fnet_dns_params      dns_params;
     fnet_netif_desc_t           netif = fnet_netif_get_default();
-    fnet_char_t                 ip_str[FNET_IP_ADDR_STR_SIZE];
+    fnet_char_t                 ip_str[FNET_IP_ADDR_STR_SIZE_MAX];
     fnet_dns_desc_t             dns_desc;
     fnet_index_t                i;
 
@@ -97,7 +97,7 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
     
     dns_params.addr_family = AF_INET;
 
-    /* [-n <if name>] [-n <server ip>] [4|6] */
+    /* [-n <if name>] [-s <server ip>] [4|6] */
     for(i = 1u; i < (argc-1) /*avoid the last parameter.*/; i++)
     {
         if (!fnet_strcmp(argv[i], "-n")) /*[-n <if name>] */
@@ -117,7 +117,7 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
             i++;
             if(i < argc)
             {
-                if(fnet_inet_ptos(argv[3], &dns_params.dns_server_addr) == FNET_ERR)
+                if(fnet_inet_ptos(argv[i], &dns_params.dns_server_addr) == FNET_ERR)
                 {
                     goto ERROR_PARAMETER;
                 }
@@ -128,11 +128,11 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
             }
         }
         /* Addr family to request */
-        else if (!fnet_strcmp(argv[2], "4"))
+        else if (!fnet_strcmp(argv[i], "4"))
         {
             dns_params.addr_family = AF_INET;
         }
-        else if (!fnet_strcmp(argv[2], "6"))
+        else if (!fnet_strcmp(argv[i], "6"))
         {
             dns_params.addr_family = AF_INET6;
         }

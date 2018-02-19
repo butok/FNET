@@ -44,7 +44,7 @@
 * // *************************************************************************
 *  static const struct fnet_shell_command fapp_cmd_tab [] =
 *  {
-*      { "help", 0, 0, fnet_shell_help_cmd,"Display this help message.", ""},
+*      { "?", 0, 0, fnet_shell_help_cmd,"Display this help message.", ""},
 *      { "set", 0, 2, fapp_set_cmd, "Set parameter.", "[<parameter> <value>]"},
 *      { "show", 0, 0, fapp_show, "Show parameters.", "" },
 *      { "info", 0, 0, fapp_netif_info_cmd, "Show interface info.", ""},
@@ -317,7 +317,7 @@ void fnet_shell_release(fnet_shell_desc_t desc);
  * ...
  *  static const struct fnet_shell_command fapp_cmd_table [] =
  *  {
- *      { FNET_SHELL_CMD_TYPE_NORMAL, "help", 0, 0, fapp_help_cmd,"Display this help message.", ""},
+ *      { FNET_SHELL_CMD_TYPE_NORMAL, "?", 0, 0, fapp_help_cmd,"Display this help message.", ""},
  *      { FNET_SHELL_CMD_TYPE_NORMAL, "set", 0, 2, fapp_set_cmd,      "Set parameter.", "[<parameter> <value>]"},
  *      { FNET_SHELL_CMD_TYPE_NORMAL, "get", 0, 0, fapp_show,    "Get parameters.", "[<parameter>]" },
  *      { FNET_SHELL_CMD_TYPE_NORMAL, "info", 0, 0, fapp_netif_info_cmd,    "Show interface info.", ""},
@@ -329,7 +329,7 @@ void fnet_shell_release(fnet_shell_desc_t desc);
  * @endcode
  * Calling of the @ref fnet_shell_help() for the @c fapp_cmd_table structure prints:
  * @verbatim
->   help                                 - Display this help message
+>      ?                                 - Display this help message
 >    set [<parameter> <value>]           - Set parameter
 >    get [<parameter>]                   - Get parameters
 >   info                                 - Show detailed status

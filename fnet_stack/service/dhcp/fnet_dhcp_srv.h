@@ -35,15 +35,11 @@
 * the user application should call the main service-polling function
 * @ref fnet_service_poll() periodically in background. @n
 * @n
-* For example:
-* @code
-* ...
-TBD
-* ...
-* @endcode
-* @n
 * Configuration parameters:
 * - @ref FNET_CFG_DHCP_SRV
+* - @ref FNET_CFG_DHCP_SRV_PORT
+* - @ref FNET_CFG_DHCP_SRV_ADDR_POOL_SIZE
+* - @ref FNET_CFG_DHCP_SRV_LEASE_TIME
 *
 */
 /*! @{ */
@@ -188,20 +184,6 @@ fnet_bool_t fnet_dhcp_srv_is_enabled(fnet_dhcp_srv_desc_t desc);
  *
  ******************************************************************************/
 fnet_dhcp_srv_desc_t fnet_dhcp_srv_get_by_netif(fnet_netif_desc_t netif);
-
-#if 0
-
-----------
-qcom_dhcps_register_cb
-Definition Register a callback for DHCP IP address allocation at a DHCP server.
-Prototype A_STATUS qcom_dhcps_register_cb(
-A_UINT8 device_id, Interface ID
-void* callback Callback function to be invoked when an IP
-address is allocated to a client by the
-DHCP server
-
-#endif
-
 
 
 #if defined(__cplusplus)

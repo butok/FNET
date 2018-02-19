@@ -104,7 +104,7 @@ fnet_return_t fnet_ip4_init( void )
 
         /* Install SW Interrupt handler. */
         ip_event = fnet_event_init(fnet_ip4_input_low, 0u);
-        if(ip_event != FNET_ERR)
+        if(ip_event)
         {
             result = FNET_OK;
         }

@@ -29,24 +29,23 @@
 
 #include "fapp.h"
 
-#if FAPP_CFG_BENCH_CMD
+#if FAPP_CFG_BENCH_CMD && FNET_CFG_BENCH_SRV && FNET_CFG_BENCH_CLN
 
 /************************************************************************
 * Benchmark definitions
 ************************************************************************/
-#define FAPP_BENCH_PORT                         (FNET_HTONS(7007))      /* Port used by the benchmark application (in network byte order).*/
-#define FAPP_BENCH_PACKET_SIZE_MAX              (8*1024)    /* Defines size of Applacation and Socket TX&RX buffers.*/
-#define FAPP_BENCH_TX_PACKET_SIZE_DEFAULT       (1472)
-#define FAPP_BENCH_TX_PACKET_NUMBER_DEFAULT     (10000)
-#define FAPP_BENCH_TX_ITERATION_NUMBER_DEFAULT  (1)
-#define FAPP_BENCH_TX_ITERATION_NUMBER_MAX      (10000)
+#define FAPP_BENCH_TX_MESSAGE_SIZE_DEFAULT       (1472)   /* Default message size */
+#define FAPP_BENCH_TX_MESSAGE_NUMBER_DEFAULT     (10000)  /* Default number of messages */
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-void fapp_benchrx_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
-void fapp_benchtx_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
+void fapp_bench_cln_cmd( fnet_shell_desc_t shell_desc, fnet_index_t argc, fnet_char_t **argv );
+
+void fapp_bench_srv_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
+void fapp_bench_srv_info(fnet_shell_desc_t desc);
+void fapp_bench_srv_release(void);
 
 #if defined(__cplusplus)
 }

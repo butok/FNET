@@ -279,7 +279,7 @@ void fnet_cpu_timer_release( void )
 
     /* Free interrupt handler res.
      */
-    fnet_isr_vector_release(FNET_TIMER_VECTOR_NUMBER);
+    fnet_isr_unregister(FNET_TIMER_VECTOR_NUMBER);
 
 }
 

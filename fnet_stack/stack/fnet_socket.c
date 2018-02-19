@@ -66,7 +66,7 @@ fnet_return_t fnet_socket_init( void )
 #if FNET_CFG_SOCKET_CALLBACK_ON_RX
     /* Install event Handler. */
     fnet_socket_event_rx = fnet_event_init(fnet_socket_is_activity, 0);
-    if (fnet_socket_event_rx == FNET_ERR)
+    if (fnet_socket_event_rx == 0)
     {
         return FNET_ERR;
     }

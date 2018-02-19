@@ -236,8 +236,8 @@ void fnet_dhcp_cln_release(fnet_dhcp_cln_desc_t desc);
 void fnet_dhcp_cln_get_options(fnet_dhcp_cln_desc_t desc, struct fnet_dhcp_cln_options *options );
 
 /**************************************************************************/ /*!
- * @brief DHCP event handler callback function prototype, that is
- * called when the DHCP client has updated the IP parameters (in BOUND state) or sends the DHCP discover message..
+ * @brief DHCP client event handler callback function prototype, that is
+ * called when the DHCP client has updated the IPv4 parameters (in BOUND state) or sends the DHCP discover message.
  *
  * @param desc      DHCP client descriptor.
  * @param netif     Network interface descriptor which IP parameters were updated.

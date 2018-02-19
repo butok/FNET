@@ -172,7 +172,7 @@ fnet_return_t fnet_ip6_init( void )
         /* Install IPv6 event handler. */
         ip6_event = fnet_event_init(fnet_ip6_input_low, 0u);
 
-        if(ip6_event != FNET_ERR)
+        if(ip6_event)
         {
             result = FNET_OK;
         }

@@ -47,7 +47,6 @@
 *************************************************************************/
 
 #define FAPP_NET_ERR            "Error: Network Interface is not configurated!"
-#define FAPP_GO_STR             "go 0x%08X"
 #define FAPP_BOOT_STR           "Press any key to stop (%s): %3d"
 #define FAPP_PARAMS_LOAD_STR    "[FAPP] Application parameters loaded from Flash."
 #define FAPP_DUP_IP_WARN        "\n[FAPP] %s: %s has IP address conflict with another system on the network!\n"
@@ -56,7 +55,6 @@
 *     Function Prototypes
 *************************************************************************/
 static void fapp_init(void);
-static void fapp_poll(void);
 
 #if FAPP_CFG_BOOTLOADER || FAPP_CFG_SETGET_CMD_BOOT
     static void fapp_boot_mode_go(fnet_shell_desc_t desc);
@@ -350,6 +348,10 @@ static void fapp_release(fnet_shell_desc_t desc)
     fapp_http_release();
 #endif
 
+#if FAPP_CFG_BENCH_CMD && FNET_CFG_BENCH_SRV    /* Release BENCH server. */
+    fapp_bench_srv_release();
+#endif
+
 #if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP && FNET_CFG_HTTP_TLS && FNET_CFG_TLS /* Release HTTPS server. */
     fapp_http_tls_release();
 #endif
@@ -376,7 +378,7 @@ static void fapp_release(fnet_shell_desc_t desc)
 /************************************************************************
 * DESCRIPTION: Application poll.
 ************************************************************************/
-static void fapp_poll(void)
+void fapp_poll(void)
 {
     #if !FNET_CFG_TIMER_POLL_AUTOMATIC
         fnet_timer_poll(); /* Poll FNET stack timeouts.*/

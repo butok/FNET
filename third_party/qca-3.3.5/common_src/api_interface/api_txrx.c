@@ -350,7 +350,9 @@ Api_DataTxStart(void *pCxt, void *pReq)
     boolean bMoreData = false;
     uint8_t dot11Hdr = WLAN_CONFIG_TX_DOT11_HDR;
     A_STATUS status = A_ERROR;
+#if ENABLE_STACK_OFFLOAD
     WMI_TX_META_V5 ip_meta;
+#endif
 
     do
     {

@@ -183,7 +183,7 @@ struct fnet_http_params
     fnet_char_t *index_path;                    /**< @brief Index file path (null-terminated string). @n
                                                 *   It's relative to the @c root_path.*/
     struct fnet_sockaddr address;               /**< @brief Server socket address. @n
-                                                * If server IP address and Scop ID are set to @c 0s, the server will listen to all current network interfaces. @n
+                                                * If server IP address and Scope ID are set to @c 0s, the server will listen to all current network interfaces. @n
                                                 * If server address family is set to @c 0, it will be assigned to @ref AF_SUPPORTED. @n
                                                 * If server port number is set to @c 0, it will be assigned to the default port number defined by @ref FNET_CFG_HTTP_PORT.*/
 #if FNET_CFG_HTTP_SSI || defined(__DOXYGEN__)
