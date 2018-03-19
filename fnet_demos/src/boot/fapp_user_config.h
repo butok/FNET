@@ -12,8 +12,9 @@
 
 #define _FAPP_USER_CONFIG_H_
 
-#define FAPP_CFG_BOOTLOADER_SIZE       (52*1024) /* First 52 KBs of FLASH are reserved by 
-                                                   * the Bootloader application.*/
+#define FAPP_CFG_BOOTLOADER_SIZE       (60*1024) /* First 52 KBs of FLASH are reserved by the Bootloader application.
+                                                  * This value must be dividable by FNET_CFG_CPU_FLASH_PAGE_SIZE.
+                                                  * On any change, must be updated the linker file of shell_boot application. */
 
 #define FAPP_CFG_NAME                   "FNET Bootloader"
 #define FAPP_CFG_SHELL_PROMPT           "BOOT> "

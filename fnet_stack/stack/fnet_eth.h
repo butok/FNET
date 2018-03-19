@@ -75,11 +75,11 @@ typedef fnet_uint8_t fnet_mac_addr_t[6]; /* MAC address type.*/
 
 /* MAC address is broadcast. */
 #define FNET_MAC_ADDR_IS_BROADCAST(a)	(((((a)[0]) == 0xFFU) && \
-                                        (((a)[1]) == 0xFFU)&& \
-                                        (((a)[1]) == 0xFFU)&& \
-                                        (((a)[1]) == 0xFFU)&& \
-                                        (((a)[1]) == 0xFFU)&& \
-                                        (((a)[1]) == 0xFFU))? FNET_TRUE:FNET_FALSE)
+        (((a)[1]) == 0xFFU)&& \
+        (((a)[1]) == 0xFFU)&& \
+        (((a)[1]) == 0xFFU)&& \
+        (((a)[1]) == 0xFFU)&& \
+        (((a)[1]) == 0xFFU))? FNET_TRUE:FNET_FALSE)
 /* Copying address. */
 #define FNET_MAC_ADDR_COPY(from_addr, to_addr)  \
     (fnet_memcpy(&to_addr[0], &from_addr[0], sizeof(fnet_mac_addr_t)))

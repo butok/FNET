@@ -28,7 +28,7 @@
 #include "fnet_dhcp_prv.h"
 
 /* The first four octets of the vendor information field have been assigned to the "magic cookie".*/
-const fnet_uint8_t fnet_dhcp_magic_cookie[4] = {99, 130, 83, 99}; 
+const fnet_uint8_t fnet_dhcp_magic_cookie[4] = {99, 130, 83, 99};
 
 /************************************************************************
 * DESCRIPTION: Add DHCPv4 option.
@@ -40,7 +40,7 @@ fnet_uint8_t *fnet_dhcp_add_option(fnet_uint8_t *option_buffer, fnet_size_t opti
 {
     FNET_ASSERT(option_buffer != FNET_NULl);
     FNET_ASSERT(option_value != FNET_NULl);
- 
+
     fnet_uint8_t    *result = FNET_NULL;
 
     if(option_buffer_size >= (2U/*type+length*/ + 1U/* END option*/ + option_length))

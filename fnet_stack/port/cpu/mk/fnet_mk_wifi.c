@@ -25,7 +25,7 @@
 #include "fnet.h"
 #if FNET_MK && FNET_CFG_CPU_WIFI
 
-#include "port/cpu/netif/qca/fnet_qca.h"
+#include "port/netif/qca/fnet_qca.h"
 
 /************************************************************************
 * Wi-Fi interface structures.
@@ -68,8 +68,8 @@ void BOARD_InitGT202Shield(void)
     FNET_MK_SIM_SCGC5 |= FNET_MK_SIM_SCGC5_PORTC_MASK | FNET_MK_SIM_SCGC5_PORTD_MASK;
 
     pctl = (FNET_MK_PORT_MemMapPtr)FNET_MK_PORTC_BASE_PTR;
-    pctl->PCR[12] = FNET_MK_PORT_PCR_MUX(1)|FNET_MK_PORT_PCR_PE(1);     /* PORTC12 (pin 84) is configured as PTC12 (GPIO). Pull Enable: Internal pullup or pulldown resistor is enabled on the corresponding pin, if the pin is configured as a digital input.*/
-    pctl->PCR[3] = FNET_MK_PORT_PCR_MUX(1)|FNET_MK_PORT_PCR_PE(1)|FNET_MK_PORT_PCR_PS(1);   /* PPORTC3 (pin 73) is configured as PTC3 (GPIO). 
+    pctl->PCR[12] = FNET_MK_PORT_PCR_MUX(1) | FNET_MK_PORT_PCR_PE(1);   /* PORTC12 (pin 84) is configured as PTC12 (GPIO). Pull Enable: Internal pullup or pulldown resistor is enabled on the corresponding pin, if the pin is configured as a digital input.*/
+    pctl->PCR[3] = FNET_MK_PORT_PCR_MUX(1) | FNET_MK_PORT_PCR_PE(1) | FNET_MK_PORT_PCR_PS(1);   /* PPORTC3 (pin 73) is configured as PTC3 (GPIO).
                                                                                             Pull Enable: Internal pullup or pulldown resistor is enabled on the corresponding pin, if the pin is configured as a digital input.
                                                                                             Pull Select: Internal pullup resistor is enabled on the corresponding pin, if the corresponding PE field is set. */
 
@@ -84,7 +84,7 @@ void BOARD_InitGT202Shield(void)
 /************************************************************************
 * DESCRIPTION: Silex2401/QCA4002 Wi-Fi board pin initialization.
 *************************************************************************/
-void BOARD_InitSilex2401Shield(void) 
+void BOARD_InitSilex2401Shield(void)
 {
 #if FNET_CFG_CPU_MK64FN1
     FNET_MK_PORT_MemMapPtr pctl;
@@ -100,9 +100,9 @@ void BOARD_InitSilex2401Shield(void)
     FNET_MK_SIM_SCGC5 |= FNET_MK_SIM_SCGC5_PORTB_MASK | FNET_MK_SIM_SCGC5_PORTD_MASK;
 
     pctl = (FNET_MK_PORT_MemMapPtr)FNET_MK_PORTB_BASE_PTR;
-    pctl->PCR[23] = FNET_MK_PORT_PCR_MUX(1)|FNET_MK_PORT_PCR_PE(1);     /* PORTB23 (pin 69) is configured as PTB23 (GPIO). 
+    pctl->PCR[23] = FNET_MK_PORT_PCR_MUX(1) | FNET_MK_PORT_PCR_PE(1);     /* PORTB23 (pin 69) is configured as PTB23 (GPIO).
                                                                         Pull Enable: Internal pullup or pulldown resistor is enabled on the corresponding pin, if the pin is configured as a digital input.*/
-    pctl->PCR[9] = FNET_MK_PORT_PCR_MUX(1)|FNET_MK_PORT_PCR_PE(1)|FNET_MK_PORT_PCR_PS(1);   /* PORTB9 (pin 57) is configured as PTB9 (GPIO). 
+    pctl->PCR[9] = FNET_MK_PORT_PCR_MUX(1) | FNET_MK_PORT_PCR_PE(1) | FNET_MK_PORT_PCR_PS(1);   /* PORTB9 (pin 57) is configured as PTB9 (GPIO).
                                                                                             Pull Enable: Internal pullup or pulldown resistor is enabled on the corresponding pin, if the pin is configured as a digital input.
                                                                                             Pull Select: Internal pullup resistor is enabled on the corresponding pin, if the corresponding PE field is set. */
 
@@ -114,7 +114,7 @@ void BOARD_InitSilex2401Shield(void)
 #endif /* FNET_CFG_CPU_MK64FN1 */
 }
 #if !FNET_CFG_CPU_MK64FN1
- #warning "QCA400x Wi-Fi board pin initialization is not tested for your platform."
+    #warning "QCA400x Wi-Fi board pin initialization is not tested for your platform."
 #endif
 
 #endif /* FNET_CFG_CPU_WIFI_IO_INIT */

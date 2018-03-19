@@ -251,7 +251,8 @@ const struct fnet_shell_command fapp_cmd_table [] =
 
 /* Connection state string */
 const fnet_char_t *const fapp_is_enabled_str[] =    {"off",  /* Disabled */
-                                                     "on"    /* Enabled */};
+                                                     "on"    /* Enabled */
+                                                    };
 
 /* Shell command-line buffer.*/
 static fnet_char_t fapp_cmd_line_buffer[FAPP_CFG_SHELL_MAX_LINE_LENGTH];
@@ -272,14 +273,14 @@ static const struct fnet_shell fapp_shell =
 fnet_shell_desc_t fapp_shell_init(void)
 {
     struct fnet_shell_params    shell_params;
-        
+
     /* Init main shell. */
     shell_params.shell = &fapp_shell;
     shell_params.cmd_line_buffer = fapp_cmd_line_buffer;
     shell_params.cmd_line_buffer_size = sizeof(fapp_cmd_line_buffer);
     shell_params.stream = FNET_SERIAL_STREAM_DEFAULT;
     shell_params.echo = FNET_TRUE;
-    
+
     return fnet_shell_init(&shell_params);
 }
 
@@ -516,7 +517,7 @@ static void fapp_bind_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_
     {
         if(argc > 2u) /* There are additional parameters */
         {
-            for(i = 1u; i < (argc-1)/*avoid the last parameter.*/ ; i++)
+            for(i = 1u; i < (argc - 1)/*avoid the last parameter.*/ ; i++)
             {
                 if (!fnet_strcmp(argv[i], "-n")) /*[-n <if name>] */
                 {
@@ -537,7 +538,7 @@ static void fapp_bind_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_
             }
         }
     }
-    
+
     /* Bind Ipv6 address.*/
     if(fnet_netif_bind_ip6_addr(netif, &addr, FNET_NETIF_IP_ADDR_TYPE_MANUAL) == FNET_ERR)
     {
@@ -571,7 +572,7 @@ static void fapp_unbind_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_cha
     {
         if(argc > 2u) /* There are additional parameters */
         {
-            for(i = 1u; i < (argc-1)/*avoid the last parameter.*/ ; i++)
+            for(i = 1u; i < (argc - 1)/*avoid the last parameter.*/ ; i++)
             {
                 if (!fnet_strcmp(argv[i], "-n")) /*[-n <if name>] */
                 {
@@ -592,7 +593,7 @@ static void fapp_unbind_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_cha
             }
         }
     }
-    
+
     /* Unbind Ipv6 address.*/
     if(fnet_netif_unbind_ip6_addr(netif, &addr) == FNET_ERR)
     {

@@ -36,10 +36,10 @@
 #endif
 
 #if FAPP_CFG_FREERTOS
-/* FreeRTOS kernel includes. */
-#include "FreeRTOS.h"
-#include "task.h"
-#include "event_groups.h"
+    /* FreeRTOS kernel includes. */
+    #include "FreeRTOS.h"
+    #include "task.h"
+    #include "event_groups.h"
 #endif
 
 /************************************************************************
@@ -68,9 +68,9 @@ static void fapp_boot(fnet_shell_desc_t desc);
 static fnet_shell_desc_t fapp_shell_desc = 0; /* Shell descriptor. */
 
 #if FAPP_CFG_FREERTOS
-/* RX activity event. */
-#define FAPP_FREERTOS_EVENT_RX  (0x1)  
-static EventGroupHandle_t fapp_freertos_event_group;
+    /* RX activity event. */
+    #define FAPP_FREERTOS_EVENT_RX  (0x1)
+    static EventGroupHandle_t fapp_freertos_event_group;
 #endif
 
 /******************************************************************************
@@ -268,15 +268,15 @@ static void fapp_init(void)
     if(fnet_init(&init_params) == FNET_OK)
     {
         /* Add event handler on duplicated IP address */
-    #if FNET_CFG_IP4
+#if FNET_CFG_IP4
         fnet_netif_set_callback_on_ip4_addr_conflict(fapp_dup_ip_callback);
-    #endif
+#endif
 
         /* Init FS and mount FS Image. */
-    #if (FAPP_CFG_EXP_CMD && FNET_CFG_FS) || ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP)
-        fapp_fs_mount(); 
-    #endif
-    
+#if (FAPP_CFG_EXP_CMD && FNET_CFG_FS) || ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP)
+        fapp_fs_mount();
+#endif
+
         /* Init main shell. */
         fapp_shell_desc = fapp_shell_init();
         if(fapp_shell_desc)
@@ -284,20 +284,20 @@ static void fapp_init(void)
             /* Initialize network interfaces.*/
             if(fapp_netif_init(fapp_shell_desc) == FNET_OK)
             {
-            #if FAPP_CFG_PARAMS_READ_FLASH && FNET_CFG_CPU_FLASH
+#if FAPP_CFG_PARAMS_READ_FLASH && FNET_CFG_CPU_FLASH
                 /* During bootup, the most recently stored customer configuration data will be read and used to configure the interfaces.*/
                 if(fapp_params_from_flash() == FNET_OK)
                 {
                     fnet_shell_println(fapp_shell_desc, FAPP_PARAMS_LOAD_STR);
                 }
-            #endif
-        
+#endif
+
                 /* Check if we have atleast one initoalized networking interface.*/
                 if(fnet_netif_get_default() == FNET_NULL)
                 {
                     fnet_shell_println(fapp_shell_desc, FAPP_NET_ERR);
                 }
-    
+
                 /* Start application */
                 fapp_boot(fapp_shell_desc);
             }
@@ -378,31 +378,32 @@ static void fapp_release(fnet_shell_desc_t desc)
 /************************************************************************
 * DESCRIPTION: Application poll.
 ************************************************************************/
+extern void fnet_enet_poll(fnet_netif_desc_t netif_desc);
 void fapp_poll(void)
 {
-    #if !FNET_CFG_TIMER_POLL_AUTOMATIC
-        fnet_timer_poll(); /* Poll FNET stack timeouts.*/
-    #endif
-        fnet_service_poll(); /* Poll registered services.*/
+#if !FNET_CFG_TIMER_POLL_AUTOMATIC
+    fnet_timer_poll(); /* Poll FNET stack timeouts.*/
+#endif
+    fnet_service_poll(); /* Poll registered services.*/
 
-    #if FAPP_CFG_FREERTOS /* FrerRTOS task sleep */
-        {
-        #if 0 /* Sleep for some time. Simple version. */
-            vTaskDelay(FAPP_CFG_FREERTOS_TASK_POLL_PERIOD/portTICK_PERIOD_MS);
-        #else /* Sleep for some time or for the FNET RX event */
-            /* Wait a maximum of FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS ms for either any bit to be set within
-                the event group.  Clear the bits before exiting. */
-            xEventGroupWaitBits(
-                        fapp_freertos_event_group,   /* The event group being tested. */
-                        FAPP_FREERTOS_EVENT_RX, /* The bits within the event group to wait for. */
-                        pdTRUE,        /* BIT_0 & BIT_4 should be cleared before returning. */
-                        pdFALSE,       /* Don't wait for both bits, either bit will do. */
-                        FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS/portTICK_PERIOD_MS );/* Ticks to wait for either bit to be set. */
+#if FAPP_CFG_FREERTOS /* FrerRTOS task sleep */
+    {
+#if 0 /* Sleep for some time. Simple version. */
+        vTaskDelay(FAPP_CFG_FREERTOS_TASK_POLL_PERIOD / portTICK_PERIOD_MS);
+#else /* Sleep for some time or for the FNET RX event */
+        /* Wait a maximum of FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS ms for either any bit to be set within
+            the event group.  Clear the bits before exiting. */
+        xEventGroupWaitBits(
+            fapp_freertos_event_group,   /* The event group being tested. */
+            FAPP_FREERTOS_EVENT_RX, /* The bits within the event group to wait for. */
+            pdTRUE,        /* BIT_0 & BIT_4 should be cleared before returning. */
+            pdFALSE,       /* Don't wait for both bits, either bit will do. */
+            FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS / portTICK_PERIOD_MS ); /* Ticks to wait for either bit to be set. */
 
-            /* Returned because Socket RX event or ticks passed.*/
-        #endif
-        }
-    #endif
+        /* Returned because Socket RX event or ticks passed.*/
+#endif
+    }
+#endif
 }
 
 /************************************************************************
@@ -412,7 +413,7 @@ void fapp_main(void)
 {
     /* Initilize FNET Demo application */
     fapp_init();
-    
+
     while(1)
     {
         /* Application poll */
@@ -430,7 +431,7 @@ static void fapp_socket_rx_callback(void)
 {
     BaseType_t xHigherPriorityTaskWoken;
 
-    if(xEventGroupSetBitsFromISR(fapp_freertos_event_group, FAPP_FREERTOS_EVENT_RX, &xHigherPriorityTaskWoken)!= pdFAIL)
+    if(xEventGroupSetBitsFromISR(fapp_freertos_event_group, FAPP_FREERTOS_EVENT_RX, &xHigherPriorityTaskWoken) != pdFAIL)
     {
         /* If xHigherPriorityTaskWoken is now set to pdTRUE then a context
         switch should be requested.  The macro used is port specific and will
@@ -446,24 +447,24 @@ static void fapp_socket_rx_callback(void)
 ************************************************************************/
 static void fapp_task(void *params)
 {
-	/* FNET demo application */
+    /* FNET demo application */
     fapp_main();
 }
 
 /************************************************************************
 * DESCRIPTION: Main entry point of the FreeRTOS shell demo.
 ************************************************************************/
-void fapp_main_freertos( void ) 
+void fapp_main_freertos( void )
 {
     /* Create FNET demo application task */
     if(xTaskCreate(
-            fapp_task,  /* pointer to the task */
-            FAPP_CFG_NAME, /* task name for kernel awareness debugging */
-            FAPP_CFG_FREERTOS_TASK_STACK_SIZE/sizeof(portSTACK_TYPE), /* task stack size */
-            NULL, /* optional task startup argument */
-            FAPP_CFG_FREERTOS_TASK_PRIORITY,  /* initial priority */
-            NULL /* optional task handle to create */
-        ) != pdPASS)
+           fapp_task,  /* pointer to the task */
+           FAPP_CFG_NAME, /* task name for kernel awareness debugging */
+           FAPP_CFG_FREERTOS_TASK_STACK_SIZE / sizeof(portSTACK_TYPE), /* task stack size */
+           NULL, /* optional task startup argument */
+           FAPP_CFG_FREERTOS_TASK_PRIORITY,  /* initial priority */
+           NULL /* optional task handle to create */
+       ) != pdPASS)
     {
         fnet_println("[FREERTOS] Failed to create task."); /* Probably out of memory */
     }
@@ -480,15 +481,15 @@ void fapp_main_freertos( void )
         }
         else
         {
-        #if FNET_CFG_SOCKET_CALLBACK_ON_RX
+#if FNET_CFG_SOCKET_CALLBACK_ON_RX
             /* Registers the "socket layer activity" event handler.*/
             fnet_socket_set_callback_on_rx(fapp_socket_rx_callback);
-        #endif
+#endif
 
             fnet_println("[FREERTOS] Starting scheduler.");
             vTaskStartScheduler();
 
-            /* The code should never reach here. */ 
+            /* The code should never reach here. */
         }
     }
 }
@@ -525,6 +526,33 @@ void fapp_addr_callback_updated(fnet_shell_desc_t desc, fnet_netif_desc_t netif)
     fapp_netif_info_print( desc, netif );
 }
 #endif
+
+/************************************************************************
+* DESCRIPTION: Board-specific HW initialization.
+*              Default serial port initialization.
+*              Interrupt enabling.
+************************************************************************/
+
+
+void fapp_hw_init(void)
+{
+#if FNET_MK /* Kinetis Board specific initialization */
+#include "clock_config.h"
+    /* Init clock to run mode */
+    BOARD_BootClockRUN();
+#endif
+
+#if FNET_LPC /* LPC Board specific initialization */
+    extern void BOARD_InitHardware(void);
+    BOARD_InitHardware();
+#endif
+
+    /* Default serial port initialization. */
+    fnet_cpu_serial_init(FNET_CFG_CPU_SERIAL_PORT_DEFAULT, 115200u);
+
+    /* Enable Interrupts.*/
+    fnet_cpu_irq_enable(0u);
+}
 
 /******************************************************************************
  *  Testing of mutex nesting conflict.

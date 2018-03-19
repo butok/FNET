@@ -114,14 +114,14 @@
 * @note "%s" will be replaced by the interface name.*/
 /* All interfaces */
 #ifndef FAPP_CFG_LINK_CONNECT_SCRIPT
-    #define FAPP_CFG_LINK_CONNECT_SCRIPT        "dhcpc autoip -n %s; mdns -n %s; llmnr -n %s;"    
+    #define FAPP_CFG_LINK_CONNECT_SCRIPT        "dhcpc autoip -n %s; mdns -n %s; llmnr -n %s;"
 #endif
 #ifndef FAPP_CFG_LINK_DISCONNECT_SCRIPT
     #define FAPP_CFG_LINK_DISCONNECT_SCRIPT     "mdns -n %s release; llmnr -n %s release; dhcpc -n %s release; autoip -n %s release;"
 #endif
 /* Wi-Fi interface connect/unconnect scrpts, in the access point operation mode.*/
 #ifndef FAPP_CFG_LINK_CONNECT_WIFI_ACCESS_POINT_SCRIPT
-    #define FAPP_CFG_LINK_CONNECT_WIFI_ACCESS_POINT_SCRIPT      "dhcp -n %s; mdns -n %s; llmnr -n %s;"    
+    #define FAPP_CFG_LINK_CONNECT_WIFI_ACCESS_POINT_SCRIPT      "dhcp -n %s; mdns -n %s; llmnr -n %s;"
 #endif
 #ifndef FAPP_CFG_LINK_DISCONNECT_WIFI_ACCESS_POINT_SCRIPT
     #define FAPP_CFG_LINK_DISCONNECT_WIFI_ACCESS_POINT_SCRIPT   "mdns -n %s release; llmnr -n %s release; dhcp -n %s release;"
@@ -309,7 +309,7 @@
 #endif
 
 #ifndef FAPP_CFG_DHCPC_CMD_DISCOVER_MAX
-   #define FAPP_CFG_DHCPC_CMD_DISCOVER_MAX  (-1) /* -1 means infinite. */
+    #define FAPP_CFG_DHCPC_CMD_DISCOVER_MAX  (-1) /* -1 means infinite. */
 #endif
 
 
@@ -627,7 +627,7 @@
 #endif
 
 #ifndef FAPP_CFG_PARAMS_WIFI
-#define FAPP_CFG_PARAMS_WIFI            (FAPP_CFG_SETGET_CMD_SSID|FAPP_CFG_SETGET_CMD_PASSPHRASE)
+    #define FAPP_CFG_PARAMS_WIFI            (FAPP_CFG_SETGET_CMD_SSID|FAPP_CFG_SETGET_CMD_PASSPHRASE)
 #endif
 
 
@@ -694,7 +694,9 @@
     #define FAPP_CFG_APPLICATION_ADDRESS      FNET_CFG_CPU_FLASH_ADDRESS
 #endif
 
-/* ROM memory size, reserved/protected for the application. Used by the bootloader application.*/
+/* ROM memory size, reserved/protected for the application. Used by the bootloader application.
+* This value must be dividable by FNET_CFG_CPU_FLASH_PAGE_SIZE.
+* On any change, must be updated the linker file of shell_boot application. */
 #ifndef FAPP_CFG_BOOTLOADER_SIZE
     #define FAPP_CFG_BOOTLOADER_SIZE            (52*1024) /* 52 KB */
 #endif

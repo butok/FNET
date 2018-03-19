@@ -194,7 +194,7 @@ void fnet_mdns_service_unregister(fnet_mdns_service_desc_t service_desc);
  *
  * @param mdns_desc         mDNS server descriptor.
  *
- * @param service_type      Service Type. Null-terminated string. Example "_http._tcp". 
+ * @param service_type      Service Type. Null-terminated string. Example "_http._tcp".
   *
  * @return This function returns:
  *   - mDNS service descriptor that matches the @c service_type parameter.
@@ -262,7 +262,7 @@ fnet_bool_t fnet_mdns_is_enabled(fnet_mdns_desc_t desc);
  *
  ******************************************************************************
  *
- * This function is looking for a mDNS Server service assigned to 
+ * This function is looking for a mDNS Server service assigned to
  * the @c netif network interface set during its initialization.
  *
  ******************************************************************************/

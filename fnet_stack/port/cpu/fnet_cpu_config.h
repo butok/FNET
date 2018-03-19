@@ -403,8 +403,8 @@
 
 /**************************************************************************/ /*!
  * @def      FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
- * @brief    Vector table in RAM 
- *               - @c 1 = is enabled. In this case FNET installs own interrupt service routine into the RAM vector table pointed by @ref FNET_CFG_CPU_VECTOR_TABLE. 
+ * @brief    Vector table in RAM
+ *               - @c 1 = is enabled. In this case FNET installs own interrupt service routine into the RAM vector table pointed by @ref FNET_CFG_CPU_VECTOR_TABLE.
  *               - @c 0 = is disabled. In this case assumed FNET interrupt service routine fnet_cpu_isr() is preinstalled into the ROM vector table.
  *                                     @note For Kinetis platform, is used weak symbol overload to preinstall the FNET interrupt service routine.
  ******************************************************************************/

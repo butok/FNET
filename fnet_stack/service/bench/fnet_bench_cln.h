@@ -35,7 +35,7 @@
 * the user application should call the main service-polling function
 * @ref fnet_service_poll() periodically in background.@n
 * The benchmark results will be passed to the @ref fnet_bench_cln_callback_session_end_t callback function,
-* which is set during the benchmark client initialization. 
+* which is set during the benchmark client initialization.
 * @n
 * The benchmark client service is released automatically as soon as the benchmark session is
 * finished or an error occurs. Your application may continue
@@ -57,7 +57,7 @@
  * @brief Benchmark client descriptor.
  * @see fnet_bench_cln_init()
  ******************************************************************************/
-typedef void* fnet_bench_cln_desc_t;
+typedef void *fnet_bench_cln_desc_t;
 
 /**************************************************************************/ /*!
  * @brief Benchmark client result passed to the "session end" event handler callback.
@@ -88,8 +88,8 @@ struct fnet_bench_cln_params
 {
     struct fnet_sockaddr                    address;            /**< @brief Socket address of the remote benchmark server to connect to. */
     fnet_socket_type_t                      type;               /**< @brief Protocol type. It can be @ref SOCK_STREAM (TCP) or @ref SOCK_DGRAM (UDP).*/
-    fnet_size_t                             message_size;       /**< @brief Size of one message to send. Its value must be less than @ref FNET_CFG_BENCH_CLN_BUFFER_SIZE. */  
-    fnet_index_t                            message_number;     /**< @brief Number of messages to send. */  
+    fnet_size_t                             message_size;       /**< @brief Size of one message to send. Its value must be less than @ref FNET_CFG_BENCH_CLN_BUFFER_SIZE. */
+    fnet_index_t                            message_number;     /**< @brief Number of messages to send. */
     fnet_bench_cln_callback_session_end_t   callback;           /**< @brief Pointer to the callback function defined by
                                                                 * @ref fnet_bench_cln_callback_session_end_t. It is called when the
                                                                 * benchmark session is finished. */
@@ -116,7 +116,7 @@ extern "C" {
  *
  ******************************************************************************
  *
- * This function initializes the Benchmark client/transmitter service and starts 
+ * This function initializes the Benchmark client/transmitter service and starts
  * the benchmark session. It allocates all
  * resources needed and registers the Benchmark client in the service polling list.@n
  * After the initialization, the user application should call the main polling

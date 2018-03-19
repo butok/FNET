@@ -69,17 +69,17 @@ static const struct fapp_params_flash fapp_params_config
     .fnet_params =
     {
         .netif_name = FAPP_CFG_PARAMS_NETIF_NAME, /* Default interface */
-        .address = FAPP_CFG_PARAMS_IP_ADDR,    
-        .netmask = FAPP_CFG_PARAMS_IP_MASK,    
-        .gateway = FAPP_CFG_PARAMS_IP_GW,      
-        .dns = FAPP_CFG_PARAMS_IP_DNS,     
-        .mac = FAPP_CFG_PARAMS_MAC_ADDR,   
-        .host_name = FAPP_CFG_PARAMS_HOST_NAME  
+        .address = FAPP_CFG_PARAMS_IP_ADDR,
+        .netmask = FAPP_CFG_PARAMS_IP_MASK,
+        .gateway = FAPP_CFG_PARAMS_IP_GW,
+        .dns = FAPP_CFG_PARAMS_IP_DNS,
+        .mac = FAPP_CFG_PARAMS_MAC_ADDR,
+        .host_name = FAPP_CFG_PARAMS_HOST_NAME
     },
     .boot_params =
     {
         .mode = FAPP_CFG_PARAMS_BOOT_MODE,
-        .delay = FAPP_CFG_PARAMS_BOOT_DELAY, 
+        .delay = FAPP_CFG_PARAMS_BOOT_DELAY,
         .go_address = FAPP_CFG_PARAMS_BOOT_GO_ADDRESS,
         .script = FAPP_CFG_PARAMS_BOOT_SCRIPT
     },

@@ -73,7 +73,7 @@ struct fnet_dhcp_srv_params
 typedef struct
 {
     fnet_mac_addr_t                     client_mac_addr;    /**< @brief Client-identifier (MAC address)*/
-    fnet_ip4_addr_t                     client_ip4_addr;    /**< @brief Client IPv4 address allocated by the DHCPv4 server.*/    
+    fnet_ip4_addr_t                     client_ip4_addr;    /**< @brief Client IPv4 address allocated by the DHCPv4 server.*/
     fnet_time_t                         lease_time;         /**< @brief Lease time (in seconds).*/
 } fnet_dhcp_srv_addr_pool_info_t;
 
@@ -81,7 +81,7 @@ typedef struct
  * @brief DHCPv4 server descriptor.
  * @see fnet_dhcp_srv_init()
  ******************************************************************************/
-typedef void* fnet_dhcp_srv_desc_t;
+typedef void *fnet_dhcp_srv_desc_t;
 
 #if defined(__cplusplus)
 extern "C" {
@@ -142,7 +142,7 @@ void fnet_dhcp_srv_release(fnet_dhcp_srv_desc_t desc);
  *
  ******************************************************************************
  *
- * This function is used to retrieve an information about addresses allocated by 
+ * This function is used to retrieve an information about addresses allocated by
  * the DHCPv4 server.
  *
  ******************************************************************************/
@@ -179,7 +179,7 @@ fnet_bool_t fnet_dhcp_srv_is_enabled(fnet_dhcp_srv_desc_t desc);
  *
  ******************************************************************************
  *
- * This function is looking for a DHCP Server service assigned to 
+ * This function is looking for a DHCP Server service assigned to
  * the @c netif network interface set during its initialization.
  *
  ******************************************************************************/

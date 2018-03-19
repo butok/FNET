@@ -27,7 +27,7 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_LINK
  * @brief    Link-detection service support:
- *               - @c 1..n = is enabled. Its value defines maximum number of 
+ *               - @c 1..n = is enabled. Its value defines maximum number of
  *                   the Link-Detection services that can be run simultaneously.
  *               - @b @c 0 = is disabled (Default value).
  ******************************************************************************/

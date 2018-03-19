@@ -152,7 +152,7 @@ uint32_t qcom_dset_write(HOST_DSET_HANDLE *pDsetHandle,
 
     //AB
     if(pDsetHandle->data_ptr == NULL)
-        return A_ERROR;
+        return (uint32_t)A_ERROR;
 
     memcpy(pDsetHandle->data_ptr + DSET_WRITE_HEAD_SIZE, buffer, length);
 
@@ -183,7 +183,7 @@ uint32_t qcom_dset_read(HOST_DSET_HANDLE *pDsetHandle,
 
     //AB
     if(pDsetHandle->data_ptr == NULL)
-        return A_ERROR;
+        return (uint32_t)A_ERROR;
 
     status = remote_dset_op(DSET_OP_READ, pDsetHandle);
     memcpy(buffer, pDsetHandle->data_ptr, length);

@@ -108,11 +108,11 @@ static void fnet_shell_poll( void *shell_if_p )
     const struct fnet_shell *shell = ((struct fnet_shell_if *)shell_if_p)->shell;
     fnet_int32_t            ch;
     fnet_index_t            argc;
-    fnet_char_t             *argv[FNET_CFG_SHELL_ARGS_MAX + 1u]={0}; /* One extra for 0 terminator.*/
+    fnet_char_t             *argv[FNET_CFG_SHELL_ARGS_MAX + 1u] = {0}; /* One extra for 0 terminator.*/
 
     if(shell_if->is_active == FNET_FALSE)
     {
-        shell_if->is_active = FNET_TRUE; 
+        shell_if->is_active = FNET_TRUE;
 
         switch(shell_if->state)
         {
@@ -559,10 +559,10 @@ fnet_return_t fnet_shell_script(fnet_shell_desc_t desc, fnet_char_t *script )
         fnet_shell_unblock(desc);
 
         script_size = fnet_strlen(script);
-        
+
         if(script_size)
         {
-            if(script_size+1/*splitter*/+1/*size*/ > shell_if->cmd_line_size)
+            if(script_size + 1/*splitter*/ + 1/*size*/ > shell_if->cmd_line_size)
             {
                 goto ERROR;
             }
@@ -575,7 +575,7 @@ fnet_return_t fnet_shell_script(fnet_shell_desc_t desc, fnet_char_t *script )
                     fnet_int32_t    cmd_line_shift;
                     fnet_index_t    i;
 
-                    if(cmd_line_end_size+script_size+1/*splitter*/+1/*size*/ > shell_if->cmd_line_size)
+                    if(cmd_line_end_size + script_size + 1/*splitter*/ + 1/*size*/ > shell_if->cmd_line_size)
                     {
                         goto ERROR;
                     }
@@ -583,16 +583,16 @@ fnet_return_t fnet_shell_script(fnet_shell_desc_t desc, fnet_char_t *script )
                     cmd_line_shift = (shell_if->cmd_line + script_size + 1) - shell_if->cmd_line_end;
                     if(cmd_line_shift < 0) /* Shift left */
                     {
-                        for(i=0; i<= cmd_line_end_size; i++)
+                        for(i = 0; i <= cmd_line_end_size; i++)
                         {
-                            shell_if->cmd_line_end[cmd_line_shift+i] = shell_if->cmd_line_end[i];
+                            shell_if->cmd_line_end[cmd_line_shift + i] = shell_if->cmd_line_end[i];
                         }
                     }
                     else if(cmd_line_shift > 0) /* Shift right */
                     {
-                        for(i=0; i<= cmd_line_end_size; i++)
+                        for(i = 0; i <= cmd_line_end_size; i++)
                         {
-                            shell_if->cmd_line_end[cmd_line_end_size+cmd_line_shift-i] = shell_if->cmd_line_end[cmd_line_end_size-i];
+                            shell_if->cmd_line_end[cmd_line_end_size + cmd_line_shift - i] = shell_if->cmd_line_end[cmd_line_end_size - i];
                         }
 
                     }

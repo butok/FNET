@@ -33,7 +33,7 @@
 * The FNET benchmark server/receiver is used for performance measuring and stress test of TCP and UDP.@n
 * After the FNET benchmark server is initialized by calling the @ref fnet_bench_srv_init() function,
 * the user application should call the main service-polling function
-* @ref fnet_service_poll() periodically in background. 
+* @ref fnet_service_poll() periodically in background.
 * @n
 * For the FNET benchmark server example, refer to the FNET Bench demo source code.@n
 *
@@ -49,7 +49,7 @@
  * @brief Benchmark server descriptor.
  * @see fnet_bench_srv_init()
  ******************************************************************************/
-typedef void* fnet_bench_srv_desc_t;
+typedef void *fnet_bench_srv_desc_t;
 
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_bench_srv_init() function.
@@ -151,7 +151,7 @@ void fnet_bench_srv_release(fnet_bench_srv_desc_t desc);
  * @param callback_session_begin    Pointer to the callback function defined by
  *                                  @ref fnet_bench_srv_callback_session_begin_t.
  * @param cookie                    Optional application-specific parameter. @n
- *                                  It's passed to the @c callback_session_begin 
+ *                                  It's passed to the @c callback_session_begin
  *                                  function as the input parameter.
  *
  ******************************************************************************
@@ -171,7 +171,7 @@ void fnet_bench_srv_set_callback_session_begin (fnet_bench_srv_desc_t desc, fnet
  * @param callback_session_end      Pointer to the callback function defined by
  *                                  @ref fnet_bench_srv_callback_session_end_t.
  * @param cookie                    Optional application-specific parameter. @n
- *                                  It's passed to the @c callback_session_end 
+ *                                  It's passed to the @c callback_session_end
  *                                  function as the input parameter.
  *
  ******************************************************************************

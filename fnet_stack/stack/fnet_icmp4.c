@@ -88,13 +88,13 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
         src_ip_tx = dest_ip_rx;
         dest_ip_tx = src_ip_rx;
 
-        if(
+        if((
 #if FNET_CFG_CPU_ETH_HW_RX_PROTOCOL_CHECKSUM || FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM
-            ((nb->flags & FNET_NETBUF_FLAG_HW_PROTOCOL_CHECKSUM) == 0) &&
+               ((nb->flags & FNET_NETBUF_FLAG_HW_PROTOCOL_CHECKSUM) == 0) &&
 #endif
-            (fnet_checksum(nb, nb->total_length))
-            || (fnet_ip4_addr_is_broadcast(src_ip_rx, netif))
-            || FNET_IP4_ADDR_IS_MULTICAST(src_ip_rx))
+               (fnet_checksum(nb, nb->total_length)))
+           || (fnet_ip4_addr_is_broadcast(src_ip_rx, netif))
+           || FNET_IP4_ADDR_IS_MULTICAST(src_ip_rx))
         {
             goto DISCARD;
         }

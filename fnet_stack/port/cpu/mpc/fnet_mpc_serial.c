@@ -197,7 +197,7 @@ void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
      */
 
     /* Init GPIO.*/
-#if FNET_CFG_CPU_SERIAL_IO_INIT	
+#if FNET_CFG_CPU_SERIAL_IO_INIT
     fnet_cpu_serial_gpio_init(port_number);
 #endif
 

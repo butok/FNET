@@ -36,7 +36,7 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_MDNS
  * @brief    Multicast Domain Name System (mDNS/Bonjour) Server/Responder (RFC6762) support:
- *               - @c 1..n = is enabled. Its value defines maximum number of 
+ *               - @c 1..n = is enabled. Its value defines maximum number of
  *                   the mDNS Servers that can be run simultaneously.
  *               - @b @c 0 = is disabled (Default value).
  ******************************************************************************/

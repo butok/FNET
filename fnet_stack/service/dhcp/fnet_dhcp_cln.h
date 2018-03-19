@@ -56,7 +56,7 @@
 *    else
 *    {
 *        fnet_memset_zero(&dhcp_params, sizeof(dhcp_params));
-*        dhcp_params.netif = netif;           
+*        dhcp_params.netif = netif;
 *
 *        // Enable DHCP client.
 *        if(fnet_dhcp_cln_init(&dhcp_params))
@@ -176,7 +176,7 @@ extern "C" {
  * @brief DHCPv4 client descriptor.
  * @see fnet_dhcp_cln_init()
  ******************************************************************************/
-typedef void* fnet_dhcp_cln_desc_t;
+typedef void *fnet_dhcp_cln_desc_t;
 
 /***************************************************************************/ /*!
  *
@@ -324,7 +324,7 @@ fnet_bool_t fnet_dhcp_cln_is_enabled(fnet_dhcp_cln_desc_t desc);
  *
  ******************************************************************************
  *
- * This function is looking for a DHCP Client service assigned to 
+ * This function is looking for a DHCP Client service assigned to
  * the @c netif network interface set during its initialization.
  *
  ******************************************************************************/

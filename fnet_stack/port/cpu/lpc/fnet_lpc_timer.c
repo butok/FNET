@@ -34,8 +34,8 @@
 #include <fsl_ctimer.h>
 
 /* Array of CTIMER base addresses. */
-static CTIMER_Type * const fnet_lpc_ctimer_base_addr[] = CTIMER_BASE_PTRS;
-#define FNET_LPC_CTIMER_COUNT (sizeof(fnet_lpc_ctimer_base_addr) / sizeof(fnet_lpc_ctimer_base_addr[0]))  
+static CTIMER_Type *const fnet_lpc_ctimer_base_addr[] = CTIMER_BASE_PTRS;
+#define FNET_LPC_CTIMER_COUNT (sizeof(fnet_lpc_ctimer_base_addr) / sizeof(fnet_lpc_ctimer_base_addr[0]))
 
 static void fnet_cpu_timer_handler_top(void *cookie);
 
@@ -49,7 +49,7 @@ static void fnet_cpu_timer_handler_top(void *cookie)
 
     base = fnet_lpc_ctimer_base_addr[FNET_CFG_CPU_TIMER_NUMBER];
 
-    /* Get Interrupt status flags and clear it were set*/
+    /* Get Interrupt status flags and clear it*/
     base->IR = base->IR;
 
     /* Update FNET timer tick counter.*/
@@ -74,23 +74,23 @@ fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms )
     /* Install interrupt handler and enable interrupt in NVIC.
     */
     result = fnet_isr_vector_init(FNET_CFG_CPU_TIMER_VECTOR_NUMBER, fnet_cpu_timer_handler_top,
-                                    fnet_timer_handler_bottom, 
-                                    FNET_CFG_CPU_TIMER_VECTOR_PRIORITY, 0u);
+                                  fnet_timer_handler_bottom,
+                                  FNET_CFG_CPU_TIMER_VECTOR_PRIORITY, 0u);
     if(result == FNET_OK)
     {
-        /*UM: Set the appropriate bits to enable clocks to timers that will be used: 
+        /*UM: Set the appropriate bits to enable clocks to timers that will be used:
         * CTIMER0 and CTIMER1, and CTIMER2 in the AHBCLKCTRL1 register,
-        * CTIMER3 and CTIMER4 in the ASYNCAPBCLKCTRL register  */ 
-        #if (FNET_CFG_CPU_TIMER_NUMBER == 0) || (FNET_CFG_CPU_TIMER_NUMBER == 1) || (FNET_CFG_CPU_TIMER_NUMBER == 2)
-            clock_name = kCLOCK_BusClk;
-        #elif (FNET_CFG_CPU_TIMER_NUMBER == 3) || (FNET_CFG_CPU_TIMER_NUMBER == 4)
-            clock_name = kCLOCK_AsyncApbClk;
-            /* Use 12 MHz clock. 
-            Asynchronous APB bridge is enabled inside this function. */
-            CLOCK_AttachClk(kFRO12M_to_ASYNC_APB);
-        #else
-            #error Not suported FNET_CFG_CPU_TIMER_NUMBER
-        #endif
+        * CTIMER3 and CTIMER4 in the ASYNCAPBCLKCTRL register  */
+#if (FNET_CFG_CPU_TIMER_NUMBER == 0) || (FNET_CFG_CPU_TIMER_NUMBER == 1) || (FNET_CFG_CPU_TIMER_NUMBER == 2)
+        clock_name = kCLOCK_BusClk;
+#elif (FNET_CFG_CPU_TIMER_NUMBER == 3) || (FNET_CFG_CPU_TIMER_NUMBER == 4)
+        clock_name = kCLOCK_AsyncApbClk;
+        /* Use 12 MHz clock.
+        Asynchronous APB bridge is enabled inside this function. */
+        CLOCK_AttachClk(kFRO12M_to_ASYNC_APB);
+#else
+#error Not suported FNET_CFG_CPU_TIMER_NUMBER
+#endif
 
         /* Set CTIMER driver parameters. */
         CTIMER_GetDefaultConfig(&config);
@@ -99,7 +99,7 @@ fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms )
 
         matchConfig.enableCounterReset = true;
         matchConfig.enableCounterStop = false;
-        matchConfig.matchValue = (CLOCK_GetFreq(clock_name)*period_ms)/1000;
+        matchConfig.matchValue = (CLOCK_GetFreq(clock_name) * period_ms) / 1000;
         matchConfig.enableInterrupt = true;
 
         CTIMER_SetupMatch(base, kCTIMER_Match_0, &matchConfig);

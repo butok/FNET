@@ -42,7 +42,8 @@ static const fnet_mld_ra_option_header_t mld_ra_option = {  .next_header = FNET_
                                                             .hdr_ext_length = 0,                     /* Length-8 */
                                                             .ra_option_header = {.type = FNET_IP6_OPTION_TYPE_ROUTER_ALERT, .data_length = 2},  /* Router Alert Option. */
                                                             .ra_option_value = FNET_IP6_OPTION_TYPE_ROUTER_ALERT_VALUE_MLD,                     /* Router Alert Option value. */
-                                                            .padn_option_header = {.type = FNET_IP6_OPTION_TYPE_PADN, .data_length = 0}         /* Padding. */};       
+                                                            .padn_option_header = {.type = FNET_IP6_OPTION_TYPE_PADN, .data_length = 0}         /* Padding. */
+                                                         };
 
 static void fnet_mld_send( fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet_uint8_t type);
 

@@ -890,15 +890,15 @@ fnet_bool_t fnet_netif_is_connected( fnet_netif_desc_t netif_desc )
             {
                 if(connection_flag == FNET_FALSE)  /* =>Connected. */
                 {
-                #if FNET_CFG_IP4
+#if FNET_CFG_IP4
                     if(netif->netif_api->netif_change_addr_notify)
                     {
                         netif->netif_api->netif_change_addr_notify(netif); /* Send ARP announcement*/
                     }
-                #endif
-                #if FNET_CFG_IP6
+#endif
+#if FNET_CFG_IP6
                     fnet_nd6_rd_start(netif); /* Restart IPv6 router discovery */
-                #endif
+#endif
                 }
             }
         }

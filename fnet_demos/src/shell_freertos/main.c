@@ -5,11 +5,8 @@
 
 int main (void)
 {
-    /* Init UART. */
-    fnet_cpu_serial_init(FNET_CFG_CPU_SERIAL_PORT_DEFAULT, 115200u);
-
-    /* Enable Interrupts.*/
-    fnet_cpu_irq_enable(0u);
+    /* Board-specific HW initialization. Default serial port initialization. Interrupt enabling. */
+    fapp_hw_init();
 
     /* Run application. */
     fapp_main_freertos();

@@ -36,8 +36,8 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_LLMNR
  * @brief    Link-Local Multicast Name Resolution (LLMNR) Server/Responder support:
- *               - @c 1..n = is enabled. Its value defines maximum number of 
- *                   the LLMNR Servers that can be run simultaneously. 
+ *               - @c 1..n = is enabled. Its value defines maximum number of
+ *                   the LLMNR Servers that can be run simultaneously.
  *               - @b @c 0 = is disabled (Default value).
  ******************************************************************************/
 #ifndef FNET_CFG_LLMNR

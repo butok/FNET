@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2017 by Andrey Butok. FNET Community.
+* Copyright 2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -52,11 +52,11 @@ void fnet_cpu_irq_enable(fnet_cpu_irq_desc_t irq_desc)
 }
 
 /************************************************************************
-* DESCRIPTION: Kinetis peripheral clock in KHZ.
+* DESCRIPTION: LPC peripheral clock in KHZ.
 *************************************************************************/
-fnet_uint32_t fnet_mk_periph_clk_khz(void)
+fnet_uint32_t fnet_lpc_periph_clk_khz(void)
 {
-//TBD
+    //TBD
     return (0);
 }
 

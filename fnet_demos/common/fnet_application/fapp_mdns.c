@@ -54,7 +54,7 @@ void fapp_mdns_release(void)
     fnet_mdns_desc_t    mdns;
 
     /* Release all MDNS servers.*/
-    for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
+    for(i = 0; (netif = fnet_netif_get_by_number(i)); i++)
     {
         mdns = fnet_mdns_get_by_netif(netif);
         if(mdns)
@@ -99,7 +99,7 @@ void fapp_mdns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
         }
     }
 
-    if(init == FNET_TRUE) 
+    if(init == FNET_TRUE)
     {
         /* Init parameters.*/
         fnet_memset_zero(&params, sizeof(params));
@@ -157,12 +157,15 @@ void fapp_mdns_service_register_http( void )
     fnet_index_t        i;
     fnet_mdns_desc_t    mdns;
 
-    for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
+    if(fapp_http_desc)
     {
-        mdns = fnet_mdns_get_by_netif(netif);
-        if(mdns)
+        for(i = 0; (netif = fnet_netif_get_by_number(i)); i++)
         {
-            fnet_mdns_service_register(mdns, &fapp_mdns_http_service);
+            mdns = fnet_mdns_get_by_netif(netif);
+            if(mdns)
+            {
+                fnet_mdns_service_register(mdns, &fapp_mdns_http_service);
+            }
         }
     }
 #endif
@@ -178,12 +181,15 @@ void fapp_mdns_service_register_http_tls( void )
     fnet_index_t        i;
     fnet_mdns_desc_t    mdns;
 
-    for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
+    if(fapp_http_tls_desc)
     {
-        mdns = fnet_mdns_get_by_netif(netif);
-        if(mdns)
+        for(i = 0; (netif = fnet_netif_get_by_number(i)); i++)
         {
-            fnet_mdns_service_register(mdns, &fapp_mdns_http_tls_service);
+            mdns = fnet_mdns_get_by_netif(netif);
+            if(mdns)
+            {
+                fnet_mdns_service_register(mdns, &fapp_mdns_http_tls_service);
+            }
         }
     }
 #endif
@@ -199,18 +205,18 @@ void fapp_mdns_service_unregister_http( void )
     fnet_index_t        i;
     fnet_mdns_desc_t    mdns;
 
-    for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
+    for(i = 0; (netif = fnet_netif_get_by_number(i)); i++)
     {
         mdns = fnet_mdns_get_by_netif(netif);
         if(mdns)
         {
             fnet_mdns_service_desc_t service_desc;
-            
+
             service_desc = fnet_mdns_service_get_by_type(mdns, fapp_mdns_http_service.service_type);
             /* If HTTP service is registered.*/
             if(service_desc)
             {
-                fnet_mdns_service_unregister(service_desc); 
+                fnet_mdns_service_unregister(service_desc);
             }
         }
     }
@@ -227,18 +233,18 @@ void fapp_mdns_service_unregister_http_tls( void )
     fnet_index_t        i;
     fnet_mdns_desc_t    mdns;
 
-    for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
+    for(i = 0; (netif = fnet_netif_get_by_number(i)); i++)
     {
         mdns = fnet_mdns_get_by_netif(netif);
         if(mdns)
         {
             fnet_mdns_service_desc_t service_desc;
-            
+
             service_desc = fnet_mdns_service_get_by_type(mdns, fapp_mdns_http_tls_service.service_type);
             /* If HTTP service is registered.*/
             if(service_desc)
             {
-                fnet_mdns_service_unregister(service_desc); 
+                fnet_mdns_service_unregister(service_desc);
             }
         }
     }

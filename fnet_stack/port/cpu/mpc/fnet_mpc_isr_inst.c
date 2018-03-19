@@ -35,7 +35,7 @@ extern fnet_uint32_t FNET_CFG_CPU_VECTOR_TABLE [];
 *************************************************************************/
 fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t priority)
 {
-	
+
     /* Install FNET ISR into the Vector Table in RAM */
 #if FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
     {

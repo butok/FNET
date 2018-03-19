@@ -68,7 +68,7 @@ fnet_int32_t fnet_cpu_serial_getchar (fnet_index_t port_number)
     return FNET_ERR;
 }
 
-#if FNET_CFG_CPU_SERIAL_IO_INIT	
+#if FNET_CFG_CPU_SERIAL_IO_INIT
 static inline void fnet_cpu_serial_gpio_init(fnet_index_t port_number)
 {
     /* Enable the proper UART pins */
@@ -192,9 +192,9 @@ void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
      */
     fnet_uint16_t ubgs;
 
-#if FNET_CFG_CPU_SERIAL_IO_INIT	
+#if FNET_CFG_CPU_SERIAL_IO_INIT
     /* Init GPIO.*/
-	fnet_cpu_serial_gpio_init(port_number);
+    fnet_cpu_serial_gpio_init(port_number);
 #endif
 
 

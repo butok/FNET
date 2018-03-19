@@ -25,7 +25,7 @@
 #include "fnet.h"
 #if FNET_MK && FNET_CFG_CPU_ETH0
 
-#include "port/cpu/netif/fec/fnet_fec.h"
+#include "port/netif/fec/fnet_fec.h"
 
 /************************************************************************
 * Ethernet interface structure.
@@ -145,7 +145,7 @@ void fnet_eth_phy_init(fnet_fec_if_t *ethif)
     FNET_COMP_UNUSED_ARG(ethif);
 }
 
-/* If vector table is in ROM, pre-installed FNET ISR for ENET Receive Frame interrupt*/
+/* If vector table is in ROM, pre-install FNET ISR for ENET Receive Frame interrupt*/
 #if !FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
 void ENET_Receive_IRQHandler (void)
 {

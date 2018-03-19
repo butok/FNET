@@ -179,7 +179,7 @@ void fnet_timer_delay( fnet_time_t delay_ticks );
  ******************************************************************************
  *
  * This function checks timeouts for TCP, ARP, IP and other stack activities.@n
- * The user application should call this function periodically, 
+ * The user application should call this function periodically,
  * after the FNET stack initialization, and only if @ref FNET_CFG_TIMER_POLL_AUTOMATIC is 0.@n
  * Recommended polling period is 100ms or less.@n
  * If @ref FNET_CFG_TIMER_POLL_AUTOMATIC is 1, this function is called automatically

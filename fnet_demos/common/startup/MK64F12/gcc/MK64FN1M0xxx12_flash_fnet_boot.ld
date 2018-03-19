@@ -58,9 +58,9 @@ M_VECTOR_RAM_SIZE = DEFINED(__ram_vector_table__) ? 0x0400 : 0x0;
 /* Specify the memory areas */
 MEMORY
 {
-  m_interrupts          (RX)  : ORIGIN = 0x0000D000, LENGTH = 0x00000400 /* 52KB reserved for FNET bootloader.*/
-  m_flash_config        (RX)  : ORIGIN = 0x0000D400, LENGTH = 0x00000010
-  m_text                (RX)  : ORIGIN = 0x0000D410, LENGTH = 0x000F1BF0  /* Original 0x000FFBF0/FEBF0 */
+  m_interrupts          (RX)  : ORIGIN = 0x0000F000, LENGTH = 0x00000400 /* 60KB reserved for FNET bootloader.*/
+  m_flash_config        (RX)  : ORIGIN = 0x0000F400, LENGTH = 0x00000010
+  m_text                (RX)  : ORIGIN = 0x0000F410, LENGTH = 0x000D1BF0  /* Original 0x000FFBF0/FEBF0 */
   fapp_paramsrom        (RW)  : ORIGIN = 0x000FF000, LENGTH = 0x00001000  /*!!! 4KBytes = Last logical-block reserved for FNET params.*/
   m_data                (RW)  : ORIGIN = 0x1FFF0000, LENGTH = 0x00010000
   m_data_2              (RW)  : ORIGIN = 0x20000000, LENGTH = 0x00030000

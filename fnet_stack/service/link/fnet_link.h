@@ -140,7 +140,7 @@ fnet_bool_t fnet_link_is_enabled(fnet_link_desc_t desc);
  *
  ******************************************************************************
  *
- * This function is looking for a Link-Detection service assigned to 
+ * This function is looking for a Link-Detection service assigned to
  * the @c netif network interface set during its initialization.
  *
  ******************************************************************************/

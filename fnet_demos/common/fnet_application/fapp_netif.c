@@ -99,20 +99,24 @@ struct fapp_netif_init_param fapp_netif_init_param_list[] =
 /* String equivalent to fnet_netif_ip_addr_type_t */
 static const fnet_char_t *const fapp_netif_ip_addr_type_str[] = {"manual",              /* FNET_NETIF_IP_ADDR_TYPE_MANUAL */
                                                                  "autoconfigurable",    /* FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE */
-                                                                 "dhcp"                 /* FNET_NETIF_IP_ADDR_TYPE_DHCP */};
+                                                                 "dhcp"                 /* FNET_NETIF_IP_ADDR_TYPE_DHCP */
+                                                                };
 
 /* Connection state string */
 const fnet_char_t *const fapp_netif_connection_state_str[] = {"disconnected", /* false */
-                                                              "connected"    /* true */};
+                                                              "connected"    /* true */
+                                                             };
 
 static const fnet_char_t *const fapp_netif_type_str[] = {   "",            /* FNET_NETIF_TYPE_OTHER */
                                                             "Ethernet",    /* FNET_NETIF_TYPE_ETHERNET */
                                                             "Wi-Fi",       /* FNET_NETIF_TYPE_WIFI */
-                                                            "Loopback"     /* FNET_NETIF_TYPE_LOOPBACK */};
+                                                            "Loopback"     /* FNET_NETIF_TYPE_LOOPBACK */
+                                                        };
 
 static const fnet_char_t *const fapp_wifi_op_mode[] = { "",                 /* FNET_WIFI_OP_MODE_NONE */
                                                         "station",          /* FNET_WIFI_OP_MODE_STATION */
-                                                        "access point"      /* FNET_WIFI_OP_MODE_ACCESS_POINT */};
+                                                        "access point"      /* FNET_WIFI_OP_MODE_ACCESS_POINT */
+                                                      };
 
 /************************************************************************
 * DESCRIPTION: Initialization of all supported interfaces.
@@ -138,26 +142,26 @@ fnet_return_t fapp_netif_init(fnet_shell_desc_t desc)
         {
             fnet_netif_set_ip4_addr(netif, fapp_netif_init_param_list[i].netif_ip4_addr, fapp_netif_init_param_list[i].netif_ip4_subnet_mask);
             fnet_netif_set_ip4_gateway(netif, fapp_netif_init_param_list[i].netif_ip4_gateway);
-        #if FNET_CFG_DNS
+#if FNET_CFG_DNS
             fnet_netif_set_ip4_dns(netif, fapp_netif_init_param_list[i].netif_ip4_dns);
-        #endif
+#endif
 
-        #if FNET_CFG_LINK
+#if FNET_CFG_LINK
             /* Start Link-Detection. */
             fapp_link_init(desc, netif);
-        #endif
+#endif
         }
     }
 
     /* Set default interface.*/
-    { 
+    {
         fnet_netif_desc_t netif_desc;
 
         netif_desc = fnet_netif_get_by_name(FAPP_CFG_PARAMS_NETIF_NAME);
 
         if(netif_desc)
         {
-            fnet_netif_set_default(netif_desc); 
+            fnet_netif_set_default(netif_desc);
         }
     }
 
@@ -174,7 +178,7 @@ void fapp_netif_info_print( fnet_shell_desc_t desc, fnet_netif_desc_t netif)
     fnet_netif_type_t       netif_type;
 
     netif_type = fnet_netif_get_type(netif);
-    fnet_shell_println(desc, "%s Interface%s:", fapp_netif_type_str[netif_type], ((netif == fnet_netif_get_default()) ? " <default>":""));
+    fnet_shell_println(desc, "%s Interface%s:", fapp_netif_type_str[netif_type], ((netif == fnet_netif_get_default()) ? " <default>" : ""));
 
     fnet_netif_get_name(netif, name, sizeof(name));
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Name", name);
@@ -239,26 +243,26 @@ void fapp_netif_info_print( fnet_shell_desc_t desc, fnet_netif_desc_t netif)
     }
 #endif /* FNET_CFG_IP4 */
 
-    #if FAPP_CFG_DHCP_CMD && FNET_CFG_DHCP_SRV && FNET_CFG_IP4
-        fapp_dhcp_srv_info(desc, netif);
-    #endif
+#if FAPP_CFG_DHCP_CMD && FNET_CFG_DHCP_SRV && FNET_CFG_IP4
+    fapp_dhcp_srv_info(desc, netif);
+#endif
 
-    #if FAPP_CFG_DHCPC_CMD && FNET_CFG_DHCP_CLN && FNET_CFG_IP4
-        fapp_dhcp_cln_info(desc, netif);
-    #endif
+#if FAPP_CFG_DHCPC_CMD && FNET_CFG_DHCP_CLN && FNET_CFG_IP4
+    fapp_dhcp_cln_info(desc, netif);
+#endif
 
-    #if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP && FNET_CFG_IP4
-        fapp_autoip_info(desc, netif);
-    #endif
+#if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP && FNET_CFG_IP4
+    fapp_autoip_info(desc, netif);
+#endif
 
-    #if FAPP_CFG_LLMNR_CMD && FNET_CFG_LLMNR
-        fapp_llmnr_info(desc, netif);
-    #endif
+#if FAPP_CFG_LLMNR_CMD && FNET_CFG_LLMNR
+    fapp_llmnr_info(desc, netif);
+#endif
 
-    #if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS
-        fapp_mdns_info(desc, netif);
-    #endif
-    fnet_shell_println(desc,"");
+#if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS
+    fapp_mdns_info(desc, netif);
+#endif
+    fnet_shell_println(desc, "");
 }
 
 /************************************************************************
@@ -359,13 +363,13 @@ void fapp_netif_info_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t
     }
 
     if(netif)
-    { 
+    {
         fapp_netif_info_print(desc, netif);
     }
     else
     {
         /* Print info for all initialized interfaces.*/
-        for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
+        for(i = 0; (netif = fnet_netif_get_by_number(i)); i++)
         {
             fapp_netif_info_print(desc, netif);
         }
@@ -374,21 +378,21 @@ void fapp_netif_info_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t
 #if ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP) || (FAPP_CFG_TELNET_CMD && FNET_CFG_TELNET) || (FAPP_CFG_TFTP_CMD && FNET_CFG_TFTP_SRV) || (FAPP_CFG_BENCH_CMD && FNET_CFG_BENCH_SRV)
     fnet_shell_println(desc, "Services:");
     /* General services.*/
-    #if (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP
-        fapp_http_info(desc);
-    #endif
+#if (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP
+    fapp_http_info(desc);
+#endif
 
-    #if FAPP_CFG_TELNET_CMD && FNET_CFG_TELNET
-        fapp_telnet_info(desc);
-    #endif
+#if FAPP_CFG_TELNET_CMD && FNET_CFG_TELNET
+    fapp_telnet_info(desc);
+#endif
 
-    #if FAPP_CFG_TFTP_CMD && FNET_CFG_TFTP_SRV
-        fapp_tftp_srv_info(desc);
-    #endif
+#if FAPP_CFG_TFTP_CMD && FNET_CFG_TFTP_SRV
+    fapp_tftp_srv_info(desc);
+#endif
 
-    #if FAPP_CFG_BENCH_CMD && FNET_CFG_BENCH_SRV
-        fapp_bench_srv_info(desc);
-    #endif
+#if FAPP_CFG_BENCH_CMD && FNET_CFG_BENCH_SRV
+    fapp_bench_srv_info(desc);
+#endif
 #endif
 
     return;
@@ -409,8 +413,8 @@ static void fapp_netif_stat_print( fnet_shell_desc_t desc, fnet_netif_desc_t net
     struct fnet_netif_statistics    statistics;
     fnet_char_t name[FNET_NETIF_NAMELEN];
 
-    fnet_shell_println(desc, "%s Interface%s:", fapp_netif_type_str[fnet_netif_get_type(netif)], 
-                                                ((netif == fnet_netif_get_default()) ? " <default>":""));
+    fnet_shell_println(desc, "%s Interface%s:", fapp_netif_type_str[fnet_netif_get_type(netif)],
+                       ((netif == fnet_netif_get_default()) ? " <default>" : ""));
 
     fnet_netif_get_name(netif, name, sizeof(name));
     fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Name", name);
@@ -479,7 +483,7 @@ static void fapp_netif_stat_print( fnet_shell_desc_t desc, fnet_netif_desc_t net
         }
     }
 #endif
-    fnet_shell_println(desc,"");
+    fnet_shell_println(desc, "");
 }
 
 /************************************************************************
@@ -512,13 +516,13 @@ void fapp_netif_stat_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t
     }
 
     if(netif)
-    { 
+    {
         fapp_netif_stat_print(desc, netif);
     }
     else
     {
         /* Print info for all initialized interfaces.*/
-        for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
+        for(i = 0; (netif = fnet_netif_get_by_number(i)); i++)
         {
             fapp_netif_stat_print(desc, netif);
         }

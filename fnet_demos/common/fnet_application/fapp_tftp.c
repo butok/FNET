@@ -1202,7 +1202,7 @@ static fnet_return_t fapp_tftps_request_handler(fnet_tftp_request_t request_type
             /* Do erase all, on WRITE request.*/
             if(request_type == FNET_TFTP_REQUEST_WRITE)
             {
-                if(fnet_shell_script(desc, FAPP_CFG_TFTPS_ON_WRITE_REQUEST_SCRIPT)== FNET_ERR)
+                if(fnet_shell_script(desc, FAPP_CFG_TFTPS_ON_WRITE_REQUEST_SCRIPT) == FNET_ERR)
                 {
                     fnet_shell_println(desc, "Script error!");
                 }
@@ -1259,7 +1259,7 @@ static fnet_int32_t fapp_tftps_data_handler(fnet_tftp_request_t request,
                 fnet_shell_println(desc, FAPP_TFTP_COMPLETED_STR, fapp_tftps_handler_control.image_size);
 
                 /* Set "go" state and save settings..*/
-                if(fnet_shell_script(desc, FAPP_CFG_TFTPS_AFTER_WRITE_REQUEST_SCRIPT)== FNET_ERR)
+                if(fnet_shell_script(desc, FAPP_CFG_TFTPS_AFTER_WRITE_REQUEST_SCRIPT) == FNET_ERR)
                 {
                     fnet_shell_println(desc, "Script error!");
                 }

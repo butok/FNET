@@ -33,10 +33,12 @@
 #include <fsl_iocon.h>
 #include <fsl_clock.h>
 
-
 /* Array of USART base addresses. */
-static USART_Type * const fnet_lpc_serial_usart_base_addr[] = USART_BASE_PTRS;
-#define FNET_LPC_USART_COUNT (sizeof(fnet_lpc_serial_usart_base_addr) / sizeof(fnet_lpc_serial_usart_base_addr[0]))  
+static USART_Type *const fnet_lpc_serial_usart_base_addr[] = USART_BASE_PTRS;
+/* Array of USART clocks. */
+static const clock_name_t fnet_lpc_serial_usart_clock[] = {kCLOCK_Flexcomm0, kCLOCK_Flexcomm1, kCLOCK_Flexcomm2, kCLOCK_Flexcomm3, kCLOCK_Flexcomm4, kCLOCK_Flexcomm5, kCLOCK_Flexcomm6, kCLOCK_Flexcomm7, kCLOCK_Flexcomm8, kCLOCK_Flexcomm9};
+ 
+#define FNET_LPC_USART_COUNT (sizeof(fnet_lpc_serial_usart_base_addr) / sizeof(fnet_lpc_serial_usart_base_addr[0]))
 
 /********************************************************************/
 void fnet_cpu_serial_putchar (fnet_index_t port_number, fnet_char_t character)
@@ -55,7 +57,7 @@ void fnet_cpu_serial_putchar (fnet_index_t port_number, fnet_char_t character)
         /* Wait to finish transfer */
         /* It looks like optional, but whithout it there are lost symbols */
         while (!(base->STAT & USART_STAT_TXIDLE_MASK))
-        {}; 
+        {};
     }
 }
 /********************************************************************/
@@ -79,7 +81,7 @@ fnet_int32_t fnet_cpu_serial_getchar (fnet_index_t port_number)
     return FNET_ERR;
 }
 
-#if FNET_CFG_CPU_SERIAL_IO_INIT	
+#if FNET_CFG_CPU_SERIAL_IO_INIT
 static inline void fnet_cpu_serial_gpio_init(fnet_index_t port_number)
 {
     switch(port_number)
@@ -96,51 +98,51 @@ static inline void fnet_cpu_serial_gpio_init(fnet_index_t port_number)
          * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
          */
         case 0:
-            {
-        /* attach 12 MHz clock to FLEXCOMM0 */
-        CLOCK_AttachClk(kFRO12M_to_FLEXCOMM0);
+        {
+            /* attach 12 MHz clock to FLEXCOMM0 */
+            CLOCK_AttachClk(kFRO12M_to_FLEXCOMM0);
 
-                /* Enables the clock for the IOCON block. 0 = Disable; 1 = Enable.: 0x01u */
-                CLOCK_EnableClock(kCLOCK_Iocon);
+            /* Enables the clock for the IOCON block. 0 = Disable; 1 = Enable.: 0x01u */
+            CLOCK_EnableClock(kCLOCK_Iocon);
 
-                const uint32_t port0_pin29_config = (/* Pin is configured as FC0_RXD_SDA_MOSI */
-                                                     IOCON_PIO_FUNC1 |
-                                                     /* No addition pin function */
-                                                     IOCON_PIO_MODE_INACT |
-                                                     /* Input function is not inverted */
-                                                     IOCON_PIO_INV_DI |
-                                                     /* Enables digital function */
-                                                     IOCON_PIO_DIGITAL_EN |
-                                                     /* Input filter disabled */
-                                                     IOCON_PIO_INPFILT_OFF |
-                                                     /* Standard mode, output slew rate control is enabled */
-                                                     IOCON_PIO_SLEW_STANDARD |
-                                                     /* Open drain is disabled */
-                                                     IOCON_PIO_OPENDRAIN_DI);
-                /* PORT0 PIN29 (coords: B13) is configured as FC0_RXD_SDA_MOSI */
-                IOCON_PinMuxSet(IOCON, 0U, 29U, port0_pin29_config);
+            const uint32_t port0_pin29_config = (/* Pin is configured as FC0_RXD_SDA_MOSI */
+                                                    IOCON_PIO_FUNC1 |
+                                                    /* No addition pin function */
+                                                    IOCON_PIO_MODE_INACT |
+                                                    /* Input function is not inverted */
+                                                    IOCON_PIO_INV_DI |
+                                                    /* Enables digital function */
+                                                    IOCON_PIO_DIGITAL_EN |
+                                                    /* Input filter disabled */
+                                                    IOCON_PIO_INPFILT_OFF |
+                                                    /* Standard mode, output slew rate control is enabled */
+                                                    IOCON_PIO_SLEW_STANDARD |
+                                                    /* Open drain is disabled */
+                                                    IOCON_PIO_OPENDRAIN_DI);
+            /* PORT0 PIN29 (coords: B13) is configured as FC0_RXD_SDA_MOSI */
+            IOCON_PinMuxSet(IOCON, 0U, 29U, port0_pin29_config);
 
-                const uint32_t port0_pin30_config = (/* Pin is configured as FC0_TXD_SCL_MISO */
-                                                     IOCON_PIO_FUNC1 |
-                                                     /* No addition pin function */
-                                                     IOCON_PIO_MODE_INACT |
-                                                     /* Input function is not inverted */
-                                                     IOCON_PIO_INV_DI |
-                                                     /* Enables digital function */
-                                                     IOCON_PIO_DIGITAL_EN |
-                                                     /* Input filter disabled */
-                                                     IOCON_PIO_INPFILT_OFF |
-                                                     /* Standard mode, output slew rate control is enabled */
-                                                     IOCON_PIO_SLEW_STANDARD |
-                                                     /* Open drain is disabled */
-                                                     IOCON_PIO_OPENDRAIN_DI);
-                /* PORT0 PIN30 (coords: A2) is configured as FC0_TXD_SCL_MISO */
-                IOCON_PinMuxSet(IOCON, 0U, 30U, port0_pin30_config);
-            }
-            break;
+            const uint32_t port0_pin30_config = (/* Pin is configured as FC0_TXD_SCL_MISO */
+                                                    IOCON_PIO_FUNC1 |
+                                                    /* No addition pin function */
+                                                    IOCON_PIO_MODE_INACT |
+                                                    /* Input function is not inverted */
+                                                    IOCON_PIO_INV_DI |
+                                                    /* Enables digital function */
+                                                    IOCON_PIO_DIGITAL_EN |
+                                                    /* Input filter disabled */
+                                                    IOCON_PIO_INPFILT_OFF |
+                                                    /* Standard mode, output slew rate control is enabled */
+                                                    IOCON_PIO_SLEW_STANDARD |
+                                                    /* Open drain is disabled */
+                                                    IOCON_PIO_OPENDRAIN_DI);
+            /* PORT0 PIN30 (coords: A2) is configured as FC0_TXD_SCL_MISO */
+            IOCON_PinMuxSet(IOCON, 0U, 30U, port0_pin30_config);
+        }
+        break;
         default:
             //TBD
-            break; 
+            break;
     }
 }
 #endif /* FNET_CFG_CPU_SERIAL_IO_INIT */
@@ -150,23 +152,22 @@ void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
 {
     usart_config_t  config;
     uint32_t        srcClock_Hzl;
-    USART_Type      *base; 
+    USART_Type      *base;
 
     if(port_number < FNET_LPC_USART_COUNT)
     {
-
-    #if FNET_CFG_CPU_SERIAL_IO_INIT	
+#if FNET_CFG_CPU_SERIAL_IO_INIT
         /* Init GPIO.*/
         fnet_cpu_serial_gpio_init(port_number);
-    #endif
+#endif
         base = fnet_lpc_serial_usart_base_addr[port_number];
-        srcClock_Hzl = CLOCK_GetFreq(kCLOCK_Flexcomm0);
+        srcClock_Hzl = CLOCK_GetFreq(fnet_lpc_serial_usart_clock[port_number]);
 
         /* Set USART driver parameters. */
         USART_GetDefaultConfig(&config);
         config.baudRate_Bps = baud_rate;
         config.enableTx = true;
-        config.enableRx = true; 
+        config.enableRx = true;
 
         USART_Init(base, &config, srcClock_Hzl);
     }

@@ -41,7 +41,7 @@ static void fapp_link_callback(fnet_netif_desc_t netif, fnet_bool_t connected, v
     fnet_char_t         netif_name[FNET_NETIF_NAMELEN];
     fnet_char_t         *script_p;
     fnet_char_t         script[FAPP_CFG_SHELL_MAX_LINE_LENGTH];
-    
+
     fnet_netif_get_name(netif, netif_name, sizeof(netif_name));
 
     /* connect/disconnect script.*/
@@ -106,8 +106,8 @@ static void fapp_link_script_add_netif_name(fnet_char_t *script_out, fnet_size_t
 #endif
 
     /* Very rude. TBD better way */
-    fnet_snprintf(script_out, script_out_size, script_in, 
-                netif_name, netif_name, netif_name, netif_name, netif_name, netif_name, netif_name, netif_name, netif_name, netif_name);
+    fnet_snprintf(script_out, script_out_size, script_in,
+                  netif_name, netif_name, netif_name, netif_name, netif_name, netif_name, netif_name, netif_name, netif_name, netif_name);
 }
 
 /************************************************************************
@@ -130,9 +130,9 @@ void fapp_link_init(fnet_shell_desc_t desc, fnet_netif_desc_t netif)
     {
 #if 0
         fnet_char_t netif_name[FNET_NETIF_NAMELEN];
-        
+
         fnet_netif_get_name(netif, netif_name, sizeof(netif_name));
-        
+
         fnet_shell_println(desc, FAPP_DELIMITER_STR);
         fnet_shell_println(desc, " Link-Detection service started.");
         fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Interface", netif_name );
@@ -155,7 +155,7 @@ void fapp_link_release(void)
     fnet_link_desc_t    link;
 
     /* Release all Link services.*/
-    for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
+    for(i = 0; (netif = fnet_netif_get_by_number(i)); i++)
     {
         link = fnet_link_get_by_netif(netif);
         if(link)

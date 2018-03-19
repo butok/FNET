@@ -166,7 +166,7 @@ fnet_link_desc_t fnet_link_get_by_netif(fnet_netif_desc_t netif)
 {
     fnet_link_if_t          *link_if;
     fnet_index_t            i;
-    fnet_link_desc_t        link_desc = 0; 
+    fnet_link_desc_t        link_desc = 0;
 
     if(netif)
     {
@@ -181,7 +181,7 @@ fnet_link_desc_t fnet_link_get_by_netif(fnet_netif_desc_t netif)
             }
         }
     }
-    
+
     return link_desc;
 }
 

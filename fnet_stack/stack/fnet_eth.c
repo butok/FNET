@@ -187,14 +187,14 @@ static const fnet_eth_prot_if_t fnet_eth_prot_if_list[] =
     }while(0)
 
 #if 0  /* Done by fnet_netif_is_connected()*/
-#define FNET_ETH_TIMER_PERIOD (500U) /*ms*/
+    #define FNET_ETH_TIMER_PERIOD (500U) /*ms*/
 #endif
 
 /******************************************************************************
 *     Function Prototypes
 *******************************************************************************/
 #if 0  /* Done by fnet_netif_is_connected()*/
-static void fnet_eth_timer(fnet_uint32_t cookie );
+    static void fnet_eth_timer(fnet_uint32_t cookie );
 #endif
 
 /************************************************************************
@@ -219,23 +219,23 @@ void fnet_eth_input( fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t frame
         {
             goto DROP;
         }
-                
+
         fnet_eth_trace("\nRX", ethheader); /* Print ETH header.*/
-        
+
         nb = fnet_netbuf_from_buf( ((fnet_uint8_t *)ethheader + sizeof(fnet_eth_header_t)),
-                                (frame_size - sizeof(fnet_eth_header_t)), FNET_TRUE );
+                                   (frame_size - sizeof(fnet_eth_header_t)), FNET_TRUE );
         if(nb)
         {
             if(FNET_MAC_ADDR_IS_BROADCAST(ethheader->destination_addr))    /* Broadcast */
             {
                 nb->flags |= FNET_NETBUF_FLAG_BROADCAST;
             }
-        
+
             if(FNET_MAC_ADDR_IS_MULTICAST(ethheader->destination_addr)) /* Multicast */
             {
                 nb->flags |= FNET_NETBUF_FLAG_MULTICAST;
             }
-        
+
             /* Network-layer input (IPv4/6, ARP).*/
             protocol_type = ethheader->type;
 
@@ -390,7 +390,7 @@ void fnet_eth_release( fnet_netif_t *netif)
 
 #endif /* FNET_CFG_IP6 */
 
-#if 0  
+#if 0
     fnet_timer_free(((fnet_eth_if_t *)(netif->netif_prv))->eth_timer);
 #endif
 
@@ -618,7 +618,7 @@ void fnet_eth_multicast_leave_ip4(fnet_netif_t *netif, fnet_ip4_addr_t multicast
     FNET_ASSERT(netif->netif_prv != FNET_NULL);
 
     fnet_mac_addr_t mac_addr;
-    
+
     if(((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_leave)
     {
         FNET_ETH_MULTICAST_IP4_TO_MAC(multicast_addr, mac_addr);
@@ -656,7 +656,7 @@ void fnet_eth_multicast_leave_ip6(fnet_netif_t *netif, fnet_ip6_addr_t *multicas
     FNET_ASSERT(netif->netif_prv != FNET_NULL);
 
     fnet_mac_addr_t mac_addr;
-    
+
     if(((fnet_eth_if_t *)(netif->netif_prv))->eth_multicast_leave)
     {
         FNET_ETH_MULTICAST_IP6_TO_MAC(multicast_addr, mac_addr);

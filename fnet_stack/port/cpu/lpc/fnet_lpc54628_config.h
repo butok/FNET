@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2017 by Andrey Butok. FNET Community.
+* Copyright 2017-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -42,9 +42,7 @@
 /* TBD.*/
 #define FNET_CFG_CPU_FLASH                              (0)
 
-
-/* TBD.*/
-#define FNET_CFG_CPU_ETH0                               (0)
+/* The platform does not have second Ethernet Module.*/
 #define FNET_CFG_CPU_ETH1                               (0)
 
-#endif /* _FNET_MK60N512_CONFIG_H_ */
+#endif /* _FNET_LPC54628_CONFIG_H_ */

@@ -69,7 +69,7 @@ void fapp_autoip_release(void)
     fnet_autoip_desc_t  autoip;
 
     /* Release all Auto-IP services.*/
-    for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
+    for(i = 0; (netif = fnet_netif_get_by_number(i)); i++)
     {
         autoip = fnet_autoip_get_by_netif(netif);
         if(autoip)
@@ -138,7 +138,7 @@ void fapp_autoip_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **a
         }
     }
 
-    if(init == FNET_TRUE) 
+    if(init == FNET_TRUE)
     {
         /* Save current IP address, to restore if cancelled.  */
         fapp_autoip_ip_old = fnet_netif_get_ip4_addr(netif);

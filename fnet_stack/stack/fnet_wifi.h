@@ -58,7 +58,7 @@
  * @brief Wi-Fi operation mode.
  * @see fnet_wifi_get_op_mode()
  ***********************************s*******************************************/
-typedef enum 
+typedef enum
 {
     FNET_WIFI_OP_MODE_NONE,             /**< @brief Disconnected. Wi-Fi radio is off @see fnet_wifi_disconnect()*/
     FNET_WIFI_OP_MODE_STATION,          /**< @brief Station mode. @see fnet_wifi_connect()*/
@@ -68,7 +68,7 @@ typedef enum
 /**************************************************************************/ /*!
  * @brief WPA-personal security mode.
  ***********************************s*******************************************/
-typedef enum 
+typedef enum
 {
     FNET_WIFI_WPA_NONE,         /**< @brief None. The Wi-Fi network is open.*/
     FNET_WIFI_WPA,              /**< @brief WPA. This mode uses TKIP cipher. It is used mainly for legacy devices.*/
@@ -79,7 +79,7 @@ typedef enum
 /**************************************************************************/ /*!
  * @brief Wi-Fi connection parameters for @ref fnet_wifi_connect().
  ******************************************************************************/
-typedef struct 
+typedef struct
 {
     fnet_char_t     *ssid ;             /**< @brief Wi-Fi SSID (Subscription Service Identifier), also called Wireless Network Name. @n
                                         It can be up to 32 alphanumeric character unique identifier (zero-terminated string).*/
@@ -90,7 +90,7 @@ typedef struct
 /**************************************************************************/ /*!
  * @brief Wi-Fi access point parameters for @ref fnet_wifi_access_point().
  ******************************************************************************/
-typedef struct 
+typedef struct
 {
     fnet_char_t             *ssid ;                 /**< @brief Wi-Fi SSID (Subscription Service Identifier), also called Wireless Network Name. @n
                                                     It can be up to 32 alphanumeric character unique identifier (zero-terminated string).*/

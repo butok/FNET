@@ -158,7 +158,7 @@ typedef struct fnet_dhcp_cln_if
                                                             * callback function, that is
                                                             * called when the DHCP client has
                                                             * updated the IP parameters.*/
-   fnet_dhcp_cln_callback_t     callback_discover;          /* Optional pointer to the handler
+    fnet_dhcp_cln_callback_t     callback_discover;          /* Optional pointer to the handler
                                                             * callback function, that is
                                                             * called when the DHCP client send
                                                             * the DHCP discover message.*/
@@ -628,9 +628,9 @@ static fnet_ssize_t fnet_dhcp_cln_receive_message( fnet_dhcp_cln_if_t *dhcp, str
                     dhcp->message.next_option_position = &dhcp_header->file[0];
 
                 if(options->private_options.overload & FNET_DHCP_OPTION_OVERLOAD_FILE)
-                    dhcp->message.end_position = &dhcp_header->file[128-1];
+                    dhcp->message.end_position = &dhcp_header->file[128 - 1];
                 else
-                    dhcp->message.end_position = &dhcp_header->sname[64-1];
+                    dhcp->message.end_position = &dhcp_header->sname[64 - 1];
 
                 fnet_dhcp_cln_parse_options(&dhcp->message, options);
             }
@@ -1197,7 +1197,7 @@ fnet_dhcp_cln_desc_t fnet_dhcp_cln_get_by_netif(fnet_netif_desc_t netif)
 {
     fnet_dhcp_cln_if_t      *dhcp_if;
     fnet_index_t            i;
-    fnet_dhcp_cln_desc_t    dhcp_desc = 0; 
+    fnet_dhcp_cln_desc_t    dhcp_desc = 0;
 
     if(netif)
     {
@@ -1212,7 +1212,7 @@ fnet_dhcp_cln_desc_t fnet_dhcp_cln_get_by_netif(fnet_netif_desc_t netif)
             }
         }
     }
-    
+
     return dhcp_desc;
 }
 

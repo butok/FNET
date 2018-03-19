@@ -39,23 +39,23 @@ fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t pr
     if(vector_number > 0x40)
     {
         /* Install FNET ISR into the Vector Table in RAM */
-    #if FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
+#if FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
         {
             fnet_uint32_t   *irq_vec;
-			irq_vec = (fnet_uint32_t *)(FNET_CFG_CPU_VECTOR_TABLE) + vector_number;
+            irq_vec = (fnet_uint32_t *)(FNET_CFG_CPU_VECTOR_TABLE) + vector_number;
 
-			if(*irq_vec != (fnet_uint32_t)FNET_ISR_HANDLER)
-			{
-				/* It's not installed yet.*/
-				*irq_vec = (fnet_uint32_t) FNET_ISR_HANDLER;
-			}
+            if(*irq_vec != (fnet_uint32_t)FNET_ISR_HANDLER)
+            {
+                /* It's not installed yet.*/
+                *irq_vec = (fnet_uint32_t) FNET_ISR_HANDLER;
+            }
         }
-    #endif
+#endif
 
-		if(priority > FNET_CFG_CPU_VECTOR_PRIORITY_MAX)
-		{
-			priority = FNET_CFG_CPU_VECTOR_PRIORITY_MAX;
-		}
+        if(priority > FNET_CFG_CPU_VECTOR_PRIORITY_MAX)
+        {
+            priority = FNET_CFG_CPU_VECTOR_PRIORITY_MAX;
+        }
 
 #if !FNET_CFG_MCF_V1 /* Not for MCF Ver.1 */
         /* Set priority. */

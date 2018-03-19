@@ -35,10 +35,10 @@ fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t pr
     fnet_uint32_t   divider;
     fnet_uint32_t   irq_number; /* The irq number NOT the vector number.*/
 
-    if(vector_number>16)
+    if(vector_number > 16)
     {
         /* Install FNET ISR into the Vector Table in RAM */
-    #if FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
+#if FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
         {
             fnet_uint32_t   *irq_vec;
             irq_vec = (fnet_uint32_t *)(FNET_CFG_CPU_VECTOR_TABLE) + vector_number;
@@ -48,7 +48,7 @@ fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t pr
                 *irq_vec = (fnet_uint32_t) FNET_ISR_HANDLER;
             }
         }
-    #endif
+#endif
 
         /* Initialize NVIC */
         if(priority > FNET_CFG_CPU_VECTOR_PRIORITY_MAX)

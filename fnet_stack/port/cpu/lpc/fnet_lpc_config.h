@@ -65,8 +65,8 @@
     #endif
 
     /*******************************************************************************
-     * Timer number used by the FNET. It can range from 0 to FNET_CFG_CPU_TIMER_NUMBER_MAX.
-     ******************************************************************************/
+    * Timer number used by the FNET. It can range from 0 to FNET_CFG_CPU_TIMER_NUMBER_MAX.
+    ******************************************************************************/
     #ifndef FNET_CFG_CPU_TIMER_NUMBER
         #define FNET_CFG_CPU_TIMER_NUMBER           (FNET_CFG_CPU_TIMER_NUMBER_MAX)
     #endif
@@ -85,15 +85,15 @@
     ******************************************************************************/
     #ifndef FNET_CFG_CPU_TIMER_VECTOR_NUMBER
         #if FNET_CFG_CPU_TIMER_NUMBER == 0
-           #define FNET_CFG_CPU_TIMER_VECTOR_NUMBER        (16U + 10U) /* Standard counter/timer CTIMER0 */
+            #define FNET_CFG_CPU_TIMER_VECTOR_NUMBER        (16U + 10U) /* Standard counter/timer CTIMER0 */
         #elif FNET_CFG_CPU_TIMER_NUMBER == 1
-           #define FNET_CFG_CPU_TIMER_VECTOR_NUMBER        (16U + 11U) /* Standard counter/timer CTIMER1 */
+            #define FNET_CFG_CPU_TIMER_VECTOR_NUMBER        (16U + 11U) /* Standard counter/timer CTIMER1 */
         #elif FNET_CFG_CPU_TIMER_NUMBER == 2
-           #define FNET_CFG_CPU_TIMER_VECTOR_NUMBER        (16U + 36U) /* Standard counter/timer CTIMER2 */
+            #define FNET_CFG_CPU_TIMER_VECTOR_NUMBER        (16U + 36U) /* Standard counter/timer CTIMER2 */
         #elif FNET_CFG_CPU_TIMER_NUMBER == 3
-           #define FNET_CFG_CPU_TIMER_VECTOR_NUMBER        (16U + 13U) /* Standard counter/timer CTIMER3 */
+            #define FNET_CFG_CPU_TIMER_VECTOR_NUMBER        (16U + 13U) /* Standard counter/timer CTIMER3 */
         #elif FNET_CFG_CPU_TIMER_NUMBER == 4
-           #define FNET_CFG_CPU_TIMER_VECTOR_NUMBER        (16U + 37U) /* Standard counter/timer CTIMER4 */
+            #define FNET_CFG_CPU_TIMER_VECTOR_NUMBER        (16U + 37U) /* Standard counter/timer CTIMER4 */
         #else
             #error Not suported FNET_CFG_CPU_TIMER_NUMBER
         #endif
@@ -103,7 +103,7 @@
     *  Vector number of the Ethernet Receive Frame vector number.
     ******************************************************************************/
     #ifndef FNET_CFG_CPU_ETH0_VECTOR_NUMBER
-        #define FNET_CFG_CPU_ETH0_VECTOR_NUMBER        (49U)
+        #define FNET_CFG_CPU_ETH0_VECTOR_NUMBER             (16U+49U) /* Ethernet */
     #endif
 
     /*****************************************************************************
@@ -111,15 +111,20 @@
     ******************************************************************************/
     #define FNET_CFG_CPU_VECTOR_PRIORITY_MAX            (15u) /* 4 bits */
 
-    /*****************************************************************************
-    *  On-chip Flash memory start address.
-    ******************************************************************************/
-    #ifndef FNET_CFG_CPU_FLASH_ADDRESS
-        #define FNET_CFG_CPU_FLASH_ADDRESS          (0x0U)
+
+    /* UM: NXP recommends a minimum ring length of 4.
+    * Less than 4 causes ENET_DescriptorInit() returns error;*/
+    #ifndef FNET_CFG_CPU_ETH_TX_BUFS_MAX
+        #define FNET_CFG_CPU_ETH_TX_BUFS_MAX        (4u)
+    #endif
+    #ifndef FNET_CFG_CPU_ETH_RX_BUFS_MAX
+        #define FNET_CFG_CPU_ETH_RX_BUFS_MAX        (4u)
     #endif
 
-    #ifndef FNET_CFG_CPU_FLASH_PROGRAM_SIZE
-        #define FNET_CFG_CPU_FLASH_PROGRAM_SIZE     (4U)
+
+    /* LPC start up code does not support vector table in RAM, so far */
+    #ifndef FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
+        #define FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM (0)
     #endif
 
 #endif /* FNET_LPC */

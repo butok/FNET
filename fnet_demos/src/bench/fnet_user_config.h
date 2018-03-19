@@ -97,8 +97,4 @@
 #define FNET_CFG_BENCH_SRV          (1)
 #define FNET_CFG_BENCH_CLN          (1)
 
-#define FNET_CFG_DEBUG_BENCH_SRV 1 //DM
-#define FNET_CFG_DEBUG_BENCH_CLN 1 //DM
-#define FNET_CFG_DEBUG 1
-
 #endif /* _FNET_USER_CONFIG_H_ */

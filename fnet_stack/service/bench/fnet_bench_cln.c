@@ -36,7 +36,7 @@
 *************************************************************************/
 
 #define FNET_BENCH_CLN_UDP_END_LENGTH          (1)  /* End of UDP session mark */
-#define FNET_BENCH_CLN_UDP_END_ITERATION       (5) 
+#define FNET_BENCH_CLN_UDP_END_ITERATION       (5)
 
 /* Error strings.*/
 #define FNET_BENCH_CLN_ERR_PARAMS             "[BENCH cln] Wrong input parameters"
@@ -67,17 +67,17 @@ typedef struct fnet_bench_cln_if
     fnet_socket_type_t                      type;
     struct fnet_sockaddr                    address_foreign;
     fnet_socket_t                           socket_foreign;     /* Foreign socket.*/
-    fnet_size_t                             message_size;       /* Size of one message to send. */  
+    fnet_size_t                             message_size;       /* Size of one message to send. */
     fnet_index_t                            message_number;     /* Number of messages to send. */
     fnet_size_t                             message_offset;     /* Partial send (TCP) */
-    fnet_bench_cln_callback_session_end_t   callback; 
-    void                                    *cookie; 
+    fnet_bench_cln_callback_session_end_t   callback;
+    void                                    *cookie;
     fnet_time_t                             time_begin;
     struct fnet_bench_cln_result            bench_cln_result;
 } fnet_bench_cln_if_t;
 
 /* Tx buffer */
-static fnet_uint8_t fnet_bench_cln_buffer[FNET_CFG_BENCH_CLN_BUFFER_SIZE]; 
+static fnet_uint8_t fnet_bench_cln_buffer[FNET_CFG_BENCH_CLN_BUFFER_SIZE];
 
 /* The Benchmark server interface list*/
 static  fnet_bench_cln_if_t fnet_bench_cln_if_list[FNET_CFG_BENCH_CLN];
@@ -96,10 +96,10 @@ fnet_bench_srv_desc_t fnet_bench_cln_init( struct fnet_bench_cln_params *params 
     fnet_bench_cln_if_t         *bench_cln_if = FNET_NULL;
     fnet_size_t                 bufsize_option = FNET_CFG_BENCH_CLN_BUFFER_SIZE;
 
-    if((params == 0) || 
-        !((params->type == SOCK_STREAM) || (params->type == SOCK_DGRAM)) ||
-         (params->message_number == 0) || (params->callback == 0) ||
-         (params->message_size == 0) || (params->message_size > sizeof(fnet_bench_cln_buffer)))
+    if((params == 0) ||
+       !((params->type == SOCK_STREAM) || (params->type == SOCK_DGRAM)) ||
+       (params->message_number == 0) || (params->callback == 0) ||
+       (params->message_size == 0) || (params->message_size > sizeof(fnet_bench_cln_buffer)))
     {
         FNET_DEBUG_BENCH_CLN(FNET_BENCH_CLN_ERR_PARAMS);
         goto ERROR_1;
@@ -123,7 +123,7 @@ fnet_bench_srv_desc_t fnet_bench_cln_init( struct fnet_bench_cln_params *params 
     }
 
     /* Clear all parameters.*/
-    fnet_memset_zero(bench_cln_if,sizeof(*bench_cln_if));
+    fnet_memset_zero(bench_cln_if, sizeof(*bench_cln_if));
 
     /* Set parameters */
     fnet_memcpy(&bench_cln_if->address_foreign, &params->address, sizeof(bench_cln_if->address_foreign));
@@ -200,7 +200,7 @@ void fnet_bench_cln_release(fnet_bench_cln_desc_t desc)
         {
             fnet_uint32_t   bytes;
             fnet_index_t    i;
-        
+
             /* Send UDP session End mark.*/
             for(i = 0; i < FNET_BENCH_CLN_UDP_END_ITERATION; i++)
             {
@@ -208,15 +208,15 @@ void fnet_bench_cln_release(fnet_bench_cln_desc_t desc)
                 fnet_socket_send(bench_cln_if->socket_foreign, &bytes, 1, 0);
             }
         }
-        
+
         bench_cln_if->is_enabled = FNET_FALSE;
 
         fnet_service_unregister(bench_cln_if->service_descriptor); /* Delete service. */
 
         fnet_socket_close(bench_cln_if->socket_foreign);
-        
+
         bench_cln_if->state = FNET_BENCH_CLN_STATE_DISABLED;
-        
+
         /* Inform a user application about the session end */
         bench_cln_if->bench_cln_result.time_ms = fnet_timer_get_ms() - bench_cln_if->time_begin;
         bench_cln_if->callback(bench_cln_if, &bench_cln_if->bench_cln_result, bench_cln_if->cookie);
@@ -236,60 +236,60 @@ static void fnet_bench_cln_poll( void *fnet_bench_cln_if_p )
         switch(bench_cln_if->state)
         {
             case FNET_BENCH_CLN_STATE_CONNECTING:            /* Benchmark client is connecting.*/
+            {
+                fnet_socket_state_t     connection_state;
+                fnet_size_t             option_len;
+
+                option_len = sizeof(connection_state);
+                fnet_socket_getopt(bench_cln_if->socket_foreign, SOL_SOCKET, SO_STATE, &connection_state, &option_len);
+
+                if(connection_state != SS_CONNECTING)
                 {
-                    fnet_socket_state_t     connection_state;
-                    fnet_size_t             option_len;
-
-                    option_len = sizeof(connection_state);
-                    fnet_socket_getopt(bench_cln_if->socket_foreign, SOL_SOCKET, SO_STATE, &connection_state, &option_len);
-
-                    if(connection_state != SS_CONNECTING)
-                    {
-                        bench_cln_if->time_begin = fnet_timer_get_ms();
-                        bench_cln_if->state = FNET_BENCH_CLN_STATE_TX;
-                    }
+                    bench_cln_if->time_begin = fnet_timer_get_ms();
+                    bench_cln_if->state = FNET_BENCH_CLN_STATE_TX;
                 }
-                break;
+            }
+            break;
             case FNET_BENCH_CLN_STATE_TX:   /* Benchmark client is sending.*/
+            {
+                fnet_bool_t     is_session_end = FNET_FALSE;
+
+                send_result = fnet_socket_send(bench_cln_if->socket_foreign, &fnet_bench_cln_buffer[bench_cln_if->message_offset], (bench_cln_if->message_size - bench_cln_if->message_offset), 0);
+
+                if (send_result == FNET_ERR)
                 {
-                    fnet_bool_t     is_session_end = FNET_FALSE;
-
-                    send_result = fnet_socket_send(bench_cln_if->socket_foreign, &fnet_bench_cln_buffer[bench_cln_if->message_offset], (bench_cln_if->message_size - bench_cln_if->message_offset), 0);
-
-                    if (send_result == FNET_ERR)
+                    is_session_end = FNET_TRUE;
+                }
+                else if(send_result)
+                {
+                    bench_cln_if->bench_cln_result.bytes += send_result;
+                    if(bench_cln_if->bench_cln_result.bytes >= 1000000)
                     {
-                        is_session_end = FNET_TRUE;
+                        bench_cln_if->bench_cln_result.megabytes ++;
+                        bench_cln_if->bench_cln_result.bytes -= 1000000;
                     }
-                    else if(send_result)
+                    bench_cln_if->message_offset += send_result;
+
+                    if(bench_cln_if->message_offset >= bench_cln_if->message_size)
                     {
-                        bench_cln_if->bench_cln_result.bytes += send_result;
-                        if(bench_cln_if->bench_cln_result.bytes >= 1000000)
+                        bench_cln_if->message_offset = 0;
+                        bench_cln_if->message_number--;
+
+                        if(bench_cln_if->message_number == 0)
                         {
-                            bench_cln_if->bench_cln_result.megabytes ++;
-                            bench_cln_if->bench_cln_result.bytes -= 1000000;
+                            is_session_end = FNET_TRUE;
                         }
-                        bench_cln_if->message_offset += send_result;
-
-                        if(bench_cln_if->message_offset >= bench_cln_if->message_size)
-                        {
-                            bench_cln_if->message_offset = 0;
-                            bench_cln_if->message_number--;
-
-                            if(bench_cln_if->message_number == 0)
-                            {
-                                is_session_end = FNET_TRUE;
-                            }
-                        }
-                    }
-                    else /* 0 */
-                    {}  
-
-                    if(is_session_end == FNET_TRUE)
-                    {
-                        fnet_bench_cln_release(bench_cln_if);                 
                     }
                 }
-                break;
+                else /* 0 */
+                {}
+
+                if(is_session_end == FNET_TRUE)
+                {
+                    fnet_bench_cln_release(bench_cln_if);
+                }
+            }
+            break;
             default:
                 break;
         }

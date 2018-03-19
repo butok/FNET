@@ -45,6 +45,33 @@
 #define FNET_ETH_CRC_SIZE       (4U)     /* Size of Ethernet CRC.*/
 
 /************************************************************************
+*  IEEE802.3 PHY MII management register set
+*************************************************************************/
+#define FNET_ETH_MII_REG_CR             (0x0000U)   /* Control Register */
+#define FNET_ETH_MII_REG_SR             (0x0001U)   /* Status Register */
+#define FNET_ETH_MII_REG_IDR1           (0x0002U)   /* Identification Register #1 */
+#define FNET_ETH_MII_REG_IDR2           (0x0003U)   /* Identification Register #2 */
+#define FNET_ETH_MII_REG_ANAR           (0x0004U)   /* Auto-Negotiation Advertisement Register */
+#define FNET_ETH_MII_REG_ANLPAR         (0x0005U)   /* Auto-Negotiation Link Partner Ability Register */
+#define FNET_ETH_MII_REG_ANER           (0x0006U)   /* Auto-Negotiation Expansion Register */
+#define FNET_ETH_MII_REG_ANNPTR         (0x0007U)   /* Auto-Negotiation Next Page TX Register */
+
+/* Status Register flags*/
+#define FNET_ETH_MII_REG_SR_LINK_STATUS (0x0004U)
+#define FNET_ETH_MII_REG_SR_AN_ABILITY  (0x0008U)
+#define FNET_ETH_MII_REG_SR_AN_COMPLETE (0x0020U)
+
+/* Control Register flags*/
+#define FNET_ETH_MII_REG_CR_RESET       (0x8000U)    /* Resetting a port is accomplished by setting this bit to 1.*/
+#define FNET_ETH_MII_REG_CR_LOOPBACK    (0x4000U)    /* Determines Digital Loopback Mode. */
+#define FNET_ETH_MII_REG_CR_DATARATE    (0x2000U)    /* Speed Selection bit.*/
+#define FNET_ETH_MII_REG_CR_ANE         (0x1000U)    /* Auto-Negotiation Enable bit. */
+#define FNET_ETH_MII_REG_CR_PDWN        (0x0800U)    /* Power Down bit. */
+#define FNET_ETH_MII_REG_CR_ISOL        (0x0400U)    /* Isolate bit.*/
+#define FNET_ETH_MII_REG_CR_ANE_RESTART (0x0200U)    /* Restart Auto-Negotiation bit.*/
+#define FNET_ETH_MII_REG_CR_DPLX        (0x0100U)    /* Duplex Mode bit.*/
+
+/************************************************************************
 *    Network Layer Protocol interface control structure.
 *************************************************************************/
 typedef struct fnet_eth_prot_if

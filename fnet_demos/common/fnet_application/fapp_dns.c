@@ -94,11 +94,11 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
 
     /* Set DNS client/resolver parameters.*/
     fnet_memset_zero(&dns_params, sizeof(struct fnet_dns_params));
-    
+
     dns_params.addr_family = AF_INET;
 
     /* [-n <if name>] [-s <server ip>] [4|6] */
-    for(i = 1u; i < (argc-1) /*avoid the last parameter.*/; i++)
+    for(i = 1u; i < (argc - 1) /*avoid the last parameter.*/; i++)
     {
         if (!fnet_strcmp(argv[i], "-n")) /*[-n <if name>] */
         {
@@ -153,19 +153,19 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
         else
 #endif
 #if FNET_CFG_IP6
-        if(fnet_netif_get_ip6_dns(netif, 0U, (fnet_ip6_addr_t *)&dns_params.dns_server_addr.sa_data) == FNET_TRUE)
-        {
-            dns_params.dns_server_addr.sa_family = AF_INET6;
-        }
-        else
+            if(fnet_netif_get_ip6_dns(netif, 0U, (fnet_ip6_addr_t *)&dns_params.dns_server_addr.sa_data) == FNET_TRUE)
+            {
+                dns_params.dns_server_addr.sa_family = AF_INET6;
+            }
+            else
 #endif
-        {
-            fnet_shell_println(desc, FNET_DNS_UNKNOWN);
-            return;
-        }
+            {
+                fnet_shell_println(desc, FNET_DNS_UNKNOWN);
+                return;
+            }
     }
 
-    dns_params.host_name = argv[argc-1];                /* Host name to resolve - last parameter.*/
+    dns_params.host_name = argv[argc - 1];              /* Host name to resolve - last parameter.*/
     dns_params.callback = fapp_dns_callback_resolved;   /* Callback function.*/
     dns_params.cookie = desc;                           /* Application-specific parameter
                                                         which will be passed to fapp_dns_callback_resolved().*/

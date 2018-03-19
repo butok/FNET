@@ -33,26 +33,26 @@
 *     Definitions.
 *************************************************************************/
 #if FAPP_CFG_DHCPC_CMD && FNET_CFG_DHCP_CLN
-#define FAPP_DHCP_CLN_DISCOVER_STR      "[DHCP] Discovering..."
-#define FAPP_DHCP_CLN_COMMAND_REBOOT    "reboot"
-#define FAPP_DHCP_CLN_COMMAND_AUTOIP    "autoip"
-#define FAPP_DHCP_SRV_COMMAND_POOL      "pool"
+    #define FAPP_DHCP_CLN_DISCOVER_STR      "[DHCP] Discovering..."
+    #define FAPP_DHCP_CLN_COMMAND_REBOOT    "reboot"
+    #define FAPP_DHCP_CLN_COMMAND_AUTOIP    "autoip"
+    #define FAPP_DHCP_SRV_COMMAND_POOL      "pool"
 
-static fnet_int32_t     fapp_dhcp_cln_discover_counter;
-static fnet_ip4_addr_t  fapp_dhcp_cln_ip_old;
-static fnet_ip4_addr_t  fapp_dhcp_cln_subnet_mask_old;
-#if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP
-    static fnet_bool_t      fapp_dhcp_cln_autoip = FNET_FALSE; /* Flag that means to start the Auto-IP service automatically if a DHCP server is not found. */
-#endif
+    static fnet_int32_t     fapp_dhcp_cln_discover_counter;
+    static fnet_ip4_addr_t  fapp_dhcp_cln_ip_old;
+    static fnet_ip4_addr_t  fapp_dhcp_cln_subnet_mask_old;
+    #if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP
+        static fnet_bool_t      fapp_dhcp_cln_autoip = FNET_FALSE; /* Flag that means to start the Auto-IP service automatically if a DHCP server is not found. */
+    #endif
 #endif /* FAPP_CFG_DHCPC_CMD && FNET_CFG_DHCP_CLN */
 
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
 #if FAPP_CFG_DHCPC_CMD && FNET_CFG_DHCP_CLN
-static void fapp_dhcp_cln_on_ctrlc(fnet_shell_desc_t desc, void *cookie);
-static void fapp_dhcp_cln_callback_updated(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
-static void fapp_dhcp_cln_callback_discover(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
+    static void fapp_dhcp_cln_on_ctrlc(fnet_shell_desc_t desc, void *cookie);
+    static void fapp_dhcp_cln_callback_updated(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
+    static void fapp_dhcp_cln_callback_discover(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
 #endif
 
 #if FAPP_CFG_DHCPC_CMD && FNET_CFG_DHCP_CLN
@@ -132,7 +132,7 @@ void fapp_dhcp_cln_release(void)
     fnet_dhcp_cln_desc_t    dhcp;
 
     /* Release all DHCP clients.*/
-    for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
+    for(i = 0; (netif = fnet_netif_get_by_number(i)); i++)
     {
         dhcp = fnet_dhcp_cln_get_by_netif(netif);
         if(dhcp)
@@ -178,9 +178,9 @@ void fapp_dhcp_cln_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
         }
         else if (!fnet_strcmp(argv[i], FAPP_DHCP_CLN_COMMAND_AUTOIP)) /* [autoip] */
         {
-        #if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP
+#if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP
             fapp_dhcp_cln_autoip = FNET_TRUE;
-        #endif
+#endif
         }
         else/* Wrong parameter.*/
         {
@@ -188,7 +188,7 @@ void fapp_dhcp_cln_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
         }
     }
 
-    if(init == FNET_TRUE) 
+    if(init == FNET_TRUE)
     {
         fapp_dhcp_cln_discover_counter = FAPP_CFG_DHCPC_CMD_DISCOVER_MAX; /* reset counter.*/
 
@@ -257,9 +257,9 @@ void fapp_dhcp_cln_info(fnet_shell_desc_t desc, fnet_netif_desc_t  netif)
 
         fnet_inet_ntoa(*(struct fnet_in_addr *)( &options.dhcp_server), ip_str);
         fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "DHCP Server Address", ip_str);
-    #if 0 /* Not too important */
+#if 0 /* Not too important */
         fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "Lease Time", fnet_ntohl(options.lease_time));
-    #endif
+#endif
     }
 }
 #endif /* FAPP_CFG_DHCPC_CMD && FNET_CFG_DHCP_CLN */
@@ -305,7 +305,7 @@ void fapp_dhcp_srv_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
             goto ERROR_PARAMETER;
         }
     }
-    
+
     if(pool == FNET_TRUE)
     {
         fnet_dhcp_srv_addr_pool_info_t      addr_pool_info;
@@ -326,14 +326,14 @@ void fapp_dhcp_srv_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
             fnet_shell_println(desc, "\t<empty>");
         }
     }
-    else if(init == FNET_TRUE) 
+    else if(init == FNET_TRUE)
     {
         /* Set the default IPv4 address for the interface running the DHCP server.*/
         fnet_netif_set_ip4_addr(netif, FAPP_CFG_DHCP_CMD_IP4_ADDR, FAPP_CFG_DHCP_CMD_IP4_MASK);
         fnet_netif_set_ip4_gateway(netif, FAPP_CFG_DHCP_CMD_IP4_GW);
-    #if FNET_CFG_DNS
+#if FNET_CFG_DNS
         fnet_netif_set_ip4_dns(netif, FAPP_CFG_DHCP_CMD_IP4_DNS);
-    #endif
+#endif
 
         /* Init parameters.*/
         fnet_memset_zero(&dhcp_params, sizeof(dhcp_params));
@@ -379,7 +379,7 @@ void fapp_dhcp_srv_release(void)
     fnet_dhcp_srv_desc_t    dhcp;
 
     /* Release all DHCP servers.*/
-    for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
+    for(i = 0; (netif = fnet_netif_get_by_number(i)); i++)
     {
         dhcp = fnet_dhcp_srv_get_by_netif(netif);
         if(dhcp)

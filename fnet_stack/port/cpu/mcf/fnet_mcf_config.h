@@ -117,10 +117,10 @@
     #if FNET_CFG_MCF_TIMER_PIT
         #define  FNET_CFG_CPU_TIMER_NUMBER_MAX  (1)
     #endif
-	
+
     /*******************************************************************************
-     * Timer number used by the FNET. It can range from 0 to FNET_CFG_CPU_TIMER_NUMBER_MAX.
-     ******************************************************************************/
+    * Timer number used by the FNET. It can range from 0 to FNET_CFG_CPU_TIMER_NUMBER_MAX.
+    ******************************************************************************/
     #ifndef FNET_CFG_CPU_TIMER_NUMBER
         #define FNET_CFG_CPU_TIMER_NUMBER           (FNET_CFG_CPU_TIMER_NUMBER_MAX)
     #endif

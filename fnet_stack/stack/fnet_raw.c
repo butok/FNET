@@ -88,7 +88,7 @@ static void fnet_raw_release( void )
 * DESCRIPTION: RAW output function
 *************************************************************************/
 static fnet_error_t fnet_raw_output( struct fnet_sockaddr *src_addr, const struct fnet_sockaddr *dest_addr, fnet_uint8_t protocol_number,
-                                      fnet_socket_option_t *sockoption, fnet_netbuf_t *nb )
+                                     fnet_socket_option_t *sockoption, fnet_netbuf_t *nb )
 {
     fnet_error_t error =  FNET_ERR_OK;
 

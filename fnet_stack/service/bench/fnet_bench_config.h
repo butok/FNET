@@ -46,7 +46,7 @@
 /**************************************************************************/ /*!
  * @def     FNET_CFG_BENCH_SRV_PORT
  * @brief   Default benchmark server port number (in network byte order).@n
- *          The benchmark server uses this port for sending and receiving of 
+ *          The benchmark server uses this port for sending and receiving of
  *          messages. @n
  *          It can be changed during the benchmark server initialization by the
  *          @ref fnet_bench_srv_init() function.@n
@@ -59,7 +59,7 @@
 
 /**************************************************************************/ /*!
  * @def     FNET_CFG_BENCH_SRV_BUFFER_SIZE
- * @brief   Defines the socket recieve buffer size. 
+ * @brief   Defines the socket recieve buffer size.
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_BENCH_SRV_BUFFER_SIZE
@@ -84,7 +84,7 @@
 /**************************************************************************/ /*!
  * @def     FNET_CFG_BENCH_CLN_PORT
  * @brief   Default benchmark client port number (in network byte order).@n
- *          The benchmark client uses this port for sending and receiving of 
+ *          The benchmark client uses this port for sending and receiving of
  *          messages. @n
  *          It can be changed during the benchmark client initialization by the
  *          @ref fnet_bench_cln_init() function.@n
@@ -97,7 +97,7 @@
 
 /**************************************************************************/ /*!
  * @def     FNET_CFG_BENCH_CLN_BUFFER_SIZE
- * @brief   Defines the socket transmit buffer size. 
+ * @brief   Defines the socket transmit buffer size.
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_BENCH_CLN_BUFFER_SIZE

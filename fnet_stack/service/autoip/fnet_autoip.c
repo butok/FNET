@@ -557,7 +557,7 @@ fnet_autoip_desc_t fnet_autoip_get_by_netif(fnet_netif_desc_t netif)
 {
     fnet_autoip_if_t        *autoip_if;
     fnet_index_t            i;
-    fnet_autoip_desc_t      autoip_desc = 0; 
+    fnet_autoip_desc_t      autoip_desc = 0;
 
     if(netif)
     {
@@ -572,7 +572,7 @@ fnet_autoip_desc_t fnet_autoip_get_by_netif(fnet_netif_desc_t netif)
             }
         }
     }
-    
+
     return autoip_desc;
 }
 

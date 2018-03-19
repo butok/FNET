@@ -34,6 +34,8 @@
 extern "C" {
 #endif
 
+void fapp_hw_init( void ); /* Board-specific HW initialization. Default serial port initialization. Interrupt enabling. */
+
 void fapp_main( void ); /* Main entry point of the bare-metal shell demo. */
 #if FAPP_CFG_FREERTOS
 void fapp_main_freertos( void ); /* Main entry point of the FreeRTOS shell demo. */

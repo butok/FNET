@@ -147,7 +147,7 @@ fnet_bool_t fnet_llmnr_is_enabled(fnet_llmnr_desc_t desc);
  *
  ******************************************************************************
  *
- * This function is looking for a LLMNR Server service assigned to 
+ * This function is looking for a LLMNR Server service assigned to
  * the @c netif network interface set during its initialization.
  *
  ******************************************************************************/

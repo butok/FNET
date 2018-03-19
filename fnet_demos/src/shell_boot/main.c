@@ -1,15 +1,16 @@
 
 #include "fapp.h"
 
+#if !FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
+   #warning For the shell_boot application the vector table must be in RAM.
+#endif
+
 /********************************************************************/
 
-fnet_int32_t main (void)
+int main (void)
 {
-    /* Init UART. */
-    fnet_cpu_serial_init(FNET_CFG_CPU_SERIAL_PORT_DEFAULT, 115200u);
-
-    /* Enable Interrupts.*/
-    fnet_cpu_irq_enable(0u);
+    /* Board-specific HW initialization. Default serial port initialization. Interrupt enabling. */
+    fapp_hw_init();
 
     /* Run application. */
     fapp_main();

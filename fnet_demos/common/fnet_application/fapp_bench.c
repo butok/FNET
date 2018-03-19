@@ -33,11 +33,11 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-#if FNET_CFG_BENCH_SRV 
-static fnet_bench_srv_desc_t fapp_bench_srv_desc = 0;    /* Benchmark server descriptor. */
+#if FNET_CFG_BENCH_SRV
+    static fnet_bench_srv_desc_t fapp_bench_srv_desc = 0;    /* Benchmark server descriptor. */
 #endif
 #if FNET_CFG_BENCH_CLN
-static fnet_bench_cln_desc_t fapp_bench_cln_desc = 0;    /* Benchmark client descriptor. */
+    static fnet_bench_cln_desc_t fapp_bench_cln_desc = 0;    /* Benchmark client descriptor. */
 #endif
 
 /************************************************************************
@@ -52,21 +52,21 @@ static void fapp_bench_print_results (fnet_shell_desc_t desc, fnet_size_t megaby
 
     if(time_ms)
     {
-        kbits_sec =  (((megabytes * 8 * 1000 /*sec*/) % time_ms)*1000 /*kbits*/)/time_ms;
+        kbits_sec =  (((megabytes * 8 * 1000 /*sec*/) % time_ms) * 1000 /*kbits*/) / time_ms;
         kbits_sec = kbits_sec + (fnet_size_t)((bytes * 8) / time_ms);
 
-        megabits_sec = (fnet_size_t)((megabytes * 8 * 1000) / time_ms) + (kbits_sec/1000);
-        kbits_sec = (kbits_sec%1000);
+        megabits_sec = (fnet_size_t)((megabytes * 8 * 1000) / time_ms) + (kbits_sec / 1000);
+        kbits_sec = (kbits_sec % 1000);
     }
 
     /* Print benchmark results.*/
     fnet_shell_println(desc, "\r\n[BENCH]\t%u.%06u MBytes in %u.%02u Seconds = %u.%03u Mbit/sec\n", megabytes, bytes,
                        (time_ms / 1000), ((time_ms % 1000) / 10),
-                        megabits_sec, kbits_sec);
+                       megabits_sec, kbits_sec);
 }
 #endif
 
-#if FNET_CFG_BENCH_SRV 
+#if FNET_CFG_BENCH_SRV
 /************************************************************************
 * DESCRIPTION: Benchmark server "session begin" event handler callback.
 ************************************************************************/
@@ -139,7 +139,7 @@ void fapp_bench_srv_cmd( fnet_shell_desc_t shell_desc, fnet_index_t argc, fnet_c
         }
         else if (!fnet_strcmp(argv[i], "tcp")) /* TCP */
         {
-            bench_srv_params.type = SOCK_STREAM; 
+            bench_srv_params.type = SOCK_STREAM;
         }
         else if (!fnet_strcmp(argv[i], "udp")) /* udp */
         {
@@ -155,13 +155,13 @@ void fapp_bench_srv_cmd( fnet_shell_desc_t shell_desc, fnet_index_t argc, fnet_c
         }
     }
 
-    if(init == FNET_TRUE) 
+    if(init == FNET_TRUE)
     {
         if(netif) /* Only on one interface */
         {
             bench_srv_params.address.sa_scope_id = fnet_netif_get_scope_id(netif);
         }
-        
+
         /* Start Benchmark server. */
         bench_srv_desc = fnet_bench_srv_init(&bench_srv_params);
         if(bench_srv_desc)
@@ -174,7 +174,7 @@ void fapp_bench_srv_cmd( fnet_shell_desc_t shell_desc, fnet_index_t argc, fnet_c
 
             fnet_shell_println(shell_desc, FAPP_DELIMITER_STR);
             fnet_shell_println(shell_desc, " Benchmark server started.");
-            
+
             if(fnet_socket_addr_is_unspecified(&bench_srv_params.address) == FNET_FALSE) /* Listen on concrete address */
             {
                 fnet_char_t     ip_str[FNET_IP_ADDR_STR_SIZE_MAX];
@@ -187,10 +187,10 @@ void fapp_bench_srv_cmd( fnet_shell_desc_t shell_desc, fnet_index_t argc, fnet_c
             {
                 fapp_netif_addr_print(shell_desc, AF_SUPPORTED, netif, FNET_FALSE);
             }
-            fnet_shell_println(shell_desc, FAPP_SHELL_INFO_FORMAT_S, "Protocol", (bench_srv_params.type == SOCK_STREAM)?"TCP":"UDP");
+            fnet_shell_println(shell_desc, FAPP_SHELL_INFO_FORMAT_S, "Protocol", (bench_srv_params.type == SOCK_STREAM) ? "TCP" : "UDP");
             fnet_shell_println(shell_desc, FAPP_SHELL_INFO_FORMAT_D, "Local Port", FNET_NTOHS(FNET_CFG_BENCH_SRV_PORT));
             fnet_shell_println(shell_desc, FAPP_DELIMITER_STR);
-            
+
         }
         else
         {
@@ -229,7 +229,7 @@ void fapp_bench_srv_info(fnet_shell_desc_t desc)
 #endif /* FNET_CFG_BENCH_SRV */
 
 
-#if FNET_CFG_BENCH_CLN 
+#if FNET_CFG_BENCH_CLN
 
 /************************************************************************
 * DESCRIPTION: Benchmark client "session end" event handler callback.
@@ -269,7 +269,7 @@ void fapp_bench_cln_cmd(fnet_shell_desc_t shell_desc, fnet_index_t argc, fnet_ch
 
     /* Set Benchmark client parameters.*/
     fnet_memset_zero(&bench_cln_params, sizeof(bench_cln_params));
-    
+
     /* Default values */
     bench_cln_params.type = SOCK_STREAM; /* TCP by default */
     bench_cln_params.message_size = FAPP_BENCH_TX_MESSAGE_SIZE_DEFAULT;     /* Default message size */
@@ -307,7 +307,7 @@ void fapp_bench_cln_cmd(fnet_shell_desc_t shell_desc, fnet_index_t argc, fnet_ch
         }
         else if (!fnet_strcmp(argv[i], "tcp")) /* TCP */
         {
-            bench_cln_params.type = SOCK_STREAM; 
+            bench_cln_params.type = SOCK_STREAM;
         }
         else if (!fnet_strcmp(argv[i], "udp")) /* udp */
         {
@@ -377,7 +377,7 @@ void fapp_bench_cln_cmd(fnet_shell_desc_t shell_desc, fnet_index_t argc, fnet_ch
 
             fnet_shell_println(shell_desc, FAPP_DELIMITER_STR);
             fnet_shell_println(shell_desc, " Benchmark client started.");
-            fnet_shell_println(shell_desc, FAPP_SHELL_INFO_FORMAT_S, "Protocol", (bench_cln_params.type == SOCK_STREAM)?"TCP":"UDP");
+            fnet_shell_println(shell_desc, FAPP_SHELL_INFO_FORMAT_S, "Protocol", (bench_cln_params.type == SOCK_STREAM) ? "TCP" : "UDP");
             fnet_shell_println(shell_desc, FAPP_SHELL_INFO_FORMAT_S, "Remote IP Addr", fnet_inet_ntop(bench_cln_params.address.sa_family, bench_cln_params.address.sa_data, ip_str, sizeof(ip_str)));
             fnet_shell_println(shell_desc, FAPP_SHELL_INFO_FORMAT_D, "Remote Port", FNET_NTOHS(FNET_CFG_BENCH_CLN_PORT));
             fnet_shell_println(shell_desc, FAPP_SHELL_INFO_FORMAT_D, "Message Size", bench_cln_params.message_size);

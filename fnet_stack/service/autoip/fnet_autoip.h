@@ -210,7 +210,7 @@ fnet_bool_t fnet_autoip_is_enabled(fnet_autoip_desc_t desc);
  *
  ******************************************************************************
  *
- * This function is looking for a Auto-IP service assigned to 
+ * This function is looking for a Auto-IP service assigned to
  * the @c netif network interface set during its initialization.
  *
  ******************************************************************************/

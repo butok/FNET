@@ -87,7 +87,7 @@ typedef enum
  *
  * @see fnet_ping_request(), fnet_ping_params
  ******************************************************************************/
-typedef void(*fnet_ping_callback_t)(fnet_error_t result, fnet_size_t packet_count, struct fnet_sockaddr *target_addr, void* cookie);
+typedef void(*fnet_ping_callback_t)(fnet_error_t result, fnet_size_t packet_count, struct fnet_sockaddr *target_addr, void *cookie);
 
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_ping_request() function.

@@ -36,7 +36,7 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_TLS
  * @brief    TLS Library support:
- *               - @c 1..n = is enabled (mbedTLS). Its value defines 
+ *               - @c 1..n = is enabled (mbedTLS). Its value defines
  *                      the maximum number of the TLS contexts that can be initialized
  *                      simultaneously, using fnet_tls_init().
  *               - @b @c 0 = is disabled (Default value).

@@ -67,17 +67,17 @@ typedef struct fnet_bench_srv_if
     fnet_socket_t                   socket_listen;                  /* Listening socket.*/
     fnet_socket_t                   socket_foreign;                 /* Foreign socket.*/
     struct fnet_sockaddr            address;                        /* Address of the remote client at the other end of the connection.*/
-    fnet_bench_srv_callback_session_begin_t callback_session_begin;     
-    fnet_bench_srv_callback_session_end_t   callback_session_end; 
-    void                            *callback_session_begin_cookie; 
-    void                            *callback_session_end_cookie; 
+    fnet_bench_srv_callback_session_begin_t callback_session_begin;
+    fnet_bench_srv_callback_session_end_t   callback_session_end;
+    void                            *callback_session_begin_cookie;
+    void                            *callback_session_end_cookie;
     fnet_time_t                     time_last; /* Last receive timestamp. Used for session timeout control */
     fnet_time_t                     time_begin;
     struct fnet_bench_srv_result    bench_srv_result;
 } fnet_bench_srv_if_t;
 
 /* Receive buffer */
-static fnet_uint8_t fnet_bench_srv_buffer[FNET_CFG_BENCH_SRV_BUFFER_SIZE]; 
+static fnet_uint8_t fnet_bench_srv_buffer[FNET_CFG_BENCH_SRV_BUFFER_SIZE];
 /* The Benchmark server interface list*/
 static  fnet_bench_srv_if_t fnet_bench_srv_if_list[FNET_CFG_BENCH_SRV];
 
@@ -161,51 +161,51 @@ fnet_bench_srv_desc_t fnet_bench_srv_init( struct fnet_bench_srv_params *params 
     switch(bench_srv_if->type)
     {
         case SOCK_STREAM:
+        {
+            const struct fnet_linger    linger_option =
             {
-                const struct fnet_linger    linger_option =
-                {
-                    .l_onoff = FNET_TRUE,
-                    .l_linger = 4 /*sec*/
-                };
-                const fnet_int32_t        keepalive_option = 1;
-                /* Keepalive probe retransmit limit.*/
-                const fnet_int32_t        keepcnt_option = 2;
+                .l_onoff = FNET_TRUE,
+                .l_linger = 4 /*sec*/
+            };
+            const fnet_int32_t        keepalive_option = 1;
+            /* Keepalive probe retransmit limit.*/
+            const fnet_int32_t        keepcnt_option = 2;
+            /* Keepalive retransmit interval.*/
+            const fnet_int32_t        keepintvl_option = 5; /*sec*/
+            /* Time between keepalive probes.*/
+            const fnet_int32_t        keepidle_option = 5; /* sec */
+
+            /* Set TCP Socket options. */
+            if( /* Setup linger option. */
+                (fnet_socket_setopt (bench_srv_if->socket_listen, SOL_SOCKET, SO_LINGER, &linger_option, sizeof(linger_option)) == FNET_ERR) ||
+                /* Enable keepalive_option option. */
+                (fnet_socket_setopt (bench_srv_if->socket_listen, SOL_SOCKET, SO_KEEPALIVE, &keepalive_option, sizeof(keepalive_option)) == FNET_ERR) ||
+                /* Keepalive probe retransmit limit. */
+                (fnet_socket_setopt (bench_srv_if->socket_listen, IPPROTO_TCP, TCP_KEEPCNT, &keepcnt_option, sizeof(keepcnt_option)) == FNET_ERR) ||
                 /* Keepalive retransmit interval.*/
-                const fnet_int32_t        keepintvl_option = 5; /*sec*/
+                (fnet_socket_setopt (bench_srv_if->socket_listen, IPPROTO_TCP, TCP_KEEPINTVL, &keepintvl_option, sizeof(keepintvl_option)) == FNET_ERR) ||
                 /* Time between keepalive probes.*/
-                const fnet_int32_t        keepidle_option = 5; /* sec */
-
-                /* Set TCP Socket options. */
-                if( /* Setup linger option. */
-                    (fnet_socket_setopt (bench_srv_if->socket_listen, SOL_SOCKET, SO_LINGER, &linger_option, sizeof(linger_option)) == FNET_ERR) ||
-                    /* Enable keepalive_option option. */
-                    (fnet_socket_setopt (bench_srv_if->socket_listen, SOL_SOCKET, SO_KEEPALIVE, &keepalive_option, sizeof(keepalive_option)) == FNET_ERR) ||
-                    /* Keepalive probe retransmit limit. */
-                    (fnet_socket_setopt (bench_srv_if->socket_listen, IPPROTO_TCP, TCP_KEEPCNT, &keepcnt_option, sizeof(keepcnt_option)) == FNET_ERR) ||
-                    /* Keepalive retransmit interval.*/
-                    (fnet_socket_setopt (bench_srv_if->socket_listen, IPPROTO_TCP, TCP_KEEPINTVL, &keepintvl_option, sizeof(keepintvl_option)) == FNET_ERR) ||
-                    /* Time between keepalive probes.*/
-                    (fnet_socket_setopt (bench_srv_if->socket_listen, IPPROTO_TCP, TCP_KEEPIDLE, &keepidle_option, sizeof(keepidle_option)) == FNET_ERR)
-                )
-                {
-                    FNET_DEBUG_BENCH_SRV(FNET_BENCH_SRV_ERR_SOCKET_OPTION);
-                    goto ERROR_2;
-                }
-
-                /* Listen. */
-                if(fnet_socket_listen(bench_srv_if->socket_listen, 1) == FNET_ERR)
-                {
-                    FNET_DEBUG_BENCH_SRV(FNET_BENCH_SRV_ERR_SOCKET_LISTEN);
-                    goto ERROR_2;
-                }
+                (fnet_socket_setopt (bench_srv_if->socket_listen, IPPROTO_TCP, TCP_KEEPIDLE, &keepidle_option, sizeof(keepidle_option)) == FNET_ERR)
+            )
+            {
+                FNET_DEBUG_BENCH_SRV(FNET_BENCH_SRV_ERR_SOCKET_OPTION);
+                goto ERROR_2;
             }
-            break;
+
+            /* Listen. */
+            if(fnet_socket_listen(bench_srv_if->socket_listen, 1) == FNET_ERR)
+            {
+                FNET_DEBUG_BENCH_SRV(FNET_BENCH_SRV_ERR_SOCKET_LISTEN);
+                goto ERROR_2;
+            }
+        }
+        break;
         case SOCK_DGRAM:
             /* Join multicast group, if set. */ //TBD add drop membership
             if(fnet_socket_addr_is_multicast(&local_addr))
             {
                 /* Join multicast group. */
-        #if FNET_CFG_IP4
+#if FNET_CFG_IP4
                 if(local_addr.sa_family == AF_INET)
                 {
                     struct fnet_ip_mreq mreq; /* Multicast group information.*/
@@ -220,8 +220,8 @@ fnet_bench_srv_desc_t fnet_bench_srv_init( struct fnet_bench_srv_params *params 
                         goto ERROR_2;
                     }
                 }
-        #endif
-        #if FNET_CFG_IP6
+#endif
+#if FNET_CFG_IP6
                 if(local_addr.sa_family == AF_INET6)
                 {
                     struct fnet_ipv6_mreq mreq6; /* Multicast group information.*/
@@ -236,10 +236,10 @@ fnet_bench_srv_desc_t fnet_bench_srv_init( struct fnet_bench_srv_params *params 
                         goto ERROR_2;
                     }
                 }
-        #endif
+#endif
             }
             break;
-        default: 
+        default:
             goto ERROR_2;
     }
 
@@ -275,7 +275,7 @@ void fnet_bench_srv_release(fnet_bench_srv_desc_t desc)
             fnet_bench_srv_close_session(bench_srv_if);
         }
 
-        fnet_socket_close(bench_srv_if->socket_listen);       
+        fnet_socket_close(bench_srv_if->socket_listen);
 
         bench_srv_if->state = FNET_BENCH_SRV_STATE_DISABLED;
         bench_srv_if->is_enabled = FNET_FALSE;
@@ -327,7 +327,7 @@ static void fnet_bench_srv_close_session(fnet_bench_srv_if_t    *bench_srv_if)
         fnet_socket_close(bench_srv_if->socket_foreign);
         bench_srv_if->socket_foreign = 0;
     }
-    
+
     bench_srv_if->bench_srv_result.megabytes = 0;
     bench_srv_if->bench_srv_result.bytes = 0;
 }
@@ -346,94 +346,94 @@ static void fnet_bench_srv_poll( void *fnet_bench_srv_if_p )
         switch(bench_srv_if->state)
         {
             case FNET_BENCH_SRV_STATE_LISTENING:     /* Benchmark server is listening for incoming connection.*/
+            {
+                fnet_bool_t     is_session_begin = FNET_FALSE;
+
+                if(bench_srv_if->type == SOCK_STREAM) /* TCP */
                 {
-                    fnet_bool_t     is_session_begin = FNET_FALSE;
-
-                    if(bench_srv_if->type == SOCK_STREAM) /* TCP */
+                    /*Accept*/
+                    addr_len = sizeof(bench_srv_if->address);
+                    bench_srv_if->socket_foreign = fnet_socket_accept(bench_srv_if->socket_listen, &bench_srv_if->address, &addr_len);
+                    if(bench_srv_if->socket_foreign)
                     {
-                        /*Accept*/
-                        addr_len = sizeof(bench_srv_if->address);
-                        bench_srv_if->socket_foreign = fnet_socket_accept(bench_srv_if->socket_listen, &bench_srv_if->address, &addr_len);
-                        if(bench_srv_if->socket_foreign)
-                        {
-                            is_session_begin = FNET_TRUE;
-                        }
-                    }
-                    else /* UDP */
-                    {
-                        /* Accept */
-                        addr_len = sizeof(bench_srv_if->address);
-                        received = fnet_socket_recvfrom(bench_srv_if->socket_listen, fnet_bench_srv_buffer, sizeof(fnet_bench_srv_buffer), 0,
-                                                         &bench_srv_if->address, &addr_len);
-
-                        if(received > FNET_BENCH_SRV_UDP_END_LENGTH) /* First UDP datagram is mark of session begin.*/
-                        {
-                            is_session_begin = FNET_TRUE;
-                        }
-                    }
-
-                    if(is_session_begin == FNET_TRUE)
-                    {
-                        if(bench_srv_if->callback_session_begin) /* Inform a user application about the session begin */
-                        {
-                            bench_srv_if->callback_session_begin((fnet_bench_srv_desc_t)bench_srv_if, bench_srv_if->address, bench_srv_if->callback_session_begin_cookie);
-                        }
-                        
-                        bench_srv_if->time_begin = fnet_timer_get_ms();
-                        bench_srv_if->time_last = bench_srv_if->time_begin;
-
-                        bench_srv_if->state = FNET_BENCH_SRV_STATE_RX;
+                        is_session_begin = FNET_TRUE;
                     }
                 }
-                break;
+                else /* UDP */
+                {
+                    /* Accept */
+                    addr_len = sizeof(bench_srv_if->address);
+                    received = fnet_socket_recvfrom(bench_srv_if->socket_listen, fnet_bench_srv_buffer, sizeof(fnet_bench_srv_buffer), 0,
+                                                    &bench_srv_if->address, &addr_len);
+
+                    if(received > FNET_BENCH_SRV_UDP_END_LENGTH) /* First UDP datagram is mark of session begin.*/
+                    {
+                        is_session_begin = FNET_TRUE;
+                    }
+                }
+
+                if(is_session_begin == FNET_TRUE)
+                {
+                    if(bench_srv_if->callback_session_begin) /* Inform a user application about the session begin */
+                    {
+                        bench_srv_if->callback_session_begin((fnet_bench_srv_desc_t)bench_srv_if, bench_srv_if->address, bench_srv_if->callback_session_begin_cookie);
+                    }
+
+                    bench_srv_if->time_begin = fnet_timer_get_ms();
+                    bench_srv_if->time_last = bench_srv_if->time_begin;
+
+                    bench_srv_if->state = FNET_BENCH_SRV_STATE_RX;
+                }
+            }
+            break;
             case FNET_BENCH_SRV_STATE_RX:            /* Benchmark server is receiving.*/
+            {
+                fnet_bool_t     is_session_end = FNET_FALSE;
+                fnet_time_t     time_current = fnet_timer_get_ms();
+
+                if(bench_srv_if->type == SOCK_STREAM) /* TCP */
                 {
-                    fnet_bool_t     is_session_end = FNET_FALSE;
-                    fnet_time_t     time_current = fnet_timer_get_ms();
-
-                    if(bench_srv_if->type == SOCK_STREAM) /* TCP */
+                    received = fnet_socket_recv(bench_srv_if->socket_foreign, fnet_bench_srv_buffer, sizeof(fnet_bench_srv_buffer), 0);
+                    if(received == FNET_ERR)
                     {
-                        received = fnet_socket_recv(bench_srv_if->socket_foreign, fnet_bench_srv_buffer, sizeof(fnet_bench_srv_buffer), 0);
-                        if(received == FNET_ERR)
-                        {
-                            is_session_end = FNET_TRUE;
-                        }
-                    }
-                    else /* UDP */
-                    {
-                        addr_len = sizeof(bench_srv_if->address);
-                        received = fnet_socket_recvfrom(bench_srv_if->socket_listen, fnet_bench_srv_buffer, sizeof(fnet_bench_srv_buffer), 0,
-                                                        &bench_srv_if->address, &addr_len);
-
-                        if((received == FNET_ERR) || (received == FNET_BENCH_SRV_UDP_END_LENGTH)) /* End of session. */
-                        {
-                            is_session_end = FNET_TRUE;
-                        }
-                    }
-                    
-                    if(received > 0)
-                    {
-                        bench_srv_if->bench_srv_result.bytes += received;
-                        if(bench_srv_if->bench_srv_result.bytes >= 1000000)
-                        {
-                            bench_srv_if->bench_srv_result.megabytes ++;
-                            bench_srv_if->bench_srv_result.bytes -= 1000000;
-                        }
-                        bench_srv_if->time_last = time_current;
-                    }
-
-                    /* Session End */
-                    if ((is_session_end == FNET_TRUE) ||
-                         ((time_current - bench_srv_if->time_last) > FNET_BENCH_SRV_SESSION_TIMEOUT_MS))   /* Session timeout */
-                        
-                    {
-                        fnet_bench_srv_close_session(bench_srv_if);
-
-                        bench_srv_if->state = FNET_BENCH_SRV_STATE_LISTENING;
-                        break;
+                        is_session_end = FNET_TRUE;
                     }
                 }
-                break;
+                else /* UDP */
+                {
+                    addr_len = sizeof(bench_srv_if->address);
+                    received = fnet_socket_recvfrom(bench_srv_if->socket_listen, fnet_bench_srv_buffer, sizeof(fnet_bench_srv_buffer), 0,
+                                                    &bench_srv_if->address, &addr_len);
+
+                    if((received == FNET_ERR) || (received == FNET_BENCH_SRV_UDP_END_LENGTH)) /* End of session. */
+                    {
+                        is_session_end = FNET_TRUE;
+                    }
+                }
+
+                if(received > 0)
+                {
+                    bench_srv_if->bench_srv_result.bytes += received;
+                    if(bench_srv_if->bench_srv_result.bytes >= 1000000)
+                    {
+                        bench_srv_if->bench_srv_result.megabytes ++;
+                        bench_srv_if->bench_srv_result.bytes -= 1000000;
+                    }
+                    bench_srv_if->time_last = time_current;
+                }
+
+                /* Session End */
+                if ((is_session_end == FNET_TRUE) ||
+                    ((time_current - bench_srv_if->time_last) > FNET_BENCH_SRV_SESSION_TIMEOUT_MS))   /* Session timeout */
+
+                {
+                    fnet_bench_srv_close_session(bench_srv_if);
+
+                    bench_srv_if->state = FNET_BENCH_SRV_STATE_LISTENING;
+                    break;
+                }
+            }
+            break;
             default:
                 break;
         }

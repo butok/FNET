@@ -40,7 +40,7 @@
  *          Default value is @b @c 1.
  ******************************************************************************/
 #ifndef FNET_CFG_SHELL_MAX
-        #define FNET_CFG_SHELL_MAX          (1u+(FNET_CFG_TELNET*FNET_CFG_TELNET_SESSION_MAX))
+    #define FNET_CFG_SHELL_MAX          (1u+(FNET_CFG_TELNET*FNET_CFG_TELNET_SESSION_MAX))
 #endif
 
 /**************************************************************************/ /*!

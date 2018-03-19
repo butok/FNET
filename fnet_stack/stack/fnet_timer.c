@@ -116,7 +116,7 @@ void fnet_timer_ticks_inc( void )
 
 #if FNET_CFG_DEBUG_TIMER && FNET_CFG_DEBUG
     /* Print once per second */
-    if((fnet_current_time % (1000/FNET_TIMER_PERIOD_MS)) == 0)
+    if((fnet_current_time % (1000 / FNET_TIMER_PERIOD_MS)) == 0)
     {
         FNET_DEBUG_TIMER("!");
     }

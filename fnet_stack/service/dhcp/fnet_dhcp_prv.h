@@ -187,9 +187,9 @@ extern const fnet_uint8_t fnet_dhcp_magic_cookie[4];
 fnet_uint8_t *fnet_dhcp_add_option(fnet_uint8_t *option_buffer, fnet_size_t option_buffer_size, fnet_uint8_t option_code, fnet_uint8_t option_length,  const void *option_value);
 
 #if FNET_CFG_DEBUG_TRACE_DHCP_SRV && FNET_CFG_DEBUG_TRACE
-    void fnet_dhcp_trace(fnet_uint8_t *str, fnet_dhcp_header_t *header);
+void fnet_dhcp_trace(fnet_uint8_t *str, fnet_dhcp_header_t *header);
 #else
-    #define fnet_dhcp_trace(str, header)    do{}while(0)
+#define fnet_dhcp_trace(str, header)    do{}while(0)
 #endif
 
 #if defined(__cplusplus)

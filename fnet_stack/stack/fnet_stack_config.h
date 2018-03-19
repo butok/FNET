@@ -625,7 +625,7 @@
  *               - @b @c 1 = is enabled (Default value).@n
  *                          It means that FNET automatically controls all internal protocol timeouts.
  *               - @b @c 0 = is disabled.@n
- *                          In this case a user application 
+ *                          In this case a user application
  *                          must call fnet_timer_poll() periodically.
  * @see fnet_timer_poll()
  * @showinitializer
@@ -770,6 +770,10 @@
 
 #ifndef FNET_CFG_DEBUG_QCA
     #define FNET_CFG_DEBUG_QCA         (0)
+#endif
+
+#ifndef FNET_CFG_DEBUG_ENET
+    #define FNET_CFG_DEBUG_ENET        (0)
 #endif
 
 #ifndef FNET_CFG_DEBUG_TRACE

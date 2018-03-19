@@ -48,18 +48,20 @@ preferred way to configure stack features). @n
 
 @par The stack provides following protocols and services:
 - Supported Platforms:
-	- @b ARM Cortex-M4, Kinetis:
-		- @b MK64FN1M (FRDM-K64F board)
-		- @b MK66FN2M (FRDM-K66F board)
-		- @b MK6DN512 (TWR-K60D100M board)
-	- Older Platforms (not supported):
+	- @b ARM Cortex-M4
+		- Kinetis:
+			- @b MK64FN1M (FRDM-K64F board)
+			- @b MK66FN2M (FRDM-K66F board)
+			- @b MK6DN512 (TWR-K60D100M board)
+		- LPC: LPC54628 (OM13098: LPCXpresso54628 board)
+	- Qualcomm: QCA4002 (GT202 802.11 Wireless board).
+	- Other platforms (not supported):
 		- ColdFire: MCF51CN128, MCF5282, MCF52235, MCF54418, MCF52259
 		- PowerPC: MPC5668G, MPC5566, MPC564xBC, MPC5744P, S32R274.
 		- Kinetis: MK70FN1M, MK60FN1M.
-		- LPC: LPC54628.
 - Supported Compilers:
-	- IAR: Embedded Workbench for ARM, version 7.8
-	- GCC: Kinetis Design Studio, version 3.0 
+	- IAR: Embedded Workbench for ARM, version 8.22
+	- GCC: Kinetis Design Studio, version 3.2 
 - Bare-metal TCP/IP stack. No underlying RTOS is required, although it can be used with it. FreeRTOS example is provided.
 - Non-blocking Socket API (DGRAM, STREAM, RAW).
 - Core Protocols:
@@ -167,21 +169,23 @@ fnet                        - FNET root directory.
 |    |    |-- tftp                - TFTP server and client.
 |    |    |-- tls                 - TLS library.
 |    |-- port                   - FNET port-specific source code.
+|         |-- compiler            - Compiler-specific source code.
 |         |-- cpu                 - FNET platform-specific source code.
-|         |    |-- netif            - Platform-specific network interface drivers.
-|         |    |    |-- fec           - FEC/ENET Ethernet module driver.
-|         |    |    |-- qca           - QCA4002 Wi-Fi module driver, using "third_party/qca-x.x.x".
+|         |    |-- lpc              - LPC-specific source code.
 |         |    |-- mcf              - ColdFire-specific source code.
 |         |    |-- mk               - Kinetis-specific source code.
 |         |    |-- mpc              - Power Architecture-specific source code.
-|         |-- compiler            - Compiler-specific source code.
+|         |-- netif            - Platform-specific network interface drivers.
+|              |-- enet          - ENET Ethernet module driver, used by LPC platform.
+|              |-- fec           - FEC/ENET Ethernet module driver, used by MCF,MPC and MK platforms.
+|              |-- qca           - QCA4002 Wi-Fi module driver, adapter for "third_party/qca-x.x.x".
 |-- fnet_doc                  - FNET documentation.
 |-- fnet_demos                - FNET demo projects.
 |    |-- common                 - Common source code used by demos.
 |    |    |-- fnet_application    - Demo application source code.
 |    |    |-- fnet_webpage        - Demo web page source code.
 |    |    |-- startup             - Platform-specific startup source code.
-|    |-- boards                 - Demo projects.
+|    |-- build                 - Demo projects.
 |         |-- <board_name>        - Demo projects for a <board_name> board.
 |              |-- boot           - FNET TFTP Bootloader.
 |              |-- benchmark      - TCP/UDP Throughput Benchmark application. 
@@ -222,7 +226,7 @@ fnet                        - FNET root directory.
 
 The FNET project supplied with several demo applications. They can be used for demonstration of FNET features or as an example of FNET User-API usage. @n
 It is recommended to use them as starting point for your new applications.@n 
-Project files are placed in @verbatim fnet\fnet_demos\boards\<board_name>\<demo_name>\<compiler_name>\ @endverbatim
+Project files are placed in @verbatim fnet\fnet_demos\build\<board_name>\<demo_name>\<compiler_name>\ @endverbatim
 There are six types of demo projects:
 - @c shell - This is the main demo application. @n 
   The "Shell" demo allows to view/change various system parameters (e.g. IP address, subnet mask), to explore mounted file systems, to run DHCP and DNS clients, HTTP and Telnet servers, via a serial-terminal application. @n
@@ -258,31 +262,40 @@ The following table summarizes the supported demo applications, platforms and co
  <th ALIGN=CENTER>Shell FreeRTOS QCA Wi-Fi</th>
  </tr>
 <tr>
- <td class="fnet_td_grey">MK64FN1M (Kinetis)</td>
- <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td> 
- <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td> 
+ <td class="fnet_td_grey">MK64FN1M</td>
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td> 
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td> 
  </tr>
 <tr>
- <td class="fnet_td_grey">MK66FN2M (Kinetis)</td>
- <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td> 
+ <td class="fnet_td_grey">MK66FN2M</td>
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td> 
  <td ALIGN=CENTER>-</td> 
  </tr>
 <tr>
- <td class="fnet_td_grey">MK60DN512 (Kinetis)</td>
- <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
- <td ALIGN=CENTER>IAR7.8<br/>KDS3.0</td>
+ <td class="fnet_td_grey">MK60DN512</td>
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
  <td ALIGN=CENTER>-</td> 
  <td ALIGN=CENTER>-</td>
  <td ALIGN=CENTER>-</td> 
+ </tr>
+<tr>
+ <td class="fnet_td_grey">LPC54628</td>
+ <td ALIGN=CENTER>IAR8.22</td>
+ <td ALIGN=CENTER>-</td>
+ <td ALIGN=CENTER>IAR8.22</td>
+ <td ALIGN=CENTER>IAR8.22</td>
+ <td ALIGN=CENTER>IAR8.22</td> 
+ <td ALIGN=CENTER>IAR8.22</td> 
  </tr>
 </table>
 
@@ -329,7 +342,7 @@ Follow these steps to run the FNET Shell demo application:
 
 - Launch IDE.
 - Open the project:
-@verbatim fnet\fnet_demos\boards\<board_name>\shell\<compiler_name>\
+@verbatim fnet\fnet_demos\build\<board_name>\shell\<compiler_name>\
 @endverbatim 
 
 - In the IDE, choose a project target you want to compile.
@@ -748,7 +761,7 @@ Follow these steps to run the FNET Shell demo application:
 
 - Launch IDE.
 - Open the project:
-@verbatim fnet\fnet_demos\boards\<board_name>\shell_mbedtls\<compiler_name>\
+@verbatim fnet\fnet_demos\build\<board_name>\shell_mbedtls\<compiler_name>\
 @endverbatim
 
 - In the IDE, choose a project target you want to compile.
@@ -915,7 +928,7 @@ Follow these steps to run the FNET Shell demo application:
 
 - Launch IDE.
 - Open the project:
-@verbatim fnet\fnet_demos\boards\<board_name>\shell_mbedtls\<compiler_name>\
+@verbatim fnet\fnet_demos\build\<board_name>\shell_mbedtls\<compiler_name>\
 @endverbatim
 @note So far, it is was tested only with frdmk64f board.
 
@@ -1209,7 +1222,7 @@ Follow these steps to run the FNET Bootloader:
 @par Prepare the example-application image file that is to be downloaded by the TFTP Bootloader:
 
 - Open the project:
-@verbatim fnet\fnet_demos\boards\<board_name>\shell_boot\<compiler_name>\
+@verbatim fnet\fnet_demos\build\<board_name>\shell_boot\<compiler_name>\
 @endverbatim 
 - In the IDE choose the @a Release target.
 - Compile the project.
@@ -1219,7 +1232,7 @@ Follow these steps to run the FNET Bootloader:
 @par Prepare the FNET TFTP Bootloader:
 
 - Open the project:
-@verbatim fnet\fnet_demos\boards\<board_name>\boot\<compiler_name>\
+@verbatim fnet\fnet_demos\build\<board_name>\boot\<compiler_name>\
 @endverbatim 
 - In the IDE choose @a Release target.
 - Compile the project.
@@ -1715,7 +1728,7 @@ or on http://fbench.sf.net
 @par Prepare the FNET Throughput Benchmark application:
 
 - Open the project:
-@verbatim fnet\fnet_demos\boards\<board_name>\bench\<compiler_name>\
+@verbatim fnet\fnet_demos\build\<board_name>\bench\<compiler_name>\
 @endverbatim 
 - In the IDE choose the @a Release target.
 - Compile the project.
@@ -2007,27 +2020,26 @@ fnet_cpu_isr,                        /****  91 (0x16C) FEC Receive frame interru
 /*! 
 @page how_to_add_boot Add FNET Bootloader support to an existing project
 
-The Bootloader reserves the first 52 Kbytes of the on-chip Flash memory for its own needs (actually it can occupy less space). @n The last page of the on-chip Flash memory is used by the Bootloader for parameter storage and may be modified by a user application to change the Bootloader behaviour.
+The Bootloader reserves the first 60 Kbytes of the on-chip Flash memory for its own needs (actually it can occupy less space). @n The last page of the on-chip Flash memory is used by the Bootloader for parameter storage and may be modified by a user application to change the Bootloader behaviour.
 
 To use an existing application with the FNET Bootloader, the following changes should be applied in the application project:
 -# Add additional sections to the application linker command file and update the already defined memory sections to avoid section overlapping. 
-The example of MCF52259 lcf file modification:
+The example of MK64FN IAR linker file modification (added __flash_offset__):
 @verbatim
 ...
-MEMORY
-{
-                                                                     # 512KB FLASH
-	
-    fnet_bootloader (RX)  : ORIGIN = 0x00000000, LENGTH = 0x0000D000 # 52KB (Reserved for FNET Bootloader)
-    
-    vectorrom       (RX)  : ORIGIN = 0x0000D000, LENGTH = 0x00000400 
-    code            (RX)  : ORIGIN = 0x0000D400, LENGTH = 0x0007DC00
+define symbol __flash_offset__ =  0x0000F000; //60KB reserved for FNET bootloader.
 
-    fnet_params     (RW)  : ORIGIN = 0x0007F000, LENGTH = 0x00001000 # 4Kbytes (Last logical-block reserved for parameters)
-   
-    vectorram       (RWX) : ORIGIN = 0x20000000, LENGTH = 0x00000400 # 64KB SRAM
-    userram         (RWX) : ORIGIN = 0x20000400, LENGTH = 0x0000FC00 
-}
+define symbol __ram_vector_table_size__ =  isdefinedsymbol(__ram_vector_table__) ? 0x00000400 : 0;
+define symbol __ram_vector_table_offset__ =  isdefinedsymbol(__ram_vector_table__) ? 0x000003FF : 0;
+
+define symbol m_interrupts_start       = 0x00000000 + __flash_offset__;
+define symbol m_interrupts_end         = 0x000003FF + __flash_offset__;
+
+define symbol m_flash_config_start     = 0x00000400 + __flash_offset__;
+define symbol m_flash_config_end       = 0x0000040F + __flash_offset__;
+
+define symbol m_text_start             = 0x00000410 + __flash_offset__;
+define symbol m_text_end               = 0x000FFFFF - __flash_offset__;
 ...  
 @endverbatim
 -# An application may change the Bootloader parameters. They are placed at the beginning of the last logical-block of the on-chip flash memory. @n
@@ -2120,6 +2132,16 @@ Press any key to continue . . .
 
 FNET public releases:
 
+- Version 4.1.1
+	- LPC54628 support:
+		- Added bench, shell, shell_freertos, shell_freertos_wifi_qca, shell_mbedtls projects for lpcxpresso54628.
+		- Added Ethernet and WiFi interface.
+		- Is fully functional, but still under development. 
+	- Added fapp_hw_init() which contains a board-specific initialization.
+	- Upgraded projects to IAR v8.22.
+	- Moved projects to fnet/fnet_demos/build.
+	- Other minor fixes.
+	
 - Version 4.1.0
 	- QCA Wi-Fi:
 		- Fixed SSID scanning in the QCA Wi-Fi driver and following failed connection. 

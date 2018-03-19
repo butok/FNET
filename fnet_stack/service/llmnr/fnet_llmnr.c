@@ -569,7 +569,7 @@ fnet_llmnr_desc_t fnet_llmnr_get_by_netif(fnet_netif_desc_t netif)
 {
     fnet_llmnr_if_t         *llmnr_if;
     fnet_index_t            i;
-    fnet_llmnr_desc_t       llmnr_desc = 0; 
+    fnet_llmnr_desc_t       llmnr_desc = 0;
 
     if(netif)
     {
@@ -584,7 +584,7 @@ fnet_llmnr_desc_t fnet_llmnr_get_by_netif(fnet_netif_desc_t netif)
             }
         }
     }
-    
+
     return llmnr_desc;
 }
 

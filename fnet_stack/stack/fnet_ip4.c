@@ -437,10 +437,10 @@ static void fnet_ip4_netif_output(struct fnet_netif *netif, fnet_ip4_addr_t dest
 #if  FNET_CFG_LOOPBACK && (FNET_CFG_LOOPBACK_MULTICAST || FNET_CFG_LOOPBACK_BROADCAST)
         fnet_netbuf_t *nb_loop;
 
-        if((netif != FNET_LOOP_IF) /* Avoid double send to the loopback interface.*/
-    {
-        /* Datagrams sent to a broadcast/multicast address are copied to the loopback interface.*/
-        if((nb_loop = fnet_netbuf_copy(nb, 0, FNET_NETBUF_COPYALL, FNET_TRUE)) != 0)
+        if(netif != FNET_LOOP_IF) /* Avoid double send to the loopback interface.*/
+        {
+            /* Datagrams sent to a broadcast/multicast address are copied to the loopback interface.*/
+            if((nb_loop = fnet_netbuf_copy(nb, 0, FNET_NETBUF_COPYALL, FNET_TRUE)) != 0)
             {
                 fnet_loop_output_ip4(netif, dest_ip_addr, nb_loop);
             }
@@ -836,13 +836,13 @@ static void fnet_ip4_reassembly( fnet_netbuf_t **nb_ptr )
     fnet_ip4_frag_list_del(&ip_frag_list_head, frag_list_ptr);
     fnet_free(frag_list_ptr);
 
-goto EXIT;
+    goto EXIT;
 
 DROP_FRAG:
     fnet_netbuf_free_chain(nb);
 NEXT_FRAG:
     nb = FNET_NULL;
-EXIT:    
+EXIT:
     *nb_ptr =  nb;
 }
 #endif /* FNET_CFG_IP4_FRAGMENTATION */

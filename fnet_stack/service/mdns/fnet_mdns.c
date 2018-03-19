@@ -545,7 +545,7 @@ fnet_mdns_service_desc_t fnet_mdns_service_get_by_type(fnet_mdns_desc_t mdns_des
         {
             if(mdns_if->service_if_list[i].service_type)
             {
-                if (!fnet_strcmp(mdns_if->service_if_list[i].service_type, service_type)) 
+                if (!fnet_strcmp(mdns_if->service_if_list[i].service_type, service_type))
                 {
                     result = (fnet_mdns_service_desc_t)&mdns_if->service_if_list[i];
                     break; /* Found.*/
@@ -628,7 +628,7 @@ fnet_mdns_desc_t fnet_mdns_get_by_netif(fnet_netif_desc_t netif)
 {
     fnet_mdns_if_t          *mdns_if;
     fnet_index_t            i;
-    fnet_mdns_desc_t        mdns_desc = 0; 
+    fnet_mdns_desc_t        mdns_desc = 0;
 
     if(netif)
     {
@@ -643,7 +643,7 @@ fnet_mdns_desc_t fnet_mdns_get_by_netif(fnet_netif_desc_t netif)
             }
         }
     }
-    
+
     return mdns_desc;
 }
 
@@ -1126,16 +1126,16 @@ static const fnet_uint8_t *fnet_mdns_process_query(fnet_mdns_if_t *mdns_if, fnet
                                         mdns_if->is_shared = FNET_TRUE;
                                         mdns_if->is_shared_timestamp = fnet_timer_get_ms();
                                         /* Calculated shared response delay */
-                                        #if 0 /* Original */
-                                        mdns_if->is_shared_response_delay = FNET_MDNS_SHARED_RESPONSE_DELAY_MIN + (fnet_rand()% (FNET_MDNS_SHARED_RESPONSE_DELAY_MAX - FNET_MDNS_SHARED_RESPONSE_DELAY_MIN));
-                                        #else /* To workaround BCT warning */
-                                        mdns_if->is_shared_response_delay += (FNET_MDNS_SHARED_RESPONSE_DELAY_MAX - FNET_MDNS_SHARED_RESPONSE_DELAY_MIN)/4;
+#if 0 /* Original */
+                                        mdns_if->is_shared_response_delay = FNET_MDNS_SHARED_RESPONSE_DELAY_MIN + (fnet_rand() % (FNET_MDNS_SHARED_RESPONSE_DELAY_MAX - FNET_MDNS_SHARED_RESPONSE_DELAY_MIN));
+#else /* To workaround BCT warning */
+                                        mdns_if->is_shared_response_delay += (FNET_MDNS_SHARED_RESPONSE_DELAY_MAX - FNET_MDNS_SHARED_RESPONSE_DELAY_MIN) / 4;
                                         mdns_if->is_shared_response_delay = mdns_if->is_shared_response_delay % FNET_MDNS_SHARED_RESPONSE_DELAY_MAX;
                                         if(mdns_if->is_shared_response_delay < FNET_MDNS_SHARED_RESPONSE_DELAY_MIN)
                                         {
-                                           mdns_if->is_shared_response_delay += FNET_MDNS_SHARED_RESPONSE_DELAY_MIN;
+                                            mdns_if->is_shared_response_delay += FNET_MDNS_SHARED_RESPONSE_DELAY_MIN;
                                         }
-                                        #endif
+#endif
                                     }
                                 }
                             }
@@ -1732,7 +1732,7 @@ static const fnet_uint8_t *fnet_mdns_process_response(fnet_mdns_if_t *mdns_if, c
         {
             rr_header = (fnet_mdns_rr_header_t *)ptr;
             ptr += sizeof(fnet_mdns_rr_header_t) + fnet_htons(rr_header->data_length);
-            
+
             /* Compare received name with our names */
             fnet_bool_t is_our_host_name = fnet_mdns_is_our_host_name(mdns_if, rr_name);
             fnet_bool_t is_our_service_name = fnet_mdns_is_our_service_name(mdns_if, rr_name);
@@ -1743,7 +1743,7 @@ static const fnet_uint8_t *fnet_mdns_process_response(fnet_mdns_if_t *mdns_if, c
                     (rr_header->type == FNET_HTONS(FNET_MDNS_RR_A)) ||
                     (rr_header->type == FNET_HTONS(FNET_MDNS_RR_AAAA)))
 #endif
-              ) 
+              )
             {
 #if FNET_CFG_DEBUG_MDNS && FNET_CFG_DEBUG
                 fnet_mdns_print_qe_name("MDNS: RX response for:", rr_name);
@@ -1756,7 +1756,7 @@ static const fnet_uint8_t *fnet_mdns_process_response(fnet_mdns_if_t *mdns_if, c
 
                 /* If in Probing state, change name and try again */
                 if((mdns_if->state == FNET_MDNS_STATE_PROBING)
-                ||(mdns_if->state == FNET_MDNS_STATE_PROBING_WAIT))
+                   || (mdns_if->state == FNET_MDNS_STATE_PROBING_WAIT))
                 {
                     /* Regenerate names.*/
                     if(is_our_host_name)
@@ -1816,9 +1816,9 @@ static void fnet_mdns_recv(fnet_mdns_if_t *mdns_if)
             if(received > sizeof(fnet_mdns_header_t))
             {
                 mdns_header = (fnet_mdns_header_t *)&mdns_if->buffer[0];
-            
+
                 char *hostname = (char *)&mdns_if->buffer[sizeof(fnet_mdns_header_t)];
-            
+
                 /* Query */
                 if( ((mdns_header->flags & FNET_HTONS(FNET_MDNS_HEADER_FLAGS_QR)) == 0)       /* Query.*/
                     && ((mdns_header->flags & FNET_HTONS(FNET_MDNS_HEADER_FLAGS_OPCODE)) == 0) ) /* Standard Query */
@@ -1831,7 +1831,7 @@ static void fnet_mdns_recv(fnet_mdns_if_t *mdns_if)
                     {
                         mdns_if->is_legacy_unicast = FNET_FALSE;
                     }
-            
+
                     if( (mdns_header->flags & FNET_HTONS(FNET_MDNS_HEADER_FLAGS_TC)) == 0)       /* Trancation.*/
                     {
                         mdns_if->is_truncated = FNET_FALSE;
@@ -1840,7 +1840,7 @@ static void fnet_mdns_recv(fnet_mdns_if_t *mdns_if)
                     {
                         mdns_if->is_truncated = FNET_TRUE;
                     }
-            
+
                     ptr = (fnet_uint8_t *)hostname;
                     for(i = 0; i < fnet_htons(mdns_header->qdcount); i++)
                     {
@@ -1850,14 +1850,14 @@ static void fnet_mdns_recv(fnet_mdns_if_t *mdns_if)
                             return;
                         }
                     }
-            
+
                     /* Duplicate Suppression.*/
                     if(mdns_if->response_type != FNET_MDNS_QUERY_NONE)
                     {
                         const fnet_uint8_t           *an_ptr;
-            
+
                         an_ptr = fnet_mdns_get_an(mdns_if->buffer, received);
-            
+
                         /* Eliminate duplicated answers */
                         if(an_ptr)
                         {
@@ -1867,14 +1867,14 @@ static void fnet_mdns_recv(fnet_mdns_if_t *mdns_if)
                 }
                 /* Response */
                 else if( ( ((mdns_header->flags & FNET_HTONS(FNET_MDNS_HEADER_FLAGS_QR)) != 0) &&      /* Response.*/
-                        (mdns_header->qdcount == 0)) &&
-                        ( (mdns_header->nscount > 0)
-                        || (mdns_header->arcount > 0)
-                        || (mdns_header->ancount > 0))
-                    )
+                           (mdns_header->qdcount == 0)) &&
+                         ( (mdns_header->nscount > 0)
+                           || (mdns_header->arcount > 0)
+                           || (mdns_header->ancount > 0))
+                       )
                 {
                     cnt = fnet_htons(mdns_header->nscount) + fnet_htons(mdns_header->arcount) + fnet_htons(mdns_header->ancount) + fnet_htons(mdns_header->qdcount);
-            
+
                     ptr = (fnet_uint8_t *)hostname;
                     for(i = 0; (i < cnt) && (ptr < (mdns_if->buffer + received)); i++)
                     {
@@ -1886,7 +1886,7 @@ static void fnet_mdns_recv(fnet_mdns_if_t *mdns_if)
                     }
                 }
             }
-            
+
         }
     }
 }

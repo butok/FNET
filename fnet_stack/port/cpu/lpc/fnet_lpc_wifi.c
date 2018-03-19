@@ -25,7 +25,7 @@
 #include "fnet.h"
 #if FNET_LPC && FNET_CFG_CPU_WIFI
 
-#include "port/cpu/netif/qca/fnet_qca.h"
+#include "port/netif/qca/fnet_qca.h"
 
 /* MCUXpresso */
 #include <fsl_common.h>
@@ -58,6 +58,7 @@ fnet_netif_t fnet_cpu_wifi_if =
 *************************************************************************/
 void BOARD_InitGT202Shield(void)
 {
+#if FNET_CFG_CPU_LPC54628
     /* Enables the clock for the IOCON block. 0 = Disable; 1 = Enable.: 0x01u */
     CLOCK_EnableClock(kCLOCK_Iocon);
 
@@ -134,17 +135,18 @@ void BOARD_InitGT202Shield(void)
 
          /* Select Analog/Digital mode.: Digital mode. */
          | IOCON_PIO_DIGIMODE(PIO47_DIGIMODE_DIGITAL));
+#endif /* FNET_CFG_CPU_LPC54628 */
 }
 
 /************************************************************************
 * DESCRIPTION: Silex2401/QCA4002 Wi-Fi board pin initialization.
 *************************************************************************/
-void BOARD_InitSilex2401Shield(void) 
+void BOARD_InitSilex2401Shield(void)
 {
-//TBD
+    //TBD
 }
 #if !FNET_CFG_CPU_LPC54628
- #warning "QCA400x Wi-Fi board pin initialization is not tested for your platform."
+    #warning "QCA400x Wi-Fi board pin initialization is not tested for your platform."
 #endif
 
 #endif /* FNET_CFG_CPU_WIFI_IO_INIT */

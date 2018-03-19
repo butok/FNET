@@ -201,41 +201,32 @@ static fnet_return_t fnet_isr_register(fnet_uint32_t vector_number,
 void fnet_isr_unregister(fnet_uint32_t vector_number)
 {
     fnet_isr_entry_t *isr_temp;
+    fnet_isr_entry_t *isr_temp2;
 
-    isr_temp = fnet_isr_table;
-
-    while (isr_temp != 0)
+    for(isr_temp = fnet_isr_table; isr_temp; isr_temp = isr_temp->next)
     {
         if (isr_temp->vector_number == vector_number)
         {
-            break;
-        }
-
-        isr_temp = isr_temp->next;
-    }
-
-    if (isr_temp != 0) /* if handler wasn't registered in queue */
-    {
-        fnet_free(isr_temp);
-
-        if (fnet_isr_table->vector_number == vector_number)
-        {
-            fnet_isr_table = fnet_isr_table->next;
-        }
-        else
-        {
-            isr_temp = fnet_isr_table;
-
-            while (isr_temp->next != 0)
+            if (isr_temp == fnet_isr_table) /* First element */
             {
-                if (isr_temp->next->vector_number == vector_number)
-                {
-                    isr_temp->next = isr_temp->next->next;
-                    break;
-                }
-
-                isr_temp = isr_temp->next;
+                fnet_isr_table = fnet_isr_table->next;
             }
+            else /* Middle element */
+            {
+                isr_temp2 = fnet_isr_table;
+
+                for(isr_temp2 = fnet_isr_table; isr_temp2->next; isr_temp2 = isr_temp2->next)
+                {
+                    if (isr_temp2->next->vector_number == vector_number)
+                    {
+                        isr_temp2->next = isr_temp2->next->next;
+                        break;
+                    }
+                }
+            }
+
+            fnet_free(isr_temp);
+            break;
         }
     }
 }
@@ -294,7 +285,8 @@ void fnet_isr_unlock(void)
                 }
                 isr_temp = isr_temp->next;
             }
-        } while(again);
+        }
+        while(again);
     }
 
     --fnet_locked;

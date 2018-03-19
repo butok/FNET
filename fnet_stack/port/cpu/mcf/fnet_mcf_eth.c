@@ -25,7 +25,7 @@
 
 #include "fnet.h"
 #if FNET_MCF && (FNET_CFG_CPU_ETH0 ||FNET_CFG_CPU_ETH1)
-#include "port/cpu/netif/fec/fnet_fec.h"
+#include "port/netif/fec/fnet_fec.h"
 
 #if FNET_CFG_CPU_ETH0
 /************************************************************************

@@ -40,7 +40,7 @@ void fapp_llmnr_release(void)
     fnet_llmnr_desc_t   llmnr;
 
     /* Release all LLMNR servers.*/
-    for(i=0; (netif = fnet_netif_get_by_number(i)); i++)
+    for(i = 0; (netif = fnet_netif_get_by_number(i)); i++)
     {
         llmnr = fnet_llmnr_get_by_netif(netif);
         if(llmnr)
@@ -85,7 +85,7 @@ void fapp_llmnr_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
         }
     }
 
-    if(init == FNET_TRUE) 
+    if(init == FNET_TRUE)
     {
         /* Init parameters.*/
         fnet_memset_zero(&params, sizeof(params));

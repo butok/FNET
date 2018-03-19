@@ -44,7 +44,7 @@ void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 void fapp_http_info(fnet_shell_desc_t desc);
 void fapp_http_release(void);
 
-#if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
+#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP_TLS && FNET_CFG_TLS
 extern fnet_http_desc_t fapp_http_tls_desc; /* HTTPS service descriptor. */
 void fapp_http_tls_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 void fapp_http_tls_release(void);

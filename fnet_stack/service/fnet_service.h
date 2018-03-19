@@ -143,5 +143,7 @@ void fnet_service_unregister( fnet_service_desc_t desc );
 }
 #endif
 
-#endif
+/*! @} */
+
+#endif /* _FNET_SERVICE_H_ */
 
