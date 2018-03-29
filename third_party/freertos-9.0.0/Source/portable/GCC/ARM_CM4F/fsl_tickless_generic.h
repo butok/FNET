@@ -98,6 +98,10 @@ extern "C" {
 #define portNVIC_PENDSVCLEAR_BIT			( 1UL << 27UL )
 #define portNVIC_PEND_SYSTICK_CLEAR_BIT		( 1UL << 25UL )
 
+#ifndef configGPTick_RATE_HZ
+#define configGPTick_RATE_HZ configTick_RATE_HZ
+#endif
+
 /* The systick is a 24-bit counter. */
 #define portMAX_24_BIT_NUMBER				( 0xffffffUL )
 
@@ -116,19 +120,22 @@ calculations. */
 #define configLPTMR_CLOCK_HZ    (1000)
 #define configRTC_CLOCK_HZ      (0x8000UL)
 #if defined(CPU_MIMX8QM5AVUDD_cm4_core0)
-#define configLPIT_CLOCK_HZ     CLOCK_GetFreq(kCLOCK_M4_0_Lpit)
+#define configLPIT_CLOCK_HZ     CLOCK_GetIpFreq(kCLOCK_M4_0_Lpit)
 #elif defined(CPU_MIMX8QM5AVUDD_cm4_core1)
-#define configLPIT_CLOCK_HZ     CLOCK_GetFreq(kCLOCK_M4_1_Lpit)
-#elif defined(CPU_MIMX8QXP_M4AVVJP_M4_0)
-#define configLPIT_CLOCK_HZ     CLOCK_GetFreq(kCLOCK_M4_0_Lpit)
+#define configLPIT_CLOCK_HZ     CLOCK_GetIpFreq(kCLOCK_M4_1_Lpit)
+#elif defined(CPU_MIMX8QX6AVUDD)
+#define configLPIT_CLOCK_HZ     CLOCK_GetIpFreq(kCLOCK_M4_0_Lpit)
 #endif
 #define configEPIT_CLOCK_HZ     CLOCK_GetFreq(kCLOCK_IpgClk)
+#ifndef configGPT_CLOCK_HZ
 #define configGPT_CLOCK_HZ      (25000000U)
+#endif
 /*
  * Setup the timer to generate the tick interrupts.
  */
 void vPortSetupTimerInterrupt( void );
-
+void vPortPRE_SLEEP_PROCESSING(TickType_t idle_time);
+void vPortPOST_SLEEP_PROCESSING(TickType_t idle_time);
 #ifdef __cplusplus
 }
 #endif

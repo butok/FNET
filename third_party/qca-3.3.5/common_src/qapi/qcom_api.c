@@ -488,12 +488,22 @@ A_STATUS qcom_ip6_address_get(uint8_t device_id,
 
 A_STATUS qcom_ping(uint32_t host, uint32_t size)
 {
-    return (t_ping(Custom_Api_GetDriverCxt(0), host, size));
+    return (t_ping(Custom_Api_GetDriverCxt(0), host, size, COMMAND_BLOCK_TIMEOUT));
+}
+
+A_STATUS qcom_ping_ms(uint32_t host, uint32_t size, uint32_t ms_interval)
+{
+    return (t_ping(Custom_Api_GetDriverCxt(0), host, size, ms_interval));
 }
 
 A_STATUS qcom_ping6(uint8_t *host, uint32_t size)
 {
-    return (t_ping6(Custom_Api_GetDriverCxt(0), host, size));
+    return (t_ping6(Custom_Api_GetDriverCxt(0), host, size, COMMAND_BLOCK_TIMEOUT));
+}
+
+A_STATUS qcom_ping6_ms(uint8_t *host, uint32_t size, uint32_t ms_interval)
+{
+    return (t_ping6(Custom_Api_GetDriverCxt(0), host, size, ms_interval));
 }
 
 A_STATUS qcom_ip6config_router_prefix(

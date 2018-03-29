@@ -1268,6 +1268,11 @@ void Custom_DeliverFrameToNetworkStack(void *pCxt, void *pReq)
     fnet_event_raise(fnet_qca_if.input_event);
 }
 
+QCA_CONTEXT_STRUCT *wlan_get_context(void)
+{
+    return &wifiCtx;
+}
+
 /* This functions is not used, it is here just to make compilable the QCA driver */
 uint32_t Custom_Api_Send(QCA_CONTEXT_STRUCT_PTR qca_ptr, PCB_PTR pcb_ptr, uint32_t size, uint32_t frags, uint32_t flags);
 uint32_t Custom_Api_Send(QCA_CONTEXT_STRUCT_PTR qca_ptr, PCB_PTR pcb_ptr, uint32_t size, uint32_t frags, uint32_t flags)

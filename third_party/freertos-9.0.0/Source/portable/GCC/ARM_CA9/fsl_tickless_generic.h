@@ -97,7 +97,7 @@ extern "C" {
 #define configLPIT_CLOCK_HZ     CLOCK_GetFreq(kCLOCK_M4_0_Lpit)
 #elif defined(CPU_MIMX8QM5AVUDD_cm4_core1)
 #define configLPIT_CLOCK_HZ     CLOCK_GetFreq(kCLOCK_M4_1_Lpit)
-#elif defined(CPU_MIMX8QXP_M4AVVJP_M4_0)
+#elif defined(CPU_MIMX8QX6AVUDD)
 #define configLPIT_CLOCK_HZ     CLOCK_GetFreq(kCLOCK_M4_0_Lpit)
 #endif
 #define configEPIT_CLOCK_HZ     CLOCK_GetFreq(kCLOCK_IpgClk)

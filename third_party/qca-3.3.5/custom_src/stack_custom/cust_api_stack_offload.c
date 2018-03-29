@@ -1165,7 +1165,7 @@ void Custom_Api_Ota_Resp_Result(void *pCxt, uint32_t cmd, uint32_t resp_code, ui
  *                 Api_ping for details.
  * RETURNS: A_OK or A_ERROR
  *****************************************************************************/
-A_STATUS t_ping(QCA_CONTEXT_STRUCT_PTR qca_ptr, uint32_t ipv4_addr, uint32_t size)
+A_STATUS t_ping(QCA_CONTEXT_STRUCT_PTR qca_ptr, uint32_t ipv4_addr, uint32_t size, uint32_t ms_interval)
 {
     void *pCxt;
     int32_t result;
@@ -1180,7 +1180,7 @@ A_STATUS t_ping(QCA_CONTEXT_STRUCT_PTR qca_ptr, uint32_t ipv4_addr, uint32_t siz
         return A_ERROR;
     }
 
-    result = Api_ping(pCxt, ipv4_addr, size);
+    result = Api_ping(pCxt, ipv4_addr, size, ms_interval);
     return result == 0 ? A_OK : A_ERROR;
 }
 
@@ -1189,7 +1189,7 @@ A_STATUS t_ping(QCA_CONTEXT_STRUCT_PTR qca_ptr, uint32_t ipv4_addr, uint32_t siz
  *                 Api_ping6 for details.
  * RETURNS: A_OK or A_ERROR
  *****************************************************************************/
-A_STATUS t_ping6(QCA_CONTEXT_STRUCT_PTR qca_ptr, uint8_t *ip6addr, uint32_t size)
+A_STATUS t_ping6(QCA_CONTEXT_STRUCT_PTR qca_ptr, uint8_t *ip6addr, uint32_t size, uint32_t ms_interval)
 {
     void *pCxt;
     int32_t result;
@@ -1205,7 +1205,7 @@ A_STATUS t_ping6(QCA_CONTEXT_STRUCT_PTR qca_ptr, uint8_t *ip6addr, uint32_t size
         return A_ERROR;
     }
 
-    result = Api_ping6(pCxt, ip6addr, size);
+    result = Api_ping6(pCxt, ip6addr, size, ms_interval);
     return 0 == result ? A_OK : A_ERROR;
 }
 

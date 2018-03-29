@@ -139,7 +139,7 @@ void BOARD_InitGT202Shield(void)
 }
 
 /************************************************************************
-* DESCRIPTION: Silex2401/QCA4002 Wi-Fi board pin initialization.
+* DESCRIPTION: Silex2401/QCA4004 Wi-Fi board pin initialization.
 *************************************************************************/
 void BOARD_InitSilex2401Shield(void)
 {

@@ -803,8 +803,8 @@ int32_t Api_ipconfig(void *pCxt,
                      IP46ADDR *dnsaddr,
                      char *hostname);
 void clear_socket_context(int32_t index);
-int32_t Api_ping(void *pCxt, uint32_t ipv4_addr, uint32_t size);
-int32_t Api_ping6(void *pCxt, uint8_t *ip6addr, uint32_t size);
+int32_t Api_ping(void *pCxt, uint32_t ipv4_addr, uint32_t size, uint32_t ms_interval);
+int32_t Api_ping6(void *pCxt, uint8_t *ip6addr, uint32_t size, uint32_t ms_interval);
 int32_t Api_ip6config(void *pCxt,
                       uint32_t mode,
                       IP6_ADDR_T *v6Global,

@@ -26,21 +26,23 @@ FNET project directory structure:
 	|    |    |-- tftp                - TFTP server and client.
 	|    |    |-- tls                 - TLS library.
 	|    |-- port                   - FNET port-specific source code.
+	|         |-- compiler            - Compiler-specific source code.
 	|         |-- cpu                 - FNET platform-specific source code.
-	|         |    |-- netif            - Platform-specific network interface drivers.
-	|         |    |    |-- fec           - FEC/ENET Ethernet module driver.
-	|         |    |    |-- qca           - QCA4002 Wi-Fi module driver, using "third_party/qca-x.x.x".
+	|         |    |-- lpc              - LPC-specific source code.
 	|         |    |-- mcf              - ColdFire-specific source code.
 	|         |    |-- mk               - Kinetis-specific source code.
 	|         |    |-- mpc              - Power Architecture-specific source code.
-	|         |-- compiler            - Compiler-specific source code.
+	|         |-- netif            - Platform-specific network interface drivers.
+	|              |-- enet          - ENET Ethernet module driver, used by LPC platform.
+	|              |-- fec           - FEC/ENET Ethernet module driver, used by MCF,MPC and MK platforms.
+	|              |-- qca           - QCA4002/4 Wi-Fi module driver, adapter for "third_party/qca-x.x.x".
 	|-- fnet_doc                  - FNET documentation.
 	|-- fnet_demos                - FNET demo projects.
 	|    |-- common                 - Common source code used by demos.
 	|    |    |-- fnet_application    - Demo application source code.
 	|    |    |-- fnet_webpage        - Demo web page source code.
 	|    |    |-- startup             - Platform-specific startup source code.
-	|    |-- boards                 - Demo projects.
+	|    |-- build                 - Demo projects.
 	|         |-- <board_name>        - Demo projects for a <board_name> board.
 	|              |-- boot           - FNET TFTP Bootloader.
 	|              |-- benchmark      - TCP/UDP Throughput Benchmark application. 
@@ -57,11 +59,11 @@ FNET project directory structure:
 	|              |                    but in addition it includes the mbedTLS library.
 	|              |-- shell_freertos - Example application using FreeRTOS.
 	|              |                    This demo has the same features as the "Shell" demo.
-	|              |-- shell_freertos_wifi_qca - Example application used for the Wi-Fi interface demonstration.
+	|              |-- shell_freertos_wifi_<board> - Example application used for the Wi-Fi interface demonstration.
 	|                                           It has the same features as the "Shell FreeRTOS" demo,
-	|                                           but in addition it supports the Wi-Fi network interface using the Qualcomm QCA4002 module (GT202 board).
+	|                                           but in addition it supports the Wi-Fi network interface using the Qualcomm QCA4002/4 module.
 	|-- fnet_tools                - FNET PC tools.
 	|-- third_party               - Optional, third-party libraries.
 		 |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
 		 |-- freertos-x.x.x         - FreeRTOS, used by the shell_freertos example.
-		 |-- qca-x.x.x              - Qualcomm QCA4002/4 driver, used by shell_freertos_wifi_qca example.
+		 |-- qca-x.x.x              - Qualcomm QCA4002/4 driver, used by shell_freertos_wifi_<board> example.

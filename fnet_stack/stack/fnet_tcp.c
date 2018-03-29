@@ -637,9 +637,9 @@ static fnet_socket_if_t *fnet_tcp_accept( fnet_socket_if_t *listensk )
         /* Delete the incoming socket from the list.*/
         sk->head_con->incoming_con_len--;
         fnet_socket_list_del(&sk->head_con->incoming_con, sk);
+        sk->head_con = 0;
 
         fnet_isr_unlock();
-        sk->head_con = 0;
     }
 
     return sk;
@@ -1292,10 +1292,12 @@ static void fnet_tcp_drain( void )
         /* Delete all partial and incoming connections */
         else if(delsk->state == SS_LISTENING)
         {
+#if 0 /* So far, disabled. It was reported that it may cause problems - not reproduced yet */
             while(delsk->partial_con)
             {
                 fnet_tcp_abortsk(delsk->partial_con);
             }
+#endif
 #if 0
             while (delsk->incoming_con)
             {
@@ -4005,10 +4007,6 @@ static void fnet_tcp_movesk2incominglist( fnet_socket_if_t *sk )
 *************************************************************************/
 static void fnet_tcp_closesk( fnet_socket_if_t *sk )
 {
-
-    /* Initialize the pointer to the control block.*/
-    fnet_tcp_control_t *cb = (fnet_tcp_control_t *)sk->protocol_control;
-
     if(sk->head_con)
     {
         /* If the socket is partial or incoming.*/
@@ -4025,6 +4023,8 @@ static void fnet_tcp_closesk( fnet_socket_if_t *sk )
     }
     else
     {
+        fnet_tcp_control_t *cb = (fnet_tcp_control_t *)sk->protocol_control;
+
         /* If the socket must be deleted, free the structures
          * Otherwise, change the state and free the unused data.*/
         if((cb->tcpcb_flags & FNET_TCP_CBF_CLOSE) != 0u)

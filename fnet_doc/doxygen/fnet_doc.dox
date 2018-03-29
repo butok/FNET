@@ -48,13 +48,15 @@ preferred way to configure stack features). @n
 
 @par The stack provides following protocols and services:
 - Supported Platforms:
-	- @b ARM Cortex-M4
+	- ARM Cortex-M4
 		- Kinetis:
 			- @b MK64FN1M (FRDM-K64F board)
 			- @b MK66FN2M (FRDM-K66F board)
 			- @b MK6DN512 (TWR-K60D100M board)
 		- LPC: LPC54628 (OM13098: LPCXpresso54628 board)
-	- Qualcomm: QCA4002 (GT202 802.11 Wireless board).
+	- Qualcomm/Atheros Wi-Fi 202.11: 
+		- QCA4002 (GT202-GC3013-FRDM4-KIT board).
+		- QCA4004 (SX-ULPAN-2401-SHIELD board). 
 	- Other platforms (not supported):
 		- ColdFire: MCF51CN128, MCF5282, MCF52235, MCF54418, MCF52259
 		- PowerPC: MPC5668G, MPC5566, MPC564xBC, MPC5744P, S32R274.
@@ -80,7 +82,7 @@ preferred way to configure stack features). @n
 		- Path MTU Discovery for IPv6
 - Network Interfaces:
 	- Ethernet (FEC/ENET module).
-	- Wi-Fi (QCA4002 module).
+	- Wi-Fi (QCA4002/4 module).
 	- Loopback.
 - Services:
 	- @b HTTP server:
@@ -112,7 +114,7 @@ preferred way to configure stack features). @n
 	- @ref quick_start_shell "Shell Application, bare-metal".
 	- @ref quick_start_shell_freertos "Shell Application, using FreeRTOS".
 	- @ref quick_start_shell_mbedtls "Shell Application, using mbedTLS".
-	- @ref quick_start_shell_freertos_wifi_qca "Shell Application, using Wi-Fi QCA4002 interface".
+	- @ref quick_start_shell_freertos_wifi_qca "Shell Application, using Wi-Fi QCA4002/4 interface".
 	- @ref quick_start_boot "TCP/UDP Throughput Benchmark Application".
 - Source-code based User documentation, by Doxygen.
 - RFC list supported by the FNET stack: 
@@ -178,7 +180,7 @@ fnet                        - FNET root directory.
 |         |-- netif            - Platform-specific network interface drivers.
 |              |-- enet          - ENET Ethernet module driver, used by LPC platform.
 |              |-- fec           - FEC/ENET Ethernet module driver, used by MCF,MPC and MK platforms.
-|              |-- qca           - QCA4002 Wi-Fi module driver, adapter for "third_party/qca-x.x.x".
+|              |-- qca           - QCA4002/4 Wi-Fi module driver, adapter for "third_party/qca-x.x.x".
 |-- fnet_doc                  - FNET documentation.
 |-- fnet_demos                - FNET demo projects.
 |    |-- common                 - Common source code used by demos.
@@ -202,14 +204,14 @@ fnet                        - FNET root directory.
 |              |                    but in addition it includes the mbedTLS library.
 |              |-- shell_freertos - Example application using FreeRTOS.
 |              |                    This demo has the same features as the "Shell" demo.
-|              |-- shell_freertos_wifi_qca - Example application used for the Wi-Fi interface demonstration.
+|              |-- shell_freertos_wifi_<board> - Example application used for the Wi-Fi interface demonstration.
 |                                           It has the same features as the "Shell FreeRTOS" demo,
-|                                           but in addition it supports the Wi-Fi network interface using the Qualcomm QCA4002 module (GT202 board).
+|                                           but in addition it supports the Wi-Fi network interface using the Qualcomm QCA4002/4 module.
 |-- fnet_tools                - FNET PC tools.
 |-- third_party               - Optional, third-party libraries.
      |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
      |-- freertos-x.x.x         - FreeRTOS, used by the shell_freertos example.
-	 |-- qca-x.x.x              - Qualcomm QCA4002/4 driver, used by shell_freertos_wifi_qca example.
+	 |-- qca-x.x.x              - Qualcomm QCA4002/4 driver, used by shell_freertos_wifi_<board> example.
               
 @endverbatim
 */
@@ -243,8 +245,8 @@ There are six types of demo projects:
 - @c shell_freertos - This is the example application using FreeRTOS.
   This demo has the same features as the "Shell" demo, but in addition it includes FreeRTOS.@n
   More information can be found in @ref quick_start_shell_freertos.
-- @c shell_freertos_wifi_qca - This is the example application using Wi-Fi network interface.
-  This demo has the same features as the "Shell FreeRTOS" demo, but in addition it includes Wi-Fi QCA4002 network interface.@n
+- @c shell_freertos_wifi_[gt202|sx2401] - This is the example application using Wi-Fi network interface.
+  This demo has the same features as the "Shell FreeRTOS" demo, but in addition it includes Wi-Fi QCA4002/4 network interface.@n
   More information can be found in @ref quick_start_shell_freertos_wifi_qca.
 - @c benchmark - This is the TCP/UDP Throughput Benchmark application. @n
   More information can be found in @ref quick_start_benchmark.
@@ -905,10 +907,10 @@ Tools used during this quick start:
 - Terminal program (Tera Term Pro v4.63 http://ttssh2.sourceforge.jp).
 - WEB browser.
 - FNET project source code, coming with this document.
-- GT202-GC3013-FRDM4-KIT board (https://www.arrow.com/en/products/gt202-gc3013-frdm4-kit/longthink-technology-hk-limited) @n
-  @note	- FNET was tested with QCA4002, firmware version 3.0.8, 3.3.4 ans 3.3.5. @n
-		- QCA4002 firmware v3.0.8 (target REV2)	has stability issues. Recommended to use firmware v3.3.5 (target REV4).
-		- GT202 board was tested with frdmk64f rev. D board. It does not work with frdmk64f rev B.
+- GT202-GC3013-FRDM4-KIT board (http://www.chip1stop.com/web/USA/en/dispDetail.do?partId=ARRD-0000027) or SX-ULPAN-2401-SHIELD (http://www.silexamerica.com/products/connectivity-solutions/embedded-wireless/IoT-Modules/sx-ulpan-shield/)@n
+  @note	- FNET was tested with QCA4002 (firmware version 3.0.8, 3.3.4, 3.3.5 and 3.3.6) and QCA4004 (firmware version 3.3.4). @n
+		- QCA4002 firmware v3.0.8 (target REV2)	has stability issues.
+		- GT202 and SX-ULPAN-2401 boards were tested with frdmk64f rev D board. It does not work with frdmk64f rev B.
 
 @section fnet_stepbystep_shell_freertos_wifi_qca Step by step
 
@@ -1159,7 +1161,7 @@ The firmware binary is placed in the @verbatim fnet/third_party/qca-x.x.x/flasho
 
 
 @note
-- The application project includes QCA4002 SDK, with some modifications and fixes to support on-chip stack. Its source code is located in fnet/third_party/qca-x.x.x/.
+- The application project includes QCA4002/4 SDK, with some modifications and fixes to support on-chip stack. Its source code is located in fnet/third_party/qca-x.x.x/.
 - The Wi-Fi interface connect/disconnect scripts, in the access point operation mode, are defined by @c FAPP_CFG_LINK_CONNECT_WIFI_ACCESS_POINT_SCRIPT and @c FAPP_CFG_LINK_DISCONNECT_WIFI_ACCESS_POINT_SCRIPT.
 - The DHCPv4 server interface address parameters are defined by FAPP_CFG_DHCP_CMD_IP4_ADDR, FAPP_CFG_DHCP_CMD_IP4_MASK, FAPP_CFG_DHCP_CMD_IP4_GW and FAPP_CFG_DHCP_CMD_IP4_DNS.
 */
@@ -2132,6 +2134,15 @@ Press any key to continue . . .
 
 FNET public releases:
 
+- Version 4.2.0
+	- Added fnet_socket_poll() which used to check if one or more sockets become ready to perform input/output activity.
+	- New socket options (FreeBSD like):
+		- SO_LISTENQLIMIT to get backlog limit or the maximal number of queued connections, which is set by fnet_socket_listen().
+		- SO_LISTENQLEN to get unaccepted complete connection queue length.
+	- Added WiFi QCA4004 (Silex SX-ULPAN-2401-SHIELD board) support. 
+	- Added WiFi QCA4002 (GT202) firmware image update to v3.5.6.
+	- Updated mbeTLS to the latest version 2.8.0. 
+		
 - Version 4.1.1
 	- LPC54628 support:
 		- Added bench, shell, shell_freertos, shell_freertos_wifi_qca, shell_mbedtls projects for lpcxpresso54628.

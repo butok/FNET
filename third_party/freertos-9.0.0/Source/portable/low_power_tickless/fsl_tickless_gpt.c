@@ -186,7 +186,7 @@ extern uint32_t SystemCoreClock; /* in Kinetis SDK, this contains the system cor
         else
         {
             /* Set the new reload value. */
-                        GPT_SetOutputCompareValue(pxGptBase, kGPT_OutputCompare_Channel1, ulReloadValue);
+            GPT_SetOutputCompareValue(pxGptBase, kGPT_OutputCompare_Channel1, ulReloadValue);
 
             /* Enable GPT. */
             GPT_StartTimer(pxGptBase);

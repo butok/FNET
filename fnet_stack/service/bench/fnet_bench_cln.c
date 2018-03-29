@@ -237,6 +237,7 @@ static void fnet_bench_cln_poll( void *fnet_bench_cln_if_p )
         {
             case FNET_BENCH_CLN_STATE_CONNECTING:            /* Benchmark client is connecting.*/
             {
+#if 0 /* Use socket state parameter */
                 fnet_socket_state_t     connection_state;
                 fnet_size_t             option_len;
 
@@ -248,6 +249,24 @@ static void fnet_bench_cln_poll( void *fnet_bench_cln_if_p )
                     bench_cln_if->time_begin = fnet_timer_get_ms();
                     bench_cln_if->state = FNET_BENCH_CLN_STATE_TX;
                 }
+#else /* Use socket poll */
+                fnet_socket_poll_t socket_poll;
+                socket_poll.s = bench_cln_if->socket_foreign;
+                socket_poll.events = (fnet_socket_event_t)(FNET_SOCKET_EVENT_OUT | FNET_SOCKET_EVENT_ERR); /* Connection attempt successful or failed */
+
+                if(fnet_socket_poll(&socket_poll, 1))
+                {
+                    bench_cln_if->time_begin = fnet_timer_get_ms();
+                    if(socket_poll.events_occurred & FNET_SOCKET_EVENT_OUT) /* Connection successful */
+                    {
+                        bench_cln_if->state = FNET_BENCH_CLN_STATE_TX;
+                    }
+                    else if(socket_poll.events_occurred & FNET_SOCKET_EVENT_ERR) /* Connection failed */
+                    {
+                        fnet_bench_cln_release(bench_cln_if);
+                    }
+                }
+#endif
             }
             break;
             case FNET_BENCH_CLN_STATE_TX:   /* Benchmark client is sending.*/

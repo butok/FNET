@@ -679,8 +679,8 @@ A_STATUS t_ipconfig(void *handle,
                    uint32_t *gateway4,
                    IP46ADDR *Dnsaddr,
                    char *hostname);
-A_STATUS t_ping(QCA_CONTEXT_STRUCT_PTR qca_ptr, uint32_t ipv4_addr, uint32_t size);
-A_STATUS t_ping6(QCA_CONTEXT_STRUCT_PTR qca_ptr, uint8_t *ip6addr, uint32_t size);
+A_STATUS t_ping(QCA_CONTEXT_STRUCT_PTR qca_ptr, uint32_t ipv4_addr, uint32_t size, uint32_t ms_interval);
+A_STATUS t_ping6(QCA_CONTEXT_STRUCT_PTR qca_ptr, uint8_t *ip6addr, uint32_t size, uint32_t ms_interval);
 A_STATUS t_ip6config(QCA_CONTEXT_STRUCT_PTR qca_ptr,
                     uint32_t mode,
                     IP6_ADDR_T *v6Global,

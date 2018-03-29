@@ -168,6 +168,7 @@ void socket_context_deinit(void)
     for (index = 0; index < MAX_SOCKETS_SUPPORTED + 1; index++)
     {
         A_FREE(ath_sock_context[index], MALLOC_ID_CONTEXT);
+        ath_sock_context[index] = NULL;
     }
     /*Free the custom context as well*/
 
@@ -1320,6 +1321,7 @@ int32_t Api_accept(void *pCxt, uint32_t handle, void *name, socklen_t length)
                     ((SOCKADDR_6_T *)name)->sin6_family = A_CPU2LE16(((SOCKADDR_6_T *)name)->sin6_family);
                 }
                 // A_FREE(ath_sock_context[index]->data, MALLOC_ID_CONTEXT);
+                // ath_sock_context[index]->data = NULL;
 
                 ath_sock_context[index]->data = NULL;
             }
@@ -1397,6 +1399,7 @@ int32_t Api_accept_ver1(void *pCxt, uint32_t handle, void *name, socklen_t lengt
                     ((SOCKADDR_6_T *)name)->sin6_family = A_CPU2LE16(((SOCKADDR_6_T *)name)->sin6_family);
                 }
                 // A_FREE(ath_sock_context[index]->data, MALLOC_ID_CONTEXT);
+                // ath_sock_context[index]->data = NULL;
 
                 ath_sock_context[index]->data = NULL;
             }
@@ -1926,7 +1929,7 @@ int32_t Api_getsockopt(void *pCxt, uint32_t handle, uint32_t level, uint32_t opt
         {
             A_MEMCPY(optval, ((SOCK_OPT_T *)ath_sock_context[index]->data)->optval, optlen);
             // A_FREE(ath_sock_context[index]->data,MALLOC_ID_CONTEXT);
-            ath_sock_context[index]->data = NULL;
+            ath_sock_context[index]->data = NULL; //TODO: check possible leak !!
         }
         result = ath_sock_context[index]->result;
     } while (0);
@@ -3564,7 +3567,7 @@ ota_error:
  *  uint32_t* ipv4_addr
  * Returns- 0 in case of successful connect, A_ERROR otherwise
  *****************************************************************************/
-int32_t Api_ping(void *pCxt, uint32_t ipv4_addr, uint32_t size)
+int32_t Api_ping(void *pCxt, uint32_t ipv4_addr, uint32_t size, uint32_t ms_interval)
 {
     A_DRIVER_CONTEXT *pDCxt;
     PING_T ping;
@@ -3595,7 +3598,7 @@ int32_t Api_ping(void *pCxt, uint32_t ipv4_addr, uint32_t size)
 
         do
         {
-            if (BLOCK(pCxt, ath_sock_context[index], COMMAND_BLOCK_TIMEOUT, RX_DIRECTION) != A_OK)
+            if (BLOCK(pCxt, ath_sock_context[index], ms_interval, RX_DIRECTION) != A_OK)
             {
                 A_ASSERT(0);
             }
@@ -3613,7 +3616,7 @@ int32_t Api_ping(void *pCxt, uint32_t ipv4_addr, uint32_t size)
  *  uint32_t* ipv4_addr
  * Returns- 0 in case of successful connect, A_ERROR otherwise
  *****************************************************************************/
-int32_t Api_ping6(void *pCxt, uint8_t *ip6addr, uint32_t size)
+int32_t Api_ping6(void *pCxt, uint8_t *ip6addr, uint32_t size, uint32_t ms_interval)
 {
     A_DRIVER_CONTEXT *pDCxt;
     PING_6_T ping6;

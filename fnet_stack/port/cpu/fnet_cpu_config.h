@@ -894,7 +894,7 @@
 
 /**************************************************************************/ /*!
  * @def      FNET_CFG_CPU_WIFI
- * @brief    Wi-Fi module interface (QCA4002):
+ * @brief    Wi-Fi module interface (QCA4002/QCA4004):
  *               - @c 1 = is enabled.
  *               - @b @c 0 = is disabled (default value).
  * @showinitializer

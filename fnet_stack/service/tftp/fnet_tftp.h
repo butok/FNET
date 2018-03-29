@@ -67,23 +67,15 @@ typedef enum
 typedef enum
 {
     FNET_TFTP_ERROR_NOT_DEFINED         = 0,    /**< @brief Not defined, see error
-                                                 * message (if any).
-                                                 */
-    FNET_TFTP_ERROR_FILE_NOT_FOUND      = 1,    /**< @brief File not found.
-                                                 */
-    FNET_TFTP_ERROR_ACCESS_VIOLATION    = 2,    /**< @brief Access violation.
-                                                 */
+                                                 * message (if any).*/
+    FNET_TFTP_ERROR_FILE_NOT_FOUND      = 1,    /**< @brief File not found.*/
+    FNET_TFTP_ERROR_ACCESS_VIOLATION    = 2,    /**< @brief Access violation.*/
     FNET_TFTP_ERROR_DISK_FULL           = 3,    /**< @brief Disk full or allocation
-                                                 * exceeded.
-                                                 */
-    FNET_TFTP_ERROR_ILLEGAL_OPERATION   = 4,    /**< @brief Illegal TFTP operation.
-                                                 */
-    FNET_TFTP_ERROR_UNKNOWN_TID         = 5,    /**< @brief Unknown transfer ID.
-                                                 */
-    FNET_TFTP_ERROR_FILE_ALREADY_EXISTS = 6,    /**< @brief File already exists.
-                                                 */
-    FNET_TFTP_ERROR_NO_SUCH_USER        = 7     /**< @brief No such user.
-                                                 */
+                                                 * exceeded.*/
+    FNET_TFTP_ERROR_ILLEGAL_OPERATION   = 4,    /**< @brief Illegal TFTP operation.*/
+    FNET_TFTP_ERROR_UNKNOWN_TID         = 5,    /**< @brief Unknown transfer ID.*/
+    FNET_TFTP_ERROR_FILE_ALREADY_EXISTS = 6,    /**< @brief File already exists.*/
+    FNET_TFTP_ERROR_NO_SUCH_USER        = 7     /**< @brief No such user*/
 } fnet_tftp_error_t;
 
 /*! @} */

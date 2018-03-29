@@ -148,20 +148,23 @@ void fapp_wifi_disconnect_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_c
 
 /* Wi-Fi firmware image */
 #include <qca_firmware.h>
-#define FAPP_WIFI_FW_IMAGE QCA_FW_BUFFER
 
 /************************************************************************
 * DESCRIPTION: Wi-Fi firmware update.
 *************************************************************************/
 void fapp_wifi_fw_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
+#if QCA_FW_BUFFER_SIZE
     fnet_return_t result;
 
     fnet_shell_println(desc, "Wi-Fi FW update. Do not turn off...");
 
-    result = fnet_wifi_fw_update(FNET_CPU_WIFI_IF, FAPP_WIFI_FW_IMAGE, sizeof(FAPP_WIFI_FW_IMAGE));
+    result = fnet_wifi_fw_update(FNET_CPU_WIFI_IF, QCA_FW_BUFFER, QCA_FW_BUFFER_SIZE);
 
     fnet_shell_println(desc, "Wi-Fi FW update is %s", (result == FNET_OK) ? "completed" : "failed");
+#else
+    fnet_shell_println(desc, "There is No Wi-Fi firmware image for update");
+#endif
 }
 
 #endif /* FNET_CFG_CPU_WIFI_FW_UPDATE */

@@ -127,7 +127,7 @@
 #define FNET_CFG_DHCP_SRV                   (1) /* Used mainly by Wi-Fi interface in Access Point mode. */
 
 /*****************************************************************************
- * QCA4002 Wi-Fi module interface
+ * QCA4002/4004 Wi-Fi module interface
  ******************************************************************************/
 #define FNET_CFG_CPU_WIFI                   (1)
 #define FNET_CFG_TIMER_POLL_AUTOMATIC       (0) /* Disable stack timer in interrupt. Required by the QCA driver, otherwise it causes assert during TX. */

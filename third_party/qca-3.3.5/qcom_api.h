@@ -417,7 +417,9 @@ A_STATUS qcom_ip6_address_get(uint8_t device_id,
                               int32_t *DefgwPrefix,
                               int32_t *GlbPrefixExtd);
 A_STATUS qcom_ping(uint32_t host, uint32_t size);
+A_STATUS qcom_ping_ms(uint32_t host, uint32_t size, uint32_t ms_interval);
 A_STATUS qcom_ping6(uint8_t *host, uint32_t size);
+A_STATUS qcom_ping6_ms(uint8_t *host, uint32_t size, uint32_t ms_interval);
 A_STATUS qcom_ip6config_router_prefix(
     uint8_t device_id, IP6_ADDR_T *addr, int32_t prefixlen, int32_t prefix_lifetime, int32_t valid_lifetime);
 int32_t qcom_dhcps_set_pool(uint8_t device_id, uint32_t startip, uint32_t endip, int32_t leasetime);

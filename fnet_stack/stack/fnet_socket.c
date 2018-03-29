@@ -832,7 +832,7 @@ fnet_return_t fnet_socket_listen( fnet_socket_t s, fnet_size_t backlog )
     {
         if((sock->state == SS_CONNECTING) || (sock->state == SS_CONNECTED))
         {
-            error = FNET_ERR_ISCONN; /* Operation not supported.*/
+            error = FNET_ERR_ISCONN; /* Socket is already connected.*/
             goto ERROR_SOCK;
         }
 
@@ -1500,6 +1500,26 @@ fnet_return_t fnet_socket_getopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
                         *optvallen = sizeof(fnet_socket_type_t);
                         *((fnet_socket_type_t *)optval) = (sock->protocol_interface ? sock->protocol_interface->type : SOCK_UNSPEC);
                         break;
+                    case SO_LISTENQLIMIT:
+                        if(*optvallen < sizeof(fnet_uint32_t))
+                        {
+                            error = FNET_ERR_INVAL;
+                            goto ERROR_SOCK;
+                        }
+
+                        *optvallen = sizeof(fnet_uint32_t);
+                        *((fnet_uint32_t *)optval) = sock->con_limit;
+                        break;
+                    case SO_LISTENQLEN:
+                        if(*optvallen < sizeof(fnet_uint32_t))
+                        {
+                            error = FNET_ERR_INVAL;
+                            goto ERROR_SOCK;
+                        }
+
+                        *optvallen = sizeof(fnet_uint32_t);
+                        *((fnet_uint32_t *)optval) = sock->incoming_con_len;
+                        break;
                     default:
                         error = FNET_ERR_NOPROTOOPT; /* The option is unknown or unsupported. */
                         goto ERROR_SOCK;
@@ -1952,6 +1972,108 @@ fnet_netif_t *fnet_socket_addr_route(const struct fnet_sockaddr *dest_addr)
 #endif
             default:
                 break;
+        }
+    }
+
+    return result;
+}
+
+/************************************************************************
+* DESCRIPTION: Polls current socket event state.
+*************************************************************************/
+fnet_size_t fnet_socket_poll(fnet_socket_poll_t *socket_poll, fnet_size_t socket_poll_size)
+{
+    fnet_size_t     result = 0;
+
+    if(socket_poll)
+    {
+        while(socket_poll_size)
+        {
+            if(socket_poll->s && socket_poll->events) /* If socket valid and any requested event */
+            {
+                fnet_socket_if_t   *sock;
+
+                fnet_stack_mutex_lock();
+
+                sock = fnet_socket_desc_find(socket_poll->s);
+
+                if(sock)
+                {
+                    socket_poll->events_occurred = FNET_SOCKET_EVENT_NONE;
+
+                    fnet_isr_lock();
+
+                    if(socket_poll->events &  FNET_SOCKET_EVENT_IN) /* There is data for reading or a new pending connection for accepting. */
+                    {
+                        if(sock->state == SS_LISTENING) /*If socket is listening */
+                        {
+                            if(sock->incoming_con_len)
+                            {
+                                socket_poll->events_occurred |= FNET_SOCKET_EVENT_IN; /* IN event */
+                            }
+                        }
+                        else
+                        {
+                            if(sock->receive_buffer.count) /* There is data for reading */
+                            {
+                                socket_poll->events_occurred |= FNET_SOCKET_EVENT_IN; /* IN event */
+                            }
+                            else /* No data */
+                            {
+                                /* The protocol is connection oriented (TCP).*/
+                                if((sock->protocol_interface->socket_api->con_req) &&
+                                   (sock->state == SS_UNCONNECTED)) /* If the socket is disconnected*/
+                                {
+                                    fnet_socket_set_error(sock, FNET_ERR_NOTCONN); /* Will be catched later if FNET_SOCKET_EVENT_ERR is set. */
+                                }
+                            }
+                        }
+                    }
+
+                    if(socket_poll->events &  FNET_SOCKET_EVENT_OUT) /* There is a free buffer space and the socket may accept data for writing. */
+                    {
+                        if((sock->send_buffer.count_max - sock->send_buffer.count) > 0 ) /* If there is a free buffer space */
+                        {
+                            /* The protocol is connection oriented (TCP).*/
+                            if(sock->protocol_interface->socket_api->con_req)
+                            {
+                                if(sock->state == SS_CONNECTED) /* Socket is connected.*/
+                                {
+                                    socket_poll->events_occurred |= FNET_SOCKET_EVENT_OUT;
+                                }
+                                else if(sock->state == SS_UNCONNECTED) /* If the socket is disconnected*/
+                                {
+                                    fnet_socket_set_error(sock, FNET_ERR_NOTCONN); /* Will be catched later if FNET_SOCKET_EVENT_ERR is set. */
+                                }
+                            }
+                            else /* Non-connection socket is always ready to send */
+                            {
+                                socket_poll->events_occurred |= FNET_SOCKET_EVENT_OUT;
+                            }
+                        }
+                    }
+
+                    if(socket_poll->events &  FNET_SOCKET_EVENT_ERR) /* There is a socket error. */
+                    {
+                        if(sock->options.error != FNET_ERR_OK) /* Thre is socket error */
+                        {
+                            socket_poll->events_occurred |= FNET_SOCKET_EVENT_ERR;
+                        }
+                    }
+
+                    fnet_isr_unlock();
+
+                    if(socket_poll->events_occurred)
+                    {
+                        result++;
+                    }
+                }
+
+                fnet_stack_mutex_unlock();
+            }
+            /* Next socket event */
+            socket_poll++;
+            socket_poll_size--;
         }
     }
 

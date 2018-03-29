@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2018 by Andrey Butok. FNET Community.
 * Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
 * Copyright 2003 by Andrey Butok. Motorola SPS.
 *
@@ -391,6 +391,12 @@ typedef enum
  *<td>@ref SO_LINGER</td><td>struct @ref fnet_linger</td><td>{0,0}</td><td>RW</td>
  *</tr>
  *<tr>
+ *<td>@ref SO_LISTENQLIMIT</td><td>fnet_uint32_t</td><td>0</td><td>R</td>
+ *</tr>
+ *<tr>
+ *<td>@ref SO_LISTENQLEN</td><td>fnet_uint32_t</td><td>0</td><td>R</td>
+ *</tr>
+ *<tr>
  *<td>@ref SO_OOBINLINE</td><td>fnet_uint32_t</td><td>0</td><td>RW</td>
  *</tr>
  *<tr>
@@ -512,6 +518,10 @@ typedef enum
                                 *   This is a read-only option.*/
     SO_SNDNUM,                  /**< @brief This option is used to determine the amount of data
                                 *   in the socket output buffer. @n
+                                *   This is a read-only option.*/
+    SO_LISTENQLIMIT,            /**< @brief Backlog limit of the socket or the maximal number of queued connections, which is set by @ref fnet_socket_listen(). @n
+                                *   This is a read-only option.*/
+    SO_LISTENQLEN,              /**< @brief Complete queue length of the socket. If it has the nonzeo value, unaccepted complete connections are waiting for fnet_socket_accept(). @n
                                 *   This is a read-only option.*/
     /* TCP level (IPPROTO_TCP) options */
 
@@ -679,6 +689,33 @@ typedef enum
                                      * sending are disabled.
                                      */
 } fnet_sd_flags_t;
+
+/**************************************************************************/ /*!
+* @brief Socket event type, used by @ref fnet_socket_poll_t.
+* @see fnet_socket_poll()
+******************************************************************************/
+typedef enum
+{
+    FNET_SOCKET_EVENT_NONE = 0,    /**< @brief There is no registered event. */
+    FNET_SOCKET_EVENT_IN =  1 << 0, /**< @brief There is data for reading or a new pending connection for accepting. */
+    FNET_SOCKET_EVENT_OUT = 1 << 1,  /**< @brief There is a free buffer space and the socket may accept data for writing.
+                                        Also, it may be used as the mark that the TCP socket is connected. */
+    FNET_SOCKET_EVENT_ERR = 1 << 2,  /**< @brief There is a socket error. It may happen when a connect attempt is failed, or connection is closed by remote peer
+                                        or any other socket error (to determine the error value application may examine the socket @ref SO_ERROR option).*/
+    FNET_SOCKET_EVENT_ALL = FNET_SOCKET_EVENT_IN | FNET_SOCKET_EVENT_OUT | FNET_SOCKET_EVENT_ERR /**< @brief Bitmask of all event types.*/
+} fnet_socket_event_t;
+
+/**************************************************************************/ /*!
+ * @brief Socket poll structure used by @ref fnet_socket_poll().
+ ******************************************************************************/
+typedef struct
+{
+    fnet_socket_t          s;                      /**< @brief Socket descriptor. If its value is zero, it is ignored.*/
+    fnet_socket_event_t    events;                 /**< @brief A bit mask specifying the events the application is interested in.*/
+    fnet_socket_event_t    events_occurred;        /**< @brief A bit mask specifying the events that actually occurred.
+                                                             It is filled by by the fnet_socket_poll() and can include any event specified in the @c events field. */
+} fnet_socket_poll_t;
+
 
 #if defined(__cplusplus)
 extern "C" {
@@ -1366,6 +1403,24 @@ fnet_bool_t fnet_socket_addr_is_unspecified(const struct fnet_sockaddr *addr);
  *
  ******************************************************************************/
 fnet_bool_t fnet_socket_addr_is_multicast(const struct fnet_sockaddr *addr);
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Polls socket event state.
+ *
+ * @param socket_poll          Array for socket events to be checked.
+ * @param socket_poll_size     Number of items in the @c socket_poll array.
+ *
+ * @return       This function returns number of items in @c socket_poll array which have nonzero @c events_occurred fields.@n
+ *               Zero value indicates that no event has occurred.
+ *
+ ******************************************************************************
+ *
+ * This function polls for any set of occurred socket events. @n
+ * It may be used to check if one or more sockets become ready to perform input/output activity.
+ *
+ ******************************************************************************/
+fnet_size_t fnet_socket_poll(fnet_socket_poll_t *socket_poll, fnet_size_t socket_poll_size);
 
 #if FNET_CFG_SOCKET_CALLBACK_ON_RX || defined(__DOXYGEN__)
 /***************************************************************************/ /*!

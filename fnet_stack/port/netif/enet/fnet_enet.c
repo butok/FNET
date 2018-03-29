@@ -283,8 +283,7 @@ static void fnet_enet_rx_buf_next( fnet_enet_if_t  *enet_if)
         rxBdRing->rxGenIdx = 0;
     }
     /* Updates the receive buffer descriptor. */
-    //DM ENET_UpdateRxDescriptor(rxDesc, NULL, NULL, handle->rxintEnable, handle->doubleBuffEnable);
-    rxDesc->control =  ENET_RXDESCRIP_RD_OWN_MASK |             /* Own bit -  Ethernet block's DMA owns the descriptor */
+    rxDesc->control =  ENET_RXDESCRIP_RD_OWN_MASK |            /* Own bit -  Ethernet block's DMA owns the descriptor */
                        ENET_RXDESCRIP_RD_BUFF1VALID_MASK |     /* Buffer 1 address valid */
                        ENET_RXDESCRIP_RD_IOC_MASK;             /* Interrupt enabled on completion */
     rxDesc->buff2Addr = 0; /* Just in case. We support only Buffer 1. */

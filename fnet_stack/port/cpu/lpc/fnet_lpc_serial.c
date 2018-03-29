@@ -37,7 +37,7 @@
 static USART_Type *const fnet_lpc_serial_usart_base_addr[] = USART_BASE_PTRS;
 /* Array of USART clocks. */
 static const clock_name_t fnet_lpc_serial_usart_clock[] = {kCLOCK_Flexcomm0, kCLOCK_Flexcomm1, kCLOCK_Flexcomm2, kCLOCK_Flexcomm3, kCLOCK_Flexcomm4, kCLOCK_Flexcomm5, kCLOCK_Flexcomm6, kCLOCK_Flexcomm7, kCLOCK_Flexcomm8, kCLOCK_Flexcomm9};
- 
+
 #define FNET_LPC_USART_COUNT (sizeof(fnet_lpc_serial_usart_base_addr) / sizeof(fnet_lpc_serial_usart_base_addr[0]))
 
 /********************************************************************/

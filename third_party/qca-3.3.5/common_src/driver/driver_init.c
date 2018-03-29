@@ -449,7 +449,10 @@ Driver_Init(void *pCxt)
             break;
         }
 
+        /* It is necessary to postpone further SPI commands,
+         * until WiFI gets ready. Empirical value is 100ms */
         A_MDELAY(100);
+
         /* - initiate communication with chip firmware */
         if (A_OK != (status = Driver_BootComm(pCxt)))
         {
