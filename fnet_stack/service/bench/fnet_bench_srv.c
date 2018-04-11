@@ -84,8 +84,8 @@ static  fnet_bench_srv_if_t fnet_bench_srv_if_list[FNET_CFG_BENCH_SRV];
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fnet_bench_srv_poll(void *fnet_bench_srv_if_p);
-static void fnet_bench_srv_close_session(fnet_bench_srv_if_t *bench_srv_if);
+static void _fnet_bench_srv_poll(void *fnet_bench_srv_if_p);
+static void _fnet_bench_srv_close_session(fnet_bench_srv_if_t *bench_srv_if);
 
 /************************************************************************
 * DESCRIPTION: Initializes the Benchmark server service.
@@ -96,6 +96,8 @@ fnet_bench_srv_desc_t fnet_bench_srv_init( struct fnet_bench_srv_params *params 
     fnet_bench_srv_if_t         *bench_srv_if = FNET_NULL;
     struct fnet_sockaddr        local_addr;
     fnet_size_t                 bufsize_option = FNET_CFG_BENCH_SRV_BUFFER_SIZE;
+
+    fnet_service_mutex_lock();
 
     if((params == 0) || !((params->type == SOCK_STREAM) || (params->type == SOCK_DGRAM)))
     {
@@ -243,7 +245,7 @@ fnet_bench_srv_desc_t fnet_bench_srv_init( struct fnet_bench_srv_params *params 
             goto ERROR_2;
     }
 
-    bench_srv_if->service_descriptor = fnet_service_register(fnet_bench_srv_poll, (void *) bench_srv_if);
+    bench_srv_if->service_descriptor = fnet_service_register(_fnet_bench_srv_poll, (void *) bench_srv_if);
     if(bench_srv_if->service_descriptor == 0)
     {
         FNET_DEBUG_BENCH_SRV(FNET_BENCH_SRV_ERR_SERVICE);
@@ -253,11 +255,14 @@ fnet_bench_srv_desc_t fnet_bench_srv_init( struct fnet_bench_srv_params *params 
     bench_srv_if->is_enabled = FNET_TRUE;
     bench_srv_if->state = FNET_BENCH_SRV_STATE_LISTENING;
 
+    fnet_service_mutex_unlock();
+
     return (fnet_bench_srv_desc_t)bench_srv_if;
 
 ERROR_2:
     fnet_socket_close(bench_srv_if->socket_listen);
 ERROR_1:
+    fnet_service_mutex_unlock();
     return 0;
 }
 
@@ -270,9 +275,11 @@ void fnet_bench_srv_release(fnet_bench_srv_desc_t desc)
 
     if(bench_srv_if && bench_srv_if->is_enabled)
     {
+        fnet_service_mutex_lock();
+
         if(bench_srv_if->state == FNET_BENCH_SRV_STATE_RX)         /* Benchmark session is active.*/
         {
-            fnet_bench_srv_close_session(bench_srv_if);
+            _fnet_bench_srv_close_session(bench_srv_if);
         }
 
         fnet_socket_close(bench_srv_if->socket_listen);
@@ -281,6 +288,8 @@ void fnet_bench_srv_release(fnet_bench_srv_desc_t desc)
         bench_srv_if->is_enabled = FNET_FALSE;
 
         fnet_service_unregister(bench_srv_if->service_descriptor); /* Delete service. */
+
+        fnet_service_mutex_unlock();
     }
 }
 
@@ -293,8 +302,10 @@ void fnet_bench_srv_set_callback_session_begin (fnet_bench_srv_desc_t desc, fnet
 
     if(bench_srv_if)
     {
+        fnet_service_mutex_lock();
         bench_srv_if->callback_session_begin = callback_session_begin;
         bench_srv_if->callback_session_begin_cookie = cookie;
+        fnet_service_mutex_unlock();
     }
 }
 
@@ -307,15 +318,17 @@ void fnet_bench_srv_set_callback_session_end (fnet_bench_srv_desc_t desc, fnet_b
 
     if(bench_srv_if)
     {
+        fnet_service_mutex_lock();
         bench_srv_if->callback_session_end = callback_session_end;
         bench_srv_if->callback_session_end_cookie = cookie;
+        fnet_service_mutex_unlock();
     }
 }
 
 /************************************************************************
-* DESCRIPTION: Benchmark server state machine.
+* DESCRIPTION: Benchmark server session close.
 ************************************************************************/
-static void fnet_bench_srv_close_session(fnet_bench_srv_if_t    *bench_srv_if)
+static void _fnet_bench_srv_close_session(fnet_bench_srv_if_t    *bench_srv_if)
 {
     if(bench_srv_if->callback_session_end) /* Inform a user application about the session end */
     {
@@ -335,7 +348,7 @@ static void fnet_bench_srv_close_session(fnet_bench_srv_if_t    *bench_srv_if)
 /************************************************************************
 * DESCRIPTION: Benchmark server state machine.
 ************************************************************************/
-static void fnet_bench_srv_poll( void *fnet_bench_srv_if_p )
+static void _fnet_bench_srv_poll( void *fnet_bench_srv_if_p )
 {
     fnet_bench_srv_if_t         *bench_srv_if = (fnet_bench_srv_if_t *)fnet_bench_srv_if_p;
     fnet_size_t                 addr_len;
@@ -427,7 +440,7 @@ static void fnet_bench_srv_poll( void *fnet_bench_srv_if_p )
                     ((time_current - bench_srv_if->time_last) > FNET_BENCH_SRV_SESSION_TIMEOUT_MS))   /* Session timeout */
 
                 {
-                    fnet_bench_srv_close_session(bench_srv_if);
+                    _fnet_bench_srv_close_session(bench_srv_if);
 
                     bench_srv_if->state = FNET_BENCH_SRV_STATE_LISTENING;
                     break;

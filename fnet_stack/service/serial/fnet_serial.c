@@ -1,8 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
-* Copyright 2003 by Andrey Butok. Motorola SPS.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -26,9 +24,9 @@
 
 #include "fnet.h"
 
-static fnet_size_t fnet_serial_printk_mknumstr( fnet_char_t *numstr, void *nump, fnet_bool_t neg, fnet_size_t radix );
-static void fnet_serial_printk_pad( fnet_uint8_t c, fnet_serial_stream_t stream, fnet_size_t curlen, fnet_size_t field_width, fnet_size_t *count );
-static void fnet_serial_buffer_putchar( fnet_index_t p_dest, fnet_char_t character );
+static fnet_size_t _fnet_serial_printk_mknumstr( fnet_char_t *numstr, void *nump, fnet_bool_t neg, fnet_size_t radix );
+static void _fnet_serial_printk_pad( fnet_uint8_t c, fnet_serial_stream_t stream, fnet_size_t curlen, fnet_size_t field_width, fnet_size_t *count );
+static void _fnet_serial_buffer_putchar( fnet_index_t p_dest, fnet_char_t character );
 
 /******************************************************************************
  * Stream descriptors associated with the serial ports.
@@ -84,13 +82,19 @@ const struct fnet_serial_stream fnet_serial_stream_port5 =
 /********************************************************************/
 void fnet_serial_putchar(fnet_serial_stream_t stream, fnet_char_t character)
 {
+    fnet_service_mutex_lock();
     stream->putchar(stream->id, character);
+    fnet_service_mutex_unlock();
 }
 
 /********************************************************************/
 fnet_int32_t fnet_serial_getchar(fnet_serial_stream_t stream)
 {
-    return stream->getchar(stream->id);
+    fnet_int32_t result;
+    fnet_service_mutex_lock();
+    result = stream->getchar(stream->id);
+    fnet_service_mutex_unlock();
+    return result;
 }
 
 /********************************************************************/
@@ -98,7 +102,9 @@ void fnet_serial_flush(fnet_serial_stream_t stream)
 {
     if(stream->flush)
     {
+        fnet_service_mutex_lock();
         stream->flush(stream->id);
+        fnet_service_mutex_unlock();
     }
 }
 
@@ -122,7 +128,7 @@ void fnet_serial_flush(fnet_serial_stream_t stream)
 #define FNET_SERIAL_IS_FLAG_POUND(a)    (((a) & FNET_SERIAL_FLAGS_POUND)!=0u)
 
 /********************************************************************/
-static fnet_size_t fnet_serial_printk_mknumstr( fnet_char_t *numstr, void *nump, fnet_bool_t neg, fnet_size_t radix )
+static fnet_size_t _fnet_serial_printk_mknumstr( fnet_char_t *numstr, void *nump, fnet_bool_t neg, fnet_size_t radix )
 {
     fnet_int32_t    a, b, c;
     fnet_uint32_t   ua, ub, uc;
@@ -199,8 +205,7 @@ DONE:
 }
 
 /********************************************************************/
-static void fnet_serial_printk_pad(fnet_uint8_t c, fnet_serial_stream_t stream, fnet_size_t curlen, fnet_size_t field_width, fnet_size_t *count )
-
+static void _fnet_serial_printk_pad(fnet_uint8_t c, fnet_serial_stream_t stream, fnet_size_t curlen, fnet_size_t field_width, fnet_size_t *count )
 {
     fnet_size_t i;
 
@@ -240,18 +245,16 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
     fnet_char_t         cval;
     fnet_uint32_t       uval;
 
-    /*
-     * Start parsing apart the format string and display appropriate
-     * formats and data.
-     */
+    fnet_service_mutex_lock();
+
+    /* Start parsing apart the format string and display appropriate
+     * formats and data. */
     for (p = format; (c = *p) != '\0'; p++)
     {
-        /*
-         * All formats begin with a '%' marker.  Special chars like
+        /* All formats begin with a '%' marker.  Special chars like
          * '\n' or '\t' are normally converted to the appropriate
          * character by the __compiler__.  Thus, no need for this
-         * routine to account for the '\' character.
-         */
+         * routine to account for the '\' character. */
         if(c != '%')
         {
 
@@ -383,7 +386,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
             case 'd':
             case 'i':
                 ival = (fnet_int32_t)va_arg(arg, fnet_int32_t);
-                vlen = fnet_serial_printk_mknumstr(vstr, &ival, FNET_TRUE, 10u);
+                vlen = _fnet_serial_printk_mknumstr(vstr, &ival, FNET_TRUE, 10u);
                 vstrp = &vstr[vlen];
 
                 if(ival < 0)
@@ -427,7 +430,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
 
                     dschar = FNET_TRUE;
 
-                    fnet_serial_printk_pad('0', stream, vlen, field_width, &count);
+                    _fnet_serial_printk_pad('0', stream, vlen, field_width, &count);
 
                     vlen = field_width;
                 }
@@ -435,7 +438,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                 {
                     if(!FNET_SERIAL_IS_FLAG_MINUS(flags_used))
                     {
-                        fnet_serial_printk_pad(' ', stream, vlen, field_width, &count);
+                        _fnet_serial_printk_pad(' ', stream, vlen, field_width, &count);
 
                         if(schar)
                         {
@@ -460,7 +463,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
             case 'x':
             case 'X':
                 uval = (fnet_uint32_t)va_arg(arg, fnet_uint32_t);
-                vlen = fnet_serial_printk_mknumstr(vstr, &uval, FNET_FALSE, 16u);
+                vlen = _fnet_serial_printk_mknumstr(vstr, &uval, FNET_FALSE, 16u);
                 vstrp = &vstr[vlen];
 
                 dschar = FNET_FALSE;
@@ -476,7 +479,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                         dschar = FNET_TRUE;
                     }
 
-                    fnet_serial_printk_pad('0', stream, vlen, field_width, &count);
+                    _fnet_serial_printk_pad('0', stream, vlen, field_width, &count);
                     vlen = field_width;
                 }
                 else
@@ -488,7 +491,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                             vlen += 2u;
                         }
 
-                        fnet_serial_printk_pad(' ', stream, vlen, field_width, &count);
+                        _fnet_serial_printk_pad(' ', stream, vlen, field_width, &count);
 
                         if(FNET_SERIAL_IS_FLAG_POUND(flags_used))
                         {
@@ -513,25 +516,25 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                 break;
             case 'o':
                 uval = (fnet_uint32_t)va_arg(arg, fnet_uint32_t);
-                vlen = fnet_serial_printk_mknumstr(vstr, &uval, FNET_FALSE, 8u);
+                vlen = _fnet_serial_printk_mknumstr(vstr, &uval, FNET_FALSE, 8u);
 
                 cont_u = FNET_TRUE;
                 break;
             case 'b':
                 uval = (fnet_uint32_t)va_arg(arg, fnet_uint32_t);
-                vlen = fnet_serial_printk_mknumstr(vstr, &uval, FNET_FALSE, 2u);
+                vlen = _fnet_serial_printk_mknumstr(vstr, &uval, FNET_FALSE, 2u);
 
                 cont_u = FNET_TRUE;
                 break;
             case 'p':
                 uval = (fnet_uint32_t)va_arg(arg, void *);
-                vlen = fnet_serial_printk_mknumstr(vstr, &uval, FNET_FALSE, 16u);
+                vlen = _fnet_serial_printk_mknumstr(vstr, &uval, FNET_FALSE, 16u);
 
                 cont_u = FNET_TRUE;
                 break;
             case 'u':
                 uval = (fnet_uint32_t)va_arg(arg, fnet_uint32_t);
-                vlen = fnet_serial_printk_mknumstr(vstr, &uval, FNET_FALSE, 10u);
+                vlen = _fnet_serial_printk_mknumstr(vstr, &uval, FNET_FALSE, 10u);
 
                 vstrp = &vstr[vlen];
 
@@ -553,7 +556,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
 
                     if(!FNET_SERIAL_IS_FLAG_MINUS(flags_used))
                     {
-                        fnet_serial_printk_pad(' ', stream, vlen, field_width, &count);
+                        _fnet_serial_printk_pad(' ', stream, vlen, field_width, &count);
                     }
 
                     while(*sval)
@@ -564,7 +567,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
 
                     if(FNET_SERIAL_IS_FLAG_MINUS(flags_used))
                     {
-                        fnet_serial_printk_pad(' ', stream, vlen, field_width, &count);
+                        _fnet_serial_printk_pad(' ', stream, vlen, field_width, &count);
                     }
                 }
 
@@ -588,14 +591,14 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
 
             if(FNET_SERIAL_IS_FLAG_ZERO(flags_used))
             {
-                fnet_serial_printk_pad('0', stream, vlen, field_width, &count);
+                _fnet_serial_printk_pad('0', stream, vlen, field_width, &count);
                 vlen = field_width;
             }
             else
             {
                 if(!FNET_SERIAL_IS_FLAG_MINUS(flags_used))
                 {
-                    fnet_serial_printk_pad(' ', stream, vlen, field_width, &count);
+                    _fnet_serial_printk_pad(' ', stream, vlen, field_width, &count);
                 }
             }
         }
@@ -609,11 +612,12 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
             }
             if(FNET_SERIAL_IS_FLAG_MINUS(flags_used))
             {
-                fnet_serial_printk_pad(' ', stream, vlen, field_width, &count);
+                _fnet_serial_printk_pad(' ', stream, vlen, field_width, &count);
             }
         }
-
     }
+
+    fnet_service_mutex_unlock();
 
     return count;
 }
@@ -666,12 +670,12 @@ fnet_size_t fnet_println(const fnet_char_t *format, ... )
  ******************************************************************************/
 struct fnet_serial_buffer_id
 {
-    fnet_char_t            *dest;      /* Pointer to the destination buffer.*/
+    fnet_char_t     *dest;      /* Pointer to the destination buffer.*/
     fnet_size_t     dest_size;  /* Maximum number of characters to be written to the buffer.*/
 };
 
 /********************************************************************/
-static void fnet_serial_buffer_putchar(fnet_index_t p_dest, fnet_char_t character)
+static void _fnet_serial_buffer_putchar(fnet_index_t p_dest, fnet_char_t character)
 {
     struct fnet_serial_buffer_id *buffer_id = (struct fnet_serial_buffer_id *)p_dest;
 
@@ -699,7 +703,7 @@ fnet_size_t fnet_sprintf( fnet_char_t *str, const fnet_char_t *format, ... )
         buffer_id.dest_size = (fnet_size_t) - 1; /* No limit.*/
 
         buffer_stream.id = (fnet_index_t)&buffer_id;
-        buffer_stream.putchar = fnet_serial_buffer_putchar;
+        buffer_stream.putchar = _fnet_serial_buffer_putchar;
 
         /*
          * Initialize the pointer to the variable length argument list.
@@ -729,7 +733,7 @@ fnet_size_t fnet_snprintf( fnet_char_t *str, fnet_size_t size, const fnet_char_t
         buffer_id.dest_size = size;
 
         buffer_stream.id = (fnet_index_t)&buffer_id;
-        buffer_stream.putchar = fnet_serial_buffer_putchar;
+        buffer_stream.putchar = _fnet_serial_buffer_putchar;
 
         /*
          * Initialize the pointer to the variable length argument list.
@@ -749,12 +753,20 @@ fnet_size_t fnet_snprintf( fnet_char_t *str, fnet_size_t size, const fnet_char_t
 /********************************************************************/
 void fnet_putchar( fnet_char_t character )
 {
+    fnet_service_mutex_lock();
     fnet_cpu_serial_putchar( FNET_CFG_CPU_SERIAL_PORT_DEFAULT, character);
+    fnet_service_mutex_unlock();
 }
 
 /********************************************************************/
 fnet_int32_t fnet_getchar( void )
 {
-    return fnet_cpu_serial_getchar(FNET_CFG_CPU_SERIAL_PORT_DEFAULT);
+    fnet_int32_t result;
+
+    fnet_service_mutex_lock();
+    result = fnet_cpu_serial_getchar(FNET_CFG_CPU_SERIAL_PORT_DEFAULT);
+    fnet_service_mutex_unlock();
+
+    return result;
 }
 

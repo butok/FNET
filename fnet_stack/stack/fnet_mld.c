@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -27,7 +27,7 @@
 #if FNET_CFG_MLD & FNET_CFG_IP6
 
 #include "fnet_mld.h"
-#include "fnet_checksum.h"
+#include "fnet_checksum_prv.h"
 #include "fnet_prot.h"
 
 /* TBD Random delay timers */
@@ -45,29 +45,29 @@ static const fnet_mld_ra_option_header_t mld_ra_option = {  .next_header = FNET_
                                                             .padn_option_header = {.type = FNET_IP6_OPTION_TYPE_PADN, .data_length = 0}         /* Padding. */
                                                          };
 
-static void fnet_mld_send( fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet_uint8_t type);
+static void _fnet_mld_send( fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet_uint8_t type);
 
 /************************************************************************
 * DESCRIPTION: Sends Host Membership Reports.
 *************************************************************************/
-void fnet_mld_join(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr)
+void _fnet_mld_join(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr)
 {
-    fnet_mld_send(netif, group_addr, FNET_ICMP6_TYPE_MULTICAST_LISTENER_REPORT);
+    _fnet_mld_send(netif, group_addr, FNET_ICMP6_TYPE_MULTICAST_LISTENER_REPORT);
 }
 
 /************************************************************************
 * DESCRIPTION: Sends a Leave Group message.
 *************************************************************************/
-void fnet_mld_leave(fnet_netif_t *netif, fnet_ip6_addr_t  *group_addr)
+void _fnet_mld_leave(fnet_netif_t *netif, fnet_ip6_addr_t  *group_addr)
 {
-    fnet_mld_send(netif, group_addr, FNET_ICMP6_TYPE_MULTICAST_LISTENER_DONE);
+    _fnet_mld_send(netif, group_addr, FNET_ICMP6_TYPE_MULTICAST_LISTENER_DONE);
 }
 
 /************************************************************************
 * DESCRIPTION: Generates new MLD Report messages for all multicast
 *              addresses joined on the interface.
 *************************************************************************/
-void fnet_mld_report_all(fnet_netif_t *netif)
+void _fnet_mld_report_all(fnet_netif_t *netif)
 {
     fnet_index_t i;
 
@@ -78,7 +78,7 @@ void fnet_mld_report_all(fnet_netif_t *netif)
            && (fnet_ip6_multicast_list[i].netif == netif))
         {
             /* Send report.*/
-            fnet_mld_send(netif, &fnet_ip6_multicast_list[i].group_addr, FNET_ICMP6_TYPE_MULTICAST_LISTENER_REPORT);
+            _fnet_mld_send(netif, &fnet_ip6_multicast_list[i].group_addr, FNET_ICMP6_TYPE_MULTICAST_LISTENER_REPORT);
         }
     }
 }
@@ -87,7 +87,7 @@ void fnet_mld_report_all(fnet_netif_t *netif)
 * DESCRIPTION: Sends MLD message defined by type:
 *        FNET_ICMP6_TYPE_MULTICAST_LISTENER_REPORT or FNET_ICMP6_TYPE_MULTICAST_LISTENER_DONE
 *************************************************************************/
-static void fnet_mld_send(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet_uint8_t type)
+static void _fnet_mld_send(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet_uint8_t type)
 {
     fnet_netbuf_t                       *nb;
     fnet_netbuf_t                       *nb_option;
@@ -103,9 +103,9 @@ static void fnet_mld_send(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet
        && !FNET_IP6_ADDR_EQUAL(&fnet_ip6_addr_linklocal_allnodes, group_addr))
     {
         /* Construct Router Alert option + MLD meassage */
-        if((nb = fnet_netbuf_new(sizeof(fnet_mld_header_t), FNET_FALSE)) != 0)
+        if((nb = _fnet_netbuf_new(sizeof(fnet_mld_header_t), FNET_FALSE)) != 0)
         {
-            if((nb_option = fnet_netbuf_new(sizeof(fnet_mld_ra_option_header_t), FNET_FALSE)) != 0)
+            if((nb_option = _fnet_netbuf_new(sizeof(fnet_mld_ra_option_header_t), FNET_FALSE)) != 0)
             {
                 /* Fill Hop-by_Hop Options header.*/
                 ra_option_header = (fnet_mld_ra_option_header_t *)(nb_option->data_ptr);
@@ -119,17 +119,17 @@ static void fnet_mld_send(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet
 
                 /* Checksum calculation.*/
                 mld_header->icmp6_header.checksum = 0;
-                mld_header->icmp6_header.checksum = fnet_checksum_pseudo_start(nb, FNET_HTONS((fnet_uint16_t)FNET_PROT_ICMP6), (fnet_uint16_t)nb->total_length);
+                mld_header->icmp6_header.checksum = _fnet_checksum_pseudo_netbuf_start(nb, FNET_HTONS((fnet_uint16_t)FNET_PROT_ICMP6), (fnet_uint16_t)nb->total_length);
                 checksum_p = &mld_header->icmp6_header.checksum;
 
                 /* Concatanate Hop-by_Hop Options with MLD header. */
-                nb = fnet_netbuf_concat(nb_option, nb);
+                nb = _fnet_netbuf_concat(nb_option, nb);
 
                 /* Source Address Selection for MLD, by RFC3590.*/
 
                 /* [RFC3590] MLD Report and Done messages are sent with a link-local address as
                  * the IPv6 source address, if a valid address is available on the interface.*/
-                ip_src = fnet_netif_get_ip6_addr_valid_link_local(netif);
+                ip_src = _fnet_netif_get_ip6_addr_valid_link_local(netif);
 
                 /* [RFC3590] If a valid link-local address is not available (e.g., one has not been configured),
                  * the message is sent with the unspecified address. */
@@ -156,11 +156,11 @@ static void fnet_mld_send(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet
                 }
 
                 /* Send via IPv6*/
-                fnet_ip6_output(netif, ip_src, ip_dst, FNET_IP6_TYPE_HOP_BY_HOP_OPTIONS, FNET_MLD_HOP_LIMIT, nb, checksum_p);
+                _fnet_ip6_output(netif, ip_src, ip_dst, FNET_IP6_TYPE_HOP_BY_HOP_OPTIONS, FNET_MLD_HOP_LIMIT, nb, checksum_p);
             }
             else
             {
-                fnet_netbuf_free_chain(nb);
+                _fnet_netbuf_free_chain(nb);
             }
         }
     }
@@ -169,7 +169,7 @@ static void fnet_mld_send(fnet_netif_t *netif, fnet_ip6_addr_t *group_addr, fnet
 /************************************************************************
 * DESCRIPTION: Handles received Multicast Listener Query message.
 *************************************************************************/
-void fnet_mld_query_receive(fnet_netif_t *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb)
+void _fnet_mld_query_receive(fnet_netif_t *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb)
 {
     fnet_mld_header_t               *mld_packet = nb->data_ptr;
     fnet_size_t                     mld_packet_size = nb->total_length;
@@ -198,21 +198,21 @@ void fnet_mld_query_receive(fnet_netif_t *netif, fnet_ip6_addr_t *src_ip, fnet_i
         /* [RFC2710] A Multicast-Address-Specific
          * Query applies to a single multicast address on the interface from
          * which the Query is received. */
-        if(fnet_ip6_multicast_find_entry(netif, &mld_packet->multicast_addr))
-            fnet_mld_join(netif, &mld_packet->multicast_addr);
+        if(_fnet_ip6_multicast_find_entry(netif, &mld_packet->multicast_addr))
+            _fnet_mld_join(netif, &mld_packet->multicast_addr);
     }
     else if(FNET_IP6_ADDR_EQUAL(&fnet_ip6_addr_any, &mld_packet->multicast_addr))
     {
         /* [RFC2710] General Query applies to all multicast addresses on the interface
          * from which the Query is received. */
-        fnet_mld_report_all(netif);
+        _fnet_mld_report_all(netif);
     }
     else
     {}
 
 DROP:
-    fnet_netbuf_free_chain(ip6_nb);
-    fnet_netbuf_free_chain(nb);
+    _fnet_netbuf_free_chain(ip6_nb);
+    _fnet_netbuf_free_chain(nb);
 }
 
 #endif /* FNET_CFG_MLD */

@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -55,7 +54,7 @@
 #define FNET_TFTP_ERR_SERVICE           "ERROR: Service registration is failed."
 #define FNET_TFTP_ERR_IS_INITIALIZED    "ERROR: TFTP is already initialized."
 
-static void fnet_tftp_cln_poll(void *fnet_tftp_cln_if_p);
+static void _fnet_tftp_cln_poll(void *fnet_tftp_cln_if_p);
 
 /* TFTP packets:*/
 FNET_COMP_PACKED_BEGIN
@@ -148,6 +147,8 @@ fnet_return_t fnet_tftp_cln_init( struct fnet_tftp_cln_params *params )
     struct fnet_sockaddr    addr_client;
     fnet_char_t             *data_ptr;
 
+    fnet_service_mutex_lock();
+
     /* Check input parameters. */
     if((params == 0) || (params->server_addr.sa_family == AF_UNSPEC) ||
        (fnet_socket_addr_is_unspecified(&params->server_addr)) ||
@@ -226,7 +227,7 @@ fnet_return_t fnet_tftp_cln_init( struct fnet_tftp_cln_params *params )
     fnet_tftp_if.packet_size = sizeof(fnet_tftp_if.packet.packet_request.opcode) + fnet_strlen(params->file_name) + 1u + sizeof(FNET_TFTP_MODE);
 
     /* Register TFTP service. */
-    fnet_tftp_if.service_descriptor = fnet_service_register(fnet_tftp_cln_poll, (void *) &fnet_tftp_if);
+    fnet_tftp_if.service_descriptor = fnet_service_register(_fnet_tftp_cln_poll, (void *) &fnet_tftp_if);
     if(fnet_tftp_if.service_descriptor == 0)
     {
         FNET_DEBUG_TFTP(FNET_TFTP_ERR_SERVICE);
@@ -235,18 +236,20 @@ fnet_return_t fnet_tftp_cln_init( struct fnet_tftp_cln_params *params )
 
     fnet_tftp_if.state = FNET_TFTP_CLN_STATE_SEND_REQUEST; /* => Send REQUEST */
 
+    fnet_service_mutex_unlock();
     return FNET_OK;
 ERROR_1:
     fnet_socket_close(fnet_tftp_if.socket_client);
 
 ERROR:
+    fnet_service_mutex_unlock();
     return FNET_ERR;
 }
 
 /************************************************************************
 * DESCRIPTION: TFTP-client state machine.
 ************************************************************************/
-static void fnet_tftp_cln_poll( void *fnet_tftp_cln_if_p )
+static void _fnet_tftp_cln_poll( void *fnet_tftp_cln_if_p )
 {
     struct fnet_sockaddr    addr;
     fnet_size_t             addr_len;
@@ -415,6 +418,7 @@ ERROR:
 ************************************************************************/
 void fnet_tftp_cln_release(void)
 {
+    fnet_service_mutex_lock();
     if(fnet_tftp_if.state != FNET_TFTP_CLN_STATE_DISABLED)
     {
         /* Close socket. */
@@ -425,6 +429,7 @@ void fnet_tftp_cln_release(void)
 
         fnet_tftp_if.state = FNET_TFTP_CLN_STATE_DISABLED;
     }
+    fnet_service_mutex_unlock();
 }
 
 /************************************************************************

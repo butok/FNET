@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -120,5 +119,19 @@ extern const fnet_ip6_addr_t fnet_ip6_addr_linklocal_prefix;
     ((((a)->addr[0]) == 0xfeU) && ((((a)->addr[1]) & 0xc0U) == 0x80U))
 #define FNET_IP6_ADDR_IS_SITELOCAL(a)	\
     ((((a)->addr[0]) == 0xfeU) && ((((a)->addr[1]) & 0xc0U) == 0xc0U))
+
+/************************************************************************
+*     Function Prototypes
+*************************************************************************/
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+/* Selects the best source address to use with a destination address, Based on RFC3484. */
+const fnet_ip6_addr_t *fnet_ip6_select_src_addr(const fnet_ip6_addr_t *dest_addr);
+
+#if defined(__cplusplus)
+}
+#endif
 
 #endif  /* _FNET_IP6_H_ */

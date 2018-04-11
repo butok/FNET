@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2016-2017 by Andrey Butok. FNET Community.
+* Copyright 2016-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -33,7 +33,7 @@
 
 #define FNET_LINK_ERR_IS_INITIALIZED    "ERROR: No free service."
 
-static void fnet_link_poll( void *fnet_link_if_p );
+static void _fnet_link_poll( void *fnet_link_if_p );
 
 /************************************************************************
 *    Link-Detection interface structure.
@@ -61,6 +61,8 @@ fnet_link_desc_t fnet_link_init( struct fnet_link_params *params )
 {
     fnet_link_if_t    *link_if = FNET_NULL;
     fnet_index_t      i;
+
+    fnet_service_mutex_lock();
 
     if ((params == 0) || (params->netif_desc == 0) || (params->callback == 0))
     {
@@ -91,7 +93,7 @@ fnet_link_desc_t fnet_link_init( struct fnet_link_params *params )
     link_if->callback = params->callback;
     link_if->callback_param = params->callback_param;
 
-    link_if->service_descriptor = fnet_service_register(fnet_link_poll, (void *) link_if);
+    link_if->service_descriptor = fnet_service_register(_fnet_link_poll, (void *) link_if);
     if (link_if->service_descriptor == 0)
     {
         goto ERROR;
@@ -100,6 +102,8 @@ fnet_link_desc_t fnet_link_init( struct fnet_link_params *params )
     link_if->connection_flag = FNET_FALSE;
 
     link_if->is_enabled = FNET_TRUE;
+
+    fnet_service_mutex_unlock();
 
     return (fnet_link_desc_t)link_if;
 
@@ -110,7 +114,7 @@ ERROR:
 /******************************************************************************
  * DESCRIPTION: Link-Detection service state machine.
  ******************************************************************************/
-static void fnet_link_poll( void *fnet_link_if_p )
+static void _fnet_link_poll( void *fnet_link_if_p )
 {
     fnet_bool_t     connected;
     fnet_link_if_t  *link_if = (fnet_link_if_t *)fnet_link_if_p;
@@ -134,8 +138,10 @@ void fnet_link_release(fnet_link_desc_t desc)
 
     if (link_if)
     {
+        fnet_service_mutex_lock();
         fnet_service_unregister(link_if->service_descriptor); /* Delete service.*/
         link_if->is_enabled = FNET_FALSE;
+        fnet_service_mutex_unlock();
     }
 }
 
@@ -170,6 +176,7 @@ fnet_link_desc_t fnet_link_get_by_netif(fnet_netif_desc_t netif)
 
     if(netif)
     {
+        fnet_service_mutex_lock();
         for(i = 0u; i < FNET_CFG_LINK; i++)
         {
             link_if = &fnet_link_if_list[i];
@@ -180,6 +187,7 @@ fnet_link_desc_t fnet_link_get_by_netif(fnet_netif_desc_t netif)
                 break;
             }
         }
+        fnet_service_mutex_unlock();
     }
 
     return link_desc;

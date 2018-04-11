@@ -56,7 +56,7 @@ static void fnet_cpu_timer_handler_top(void *cookie)
 
     /* Update RTC counter.
      */
-    fnet_timer_ticks_inc();
+    _fnet_timer_ticks_inc();
 }
 
 /************************************************************************
@@ -70,9 +70,9 @@ fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms )
 
     /* Install interrupt handler and enable interrupt in NVIC.
     */
-    result = fnet_isr_vector_init(FNET_CFG_CPU_TIMER_VECTOR_NUMBER, fnet_cpu_timer_handler_top,
-                                  fnet_timer_handler_bottom,
-                                  FNET_CFG_CPU_TIMER_VECTOR_PRIORITY, 0u);
+    result = _fnet_isr_vector_init(FNET_CFG_CPU_TIMER_VECTOR_NUMBER, fnet_cpu_timer_handler_top,
+                                   _fnet_timer_handler_bottom,
+                                   FNET_CFG_CPU_TIMER_VECTOR_PRIORITY, 0u);
     if(result == FNET_OK)
     {
         /* Initialize the PIT timer to generate an interrupt every period_ms */

@@ -1,8 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
-* Copyright 2003 by Andrey Butok. Motorola SPS.
+* Copyright 2008-2018 by Andrey Butok. FNET Community
 *
 ***************************************************************************
 *
@@ -32,14 +30,14 @@
 #include "fnet_timer.h"
 #include "fnet_prot.h"
 #include "fnet_socket_prv.h"
-#include "fnet_checksum.h"
+#include "fnet_checksum_prv.h"
 
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip4_nb);
-static void fnet_icmp4_output( fnet_netif_t *netif, fnet_ip4_addr_t src_ip, fnet_ip4_addr_t dest_ip, fnet_netbuf_t *nb );
-static void fnet_icmp4_notify_protocol(fnet_netif_t *netif, fnet_prot_notify_t prot_cmd, fnet_netbuf_t *nb );
+static void _fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip4_nb);
+static void _fnet_icmp4_output( fnet_netif_t *netif, fnet_ip4_addr_t src_ip, fnet_ip4_addr_t dest_ip, fnet_netbuf_t *nb );
+static void _fnet_icmp4_notify_protocol(fnet_netif_t *netif, fnet_prot_notify_t prot_cmd, fnet_netbuf_t *nb );
 
 #if FNET_CFG_DEBUG_TRACE_ICMP4 && FNET_CFG_DEBUG_TRACE
     void fnet_icmp4_trace(fnet_uint8_t *str, fnet_icmp4_header_t *icmpp_hdr);
@@ -55,13 +53,13 @@ fnet_prot_if_t fnet_icmp4_prot_if =
     .family = AF_INET,              /* Address domain family.*/
     .type = SOCK_UNSPEC,            /* Socket type used for.*/
     .protocol = FNET_PROT_ICMP4,    /* Protocol number.*/
-    .prot_input = fnet_icmp4_input, /* Protocol input function.*/
+    .prot_input = _fnet_icmp4_input, /* Protocol input function.*/
 };
 
 /************************************************************************
 * DESCRIPTION: ICMP input function.
 *************************************************************************/
-static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip4_nb)
+static void _fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip4_nb)
 {
     fnet_icmp4_header_t     *hdr;
     fnet_prot_notify_t      prot_cmd;
@@ -70,11 +68,11 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
     fnet_ip4_addr_t         src_ip_tx;
     fnet_ip4_addr_t         dest_ip_tx;
 
-    fnet_netbuf_free_chain(ip4_nb); /* Not used.*/
+    _fnet_netbuf_free_chain(ip4_nb); /* Not used.*/
 
     if((netif != 0) && (nb != 0) )
     {
-        if(fnet_netbuf_pullup(&nb, sizeof(fnet_icmp4_header_t)) == FNET_ERR) /* The header must reside in contiguous area of memory. */
+        if(_fnet_netbuf_pullup(&nb, sizeof(fnet_icmp4_header_t)) == FNET_ERR) /* The header must reside in contiguous area of memory. */
         {
             goto DISCARD;
         }
@@ -92,8 +90,8 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
 #if FNET_CFG_CPU_ETH_HW_RX_PROTOCOL_CHECKSUM || FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM
                ((nb->flags & FNET_NETBUF_FLAG_HW_PROTOCOL_CHECKSUM) == 0) &&
 #endif
-               (fnet_checksum(nb, nb->total_length)))
-           || (fnet_ip4_addr_is_broadcast(src_ip_rx, netif))
+               (_fnet_checksum_netbuf(nb, nb->total_length)))
+           || (_fnet_ip4_addr_is_broadcast(src_ip_rx, netif))
            || FNET_IP4_ADDR_IS_MULTICAST(src_ip_rx))
         {
             goto DISCARD;
@@ -110,14 +108,14 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
                 if((nb->total_length < sizeof(fnet_icmp4_echo_header_t)) ||
                    /* An ICMP Echo Request destined to an IP broadcast or IP
                    * multicast address MAY be silently discarded.(RFC1122)*/
-                   (fnet_ip4_addr_is_broadcast(dest_ip_rx, netif)) || FNET_IP4_ADDR_IS_MULTICAST(dest_ip_rx))
+                   (_fnet_ip4_addr_is_broadcast(dest_ip_rx, netif)) || FNET_IP4_ADDR_IS_MULTICAST(dest_ip_rx))
                 {
                     goto DISCARD;
                 }
 
                 hdr->type = FNET_ICMP4_ECHOREPLY;
 
-                fnet_icmp4_output(netif, src_ip_tx, dest_ip_tx, nb);
+                _fnet_icmp4_output(netif, src_ip_tx, dest_ip_tx, nb);
                 break;
 #if 0 /* Optional functionality.*/
             /************************
@@ -126,7 +124,7 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
             case FNET_ICMP4_TSTAMP:
 
                 /* The header must reside in contiguous area of memory. */
-                if(fnet_netbuf_pullup(&nb, sizeof(fnet_icmp4_timestamp_header_t)) == FNET_ERR)
+                if(_fnet_netbuf_pullup(&nb, sizeof(fnet_icmp4_timestamp_header_t)) == FNET_ERR)
                 {
                     goto DISCARD;
                 }
@@ -141,14 +139,14 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
 
                 dest_ip = netif->ip4_addr.address;
 
-                fnet_icmp4_output(netif, src_ip_tx, dest_ip_tx, nb);
+                _fnet_icmp4_output(netif, src_ip_tx, dest_ip_tx, nb);
                 break;
             /************************
              * Address Mask Query
              ************************/
             case FNET_ICMP4_MASKREQ:
                 /* The header must reside in contiguous area of memory*/
-                if(fnet_netbuf_pullup(&nb, sizeof(fnet_icmp4_mask_header_t)) == FNET_ERR)
+                if(_fnet_netbuf_pullup(&nb, sizeof(fnet_icmp4_mask_header_t)) == FNET_ERR)
                 {
                     goto DISCARD;
                 }
@@ -161,7 +159,7 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
 
                 dest_ip = netif->ip4_addr.address;
 
-                fnet_icmp4_output(netif, src_ip_tx, dest_ip_tx, nb);
+                _fnet_icmp4_output(netif, src_ip_tx, dest_ip_tx, nb);
                 break;
 #endif
             /**************************
@@ -204,7 +202,7 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
                     default:
                         goto DISCARD;
                 }
-                fnet_icmp4_notify_protocol(netif, prot_cmd, nb);  /* Protocol notification.*/
+                _fnet_icmp4_notify_protocol(netif, prot_cmd, nb);  /* Protocol notification.*/
                 break;
             case FNET_ICMP4_TIMXCEED:
                 switch(hdr->code)
@@ -221,7 +219,7 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
                         goto DISCARD;
                 }
 
-                fnet_icmp4_notify_protocol(netif, prot_cmd, nb);  /* Protocol notification.*/
+                _fnet_icmp4_notify_protocol(netif, prot_cmd, nb);  /* Protocol notification.*/
                 break;
             case FNET_ICMP4_PARAMPROB:                       /* Parameter Problem Message.*/
                 if(hdr->code > 1u)
@@ -230,7 +228,7 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
                 }
 
                 prot_cmd = FNET_PROT_NOTIFY_PARAMPROB;
-                fnet_icmp4_notify_protocol(netif, prot_cmd, nb);  /* Protocol notification.*/
+                _fnet_icmp4_notify_protocol(netif, prot_cmd, nb);  /* Protocol notification.*/
                 break;
             case FNET_ICMP4_SOURCEQUENCH:                    /* Source Quench Message; packet lost, slow down.*/
                 if(hdr->code)
@@ -239,7 +237,7 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
                 }
 
                 prot_cmd = FNET_PROT_NOTIFY_QUENCH;
-                fnet_icmp4_notify_protocol(netif, prot_cmd, nb);  /* Protocol notification.*/
+                _fnet_icmp4_notify_protocol(netif, prot_cmd, nb);  /* Protocol notification.*/
                 break;
             /************************
              * Ignore others
@@ -260,14 +258,14 @@ static void fnet_icmp4_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
     else
     {
     DISCARD:
-        fnet_netbuf_free_chain(nb);
+        _fnet_netbuf_free_chain(nb);
     }
 }
 
 /************************************************************************
 * DESCRIPTION: Upper protocol notification..
 *************************************************************************/
-static void fnet_icmp4_notify_protocol(fnet_netif_t *netif, fnet_prot_notify_t prot_cmd, fnet_netbuf_t *nb)
+static void _fnet_icmp4_notify_protocol(fnet_netif_t *netif, fnet_prot_notify_t prot_cmd, fnet_netbuf_t *nb)
 {
     fnet_icmp4_err_header_t *hdr_err = (fnet_icmp4_err_header_t *)nb->data_ptr;
     fnet_ip4_header_t       *ip_header = &hdr_err->ip;
@@ -282,10 +280,10 @@ static void fnet_icmp4_notify_protocol(fnet_netif_t *netif, fnet_prot_notify_t p
 
     if(nb->total_length > hdr_err_data_length)
     {
-        fnet_netbuf_trim(&nb, (fnet_int32_t)hdr_err_data_length - (fnet_int32_t)nb->total_length);
+        _fnet_netbuf_trim(&nb, (fnet_int32_t)hdr_err_data_length - (fnet_int32_t)nb->total_length);
     }
 
-    if(fnet_netbuf_pullup(&nb, nb->total_length) == FNET_ERR) /* The header must reside in contiguous area of memory.*/
+    if(_fnet_netbuf_pullup(&nb, nb->total_length) == FNET_ERR) /* The header must reside in contiguous area of memory.*/
     {
         goto DISCARD;
     }
@@ -293,7 +291,7 @@ static void fnet_icmp4_notify_protocol(fnet_netif_t *netif, fnet_prot_notify_t p
     hdr_err = (fnet_icmp4_err_header_t *)nb->data_ptr;
     ip_header = &hdr_err->ip;
 
-    if((protocol = fnet_prot_find(AF_INET, SOCK_UNSPEC, (fnet_uint32_t)hdr_err->ip.protocol)) != 0)
+    if((protocol = _fnet_prot_find(AF_INET, SOCK_UNSPEC, (fnet_uint32_t)hdr_err->ip.protocol)) != 0)
     {
         if(protocol->prot_control_input)
         {
@@ -301,24 +299,24 @@ static void fnet_icmp4_notify_protocol(fnet_netif_t *netif, fnet_prot_notify_t p
             struct fnet_sockaddr     err_dest_addr;
 
             /* Prepare addreses for upper protocol.*/
-            fnet_ip4_set_socket_addr(netif, ip_header, &err_src_addr,  &err_dest_addr );
+            _fnet_ip4_set_socket_addr(netif, ip_header, &err_src_addr,  &err_dest_addr );
 
-            fnet_netbuf_trim(&nb, (fnet_int32_t)(hdr_err_length)); /* Cut the ICMP error header.*/
+            _fnet_netbuf_trim(&nb, (fnet_int32_t)(hdr_err_length)); /* Cut the ICMP error header.*/
 
             protocol->prot_control_input(prot_cmd, &err_src_addr, &err_dest_addr, nb);
         }
     }
 
 DISCARD:
-    fnet_netbuf_free_chain(nb);
+    _fnet_netbuf_free_chain(nb);
 }
 
 
 /************************************************************************
 * DESCRIPTION: ICMP output function.
 *************************************************************************/
-static void fnet_icmp4_output( fnet_netif_t *netif, fnet_ip4_addr_t src_ip,
-                               fnet_ip4_addr_t dest_ip, fnet_netbuf_t *nb )
+static void _fnet_icmp4_output( fnet_netif_t *netif, fnet_ip4_addr_t src_ip,
+                                fnet_ip4_addr_t dest_ip, fnet_netbuf_t *nb )
 {
     fnet_icmp4_header_t *hdr = (fnet_icmp4_header_t *)nb->data_ptr;
 
@@ -326,21 +324,21 @@ static void fnet_icmp4_output( fnet_netif_t *netif, fnet_ip4_addr_t src_ip,
 #if FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM
     if( netif
         && (netif->features & FNET_NETIF_FEATURE_HW_TX_PROTOCOL_CHECKSUM)
-        && (fnet_ip4_will_fragment(netif, nb->total_length) == FNET_FALSE) /* Fragmented packets are not inspected.*/  )
+        && (_fnet_ip4_will_fragment(netif, nb->total_length) == FNET_FALSE) /* Fragmented packets are not inspected.*/  )
     {
         nb->flags |= FNET_NETBUF_FLAG_HW_PROTOCOL_CHECKSUM;
     }
     else
 #endif
-        hdr->checksum = fnet_checksum(nb, nb->total_length);
+        hdr->checksum = _fnet_checksum_netbuf(nb, nb->total_length);
 
-    fnet_ip4_output(netif, src_ip, dest_ip, FNET_PROT_ICMP4, FNET_ICMP4_TOS, FNET_ICMP4_TTL, nb, FNET_FALSE, FNET_FALSE, 0);
+    _fnet_ip4_output(netif, src_ip, dest_ip, FNET_PROT_ICMP4, FNET_ICMP4_TOS, FNET_ICMP4_TTL, nb, FNET_FALSE, FNET_FALSE, 0);
 }
 
 /************************************************************************
 * DESCRIPTION: Sends ICMP error message.
 *************************************************************************/
-void fnet_icmp4_error( fnet_netif_t *netif, fnet_uint8_t type, fnet_uint8_t code, fnet_netbuf_t *nb )
+void _fnet_icmp4_error( fnet_netif_t *netif, fnet_uint8_t type, fnet_uint8_t code, fnet_netbuf_t *nb )
 {
     fnet_ip4_header_t       *ipheader;
     fnet_netbuf_t           *nb_header;
@@ -364,11 +362,11 @@ void fnet_icmp4_error( fnet_netif_t *netif, fnet_uint8_t type, fnet_uint8_t code
             * host -- e.g., a zero address, a loopback address, a
             * broadcast address, a multicast address, or a Class E
             * address.*/
-           || (fnet_ip4_addr_is_broadcast(source_addr, netif))
+           || (_fnet_ip4_addr_is_broadcast(source_addr, netif))
            || FNET_IP4_ADDR_IS_MULTICAST(source_addr)
            || FNET_IP4_CLASS_E(source_addr)
            /* Do not send error on a datagram destined to an IP broadcast or IP multicast address*/
-           || (fnet_ip4_addr_is_broadcast(destination_addr, netif))
+           || (_fnet_ip4_addr_is_broadcast(destination_addr, netif))
            || FNET_IP4_ADDR_IS_MULTICAST(destination_addr)
            /* Do not send error on datagram sent as a link-layer broadcast or multicast.*/
            || ((nb->flags & FNET_NETBUF_FLAG_BROADCAST) != 0u) || ((nb->flags & FNET_NETBUF_FLAG_MULTICAST) != 0u)
@@ -378,7 +376,7 @@ void fnet_icmp4_error( fnet_netif_t *netif, fnet_uint8_t type, fnet_uint8_t code
         }
 
         /* Construct ICMP error header*/
-        if((nb_header = fnet_netbuf_new((sizeof(fnet_icmp4_err_header_t) - sizeof(fnet_ip4_header_t)), FNET_FALSE)) == 0)
+        if((nb_header = _fnet_netbuf_new((sizeof(fnet_icmp4_err_header_t) - sizeof(fnet_ip4_header_t)), FNET_FALSE)) == 0)
         {
             goto FREE_NB;
         }
@@ -403,17 +401,17 @@ void fnet_icmp4_error( fnet_netif_t *netif, fnet_uint8_t type, fnet_uint8_t code
 
         if((fnet_size_t)((FNET_IP_HEADER_GET_HEADER_LENGTH(ipheader) << 2) + 8u) < nb->total_length)
         {
-            fnet_netbuf_trim(&nb, (fnet_int32_t)((fnet_size_t)((FNET_IP_HEADER_GET_HEADER_LENGTH(ipheader) << 2) + 8u) - nb->total_length));
+            _fnet_netbuf_trim(&nb, (fnet_int32_t)((fnet_size_t)((FNET_IP_HEADER_GET_HEADER_LENGTH(ipheader) << 2) + 8u) - nb->total_length));
         }
 
-        nb = fnet_netbuf_concat(nb_header, nb);
+        nb = _fnet_netbuf_concat(nb_header, nb);
 
-        fnet_icmp4_output(netif, destination_addr, source_addr, nb);
+        _fnet_icmp4_output(netif, destination_addr, source_addr, nb);
 
         return;
 
     FREE_NB:
-        fnet_netbuf_free_chain(nb);
+        _fnet_netbuf_free_chain(nb);
     }
 }
 

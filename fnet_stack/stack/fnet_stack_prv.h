@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -27,6 +26,8 @@
 
 #define _FNET_STACK_PRV_H_
 
+#include "fnet.h"
+
 extern fnet_bool_t _fnet_is_enabled;
 
 #if defined(__cplusplus)
@@ -34,16 +35,28 @@ extern "C" {
 #endif
 
 #if FNET_CFG_MULTITHREADING
-fnet_return_t fnet_stack_mutex_init(void);
-void fnet_stack_mutex_free(void);
-void fnet_stack_mutex_lock(void);
-void fnet_stack_mutex_unlock(void);
+
+/* General mutex API */
+fnet_return_t _fnet_mutex_init(fnet_mutex_t *mutex);
+void _fnet_mutex_lock(fnet_mutex_t *mutex);
+void _fnet_mutex_unlock(fnet_mutex_t *mutex);
+void _fnet_mutex_release(fnet_mutex_t *mutex);
+
+/* Stack mutex */
+extern  const fnet_mutex_api_t  *fnet_mutex_api;
+fnet_return_t _fnet_stack_mutex_init(void);
+void _fnet_stack_mutex_release(void);
+void _fnet_stack_mutex_lock(void);
+void _fnet_stack_mutex_unlock(void);
+
 #else
-#define fnet_stack_mutex_init()        FNET_OK
-#define fnet_stack_mutex_free()        do{}while(0)
-#define fnet_stack_mutex_lock()        do{}while(0)
-#define fnet_stack_mutex_unlock()      do{}while(0)
-#endif
+
+#define _fnet_stack_mutex_init()        FNET_OK
+#define _fnet_stack_mutex_release()     do{}while(0)
+#define _fnet_stack_mutex_lock()        do{}while(0)
+#define _fnet_stack_mutex_unlock()      do{}while(0)
+
+#endif /* FNET_CFG_MULTITHREADING */
 
 #if defined(__cplusplus)
 }

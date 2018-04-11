@@ -173,6 +173,12 @@ extern "C" {
 
 #define ENABLE_LARGE_DSET 1 // 1 or 0
 
+/*This macro is used to config the number of rx buffers for multiple socket feature.
+*if the rx buffers is low, and multiple sockets are receiving data (especially for multiple TCP RX), 
+*the application may be blocked
+*/
+#define WLAN_CONFIG_RX_BUFFERS 4
+
 #include "wlan_config.h"
 
 #ifdef __cplusplus

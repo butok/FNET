@@ -67,26 +67,26 @@ const fnet_netif_api_t fnet_enet_api =
     .netif_init = fnet_enet_init,                               /* Initialization function.*/
     .netif_release = fnet_enet_release,                         /* Shutdown function.*/
 #if FNET_CFG_IP4
-    .netif_output_ip4 = fnet_eth_output_ip4,                    /* IPv4 Transmit function.*/
+    .netif_output_ip4 = _fnet_eth_output_ip4,                    /* IPv4 Transmit function.*/
 #endif
-    .netif_change_addr_notify = fnet_eth_change_addr_notify,    /* Address change notification function.*/
-    .netif_drain = fnet_eth_drain,                              /* Drain function.*/
+    .netif_change_addr_notify = _fnet_eth_change_addr_notify,    /* Address change notification function.*/
+    .netif_drain = _fnet_eth_drain,                              /* Drain function.*/
     .netif_get_hw_addr = fnet_enet_get_hw_addr,
     .netif_set_hw_addr = fnet_enet_set_hw_addr,
     .netif_is_connected = fnet_enet_is_connected,
     .netif_get_statistics = fnet_enet_get_statistics
 #if FNET_CFG_MULTICAST
 #if FNET_CFG_IP4
-    , .netif_multicast_join_ip4 = fnet_eth_multicast_join_ip4
-    , .netif_multicast_leave_ip4 = fnet_eth_multicast_leave_ip4
+    , .netif_multicast_join_ip4 = _fnet_eth_multicast_join_ip4
+    , .netif_multicast_leave_ip4 = _fnet_eth_multicast_leave_ip4
 #endif
 #if FNET_CFG_IP6
-    , .netif_multicast_join_ip6 = fnet_eth_multicast_join_ip6
-    , .netif_multicast_leave_ip6 = fnet_eth_multicast_leave_ip6
+    , .netif_multicast_join_ip6 = _fnet_eth_multicast_join_ip6
+    , .netif_multicast_leave_ip6 = _fnet_eth_multicast_leave_ip6
 #endif
 #endif
 #if FNET_CFG_IP6
-    , .netif_output_ip6 = fnet_eth_output_ip6                   /* IPv6 Transmit function.*/
+    , .netif_output_ip6 = _fnet_eth_output_ip6                   /* IPv6 Transmit function.*/
 #endif
 };
 
@@ -162,7 +162,7 @@ static fnet_return_t fnet_enet_init(fnet_netif_t *netif)
         enet_if->txIdx = 0;
 
         /* Install ENET interrupt handler.*/
-        result = fnet_isr_vector_init(enet_if->vector_number, fnet_enet_isr_handler_top, fnet_enet_isr_handler_bottom, FNET_CFG_CPU_ETH_VECTOR_PRIORITY, netif);
+        result = _fnet_isr_vector_init(enet_if->vector_number, fnet_enet_isr_handler_top, fnet_enet_isr_handler_bottom, FNET_CFG_CPU_ETH_VECTOR_PRIORITY, netif);
 
         /* Initializes the ENET module. */
         ENET_Init(enet_if->base, &enet_config, FNET_NULL, kCLOCK_CoreSysClk);
@@ -210,7 +210,7 @@ static void fnet_enet_release(fnet_netif_t *netif)
 
     fnet_isr_unregister(enet_if->vector_number);
 
-    fnet_eth_release(netif); /* Common Ethernet-interface release.*/
+    _fnet_eth_release(netif); /* Common Ethernet-interface release.*/
 }
 
 /************************************************************************
@@ -256,7 +256,7 @@ static void fnet_enet_input(fnet_netif_t *netif)
             frame = (void *)rxDesc->buff1Addr;
 
             /* Ethernet input.*/
-            fnet_eth_input( netif, frame, length);
+            _fnet_eth_input( netif, frame, length);
         }
 
     NEXT_FRAME:
@@ -319,7 +319,7 @@ void fnet_enet_output(fnet_netif_t *netif, fnet_netbuf_t *nb)
         tx_buffer = txDataBuff[enet_if->txIdx];
         enet_if->txIdx = (enet_if->txIdx + 1U) % FNET_CFG_CPU_ETH_TX_BUFS_MAX;
 
-        fnet_netbuf_to_buf(nb, 0u, FNET_NETBUF_COPYALL, tx_buffer);
+        _fnet_netbuf_to_buf(nb, 0u, FNET_NETBUF_COPYALL, tx_buffer);
 
         if (ENET_SendFrame(enet_if->base, &enet_if->handle, tx_buffer, nb->total_length) != kStatus_Success)
         {
@@ -329,7 +329,7 @@ void fnet_enet_output(fnet_netif_t *netif, fnet_netbuf_t *nb)
         enet_if->statistics.tx_packet++;
     }
 
-    fnet_netbuf_free_chain(nb);
+    _fnet_netbuf_free_chain(nb);
 }
 
 /************************************************************************
@@ -367,7 +367,7 @@ static fnet_return_t fnet_enet_set_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw
         /* Set Macaddr */
         ENET_SetMacAddr(enet_if->base, hw_addr);
 
-        fnet_eth_change_addr_notify(netif);
+        _fnet_eth_change_addr_notify(netif);
 
         result = FNET_OK;
     }

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2016 by Andrey Butok. FNET Community.
+* Copyright 2016-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -78,6 +78,8 @@ fnet_tls_desc_t fnet_tls_init(struct fnet_tls_params *params)
     struct fnet_tls_if  *tls_if = FNET_NULL;
     fnet_int32_t        endpoint;
     const unsigned char custom[] = "FNET";
+
+    fnet_service_mutex_lock();
 
     if(params == 0)
     {
@@ -181,6 +183,8 @@ fnet_tls_desc_t fnet_tls_init(struct fnet_tls_params *params)
     }
 
     tls_if->is_enabled = FNET_TRUE;
+
+    fnet_service_mutex_unlock();
     return (fnet_tls_desc_t)tls_if;
 
 ERROR_4:
@@ -196,6 +200,7 @@ ERROR_2:
 ERROR_1:
     mbedtls_x509_crt_free(&tls_if->x509_crt);
 ERROR:
+    fnet_service_mutex_unlock();
     return FNET_NULL;;
 }
 
@@ -206,6 +211,7 @@ void fnet_tls_release(fnet_tls_desc_t tls_desc)
 {
     struct fnet_tls_if  *tls_if = (struct fnet_tls_if *)tls_desc;
 
+    fnet_service_mutex_lock();
     if(tls_if && (tls_if->is_enabled == FNET_TRUE ) )
     {
         mbedtls_x509_crt_free(&tls_if->x509_crt);
@@ -220,6 +226,7 @@ void fnet_tls_release(fnet_tls_desc_t tls_desc)
         /* Set all the fields to zero */
         fnet_memset_zero(tls_if, sizeof(*tls_if));
     }
+    fnet_service_mutex_unlock();
 }
 
 /************************************************************************
@@ -234,6 +241,7 @@ fnet_tls_socket_t fnet_tls_socket(fnet_tls_desc_t tls_desc, fnet_socket_t sock)
 
     if(tls_if)
     {
+        fnet_service_mutex_lock();
         for (i = 0u; i < FNET_CFG_TLS_SOCKET_MAX; i++) /* Find the empty descriptor.*/
         {
             if(fnet_tls_socket_if_list[i].conf == 0)
@@ -280,6 +288,7 @@ fnet_tls_socket_t fnet_tls_socket(fnet_tls_desc_t tls_desc, fnet_socket_t sock)
 #endif
             }
         }
+        fnet_service_mutex_unlock();
     }
 
     return result;
@@ -292,12 +301,15 @@ void fnet_tls_socket_close(fnet_tls_socket_t tls_sock)
 {
     if(tls_sock)
     {
+        fnet_service_mutex_lock();
 #if 0
         /* Notify the peer that the connection is being closed */
         mbedtls_ssl_close_notify(tls_sock);
 #endif
         /* Free referenced items in an SSL context and clear memory.*/
         mbedtls_ssl_free(tls_sock);
+
+        fnet_service_mutex_unlock();
     }
 }
 
@@ -307,6 +319,8 @@ void fnet_tls_socket_close(fnet_tls_socket_t tls_sock)
 fnet_ssize_t fnet_tls_socket_recv(fnet_tls_socket_t tls_sock, fnet_uint8_t *buf, fnet_size_t len)
 {
     fnet_int32_t     result;
+
+    fnet_service_mutex_lock();
 
     result = mbedtls_ssl_read(tls_sock, buf, len);
 
@@ -322,6 +336,7 @@ fnet_ssize_t fnet_tls_socket_recv(fnet_tls_socket_t tls_sock, fnet_uint8_t *buf,
     {
         result = FNET_ERR;
     }
+    fnet_service_mutex_unlock();
 
     return result;
 }
@@ -332,6 +347,8 @@ fnet_ssize_t fnet_tls_socket_recv(fnet_tls_socket_t tls_sock, fnet_uint8_t *buf,
 fnet_ssize_t fnet_tls_socket_send(fnet_tls_socket_t tls_sock, fnet_uint8_t *buf, fnet_size_t len)
 {
     fnet_int32_t     result;
+
+    fnet_service_mutex_lock();
 
     result = mbedtls_ssl_write(tls_sock, buf, len);
 
@@ -348,6 +365,8 @@ fnet_ssize_t fnet_tls_socket_send(fnet_tls_socket_t tls_sock, fnet_uint8_t *buf,
         result = FNET_ERR;
     }
 
+    fnet_service_mutex_unlock();
+
     return result;
 }
 
@@ -357,6 +376,8 @@ fnet_ssize_t fnet_tls_socket_send(fnet_tls_socket_t tls_sock, fnet_uint8_t *buf,
 static int fnet_tls_mbedtls_send(void *ctx, unsigned char const *buf, size_t len)
 {
     int result;
+
+    fnet_service_mutex_lock();
 
     result = fnet_socket_send((fnet_socket_t)ctx, buf, len, 0);
 
@@ -371,6 +392,8 @@ static int fnet_tls_mbedtls_send(void *ctx, unsigned char const *buf, size_t len
         result = 0; /* Close connection.*/
     }
 
+    fnet_service_mutex_unlock();
+
     return result;
 }
 
@@ -380,6 +403,8 @@ static int fnet_tls_mbedtls_send(void *ctx, unsigned char const *buf, size_t len
 static int fnet_tls_mbedtls_recv(void *ctx, unsigned char *buf, size_t len)
 {
     fnet_ssize_t result;
+
+    fnet_service_mutex_lock();
 
     result = fnet_socket_recv((fnet_socket_t)ctx, buf, len, 0);
 
@@ -393,6 +418,9 @@ static int fnet_tls_mbedtls_recv(void *ctx, unsigned char *buf, size_t len)
     {
         result = 0; /* Close connection.*/
     }
+
+    fnet_service_mutex_unlock();
+
     return result;
 }
 

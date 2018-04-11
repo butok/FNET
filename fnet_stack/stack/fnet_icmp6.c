@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community
 *
 ***************************************************************************
 *
@@ -32,13 +31,13 @@
 #include "fnet_prot.h"
 #include "fnet_socket.h"
 #include "fnet_socket_prv.h"
-#include "fnet_checksum.h"
+#include "fnet_checksum_prv.h"
 #include "fnet_mld.h"
 
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fnet_icmp6_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
+static void _fnet_icmp6_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
 
 /************************************************************************
 * Protocol API structure.
@@ -51,7 +50,7 @@ fnet_prot_if_t fnet_icmp6_prot_if =
     FNET_PROT_ICMP6,        /* Protocol number.*/
     0,                      /* Protocol initialization function.*/
     0,                      /* Protocol release function.*/
-    fnet_icmp6_input,       /* Protocol input function,.*/
+    _fnet_icmp6_input,      /* Protocol input function,.*/
     0,                      /* Protocol input control function.*/
     0,                      /* protocol drain function.*/
     0                       /* Socket API */
@@ -60,7 +59,7 @@ fnet_prot_if_t fnet_icmp6_prot_if =
 /************************************************************************
 * DESCRIPTION: ICMPv6 input function.
 *************************************************************************/
-static void fnet_icmp6_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb)
+static void _fnet_icmp6_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb)
 {
     fnet_icmp6_header_t     *hdr;
     fnet_uint16_t           sum;
@@ -74,7 +73,7 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
     if((netif != 0) && (nb != 0))
     {
         /* The header must reside in contiguous area of memory. */
-        if(fnet_netbuf_pullup(&nb, sizeof(fnet_icmp6_header_t)) == FNET_ERR)
+        if(_fnet_netbuf_pullup(&nb, sizeof(fnet_icmp6_header_t)) == FNET_ERR)
         {
             goto DISCARD;
         }
@@ -97,8 +96,8 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
 #endif /* FNET_CFG_LOOPBACK */
 
         /* Verify the checksum. */
-        sum = fnet_checksum_pseudo_start( nb, FNET_HTONS((fnet_uint16_t)FNET_PROT_ICMP6), (fnet_uint16_t)nb->total_length );
-        sum = fnet_checksum_pseudo_end( sum, (fnet_uint8_t *)src_ip_rx, (fnet_uint8_t *)dest_ip_rx, sizeof(fnet_ip6_addr_t) );
+        sum = _fnet_checksum_pseudo_netbuf_start( nb, FNET_HTONS((fnet_uint16_t)FNET_PROT_ICMP6), (fnet_uint16_t)nb->total_length );
+        sum = _fnet_checksum_pseudo_netbuf_end( sum, (fnet_uint8_t *)src_ip_rx, (fnet_uint8_t *)dest_ip_rx, sizeof(fnet_ip6_addr_t) );
         if(sum)
         {
             goto DISCARD;
@@ -113,32 +112,32 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
              * Neighbor Solicitation.
              **************************/
             case FNET_ICMP6_TYPE_NEIGHBOR_SOLICITATION:
-                fnet_nd6_neighbor_solicitation_receive(netif, src_ip_rx, dest_ip_rx, nb, ip6_nb);
+                _fnet_nd6_neighbor_solicitation_receive(netif, src_ip_rx, dest_ip_rx, nb, ip6_nb);
                 break;
             /**************************
              * Neighbor Advertisemnt.
              **************************/
             case FNET_ICMP6_TYPE_NEIGHBOR_ADVERTISEMENT:
-                fnet_nd6_neighbor_advertisement_receive(netif, src_ip_rx, dest_ip_rx, nb, ip6_nb);
+                _fnet_nd6_neighbor_advertisement_receive(netif, src_ip_rx, dest_ip_rx, nb, ip6_nb);
                 break;
             /**************************
              * Router Advertisemnt.
              **************************/
             case FNET_ICMP6_TYPE_ROUTER_ADVERTISEMENT:
-                fnet_nd6_router_advertisement_receive(netif, src_ip_rx, dest_ip_rx, nb, ip6_nb);
+                _fnet_nd6_router_advertisement_receive(netif, src_ip_rx, dest_ip_rx, nb, ip6_nb);
                 break;
             /**************************
              * Router Advertisemnt.
              **************************/
             case FNET_ICMP6_TYPE_REDIRECT:
-                fnet_nd6_redirect_receive(netif, src_ip_rx, dest_ip_rx, nb, ip6_nb);
+                _fnet_nd6_redirect_receive(netif, src_ip_rx, dest_ip_rx, nb, ip6_nb);
                 break;
 #if FNET_CFG_MLD
             /**************************
              * Multicast Listener Query.
              **************************/
             case FNET_ICMP6_TYPE_MULTICAST_LISTENER_QUERY:
-                fnet_mld_query_receive(netif, src_ip_rx, dest_ip_rx, nb, ip6_nb);
+                _fnet_mld_query_receive(netif, src_ip_rx, dest_ip_rx, nb, ip6_nb);
                 break;
 #endif
             /**************************
@@ -158,8 +157,8 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
                 }
 
                 /* Swap source and destination addresses.*/
-                fnet_icmp6_output(netif, src_ip_tx, dest_ip_tx, 0u, nb);
-                fnet_netbuf_free_chain(ip6_nb);
+                _fnet_icmp6_output(netif, src_ip_tx, dest_ip_tx, 0u, nb);
+                _fnet_netbuf_free_chain(ip6_nb);
                 break;
 #if FNET_CFG_IP6_PMTU_DISCOVERY
             /**************************
@@ -172,7 +171,7 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
                     fnet_icmp6_err_header_t *icmp6_err = (fnet_icmp6_err_header_t *)nb->data_ptr;
 
                     /* The header must reside in contiguous area of memory. */
-                    if(fnet_netbuf_pullup(&nb, sizeof(fnet_icmp6_err_header_t)) == FNET_ERR)
+                    if(_fnet_netbuf_pullup(&nb, sizeof(fnet_icmp6_err_header_t)) == FNET_ERR)
                     {
                         goto DISCARD;
                     }
@@ -187,7 +186,7 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
                      * the contents of a Packet Too Big message. */
                     if(netif->pmtu > pmtu)
                     {
-                        fnet_netif_set_pmtu(netif, pmtu);
+                        _fnet_netif_set_pmtu(netif, pmtu);
                     }
                 }
 
@@ -229,16 +228,16 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
                     }
                     if(nb->total_length > hdr_err_data_length)
                     {
-                        fnet_netbuf_trim(&nb, (fnet_int32_t)(hdr_err_data_length - nb->total_length));
+                        _fnet_netbuf_trim(&nb, (fnet_int32_t)(hdr_err_data_length - nb->total_length));
                     }
-                    if(fnet_netbuf_pullup(&nb, nb->total_length) == FNET_ERR) /* The header must reside in contiguous area of memory.*/
+                    if(_fnet_netbuf_pullup(&nb, nb->total_length) == FNET_ERR) /* The header must reside in contiguous area of memory.*/
                     {
                         goto DISCARD;
                     }
 
                     ip_header = (fnet_ip6_header_t *)((fnet_uint8_t *)nb->data_ptr  + sizeof(fnet_icmp6_err_header_t));
 
-                    if((protocol = fnet_prot_find(AF_INET6, SOCK_UNSPEC, (fnet_uint32_t)ip_header->next_header)) != 0)
+                    if((protocol = _fnet_prot_find(AF_INET6, SOCK_UNSPEC, (fnet_uint32_t)ip_header->next_header)) != 0)
                     {
                         if(protocol->prot_control_input)
                         {
@@ -246,9 +245,9 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
                             struct fnet_sockaddr     err_dest_addr;
 
                             /* Prepare addreses for upper protocol.*/
-                            fnet_ip6_set_socket_addr(netif, ip_header, &err_src_addr, &err_dest_addr );
+                            _fnet_ip6_set_socket_addr(netif, ip_header, &err_src_addr, &err_dest_addr );
 
-                            fnet_netbuf_trim(&nb, (fnet_int32_t)(hdr_err_length)); /* Cut the ICMP error header.*/
+                            _fnet_netbuf_trim(&nb, (fnet_int32_t)(hdr_err_length)); /* Cut the ICMP error header.*/
 
                             protocol->prot_control_input(prot_cmd, &err_src_addr, &err_dest_addr, nb);
                         }
@@ -269,16 +268,15 @@ static void fnet_icmp6_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr
     if(discard_flag == FNET_TRUE)
     {
     DISCARD:
-        fnet_netbuf_free_chain(ip6_nb);
-        fnet_netbuf_free_chain(nb);
+        _fnet_netbuf_free_chain(ip6_nb);
+        _fnet_netbuf_free_chain(nb);
     }
-
 }
 
 /************************************************************************
 * DESCRIPTION: ICMPv6 output function.
 *************************************************************************/
-void fnet_icmp6_output( struct fnet_netif *netif, const fnet_ip6_addr_t *src_ip, const fnet_ip6_addr_t *dest_ip, fnet_uint8_t hop_limit, fnet_netbuf_t *nb )
+void _fnet_icmp6_output( struct fnet_netif *netif, const fnet_ip6_addr_t *src_ip, const fnet_ip6_addr_t *dest_ip, fnet_uint8_t hop_limit, fnet_netbuf_t *nb )
 {
     fnet_icmp6_header_t                     *hdr = (fnet_icmp6_header_t *)nb->data_ptr;
     FNET_COMP_PACKED_VAR fnet_uint16_t      *checksum_p;
@@ -286,16 +284,16 @@ void fnet_icmp6_output( struct fnet_netif *netif, const fnet_ip6_addr_t *src_ip,
     /* Checksum calculation.*/
     hdr->checksum = 0u;
 
-    hdr->checksum = fnet_checksum_pseudo_start(nb, FNET_HTONS((fnet_uint16_t)FNET_PROT_ICMP6), (fnet_uint16_t)nb->total_length);
+    hdr->checksum = _fnet_checksum_pseudo_netbuf_start(nb, FNET_HTONS((fnet_uint16_t)FNET_PROT_ICMP6), (fnet_uint16_t)nb->total_length);
     checksum_p = &hdr->checksum;
 
-    fnet_ip6_output(netif, src_ip, dest_ip, FNET_PROT_ICMP6, hop_limit, nb, checksum_p);
+    _fnet_ip6_output(netif, src_ip, dest_ip, FNET_PROT_ICMP6, hop_limit, nb, checksum_p);
 }
 
 /************************************************************************
 * DESCRIPTION: Sends ICMPv6 error message.
 *************************************************************************/
-void fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t code, fnet_uint32_t param, fnet_netbuf_t *origin_nb )
+void _fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t code, fnet_uint32_t param, fnet_netbuf_t *origin_nb )
 {
     fnet_ip6_header_t       *ip6_header;
     fnet_icmp6_err_header_t *icmp6_err_header;
@@ -310,7 +308,7 @@ void fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t
         /* Limit to FNET_IP6_DEFAULT_MTU. */
         if(origin_nb->total_length > (FNET_IP6_DEFAULT_MTU - (sizeof(fnet_icmp6_err_header_t) + sizeof(fnet_ip6_header_t))  ))
         {
-            fnet_netbuf_trim(&origin_nb, (fnet_int32_t)(FNET_IP6_DEFAULT_MTU - (sizeof(fnet_icmp6_err_header_t) + sizeof(fnet_ip6_header_t)) - origin_nb->total_length));
+            _fnet_netbuf_trim(&origin_nb, (fnet_int32_t)(FNET_IP6_DEFAULT_MTU - (sizeof(fnet_icmp6_err_header_t) + sizeof(fnet_ip6_header_t)) - origin_nb->total_length));
         }
 
         ip6_header = (fnet_ip6_header_t *)origin_nb->data_ptr;
@@ -366,7 +364,7 @@ void fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t
             if(FNET_IP6_ADDR_IS_MULTICAST(dest_ip_rx))
             {
                 /* We may not use multicast address as source. Get real source address. */
-                src_ip_tx = fnet_ip6_select_src_addr(netif, src_ip_rx /*dest*/);
+                src_ip_tx = _fnet_ip6_select_src_addr(netif, src_ip_rx /*dest*/);
             }
         }
 
@@ -388,7 +386,7 @@ void fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t
         }
 
         /* Construct ICMPv6 error header.*/
-        if((nb_header = fnet_netbuf_new((sizeof(fnet_icmp6_err_header_t)), FNET_FALSE)) == 0)
+        if((nb_header = _fnet_netbuf_new((sizeof(fnet_icmp6_err_header_t)), FNET_FALSE)) == 0)
         {
             goto FREE_NB;
         }
@@ -399,16 +397,15 @@ void fnet_icmp6_error( struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t
         icmp6_err_header->icmp6_header.code = code;
         icmp6_err_header->data = fnet_htonl(param);
 
-        origin_nb = fnet_netbuf_concat(nb_header, origin_nb);
+        origin_nb = _fnet_netbuf_concat(nb_header, origin_nb);
 
         /* Swap source and destination addresses.*/
-        fnet_icmp6_output( netif, src_ip_tx, dest_ip_tx, 0u, origin_nb);
+        _fnet_icmp6_output( netif, src_ip_tx, dest_ip_tx, 0u, origin_nb);
 
         return;
 
     FREE_NB:
-        fnet_netbuf_free_chain(origin_nb);
-
+        _fnet_netbuf_free_chain(origin_nb);
     }
 
 }

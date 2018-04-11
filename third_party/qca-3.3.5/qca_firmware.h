@@ -7,8 +7,8 @@
 
 #include <stdint.h>
 
-#if 1 /*ver 3.3.6*/
-	#define QCA_FW_VERSION	        0x33060074
+#if 1 /*ver 3.3.6*/ /* Not stable */
+	#define QCA_FW_VERSION	        0x3306000A
 	#define QCA_FW_BUFFER_SIZE	    116877
 #elif 1 /*ver 3.3.5*/
 	#define QCA_FW_VERSION	        0x33050074

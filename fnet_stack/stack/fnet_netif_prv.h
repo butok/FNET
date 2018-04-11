@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -28,7 +27,7 @@
 #define _FNET_NETIF_PRV_H_
 
 #include "fnet.h"
-#include "fnet_netbuf.h"
+#include "fnet_netbuf_prv.h"
 #include "fnet_netif.h"
 #include "fnet_eth.h"
 #include "fnet_nd6.h"
@@ -156,7 +155,7 @@ typedef struct fnet_netif
     struct fnet_netif       *prev;                              /* Pointer to the previous net_if structure. */
     fnet_scope_id_t         scope_id;                           /* Scope zone index, defining network interface. Used by IPv6 sockets.*/
     fnet_uint32_t           features;                           /* Supported features. Bitwise of fnet_netif_feature_t.*/
-    fnet_bool_t             is_connected;                       /* Connection state, updated by fnet_netif_is_connected() call.*/
+    fnet_bool_t             is_connected;                       /* Connection state, updated by _fnet_netif_is_connected() call.*/
     fnet_time_t             is_connected_timestamp;             /* The timestamp, in milliseconds, when is_connected updated last time.*/
 #if FNET_CFG_IP4
     fnet_netif_ip4_addr_t   ip4_addr;                           /* The interface IPv4 address structure. */
@@ -193,31 +192,45 @@ extern fnet_netif_t *fnet_netif_default;    /* Default net_if. */
 extern "C" {
 #endif
 
-void fnet_netif_release_all( void );
-void fnet_netif_drain( void );
-void fnet_netif_signal_p4_addr_conflict( fnet_netif_desc_t netif );
+void _fnet_netif_release(fnet_netif_t *netif);
+fnet_bool_t _fnet_netif_is_initialized(fnet_netif_t *netif);
+void _fnet_netif_release_all( void );
+void _fnet_netif_drain( void );
+fnet_bool_t _fnet_netif_is_connected(fnet_netif_t *netif);
+fnet_netif_t *_fnet_netif_get_default( void );
+fnet_netif_t *_fnet_netif_get_by_number(fnet_index_t n);
+fnet_netif_t *_fnet_netif_get_by_ip4_addr(fnet_ip4_addr_t addr);
+fnet_netif_t *_fnet_netif_get_by_sockaddr( const struct fnet_sockaddr *addr );
+fnet_return_t _fnet_netif_get_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_addr, fnet_size_t hw_addr_size);
+void _fnet_netif_signal_ip4_addr_conflict( fnet_netif_desc_t netif );
+fnet_netif_desc_t _fnet_netif_get_by_scope_id(fnet_scope_id_t scope_id);
+fnet_return_t _fnet_netif_init(fnet_netif_t *netif, fnet_uint8_t *hw_addr, fnet_size_t hw_addr_size );
 
-#if FNET_CFG_MULTICAST & FNET_CFG_IP4
+#if FNET_CFG_IP4
+void _fnet_netif_set_ip4_addr(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_ip4_addr_t subnet_mask);
+#if FNET_CFG_MULTICAST
 void _fnet_netif_join_ip4_multicast (fnet_netif_desc_t netif_desc, fnet_ip4_addr_t multicast_addr);
 void _fnet_netif_leave_ip4_multicast (fnet_netif_desc_t netif_desc, fnet_ip4_addr_t multicast_addr);
 #endif
+#endif
+
 fnet_return_t _fnet_netif_set_hw_addr(fnet_netif_desc_t netif_desc, fnet_uint8_t *hw_addr, fnet_size_t hw_addr_size);
 
 #if FNET_CFG_IP6
-fnet_netif_ip6_addr_t *fnet_netif_get_ip6_addr_info(fnet_netif_t *netif, const fnet_ip6_addr_t *ip_addr);
-fnet_return_t fnet_netif_bind_ip6_addr_prv(fnet_netif_t *netif, const fnet_ip6_addr_t *addr, fnet_netif_ip_addr_type_t addr_type,
-        fnet_time_t lifetime /*in seconds*/, fnet_size_t prefix_length /* bits */ );
-fnet_return_t fnet_netif_unbind_ip6_addr_prv ( fnet_netif_t *netif, fnet_netif_ip6_addr_t *if_addr );
-fnet_bool_t fnet_netif_is_my_ip6_addr(fnet_netif_t *netif, const fnet_ip6_addr_t *ip_addr);
-fnet_netif_desc_t fnet_netif_get_by_ip6_addr( const fnet_ip6_addr_t *ip_addr );
-fnet_bool_t fnet_netif_is_my_ip6_solicited_multicast_addr(fnet_netif_t *netif, fnet_ip6_addr_t *ip_addr);
-void fnet_netif_ip6_addr_timer ( fnet_netif_t *netif);
-fnet_return_t fnet_netif_set_ip6_addr_autoconf(fnet_netif_t *netif, fnet_ip6_addr_t *ip_addr);
-fnet_ip6_addr_t *fnet_netif_get_ip6_addr_valid_link_local (fnet_netif_t *netif);
+fnet_netif_ip6_addr_t *_fnet_netif_get_ip6_addr_info(fnet_netif_t *netif, const fnet_ip6_addr_t *ip_addr);
+fnet_return_t _fnet_netif_bind_ip6_addr(fnet_netif_t *netif, const fnet_ip6_addr_t *addr, fnet_netif_ip_addr_type_t addr_type,
+                                        fnet_time_t lifetime /*in seconds*/, fnet_size_t prefix_length /* bits */ );
+fnet_return_t _fnet_netif_unbind_ip6_addr ( fnet_netif_t *netif, fnet_netif_ip6_addr_t *if_addr );
+fnet_bool_t _fnet_netif_is_my_ip6_addr(fnet_netif_t *netif, const fnet_ip6_addr_t *ip_addr);
+fnet_netif_t *_fnet_netif_get_by_ip6_addr(const fnet_ip6_addr_t *ip_addr );
+fnet_bool_t _fnet_netif_is_my_ip6_solicited_multicast_addr(fnet_netif_t *netif, fnet_ip6_addr_t *ip_addr);
+void _fnet_netif_ip6_addr_timer ( fnet_netif_t *netif);
+fnet_return_t _fnet_netif_set_ip6_addr_autoconf(fnet_netif_t *netif, fnet_ip6_addr_t *ip_addr);
+fnet_ip6_addr_t *_fnet_netif_get_ip6_addr_valid_link_local (fnet_netif_t *netif);
 #if FNET_CFG_IP6_PMTU_DISCOVERY
-void fnet_netif_pmtu_init(fnet_netif_t *netif);
-void fnet_netif_pmtu_release(fnet_netif_t *netif);
-void fnet_netif_set_pmtu(fnet_netif_t *netif, fnet_size_t pmtu);
+void _fnet_netif_pmtu_init(fnet_netif_t *netif);
+void _fnet_netif_pmtu_release(fnet_netif_t *netif);
+void _fnet_netif_set_pmtu(fnet_netif_t *netif, fnet_size_t pmtu);
 #endif
 void _fnet_netif_join_ip6_multicast (fnet_netif_desc_t netif_desc, const fnet_ip6_addr_t *multicast_addr);
 void _fnet_netif_leave_ip6_multicast (fnet_netif_desc_t netif_desc, fnet_ip6_addr_t *multicast_addr);

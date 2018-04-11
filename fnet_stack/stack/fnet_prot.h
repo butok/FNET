@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community
 *
 ***************************************************************************
 *
@@ -81,10 +80,10 @@ typedef struct fnet_prot_if
 extern "C" {
 #endif
 
-fnet_return_t fnet_prot_init( void );
-void fnet_prot_release( void );
-fnet_prot_if_t *fnet_prot_find( fnet_address_family_t family, fnet_socket_type_t type, fnet_uint32_t protocol );
-void fnet_prot_drain( void );
+fnet_return_t _fnet_prot_init( void );
+void _fnet_prot_release( void );
+fnet_prot_if_t *_fnet_prot_find( fnet_address_family_t family, fnet_socket_type_t type, fnet_uint32_t protocol );
+void _fnet_prot_drain( void );
 
 #if defined(__cplusplus)
 }

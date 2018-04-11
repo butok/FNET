@@ -157,7 +157,7 @@ static fnet_sntp_if_t fnet_sntp_if;
 static const fnet_uint8_t fnet_sntp_year_days[FNET_SNTP_MONTHS_IN_YEAR] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 static const fnet_uint8_t fnet_sntp_leap_year_days[FNET_SNTP_MONTHS_IN_YEAR] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-static void fnet_sntp_poll(void *fnet_sntp_if_p);
+static void _fnet_sntp_poll(void *fnet_sntp_if_p);
 
 /************************************************************************
 * DESCRIPTION: Initializes SNTP client service and starts the time
@@ -167,6 +167,8 @@ fnet_return_t fnet_sntp_init( struct fnet_sntp_params *params )
 {
     const fnet_uint32_t     bufsize_option = sizeof(fnet_sntp_header_t);
     struct fnet_sockaddr    remote_addr;
+
+    fnet_service_mutex_lock();
 
     /* Check input parameters. */
     if((params == 0)
@@ -216,7 +218,7 @@ fnet_return_t fnet_sntp_init( struct fnet_sntp_params *params )
     }
 
     /* Register SNTP service. */
-    fnet_sntp_if.service_descriptor = fnet_service_register(fnet_sntp_poll, (void *) &fnet_sntp_if);
+    fnet_sntp_if.service_descriptor = fnet_service_register(_fnet_sntp_poll, (void *) &fnet_sntp_if);
     if(fnet_sntp_if.service_descriptor == 0)
     {
         FNET_DEBUG_SNTP(FNET_SNTP_ERR_SERVICE);
@@ -233,18 +235,21 @@ fnet_return_t fnet_sntp_init( struct fnet_sntp_params *params )
 
     fnet_sntp_if.state = FNET_SNTP_STATE_TX; /* => Send request. */
 
+    fnet_service_mutex_unlock();
+
     return FNET_OK;
 ERROR_1:
     fnet_socket_close(fnet_sntp_if.socket_cln);
 
 ERROR:
+    fnet_service_mutex_unlock();
     return FNET_ERR;
 }
 
 /************************************************************************
 * DESCRIPTION: SNTP-client state machine.
 ************************************************************************/
-static void fnet_sntp_poll( void *fnet_sntp_if_p )
+static void _fnet_sntp_poll( void *fnet_sntp_if_p )
 {
     fnet_ssize_t            sent_size;
     fnet_ssize_t            received;
@@ -338,6 +343,7 @@ void fnet_sntp_release( void )
 {
     if(fnet_sntp_if.state != FNET_SNTP_STATE_DISABLED)
     {
+        fnet_service_mutex_lock();
         /* Unregister the tftp service. */
         fnet_service_unregister( fnet_sntp_if.service_descriptor );
 
@@ -345,6 +351,7 @@ void fnet_sntp_release( void )
         fnet_socket_close(fnet_sntp_if.socket_cln);
 
         fnet_sntp_if.state = FNET_SNTP_STATE_DISABLED;
+        fnet_service_mutex_unlock();
     }
 }
 

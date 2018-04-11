@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -41,7 +40,7 @@
  * @brief NULL pointer.
  * @showinitializer
  ******************************************************************************/
-#define FNET_NULL       (0)
+#define FNET_NULL       ((void *)0)
 
 /**************************************************************************/ /*!
  * @def FNET_RAND_MAX

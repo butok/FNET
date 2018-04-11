@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2011 by Andrey Butok,Gordon Jahn. Freescale Semiconductor, Inc.
+* Copyright 2011-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *

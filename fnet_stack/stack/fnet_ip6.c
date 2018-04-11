@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community
 *
 ***************************************************************************
 *
@@ -30,7 +29,7 @@
 #include "fnet_ip6_prv.h"
 #include "fnet_ip_prv.h"
 #include "fnet_icmp4.h"
-#include "fnet_checksum.h"
+#include "fnet_checksum_prv.h"
 #include "fnet_timer_prv.h"
 #include "fnet_socket_prv.h"
 #include "fnet_netif_prv.h"
@@ -39,6 +38,7 @@
 #include "fnet_prot.h"
 #include "fnet_raw.h"
 #include "fnet_mld.h"
+#include "fnet_stack_prv.h"
 
 #if FNET_CFG_MULTICAST == 0 /* Multicast must be enabled for IPv6. */
     #error  "FNET_CFG_MULTICAST must be enabled for IPv6."
@@ -72,23 +72,23 @@ typedef struct fnet_ip6_ext_header
 /******************************************************************
 * Function Prototypes
 *******************************************************************/
-static void fnet_ip6_netif_output(struct fnet_netif *netif, const fnet_ip6_addr_t *src_ip, const fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb);
-static fnet_return_t fnet_ip6_ext_header_process(fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb);
-static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_fragment_header(fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb);
-static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_routing_header(fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb);
-static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_options (fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb);
-static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_no_next_header (fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb);
-static void fnet_ip6_input_low(void *cookie);
-static fnet_uint32_t fnet_ip6_policy_label( const fnet_ip6_addr_t *addr );
+static void _fnet_ip6_netif_output(struct fnet_netif *netif, const fnet_ip6_addr_t *src_ip, const fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb);
+static fnet_return_t _fnet_ip6_ext_header_process(fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb);
+static fnet_ip6_ext_header_handler_result_t _fnet_ip6_ext_header_handler_fragment_header(fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb);
+static fnet_ip6_ext_header_handler_result_t _fnet_ip6_ext_header_handler_routing_header(fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb);
+static fnet_ip6_ext_header_handler_result_t _fnet_ip6_ext_header_handler_options (fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb);
+static fnet_ip6_ext_header_handler_result_t _fnet_ip6_ext_header_handler_no_next_header (fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb);
+static void _fnet_ip6_input_low(void *cookie);
+static fnet_uint32_t _fnet_ip6_policy_label( const fnet_ip6_addr_t *addr );
 
 #if FNET_CFG_IP6_FRAGMENTATION
-    static void fnet_ip6_frag_list_add( fnet_ip6_frag_list_t **head, fnet_ip6_frag_list_t *fl );
-    static void fnet_ip6_frag_list_del( fnet_ip6_frag_list_t **head, fnet_ip6_frag_list_t *fl );
-    static void fnet_ip6_frag_add( fnet_ip6_frag_header_t **head, fnet_ip6_frag_header_t *frag,  fnet_ip6_frag_header_t *frag_prev );
-    static void fnet_ip6_frag_del( fnet_ip6_frag_header_t **head, fnet_ip6_frag_header_t *frag );
-    static void fnet_ip6_frag_list_free( fnet_ip6_frag_list_t *list );
-    static fnet_netbuf_t *fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip );
-    static void fnet_ip6_timer(fnet_uint32_t cookie);
+    static void _fnet_ip6_frag_list_add( fnet_ip6_frag_list_t **head, fnet_ip6_frag_list_t *fl );
+    static void _fnet_ip6_frag_list_del( fnet_ip6_frag_list_t **head, fnet_ip6_frag_list_t *fl );
+    static void _fnet_ip6_frag_add( fnet_ip6_frag_header_t **head, fnet_ip6_frag_header_t *frag,  fnet_ip6_frag_header_t *frag_prev );
+    static void _fnet_ip6_frag_del( fnet_ip6_frag_header_t **head, fnet_ip6_frag_header_t *frag );
+    static void _fnet_ip6_frag_list_free( fnet_ip6_frag_list_t *list );
+    static fnet_netbuf_t *_fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip );
+    static void _fnet_ip6_timer(fnet_uint32_t cookie);
 #endif
 
 /******************************************************************
@@ -96,11 +96,11 @@ static fnet_uint32_t fnet_ip6_policy_label( const fnet_ip6_addr_t *addr );
 *******************************************************************/
 static fnet_ip6_ext_header_t fnet_ip6_ext_header_list[] =
 {
-    {FNET_IP6_TYPE_NO_NEXT_HEADER,          fnet_ip6_ext_header_handler_no_next_header}
-    , {FNET_IP6_TYPE_HOP_BY_HOP_OPTIONS,     fnet_ip6_ext_header_handler_options}
-    , {FNET_IP6_TYPE_DESTINATION_OPTIONS,    fnet_ip6_ext_header_handler_options}
-    , {FNET_IP6_TYPE_ROUTING_HEADER,         fnet_ip6_ext_header_handler_routing_header}
-    , {FNET_IP6_TYPE_FRAGMENT_HEADER,        fnet_ip6_ext_header_handler_fragment_header}
+    {FNET_IP6_TYPE_NO_NEXT_HEADER,          _fnet_ip6_ext_header_handler_no_next_header}
+    , {FNET_IP6_TYPE_HOP_BY_HOP_OPTIONS,     _fnet_ip6_ext_header_handler_options}
+    , {FNET_IP6_TYPE_DESTINATION_OPTIONS,    _fnet_ip6_ext_header_handler_options}
+    , {FNET_IP6_TYPE_ROUTING_HEADER,         _fnet_ip6_ext_header_handler_routing_header}
+    , {FNET_IP6_TYPE_FRAGMENT_HEADER,        _fnet_ip6_ext_header_handler_fragment_header}
     /* ADD YOUR EXTENSION HEADER HANDLERS HERE.*/
 };
 
@@ -156,7 +156,7 @@ fnet_ip6_multicast_list_entry_t fnet_ip6_multicast_list[FNET_CFG_MULTICAST_MAX];
 /************************************************************************
 * DESCRIPTION: This function makes initialization of the IPv6 layer.
 *************************************************************************/
-fnet_return_t fnet_ip6_init( void )
+fnet_return_t _fnet_ip6_init( void )
 {
     fnet_return_t result = FNET_ERR;
 
@@ -164,13 +164,13 @@ fnet_return_t fnet_ip6_init( void )
 
     ip6_frag_list_head = 0;
 
-    ip6_timer_ptr = fnet_timer_new((FNET_IP6_TIMER_PERIOD / FNET_TIMER_PERIOD_MS), fnet_ip6_timer, 0u);
+    ip6_timer_ptr = _fnet_timer_new((FNET_IP6_TIMER_PERIOD / FNET_TIMER_PERIOD_MS), _fnet_ip6_timer, 0u);
 
     if(ip6_timer_ptr)
     {
 #endif
         /* Install IPv6 event handler. */
-        ip6_event = fnet_event_init(fnet_ip6_input_low, 0u);
+        ip6_event = fnet_event_init(_fnet_ip6_input_low, 0u);
 
         if(ip6_event)
         {
@@ -191,11 +191,11 @@ fnet_return_t fnet_ip6_init( void )
 * DESCRIPTION: This function makes release of the all resources
 *              allocated for IPv6 layer module.
 *************************************************************************/
-void fnet_ip6_release( void )
+void _fnet_ip6_release( void )
 {
-    fnet_ip6_drain();
+    _fnet_ip6_drain();
 #if FNET_CFG_IP6_FRAGMENTATION
-    fnet_timer_free(ip6_timer_ptr);
+    _fnet_timer_free(ip6_timer_ptr);
     ip6_timer_ptr = 0;
 #endif
 }
@@ -206,7 +206,7 @@ void fnet_ip6_release( void )
 * RETURNS: FNET_OK - continue processing by transport layer.
 *          FNET_ERR - stop processing.
 *************************************************************************/
-static fnet_return_t fnet_ip6_ext_header_process(fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb)
+static fnet_return_t _fnet_ip6_ext_header_process(fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb)
 {
     fnet_bool_t             try_upper_layer = FNET_FALSE;
     fnet_uint8_t            next_header;
@@ -236,9 +236,9 @@ static fnet_return_t fnet_ip6_ext_header_process(fnet_netif_t *netif, fnet_uint8
         /*TBD try to put it to main handler */
         if( (next_header == FNET_IP6_TYPE_HOP_BY_HOP_OPTIONS) && ext_header_counter)
         {
-            fnet_netbuf_free_chain(*nb_p);
-            fnet_icmp6_error( netif, FNET_ICMP6_TYPE_PARAM_PROB, FNET_ICMP6_CODE_PP_NEXT_HEADER,
-                              (fnet_uint32_t)(*next_header_p) - (fnet_uint32_t)(ip6_nb->data_ptr), ip6_nb );
+            _fnet_netbuf_free_chain(*nb_p);
+            _fnet_icmp6_error( netif, FNET_ICMP6_TYPE_PARAM_PROB, FNET_ICMP6_CODE_PP_NEXT_HEADER,
+                               (fnet_uint32_t)(*next_header_p) - (fnet_uint32_t)(ip6_nb->data_ptr), ip6_nb );
             return FNET_ERR;
         }
 
@@ -290,7 +290,7 @@ static fnet_return_t fnet_ip6_ext_header_process(fnet_netif_t *netif, fnet_uint8
 /************************************************************************
 * DESCRIPTION: Process No Next Header
 *************************************************************************/
-static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_no_next_header (fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb)
+static fnet_ip6_ext_header_handler_result_t _fnet_ip6_ext_header_handler_no_next_header (fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb)
 {
     FNET_COMP_UNUSED_ARG(netif);
     FNET_COMP_UNUSED_ARG(src_ip);
@@ -302,15 +302,15 @@ static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_no_next_
      * header. If the Payload Length field of the IPv6 header indicates the
      * presence of octets past the end of a header whose Next Header field
      * contains 59, those octets must be ignored.*/
-    fnet_netbuf_free_chain(ip6_nb);
-    fnet_netbuf_free_chain(*nb_p);
+    _fnet_netbuf_free_chain(ip6_nb);
+    _fnet_netbuf_free_chain(*nb_p);
     return FNET_IP6_EXT_HEADER_HANDLER_RESULT_EXIT;
 }
 
 /************************************************************************
 * DESCRIPTION: Process Hop by Hop Options and Destimation Options
 *************************************************************************/
-static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_options (fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb)
+static fnet_ip6_ext_header_handler_result_t _fnet_ip6_ext_header_handler_options (fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb)
 {
     fnet_netbuf_t               *nb = *nb_p;
     fnet_ip6_options_header_t   *options_h = (fnet_ip6_options_header_t *)nb->data_ptr;
@@ -349,8 +349,8 @@ static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_options 
                         break;
                     /* 01 - discard the packet. */
                     case FNET_IP6_OPTION_TYPE_UNRECOGNIZED_DISCARD:
-                        fnet_netbuf_free_chain(nb);
-                        fnet_netbuf_free_chain(ip6_nb);
+                        _fnet_netbuf_free_chain(nb);
+                        _fnet_netbuf_free_chain(ip6_nb);
 
                         exit_flag = FNET_TRUE;
                         break;
@@ -359,9 +359,9 @@ static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_options 
                      *      ICMP Parameter Problem, Code 2, message to the packet’s
                      *      Source Address, pointing to the unrecognized Option Type.*/
                     case FNET_IP6_OPTION_TYPE_UNRECOGNIZED_DISCARD_ICMP:
-                        fnet_netbuf_free_chain(nb);
-                        fnet_icmp6_error( netif, FNET_ICMP6_TYPE_PARAM_PROB, FNET_ICMP6_CODE_PP_OPTION,
-                                          (fnet_uint32_t)(&option->type) - (fnet_uint32_t)(ip6_nb->data_ptr), ip6_nb ); /* TBD not tested.*/
+                        _fnet_netbuf_free_chain(nb);
+                        _fnet_icmp6_error( netif, FNET_ICMP6_TYPE_PARAM_PROB, FNET_ICMP6_CODE_PP_OPTION,
+                                           (fnet_uint32_t)(&option->type) - (fnet_uint32_t)(ip6_nb->data_ptr), ip6_nb ); /* TBD not tested.*/
 
                         exit_flag = FNET_TRUE;
                         break;
@@ -370,15 +370,15 @@ static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_options 
                      *      Problem, Code 2, message to the packet’s Source Address,
                      *      pointing to the unrecognized Option Type.*/
                     case FNET_IP6_OPTION_TYPE_UNRECOGNIZED_DISCARD_UICMP:
-                        fnet_netbuf_free_chain(nb);
+                        _fnet_netbuf_free_chain(nb);
                         if(!FNET_IP6_ADDR_IS_MULTICAST(dest_ip))
                         {
-                            fnet_icmp6_error( netif, FNET_ICMP6_TYPE_PARAM_PROB, FNET_ICMP6_CODE_PP_OPTION,
-                                              (fnet_uint32_t)(&option->type) - (fnet_uint32_t)(ip6_nb->data_ptr), ip6_nb ); /* TBD not tested.*/
+                            _fnet_icmp6_error( netif, FNET_ICMP6_TYPE_PARAM_PROB, FNET_ICMP6_CODE_PP_OPTION,
+                                               (fnet_uint32_t)(&option->type) - (fnet_uint32_t)(ip6_nb->data_ptr), ip6_nb ); /* TBD not tested.*/
                         }
                         else
                         {
-                            fnet_netbuf_free_chain(ip6_nb);
+                            _fnet_netbuf_free_chain(ip6_nb);
                         }
 
                         exit_flag = FNET_TRUE;
@@ -398,8 +398,7 @@ static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_options 
     }
 
     *next_header_p = &options_h->next_header;
-    fnet_netbuf_trim(nb_p, (fnet_int32_t)(length + 2u));
-
+    _fnet_netbuf_trim(nb_p, (fnet_int32_t)(length + 2u));
 
     return FNET_IP6_EXT_HEADER_HANDLER_RESULT_NEXT;
 }
@@ -407,7 +406,7 @@ static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_options 
 /************************************************************************
 * DESCRIPTION: Process Routing header.
 *************************************************************************/
-static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_routing_header(fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb)
+static fnet_ip6_ext_header_handler_result_t _fnet_ip6_ext_header_handler_routing_header(fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb)
 {
     fnet_ip6_ext_header_handler_result_t    result;
     fnet_netbuf_t                           *nb = *nb_p;
@@ -428,9 +427,9 @@ static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_routing_
     */
     if( routing_h->segments_left > 0u)
     {
-        fnet_netbuf_free_chain(nb);
-        fnet_icmp6_error( netif, FNET_ICMP6_TYPE_PARAM_PROB, FNET_ICMP6_CODE_PP_HEADER,
-                          (fnet_uint32_t)(&routing_h->routing_type) - (fnet_uint32_t)(ip6_nb->data_ptr), ip6_nb ); /* TBD not tested.*/
+        _fnet_netbuf_free_chain(nb);
+        _fnet_icmp6_error( netif, FNET_ICMP6_TYPE_PARAM_PROB, FNET_ICMP6_CODE_PP_HEADER,
+                           (fnet_uint32_t)(&routing_h->routing_type) - (fnet_uint32_t)(ip6_nb->data_ptr), ip6_nb ); /* TBD not tested.*/
         result = FNET_IP6_EXT_HEADER_HANDLER_RESULT_EXIT;
     }
     else
@@ -440,7 +439,7 @@ static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_routing_
          *  is identified by the Next Header field in the Routing header.*/
 
         *next_header_p = &routing_h->next_header;
-        fnet_netbuf_trim(nb_p, (fnet_int32_t)(((fnet_uint32_t)routing_h->hdr_ext_length << 3u) + (8u)));
+        _fnet_netbuf_trim(nb_p, (fnet_int32_t)(((fnet_uint32_t)routing_h->hdr_ext_length << 3u) + (8u)));
 
         result = FNET_IP6_EXT_HEADER_HANDLER_RESULT_NEXT;
     }
@@ -452,11 +451,11 @@ static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_routing_
 * DESCRIPTION: Process IPv6 Fragment header.
 *************************************************************************/
 #if FNET_CFG_IP6_FRAGMENTATION
-static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_fragment_header(fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb)
+static fnet_ip6_ext_header_handler_result_t _fnet_ip6_ext_header_handler_fragment_header(fnet_netif_t *netif, fnet_uint8_t **next_header_p, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb)
 {
     fnet_ip6_ext_header_handler_result_t result;
 
-    if( (*nb_p = fnet_ip6_reassembly(netif, nb_p, ip6_nb, src_ip, dest_ip )) != FNET_NULL)
+    if( (*nb_p = _fnet_ip6_reassembly(netif, nb_p, ip6_nb, src_ip, dest_ip )) != FNET_NULL)
     {
         fnet_ip6_header_t  *ip6_header = (fnet_ip6_header_t *)ip6_nb->data_ptr;
         *next_header_p = &ip6_header->next_header;
@@ -475,7 +474,7 @@ static fnet_ip6_ext_header_handler_result_t fnet_ip6_ext_header_handler_fragment
 /************************************************************************
 * DESCRIPTION: Prepare sockets addreses for upper protocol.
 *************************************************************************/
-void fnet_ip6_set_socket_addr(fnet_netif_t *netif, fnet_ip6_header_t *ip_hdr, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr )
+void _fnet_ip6_set_socket_addr(fnet_netif_t *netif, fnet_ip6_header_t *ip_hdr, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr )
 {
     fnet_memset_zero(src_addr, sizeof(struct fnet_sockaddr));
     src_addr->sa_family = AF_INET6;
@@ -491,13 +490,13 @@ void fnet_ip6_set_socket_addr(fnet_netif_t *netif, fnet_ip6_header_t *ip_hdr, st
 /************************************************************************
 * DESCRIPTION: IPv6 input function.
 *************************************************************************/
-void fnet_ip6_input( fnet_netif_t *netif, fnet_netbuf_t *nb )
+void _fnet_ip6_input( fnet_netif_t *netif, fnet_netbuf_t *nb )
 {
     if(netif && nb)
     {
-        if(fnet_ip_queue_append(&ip6_queue, netif, nb) != FNET_OK)
+        if(_fnet_ip_queue_append(&ip6_queue, netif, nb) != FNET_OK)
         {
-            fnet_netbuf_free_chain(nb);
+            _fnet_netbuf_free_chain(nb);
             return;
         }
 
@@ -509,7 +508,7 @@ void fnet_ip6_input( fnet_netif_t *netif, fnet_netbuf_t *nb )
 /************************************************************************
 * DESCRIPTION: This function performs handling of incoming IPv6 datagrams.
 *************************************************************************/
-static void fnet_ip6_input_low(void *cookie)
+static void _fnet_ip6_input_low(void *cookie)
 {
     fnet_ip6_header_t       *hdr;
     fnet_netif_t            *netif;
@@ -525,9 +524,8 @@ static void fnet_ip6_input_low(void *cookie)
 
     fnet_isr_lock();
 
-    while((nb = fnet_ip_queue_read(&ip6_queue, &netif)) != 0)
+    while((nb = _fnet_ip_queue_read(&ip6_queue, &netif)) != 0)
     {
-
         nb->next_chain = 0;
 
         /* RFC 4862: By disabling IP operation,
@@ -538,7 +536,7 @@ static void fnet_ip6_input_low(void *cookie)
         }
 
         /* The header must reside in contiguous area of memory. */
-        if(fnet_netbuf_pullup(&nb, sizeof(fnet_ip6_header_t)) == FNET_ERR)
+        if(_fnet_netbuf_pullup(&nb, sizeof(fnet_ip6_header_t)) == FNET_ERR)
         {
             goto DROP;
         }
@@ -552,7 +550,7 @@ static void fnet_ip6_input_low(void *cookie)
         if(nb->total_length > (sizeof(fnet_ip6_header_t) + (fnet_size_t)payload_length))
         {
             /* Logical size and the physical size of the packet should be the same.*/
-            fnet_netbuf_trim(&nb, (fnet_int32_t)sizeof(fnet_ip6_header_t) + (fnet_int32_t)payload_length - (fnet_int32_t)nb->total_length );
+            _fnet_netbuf_trim(&nb, (fnet_int32_t)sizeof(fnet_ip6_header_t) + (fnet_int32_t)payload_length - (fnet_int32_t)nb->total_length );
         }
 
         /*******************************************************************
@@ -562,7 +560,7 @@ static void fnet_ip6_input_low(void *cookie)
             && (nb->total_length >= (sizeof(fnet_ip6_header_t) + (fnet_size_t)payload_length))
             && (FNET_IP6_HEADER_GET_VERSION(hdr) == 6u)                     /* Check the IP Version. */
             && (!FNET_IP6_ADDR_IS_MULTICAST(&hdr->source_addr))             /* Validate source address. */
-            && ((fnet_netif_is_my_ip6_addr(netif, &hdr->destination_addr))  /* Validate destination address. */
+            && ((_fnet_netif_is_my_ip6_addr(netif, &hdr->destination_addr))  /* Validate destination address. */
                 || FNET_IP6_ADDR_IS_MULTICAST(&hdr->destination_addr)        /* Pass multicast destination address.*/
                 || (netif->netif_api->netif_type == FNET_NETIF_TYPE_LOOPBACK) )
           )
@@ -570,7 +568,7 @@ static void fnet_ip6_input_low(void *cookie)
             fnet_uint8_t    *next_header = &hdr->next_header;
             fnet_netbuf_t   *ip6_nb;
 
-            ip6_nb = fnet_netbuf_copy(nb, 0u, ((nb->total_length > FNET_IP6_DEFAULT_MTU) ? FNET_IP6_DEFAULT_MTU : FNET_NETBUF_COPYALL), FNET_FALSE); /* Used mainly for ICMP errors .*/
+            ip6_nb = _fnet_netbuf_copy(nb, 0u, ((nb->total_length > FNET_IP6_DEFAULT_MTU) ? FNET_IP6_DEFAULT_MTU : FNET_NETBUF_COPYALL), FNET_FALSE); /* Used mainly for ICMP errors .*/
             if(ip6_nb == FNET_NULL)
             {
                 goto DROP;
@@ -586,22 +584,22 @@ static void fnet_ip6_input_low(void *cookie)
             }
 #endif
 
-            fnet_netbuf_trim(&nb, (fnet_int32_t)sizeof(fnet_ip6_header_t));
+            _fnet_netbuf_trim(&nb, (fnet_int32_t)sizeof(fnet_ip6_header_t));
 
             /********************************************
              * Extension headers processing.
              *********************************************/
-            if(fnet_ip6_ext_header_process(netif, &next_header, source_addr, destination_addr, &nb, ip6_nb) == FNET_ERR)
+            if(_fnet_ip6_ext_header_process(netif, &next_header, source_addr, destination_addr, &nb, ip6_nb) == FNET_ERR)
             {
                 continue;
             }
 
             /* Prepare addreses for upper protocol.*/
-            fnet_ip6_set_socket_addr(netif, hdr, &src_addr,  &dest_addr );
+            _fnet_ip6_set_socket_addr(netif, hdr, &src_addr,  &dest_addr );
 
 #if FNET_CFG_RAW
             /* RAW Sockets input.*/
-            fnet_raw_input(netif, &src_addr, &dest_addr, nb, ip6_nb);
+            _fnet_raw_input(netif, &src_addr, &dest_addr, nb, ip6_nb);
 #endif
 
             /* Note: (http://www.cisco.com/web/about/ac123/ac147/archived_issues/ipj_9-3/ipv6_internals.html)
@@ -619,7 +617,7 @@ static void fnet_ip6_input_low(void *cookie)
              * Transport layer processing (ICMP/TCP/UDP).
              *********************************************/
             /* Find transport protocol.*/
-            if((protocol = fnet_prot_find(AF_INET6, SOCK_UNSPEC, (fnet_uint32_t) * next_header)) != FNET_NULL)
+            if((protocol = _fnet_prot_find(AF_INET6, SOCK_UNSPEC, (fnet_uint32_t) * next_header)) != FNET_NULL)
             {
                 protocol->prot_input(netif, &src_addr,  &dest_addr, nb, ip6_nb);
                 /* After that nb may point to wrong place. Do not use it.*/
@@ -627,7 +625,7 @@ static void fnet_ip6_input_low(void *cookie)
             else
                 /* No protocol found.*/
             {
-                fnet_netbuf_free_chain(nb);
+                _fnet_netbuf_free_chain(nb);
                 /* RFC 2460 4:If, as a result of processing a header, a node is required to proceed
                  * to the next header but the Next Header value in the current header is
                  * unrecognized by the node, it should discard the packet and send an
@@ -637,14 +635,14 @@ static void fnet_ip6_input_low(void *cookie)
                  * value within the original packet. The same action should be taken if
                  * a node encounters a Next Header value of zero in any header other
                  * than an IPv6 header.*/
-                fnet_icmp6_error( netif, FNET_ICMP6_TYPE_PARAM_PROB, FNET_ICMP6_CODE_PP_NEXT_HEADER,
-                                  (fnet_uint32_t)(next_header) - (fnet_uint32_t)(ip6_nb->data_ptr), ip6_nb ); /* TBD not tested.*/
+                _fnet_icmp6_error( netif, FNET_ICMP6_TYPE_PARAM_PROB, FNET_ICMP6_CODE_PP_NEXT_HEADER,
+                                   (fnet_uint32_t)(next_header) - (fnet_uint32_t)(ip6_nb->data_ptr), ip6_nb ); /* TBD not tested.*/
             }
         }
         else
         {
         DROP:
-            fnet_netbuf_free_chain(nb);
+            _fnet_netbuf_free_chain(nb);
         }
     } /* while end */
 
@@ -655,7 +653,7 @@ static void fnet_ip6_input_low(void *cookie)
 * DESCRIPTION: Returns scope of the IPv6 address (Node-local,
 * link-local, site-local or global.).
 *************************************************************************/
-fnet_int32_t fnet_ip6_addr_scope(const fnet_ip6_addr_t *ip_addr)
+fnet_int32_t _fnet_ip6_addr_scope(const fnet_ip6_addr_t *ip_addr)
 {
     fnet_int32_t result = FNET_IP6_ADDR_SCOPE_GLOBAL;
 
@@ -704,7 +702,7 @@ fnet_int32_t fnet_ip6_addr_scope(const fnet_ip6_addr_t *ip_addr)
 *  most significant, or leftmost, bits) that the two addresses have in
 *  common. It ranges from 0 to 128.
 *************************************************************************/
-fnet_size_t fnet_ip6_common_prefix_length(const fnet_ip6_addr_t *ip_addr_1, const fnet_ip6_addr_t *ip_addr_2)
+fnet_size_t _fnet_ip6_common_prefix_length(const fnet_ip6_addr_t *ip_addr_1, const fnet_ip6_addr_t *ip_addr_2)
 {
     fnet_size_t     length = 0u;
     fnet_index_t    i;
@@ -736,7 +734,7 @@ fnet_size_t fnet_ip6_common_prefix_length(const fnet_ip6_addr_t *ip_addr_1, cons
 /************************************************************************
 * DESCRIPTION:  Returns label value from policy table.
 *************************************************************************/
-static fnet_uint32_t fnet_ip6_policy_label( const fnet_ip6_addr_t *addr )
+static fnet_uint32_t _fnet_ip6_policy_label( const fnet_ip6_addr_t *addr )
 {
     fnet_index_t    i;
     fnet_uint32_t   label = 0u;
@@ -747,7 +745,7 @@ static fnet_uint32_t fnet_ip6_policy_label( const fnet_ip6_addr_t *addr )
     {
         fnet_size_t prefix_length = fnet_ip6_if_policy_table[i].prefix_length;
 
-        if(fnet_ip6_addr_pefix_cmp(&fnet_ip6_if_policy_table[i].prefix, addr, prefix_length) == FNET_TRUE)
+        if(_fnet_ip6_addr_pefix_cmp(&fnet_ip6_if_policy_table[i].prefix, addr, prefix_length) == FNET_TRUE)
         {
             if(prefix_length > biggest_prefix_length)
             {
@@ -763,7 +761,7 @@ static fnet_uint32_t fnet_ip6_policy_label( const fnet_ip6_addr_t *addr )
 /************************************************************************
 * DESCRIPTION: Compares first "prefix_length" bits of the addresses.
 *************************************************************************/
-fnet_bool_t fnet_ip6_addr_pefix_cmp(const fnet_ip6_addr_t *addr_1, const fnet_ip6_addr_t *addr_2, fnet_size_t prefix_length)
+fnet_bool_t _fnet_ip6_addr_pefix_cmp(const fnet_ip6_addr_t *addr_1, const fnet_ip6_addr_t *addr_2, fnet_size_t prefix_length)
 {
     fnet_bool_t     result;
     fnet_size_t     prefix_length_bytes = prefix_length >> 3;
@@ -787,7 +785,18 @@ fnet_bool_t fnet_ip6_addr_pefix_cmp(const fnet_ip6_addr_t *addr_1, const fnet_ip
 * DESCRIPTION:  Selects the best source address to use with a
 *               destination address, Based on RFC3484.
 *************************************************************************/
-const fnet_ip6_addr_t *fnet_ip6_select_src_addr(fnet_netif_t *netif /* Optional.*/, const fnet_ip6_addr_t *dest_addr)
+const fnet_ip6_addr_t *fnet_ip6_select_src_addr( const fnet_ip6_addr_t *dest_addr)
+{
+    const fnet_ip6_addr_t   *result;
+
+    _fnet_stack_mutex_lock();
+    result = _fnet_ip6_select_src_addr(FNET_NULL, dest_addr);
+    _fnet_stack_mutex_unlock();
+
+    return result;
+}
+/* Private */
+const fnet_ip6_addr_t *_fnet_ip6_select_src_addr(fnet_netif_t *netif /* Optional.*/, const fnet_ip6_addr_t *dest_addr)
 {
     fnet_index_t    i;
     fnet_ip6_addr_t *best_addr = FNET_NULL;
@@ -808,8 +817,8 @@ const fnet_ip6_addr_t *fnet_ip6_select_src_addr(fnet_netif_t *netif /* Optional.
     {
         for(if_dest_cur = fnet_netif_list; (if_dest_cur != FNET_NULL) && (terminate_algorithm == FNET_FALSE) ; if_dest_cur = if_dest_cur->next)
         {
-            dest_scope = fnet_ip6_addr_scope(dest_addr);
-            dest_label = fnet_ip6_policy_label(dest_addr);
+            dest_scope = _fnet_ip6_addr_scope(dest_addr);
+            dest_label = _fnet_ip6_policy_label(dest_addr);
 
             /* Just continue the first loop.*/
             for(i = 0u; i < FNET_NETIF_IP6_ADDR_MAX; i++)
@@ -844,8 +853,8 @@ const fnet_ip6_addr_t *fnet_ip6_select_src_addr(fnet_netif_t *netif /* Optional.
                  * and otherwise prefer SA.  Similarly, if Scope(SB) < Scope(SA): If
                  * Scope(SB) < Scope(D), then prefer SA and otherwise prefer SB.
                  */
-                best_scope = fnet_ip6_addr_scope(best_addr);
-                new_scope = fnet_ip6_addr_scope(&if_dest_cur->ip6_addr[i].address);
+                best_scope = _fnet_ip6_addr_scope(best_addr);
+                new_scope = _fnet_ip6_addr_scope(&if_dest_cur->ip6_addr[i].address);
 
                 if(best_scope < new_scope)
                 {
@@ -892,8 +901,8 @@ const fnet_ip6_addr_t *fnet_ip6_select_src_addr(fnet_netif_t *netif /* Optional.
                  * Similarly, if Label(SB) = Label(D) and Label(SA) <> Label(D), then
                  * prefer SB.
                  */
-                best_label = fnet_ip6_policy_label(best_addr);
-                new_label = fnet_ip6_policy_label(&if_dest_cur->ip6_addr[i].address);
+                best_label = _fnet_ip6_policy_label(best_addr);
+                new_label = _fnet_ip6_policy_label(&if_dest_cur->ip6_addr[i].address);
 
                 if(best_label == dest_label)
                 {
@@ -923,8 +932,8 @@ const fnet_ip6_addr_t *fnet_ip6_select_src_addr(fnet_netif_t *netif /* Optional.
                  * Similarly, if CommonPrefixLen(SB, D) > CommonPrefixLen(SA, D), then
                  * prefer SB.
                  */
-                best_prefix_length = fnet_ip6_common_prefix_length(best_addr, dest_addr);
-                new_prefix_length = fnet_ip6_common_prefix_length(&if_dest_cur->ip6_addr[i].address, dest_addr);
+                best_prefix_length = _fnet_ip6_common_prefix_length(best_addr, dest_addr);
+                new_prefix_length = _fnet_ip6_common_prefix_length(&if_dest_cur->ip6_addr[i].address, dest_addr);
 
                 if(new_prefix_length > best_prefix_length)
                     /* Found better one.*/
@@ -944,7 +953,7 @@ const fnet_ip6_addr_t *fnet_ip6_select_src_addr(fnet_netif_t *netif /* Optional.
 *
 * RETURNS: MTU
 *************************************************************************/
-fnet_size_t fnet_ip6_mtu( fnet_netif_t *netif)
+fnet_size_t _fnet_ip6_mtu( fnet_netif_t *netif)
 {
     fnet_size_t mtu;
 
@@ -978,7 +987,7 @@ fnet_size_t fnet_ip6_mtu( fnet_netif_t *netif)
 * DESCRIPTION: This function performs IPv6 routing
 *              on an outgoing IP packet.
 *************************************************************************/
-fnet_netif_t *fnet_ip6_route(const fnet_ip6_addr_t *src_ip /*optional*/, const fnet_ip6_addr_t *dest_ip)
+fnet_netif_t *_fnet_ip6_route(const fnet_ip6_addr_t *src_ip /*optional*/, const fnet_ip6_addr_t *dest_ip)
 {
     fnet_netif_t        *netif = FNET_NULL;
 
@@ -999,13 +1008,13 @@ fnet_netif_t *fnet_ip6_route(const fnet_ip6_addr_t *src_ip /*optional*/, const f
         if((src_ip == FNET_NULL) || FNET_IP6_ADDR_IS_UNSPECIFIED(src_ip))
             /* Determine a source address. */
         {
-            src_ip = fnet_ip6_select_src_addr(FNET_NULL, dest_ip);
+            src_ip = _fnet_ip6_select_src_addr(FNET_NULL, dest_ip);
         }
 
         if(src_ip != FNET_NULL)
         {
             /* Determine an output interface. */
-            netif = (fnet_netif_t *)fnet_netif_get_by_ip6_addr(src_ip);
+            netif = _fnet_netif_get_by_ip6_addr(src_ip);
         }
     }
 
@@ -1016,7 +1025,7 @@ fnet_netif_t *fnet_ip6_route(const fnet_ip6_addr_t *src_ip /*optional*/, const f
 * DESCRIPTION: This function returns FNET_TRUE if the protocol message
 *              will be fragmented by IPv6, and FNET_FALSE otherwise.
 *************************************************************************/
-fnet_bool_t fnet_ip6_will_fragment( fnet_netif_t *netif, fnet_size_t protocol_message_size)
+fnet_bool_t _fnet_ip6_will_fragment( fnet_netif_t *netif, fnet_size_t protocol_message_size)
 {
     fnet_bool_t res;
 
@@ -1039,7 +1048,7 @@ fnet_bool_t fnet_ip6_will_fragment( fnet_netif_t *netif, fnet_size_t protocol_me
         ((netif->pmtu) /* If PMTU is enabled.*/ &&  ((protocol_message_size + sizeof(fnet_ip6_header_t)) > netif->pmtu)) ||
         ( (!netif->pmtu) &&
 #endif
-          ((protocol_message_size + sizeof(fnet_ip6_header_t)) > fnet_ip6_mtu(netif))
+          ((protocol_message_size + sizeof(fnet_ip6_header_t)) > _fnet_ip6_mtu(netif))
 #if FNET_CFG_IP6_PMTU_DISCOVERY
         )/* IP Fragmentation. */
 #endif
@@ -1062,8 +1071,8 @@ fnet_bool_t fnet_ip6_will_fragment( fnet_netif_t *netif, fnet_size_t protocol_me
 *          FNET_ERR_MSGSIZE=Size error
 *          FNET_ERR_NOMEM=No memory
 *************************************************************************/
-fnet_error_t fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_addr_t *src_ip /*optional*/, const fnet_ip6_addr_t *dest_ip,
-                             fnet_uint8_t protocol, fnet_uint8_t hop_limit /*optional*/, fnet_netbuf_t *nb, FNET_COMP_PACKED_VAR fnet_uint16_t *checksum)
+fnet_error_t _fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_addr_t *src_ip /*optional*/, const fnet_ip6_addr_t *dest_ip,
+                              fnet_uint8_t protocol, fnet_uint8_t hop_limit /*optional*/, fnet_netbuf_t *nb, FNET_COMP_PACKED_VAR fnet_uint16_t *checksum)
 {
     fnet_error_t        error_code;
     fnet_netbuf_t       *nb_header;
@@ -1098,7 +1107,7 @@ fnet_error_t fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_ad
     if(src_ip == FNET_NULL) /* It may be any address.*/
         /* Determine a source address. */
     {
-        src_ip = fnet_ip6_select_src_addr(netif, dest_ip);
+        src_ip = _fnet_ip6_select_src_addr(netif, dest_ip);
 
         if(src_ip == FNET_NULL)
         {
@@ -1110,7 +1119,7 @@ fnet_error_t fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_ad
     if(netif == FNET_NULL)
         /* Determine an output interface. */
     {
-        netif = (fnet_netif_t *)fnet_netif_get_by_ip6_addr(src_ip);
+        netif = _fnet_netif_get_by_ip6_addr(src_ip);
 
         if(netif == FNET_NULL) /* Ther is no any initializaed IF.*/
         {
@@ -1130,11 +1139,11 @@ fnet_error_t fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_ad
     /* Pseudo checksum. */
     if(checksum)
     {
-        *checksum = fnet_checksum_pseudo_end( *checksum, (fnet_uint8_t *)src_ip, (const fnet_uint8_t *)dest_ip, sizeof(fnet_ip6_addr_t) );
+        *checksum = _fnet_checksum_pseudo_netbuf_end( *checksum, (fnet_uint8_t *)src_ip, (const fnet_uint8_t *)dest_ip, sizeof(fnet_ip6_addr_t) );
     }
 
     /****** Construct IP header. ******/
-    if((nb_header = fnet_netbuf_new(sizeof(fnet_ip6_header_t), FNET_TRUE)) == 0)
+    if((nb_header = _fnet_netbuf_new(sizeof(fnet_ip6_header_t), FNET_TRUE)) == 0)
     {
         error_code = FNET_ERR_NOMEM;
         goto DROP;
@@ -1159,7 +1168,7 @@ fnet_error_t fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_ad
     FNET_IP6_ADDR_COPY(src_ip, &ip6_header->source_addr);
     FNET_IP6_ADDR_COPY(dest_ip, &ip6_header->destination_addr);
 
-    mtu = fnet_ip6_mtu(netif);
+    mtu = _fnet_ip6_mtu(netif);
 
     if(
 #if FNET_CFG_IP6_PMTU_DISCOVERY
@@ -1206,27 +1215,27 @@ fnet_error_t fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_ad
         if(tmp < 8)             /* The MTU is too small.*/
         {
             error_code = FNET_ERR_MSGSIZE;
-            fnet_netbuf_free_chain(nb_header);
+            _fnet_netbuf_free_chain(nb_header);
             goto DROP;
         }
         frag_length = (fnet_size_t)tmp;
 
         first_frag_length = frag_length;
 
-        if((nb_frag_header = fnet_netbuf_new(sizeof(fnet_ip6_fragment_header_t), FNET_TRUE)) == 0)
+        if((nb_frag_header = _fnet_netbuf_new(sizeof(fnet_ip6_fragment_header_t), FNET_TRUE)) == 0)
         {
             error_code = FNET_ERR_NOMEM;
-            fnet_netbuf_free_chain(nb_header);
+            _fnet_netbuf_free_chain(nb_header);
             goto DROP;
         }
 
-        nb = fnet_netbuf_concat(nb_frag_header, nb);
-        nb = fnet_netbuf_concat(nb_header, nb);
+        nb = _fnet_netbuf_concat(nb_frag_header, nb);
+        nb = _fnet_netbuf_concat(nb_header, nb);
 
         nb_next_ptr = &nb->next_chain;
 
         /* The header (and options) must reside in contiguous area of memory.*/
-        if(fnet_netbuf_pullup(&nb,  header_length) == FNET_ERR)
+        if(_fnet_netbuf_pullup(&nb,  header_length) == FNET_ERR)
         {
             error_code = FNET_ERR_NOMEM;
             goto DROP;
@@ -1253,7 +1262,7 @@ fnet_error_t fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_ad
         {
             fnet_netbuf_t *nb_tmp;
 
-            nb = fnet_netbuf_new(header_length, FNET_FALSE); /* Allocate a new header.*/
+            nb = _fnet_netbuf_new(header_length, FNET_FALSE); /* Allocate a new header.*/
 
             if(nb == 0)
             {
@@ -1279,14 +1288,14 @@ fnet_error_t fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_ad
             }
 
             /* Copy the data from the original packet into the fragment.*/
-            if((nb_tmp = fnet_netbuf_copy(nb_prev, offset, frag_length, FNET_FALSE)) == 0)
+            if((nb_tmp = _fnet_netbuf_copy(nb_prev, offset, frag_length, FNET_FALSE)) == 0)
             {
                 error++;
-                fnet_netbuf_free_chain(nb);
+                _fnet_netbuf_free_chain(nb);
                 goto FRAG_END;
             }
 
-            nb = fnet_netbuf_concat(nb, nb_tmp);
+            nb = _fnet_netbuf_concat(nb, nb_tmp);
 
             ip6_header_new->length = fnet_htons((fnet_uint16_t)(nb->total_length - sizeof(fnet_ip6_header_t)) );
 
@@ -1296,7 +1305,7 @@ fnet_error_t fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_ad
 
         /* Update the first fragment.*/
         nb = nb_prev;
-        fnet_netbuf_trim(&nb, (fnet_int32_t)(/*header_length +*/ first_frag_length -  fnet_ntohs(ip6_header->length) /*- sizeof(fnet_ip6_header_t)*/) );
+        _fnet_netbuf_trim(&nb, (fnet_int32_t)(/*header_length +*/ first_frag_length -  fnet_ntohs(ip6_header->length) /*- sizeof(fnet_ip6_header_t)*/) );
 
         ip6_header->length = fnet_htons((fnet_uint16_t)(nb->total_length - sizeof(fnet_ip6_header_t)) );
 
@@ -1308,11 +1317,11 @@ fnet_error_t fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_ad
 
             if(error == 0u)
             {
-                fnet_ip6_netif_output(netif, src_ip, dest_ip, nb);
+                _fnet_ip6_netif_output(netif, src_ip, dest_ip, nb);
             }
             else
             {
-                fnet_netbuf_free_chain(nb);
+                _fnet_netbuf_free_chain(nb);
             }
         }
 
@@ -1323,14 +1332,14 @@ fnet_error_t fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_ad
     }
     else
     {
-        nb = fnet_netbuf_concat(nb_header, nb);
-        fnet_ip6_netif_output(netif, src_ip, dest_ip, nb);
+        nb = _fnet_netbuf_concat(nb_header, nb);
+        _fnet_ip6_netif_output(netif, src_ip, dest_ip, nb);
     }
 
     return (FNET_ERR_OK);
 
 DROP:
-    fnet_netbuf_free_chain(nb);           /* Discard datagram */
+    _fnet_netbuf_free_chain(nb);           /* Discard datagram */
 
     return (error_code);
 }
@@ -1338,7 +1347,7 @@ DROP:
 /************************************************************************
 * DESCRIPTION:
 *************************************************************************/
-static void fnet_ip6_netif_output(struct fnet_netif *netif, const fnet_ip6_addr_t *src_ip, const fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb)
+static void _fnet_ip6_netif_output(struct fnet_netif *netif, const fnet_ip6_addr_t *src_ip, const fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb)
 {
 
 #if FNET_CFG_LOOPBACK
@@ -1347,7 +1356,7 @@ static void fnet_ip6_netif_output(struct fnet_netif *netif, const fnet_ip6_addr_
      ***********************************************/
 
     /* Anything sent to one of the host's own IP address is sent to the loopback interface.*/
-    if(fnet_netif_is_my_ip6_addr(netif, dest_ip) == FNET_TRUE)
+    if(_fnet_netif_is_my_ip6_addr(netif, dest_ip) == FNET_TRUE)
     {
         netif = FNET_LOOP_IF;
     }
@@ -1361,9 +1370,9 @@ static void fnet_ip6_netif_output(struct fnet_netif *netif, const fnet_ip6_addr_
             fnet_netbuf_t *nb_loop;
 
             /* Datagrams sent to amulticast address are copied to the loopback interface.*/
-            if((nb_loop = fnet_netbuf_copy(nb, 0, FNET_NETBUF_COPYALL, FNET_TRUE)) != 0)
+            if((nb_loop = _fnet_netbuf_copy(nb, 0, FNET_NETBUF_COPYALL, FNET_TRUE)) != 0)
             {
-                fnet_loop_output_ip6(netif, src_ip,  dest_ip, nb_loop);
+                _fnet_loop_output_ip6(netif, src_ip,  dest_ip, nb_loop);
             }
         }
 #endif /* FNET_CFG_LOOPBACK && FNET_CFG_LOOPBACK_MULTICAST */
@@ -1377,7 +1386,7 @@ static void fnet_ip6_netif_output(struct fnet_netif *netif, const fnet_ip6_addr_
 *        with the 24 low-order bits of a corresponding IPv6 unicast
 *        or anycast address.
 *************************************************************************/
-void fnet_ip6_get_solicited_multicast_addr(const fnet_ip6_addr_t *ip_addr, fnet_ip6_addr_t *solicited_multicast_addr)
+void _fnet_ip6_get_solicited_multicast_addr(const fnet_ip6_addr_t *ip_addr, fnet_ip6_addr_t *solicited_multicast_addr)
 {
     solicited_multicast_addr->addr[0] = 0xFFu;
     solicited_multicast_addr->addr[1] = 0x02u;
@@ -1401,7 +1410,7 @@ void fnet_ip6_get_solicited_multicast_addr(const fnet_ip6_addr_t *ip_addr, fnet_
 * DESCRIPTION: This function frees list of datagram fragments.
 *************************************************************************/
 #if FNET_CFG_IP6_FRAGMENTATION  /* PFI create general library fo list, linked lists etc.*/
-static void fnet_ip6_frag_list_free( fnet_ip6_frag_list_t *list )
+static void _fnet_ip6_frag_list_free( fnet_ip6_frag_list_t *list )
 {
     fnet_netbuf_t *nb;
 
@@ -1412,12 +1421,12 @@ static void fnet_ip6_frag_list_free( fnet_ip6_frag_list_t *list )
         while((volatile fnet_ip6_frag_header_t *)(list->frag_ptr) != 0)
         {
             nb = list->frag_ptr->nb;
-            fnet_ip6_frag_del((fnet_ip6_frag_header_t **)(&list->frag_ptr), list->frag_ptr);
-            fnet_netbuf_free_chain(nb);
+            _fnet_ip6_frag_del((fnet_ip6_frag_header_t **)(&list->frag_ptr), list->frag_ptr);
+            _fnet_netbuf_free_chain(nb);
         }
 
-        fnet_ip6_frag_list_del(&ip6_frag_list_head, list);
-        fnet_free(list);
+        _fnet_ip6_frag_list_del(&ip6_frag_list_head, list);
+        _fnet_free(list);
     }
 
     fnet_isr_unlock();
@@ -1429,7 +1438,7 @@ static void fnet_ip6_frag_list_free( fnet_ip6_frag_list_t *list )
 * DESCRIPTION: Adds frag list to the general frag list.
 *************************************************************************/
 #if FNET_CFG_IP6_FRAGMENTATION
-static void fnet_ip6_frag_list_add( fnet_ip6_frag_list_t **head, fnet_ip6_frag_list_t *fl )
+static void _fnet_ip6_frag_list_add( fnet_ip6_frag_list_t **head, fnet_ip6_frag_list_t *fl )
 {
     fl->next = *head;
 
@@ -1448,7 +1457,7 @@ static void fnet_ip6_frag_list_add( fnet_ip6_frag_list_t **head, fnet_ip6_frag_l
 * DESCRIPTION: Deletes frag list from the general frag list.
 *************************************************************************/
 #if FNET_CFG_IP6_FRAGMENTATION
-static void fnet_ip6_frag_list_del( fnet_ip6_frag_list_t **head, fnet_ip6_frag_list_t *fl )
+static void _fnet_ip6_frag_list_del( fnet_ip6_frag_list_t **head, fnet_ip6_frag_list_t *fl )
 {
     if(fl->prev == 0)
     {
@@ -1470,8 +1479,8 @@ static void fnet_ip6_frag_list_del( fnet_ip6_frag_list_t **head, fnet_ip6_frag_l
 * DESCRIPTION: Adds frag to the frag list.
 *************************************************************************/
 #if FNET_CFG_IP6_FRAGMENTATION
-static void fnet_ip6_frag_add( fnet_ip6_frag_header_t **head, fnet_ip6_frag_header_t *frag,
-                               fnet_ip6_frag_header_t *frag_prev )
+static void _fnet_ip6_frag_add( fnet_ip6_frag_header_t **head, fnet_ip6_frag_header_t *frag,
+                                fnet_ip6_frag_header_t *frag_prev )
 {
     if(frag_prev && ( *head))
     {
@@ -1498,7 +1507,7 @@ static void fnet_ip6_frag_add( fnet_ip6_frag_header_t **head, fnet_ip6_frag_head
 * DESCRIPTION: Deletes frag from the frag list.
 *************************************************************************/
 #if FNET_CFG_IP6_FRAGMENTATION
-static void fnet_ip6_frag_del( fnet_ip6_frag_header_t **head, fnet_ip6_frag_header_t *frag )
+static void _fnet_ip6_frag_del( fnet_ip6_frag_header_t **head, fnet_ip6_frag_header_t *frag )
 {
     if(frag->prev == frag)
     {
@@ -1515,7 +1524,7 @@ static void fnet_ip6_frag_del( fnet_ip6_frag_header_t **head, fnet_ip6_frag_head
         }
     }
 
-    fnet_free(frag);
+    _fnet_free(frag);
 }
 #endif /* FNET_CFG_IP6_FRAGMENTATION */
 
@@ -1523,7 +1532,7 @@ static void fnet_ip6_frag_del( fnet_ip6_frag_header_t **head, fnet_ip6_frag_head
 * DESCRIPTION: This function attempts to assemble a complete datagram.
 *************************************************************************/
 #if FNET_CFG_IP6_FRAGMENTATION
-static fnet_netbuf_t *fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip )
+static fnet_netbuf_t *_fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **nb_p, fnet_netbuf_t *ip6_nb, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip )
 {
     fnet_ip6_frag_list_t        *frag_list_ptr;
     fnet_ip6_frag_header_t      *frag_ptr;
@@ -1540,7 +1549,7 @@ static fnet_netbuf_t *fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **n
 
 
     /* For this algorithm the all datagram must reside in contiguous area of memory.*/
-    if(fnet_netbuf_pullup(nb_p, (*nb_p)->total_length) == FNET_ERR)
+    if(_fnet_netbuf_pullup(nb_p, (*nb_p)->total_length) == FNET_ERR)
     {
         goto DROP_FRAG_1;
     }
@@ -1554,7 +1563,7 @@ static fnet_netbuf_t *fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **n
     offset = (fnet_uint16_t)FNET_IP6_FRAGMENT_OFFSET(ip6_fragment_header->offset_more);
     mf = (fnet_uint8_t)FNET_IP6_FRAGMENT_MF(ip6_fragment_header->offset_more);
 
-    fnet_netbuf_trim(nb_p, (fnet_int32_t)sizeof(fnet_ip6_fragment_header_t));
+    _fnet_netbuf_trim(nb_p, (fnet_int32_t)sizeof(fnet_ip6_fragment_header_t));
     nb = *nb_p;
 
     total_length = (fnet_uint16_t)nb->length;
@@ -1570,14 +1579,14 @@ static fnet_netbuf_t *fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **n
              * ICMP Parameter Problem, Code 0, message should be sent to the
              * source of the fragment, pointing to the Payload Length field of
              * the fragment packet. */
-            fnet_icmp6_error( netif, FNET_ICMP6_TYPE_PARAM_PROB, FNET_ICMP6_CODE_PP_HEADER,
-                              (fnet_uint32_t)((fnet_uint32_t)(&iphdr->length) - (fnet_uint32_t)ip6_nb->data_ptr), ip6_nb ); /* TBD not tested.*/
+            _fnet_icmp6_error( netif, FNET_ICMP6_TYPE_PARAM_PROB, FNET_ICMP6_CODE_PP_HEADER,
+                               (fnet_uint32_t)((fnet_uint32_t)(&iphdr->length) - (fnet_uint32_t)ip6_nb->data_ptr), ip6_nb ); /* TBD not tested.*/
             goto DROP_FRAG_0;
         }
     }
 
     /* Create fragment header.*/
-    if((cur_frag_ptr = (fnet_ip6_frag_header_t *)fnet_malloc(sizeof(fnet_ip6_frag_header_t))) == 0)
+    if((cur_frag_ptr = (fnet_ip6_frag_header_t *)_fnet_malloc(sizeof(fnet_ip6_frag_header_t))) == 0)
     {
         goto DROP_FRAG_1;
     }
@@ -1603,12 +1612,12 @@ static fnet_netbuf_t *fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **n
     if(frag_list_ptr == 0)
     {
         /* Create list.*/
-        if((frag_list_ptr = (fnet_ip6_frag_list_t *)fnet_malloc_zero(sizeof(fnet_ip6_frag_list_t))) == 0)
+        if((frag_list_ptr = (fnet_ip6_frag_list_t *)_fnet_malloc_zero(sizeof(fnet_ip6_frag_list_t))) == 0)
         {
             goto DROP_FRAG_2;
         }
 
-        fnet_ip6_frag_list_add(&ip6_frag_list_head, frag_list_ptr);
+        _fnet_ip6_frag_list_add(&ip6_frag_list_head, frag_list_ptr);
 
         frag_list_ptr->ttl = (fnet_uint8_t)FNET_IP6_FRAG_TTL;
         frag_list_ptr->id = id;
@@ -1642,7 +1651,7 @@ static fnet_netbuf_t *fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **n
                     goto DROP_FRAG_2;
                 }
 
-                fnet_netbuf_trim(nb_p, (fnet_int32_t)i);
+                _fnet_netbuf_trim(nb_p, (fnet_int32_t)i);
                 /* nb = *nb_p */
                 cur_frag_ptr->total_length -= (fnet_uint16_t)i;
                 cur_frag_ptr->offset += (fnet_uint16_t)i;
@@ -1659,13 +1668,13 @@ static fnet_netbuf_t *fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **n
             {
                 frag_ptr->total_length -= (fnet_uint16_t)i;
                 frag_ptr->offset += (fnet_uint16_t)i;
-                fnet_netbuf_trim((fnet_netbuf_t **)&frag_ptr->nb, (fnet_int32_t)i);
+                _fnet_netbuf_trim((fnet_netbuf_t **)&frag_ptr->nb, (fnet_int32_t)i);
                 break;
             }
 
             frag_ptr = frag_ptr->next;
-            fnet_netbuf_free_chain(frag_ptr->prev->nb);
-            fnet_ip6_frag_del((fnet_ip6_frag_header_t **)&frag_list_ptr->frag_ptr, frag_ptr->prev);
+            _fnet_netbuf_free_chain(frag_ptr->prev->nb);
+            _fnet_ip6_frag_del((fnet_ip6_frag_header_t **)&frag_list_ptr->frag_ptr, frag_ptr->prev);
         }
     }
 
@@ -1677,7 +1686,7 @@ static fnet_netbuf_t *fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **n
     }
 
     /* Insert fragment to the list.*/
-    fnet_ip6_frag_add((fnet_ip6_frag_header_t **)(&frag_list_ptr->frag_ptr), cur_frag_ptr, frag_ptr ? frag_ptr->prev : 0);
+    _fnet_ip6_frag_add((fnet_ip6_frag_header_t **)(&frag_list_ptr->frag_ptr), cur_frag_ptr, frag_ptr ? frag_ptr->prev : 0);
 
     {
         fnet_uint16_t offset_l = 0u;
@@ -1709,7 +1718,7 @@ static fnet_netbuf_t *fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **n
 
     while(frag_ptr != frag_list_ptr->frag_ptr)
     {
-        nb = fnet_netbuf_concat(nb, frag_ptr->nb);
+        nb = _fnet_netbuf_concat(nb, frag_ptr->nb);
 
         frag_ptr = frag_ptr->next;
     }
@@ -1721,24 +1730,24 @@ static fnet_netbuf_t *fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **n
 
     while(frag_list_ptr->frag_ptr != 0)
     {
-        fnet_ip6_frag_del((fnet_ip6_frag_header_t **)(&frag_list_ptr->frag_ptr), frag_list_ptr->frag_ptr);
+        _fnet_ip6_frag_del((fnet_ip6_frag_header_t **)(&frag_list_ptr->frag_ptr), frag_list_ptr->frag_ptr);
     }
 
-    fnet_ip6_frag_list_del(&ip6_frag_list_head, frag_list_ptr);
-    fnet_free(frag_list_ptr);
+    _fnet_ip6_frag_list_del(&ip6_frag_list_head, frag_list_ptr);
+    _fnet_free(frag_list_ptr);
 
     return (nb);
 
 DROP_FRAG_2:
-    fnet_free(cur_frag_ptr);
+    _fnet_free(cur_frag_ptr);
 DROP_FRAG_1:
-    fnet_netbuf_free_chain(ip6_nb);
+    _fnet_netbuf_free_chain(ip6_nb);
 DROP_FRAG_0:
-    fnet_netbuf_free_chain(nb);
+    _fnet_netbuf_free_chain(nb);
     return (FNET_NULL);
 
 NEXT_FRAG:
-    fnet_netbuf_free_chain(ip6_nb);
+    _fnet_netbuf_free_chain(ip6_nb);
     return (FNET_NULL);
 }
 #endif /* FNET_CFG_IP4_FRAGMENTATION */
@@ -1747,7 +1756,7 @@ NEXT_FRAG:
 * DESCRIPTION: IP timer function.
 *************************************************************************/
 #if FNET_CFG_IP6_FRAGMENTATION
-static void fnet_ip6_timer(fnet_uint32_t cookie)
+static void _fnet_ip6_timer(fnet_uint32_t cookie)
 {
     fnet_ip6_frag_list_t *frag_list_ptr;
     fnet_ip6_frag_list_t *tmp_frag_list_ptr;
@@ -1777,20 +1786,20 @@ static void fnet_ip6_timer(fnet_uint32_t cookie)
                 /*************************************
                  * Reconstact PCB for ICMP error.
                  *************************************/
-                nb_header = fnet_netbuf_new(sizeof(fnet_ip6_header_t) + sizeof(fnet_ip6_fragment_header_t), FNET_FALSE); /* Allocate a new header.*/
+                nb_header = _fnet_netbuf_new(sizeof(fnet_ip6_header_t) + sizeof(fnet_ip6_fragment_header_t), FNET_FALSE); /* Allocate a new header.*/
 
                 if(nb_header == FNET_NULL)
                 {
                     goto FREE_LIST;
                 }
-                nb = fnet_netbuf_copy(frag_list_ptr->frag_ptr->nb, 0u, FNET_NETBUF_COPYALL, FNET_FALSE);
+                nb = _fnet_netbuf_copy(frag_list_ptr->frag_ptr->nb, 0u, FNET_NETBUF_COPYALL, FNET_FALSE);
                 if(nb == FNET_NULL)
                 {
-                    fnet_netbuf_free(nb_header);
+                    _fnet_netbuf_free(nb_header);
                     goto FREE_LIST;
                 }
 
-                nb = fnet_netbuf_concat(nb_header, nb);
+                nb = _fnet_netbuf_concat(nb_header, nb);
 
                 ip6_header = (fnet_ip6_header_t *)nb->data_ptr;
                 ip6_fragment_header = (fnet_ip6_fragment_header_t *)((fnet_uint32_t)ip6_header + sizeof(fnet_ip6_header_t));
@@ -1812,13 +1821,13 @@ static void fnet_ip6_timer(fnet_uint32_t cookie)
                 ip6_fragment_header->offset_more = fnet_htons((fnet_uint16_t)frag_list_ptr->frag_ptr->mf);
                 ip6_fragment_header->id = frag_list_ptr->id;
 
-                fnet_icmp6_error( frag_list_ptr->netif, FNET_ICMP6_TYPE_TIME_EXCEED, FNET_ICMP6_CODE_TE_FRG_REASSEMBLY,
-                                  0u, nb ); /* TBD not tested.*/
+                _fnet_icmp6_error( frag_list_ptr->netif, FNET_ICMP6_TYPE_TIME_EXCEED, FNET_ICMP6_CODE_TE_FRG_REASSEMBLY,
+                                   0u, nb ); /* TBD not tested.*/
             }
 
         FREE_LIST:
             tmp_frag_list_ptr = frag_list_ptr->next;
-            fnet_ip6_frag_list_free(frag_list_ptr);
+            _fnet_ip6_frag_list_free(frag_list_ptr);
             frag_list_ptr = tmp_frag_list_ptr;
 
         }
@@ -1837,7 +1846,7 @@ static void fnet_ip6_timer(fnet_uint32_t cookie)
 * DESCRIPTION: This function tries to free not critical parts
 *              of memory occupied by the IPv6 module.
 *************************************************************************/
-void fnet_ip6_drain( void )
+void _fnet_ip6_drain( void )
 {
     fnet_isr_lock();
 
@@ -1845,14 +1854,14 @@ void fnet_ip6_drain( void )
 
     while(((volatile fnet_ip6_frag_list_t *)ip6_frag_list_head) != 0)
     {
-        fnet_ip6_frag_list_free(ip6_frag_list_head);
+        _fnet_ip6_frag_list_free(ip6_frag_list_head);
     }
 
 #endif
 
     while(((volatile fnet_netbuf_t *)ip6_queue.head) != 0)
     {
-        fnet_netbuf_del_chain(&ip6_queue.head, ip6_queue.head);
+        _fnet_netbuf_queue_del(&ip6_queue.head, ip6_queue.head);
     }
 
     ip6_queue.count = 0u;
@@ -1864,7 +1873,7 @@ void fnet_ip6_drain( void )
 * DESCRIPTION: This function retrieves the current value
 *              of IPv6 socket option.
 *************************************************************************/
-fnet_error_t fnet_ip6_getsockopt(struct _fnet_socket_if_t *sock, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen )
+fnet_error_t _fnet_ip6_getsockopt(struct _fnet_socket_if_t *sock, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen )
 {
     fnet_error_t result = FNET_ERR_OK;
 
@@ -1901,7 +1910,7 @@ fnet_error_t fnet_ip6_getsockopt(struct _fnet_socket_if_t *sock, fnet_socket_opt
 /************************************************************************
 * DESCRIPTION: This function sets the value of IPv6 socket option.
 *************************************************************************/
-fnet_error_t fnet_ip6_setsockopt(struct _fnet_socket_if_t *sock, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen )
+fnet_error_t _fnet_ip6_setsockopt(struct _fnet_socket_if_t *sock, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen )
 {
     fnet_error_t result = FNET_ERR_OK;
 
@@ -1939,11 +1948,11 @@ fnet_error_t fnet_ip6_setsockopt(struct _fnet_socket_if_t *sock, fnet_socket_opt
 
             if(mreq->ipv6imr_interface == 0u)
             {
-                netif = (fnet_netif_t *)fnet_netif_get_default();
+                netif = _fnet_netif_get_default();
             }
             else
             {
-                netif = (fnet_netif_t *)fnet_netif_get_by_scope_id(mreq->ipv6imr_interface);
+                netif = _fnet_netif_get_by_scope_id(mreq->ipv6imr_interface);
             }
 
             if((optlen != sizeof(struct fnet_ipv6_mreq)) /* Check size.*/
@@ -1991,7 +2000,7 @@ fnet_error_t fnet_ip6_setsockopt(struct _fnet_socket_if_t *sock, fnet_socket_opt
 
                 if(multicast_entry != FNET_NULL)
                 {
-                    *multicast_entry = fnet_ip6_multicast_join( netif, &mreq->ipv6imr_multiaddr.s6_addr );
+                    *multicast_entry = _fnet_ip6_multicast_join( netif, &mreq->ipv6imr_multiaddr.s6_addr );
 
                     if(*multicast_entry == FNET_NULL)
                     {
@@ -2012,7 +2021,7 @@ fnet_error_t fnet_ip6_setsockopt(struct _fnet_socket_if_t *sock, fnet_socket_opt
                 if(multicast_entry != FNET_NULL)
                 {
                     /* Leave the group.*/
-                    fnet_ip6_multicast_leave_entry(*multicast_entry);
+                    _fnet_ip6_multicast_leave_entry(*multicast_entry);
                     *multicast_entry = FNET_NULL; /* Clear entry.*/
                 }
                 else
@@ -2037,7 +2046,7 @@ fnet_error_t fnet_ip6_setsockopt(struct _fnet_socket_if_t *sock, fnet_socket_opt
 * DESCRIPTION: Join a IPv6 multicast group. Returns pointer to the entry in
 *              the multicast list, or FNET_NULL if any error.
 *************************************************************************/
-fnet_ip6_multicast_list_entry_t *fnet_ip6_multicast_join(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr )
+fnet_ip6_multicast_list_entry_t *_fnet_ip6_multicast_join(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr )
 {
     fnet_index_t                    i;
     fnet_ip6_multicast_list_entry_t *result = FNET_NULL;
@@ -2078,7 +2087,7 @@ fnet_ip6_multicast_list_entry_t *fnet_ip6_multicast_join(fnet_netif_t *netif, co
              * //TBD To cover the possibility of the initial Report being lost or damaged, it is
              * recommended that it be repeated once or twice after short delays.
              */
-            fnet_mld_join(netif, (fnet_ip6_addr_t *)group_addr);
+            _fnet_mld_join(netif, (fnet_ip6_addr_t *)group_addr);
 #endif
         }
     }
@@ -2089,7 +2098,7 @@ fnet_ip6_multicast_list_entry_t *fnet_ip6_multicast_join(fnet_netif_t *netif, co
 /************************************************************************
 * DESCRIPTION: Find a IPv6 multicast group entry.
 *************************************************************************/
-fnet_ip6_multicast_list_entry_t *fnet_ip6_multicast_find_entry(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr )
+fnet_ip6_multicast_list_entry_t *_fnet_ip6_multicast_find_entry(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr )
 {
     fnet_index_t                    i;
     fnet_ip6_multicast_list_entry_t *result = FNET_NULL;
@@ -2112,19 +2121,19 @@ fnet_ip6_multicast_list_entry_t *fnet_ip6_multicast_find_entry(fnet_netif_t *net
 /************************************************************************
 * DESCRIPTION: Leave the IPv6 multicast group.
 *************************************************************************/
-void fnet_ip6_multicast_leave(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr)
+void _fnet_ip6_multicast_leave(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr)
 {
     fnet_ip6_multicast_list_entry_t *multicast_entry;
 
-    multicast_entry = fnet_ip6_multicast_find_entry(netif, group_addr);
+    multicast_entry = _fnet_ip6_multicast_find_entry(netif, group_addr);
 
-    fnet_ip6_multicast_leave_entry(multicast_entry);
+    _fnet_ip6_multicast_leave_entry(multicast_entry);
 }
 
 /************************************************************************
 * DESCRIPTION: Leave the all IPv6 multicast groups.
 *************************************************************************/
-void fnet_ip6_multicast_leave_all(fnet_netif_t *netif)
+void _fnet_ip6_multicast_leave_all(fnet_netif_t *netif)
 {
     fnet_index_t i;
 
@@ -2133,7 +2142,7 @@ void fnet_ip6_multicast_leave_all(fnet_netif_t *netif)
         if((fnet_ip6_multicast_list[i].user_counter > 0u)
            && (fnet_ip6_multicast_list[i].netif == netif))
         {
-            fnet_ip6_multicast_leave_entry(&fnet_ip6_multicast_list[i]);
+            _fnet_ip6_multicast_leave_entry(&fnet_ip6_multicast_list[i]);
         }
     }
 }
@@ -2141,7 +2150,7 @@ void fnet_ip6_multicast_leave_all(fnet_netif_t *netif)
 /************************************************************************
 * DESCRIPTION: Leave a multicast group.
 *************************************************************************/
-void fnet_ip6_multicast_leave_entry( fnet_ip6_multicast_list_entry_t *multicastentry )
+void _fnet_ip6_multicast_leave_entry( fnet_ip6_multicast_list_entry_t *multicastentry )
 {
     if(multicastentry && (multicastentry->user_counter))
     {
@@ -2151,7 +2160,7 @@ void fnet_ip6_multicast_leave_entry( fnet_ip6_multicast_list_entry_t *multicaste
         {
 #if FNET_CFG_MLD
             /* Leave via MLD */
-            fnet_mld_leave(multicastentry->netif, &multicastentry->group_addr);
+            _fnet_mld_leave(multicastentry->netif, &multicastentry->group_addr);
 #endif
 
             /* Leave HW interface. */

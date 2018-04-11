@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -50,10 +49,10 @@ typedef struct                              /* IP input queue.*/
 extern "C" {
 #endif
 
-fnet_return_t fnet_ip_queue_append( fnet_ip_queue_t *queue, fnet_netif_t *netif, fnet_netbuf_t *nb );
-fnet_netbuf_t *fnet_ip_queue_read( fnet_ip_queue_t *queue, fnet_netif_t **netif );
-fnet_return_t fnet_ip_setsockopt( fnet_socket_if_t *sock, fnet_protocol_t level, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen );
-fnet_return_t fnet_ip_getsockopt( fnet_socket_if_t *sock, fnet_protocol_t level, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen );
+fnet_return_t _fnet_ip_queue_append( fnet_ip_queue_t *queue, fnet_netif_t *netif, fnet_netbuf_t *nb );
+fnet_netbuf_t *_fnet_ip_queue_read( fnet_ip_queue_t *queue, fnet_netif_t **netif );
+fnet_return_t _fnet_ip_setsockopt( fnet_socket_if_t *sock, fnet_protocol_t level, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen );
+fnet_return_t _fnet_ip_getsockopt( fnet_socket_if_t *sock, fnet_protocol_t level, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen );
 
 #if defined(__cplusplus)
 }

@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -53,7 +52,7 @@ fnet_int32_t DEBUG_last_free_addr_num = 0;
 /************************************************************************
 * DESCRIPTION:
 *************************************************************************/
-fnet_mempool_desc_t fnet_mempool_init( void *pool_ptr, fnet_size_t pool_size, fnet_mempool_align_t alignment )
+fnet_mempool_desc_t _fnet_mempool_init( void *pool_ptr, fnet_size_t pool_size, fnet_mempool_align_t alignment )
 {
     struct fnet_mempool *mempool = 0;
 
@@ -86,7 +85,7 @@ fnet_mempool_desc_t fnet_mempool_init( void *pool_ptr, fnet_size_t pool_size, fn
 /************************************************************************
 * DESCRIPTION: Release the mempool.
 *************************************************************************/
-void fnet_mempool_release( fnet_mempool_desc_t mpool )
+void _fnet_mempool_release( fnet_mempool_desc_t mpool )
 {
     struct fnet_mempool *mempool = (struct fnet_mempool *)mpool;
     mempool->free_ptr = 0;
@@ -95,7 +94,7 @@ void fnet_mempool_release( fnet_mempool_desc_t mpool )
 /************************************************************************
 * DESCRIPTION: Frees memory in the mempool.
 *************************************************************************/
-void fnet_mempool_free( fnet_mempool_desc_t mpool, void *ap )
+void _fnet_mempool_free( fnet_mempool_desc_t mpool, void *ap )
 {
     struct fnet_mempool *mempool = (struct fnet_mempool *)mpool;
 
@@ -189,14 +188,13 @@ void fnet_mempool_free( fnet_mempool_desc_t mpool, void *ap )
 
         fnet_isr_unlock();
     }
-
 }
 
 /************************************************************************
 * DESCRIPTION: Allocates memory in the memory pool.
 *************************************************************************/
 #if FNET_MEMPOOL_MALLOC_BEST_CHOICE /* Choose the best. */
-void *fnet_mempool_malloc(fnet_mempool_desc_t mpool, fnet_size_t nbytes )
+void *_fnet_mempool_malloc(fnet_mempool_desc_t mpool, fnet_size_t nbytes )
 {
     struct fnet_mempool         *mempool = (struct fnet_mempool *)mpool;
     fnet_mempool_unit_header_t  *p, *prevp;
@@ -287,7 +285,7 @@ void *fnet_mempool_malloc(fnet_mempool_desc_t mpool, fnet_size_t nbytes )
 
 #else /* Choose the first. */
 
-void *fnet_mempool_malloc(fnet_mempool_desc_t mpool, fnet_size_t nbytes )
+void *_fnet_mempool_malloc(fnet_mempool_desc_t mpool, fnet_size_t nbytes )
 {
     struct fnet_mempool         *mempool = (struct fnet_mempool *)mpool;
     fnet_mempool_unit_header_t  *p, *prevp;
@@ -337,7 +335,7 @@ void *fnet_mempool_malloc(fnet_mempool_desc_t mpool, fnet_size_t nbytes )
 /************************************************************************
 * DESCRIPTION: Returns a quantity of free memory (for debug needs)
 *************************************************************************/
-fnet_size_t fnet_mempool_free_mem_status( fnet_mempool_desc_t mpool)
+fnet_size_t _fnet_mempool_free_mem_status( fnet_mempool_desc_t mpool)
 {
     struct fnet_mempool          *mempool = (struct fnet_mempool *)mpool;
     fnet_size_t                 total_size = 0u;
@@ -376,7 +374,7 @@ fnet_size_t fnet_mempool_free_mem_status( fnet_mempool_desc_t mpool)
 /************************************************************************
 * DESCRIPTION: Returns a maximum size of posible allocated memory chunk.
 *************************************************************************/
-fnet_size_t fnet_mempool_malloc_max( fnet_mempool_desc_t mpool )
+fnet_size_t _fnet_mempool_malloc_max( fnet_mempool_desc_t mpool )
 {
     struct fnet_mempool         *mempool = (struct fnet_mempool *)mpool;
     fnet_size_t                 max = 0u;
@@ -423,7 +421,7 @@ fnet_size_t fnet_mempool_malloc_max( fnet_mempool_desc_t mpool )
 }
 
 #if 0 /* For Debug needs.*/
-fnet_return_t fnet_mempool_check( fnet_mempool_desc_t mpool )
+fnet_return_t _fnet_mempool_check( fnet_mempool_desc_t mpool )
 {
 
     volatile struct fnet_mempool *mempool = (struct fnet_mempool *)mpool;

@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -48,9 +47,9 @@ struct fnet_http_auth_scheme
 extern "C" {
 #endif
 
-void fnet_http_auth_validate_uri(struct fnet_http_if *http);
-fnet_return_t fnet_http_auth_validate_credentials(struct fnet_http_if *http, fnet_char_t *credentials);
-fnet_size_t fnet_http_auth_generate_challenge(struct fnet_http_if *http, fnet_uint8_t *buffer, fnet_size_t buffer_size);
+void _fnet_http_auth_validate_uri(struct fnet_http_if *http);
+fnet_return_t _fnet_http_auth_validate_credentials(struct fnet_http_if *http, fnet_char_t *credentials);
+fnet_size_t _fnet_http_auth_generate_challenge(struct fnet_http_if *http, fnet_uint8_t *buffer, fnet_size_t buffer_size);
 
 #if defined(__cplusplus)
 }

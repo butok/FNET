@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -28,6 +27,8 @@
 #include "fnet_prot.h"
 #include "fnet_stack_prv.h"
 #include "fnet_loop.h"
+#include "service\fnet_service_prv.h"
+
 
 /************************************************************************
 *     Global Data Structures
@@ -41,8 +42,8 @@ fnet_bool_t _fnet_is_enabled = FNET_FALSE;   /* Flag that the stack is initializ
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static fnet_return_t fnet_stack_init( void );
-static void fnet_stack_release( void );
+static fnet_return_t _fnet_stack_init( void );
+static void _fnet_stack_release( void );
 
 /************************************************************************
 * DESCRIPTION:
@@ -56,21 +57,24 @@ fnet_return_t fnet_init( struct fnet_init_params *init_params )
 #if FNET_CFG_MULTITHREADING
         fnet_mutex_api = init_params->mutex_api;
 #endif
-        if(fnet_stack_mutex_init() == FNET_OK)
+        if(_fnet_stack_mutex_init() == FNET_OK)
         {
-            fnet_stack_mutex_lock();
+            _fnet_stack_mutex_lock();
 
             if(_fnet_is_enabled == FNET_FALSE) /* Is enabled already?. */
             {
-                if((result = fnet_heap_init(init_params->netheap_ptr, init_params->netheap_size)) == FNET_OK )
+                if((result = _fnet_heap_init(init_params->netheap_ptr, init_params->netheap_size)) == FNET_OK )
                 {
-                    if((result = fnet_stack_init()) == FNET_OK)
+                    if((result = _fnet_service_init()) == FNET_OK )
                     {
-                        _fnet_is_enabled = FNET_TRUE; /* Mark the stack is enabled. */
+                        if((result = _fnet_stack_init()) == FNET_OK)
+                        {
+                            _fnet_is_enabled = FNET_TRUE; /* Mark the stack is enabled. */
+                        }
                     }
                 }
             }
-            fnet_stack_mutex_unlock();
+            _fnet_stack_mutex_unlock();
         }
     }
 
@@ -82,17 +86,19 @@ fnet_return_t fnet_init( struct fnet_init_params *init_params )
 *************************************************************************/
 void fnet_release(void)
 {
-    fnet_stack_mutex_lock();
+    _fnet_stack_mutex_lock();
 
     if(_fnet_is_enabled)
     {
-        fnet_stack_release();
+        _fnet_stack_release();
         _fnet_is_enabled = FNET_FALSE;
     }
 
-    fnet_stack_mutex_unlock();
+    _fnet_service_release();
 
-    fnet_stack_mutex_free();
+    _fnet_stack_mutex_unlock();
+
+    _fnet_stack_mutex_release();
 
 #if FNET_CFG_MULTITHREADING
     fnet_mutex_api = NULL;
@@ -102,7 +108,7 @@ void fnet_release(void)
 /************************************************************************
 * DESCRIPTION: TCP/IP Stack initialization.
 ************************************************************************/
-static fnet_return_t fnet_stack_init( void )
+static fnet_return_t _fnet_stack_init( void )
 {
     fnet_isr_init();
 
@@ -110,7 +116,7 @@ static fnet_return_t fnet_stack_init( void )
     fnet_netif_default = 0;  /* Reset default interface.*/
 
     /* Initialize Timer Module */
-    if (fnet_timer_init(FNET_TIMER_PERIOD_MS) == FNET_ERR)
+    if (_fnet_timer_init(FNET_TIMER_PERIOD_MS) == FNET_ERR)
     {
         goto ERROR;
     }
@@ -122,20 +128,20 @@ static fnet_return_t fnet_stack_init( void )
 #endif
 
     /* Initialize protocol layer */
-    if(fnet_prot_init() == FNET_ERR)
+    if(_fnet_prot_init() == FNET_ERR)
     {
         goto ERROR;
     }
 
     /* Initialize socket layer.*/
-    if(fnet_socket_init() == FNET_ERR)
+    if(_fnet_socket_init() == FNET_ERR)
     {
         goto ERROR;
     }
 
 #if FNET_CFG_LOOPBACK
     /* Initialize Loop-back interface.*/
-    if(fnet_netif_init(FNET_LOOP_IF, FNET_NULL, 0u) == FNET_ERR)
+    if(_fnet_netif_init(&fnet_loop_if, FNET_NULL, 0u) == FNET_ERR)
     {
         goto ERROR;
     }
@@ -143,7 +149,7 @@ static fnet_return_t fnet_stack_init( void )
 
     return (FNET_OK);
 ERROR:
-    fnet_stack_release();
+    _fnet_stack_release();
 
     return (FNET_ERR);
 }
@@ -151,23 +157,25 @@ ERROR:
 /************************************************************************
 * DESCRIPTION: TCP/IP Stack release.
 ************************************************************************/
-static void fnet_stack_release( void )
+static void _fnet_stack_release( void )
 {
-    fnet_netif_release_all();
-    fnet_prot_release();
-    fnet_timer_release();
-    fnet_mem_release();
+    _fnet_netif_release_all();
+    _fnet_prot_release();
+    _fnet_timer_release();
+    _fnet_mem_release();
 }
 
 #if FNET_CFG_MULTITHREADING
-fnet_return_t fnet_stack_mutex_init(void)
+
+/* =============== General mutex API ==============================*/
+fnet_return_t _fnet_mutex_init(fnet_mutex_t *mutex)
 {
     fnet_return_t result;
     if(fnet_mutex_api) /* Check if multithreading is enabled.*/
     {
-        if(fnet_mutex_api->mutex_init)
+        if(fnet_mutex_api->mutex_init && mutex)
         {
-            result = fnet_mutex_api->mutex_init(&fnet_stack_mutex);
+            result = fnet_mutex_api->mutex_init(mutex);
         }
         else
         {
@@ -182,37 +190,59 @@ fnet_return_t fnet_stack_mutex_init(void)
     return result;
 }
 
-void fnet_stack_mutex_lock(void)
+void _fnet_mutex_lock(fnet_mutex_t *mutex)
 {
     if(fnet_mutex_api) /* Check if multithreading is enabled.*/
     {
-        if(fnet_mutex_api->mutex_lock)
+        if(fnet_mutex_api->mutex_lock && mutex && *mutex )
         {
-            fnet_mutex_api->mutex_lock(&fnet_stack_mutex);
+            fnet_mutex_api->mutex_lock(mutex);
         }
     }
 }
 
-void fnet_stack_mutex_unlock(void)
+void _fnet_mutex_unlock(fnet_mutex_t *mutex)
 {
     if(fnet_mutex_api) /* Check if multithreading is enabled.*/
     {
-        if(fnet_mutex_api->mutex_unlock)
+        if(fnet_mutex_api->mutex_unlock && mutex && *mutex )
         {
-            fnet_mutex_api->mutex_unlock(&fnet_stack_mutex);
+            fnet_mutex_api->mutex_unlock(mutex);
         }
     }
 }
 
-void fnet_stack_mutex_free(void)
+void _fnet_mutex_release(fnet_mutex_t *mutex)
 {
     if(fnet_mutex_api) /* Check if multithreading is enabled.*/
     {
-        if(fnet_mutex_api->mutex_free)
+        if(fnet_mutex_api->mutex_release && mutex && *mutex )
         {
-            fnet_mutex_api->mutex_free(&fnet_stack_mutex);
+            fnet_mutex_api->mutex_release(mutex);
+            *mutex = FNET_NULL;
         }
     }
 }
-#endif
 
+/* ================ Core Stack Mutex ==========================*/
+fnet_return_t _fnet_stack_mutex_init(void)
+{
+    return _fnet_mutex_init(&fnet_stack_mutex);
+}
+
+void _fnet_stack_mutex_lock(void)
+{
+    _fnet_mutex_lock(&fnet_stack_mutex);
+}
+
+void _fnet_stack_mutex_unlock(void)
+{
+    _fnet_mutex_unlock(&fnet_stack_mutex);
+}
+
+void _fnet_stack_mutex_release(void)
+{
+    _fnet_mutex_release(&fnet_stack_mutex);
+}
+
+#endif /* FNET_CFG_MULTITHREADING */

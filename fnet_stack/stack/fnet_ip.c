@@ -29,7 +29,7 @@
 /************************************************************************
 * DESCRIPTION: Appends IP input queue.
 *************************************************************************/
-fnet_return_t fnet_ip_queue_append( fnet_ip_queue_t *queue, fnet_netif_t *netif, fnet_netbuf_t *nb )
+fnet_return_t _fnet_ip_queue_append( fnet_ip_queue_t *queue, fnet_netif_t *netif, fnet_netbuf_t *nb )
 {
     fnet_netbuf_t *nb_netif;
 
@@ -40,7 +40,7 @@ fnet_return_t fnet_ip_queue_append( fnet_ip_queue_t *queue, fnet_netif_t *netif,
         goto ERROR;
     }
 
-    if((nb_netif = fnet_netbuf_new(sizeof(fnet_netif_t *), FNET_FALSE)) == 0)
+    if((nb_netif = _fnet_netbuf_new(sizeof(fnet_netif_t *), FNET_FALSE)) == 0)
     {
         goto ERROR;
     }
@@ -49,8 +49,8 @@ fnet_return_t fnet_ip_queue_append( fnet_ip_queue_t *queue, fnet_netif_t *netif,
 
     queue->count += nb->total_length;
 
-    nb = fnet_netbuf_concat(nb_netif, nb);
-    fnet_netbuf_add_chain(&queue->head, nb);
+    nb = _fnet_netbuf_concat(nb_netif, nb);
+    _fnet_netbuf_queue_add(&queue->head, nb);
 
     fnet_isr_unlock();
     return FNET_OK;
@@ -63,7 +63,7 @@ ERROR:
 /************************************************************************
 * DESCRIPTION: Reads a IP datagram from IP input queue.
 *************************************************************************/
-fnet_netbuf_t *fnet_ip_queue_read( fnet_ip_queue_t *queue, fnet_netif_t **netif )
+fnet_netbuf_t *_fnet_ip_queue_read( fnet_ip_queue_t *queue, fnet_netif_t **netif )
 {
     fnet_netbuf_t *nb;
     fnet_netbuf_t *nb_netif;
@@ -82,7 +82,7 @@ fnet_netbuf_t *fnet_ip_queue_read( fnet_ip_queue_t *queue, fnet_netif_t **netif 
         }
 
         nb_netif->next = 0;
-        fnet_netbuf_del_chain(&queue->head, nb_netif);
+        _fnet_netbuf_queue_del(&queue->head, nb_netif);
 
         fnet_isr_unlock();
     }
@@ -97,7 +97,7 @@ fnet_netbuf_t *fnet_ip_queue_read( fnet_ip_queue_t *queue, fnet_netif_t **netif 
 /************************************************************************
 * DESCRIPTION: This function sets the value of IP socket option.
 *************************************************************************/
-fnet_return_t fnet_ip_setsockopt( fnet_socket_if_t *sock, fnet_protocol_t level, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen )
+fnet_return_t _fnet_ip_setsockopt( fnet_socket_if_t *sock, fnet_protocol_t level, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen )
 {
     fnet_error_t error;
 
@@ -106,7 +106,7 @@ fnet_return_t fnet_ip_setsockopt( fnet_socket_if_t *sock, fnet_protocol_t level,
 #if FNET_CFG_IP4
         if((level == IPPROTO_IP) && ((sock->protocol_interface->family & AF_INET) != 0u))
         {
-            error = fnet_ip4_setsockopt(sock, optname, optval, optlen);
+            error = _fnet_ip4_setsockopt(sock, optname, optval, optlen);
             if(error != FNET_ERR_OK)
             {
                 goto ERROR_SOCK;
@@ -117,7 +117,7 @@ fnet_return_t fnet_ip_setsockopt( fnet_socket_if_t *sock, fnet_protocol_t level,
 #if FNET_CFG_IP6
             if((level == IPPROTO_IPV6) && ((sock->protocol_interface->family & AF_INET6) != 0u))
             {
-                error = fnet_ip6_setsockopt(sock, optname, optval, optlen);
+                error = _fnet_ip6_setsockopt(sock, optname, optval, optlen);
                 if(error != FNET_ERR_OK)
                 {
                     goto ERROR_SOCK;
@@ -150,7 +150,7 @@ ERROR_SOCK:
 * DESCRIPTION: This function retrieves the current value
 *              of IP-layer socket option.
 *************************************************************************/
-fnet_return_t fnet_ip_getsockopt( fnet_socket_if_t *sock, fnet_protocol_t level, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen )
+fnet_return_t _fnet_ip_getsockopt( fnet_socket_if_t *sock, fnet_protocol_t level, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen )
 {
     fnet_error_t error;
 
@@ -160,7 +160,7 @@ fnet_return_t fnet_ip_getsockopt( fnet_socket_if_t *sock, fnet_protocol_t level,
 #if FNET_CFG_IP4
         if((level == IPPROTO_IP) && ((sock->protocol_interface->family & AF_INET) != 0u))
         {
-            error = fnet_ip4_getsockopt(sock, optname, optval, optlen);
+            error = _fnet_ip4_getsockopt(sock, optname, optval, optlen);
             if(error != FNET_ERR_OK)
             {
                 goto ERROR_SOCK;
@@ -171,7 +171,7 @@ fnet_return_t fnet_ip_getsockopt( fnet_socket_if_t *sock, fnet_protocol_t level,
 #if FNET_CFG_IP6
             if((level == IPPROTO_IPV6) && ((sock->protocol_interface->family & AF_INET6) != 0u))
             {
-                error = fnet_ip6_getsockopt(sock, optname, optval, optlen);
+                error = _fnet_ip6_getsockopt(sock, optname, optval, optlen);
                 if(error != FNET_ERR_OK)
                 {
                     goto ERROR_SOCK;

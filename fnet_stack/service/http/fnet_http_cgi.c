@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -29,24 +28,24 @@
 
 #include "fnet_http_prv.h"
 
-static fnet_return_t fnet_http_cgi_handle (struct fnet_http_if *http, struct fnet_http_uri *uri);
-static fnet_size_t fnet_http_cgi_send (struct fnet_http_if *http);
+static fnet_return_t _fnet_http_cgi_handle (struct fnet_http_if *http, struct fnet_http_uri *uri);
+static fnet_size_t _fnet_http_cgi_send (struct fnet_http_if *http);
 
 /************************************************************************
 *     Definitions
 ************************************************************************/
 const struct fnet_http_file_handler fnet_http_cgi_handler =
 {
-    FNET_HTTP_CGI_EXTENSION,
-    fnet_http_cgi_handle,
-    fnet_http_cgi_send,
-    0
+    .file_extension = FNET_HTTP_CGI_EXTENSION,
+    .file_handle = _fnet_http_cgi_handle,
+    .file_send = _fnet_http_cgi_send,
+    .file_close = 0
 };
 
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_return_t fnet_http_cgi_handle (struct fnet_http_if *http, struct fnet_http_uri *uri)
+static fnet_return_t _fnet_http_cgi_handle (struct fnet_http_if *http, struct fnet_http_uri *uri)
 {
     fnet_return_t               result = FNET_ERR;
     const struct fnet_http_cgi  *cgi_ptr;
@@ -90,7 +89,7 @@ static fnet_return_t fnet_http_cgi_handle (struct fnet_http_if *http, struct fne
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_size_t fnet_http_cgi_send (struct fnet_http_if *http)
+static fnet_size_t _fnet_http_cgi_send (struct fnet_http_if *http)
 {
     const struct fnet_http_cgi  *cgi_ptr;
     fnet_size_t                 result = 0u;

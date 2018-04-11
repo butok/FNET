@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -86,8 +85,8 @@ extern fnet_prot_if_t fnet_igmp_prot_if;
 extern "C" {
 #endif
 
-void fnet_igmp_join( fnet_netif_t *netif, fnet_ip4_addr_t  group_addr );
-void fnet_igmp_leave( fnet_netif_t *netif, fnet_ip4_addr_t  group_addr );
+void _fnet_igmp_join( fnet_netif_t *netif, fnet_ip4_addr_t  group_addr );
+void _fnet_igmp_leave( fnet_netif_t *netif, fnet_ip4_addr_t  group_addr );
 
 #if defined(__cplusplus)
 }

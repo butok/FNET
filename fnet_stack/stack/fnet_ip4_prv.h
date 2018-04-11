@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -157,26 +156,26 @@ extern fnet_ip4_multicast_list_entry_t fnet_ip4_multicast_list[FNET_CFG_MULTICAS
 extern "C" {
 #endif
 
-fnet_return_t fnet_ip4_init( void );
-void fnet_ip4_release( void );
-fnet_bool_t fnet_ip4_addr_is_broadcast( fnet_ip4_addr_t addr, fnet_netif_t *netif );
-fnet_error_t fnet_ip4_output( fnet_netif_t *netif,    fnet_ip4_addr_t src_ip, fnet_ip4_addr_t dest_ip,
-                              fnet_uint8_t protocol, fnet_uint8_t tos,     fnet_uint8_t ttl,
-                              fnet_netbuf_t *nb, fnet_bool_t DF,  fnet_bool_t do_not_route,
-                              FNET_COMP_PACKED_VAR fnet_uint16_t *checksum );
-void fnet_ip4_input( fnet_netif_t *netif, fnet_netbuf_t *nb );
-fnet_netif_t *fnet_ip4_route( fnet_ip4_addr_t dest_ip );
-fnet_size_t fnet_ip4_maximum_packet( fnet_ip4_addr_t dest_ip );
-void fnet_ip4_drain( void );
-fnet_bool_t fnet_ip4_will_fragment( fnet_netif_t *netif, fnet_size_t protocol_message_size);
-void fnet_ip4_set_socket_addr(fnet_netif_t *netif, fnet_ip4_header_t *ip_hdr, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr );
+fnet_return_t _fnet_ip4_init( void );
+void _fnet_ip4_release( void );
+fnet_bool_t _fnet_ip4_addr_is_broadcast( fnet_ip4_addr_t addr, fnet_netif_t *netif );
+fnet_error_t _fnet_ip4_output( fnet_netif_t *netif,    fnet_ip4_addr_t src_ip, fnet_ip4_addr_t dest_ip,
+                               fnet_uint8_t protocol, fnet_uint8_t tos,     fnet_uint8_t ttl,
+                               fnet_netbuf_t *nb, fnet_bool_t DF,  fnet_bool_t do_not_route,
+                               FNET_COMP_PACKED_VAR fnet_uint16_t *checksum );
+void _fnet_ip4_input( fnet_netif_t *netif, fnet_netbuf_t *nb );
+fnet_netif_t *_fnet_ip4_route( fnet_ip4_addr_t dest_ip );
+fnet_size_t _fnet_ip4_maximum_packet( fnet_ip4_addr_t dest_ip );
+void _fnet_ip4_drain( void );
+fnet_bool_t _fnet_ip4_will_fragment( fnet_netif_t *netif, fnet_size_t protocol_message_size);
+void _fnet_ip4_set_socket_addr(fnet_netif_t *netif, fnet_ip4_header_t *ip_hdr, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr );
 struct _fnet_socket_if_t; /* Forward declaration.*/
-fnet_error_t fnet_ip4_getsockopt(struct _fnet_socket_if_t *sock, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen );
-fnet_error_t fnet_ip4_setsockopt(struct _fnet_socket_if_t  *sock, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen );
+fnet_error_t _fnet_ip4_getsockopt(struct _fnet_socket_if_t *sock, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen );
+fnet_error_t _fnet_ip4_setsockopt(struct _fnet_socket_if_t  *sock, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen );
 
 #if FNET_CFG_MULTICAST
-fnet_ip4_multicast_list_entry_t *fnet_ip4_multicast_join( fnet_netif_t *netif, fnet_ip4_addr_t group_addr );
-void fnet_ip4_multicast_leave_entry( fnet_ip4_multicast_list_entry_t *multicastentry );
+fnet_ip4_multicast_list_entry_t *_fnet_ip4_multicast_join( fnet_netif_t *netif, fnet_ip4_addr_t group_addr );
+void _fnet_ip4_multicast_leave_entry( fnet_ip4_multicast_list_entry_t *multicastentry );
 #endif /* FNET_CFG_MULTICAST */
 
 #if defined(__cplusplus)

@@ -335,46 +335,6 @@ void fapp_debug_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
 
     ctaocrypt_test();
 #endif
-
-#if 0 /* test mempool */
-
-    {
-        static unsigned char mybuffer[3000];
-        static fnet_mempool_desc_t fnet_mempool_main = 0; /* Main memory pool. */
-
-        void *p1, *p2, *p3;
-        fnet_mempool_main = fnet_mempool_init(mybuffer, 2048, FNET_MEMPOOL_ALIGN_16);
-        fnet_printf("fnet_mempool_free_mem_status %d\n", fnet_mempool_free_mem_status(fnet_mempool_main));
-        fnet_printf("fnet_mempool_malloc_max %d\n", fnet_mempool_malloc_max(fnet_mempool_main));
-        p1 = fnet_mempool_malloc(fnet_mempool_main, 1600);
-        fnet_printf("Malloc returned(1600) %x\n", p1);
-
-        fnet_printf("fnet_mempool_free_mem_status %d\n", fnet_mempool_free_mem_status(fnet_mempool_main));
-        fnet_printf("fnet_mempool_malloc_max %d\n", fnet_mempool_malloc_max(fnet_mempool_main));
-        p2 = fnet_mempool_malloc(fnet_mempool_main, 368);
-        fnet_printf("Malloc returned(368) %x\n", p2);
-
-        fnet_printf("fnet_mempool_free_mem_status %d\n", fnet_mempool_free_mem_status(fnet_mempool_main));
-        fnet_printf("fnet_mempool_malloc_max %d\n", fnet_mempool_malloc_max(fnet_mempool_main));
-        p3 = fnet_mempool_malloc(fnet_mempool_main, 1);
-        fnet_printf("Malloc returned(1) %x\n", p3);
-
-        fnet_printf("fnet_mempool_free_mem_status %d\n", fnet_mempool_free_mem_status(fnet_mempool_main));
-        fnet_printf("fnet_mempool_malloc_max %d\n", fnet_mempool_malloc_max(fnet_mempool_main));
-        fnet_mempool_free(fnet_mempool_main, p1);
-        fnet_printf("freed p1\n");
-
-        fnet_printf("fnet_mempool_free_mem_status %d\n", fnet_mempool_free_mem_status(fnet_mempool_main));
-        fnet_printf("fnet_mempool_malloc_max %d\n", fnet_mempool_malloc_max(fnet_mempool_main));
-        fnet_mempool_free(fnet_mempool_main, p2);
-        fnet_printf("freed p2\n");
-
-        fnet_printf("fnet_mempool_free_mem_status %d\n", fnet_mempool_free_mem_status(fnet_mempool_main));
-        fnet_printf("fnet_mempool_malloc_max %d\n", fnet_mempool_malloc_max(fnet_mempool_main));
-        fnet_printf("Complete\n");
-    }
-#endif
-
 }
 #endif
 

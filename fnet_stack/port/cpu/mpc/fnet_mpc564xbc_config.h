@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2005-2016 by Andrey Butok and Gordon Jahn.
-*                        Freescale Semiconductor, Inc.
+* Copyright 2005-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 * This program is free software: you can redistribute it and/or modify

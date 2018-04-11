@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community
 *
 ***************************************************************************
 *
@@ -165,7 +164,7 @@ extern fnet_prot_if_t fnet_icmp4_prot_if;
 extern "C" {
 #endif
 
-void fnet_icmp4_error( fnet_netif_t *netif, fnet_uint8_t type, fnet_uint8_t code, fnet_netbuf_t *nb );
+void _fnet_icmp4_error( fnet_netif_t *netif, fnet_uint8_t type, fnet_uint8_t code, fnet_netbuf_t *nb );
 
 #if defined(__cplusplus)
 }

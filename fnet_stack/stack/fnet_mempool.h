@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -30,7 +29,7 @@
 /**************************************************************************/ /*!
  * @internal
  * @brief Memory pool descriptor.
- * @see fnet_mempool_init()
+ * @see _fnet_mempool_init()
  ******************************************************************************/
 typedef fnet_int32_t fnet_mempool_desc_t;
 
@@ -57,15 +56,15 @@ fnet_mempool_align_t;
 extern "C" {
 #endif
 
-fnet_mempool_desc_t fnet_mempool_init( void *pool_ptr, fnet_size_t pool_size, fnet_mempool_align_t alignment );
-void fnet_mempool_release( fnet_mempool_desc_t mpool );
-void fnet_mempool_free( fnet_mempool_desc_t mpool, void *ap );
-void *fnet_mempool_malloc(fnet_mempool_desc_t mpool, fnet_size_t nbytes );
-fnet_size_t fnet_mempool_free_mem_status( fnet_mempool_desc_t mpool);
-fnet_size_t fnet_mempool_malloc_max( fnet_mempool_desc_t mpool );
+fnet_mempool_desc_t _fnet_mempool_init( void *pool_ptr, fnet_size_t pool_size, fnet_mempool_align_t alignment );
+void _fnet_mempool_release( fnet_mempool_desc_t mpool );
+void _fnet_mempool_free( fnet_mempool_desc_t mpool, void *ap );
+void *_fnet_mempool_malloc(fnet_mempool_desc_t mpool, fnet_size_t nbytes );
+fnet_size_t _fnet_mempool_free_mem_status( fnet_mempool_desc_t mpool);
+fnet_size_t _fnet_mempool_malloc_max( fnet_mempool_desc_t mpool );
 
 #if 0 /* For Debug needs.*/
-fnet_return_t fnet_mempool_check( fnet_mempool_desc_t mpool );
+fnet_return_t _fnet_mempool_check( fnet_mempool_desc_t mpool );
 #endif
 
 #if defined(__cplusplus)

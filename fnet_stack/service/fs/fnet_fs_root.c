@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -34,13 +33,13 @@
 
 /* Root FS */
 
-static fnet_return_t fnet_fs_root_opendir( struct fnet_fs_desc *dir, const fnet_char_t *name);
-static fnet_return_t fnet_fs_root_readdir(struct fnet_fs_desc *dir, struct fnet_fs_dirent *dirent);
+static fnet_return_t _fnet_fs_root_opendir( struct fnet_fs_desc *dir, const fnet_char_t *name);
+static fnet_return_t _fnet_fs_root_readdir(struct fnet_fs_desc *dir, struct fnet_fs_dirent *dirent);
 
 static const struct fnet_fs_dir_operations fnet_fs_root_dir_operations =
 {
-    fnet_fs_root_opendir,
-    fnet_fs_root_readdir
+    _fnet_fs_root_opendir,
+    _fnet_fs_root_readdir
 };
 
 static struct fnet_fs fnet_fs_root =
@@ -57,39 +56,33 @@ static struct fnet_fs fnet_fs_root =
 static fnet_bool_t fnet_fs_root_registered;  /* Flag that ROM FS is registered or not.*/
 
 /************************************************************************
-* NAME: fnet_fs_root_register
-*
 * DESCRIPTION:
 *************************************************************************/
-void fnet_fs_root_register( void )
+void _fnet_fs_root_register( void )
 {
     if(fnet_fs_root_registered == FNET_FALSE)
     {
-        fnet_fs_register(&fnet_fs_root);
+        _fnet_fs_register(&fnet_fs_root);
         fnet_fs_root_registered = FNET_TRUE;
     }
 }
 
 /************************************************************************
-* NAME: fnet_fs_root_unregister
-*
 * DESCRIPTION:
 *************************************************************************/
-void fnet_fs_root_unregister( void )
+void _fnet_fs_root_unregister( void )
 {
     if(fnet_fs_root_registered == FNET_TRUE)
     {
-        fnet_fs_unregister(&fnet_fs_root);
+        _fnet_fs_unregister(&fnet_fs_root);
         fnet_fs_root_registered = FNET_FALSE;
     }
 }
 
 /************************************************************************
-* NAME: fnet_fs_root_opendir
-*
 * DESCRIPTION: Open DIR stream for the ROOT FS.
 *************************************************************************/
-static fnet_return_t fnet_fs_root_opendir( struct fnet_fs_desc *dir, const fnet_char_t *name)
+static fnet_return_t _fnet_fs_root_opendir( struct fnet_fs_desc *dir, const fnet_char_t *name)
 {
     fnet_return_t result = FNET_ERR;
 
@@ -109,11 +102,9 @@ static fnet_return_t fnet_fs_root_opendir( struct fnet_fs_desc *dir, const fnet_
 }
 
 /************************************************************************
-* NAME: fnet_fs_root_readdir
-*
 * DESCRIPTION: Read DIR stream for the ROOT FS.
 *************************************************************************/
-static fnet_return_t fnet_fs_root_readdir(struct fnet_fs_desc *dir, struct fnet_fs_dirent *dirent)
+static fnet_return_t _fnet_fs_root_readdir(struct fnet_fs_desc *dir, struct fnet_fs_dirent *dirent)
 {
     fnet_return_t               result = FNET_ERR;
     fnet_index_t                i;

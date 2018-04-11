@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -38,8 +37,8 @@
 extern "C" {
 #endif
 
-void fnet_fs_root_register( void );
-void fnet_fs_root_unregister( void );
+void _fnet_fs_root_register( void );
+void _fnet_fs_root_unregister( void );
 
 #if defined(__cplusplus)
 }

@@ -69,7 +69,7 @@
 #define WIFISHIELD_SPI_XFER_CS (kDSPI_MasterPcs0)
 #define WIFISHIELD_SPI_CLOCKSRC (kCLOCK_BusClk)
 #define WIFISHIELD_SPI_BAUDRATE (20000000)
-#define WIFISHIELD_SPI_THRESHOLD (8)
+#define WIFISHIELD_SPI_THRESHOLD 0xFFFFFFFF /* Disable transfer over DMA */ //DM (8)
 
 /* DMAMUX settings, interconnect SPI with DMA */
 #define WIFISHIELD_DMAMUX (DMAMUX0)

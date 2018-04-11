@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -19,25 +18,19 @@
 *
 ***************************************************************************
 *
-*  Private. Internet checksum API.
+*  Internet checksum API.
 *
 ***************************************************************************/
 
 #ifndef _FNET_CHECKSUM_H_
 #define	_FNET_CHECKSUM_H_
 
-#include "fnet.h"
-#include "fnet_netbuf.h"
-
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-fnet_uint16_t fnet_checksum_buf(fnet_uint8_t *buf, fnet_size_t buf_len);
-fnet_uint16_t fnet_checksum_pseudo_buf(fnet_uint8_t *buf, fnet_uint16_t buf_len, fnet_uint16_t protocol, const fnet_uint8_t *ip_src, const fnet_uint8_t *ip_dest, fnet_size_t addr_size);
-fnet_uint16_t fnet_checksum(fnet_netbuf_t *nb, fnet_size_t len);
-fnet_uint16_t fnet_checksum_pseudo_start( fnet_netbuf_t *nb, fnet_uint16_t protocol, fnet_uint16_t protocol_len );
-fnet_uint16_t fnet_checksum_pseudo_end( fnet_uint16_t sum_s, const fnet_uint8_t *ip_src, const fnet_uint8_t *ip_dest, fnet_size_t addr_size );
+fnet_uint16_t fnet_checksum(fnet_uint8_t *buf, fnet_size_t buf_len);
+fnet_uint16_t fnet_checksum_pseudo(fnet_uint8_t *buf, fnet_uint16_t buf_len, fnet_uint16_t protocol, const fnet_uint8_t *ip_src, const fnet_uint8_t *ip_dest, fnet_size_t addr_size);
 
 #if defined(__cplusplus)
 }

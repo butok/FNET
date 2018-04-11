@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -36,7 +35,7 @@
 
 #endif
 
-#include "fnet_netbuf.h"
+#include "fnet_netbuf_prv.h"
 #include "fnet_ip4_prv.h"
 #include "fnet_ip6_prv.h"
 
@@ -174,24 +173,24 @@ typedef struct fnet_socket_prot_if
 extern "C" {
 #endif
 
-fnet_return_t fnet_socket_init( void );
-void fnet_socket_list_add( fnet_socket_if_t **head, fnet_socket_if_t *s );
-void fnet_socket_list_del( fnet_socket_if_t **head, fnet_socket_if_t *s );
-void fnet_socket_set_error( fnet_socket_if_t *sock, fnet_error_t error );
-fnet_socket_if_t *fnet_socket_lookup( fnet_socket_if_t *head,  struct fnet_sockaddr *local_addr, struct fnet_sockaddr *foreign_addr, fnet_uint32_t protocol_number);
-fnet_uint16_t  fnet_socket_get_uniqueport(fnet_socket_if_t *head, struct fnet_sockaddr *local_addr);
-fnet_bool_t fnet_socket_conflict( fnet_socket_if_t *head,  const struct fnet_sockaddr *local_addr, const struct fnet_sockaddr *foreign_addr /*optional*/, fnet_bool_t wildcard );
-fnet_socket_if_t *fnet_socket_copy( fnet_socket_if_t *sock );
-void fnet_socket_release( fnet_socket_if_t **head, fnet_socket_if_t *sock );
-fnet_return_t fnet_socket_buffer_append_address( fnet_socket_buffer_t *sb, fnet_netbuf_t *nb, struct fnet_sockaddr *addr);
-fnet_return_t fnet_socket_buffer_append_record( fnet_socket_buffer_t *sb, fnet_netbuf_t *nb );
-fnet_int32_t fnet_socket_buffer_read_address( fnet_socket_buffer_t *sb, fnet_uint8_t *buf, fnet_size_t len, struct fnet_sockaddr *foreign_addr, fnet_bool_t remove );
-fnet_size_t fnet_socket_buffer_read_record( fnet_socket_buffer_t *sb, fnet_uint8_t *buf, fnet_size_t len, fnet_bool_t remove );
-void fnet_socket_buffer_release( fnet_socket_buffer_t *sb );
-fnet_bool_t fnet_socket_addr_is_broadcast(const struct fnet_sockaddr *addr, fnet_netif_t *netif);
-void fnet_socket_ip_addr_copy(const struct fnet_sockaddr *from_addr, struct fnet_sockaddr *to_addr);
-void fnet_socket_addr_copy(const struct fnet_sockaddr *from_addr, struct fnet_sockaddr *to_addr);
-fnet_netif_t *fnet_socket_addr_route(const struct fnet_sockaddr *dest_addr);
+fnet_return_t _fnet_socket_init( void );
+void _fnet_socket_list_add( fnet_socket_if_t **head, fnet_socket_if_t *s );
+void _fnet_socket_list_del( fnet_socket_if_t **head, fnet_socket_if_t *s );
+void _fnet_socket_set_error( fnet_socket_if_t *sock, fnet_error_t error );
+fnet_socket_if_t *_fnet_socket_lookup( fnet_socket_if_t *head,  struct fnet_sockaddr *local_addr, struct fnet_sockaddr *foreign_addr, fnet_uint32_t protocol_number);
+fnet_uint16_t  _fnet_socket_get_uniqueport(fnet_socket_if_t *head, struct fnet_sockaddr *local_addr);
+fnet_bool_t _fnet_socket_conflict( fnet_socket_if_t *head,  const struct fnet_sockaddr *local_addr, const struct fnet_sockaddr *foreign_addr /*optional*/, fnet_bool_t wildcard );
+fnet_socket_if_t *_fnet_socket_copy( fnet_socket_if_t *sock );
+void _fnet_socket_release( fnet_socket_if_t **head, fnet_socket_if_t *sock );
+fnet_return_t _fnet_socket_buffer_append_address( fnet_socket_buffer_t *sb, fnet_netbuf_t *nb, struct fnet_sockaddr *addr);
+fnet_return_t _fnet_socket_buffer_append_record( fnet_socket_buffer_t *sb, fnet_netbuf_t *nb );
+fnet_int32_t _fnet_socket_buffer_read_address( fnet_socket_buffer_t *sb, fnet_uint8_t *buf, fnet_size_t len, struct fnet_sockaddr *foreign_addr, fnet_bool_t remove );
+fnet_size_t _fnet_socket_buffer_read_record( fnet_socket_buffer_t *sb, fnet_uint8_t *buf, fnet_size_t len, fnet_bool_t remove );
+void _fnet_socket_buffer_release( fnet_socket_buffer_t *sb );
+fnet_bool_t _fnet_socket_addr_is_broadcast(const struct fnet_sockaddr *addr, fnet_netif_t *netif);
+void _fnet_socket_ip_addr_copy(const struct fnet_sockaddr *from_addr, struct fnet_sockaddr *to_addr);
+void _fnet_socket_addr_copy(const struct fnet_sockaddr *from_addr, struct fnet_sockaddr *to_addr);
+fnet_netif_t *_fnet_socket_addr_route(const struct fnet_sockaddr *dest_addr);
 
 #if defined(__cplusplus)
 }

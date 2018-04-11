@@ -9,7 +9,7 @@ int main (void)
     fapp_hw_init();
 
     /* Run application. */
-    fapp_main_freertos();
+    fapp_freertos_main();
 
     return(0);
 }

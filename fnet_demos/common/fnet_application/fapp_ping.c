@@ -197,7 +197,7 @@ void fapp_ping_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
             }
         }
 
-        if(fnet_ping_request(&ping_params) == FNET_OK)
+        if(fnet_ping_init(&ping_params) == FNET_OK)
         {
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             fnet_shell_println(desc, " PING" );

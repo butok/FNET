@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -95,13 +94,13 @@ typedef struct fnet_arp_if
 extern "C" {
 #endif
 
-fnet_return_t fnet_arp_init( fnet_netif_t *netif, fnet_arp_if_t *arpif);
-void fnet_arp_release( fnet_netif_t *netif );
-void fnet_arp_request( fnet_netif_t *netif, fnet_ip4_addr_t ipaddr );
-fnet_mac_addr_t *fnet_arp_lookup( fnet_netif_t *netif, fnet_ip4_addr_t ipaddr );
-void fnet_arp_resolve( fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_netbuf_t *nb );
-void fnet_arp_input( fnet_netif_t *netif, fnet_netbuf_t *nb );
-void fnet_arp_drain( fnet_netif_t *netif );
+fnet_return_t _fnet_arp_init( fnet_netif_t *netif, fnet_arp_if_t *arpif);
+void _fnet_arp_release( fnet_netif_t *netif );
+fnet_mac_addr_t *_fnet_arp_lookup( fnet_netif_t *netif, fnet_ip4_addr_t ipaddr );
+void _fnet_arp_resolve( fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_netbuf_t *nb );
+void _fnet_arp_input( fnet_netif_t *netif, fnet_netbuf_t *nb );
+void _fnet_arp_send_request(fnet_netif_t *netif, fnet_ip4_addr_t ip_addr );
+void _fnet_arp_drain( fnet_netif_t *netif );
 
 #if defined(__cplusplus)
 }

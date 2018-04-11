@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2016-2017 by Andrey Butok. FNET Community.
+* Copyright 2016-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -527,6 +527,10 @@ void fapp_netif_stat_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t
             fapp_netif_stat_print(desc, netif);
         }
     }
+
+#if 1 /* Print FNET heap status */
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "Free Heap", fnet_free_mem_status());
+#endif
 
     return;
 

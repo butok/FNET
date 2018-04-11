@@ -1,8 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
-* Copyright 2003 by Andrey Butok. Motorola SPS.
+* Copyright 2008-2018 by Andrey Butok. FNET Community
 *
 ***************************************************************************
 *
@@ -26,7 +24,7 @@
 
 #include "fnet.h"
 #include "fnet_timer_prv.h"
-#include "fnet_netbuf.h"
+#include "fnet_netbuf_prv.h"
 
 /* Queue of the software timers*/
 
@@ -52,7 +50,7 @@ static volatile fnet_time_t fnet_current_time;
 /************************************************************************
 * DESCRIPTION: Starts TCP/IP hardware timer. delay_ms - period of timer (ms)
 *************************************************************************/
-fnet_return_t fnet_timer_init( fnet_time_t period_ms )
+fnet_return_t _fnet_timer_init( fnet_time_t period_ms )
 {
     fnet_return_t result;
 
@@ -66,7 +64,7 @@ fnet_return_t fnet_timer_init( fnet_time_t period_ms )
 * DESCRIPTION: Frees the memory, which was allocated for all
 *              TCP/IP timers, and removes hardware timer
 *************************************************************************/
-void fnet_timer_release( void )
+void _fnet_timer_release( void )
 {
     struct fnet_net_timer *tmp_tl;
 
@@ -76,7 +74,7 @@ void fnet_timer_release( void )
     {
         tmp_tl = fnet_tl_head->next;
 
-        fnet_free(fnet_tl_head);
+        _fnet_free(fnet_tl_head);
 
         fnet_tl_head = tmp_tl;
     }
@@ -110,7 +108,7 @@ fnet_time_t fnet_timer_get_ms( void )
 /************************************************************************
 * DESCRIPTION: This function increments current value of the RTC counter.
 *************************************************************************/
-void fnet_timer_ticks_inc( void )
+void _fnet_timer_ticks_inc( void )
 {
     fnet_current_time++;
 
@@ -127,7 +125,7 @@ void fnet_timer_ticks_inc( void )
 * DESCRIPTION: Handles timer interrupts
 *************************************************************************/
 #if FNET_CFG_TIMER_POLL_AUTOMATIC
-void fnet_timer_handler_bottom(void *cookie)
+void _fnet_timer_handler_bottom(void *cookie)
 {
     FNET_COMP_UNUSED_ARG(cookie);
 
@@ -167,13 +165,13 @@ void fnet_timer_poll(void)
 /************************************************************************
 * DESCRIPTION: Creates new software timer with the period
 *************************************************************************/
-fnet_timer_desc_t fnet_timer_new( fnet_time_t period_ticks, void (*handler)(fnet_uint32_t cookie), fnet_uint32_t cookie )
+fnet_timer_desc_t _fnet_timer_new( fnet_time_t period_ticks, void (*handler)(fnet_uint32_t cookie), fnet_uint32_t cookie )
 {
     struct fnet_net_timer *timer = FNET_NULL;
 
     if( period_ticks && handler )
     {
-        timer = (struct fnet_net_timer *)fnet_malloc_zero(sizeof(struct fnet_net_timer));
+        timer = (struct fnet_net_timer *)_fnet_malloc_zero(sizeof(struct fnet_net_timer));
 
         if(timer)
         {
@@ -193,7 +191,7 @@ fnet_timer_desc_t fnet_timer_new( fnet_time_t period_ticks, void (*handler)(fnet
 /************************************************************************
 * DESCRIPTION: Frees software timer, which is pointed by tl_ptr
 *************************************************************************/
-void fnet_timer_free( fnet_timer_desc_t timer )
+void _fnet_timer_free( fnet_timer_desc_t timer )
 {
     struct fnet_net_timer *tl = (struct fnet_net_timer *)timer;
     struct fnet_net_timer *tl_temp;
@@ -216,23 +214,7 @@ void fnet_timer_free( fnet_timer_desc_t timer )
             tl_temp->next = tl->next;
         }
 
-        fnet_free(tl);
-    }
-}
-
-/************************************************************************
-* DESCRIPTION: Resets all timers' counters
-*************************************************************************/
-void fnet_timer_reset_all( void )
-{
-    struct fnet_net_timer *tl;
-
-    tl = fnet_tl_head;
-
-    while(tl != 0)
-    {
-        tl->timer_cnt = fnet_current_time;
-        tl = tl->next;
+        _fnet_free(tl);
     }
 }
 

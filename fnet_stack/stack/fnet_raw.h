@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -51,7 +51,7 @@ extern fnet_prot_if_t fnet_raw_prot_if;
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void fnet_raw_input(fnet_netif_t *netif, struct fnet_sockaddr *foreign_addr,  struct fnet_sockaddr *local_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb);
+void _fnet_raw_input(fnet_netif_t *netif, struct fnet_sockaddr *foreign_addr,  struct fnet_sockaddr *local_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb);
 #if defined(__cplusplus)
 }
 #endif

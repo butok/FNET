@@ -1,8 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
-* Copyright 2003 by Andrey Butok, Alexey Shervashidze. Motorola SPS
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -912,6 +910,28 @@ fnet_bool_t fnet_netif_get_ip6_prefix( fnet_netif_desc_t netif_desc, fnet_index_
  ******************************************************************************/
 fnet_bool_t fnet_netif_get_ip6_neighbor_cache(fnet_netif_desc_t netif_desc, fnet_index_t n, fnet_netif_ip6_neighbor_cache_t *ip6_neighbor_cache );
 
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Looks for a network interface according to the specified IPv6 address.
+ *
+ *
+ * @param ip_addr       The IPv6 address of a network interface.
+ *
+ * @return This function returns:
+ *   - Network interface descriptor that matches the @c ip_addr parameter.
+ *   - @ref FNET_NULL if there is no match.
+ *
+ * @see fnet_netif_get_by_name()
+ *
+ ******************************************************************************
+ *
+ * This function scans the global network interface list looking for a network
+ * interface matching the @c ip_addr parameter.
+ *
+ ******************************************************************************/
+fnet_netif_desc_t fnet_netif_get_by_ip6_addr(const fnet_ip6_addr_t *ip_addr );
+
 #endif /* FNET_CFG_IP6 */
 
 /***************************************************************************/ /*!
@@ -1046,8 +1066,8 @@ void fnet_netif_release(fnet_netif_desc_t netif_desc);
  *
  ******************************************************************************
  *
- * This function determines if the @c netif interface is initialized and
- * added to the FNET stack using ref fnet_netif_init().
+ * This function determines if the @c netif interface is initialized,
+ * using ref fnet_netif_init().
  *
  ******************************************************************************/
 fnet_bool_t fnet_netif_is_initialized(fnet_netif_desc_t netif_desc);

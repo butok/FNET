@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2011 by Andrey Butok,Gordon Jahn. Freescale Semiconductor, Inc.
+* Copyright 2011-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -30,7 +29,7 @@
 /************************************************************************
 * DESCRIPTION: This handler is executed on every FNET interrupt
 *              (from ethernet and timer module).
-*              Extructs vector number and calls fnet_isr_handler().
+*              Extructs vector number and calls _fnet_isr_handler().
 *************************************************************************/
 void fnet_cpu_isr(void)
 {
@@ -47,7 +46,7 @@ void fnet_cpu_isr(void)
 #endif
 
     /* Call FNET isr handler.*/
-    fnet_isr_handler( vector_number );
+    _fnet_isr_handler( vector_number );
 
 #if FNET_CFG_CPU_INDEX==0
     FNET_MPC_INTC_EOIR_PRC0 = 0;

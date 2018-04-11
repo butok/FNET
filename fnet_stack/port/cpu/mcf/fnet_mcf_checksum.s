@@ -1,6 +1,6 @@
 /**************************************************************************
 * 
-* Copyright 2008-2016 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -27,7 +27,7 @@
 #if FNET_MCF
 
 #if FNET_CFG_OVERLOAD_CHECKSUM_LOW
-	FNET_COMP_ASM_GLOBAL FNET_COMP_ASM_PREFIX(fnet_checksum_low) 
+	FNET_COMP_ASM_GLOBAL FNET_COMP_ASM_PREFIX(_fnet_checksum32_low) 
 
 	FNET_COMP_ASM_CODE
 	FNET_COMP_ASM_ALIGN 4
@@ -35,13 +35,13 @@
 /************************************************************************
 * DESCRIPTION: Calculates checksum.
 *************************************************************************
-* unsigned long fnet_checksum_low(unsigned long sum, int current_length, unsigned short *d_ptr);
+* unsigned long _fnet_checksum32_low(unsigned long sum, int current_length, unsigned short *d_ptr);
 *   Arguments:
 *        D0: unsigned long sum
 *        D1: int current_length
 *        A0: unsigned short *d_ptr
 */
-FNET_COMP_ASM_PREFIX(fnet_checksum_low):
+FNET_COMP_ASM_PREFIX(_fnet_checksum32_low):
 #if FNET_CFG_COMP_GNUC          /* GCC passes parameters on the stack */
         move.l  4(sp), d0
         move.l  8(sp), d1

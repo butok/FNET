@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -31,24 +30,24 @@
 #include "fnet_http_post.h"
 
 /* Prototypes */
-static fnet_return_t fnet_http_post_handle(struct fnet_http_if *http, struct fnet_http_uri *uri);
-static fnet_return_t fnet_http_post_receive(struct fnet_http_if *http);
-static fnet_return_t fnet_http_post_send(struct fnet_http_if *http);
+static fnet_return_t _fnet_http_post_handle(struct fnet_http_if *http, struct fnet_http_uri *uri);
+static fnet_return_t _fnet_http_post_receive(struct fnet_http_if *http);
+static fnet_return_t _fnet_http_post_send(struct fnet_http_if *http);
 
 /* POST method. */
 const struct fnet_http_method fnet_http_method_post =
 {
-    "POST",
-    fnet_http_post_handle,
-    fnet_http_post_receive,
-    fnet_http_post_send,
-    0
+    .token = "POST",
+    .handle = _fnet_http_post_handle,
+    .receive = _fnet_http_post_receive,
+    .send = _fnet_http_post_send,
+    .close = FNET_NULL
 };
 
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_return_t fnet_http_post_handle(struct fnet_http_if *http, struct fnet_http_uri *uri)
+static fnet_return_t _fnet_http_post_handle(struct fnet_http_if *http, struct fnet_http_uri *uri)
 {
     struct fnet_http_session_if *session =  http->session_active;
     fnet_return_t                result = FNET_ERR;
@@ -90,7 +89,7 @@ static fnet_return_t fnet_http_post_handle(struct fnet_http_if *http, struct fne
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_return_t fnet_http_post_receive(struct fnet_http_if *http)
+static fnet_return_t _fnet_http_post_receive(struct fnet_http_if *http)
 {
     struct fnet_http_session_if *session =  http->session_active;
     fnet_return_t                result = FNET_ERR;
@@ -116,7 +115,7 @@ static fnet_return_t fnet_http_post_receive(struct fnet_http_if *http)
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_return_t fnet_http_post_send(struct fnet_http_if *http)
+static fnet_return_t _fnet_http_post_send(struct fnet_http_if *http)
 {
     struct fnet_http_session_if *session =  http->session_active;
     fnet_return_t               result = FNET_ERR;

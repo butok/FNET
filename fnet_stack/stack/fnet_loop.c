@@ -1,8 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
-* Copyright 2003 by Andrey Butok. Motorola SPS.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -38,12 +36,6 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-#if FNET_CFG_IP4
-    static void fnet_loop_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb);
-#endif
-#if FNET_CFG_IP6
-    static void fnet_loop_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr, const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb);
-#endif
 static fnet_return_t fnet_loop_init( fnet_netif_t *netif );
 
 /************************************************************************
@@ -55,10 +47,10 @@ const struct fnet_netif_api fnet_loop_api =
     .netif_type = FNET_NETIF_TYPE_LOOPBACK,     /* Data-link type. */
     .netif_init = fnet_loop_init,               /* Initialization function.*/
 #if FNET_CFG_IP4
-    .netif_output_ip4 = fnet_loop_output_ip4,   /* IPv4 Transmit function.*/
+    .netif_output_ip4 = _fnet_loop_output_ip4,   /* IPv4 Transmit function.*/
 #endif
 #if FNET_CFG_IP6
-    .netif_output_ip6 = fnet_loop_output_ip6,   /* IPv6 Transmit function.*/
+    .netif_output_ip6 = _fnet_loop_output_ip6,   /* IPv6 Transmit function.*/
 #endif /* FNET_CFG_IP6 */
 };
 
@@ -74,7 +66,7 @@ fnet_netif_t fnet_loop_if =
 * DESCRIPTION: This function just only sends outgoing packets to IP layer.
 *************************************************************************/
 #if FNET_CFG_IP4
-static void fnet_loop_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb)
+void _fnet_loop_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb)
 {
     FNET_COMP_UNUSED_ARG(dest_ip_addr);
 
@@ -83,11 +75,11 @@ static void fnet_loop_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_ad
     /* MTU check */
     if (nb->total_length <= netif->netif_mtu)
     {
-        fnet_ip4_input(netif, nb);
+        _fnet_ip4_input(netif, nb);
     }
     else
     {
-        fnet_netbuf_free_chain(nb);
+        _fnet_netbuf_free_chain(nb);
     }
 
     fnet_isr_unlock();
@@ -98,7 +90,7 @@ static void fnet_loop_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_ad
 * DESCRIPTION: This function just only sends outgoing packets to IPv6 layer.
 *************************************************************************/
 #if FNET_CFG_IP6
-static void fnet_loop_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr, const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb)
+void _fnet_loop_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr, const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb)
 {
     FNET_COMP_UNUSED_ARG(dest_ip_addr);
     FNET_COMP_UNUSED_ARG(src_ip_addr);
@@ -108,11 +100,11 @@ static void fnet_loop_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src
     /* MTU check */
     if (nb->total_length <= netif->netif_mtu)
     {
-        fnet_ip6_input(netif, nb);
+        _fnet_ip6_input(netif, nb);
     }
     else
     {
-        fnet_netbuf_free_chain(nb);
+        _fnet_netbuf_free_chain(nb);
     }
 
     fnet_isr_unlock();
@@ -126,10 +118,12 @@ static fnet_return_t fnet_loop_init(fnet_netif_t *netif)
 {
     /* Set address parameters of the Loopback interface.*/
 #if FNET_CFG_IP4
-    fnet_netif_set_ip4_addr(netif, FNET_CFG_LOOPBACK_IP4_ADDR, INADDR_ANY);
+    _fnet_netif_set_ip4_addr(netif, FNET_CFG_LOOPBACK_IP4_ADDR, INADDR_ANY);
 #endif /* FNET_CFG_LOOPBACK */
 #if FNET_CFG_IP6
-    fnet_netif_bind_ip6_addr(netif, &fnet_ip6_addr_loopback, FNET_NETIF_IP_ADDR_TYPE_MANUAL);
+    _fnet_netif_bind_ip6_addr(netif, &fnet_ip6_addr_loopback, FNET_NETIF_IP_ADDR_TYPE_MANUAL,
+                              FNET_NETIF_IP6_ADDR_LIFETIME_INFINITE,
+                              FNET_ND6_PREFIX_LENGTH_DEFAULT);
 #endif /* FNET_CFG_LOOPBACK */
 
     return FNET_OK;

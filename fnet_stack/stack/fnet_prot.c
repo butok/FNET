@@ -1,8 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
-* Copyright 2003 by Andrey Butok. Motorola SPS.
+* Copyright 2008-2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -70,7 +68,7 @@ static fnet_prot_if_t *const fnet_prot_if_list[] =
 /************************************************************************
 * DESCRIPTION: Transport and IP layers initialization.
 *************************************************************************/
-fnet_return_t fnet_prot_init( void )
+fnet_return_t _fnet_prot_init( void )
 {
     fnet_index_t    i;
     fnet_return_t   result = FNET_OK;
@@ -91,7 +89,7 @@ fnet_return_t fnet_prot_init( void )
     }
 
 #if FNET_CFG_IP4
-    if(fnet_ip4_init() == FNET_ERR)
+    if(_fnet_ip4_init() == FNET_ERR)
     {
         result = FNET_ERR;
         goto ERROR;
@@ -99,7 +97,7 @@ fnet_return_t fnet_prot_init( void )
 #endif /* FNET_CFG_IP6 */
 
 #if FNET_CFG_IP6
-    if(fnet_ip6_init() == FNET_ERR)
+    if(_fnet_ip6_init() == FNET_ERR)
     {
         result = FNET_ERR;
         goto ERROR;
@@ -114,7 +112,7 @@ ERROR:
 /************************************************************************
 * DESCRIPTION: Transport and IP layers release.
 *************************************************************************/
-void fnet_prot_release( void )
+void _fnet_prot_release( void )
 {
     fnet_index_t i;
 
@@ -129,11 +127,11 @@ void fnet_prot_release( void )
     }
 
 #if FNET_CFG_IP4
-    fnet_ip4_release();
+    _fnet_ip4_release();
 #endif
 
 #if FNET_CFG_IP6
-    fnet_ip6_release();
+    _fnet_ip6_release();
 #endif
 
     fnet_isr_unlock();
@@ -143,7 +141,7 @@ void fnet_prot_release( void )
 * DESCRIPTION: This function looks up a protocol by domain family name,
 *              by type and by protocol number.
 *************************************************************************/
-fnet_prot_if_t *fnet_prot_find( fnet_address_family_t family, fnet_socket_type_t type, fnet_uint32_t protocol )
+fnet_prot_if_t *_fnet_prot_find( fnet_address_family_t family, fnet_socket_type_t type, fnet_uint32_t protocol )
 {
     fnet_index_t i;
 
@@ -164,7 +162,7 @@ fnet_prot_if_t *fnet_prot_find( fnet_address_family_t family, fnet_socket_type_t
 * DESCRIPTION: Tries to free not critical parts of
 *              dynamic allocated memory in the stack, if possible.
 *************************************************************************/
-void fnet_prot_drain( void )
+void _fnet_prot_drain( void )
 {
     fnet_size_t i;
 
@@ -181,12 +179,12 @@ void fnet_prot_drain( void )
     }
 
 #if FNET_CFG_IP4
-    fnet_ip4_drain();
+    _fnet_ip4_drain();
 #endif
 
 #if FNET_CFG_IP6
-    fnet_ip6_drain();
+    _fnet_ip6_drain();
 #endif
 
-    fnet_netif_drain();
+    _fnet_netif_drain();
 }

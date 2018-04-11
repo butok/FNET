@@ -36,7 +36,7 @@ const fnet_uint8_t fnet_dhcp_magic_cookie[4] = {99, 130, 83, 99};
 *   - ponter to the position after the option.
 *   - FNET_NULL if no space for the option (+ END option).
 ************************************************************************/
-fnet_uint8_t *fnet_dhcp_add_option(fnet_uint8_t *option_buffer, fnet_size_t option_buffer_size, fnet_uint8_t option_code, fnet_uint8_t option_length,  const void *option_value)
+fnet_uint8_t *_fnet_dhcp_add_option(fnet_uint8_t *option_buffer, fnet_size_t option_buffer_size, fnet_uint8_t option_code, fnet_uint8_t option_length,  const void *option_value)
 {
     FNET_ASSERT(option_buffer != FNET_NULl);
     FNET_ASSERT(option_value != FNET_NULl);
@@ -57,7 +57,7 @@ fnet_uint8_t *fnet_dhcp_add_option(fnet_uint8_t *option_buffer, fnet_size_t opti
 * DESCRIPTION: Print DHCP header. For debug needs.
 ************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_DHCP_SRV && FNET_CFG_DEBUG_TRACE
-void fnet_dhcp_trace(fnet_uint8_t *str, fnet_dhcp_header_t *header )
+void _fnet_dhcp_trace(fnet_uint8_t *str, fnet_dhcp_header_t *header )
 {
     fnet_char_t     ip_str[FNET_IP4_ADDR_STR_SIZE];
     fnet_index_t    i;

@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -30,24 +29,24 @@
 #include "fnet_http_prv.h"
 
 /* Prototypes */
-static fnet_return_t fnet_http_get_handle(struct fnet_http_if *http, struct fnet_http_uri *uri);
-static fnet_return_t fnet_http_get_send(struct fnet_http_if *http);
-static void fnet_http_get_close(struct fnet_http_if *http);
+static fnet_return_t _fnet_http_get_handle(struct fnet_http_if *http, struct fnet_http_uri *uri);
+static fnet_return_t _fnet_http_get_send(struct fnet_http_if *http);
+static void _fnet_http_get_close(struct fnet_http_if *http);
 
 /* GET method. */
 const struct fnet_http_method fnet_http_method_get =
 {
-    "GET",
-    fnet_http_get_handle,
-    0,
-    fnet_http_get_send,
-    fnet_http_get_close
+    .token = "GET",
+    .handle = _fnet_http_get_handle,
+    .receive = 0,
+    .send = _fnet_http_get_send,
+    .close = _fnet_http_get_close
 };
 
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_return_t fnet_http_get_handle(struct fnet_http_if *http, struct fnet_http_uri *uri)
+static fnet_return_t _fnet_http_get_handle(struct fnet_http_if *http, struct fnet_http_uri *uri)
 {
     struct fnet_http_session_if *session =  http->session_active;
     fnet_return_t               result = FNET_ERR;
@@ -55,10 +54,10 @@ static fnet_return_t fnet_http_get_handle(struct fnet_http_if *http, struct fnet
     /* Request is found */
     if(uri)
     {
-        session->response.send_file_handler = fnet_http_find_handler(http, uri);           /* Find file handler.*/
+        session->response.send_file_handler = _fnet_http_find_handler(http, uri);           /* Find file handler.*/
 
 #if FNET_CFG_HTTP_VERSION_MAJOR
-        session->response.send_file_content_type = fnet_http_find_content_type(http, uri); /* Find file content-type.*/
+        session->response.send_file_content_type = _fnet_http_find_content_type(http, uri); /* Find file content-type.*/
 #endif
 
         result = session->response.send_file_handler->file_handle(http, uri);              /* Initial handling. */
@@ -71,7 +70,7 @@ static fnet_return_t fnet_http_get_handle(struct fnet_http_if *http, struct fnet
 * DESCRIPTION: Simple-Response. Simple-responce consists only of the
 * entity body and is terminated by the server closing connection.
 ************************************************************************/
-static fnet_return_t fnet_http_get_send(struct fnet_http_if *http)
+static fnet_return_t _fnet_http_get_send(struct fnet_http_if *http)
 {
     struct fnet_http_session_if *session =  http->session_active;
     fnet_return_t               result;
@@ -91,7 +90,7 @@ static fnet_return_t fnet_http_get_send(struct fnet_http_if *http)
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static void fnet_http_get_close(struct fnet_http_if *http)
+static void _fnet_http_get_close(struct fnet_http_if *http)
 {
     struct fnet_http_session_if *session =  http->session_active;
 

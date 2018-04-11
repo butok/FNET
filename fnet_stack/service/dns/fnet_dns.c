@@ -18,7 +18,7 @@
 *
 ***************************************************************************
 *
-*  DNS Resolver implementation.
+*  DNS Client/Resolver implementation.
 *
 ***************************************************************************/
 #include "fnet.h"
@@ -53,8 +53,8 @@ typedef enum
 #define FNET_DNS_ERR_SERVICE           "ERROR: Service registration is failed."
 #define FNET_DNS_ERR_IS_INITIALIZED    "ERROR: DNS is already initialized."
 
-static void fnet_dns_poll( void *fnet_dns_if_p );
-static fnet_size_t fnet_dns_add_question( fnet_uint8_t *message, fnet_uint16_t type, const fnet_char_t *host_name);
+static void _fnet_dns_poll( void *fnet_dns_if_p );
+static fnet_size_t _fnet_dns_add_question( fnet_uint8_t *message, fnet_uint16_t type, const fnet_char_t *host_name);
 
 /************************************************************************
 *    DNS-client resolved IPv4 address structure.
@@ -122,7 +122,7 @@ static fnet_uint16_t    dns_id;
 * DESCRIPTION: Initializes DNS client service and starts the host
 *              name reolving.
 ************************************************************************/
-static fnet_size_t fnet_dns_add_question( fnet_uint8_t *message, fnet_uint16_t type, const fnet_char_t *host_name)
+static fnet_size_t _fnet_dns_add_question( fnet_uint8_t *message, fnet_uint16_t type, const fnet_char_t *host_name)
 {
     fnet_size_t         total_length = 0U;
     fnet_size_t         label_length;
@@ -192,6 +192,8 @@ fnet_dns_desc_t fnet_dns_init( struct fnet_dns_params *params )
     fnet_dns_header_t   *header;
     fnet_dns_if_t       *dns_if = FNET_NULL;
     fnet_index_t        i;
+
+    fnet_service_mutex_lock();
 
     /* Check input parameters. */
     if((params == 0)
@@ -307,11 +309,11 @@ fnet_dns_desc_t fnet_dns_init( struct fnet_dns_params *params )
 
 
     total_length = sizeof(fnet_dns_header_t);
-    total_length += fnet_dns_add_question( &dns_if->buffer.message[total_length], dns_if->dns_type, params->host_name);
+    total_length += _fnet_dns_add_question( &dns_if->buffer.message[total_length], dns_if->dns_type, params->host_name);
     dns_if->message_size = total_length;
 
     /* Register DNS service. */
-    dns_if->service_descriptor = fnet_service_register(fnet_dns_poll, dns_if);
+    dns_if->service_descriptor = fnet_service_register(_fnet_dns_poll, dns_if);
     if(dns_if->service_descriptor == FNET_NULL)
     {
         FNET_DEBUG_DNS(FNET_DNS_ERR_SERVICE);
@@ -320,18 +322,21 @@ fnet_dns_desc_t fnet_dns_init( struct fnet_dns_params *params )
 
     dns_if->state = FNET_DNS_STATE_TX; /* => Send request. */
 
+    fnet_service_mutex_unlock();
+
     return (fnet_dns_desc_t)dns_if;
 
 ERROR_1:
     fnet_socket_close(dns_if->socket_cln);
 ERROR:
+    fnet_service_mutex_unlock();
     return FNET_NULL;
 }
 
 /************************************************************************
 * DESCRIPTION: DNS-client state machine.
 ************************************************************************/
-static void fnet_dns_poll( void *fnet_dns_if_p )
+static void _fnet_dns_poll( void *fnet_dns_if_p )
 {
     fnet_ssize_t            sent_size;
     fnet_ssize_t            received;
@@ -500,6 +505,8 @@ void fnet_dns_release( fnet_dns_desc_t desc )
 
     if(dns_if && (dns_if->state != FNET_DNS_STATE_DISABLED))
     {
+        fnet_service_mutex_lock();
+
         /* Close socket. */
         fnet_socket_close(dns_if->socket_cln);
 
@@ -507,6 +514,8 @@ void fnet_dns_release( fnet_dns_desc_t desc )
         fnet_service_unregister( dns_if->service_descriptor );
 
         dns_if->state = FNET_DNS_STATE_DISABLED;
+
+        fnet_service_mutex_unlock();
     }
 }
 

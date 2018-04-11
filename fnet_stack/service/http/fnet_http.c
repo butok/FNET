@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -19,7 +18,7 @@
 *
 ***************************************************************************
 *
-*  FNET HTTP/0.9 Server implementation.
+*  FNET HTTP Server implementation.
 *
 ***************************************************************************/
 
@@ -80,9 +79,9 @@ static const struct fnet_http_file_handler *fnet_http_file_handler_list[] =
 /* Default file handler.*/
 static const struct fnet_http_file_handler fnet_http_default_handler =
 {
-    "", fnet_http_default_handle,
-    fnet_http_default_send,
-    fnet_http_default_close
+    "", _fnet_http_default_handle,
+    _fnet_http_default_send,
+    _fnet_http_default_close
 };
 /*File extension*/ /* MIME type*/
 static const struct fnet_http_content_type fnet_http_content_css = {"css", "text/css"};
@@ -112,9 +111,9 @@ static const struct fnet_http_content_type *fnet_http_content_type_list[] =
 /* The HTTP interface */
 static struct fnet_http_if http_if_list[FNET_CFG_HTTP];
 
-static void fnet_http_poll(void *http_if_p);
-static fnet_int32_t fnet_http_recv(struct fnet_http_session_if *session, fnet_uint8_t *buf, fnet_size_t len);
-static fnet_int32_t fnet_http_send(struct fnet_http_session_if *session, fnet_uint8_t *buf, fnet_size_t len);
+static void _fnet_http_poll(void *http_if_p);
+static fnet_int32_t _fnet_http_recv(struct fnet_http_session_if *session, fnet_uint8_t *buf, fnet_size_t len);
+static fnet_int32_t _fnet_http_send(struct fnet_http_session_if *session, fnet_uint8_t *buf, fnet_size_t len);
 
 #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
 
@@ -141,14 +140,14 @@ struct fnet_http_status fnet_http_status_list[] =
     {FNET_HTTP_STATUS_CODE_NONE,                ""} /* End of the list.*/
 };
 
-static void fnet_http_version_parse(fnet_char_t *in_str, struct fnet_http_version *version);
-static fnet_return_t fnet_http_tx_status_line (struct fnet_http_if *http);
+static void _fnet_http_version_parse(fnet_char_t *in_str, struct fnet_http_version *version);
+static fnet_return_t _fnet_http_tx_status_line (struct fnet_http_if *http);
 #endif /* FNET_CFG_HTTP_VERSION_MAJOR */
 
 /************************************************************************
 * DESCRIPTION: Http server state machine.
 ************************************************************************/
-static void fnet_http_poll( void *http_if_p )
+static void _fnet_http_poll( void *http_if_p )
 {
     struct fnet_sockaddr            foreign_addr;
     fnet_size_t                     len;
@@ -192,7 +191,7 @@ static void fnet_http_poll( void *http_if_p )
                         /* Default HTTP version response.*/
                         session->response.version.major = FNET_HTTP_VERSION_MAJOR;
                         session->response.version.minor = FNET_HTTP_VERSION_MINOR;
-                        session->response.tx_data = fnet_http_tx_status_line;
+                        session->response.tx_data = _fnet_http_tx_status_line;
 #endif
                         session->state_time = fnet_timer_get_ticks();          /* Reset timeout. */
                         session->buffer_actual_size = 0u;
@@ -219,7 +218,7 @@ static void fnet_http_poll( void *http_if_p )
                         /* Read character by character.*/
                         ch = &session->buffer[session->buffer_actual_size];
 
-                        if((res = fnet_http_recv(session, ch, 1u) ) != FNET_ERR)
+                        if((res = _fnet_http_recv(session, ch, 1u) ) != FNET_ERR)
                         {
                             if(res > 0) /* Received a data.*/
                             {
@@ -261,13 +260,13 @@ static void fnet_http_poll( void *http_if_p )
                                         if((session->request.method) && (session->request.method->handle))
                                         {
                                             /* Parse URI.*/
-                                            req_buf = (fnet_uint8_t *)fnet_http_uri_parse((fnet_char_t *)req_buf, &session->request.uri);
+                                            req_buf = (fnet_uint8_t *)_fnet_http_uri_parse((fnet_char_t *)req_buf, &session->request.uri);
 
                                             FNET_DEBUG_HTTP("HTTP: URI Path = %s; Query = %s", session->request.uri.path, session->request.uri.query);
 
 #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
                                             /* Parse HTTP/x.x version.*/
-                                            fnet_http_version_parse((fnet_char_t *)++req_buf, &session->response.version);
+                                            _fnet_http_version_parse((fnet_char_t *)++req_buf, &session->response.version);
 
                                             /* Check the highest supported HTTP version.*/
                                             if((((fnet_uint32_t)session->response.version.major << 8) | (fnet_uint32_t)session->response.version.minor) > ((FNET_HTTP_VERSION_MAJOR << 8) | FNET_HTTP_VERSION_MINOR))
@@ -287,7 +286,7 @@ static void fnet_http_poll( void *http_if_p )
                                             {
 #if FNET_CFG_HTTP_AUTHENTICATION_BASIC && FNET_CFG_HTTP_VERSION_MAJOR
                                                 /* Check Authentification.*/
-                                                fnet_http_auth_validate_uri(http);
+                                                _fnet_http_auth_validate_uri(http);
 #endif
 #endif/*FNET_CFG_HTTP_VERSION_MAJOR*/
 
@@ -398,7 +397,7 @@ static void fnet_http_poll( void *http_if_p )
                                                     fnet_char_t *auth_str = (fnet_char_t *)&req_buf[sizeof(FNET_HTTP_HEADER_FIELD_AUTHORIZATION) - 1u];
 
                                                     /* Validate credentials.*/
-                                                    if(fnet_http_auth_validate_credentials(http, auth_str) == FNET_OK)
+                                                    if(_fnet_http_auth_validate_credentials(http, auth_str) == FNET_OK)
                                                     {
                                                         session->response.auth_entry = 0; /* Authorization is succesful.*/
                                                     }
@@ -465,7 +464,7 @@ static void fnet_http_poll( void *http_if_p )
                             else
                             {}
                         }
-                        /* fnet_http_recv() error.*/
+                        /* _fnet_http_recv() error.*/
                         else
                         {
                             session->state = FNET_HTTP_STATE_CLOSING; /*=> CLOSING */
@@ -477,7 +476,7 @@ static void fnet_http_poll( void *http_if_p )
 #if FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR
                 /*---- RX --------------------------------------------------*/
                 case FNET_HTTP_STATE_RX: /* Receive data (Entity-Body). */
-                    if((res = fnet_http_recv(session, &session->buffer[session->buffer_actual_size], (FNET_HTTP_BUF_SIZE - session->buffer_actual_size)) ) != FNET_ERR)
+                    if((res = _fnet_http_recv(session, &session->buffer[session->buffer_actual_size], (FNET_HTTP_BUF_SIZE - session->buffer_actual_size)) ) != FNET_ERR)
                     {
                         session->buffer_actual_size += (fnet_size_t)res;
                         session->request.content_length -= res;
@@ -548,7 +547,7 @@ static void fnet_http_poll( void *http_if_p )
 
                         send_size = (session->buffer_actual_size - session->response.buffer_sent);
 
-                        if((res = fnet_http_send(session, session->buffer + session->response.buffer_sent, send_size)) != FNET_ERR)
+                        if((res = _fnet_http_send(session, session->buffer + session->response.buffer_sent, send_size)) != FNET_ERR)
                         {
                             if(res)
                             {
@@ -607,6 +606,8 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
         .l_onoff = FNET_TRUE,
         .l_linger = 4 /*sec*/
     };
+
+    fnet_service_mutex_lock();
 
     if((params == 0) || (params->root_path == 0) || (params->index_path == 0))
     {
@@ -713,11 +714,11 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
         goto ERROR_3;
     }
 
-    fnet_http_uri_parse(params->index_path, &uri);
-    http_if->index_file_handler = fnet_http_find_handler(http_if, &uri); /* Find Handler for the index file. */
+    _fnet_http_uri_parse(params->index_path, &uri);
+    http_if->index_file_handler = _fnet_http_find_handler(http_if, &uri); /* Find Handler for the index file. */
 
 #if FNET_CFG_HTTP_VERSION_MAJOR
-    http_if->index_file_content_type = fnet_http_find_content_type(http_if, &uri); /* Find Content-Type for the index file. */
+    http_if->index_file_content_type = _fnet_http_find_content_type(http_if, &uri); /* Find Content-Type for the index file. */
 #endif
 
     /* Init session parameters.*/
@@ -727,7 +728,7 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
         session->state = FNET_HTTP_STATE_LISTENING;
     }
 
-    http_if->service_descriptor = fnet_service_register(fnet_http_poll, (void *) http_if);
+    http_if->service_descriptor = fnet_service_register(_fnet_http_poll, (void *) http_if);
     if(http_if->service_descriptor == 0)
     {
         FNET_DEBUG_HTTP("HTTP: Service registration error.");
@@ -755,6 +756,8 @@ fnet_http_desc_t fnet_http_init( struct fnet_http_params *params )
 
     http_if->is_enabled = FNET_TRUE;
 
+    fnet_service_mutex_unlock();
+
     return (fnet_http_desc_t)http_if;
 
 #if (FNET_CFG_HTTP_TLS && FNET_CFG_TLS)
@@ -768,6 +771,8 @@ ERROR_3:
 ERROR_2:
     fnet_socket_close(http_if->socket_listen);
 ERROR_1:
+    fnet_service_mutex_unlock();
+
     return 0;
 }
 
@@ -778,6 +783,8 @@ void fnet_http_release(fnet_http_desc_t desc)
 {
     struct fnet_http_if     *http_if = (struct fnet_http_if *) desc;
     fnet_index_t            i;
+
+    fnet_service_mutex_lock();
 
     if(http_if && (http_if->is_enabled == FNET_TRUE))
     {
@@ -812,6 +819,7 @@ void fnet_http_release(fnet_http_desc_t desc)
         /* Clear all parameters.*/
         fnet_memset(http_if, 0, sizeof(*http_if));
     }
+    fnet_service_mutex_unlock();
 }
 
 /************************************************************************
@@ -841,7 +849,7 @@ fnet_bool_t fnet_http_is_enabled(fnet_http_desc_t desc)
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_return_t fnet_http_tx_status_line (struct fnet_http_if *http)
+static fnet_return_t _fnet_http_tx_status_line (struct fnet_http_if *http)
 {
     struct fnet_http_status     *status ;
     fnet_size_t                 result = 0u;
@@ -888,7 +896,7 @@ static fnet_return_t fnet_http_tx_status_line (struct fnet_http_if *http)
                 if(session->response.status.code == FNET_HTTP_STATUS_CODE_UNAUTHORIZED)
                 {
                     result_state = (fnet_size_t)fnet_snprintf((fnet_char_t *)&session->buffer[result], (FNET_HTTP_BUF_SIZE - result), "%s ", FNET_HTTP_HEADER_FIELD_AUTHENTICATE);
-                    result_state += fnet_http_auth_generate_challenge(http, &session->buffer[result + result_state], FNET_HTTP_BUF_SIZE - (result + result_state));
+                    result_state += _fnet_http_auth_generate_challenge(http, &session->buffer[result + result_state], FNET_HTTP_BUF_SIZE - (result + result_state));
                     session->response.content_length = -1; /* No content length .*/
                 }
 #endif
@@ -959,7 +967,7 @@ static fnet_return_t fnet_http_tx_status_line (struct fnet_http_if *http)
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-const struct fnet_http_file_handler *fnet_http_find_handler (struct fnet_http_if *http, struct fnet_http_uri *uri)
+const struct fnet_http_file_handler *_fnet_http_find_handler (struct fnet_http_if *http, struct fnet_http_uri *uri)
 {
     const struct fnet_http_file_handler *result = &fnet_http_default_handler;
     const struct fnet_http_file_handler **handler = &fnet_http_file_handler_list[0];
@@ -992,7 +1000,7 @@ const struct fnet_http_file_handler *fnet_http_find_handler (struct fnet_http_if
 * DESCRIPTION:
 ************************************************************************/
 #if FNET_CFG_HTTP_VERSION_MAJOR
-const struct fnet_http_content_type *fnet_http_find_content_type (struct fnet_http_if *http, struct fnet_http_uri *uri)
+const struct fnet_http_content_type *_fnet_http_find_content_type (struct fnet_http_if *http, struct fnet_http_uri *uri)
 {
     const struct fnet_http_content_type **content_type = &fnet_http_content_type_list[0];
     const struct fnet_http_content_type *result = FNET_NULL;
@@ -1024,7 +1032,7 @@ const struct fnet_http_content_type *fnet_http_find_content_type (struct fnet_ht
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-fnet_return_t fnet_http_default_handle (struct fnet_http_if *http, struct fnet_http_uri *uri)
+fnet_return_t _fnet_http_default_handle (struct fnet_http_if *http, struct fnet_http_uri *uri)
 {
     fnet_return_t               result;
     struct fnet_http_session_if *session =  http->session_active;
@@ -1065,7 +1073,7 @@ fnet_return_t fnet_http_default_handle (struct fnet_http_if *http, struct fnet_h
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-fnet_size_t fnet_http_default_send (struct fnet_http_if *http)
+fnet_size_t _fnet_http_default_send (struct fnet_http_if *http)
 {
     struct fnet_http_session_if *session =  http->session_active;
 
@@ -1075,7 +1083,7 @@ fnet_size_t fnet_http_default_send (struct fnet_http_if *http)
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-void fnet_http_default_close (struct fnet_http_if *http)
+void _fnet_http_default_close (struct fnet_http_if *http)
 {
     struct fnet_http_session_if *session =  http->session_active;
 
@@ -1147,7 +1155,7 @@ void fnet_http_query_unencode(fnet_uint8_t *dest, fnet_uint8_t *src)
 * DESCRIPTION:
 *   Returns pointer to the end of URI str.
 ************************************************************************/
-fnet_char_t *fnet_http_uri_parse(fnet_char_t *in_str, struct fnet_http_uri *uri)
+fnet_char_t *_fnet_http_uri_parse(fnet_char_t *in_str, struct fnet_http_uri *uri)
 {
     fnet_char_t *cur = in_str;
 
@@ -1221,7 +1229,7 @@ fnet_char_t *fnet_http_uri_parse(fnet_char_t *in_str, struct fnet_http_uri *uri)
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static void fnet_http_version_parse(fnet_char_t *in_str, struct fnet_http_version *version)
+static void _fnet_http_version_parse(fnet_char_t *in_str, struct fnet_http_version *version)
 {
     fnet_char_t  *cur = in_str;
     fnet_char_t  *ptr;
@@ -1278,7 +1286,9 @@ void fnet_http_set_response_status_code (fnet_http_session_t session, fnet_http_
 {
     if(session)
     {
+        fnet_service_mutex_lock();
         ((struct fnet_http_session_if *)session)->response.status.code = status_code;
+        fnet_service_mutex_unlock();
     }
 }
 
@@ -1289,7 +1299,9 @@ void fnet_http_set_response_content_length (fnet_http_session_t session, fnet_si
 {
     if(session)
     {
+        fnet_service_mutex_lock();
         ((struct fnet_http_session_if *)session)->response.content_length = (fnet_int32_t)content_length;
+        fnet_service_mutex_unlock();
     }
 }
 
@@ -1300,14 +1312,16 @@ void fnet_http_set_response_no_header (fnet_http_session_t session)
 {
     if(session)
     {
+        fnet_service_mutex_lock();
         ((struct fnet_http_session_if *)session)->response.no_header = FNET_TRUE;
+        fnet_service_mutex_unlock();
     }
 }
 
 /************************************************************************
 * DESCRIPTION: Receives the data from a HTTP session socket.
 ************************************************************************/
-static fnet_int32_t fnet_http_recv(struct fnet_http_session_if *session, fnet_uint8_t *buf, fnet_size_t len)
+static fnet_int32_t _fnet_http_recv(struct fnet_http_session_if *session, fnet_uint8_t *buf, fnet_size_t len)
 {
     fnet_ssize_t res;
 
@@ -1327,7 +1341,7 @@ static fnet_int32_t fnet_http_recv(struct fnet_http_session_if *session, fnet_ui
 /************************************************************************
 * DESCRIPTION: Sends data on a HTTP session socket.
 ************************************************************************/
-static fnet_int32_t fnet_http_send(struct fnet_http_session_if *session, fnet_uint8_t *buf, fnet_size_t len)
+static fnet_int32_t _fnet_http_send(struct fnet_http_session_if *session, fnet_uint8_t *buf, fnet_size_t len)
 {
     fnet_ssize_t res;
 

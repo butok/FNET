@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -25,12 +24,13 @@
 
 #include "fnet.h"
 #include "fnet_checksum.h"
+#include "fnet_checksum_prv.h"
 #include "fnet_ip4.h"
 
-static fnet_uint32_t fnet_checksum_nb(fnet_netbuf_t *nb, fnet_size_t length);
+static fnet_uint32_t _fnet_checksum32_nb(fnet_netbuf_t *nb, fnet_size_t length);
 
 #if !FNET_CFG_OVERLOAD_CHECKSUM_LOW
-    static fnet_uint32_t fnet_checksum_low(fnet_uint32_t sum, fnet_size_t length, const fnet_uint16_t *d_ptr);
+    static fnet_uint32_t _fnet_checksum32_low(fnet_uint32_t sum, fnet_size_t length, const fnet_uint16_t *d_ptr);
 #endif
 
 /*RFC:
@@ -48,7 +48,7 @@ static fnet_uint32_t fnet_checksum_nb(fnet_netbuf_t *nb, fnet_size_t length);
 *************************************************************************/
 #if !FNET_CFG_OVERLOAD_CHECKSUM_LOW
 
-static fnet_uint32_t fnet_checksum_low(fnet_uint32_t sum, fnet_size_t length, const fnet_uint16_t *d_ptr)
+static fnet_uint32_t _fnet_checksum32_low(fnet_uint32_t sum, fnet_size_t length, const fnet_uint16_t *d_ptr)
 {
     fnet_uint16_t   p_byte1;
     fnet_int32_t   current_length = (fnet_int32_t)length;
@@ -98,11 +98,11 @@ static fnet_uint32_t fnet_checksum_low(fnet_uint32_t sum, fnet_size_t length, co
 }
 #else
 
-extern fnet_uint32_t fnet_checksum_low(fnet_uint32_t sum, fnet_size_t length, const fnet_uint16_t *d_ptr);
+extern fnet_uint32_t _fnet_checksum32_low(fnet_uint32_t sum, fnet_size_t length, const fnet_uint16_t *d_ptr);
 
 #endif
 
-static fnet_uint32_t fnet_checksum_nb(fnet_netbuf_t *nb, fnet_size_t length)
+static fnet_uint32_t _fnet_checksum32_nb(fnet_netbuf_t *nb, fnet_size_t length)
 {
     fnet_netbuf_t   *tmp_nb;
     fnet_uint16_t   *d_ptr;
@@ -128,7 +128,7 @@ static fnet_uint32_t fnet_checksum_nb(fnet_netbuf_t *nb, fnet_size_t length)
     {
         len -= current_length;       /* current_length bytes should be proceeded.*/
 
-        sum = fnet_checksum_low(sum, (fnet_size_t)current_length, d_ptr);
+        sum = _fnet_checksum32_low(sum, (fnet_size_t)current_length, d_ptr);
 
         if(len)
         {
@@ -168,9 +168,9 @@ static fnet_uint32_t fnet_checksum_nb(fnet_netbuf_t *nb, fnet_size_t length)
 /************************************************************************
 * DESCRIPTION: Calculates one's complement (Internet) checksum.
 *************************************************************************/
-fnet_uint16_t fnet_checksum(fnet_netbuf_t *nb, fnet_size_t len)
+fnet_uint16_t _fnet_checksum_netbuf(fnet_netbuf_t *nb, fnet_size_t len)
 {
-    fnet_uint32_t sum = fnet_checksum_nb(nb, len);
+    fnet_uint32_t sum = _fnet_checksum32_nb(nb, len);
 
     /* Add potential carries - no branches. */
 
@@ -189,9 +189,9 @@ fnet_uint16_t fnet_checksum(fnet_netbuf_t *nb, fnet_size_t len)
 * DESCRIPTION: Calculates one's complement (Internet) checksum
 *              for a buffer.
 *************************************************************************/
-fnet_uint16_t fnet_checksum_buf(fnet_uint8_t *buf, fnet_size_t buf_len)
+fnet_uint16_t fnet_checksum(fnet_uint8_t *buf, fnet_size_t buf_len)
 {
-    fnet_uint32_t sum = fnet_checksum_low(0U, buf_len, (fnet_uint16_t *)buf);
+    fnet_uint32_t sum = _fnet_checksum32_low(0U, buf_len, (fnet_uint16_t *)buf);
 
     sum += 0xffffU; /* + 0xffff acording to RFC1624*/
 
@@ -208,13 +208,13 @@ fnet_uint16_t fnet_checksum_buf(fnet_uint8_t *buf, fnet_size_t buf_len)
 * DESCRIPTION: Calculates one's complement (Internet) checksum of
 *              the IP pseudo header, for a buffer.
 *************************************************************************/
-fnet_uint16_t fnet_checksum_pseudo_buf(fnet_uint8_t *buf, fnet_uint16_t buf_len, fnet_uint16_t protocol, const fnet_uint8_t *ip_src, const fnet_uint8_t *ip_dest, fnet_size_t addr_size )
+fnet_uint16_t fnet_checksum_pseudo(fnet_uint8_t *buf, fnet_uint16_t buf_len, fnet_uint16_t protocol, const fnet_uint8_t *ip_src, const fnet_uint8_t *ip_dest, fnet_size_t addr_size )
 {
-    fnet_uint32_t sum = fnet_checksum_low(0U, (fnet_size_t)buf_len, (fnet_uint16_t *)buf);
+    fnet_uint32_t sum = _fnet_checksum32_low(0U, (fnet_size_t)buf_len, (fnet_uint16_t *)buf);
 
     sum += (fnet_uint32_t)protocol + (fnet_uint32_t)fnet_htons(buf_len);
-    sum = fnet_checksum_low(sum, addr_size, (const fnet_uint16_t *)ip_src);
-    sum = fnet_checksum_low(sum, addr_size, (const fnet_uint16_t *)ip_dest);
+    sum = _fnet_checksum32_low(sum, addr_size, (const fnet_uint16_t *)ip_src);
+    sum = _fnet_checksum32_low(sum, addr_size, (const fnet_uint16_t *)ip_dest);
 
     /* Add accumulated carries */
     while ((sum >> 16) != 0u)
@@ -229,9 +229,9 @@ fnet_uint16_t fnet_checksum_pseudo_buf(fnet_uint8_t *buf, fnet_uint16_t buf_len,
 * DESCRIPTION: Calculates  one's complement (Internet) checksum of
 *              the IP pseudo header
 *************************************************************************/
-fnet_uint16_t fnet_checksum_pseudo_start( fnet_netbuf_t *nb, fnet_uint16_t protocol, fnet_uint16_t protocol_len )
+fnet_uint16_t _fnet_checksum_pseudo_netbuf_start( fnet_netbuf_t *nb, fnet_uint16_t protocol, fnet_uint16_t protocol_len )
 {
-    fnet_uint32_t sum = (fnet_uint32_t)fnet_checksum_nb(nb, (fnet_size_t)protocol_len);
+    fnet_uint32_t sum = _fnet_checksum32_nb(nb, (fnet_size_t)protocol_len);
 
     sum += (fnet_uint32_t)protocol + (fnet_uint32_t)fnet_htons(protocol_len);
 
@@ -249,14 +249,14 @@ fnet_uint16_t fnet_checksum_pseudo_start( fnet_netbuf_t *nb, fnet_uint16_t proto
 * DESCRIPTION: Calculates  one's complement (Internet) checksum of
 *              the IP pseudo header
 *************************************************************************/
-fnet_uint16_t fnet_checksum_pseudo_end( fnet_uint16_t sum_s, const fnet_uint8_t *ip_src, const fnet_uint8_t *ip_dest, fnet_size_t addr_size )
+fnet_uint16_t _fnet_checksum_pseudo_netbuf_end( fnet_uint16_t sum_s, const fnet_uint8_t *ip_src, const fnet_uint8_t *ip_dest, fnet_size_t addr_size )
 {
     fnet_uint32_t sum = 0U;
 
     sum = sum_s;
 
-    sum = fnet_checksum_low(sum, addr_size, (const fnet_uint16_t *)ip_src);
-    sum = fnet_checksum_low(sum, addr_size, (const fnet_uint16_t *)ip_dest);
+    sum = _fnet_checksum32_low(sum, addr_size, (const fnet_uint16_t *)ip_src);
+    sum = _fnet_checksum32_low(sum, addr_size, (const fnet_uint16_t *)ip_dest);
 
     sum += 0xffffU; /* Add in accumulated carries + 0xffff acording to RFC1624*/
 

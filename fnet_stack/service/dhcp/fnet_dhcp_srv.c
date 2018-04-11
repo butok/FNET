@@ -141,7 +141,6 @@ typedef struct fnet_dhcp_srv_if
     /* TBD RFC: Servers SHOULD be implemented so that
     network administrators MAY choose to disable probes of newly
     allocated addresses.*/
-
 } fnet_dhcp_srv_if_t;
 
 /* The DHCPv4 server interface list*/
@@ -150,15 +149,14 @@ static  fnet_dhcp_srv_if_t fnet_dhcp_srv_if_list[FNET_CFG_DHCP_SRV];
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fnet_dhcp_srv_poll(void *fnet_dhcp_srv_if_p);
-static fnet_uint8_t *fnet_dhcp_srv_get_option(fnet_uint8_t **options, fnet_uint8_t *option_end);
-static void fnet_dhcp_srv_parse_options( fnet_uint8_t *option_buffer, fnet_size_t option_buffer_size, fnet_dhcp_srv_options_t *options );
-static void fnet_dhcp_srv_set_lease_time(fnet_dhcp_srv_if_t *dhcp_srv_if, fnet_dhcp_srv_addr_pool_t  *ip_addr_pool, const fnet_dhcp_srv_options_t *options);
-static fnet_int32_t fnet_dhcp_srv_get_addr_pool(fnet_dhcp_srv_if_t *dhcp_srv_if, fnet_dhcp_header_t  *dhcp_header, fnet_mac_addr_t *client_identifier, fnet_ip4_addr_t requested_ip_address);
-static void fnet_dhcp_srv_set_lease_time(fnet_dhcp_srv_if_t *dhcp_srv_if, fnet_dhcp_srv_addr_pool_t  *ip_addr_pool, const fnet_dhcp_srv_options_t *options);
-static fnet_uint8_t *fnet_dhcp_srv_add_option(fnet_uint8_t *option_buffer, fnet_size_t option_buffer_size, fnet_uint8_t option_code, fnet_uint8_t option_length,  const void *option_value);
-static void fnet_dhcp_srv_send_message(fnet_dhcp_srv_if_t *dhcp_if, fnet_ip4_addr_t server_identifier, fnet_uint8_t message_type, fnet_dhcp_srv_options_t *rx_options, fnet_int32_t addr_pool_index);
-static fnet_int32_t fnet_dhcp_srv_get_addr_pool_free(fnet_dhcp_srv_if_t *dhcp_srv_if);
+static void _fnet_dhcp_srv_poll(void *fnet_dhcp_srv_if_p);
+static fnet_uint8_t *_fnet_dhcp_srv_get_option(fnet_uint8_t **options, fnet_uint8_t *option_end);
+static void _fnet_dhcp_srv_parse_options( fnet_uint8_t *option_buffer, fnet_size_t option_buffer_size, fnet_dhcp_srv_options_t *options );
+static void _fnet_dhcp_srv_set_lease_time(fnet_dhcp_srv_if_t *dhcp_srv_if, fnet_dhcp_srv_addr_pool_t  *ip_addr_pool, const fnet_dhcp_srv_options_t *options);
+static fnet_int32_t _fnet_dhcp_srv_get_addr_pool(fnet_dhcp_srv_if_t *dhcp_srv_if, fnet_dhcp_header_t  *dhcp_header, fnet_mac_addr_t *client_identifier, fnet_ip4_addr_t requested_ip_address);
+static fnet_uint8_t *_fnet_dhcp_srv_add_option(fnet_uint8_t *option_buffer, fnet_size_t option_buffer_size, fnet_uint8_t option_code, fnet_uint8_t option_length,  const void *option_value);
+static void _fnet_dhcp_srv_send_message(fnet_dhcp_srv_if_t *dhcp_if, fnet_ip4_addr_t server_identifier, fnet_uint8_t message_type, fnet_dhcp_srv_options_t *rx_options, fnet_int32_t addr_pool_index);
+static fnet_int32_t _fnet_dhcp_srv_get_addr_pool_free(fnet_dhcp_srv_if_t *dhcp_srv_if);
 
 /************************************************************************
 * DESCRIPTION: Initializes DHCPv4 server.
@@ -169,6 +167,8 @@ fnet_dhcp_srv_desc_t fnet_dhcp_srv_init(struct fnet_dhcp_srv_params *params)
     fnet_index_t                i;
     struct fnet_sockaddr        local_addr;
     fnet_scope_id_t             scope_id;
+
+    fnet_service_mutex_lock();
 
     /* Check input paramters. */
     if((params == 0) || (params->netif == 0))
@@ -282,7 +282,7 @@ fnet_dhcp_srv_desc_t fnet_dhcp_srv_init(struct fnet_dhcp_srv_params *params)
     }
 
     /* Register service. */
-    dhcp_srv_if->service_descriptor = fnet_service_register(fnet_dhcp_srv_poll, (void *) dhcp_srv_if);
+    dhcp_srv_if->service_descriptor = fnet_service_register(_fnet_dhcp_srv_poll, (void *) dhcp_srv_if);
     if(dhcp_srv_if->service_descriptor == 0)
     {
         FNET_DEBUG_DHCP_SRV(FNET_DHCP_SRV_ERR_SERVICE);
@@ -291,11 +291,14 @@ fnet_dhcp_srv_desc_t fnet_dhcp_srv_init(struct fnet_dhcp_srv_params *params)
 
     dhcp_srv_if->is_enabled = FNET_TRUE;
 
+    fnet_service_mutex_unlock();
+
     return (fnet_dhcp_srv_desc_t)dhcp_srv_if;
 
 ERROR_2:
     fnet_socket_close(dhcp_srv_if->socket_srv);
 ERROR_1:
+    fnet_service_mutex_unlock();
     return 0;
 }
 
@@ -308,11 +311,15 @@ void fnet_dhcp_srv_release(fnet_dhcp_srv_desc_t dhcp_srv_desc)
 
     if(dhcp_srv_if && (dhcp_srv_if->is_enabled == FNET_TRUE))
     {
+        fnet_service_mutex_lock();
+
         fnet_socket_close(dhcp_srv_if->socket_srv);
 
         fnet_service_unregister(dhcp_srv_if->service_descriptor); /* Delete service.*/
 
         dhcp_srv_if->is_enabled = FNET_FALSE;
+
+        fnet_service_mutex_unlock();
     }
 }
 
@@ -328,6 +335,8 @@ fnet_bool_t fnet_dhcp_srv_get_addr_pool_info(fnet_dhcp_srv_desc_t desc, fnet_ind
 
     if(dhcp_srv_if && addr_info)
     {
+        fnet_service_mutex_lock();
+
         for(i = 0u; i < FNET_CFG_DHCP_SRV_ADDR_POOL_SIZE; i++)
         {
             addr_pool = &dhcp_srv_if->ip_addr_pool[i];
@@ -346,6 +355,8 @@ fnet_bool_t fnet_dhcp_srv_get_addr_pool_info(fnet_dhcp_srv_desc_t desc, fnet_ind
                 n--;
             }
         }
+
+        fnet_service_mutex_unlock();
     }
 
     return result;
@@ -354,7 +365,7 @@ fnet_bool_t fnet_dhcp_srv_get_addr_pool_info(fnet_dhcp_srv_desc_t desc, fnet_ind
 /************************************************************************
 * DESCRIPTION: DHCP server state machine.
 ************************************************************************/
-static void fnet_dhcp_srv_poll( void *fnet_dhcp_srv_if_p )
+static void _fnet_dhcp_srv_poll( void *fnet_dhcp_srv_if_p )
 {
     fnet_dhcp_srv_if_t          *dhcp_srv_if = (fnet_dhcp_srv_if_t *)fnet_dhcp_srv_if_p;
     fnet_ssize_t                size;
@@ -405,14 +416,14 @@ static void fnet_dhcp_srv_poll( void *fnet_dhcp_srv_if_p )
        && !(fnet_memcmp(&dhcp_header->magic_cookie[0], fnet_dhcp_magic_cookie, sizeof(fnet_dhcp_magic_cookie))) /* Check magic cookie */
       )
     {
-        fnet_dhcp_trace("RX DHCP Server", dhcp_header);
+        _fnet_dhcp_trace("RX DHCP Server", dhcp_header);
 
         /* === Parse RX options ===*/
         fnet_memset_zero(&options_rx, sizeof(options_rx));                        /* Clear options_rx.*/
         /* The options in the ’options’ field
         MUST be interpreted first, so that any ’option overload’ options may
         be interpreted.*/
-        fnet_dhcp_srv_parse_options(dhcp_header->options, size - (sizeof(fnet_dhcp_header_t) - FNET_DHCP_OPTIONS_LENGTH), &options_rx);
+        _fnet_dhcp_srv_parse_options(dhcp_header->options, size - (sizeof(fnet_dhcp_header_t) - FNET_DHCP_OPTIONS_LENGTH), &options_rx);
 
         /* Parse overload options in sname/file
            Value   Meaning
@@ -424,12 +435,12 @@ static void fnet_dhcp_srv_poll( void *fnet_dhcp_srv_if_p )
         {
             if(options_rx.overload & FNET_DHCP_OPTION_OVERLOAD_SNAME)
             {
-                fnet_dhcp_srv_parse_options(dhcp_header->sname, sizeof(dhcp_header->sname), &options_rx);
+                _fnet_dhcp_srv_parse_options(dhcp_header->sname, sizeof(dhcp_header->sname), &options_rx);
             }
 
             if(options_rx.overload & FNET_DHCP_OPTION_OVERLOAD_FILE)
             {
-                fnet_dhcp_srv_parse_options(dhcp_header->file, sizeof(dhcp_header->file), &options_rx);
+                _fnet_dhcp_srv_parse_options(dhcp_header->file, sizeof(dhcp_header->file), &options_rx);
             }
         }
 
@@ -446,7 +457,7 @@ static void fnet_dhcp_srv_poll( void *fnet_dhcp_srv_if_p )
         server_identifier = fnet_netif_get_ip4_addr(dhcp_srv_if->netif);
 
         /* Get a network address for the requesting client. */
-        addr_pool_index = fnet_dhcp_srv_get_addr_pool(dhcp_srv_if, dhcp_header, client_identifier, options_rx.requested_ip_address);
+        addr_pool_index = _fnet_dhcp_srv_get_addr_pool(dhcp_srv_if, dhcp_header, client_identifier, options_rx.requested_ip_address);
 
         /* === Handle received message ===*/
         switch(options_rx.message_type)
@@ -460,7 +471,7 @@ static void fnet_dhcp_srv_poll( void *fnet_dhcp_srv_if_p )
                     /* Allocate a new address from the server’s pool of available addresses. */
                     if(addr_pool_index == FNET_ERR)
                     {
-                        addr_pool_index = fnet_dhcp_srv_get_addr_pool_free(dhcp_srv_if);
+                        addr_pool_index = _fnet_dhcp_srv_get_addr_pool_free(dhcp_srv_if);
                     }
 
                     if(addr_pool_index != FNET_ERR)
@@ -468,7 +479,7 @@ static void fnet_dhcp_srv_poll( void *fnet_dhcp_srv_if_p )
                         ip_addr_pool = &dhcp_srv_if->ip_addr_pool[addr_pool_index];
 
                         /* The server must also choose an expiration time for the lease */
-                        fnet_dhcp_srv_set_lease_time(dhcp_srv_if, ip_addr_pool, &options_rx);
+                        _fnet_dhcp_srv_set_lease_time(dhcp_srv_if, ip_addr_pool, &options_rx);
 
                         /* While not required for correct operation of DHCP, the server SHOULD
                         NOT reuse the selected network address before the client responds to
@@ -520,7 +531,7 @@ static void fnet_dhcp_srv_poll( void *fnet_dhcp_srv_if_p )
                             if( ip_addr_pool->state == FNET_DHCP_SRV_ADDR_POOL_STATE_BOUND)
                             {
                                 /* Update lease time */
-                                fnet_dhcp_srv_set_lease_time(dhcp_srv_if, ip_addr_pool, &options_rx);
+                                _fnet_dhcp_srv_set_lease_time(dhcp_srv_if, ip_addr_pool, &options_rx);
                                 /* Send ACK */
                                 message_type_tx = FNET_DHCP_OPTION_MSG_TYPE_ACK;
                             }
@@ -605,14 +616,14 @@ static void fnet_dhcp_srv_poll( void *fnet_dhcp_srv_if_p )
     /* Any TX */
     if(message_type_tx)
     {
-        fnet_dhcp_srv_send_message(dhcp_srv_if, server_identifier, message_type_tx, &options_rx, addr_pool_index);
+        _fnet_dhcp_srv_send_message(dhcp_srv_if, server_identifier, message_type_tx, &options_rx, addr_pool_index);
     }
 }
 
 /************************************************************************
 * DESCRIPTION: Send DHCPv4 client message.
 ************************************************************************/
-static void fnet_dhcp_srv_send_message(fnet_dhcp_srv_if_t *dhcp_if, fnet_ip4_addr_t server_identifier, fnet_uint8_t message_type, fnet_dhcp_srv_options_t *rx_options, fnet_int32_t addr_pool_index)
+static void _fnet_dhcp_srv_send_message(fnet_dhcp_srv_if_t *dhcp_if, fnet_ip4_addr_t server_identifier, fnet_uint8_t message_type, fnet_dhcp_srv_options_t *rx_options, fnet_int32_t addr_pool_index)
 {
     FNET_ASSERT(dhcp_if != FNET_NULl);
     FNET_ASSERT(rx_options != FNET_NULl);
@@ -675,14 +686,14 @@ static void fnet_dhcp_srv_send_message(fnet_dhcp_srv_if_t *dhcp_if, fnet_ip4_add
     option_position = message->options;
 
     /* Add DHCP message type option */
-    option_position = fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_MSG_TYPE, FNET_DHCP_OPTION_MSG_TYPE_LENGTH,  &message_type);
+    option_position = _fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_MSG_TYPE, FNET_DHCP_OPTION_MSG_TYPE_LENGTH,  &message_type);
     if(option_position == FNET_NULL)
     {
         goto EXIT;
     }
 
     /* Add server identifier. A DHCP server always returns its own address in the ’server identifier’ option.*/
-    option_position = fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_SERVER_ID, FNET_DHCP_OPTION_SERVER_ID_LENGTH,  &server_identifier);
+    option_position = _fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_SERVER_ID, FNET_DHCP_OPTION_SERVER_ID_LENGTH,  &server_identifier);
     if(option_position == FNET_NULL)
     {
         goto EXIT;
@@ -722,7 +733,7 @@ static void fnet_dhcp_srv_send_message(fnet_dhcp_srv_if_t *dhcp_if, fnet_ip4_add
     if(add_lease_time == FNET_TRUE)
     {
         fnet_uint32_t lease_time = fnet_htonl(dhcp_if->ip_addr_pool[addr_pool_index].lease_time - (fnet_timer_get_seconds() -  dhcp_if->ip_addr_pool[addr_pool_index].state_timestamp));
-        option_position = fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_LEASE, FNET_DHCP_OPTION_LEASE_LENGTH, &lease_time);
+        option_position = _fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_LEASE, FNET_DHCP_OPTION_LEASE_LENGTH, &lease_time);
         if(option_position == FNET_NULL)
         {
             goto EXIT;
@@ -738,14 +749,14 @@ static void fnet_dhcp_srv_send_message(fnet_dhcp_srv_if_t *dhcp_if, fnet_ip4_add
             switch(rx_options->request_list[i])
             {
                 case FNET_DHCP_OPTION_SUBNETMASK:
-                    option_position_tmp = fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_SUBNETMASK, FNET_DHCP_OPTION_SUBNETMASK_LENGTH, &dhcp_if->subnet_mask);
+                    option_position_tmp = _fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_SUBNETMASK, FNET_DHCP_OPTION_SUBNETMASK_LENGTH, &dhcp_if->subnet_mask);
                     break;
                 case FNET_DHCP_OPTION_ROUTER:
-                    option_position_tmp = fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_ROUTER, FNET_DHCP_OPTION_ROUTER_LENGTH_MIN, &dhcp_if->gateway);
+                    option_position_tmp = _fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_ROUTER, FNET_DHCP_OPTION_ROUTER_LENGTH_MIN, &dhcp_if->gateway);
                     break;
 #if FNET_CFG_DNS
                 case FNET_DHCP_OPTION_DNS:
-                    option_position_tmp = fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_DNS, FNET_DHCP_OPTION_DNS_LENGTH_MIN, &dhcp_if->dns);
+                    option_position_tmp = _fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_DNS, FNET_DHCP_OPTION_DNS_LENGTH_MIN, &dhcp_if->dns);
                     break;
 #endif
                 /*RFC: Times T1 and T2 are configurable by the server through options. T1
@@ -755,7 +766,7 @@ static void fnet_dhcp_srv_send_message(fnet_dhcp_srv_if_t *dhcp_if, fnet_ip4_add
                     {
                         fnet_uint32_t   t1;
                         t1 = fnet_htonl(dhcp_if->ip_addr_pool[addr_pool_index].lease_time >> 1);
-                        option_position_tmp = fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_T1, FNET_DHCP_OPTION_T1_LENGTH, &t1);
+                        option_position_tmp = _fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_T1, FNET_DHCP_OPTION_T1_LENGTH, &t1);
                     }
                     break;
                 /* T2 defaults to (0.875 * duration_of_lease).*/
@@ -764,7 +775,7 @@ static void fnet_dhcp_srv_send_message(fnet_dhcp_srv_if_t *dhcp_if, fnet_ip4_add
                     {
                         fnet_uint32_t   t2;
                         t2 = fnet_htonl(dhcp_if->ip_addr_pool[addr_pool_index].lease_time - (dhcp_if->ip_addr_pool[addr_pool_index].lease_time >> 3));
-                        option_position_tmp = fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_T2, FNET_DHCP_OPTION_T2_LENGTH, &t2);
+                        option_position_tmp = _fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_T2, FNET_DHCP_OPTION_T2_LENGTH, &t2);
                     }
                     break;
                 default:
@@ -800,7 +811,7 @@ EXIT:
 *   - FNET_NULL if no space for the option (+ END option).
 ************************************************************************/
 //TBD common for CLN and SRV
-static fnet_uint8_t *fnet_dhcp_srv_add_option(fnet_uint8_t *option_buffer, fnet_size_t option_buffer_size, fnet_uint8_t option_code, fnet_uint8_t option_length,  const void *option_value )
+static fnet_uint8_t *_fnet_dhcp_srv_add_option(fnet_uint8_t *option_buffer, fnet_size_t option_buffer_size, fnet_uint8_t option_code, fnet_uint8_t option_length,  const void *option_value )
 {
     FNET_ASSERT(option_buffer != FNET_NULl);
     FNET_ASSERT(option_value != FNET_NULl);
@@ -821,7 +832,7 @@ static fnet_uint8_t *fnet_dhcp_srv_add_option(fnet_uint8_t *option_buffer, fnet_
 * DESCRIPTION: Gets pointer to the first option. "options" is updated to the next option.
 * Returns NULL, if there is no option.
 ************************************************************************/
-static fnet_uint8_t *fnet_dhcp_srv_get_option(fnet_uint8_t **options, fnet_uint8_t *option_end)
+static fnet_uint8_t *_fnet_dhcp_srv_get_option(fnet_uint8_t **options, fnet_uint8_t *option_end)
 {
     fnet_uint8_t *current_position = *options;
     fnet_uint8_t length;
@@ -873,12 +884,12 @@ EXIT:
 /************************************************************************
 * DESCRIPTION: Parse DHCP options from a received message.
 ************************************************************************/
-static void fnet_dhcp_srv_parse_options( fnet_uint8_t *option_buffer, fnet_size_t option_buffer_size, fnet_dhcp_srv_options_t *options )
+static void _fnet_dhcp_srv_parse_options( fnet_uint8_t *option_buffer, fnet_size_t option_buffer_size, fnet_dhcp_srv_options_t *options )
 {
     fnet_uint8_t *current_option;
     fnet_uint8_t *option_end = option_buffer + option_buffer_size - 1;
 
-    while((current_option = fnet_dhcp_srv_get_option(&option_buffer, option_end)) != FNET_NULL)
+    while((current_option = _fnet_dhcp_srv_get_option(&option_buffer, option_end)) != FNET_NULL)
     {
         fnet_uint8_t *option_data = current_option + 2;
         fnet_uint8_t option_length = *(current_option + 1);
@@ -1035,7 +1046,7 @@ static void fnet_dhcp_srv_parse_options( fnet_uint8_t *option_buffer, fnet_size_
 * DESCRIPTION: Choose client address. Returns address pool index.
 * FNET_ERR means there is no address in the address pool.
 ************************************************************************/
-static fnet_int32_t fnet_dhcp_srv_get_addr_pool(fnet_dhcp_srv_if_t *dhcp_srv_if, fnet_dhcp_header_t  *dhcp_header, fnet_mac_addr_t *client_identifier, fnet_ip4_addr_t requested_ip_address)
+static fnet_int32_t _fnet_dhcp_srv_get_addr_pool(fnet_dhcp_srv_if_t *dhcp_srv_if, fnet_dhcp_header_t  *dhcp_header, fnet_mac_addr_t *client_identifier, fnet_ip4_addr_t requested_ip_address)
 {
     FNET_ASSERT(dhcp_srv_if != FNET_NULL);
     FNET_ASSERT(dhcp_header != FNET_NULL);
@@ -1090,7 +1101,7 @@ static fnet_int32_t fnet_dhcp_srv_get_addr_pool(fnet_dhcp_srv_if_t *dhcp_srv_if,
 * DESCRIPTION: Get free client address from the pool. Returns address pool index.
 * FNET_ERR means the pool is full.
 ************************************************************************/
-static fnet_int32_t fnet_dhcp_srv_get_addr_pool_free(fnet_dhcp_srv_if_t *dhcp_srv_if)
+static fnet_int32_t _fnet_dhcp_srv_get_addr_pool_free(fnet_dhcp_srv_if_t *dhcp_srv_if)
 {
     FNET_ASSERT(dhcp_srv_if != FNET_NULL);
 
@@ -1115,12 +1126,11 @@ static fnet_int32_t fnet_dhcp_srv_get_addr_pool_free(fnet_dhcp_srv_if_t *dhcp_sr
 /************************************************************************
 * DESCRIPTION: Choose an expiration time for the lease.
 ************************************************************************/
-static void fnet_dhcp_srv_set_lease_time(fnet_dhcp_srv_if_t *dhcp_srv_if, fnet_dhcp_srv_addr_pool_t  *ip_addr_pool, const fnet_dhcp_srv_options_t *options)
+static void _fnet_dhcp_srv_set_lease_time(fnet_dhcp_srv_if_t *dhcp_srv_if, fnet_dhcp_srv_addr_pool_t  *ip_addr_pool, const fnet_dhcp_srv_options_t *options)
 {
     FNET_ASSERT(dhcp_srv_if != FNET_NULL);
     FNET_ASSERT(ip_addr_pool != FNET_NULL);
     FNET_ASSERT(options != FNET_NULL);
-
 
     /*RFC: The server must also choose an expiration time for the lease, as
     follows:*/
@@ -1191,6 +1201,8 @@ fnet_dhcp_srv_desc_t fnet_dhcp_srv_get_by_netif(fnet_netif_desc_t netif)
 
     if(netif)
     {
+        fnet_service_mutex_lock();
+
         for(i = 0u; i < FNET_CFG_DHCP_SRV; i++)
         {
             dhcp_if = &fnet_dhcp_srv_if_list[i];
@@ -1201,6 +1213,8 @@ fnet_dhcp_srv_desc_t fnet_dhcp_srv_get_by_netif(fnet_netif_desc_t netif)
                 break;
             }
         }
+
+        fnet_service_mutex_unlock();
     }
 
     return dhcp_desc;

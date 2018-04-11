@@ -112,26 +112,26 @@ const fnet_netif_api_t fnet_qca_api =
     .netif_init = fnet_qca_init,                                /* Initialization function.*/
     .netif_release = fnet_qca_release,                          /* Shutdown function.*/
 #if FNET_CFG_IP4
-    .netif_output_ip4 = fnet_eth_output_ip4,                    /* IPv4 Transmit function.*/
+    .netif_output_ip4 = _fnet_eth_output_ip4,                    /* IPv4 Transmit function.*/
 #endif
-    .netif_change_addr_notify = fnet_eth_change_addr_notify,    /* Address change notification function.*/
-    .netif_drain = fnet_eth_drain,                              /* Drain function.*/
+    .netif_change_addr_notify = _fnet_eth_change_addr_notify,    /* Address change notification function.*/
+    .netif_drain = _fnet_eth_drain,                              /* Drain function.*/
     .netif_get_hw_addr = fnet_qca_get_hw_addr,
     .netif_set_hw_addr = fnet_qca_set_hw_addr,
     .netif_is_connected = fnet_qca_is_connected,
     .netif_get_statistics = fnet_qca_get_statistics,
 #if FNET_CFG_MULTICAST
 #if FNET_CFG_IP4
-    .netif_multicast_join_ip4 = fnet_eth_multicast_join_ip4,
-    .netif_multicast_leave_ip4 = fnet_eth_multicast_leave_ip4,
+    .netif_multicast_join_ip4 = _fnet_eth_multicast_join_ip4,
+    .netif_multicast_leave_ip4 = _fnet_eth_multicast_leave_ip4,
 #endif
 #if FNET_CFG_IP6
-    .netif_multicast_join_ip6 = fnet_eth_multicast_join_ip6,
-    .netif_multicast_leave_ip6 = fnet_eth_multicast_leave_ip6,
+    .netif_multicast_join_ip6 = _fnet_eth_multicast_join_ip6,
+    .netif_multicast_leave_ip6 = _fnet_eth_multicast_leave_ip6,
 #endif
 #endif
 #if FNET_CFG_IP6
-    .netif_output_ip6 = fnet_eth_output_ip6,           /* IPv6 Transmit function.*/
+    .netif_output_ip6 = _fnet_eth_output_ip6,           /* IPv6 Transmit function.*/
 #endif
     .wifi_api = &fnet_qca_wif_api,
 };
@@ -247,6 +247,9 @@ static fnet_return_t fnet_qca_init(fnet_netif_t *netif)
 #endif
 
             qca_if->netif = netif;
+
+            A_MDELAY(100); /* Suggested delay. Nobody knows why. */
+
             result = FNET_OK;
         }
     }
@@ -421,10 +424,10 @@ static fnet_return_t fnet_qca_get_ssid_info(const char *ssid, WLAN_AUTH_MODE *au
     FNET_ASSERT(auth_mode != FNET_NULL);
     FNET_ASSERT(encrypt_mode != FNET_NULL);
 
-    fnet_return_t   result = FNET_ERR;
-    QCA_SCAN_LIST   param = {0};
-    int16_t         num_results = 0;
-    fnet_index_t    i = 0;
+    fnet_return_t       result = FNET_ERR;
+    QCA_SCAN_LIST       param = {0};
+    int16_t             num_results = 0;
+    fnet_index_t        i;
 
     /* Set maximum power */
     if(qcom_power_set_mode(FNET_QCA_DEVICE_ID, MAX_PERF_POWER, USER) != A_OK)
@@ -448,7 +451,7 @@ static fnet_return_t fnet_qca_get_ssid_info(const char *ssid, WLAN_AUTH_MODE *au
                 FNET_DEBUG_QCA("[QCA] ERROR:  qcom_set_scan() failed\r\n");
                 break;
             }
-
+            A_MDELAY(100);
             /* Get the scan results*/
             if(qcom_get_scan(FNET_QCA_DEVICE_ID, (QCOM_BSS_SCAN_INFO **) & (param.scan_info_list), &num_results) != A_OK)
             {
@@ -624,6 +627,25 @@ static fnet_return_t fnet_qca_wifi_connect(struct fnet_netif *netif, fnet_wifi_c
         else
         {
             FNET_DEBUG_QCA("[QCA] (MODE) Station\r\n");
+
+#if 1 /* Reduce background scan period for better reconnection (optional).*/
+            {
+                qcom_scan_params_t scan_params = {.fgStartPeriod = 1,
+                                                  .fgEndPeriod = 2,
+                                                  .bgPeriod = 1,
+                                                  .shortScanRatio = WMI_SHORTSCANRATIO_DEFAULT,
+                                                  .scanCtrlFlags = DEFAULT_SCAN_CTRL_FLAGS,
+                                                  .minActChDwellTimeInMs = 0,
+                                                  .maxActScanPerSsid = 0,
+                                                  .maxDfsChActTimeInMs = 0
+                                                 };
+
+                if (qcom_scan_params_set(FNET_QCA_DEVICE_ID, &scan_params) != A_OK)
+                {
+                    FNET_DEBUG_QCA("ERROR: qcom_scan_params_set failed\r\n");
+                }
+            }
+#endif
 
             if(params->wpa_passphrase && fnet_strlen(params->wpa_passphrase)) /* Security */
             {
@@ -961,7 +983,7 @@ void fnet_qca_output(fnet_netif_t *netif, fnet_netbuf_t *nb)
                 goto EXIT_1;
             }
 
-            fnet_netbuf_to_buf(nb, 0u, FNET_NETBUF_COPYALL, a_netbuf_ptr->tail);
+            _fnet_netbuf_to_buf(nb, 0u, FNET_NETBUF_COPYALL, a_netbuf_ptr->tail);
             A_NETBUF_PUT(a_netbuf_ptr, nb->total_length);
 
             /* Ensure there is enough headroom to complete the tx operation */
@@ -982,11 +1004,11 @@ void fnet_qca_output(fnet_netif_t *netif, fnet_netbuf_t *nb)
         }
     }
 EXIT_1:
-    fnet_netbuf_free_chain(nb);
+    _fnet_netbuf_free_chain(nb);
     return;
 EXIT_2:
     A_NETBUF_FREE((void *)a_netbuf_ptr);
-    fnet_netbuf_free_chain(nb);
+    _fnet_netbuf_free_chain(nb);
     return;
 }
 
@@ -1234,7 +1256,7 @@ static void fnet_qca_input(void *cookie)
         fnet_isr_lock();
 
         /* Ethernet input.*/
-        fnet_eth_input(qca_if->netif, frame, frame_len);
+        _fnet_eth_input(qca_if->netif, frame, frame_len);
 
         fnet_isr_unlock();
     }

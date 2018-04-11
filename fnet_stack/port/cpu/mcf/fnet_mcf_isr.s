@@ -1,7 +1,6 @@
 /**************************************************************************
 * 
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -28,7 +27,7 @@
 #if FNET_MCF
 
 
-FNET_COMP_ASM_EXTERN    FNET_COMP_ASM_PREFIX(fnet_isr_handler)
+FNET_COMP_ASM_EXTERN    FNET_COMP_ASM_PREFIX(_fnet_isr_handler)
 
 FNET_COMP_ASM_GLOBAL    FNET_COMP_ASM_PREFIX(fnet_cpu_isr)
 
@@ -38,7 +37,7 @@ FNET_COMP_ASM_CODE
 /************************************************************************
 * DESCRIPTION: This handler is executed on every FNET interrupt 
 *              (from ethernet and timer module).
-*              Extructs vector number and calls fnet_isr_handler().
+*              Extructs vector number and calls _fnet_isr_handler().
 *************************************************************************/
 FNET_COMP_ASM_ALIGN 4
 
@@ -54,7 +53,7 @@ FNET_COMP_ASM_PREFIX(fnet_cpu_isr):
 #if FNET_CFG_COMP_GNUC          /* GCC passes parameters on the stack */
     move.l   d0, -(sp)
 #endif   
-	jsr     (FNET_COMP_ASM_PREFIX(fnet_isr_handler))
+	jsr     (FNET_COMP_ASM_PREFIX(_fnet_isr_handler))
 #if FNET_CFG_COMP_GNUC          /* GCC passes parameters on the stack */
     addq.l   #4, sp
 #endif

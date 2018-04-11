@@ -32,14 +32,14 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static fnet_return_t fnet_raw_attach( fnet_socket_if_t *sk );
-static fnet_return_t fnet_raw_detach( fnet_socket_if_t *sk );
-static fnet_return_t fnet_raw_connect( fnet_socket_if_t *sk, struct fnet_sockaddr *foreign_addr);
-static fnet_int32_t fnet_raw_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *addr);
-static fnet_int32_t fnet_raw_rcv(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct fnet_sockaddr *addr);
-static fnet_return_t fnet_raw_shutdown( fnet_socket_if_t *sk, fnet_sd_flags_t how );
-static void fnet_raw_release(void);
-static fnet_error_t fnet_raw_output(struct fnet_sockaddr *src_addr, const struct fnet_sockaddr *dest_addr, fnet_uint8_t protocol_number, fnet_socket_option_t *sockoption, fnet_netbuf_t *nb);
+static fnet_return_t _fnet_raw_attach( fnet_socket_if_t *sk );
+static fnet_return_t _fnet_raw_detach( fnet_socket_if_t *sk );
+static fnet_return_t _fnet_raw_connect( fnet_socket_if_t *sk, struct fnet_sockaddr *foreign_addr);
+static fnet_int32_t _fnet_raw_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *addr);
+static fnet_int32_t _fnet_raw_rcv(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct fnet_sockaddr *addr);
+static fnet_return_t _fnet_raw_shutdown( fnet_socket_if_t *sk, fnet_sd_flags_t how );
+static void _fnet_raw_release(void);
+static fnet_error_t _fnet_raw_output(struct fnet_sockaddr *src_addr, const struct fnet_sockaddr *dest_addr, fnet_uint8_t protocol_number, fnet_socket_option_t *sockoption, fnet_netbuf_t *nb);
 
 /************************************************************************
 *     Global Data Structures
@@ -51,15 +51,15 @@ static fnet_error_t fnet_raw_output(struct fnet_sockaddr *src_addr, const struct
 static const fnet_socket_prot_if_t fnet_raw_socket_api =
 {
     FNET_FALSE,              /* Flag that protocol is connection oriented.*/
-    fnet_raw_attach,        /* Protocol "attach" function.*/
-    fnet_raw_detach,        /* Protocol "detach" function.*/
-    fnet_raw_connect,       /* Protocol "connect" function.*/
+    _fnet_raw_attach,        /* Protocol "attach" function.*/
+    _fnet_raw_detach,        /* Protocol "detach" function.*/
+    _fnet_raw_connect,       /* Protocol "connect" function.*/
     0,                      /* Protocol "accept" function.*/
-    fnet_raw_rcv,           /* Protocol "receive" function.*/
-    fnet_raw_snd,           /* Protocol "send" function.*/
-    fnet_raw_shutdown,      /* Protocol "shutdown" function.*/
-    fnet_ip_setsockopt,     /* Protocol "setsockopt" function.*/
-    fnet_ip_getsockopt,     /* Protocol "getsockopt" function.*/
+    _fnet_raw_rcv,           /* Protocol "receive" function.*/
+    _fnet_raw_snd,           /* Protocol "send" function.*/
+    _fnet_raw_shutdown,      /* Protocol "shutdown" function.*/
+    _fnet_ip_setsockopt,     /* Protocol "setsockopt" function.*/
+    _fnet_ip_getsockopt,     /* Protocol "getsockopt" function.*/
     0,                      /* Protocol "listen" function.*/
 };
 
@@ -67,8 +67,8 @@ fnet_prot_if_t fnet_raw_prot_if =
 {
     .family = AF_SUPPORTED,             /* Address domain family.*/
     .type = SOCK_RAW,                   /* Socket type used for.*/
-    .prot_release = fnet_raw_release,   /* Protocol release function.*/
-    .prot_input = fnet_raw_input,       /* Protocol input function,.*/
+    .prot_release = _fnet_raw_release,   /* Protocol release function.*/
+    .prot_input = _fnet_raw_input,       /* Protocol input function,.*/
     .socket_api = &fnet_raw_socket_api  /* Socket API */
 };
 
@@ -76,51 +76,51 @@ fnet_prot_if_t fnet_raw_prot_if =
 * DESCRIPTION: This function releases all sockets associated
 *              with RAW protocol.
 *************************************************************************/
-static void fnet_raw_release( void )
+static void _fnet_raw_release( void )
 {
     while(fnet_raw_prot_if.head)
     {
-        fnet_socket_release(&fnet_raw_prot_if.head, fnet_raw_prot_if.head);
+        _fnet_socket_release(&fnet_raw_prot_if.head, fnet_raw_prot_if.head);
     }
 }
 
 /************************************************************************
 * DESCRIPTION: RAW output function
 *************************************************************************/
-static fnet_error_t fnet_raw_output( struct fnet_sockaddr *src_addr, const struct fnet_sockaddr *dest_addr, fnet_uint8_t protocol_number,
-                                     fnet_socket_option_t *sockoption, fnet_netbuf_t *nb )
+static fnet_error_t _fnet_raw_output( struct fnet_sockaddr *src_addr, const struct fnet_sockaddr *dest_addr, fnet_uint8_t protocol_number,
+                                      fnet_socket_option_t *sockoption, fnet_netbuf_t *nb )
 {
     fnet_error_t error =  FNET_ERR_OK;
 
-    fnet_netif_t *netif =  (fnet_netif_t *)fnet_netif_get_by_scope_id( dest_addr->sa_scope_id );
+    fnet_netif_t *netif =  _fnet_netif_get_by_scope_id( dest_addr->sa_scope_id );
 
 #if FNET_CFG_IP4
     if(dest_addr->sa_family == AF_INET)
     {
-        error = fnet_ip4_output(netif, ((struct fnet_sockaddr_in *)(src_addr))->sin_addr.s_addr,
-                                ((const struct fnet_sockaddr_in *)(dest_addr))->sin_addr.s_addr,
-                                protocol_number,
-                                sockoption->ip4_opt.tos,
+        error = _fnet_ip4_output(netif, ((struct fnet_sockaddr_in *)(src_addr))->sin_addr.s_addr,
+                                 ((const struct fnet_sockaddr_in *)(dest_addr))->sin_addr.s_addr,
+                                 protocol_number,
+                                 sockoption->ip4_opt.tos,
 #if FNET_CFG_MULTICAST
-                                (fnet_uint8_t)((FNET_IP4_ADDR_IS_MULTICAST(((const struct fnet_sockaddr_in *)(dest_addr))->sin_addr.s_addr) ? sockoption->ip4_opt.ttl_multicast : sockoption->ip4_opt.ttl)),
+                                 (fnet_uint8_t)((FNET_IP4_ADDR_IS_MULTICAST(((const struct fnet_sockaddr_in *)(dest_addr))->sin_addr.s_addr) ? sockoption->ip4_opt.ttl_multicast : sockoption->ip4_opt.ttl)),
 #else
-                                sockoption->ip4_opt.ttl,
+                                 sockoption->ip4_opt.ttl,
 #endif /* FNET_CFG_MULTICAST */
-                                nb, FNET_FALSE, sockoption->so_dontroute,
-                                0
-                               );
+                                 nb, FNET_FALSE, sockoption->so_dontroute,
+                                 0
+                                );
     }
 #endif
 
 #if FNET_CFG_IP6
     if(dest_addr->sa_family == AF_INET6)
     {
-        error = fnet_ip6_output( netif,
-                                 fnet_socket_addr_is_unspecified(src_addr) ? FNET_NULL : & ((struct fnet_sockaddr_in6 *)(src_addr))->sin6_addr.s6_addr,
-                                 &((const struct fnet_sockaddr_in6 *)(dest_addr))->sin6_addr.s6_addr,
-                                 protocol_number,
-                                 FNET_IP6_ADDR_IS_MULTICAST(&((const struct fnet_sockaddr_in6 *)(dest_addr))->sin6_addr.s6_addr) ? sockoption->ip6_opt.hops_multicast : sockoption->ip6_opt.hops_unicast,
-                                 nb, 0);
+        error = _fnet_ip6_output( netif,
+                                  fnet_socket_addr_is_unspecified(src_addr) ? FNET_NULL : & ((struct fnet_sockaddr_in6 *)(src_addr))->sin6_addr.s6_addr,
+                                  &((const struct fnet_sockaddr_in6 *)(dest_addr))->sin6_addr.s6_addr,
+                                  protocol_number,
+                                  FNET_IP6_ADDR_IS_MULTICAST(&((const struct fnet_sockaddr_in6 *)(dest_addr))->sin6_addr.s6_addr) ? sockoption->ip6_opt.hops_multicast : sockoption->ip6_opt.hops_unicast,
+                                  nb, 0);
     }
 #endif
 
@@ -130,7 +130,7 @@ static fnet_error_t fnet_raw_output( struct fnet_sockaddr *src_addr, const struc
 /************************************************************************
 * DESCRIPTION: RAW input function.
 *************************************************************************/
-void fnet_raw_input(fnet_netif_t *netif, struct fnet_sockaddr *foreign_addr, struct fnet_sockaddr *local_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb)
+void _fnet_raw_input(fnet_netif_t *netif, struct fnet_sockaddr *foreign_addr, struct fnet_sockaddr *local_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip_nb)
 {
     fnet_socket_if_t       *sock;
     fnet_socket_if_t       *last;
@@ -158,7 +158,7 @@ void fnet_raw_input(fnet_netif_t *netif, struct fnet_sockaddr *foreign_addr, str
             }
 
         /* Demultiplex broadcast & multicast datagrams.*/
-        if((fnet_socket_addr_is_broadcast(local_addr, netif)) || (fnet_socket_addr_is_multicast(local_addr)))
+        if((_fnet_socket_addr_is_broadcast(local_addr, netif)) || (fnet_socket_addr_is_multicast(local_addr)))
         {
             last = 0;
 
@@ -237,11 +237,11 @@ void fnet_raw_input(fnet_netif_t *netif, struct fnet_sockaddr *foreign_addr, str
 
                 if((last != 0) && (last->receive_buffer.is_shutdown == FNET_FALSE))
                 {
-                    if((nb_tmp = fnet_netbuf_copy(nb, 0u, FNET_NETBUF_COPYALL, FNET_FALSE)) != 0)
+                    if((nb_tmp = _fnet_netbuf_copy(nb, 0u, FNET_NETBUF_COPYALL, FNET_FALSE)) != 0)
                     {
-                        if(fnet_socket_buffer_append_address(&(last->receive_buffer), nb_tmp, foreign_addr) == FNET_ERR)
+                        if(_fnet_socket_buffer_append_address(&(last->receive_buffer), nb_tmp, foreign_addr) == FNET_ERR)
                         {
-                            fnet_netbuf_free_chain(nb_tmp);
+                            _fnet_netbuf_free_chain(nb_tmp);
                         }
                     }
                 }
@@ -259,11 +259,11 @@ void fnet_raw_input(fnet_netif_t *netif, struct fnet_sockaddr *foreign_addr, str
             }
 
             /* Copy buffer.*/
-            if((nb_tmp = fnet_netbuf_copy(nb, 0u, FNET_NETBUF_COPYALL, FNET_FALSE)) != 0)
+            if((nb_tmp = _fnet_netbuf_copy(nb, 0u, FNET_NETBUF_COPYALL, FNET_FALSE)) != 0)
             {
-                if(fnet_socket_buffer_append_address(&(last->receive_buffer), nb_tmp, foreign_addr) == FNET_ERR)
+                if(_fnet_socket_buffer_append_address(&(last->receive_buffer), nb_tmp, foreign_addr) == FNET_ERR)
                 {
-                    fnet_netbuf_free_chain(nb_tmp);
+                    _fnet_netbuf_free_chain(nb_tmp);
                     goto BAD;
                 }
             }
@@ -274,7 +274,7 @@ void fnet_raw_input(fnet_netif_t *netif, struct fnet_sockaddr *foreign_addr, str
         }
         else /* For unicast datagram.*/
         {
-            sock = fnet_socket_lookup(fnet_raw_prot_if.head, local_addr, foreign_addr, protocol_number);
+            sock = _fnet_socket_lookup(fnet_raw_prot_if.head, local_addr, foreign_addr, protocol_number);
 
             if(sock)
             {
@@ -284,11 +284,11 @@ void fnet_raw_input(fnet_netif_t *netif, struct fnet_sockaddr *foreign_addr, str
                 }
 
                 /* Copy buffer.*/
-                if((nb_tmp = fnet_netbuf_copy(nb, 0u, FNET_NETBUF_COPYALL, FNET_FALSE)) != 0)
+                if((nb_tmp = _fnet_netbuf_copy(nb, 0u, FNET_NETBUF_COPYALL, FNET_FALSE)) != 0)
                 {
-                    if(fnet_socket_buffer_append_address(&(sock->receive_buffer), nb_tmp, foreign_addr) == FNET_ERR)
+                    if(_fnet_socket_buffer_append_address(&(sock->receive_buffer), nb_tmp, foreign_addr) == FNET_ERR)
                     {
-                        fnet_netbuf_free_chain(nb_tmp);
+                        _fnet_netbuf_free_chain(nb_tmp);
                         goto BAD;
                     }
                 }
@@ -306,7 +306,7 @@ BAD:
 /************************************************************************
 * DESCRIPTION: RAW attach function.
 *************************************************************************/
-static fnet_return_t fnet_raw_attach( fnet_socket_if_t *sk )
+static fnet_return_t _fnet_raw_attach( fnet_socket_if_t *sk )
 {
 #if FNET_CFG_IP4
     sk->options.ip4_opt.ttl = FNET_RAW_TTL;
@@ -325,10 +325,10 @@ static fnet_return_t fnet_raw_attach( fnet_socket_if_t *sk )
 /************************************************************************
 * DESCRIPTION: RAW close function.
 *************************************************************************/
-static fnet_return_t fnet_raw_detach( fnet_socket_if_t *sk )
+static fnet_return_t _fnet_raw_detach( fnet_socket_if_t *sk )
 {
     fnet_isr_lock();
-    fnet_socket_release(&fnet_raw_prot_if.head, sk);
+    _fnet_socket_release(&fnet_raw_prot_if.head, sk);
     fnet_isr_unlock();
     return (FNET_OK);
 }
@@ -336,14 +336,14 @@ static fnet_return_t fnet_raw_detach( fnet_socket_if_t *sk )
 /************************************************************************
 * DESCRIPTION:  RAW shutdown function.
 *************************************************************************/
-static fnet_return_t fnet_raw_shutdown( fnet_socket_if_t *sk, fnet_sd_flags_t how )
+static fnet_return_t _fnet_raw_shutdown( fnet_socket_if_t *sk, fnet_sd_flags_t how )
 {
     fnet_isr_lock();
 
     if((how & SD_READ) != 0u)
     {
         sk->receive_buffer.is_shutdown = FNET_TRUE;
-        fnet_socket_buffer_release(&sk->receive_buffer);
+        _fnet_socket_buffer_release(&sk->receive_buffer);
     }
 
     if((how & SD_WRITE) != 0u)
@@ -359,7 +359,7 @@ static fnet_return_t fnet_raw_shutdown( fnet_socket_if_t *sk, fnet_sd_flags_t ho
 /************************************************************************
 * DESCRIPTION: RAW connect function.
 *************************************************************************/
-static fnet_return_t fnet_raw_connect( fnet_socket_if_t *sk, struct fnet_sockaddr *foreign_addr)
+static fnet_return_t _fnet_raw_connect( fnet_socket_if_t *sk, struct fnet_sockaddr *foreign_addr)
 {
     fnet_isr_lock();
 
@@ -367,7 +367,7 @@ static fnet_return_t fnet_raw_connect( fnet_socket_if_t *sk, struct fnet_sockadd
     sk->local_addr.sa_port = 0u;
     sk->foreign_addr.sa_port = 0u;
     sk->state = SS_CONNECTED;
-    fnet_socket_buffer_release(&sk->receive_buffer);
+    _fnet_socket_buffer_release(&sk->receive_buffer);
 
     fnet_isr_unlock();
     return (FNET_OK);
@@ -376,7 +376,7 @@ static fnet_return_t fnet_raw_connect( fnet_socket_if_t *sk, struct fnet_sockadd
 /************************************************************************
 * DESCRIPTION: RAW send function.
 *************************************************************************/
-static fnet_int32_t fnet_raw_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *addr)
+static fnet_int32_t _fnet_raw_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *addr)
 {
     fnet_netbuf_t               *nb;
     fnet_error_t                error = FNET_ERR_OK;
@@ -400,7 +400,7 @@ static fnet_int32_t fnet_raw_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_
         foreign_addr = &sk->foreign_addr;
     }
 
-    if((nb = fnet_netbuf_from_buf(buf, len, FNET_FALSE)) == 0)
+    if((nb = _fnet_netbuf_from_buf(buf, len, FNET_FALSE)) == 0)
     {
         error = FNET_ERR_NOMEM;     /* Cannot allocate memory.*/
         goto ERROR;
@@ -412,7 +412,7 @@ static fnet_int32_t fnet_raw_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_
         sk->options.so_dontroute = FNET_TRUE;
     }
 
-    error = fnet_raw_output(&sk->local_addr, foreign_addr, (fnet_uint8_t)sk->protocol_number, &(sk->options), nb);
+    error = _fnet_raw_output(&sk->local_addr, foreign_addr, (fnet_uint8_t)sk->protocol_number, &(sk->options), nb);
 
     if((flags & MSG_DONTROUTE) != 0u) /* Restore.*/
     {
@@ -426,7 +426,7 @@ static fnet_int32_t fnet_raw_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_
     }
 
 ERROR:
-    fnet_socket_set_error(sk, error);
+    _fnet_socket_set_error(sk, error);
     fnet_isr_unlock();
     return (FNET_ERR);
 }
@@ -434,7 +434,7 @@ ERROR:
 /************************************************************************
 * DESCRIPTION :RAW receive function.
 *************************************************************************/
-static fnet_int32_t fnet_raw_rcv(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct fnet_sockaddr *addr)
+static fnet_int32_t _fnet_raw_rcv(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct fnet_sockaddr *addr)
 {
     fnet_error_t            error = FNET_ERR_OK;
     fnet_int32_t            length;
@@ -450,7 +450,7 @@ static fnet_int32_t fnet_raw_rcv(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_s
     }
 #endif /* FNET_CFG_TCP_URGENT */
 
-    if((length = fnet_socket_buffer_read_address(&(sk->receive_buffer), buf,
+    if((length = _fnet_socket_buffer_read_address(&(sk->receive_buffer), buf,
                  len, &foreign_addr, ((flags & MSG_PEEK) == 0u) ? FNET_TRUE : FNET_FALSE)) == FNET_ERR)
     {
         /* The message was too large to fit into the specified buffer and was truncated.*/
@@ -462,14 +462,14 @@ static fnet_int32_t fnet_raw_rcv(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_s
     {
         if(addr)
         {
-            fnet_socket_addr_copy(&foreign_addr, addr);
+            _fnet_socket_addr_copy(&foreign_addr, addr);
         }
 
         return (length);
     }
 
 ERROR:
-    fnet_socket_set_error(sk, error);
+    _fnet_socket_set_error(sk, error);
     return (FNET_ERR);
 }
 

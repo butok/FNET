@@ -85,7 +85,7 @@ static  fnet_bench_cln_if_t fnet_bench_cln_if_list[FNET_CFG_BENCH_CLN];
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fnet_bench_cln_poll(void *fnet_bench_cln_if_p);
+static void _fnet_bench_cln_poll(void *fnet_bench_cln_if_p);
 
 /************************************************************************
 * DESCRIPTION: Initializes the Benchmark client service.
@@ -95,6 +95,8 @@ fnet_bench_srv_desc_t fnet_bench_cln_init( struct fnet_bench_cln_params *params 
     fnet_index_t                i;
     fnet_bench_cln_if_t         *bench_cln_if = FNET_NULL;
     fnet_size_t                 bufsize_option = FNET_CFG_BENCH_CLN_BUFFER_SIZE;
+
+    fnet_service_mutex_lock();
 
     if((params == 0) ||
        !((params->type == SOCK_STREAM) || (params->type == SOCK_DGRAM)) ||
@@ -160,7 +162,7 @@ fnet_bench_srv_desc_t fnet_bench_cln_init( struct fnet_bench_cln_params *params 
         goto ERROR_2;
     }
 
-    bench_cln_if->service_descriptor = fnet_service_register(fnet_bench_cln_poll, (void *)bench_cln_if);
+    bench_cln_if->service_descriptor = fnet_service_register(_fnet_bench_cln_poll, (void *)bench_cln_if);
     if(bench_cln_if->service_descriptor == 0)
     {
         FNET_DEBUG_BENCH_CLN(FNET_BENCH_CLN_ERR_SERVICE);
@@ -179,11 +181,13 @@ fnet_bench_srv_desc_t fnet_bench_cln_init( struct fnet_bench_cln_params *params 
         bench_cln_if->state = FNET_BENCH_CLN_STATE_TX;
     }
 
+    fnet_service_mutex_unlock();
     return (fnet_bench_cln_desc_t)bench_cln_if;
 
 ERROR_2:
     fnet_socket_close(bench_cln_if->socket_foreign);
 ERROR_1:
+    fnet_service_mutex_unlock();
     return FNET_NULL;
 }
 
@@ -196,6 +200,8 @@ void fnet_bench_cln_release(fnet_bench_cln_desc_t desc)
 
     if(bench_cln_if && bench_cln_if->is_enabled)
     {
+        fnet_service_mutex_lock();
+
         if(bench_cln_if->type == SOCK_DGRAM) /* UDP */
         {
             fnet_uint32_t   bytes;
@@ -220,13 +226,15 @@ void fnet_bench_cln_release(fnet_bench_cln_desc_t desc)
         /* Inform a user application about the session end */
         bench_cln_if->bench_cln_result.time_ms = fnet_timer_get_ms() - bench_cln_if->time_begin;
         bench_cln_if->callback(bench_cln_if, &bench_cln_if->bench_cln_result, bench_cln_if->cookie);
+
+        fnet_service_mutex_unlock();
     }
 }
 
 /************************************************************************
 * DESCRIPTION: Benchmark client state machine.
 ************************************************************************/
-static void fnet_bench_cln_poll( void *fnet_bench_cln_if_p )
+static void _fnet_bench_cln_poll( void *fnet_bench_cln_if_p )
 {
     fnet_bench_cln_if_t     *bench_cln_if = (fnet_bench_cln_if_t *)fnet_bench_cln_if_p;
     fnet_ssize_t            send_result;

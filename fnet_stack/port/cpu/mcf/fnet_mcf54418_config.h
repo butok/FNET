@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2012-2016 by Andrey Butok. FNET Community.
+* Copyright 2012-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 * This program is free software: you can redistribute it and/or modify

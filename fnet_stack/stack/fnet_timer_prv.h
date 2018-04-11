@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -39,17 +38,16 @@ typedef void *fnet_timer_desc_t;
 extern "C" {
 #endif
 
-fnet_return_t fnet_timer_init( fnet_time_t period_ms );
+fnet_return_t _fnet_timer_init( fnet_time_t period_ms );
 void fnet_cpu_timer_release( void );
-void fnet_timer_release( void );
-void fnet_timer_reset_all( void );
-fnet_timer_desc_t fnet_timer_new( fnet_time_t period_ticks, void (*handler)( fnet_uint32_t cookie ), fnet_uint32_t cookie );
-void fnet_timer_free( fnet_timer_desc_t timer );
-void fnet_timer_ticks_inc( void );
+void _fnet_timer_release( void );
+fnet_timer_desc_t _fnet_timer_new( fnet_time_t period_ticks, void (*handler)( fnet_uint32_t cookie ), fnet_uint32_t cookie );
+void _fnet_timer_free( fnet_timer_desc_t timer );
+void _fnet_timer_ticks_inc( void );
 #if FNET_CFG_TIMER_POLL_AUTOMATIC
-void fnet_timer_handler_bottom(void *cookie);
+void _fnet_timer_handler_bottom(void *cookie);
 #else
-#define fnet_timer_handler_bottom FNET_NULL
+#define _fnet_timer_handler_bottom FNET_NULL
 #endif
 fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms );
 

@@ -31,7 +31,7 @@
 #include "stack/fnet_eth_prv.h"
 
 #ifndef FNET_CFG_QCA_SCAN_MAX
-    #define FNET_CFG_QCA_SCAN_MAX        (10)   /* Maximum number of SSID scans. */
+    #define FNET_CFG_QCA_SCAN_MAX        (20)   /* Maximum number of SSID scans. */
 #endif
 
 /* QCA4002 Module Control data structure */

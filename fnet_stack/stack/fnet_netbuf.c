@@ -1,8 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
-* Copyright 2003 by Andrey Butok. Motorola SPS.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -27,6 +25,7 @@
 #include "fnet.h"
 #include "fnet_prot.h"
 #include "fnet_mempool.h"
+#include "fnet_stack_prv.h"
 
 
 #define FNET_HEAP_SPLIT     (0) /* If 1 the main heap will be splitted to two parts. 
@@ -47,17 +46,17 @@ fnet_netbuf_t *dm_nb;
 * DESCRIPTION: Creates a new net_buf and allocates memory
 *              for a new data buffer.
 *************************************************************************/
-fnet_netbuf_t *fnet_netbuf_new( fnet_size_t len, fnet_bool_t drain )
+fnet_netbuf_t *_fnet_netbuf_new( fnet_size_t len, fnet_bool_t drain )
 {
     fnet_netbuf_t   *nb;
     void            *nb_d;
 
-    nb = (fnet_netbuf_t *)fnet_malloc_netbuf(sizeof(fnet_netbuf_t));
+    nb = (fnet_netbuf_t *)_fnet_malloc_netbuf(sizeof(fnet_netbuf_t));
 
     if((nb == 0) && drain)
     {
-        fnet_prot_drain();
-        nb = (fnet_netbuf_t *)fnet_malloc_netbuf(sizeof(fnet_netbuf_t));
+        _fnet_prot_drain();
+        nb = (fnet_netbuf_t *)_fnet_malloc_netbuf(sizeof(fnet_netbuf_t));
     }
 
     if(nb == 0) /* If FNET_NETBUF_MALLOC_NOWAIT and no free memory for a new net_buf*/
@@ -65,17 +64,17 @@ fnet_netbuf_t *fnet_netbuf_new( fnet_size_t len, fnet_bool_t drain )
         return (fnet_netbuf_t *)0;
     }
 
-    nb_d = fnet_malloc_netbuf(len + sizeof(fnet_uint32_t)/* For reference_counter */);
+    nb_d = _fnet_malloc_netbuf(len + sizeof(fnet_uint32_t)/* For reference_counter */);
 
     if((nb_d == 0) && drain )
     {
-        fnet_prot_drain();
-        nb_d = fnet_malloc_netbuf(len + sizeof(fnet_uint32_t)/* For reference_counter */);
+        _fnet_prot_drain();
+        nb_d = _fnet_malloc_netbuf(len + sizeof(fnet_uint32_t)/* For reference_counter */);
     }
 
     if(nb_d == 0) /* If FNET_NETBUF_MALLOC_NOWAIT and no free memory for data.*/
     {
-        fnet_free_netbuf(nb);
+        _fnet_free_netbuf(nb);
         return (fnet_netbuf_t *)0;
     }
 
@@ -98,7 +97,7 @@ fnet_netbuf_t *fnet_netbuf_new( fnet_size_t len, fnet_bool_t drain )
 * DESCRIPTION: Creates a new net_buf using data buffer,
 *              which was created before for another net_buf.
 *************************************************************************/
-fnet_netbuf_t *fnet_netbuf_copy( fnet_netbuf_t *nb, fnet_size_t offset, fnet_size_t len, fnet_bool_t drain )
+fnet_netbuf_t *_fnet_netbuf_copy( fnet_netbuf_t *nb, fnet_size_t offset, fnet_size_t len, fnet_bool_t drain )
 {
     fnet_netbuf_t   *loc_nb, *loc_nb_head, *tmp_nb;
     fnet_int32_t    tot_len = 0;
@@ -130,12 +129,12 @@ fnet_netbuf_t *fnet_netbuf_copy( fnet_netbuf_t *nb, fnet_size_t offset, fnet_siz
     tmp_nb = nb;
 
 
-    loc_nb = (fnet_netbuf_t *)fnet_malloc_netbuf(sizeof(fnet_netbuf_t));
+    loc_nb = (fnet_netbuf_t *)_fnet_malloc_netbuf(sizeof(fnet_netbuf_t));
 
     if((loc_nb == 0) && drain)
     {
-        fnet_prot_drain();
-        loc_nb = (fnet_netbuf_t *)fnet_malloc_netbuf(sizeof(fnet_netbuf_t));
+        _fnet_prot_drain();
+        loc_nb = (fnet_netbuf_t *)_fnet_malloc_netbuf(sizeof(fnet_netbuf_t));
     }
 
     if(loc_nb == 0)
@@ -180,23 +179,23 @@ fnet_netbuf_t *fnet_netbuf_copy( fnet_netbuf_t *nb, fnet_size_t offset, fnet_siz
 
         do
         {
-            loc_nb->next = (fnet_netbuf_t *)fnet_malloc_netbuf(sizeof(fnet_netbuf_t));
+            loc_nb->next = (fnet_netbuf_t *)_fnet_malloc_netbuf(sizeof(fnet_netbuf_t));
 
             if((loc_nb->next == 0) && drain )
             {
-                fnet_prot_drain();
-                loc_nb->next = (fnet_netbuf_t *)fnet_malloc_netbuf(sizeof(fnet_netbuf_t));
+                _fnet_prot_drain();
+                loc_nb->next = (fnet_netbuf_t *)_fnet_malloc_netbuf(sizeof(fnet_netbuf_t));
             }
 
             if(loc_nb->next == 0) /* there is a need to erase all buffers,*/
             {
                 /* which were created earlier.*/
-                loc_nb_head = fnet_netbuf_free(loc_nb_head);
+                loc_nb_head = _fnet_netbuf_free(loc_nb_head);
 
                 while(loc_nb_head != loc_nb->next)
                 {
                     tmp_nb = loc_nb_head->next;
-                    fnet_free_netbuf(loc_nb_head);
+                    _fnet_free_netbuf(loc_nb_head);
                     loc_nb_head = tmp_nb;
                 }
 
@@ -238,11 +237,11 @@ fnet_netbuf_t *fnet_netbuf_copy( fnet_netbuf_t *nb, fnet_size_t offset, fnet_siz
 * DESCRIPTION: Creates a new net_buf and fills it by a content of
 *              the external data buffer.
 *************************************************************************/
-fnet_netbuf_t *fnet_netbuf_from_buf( void *data_ptr, fnet_size_t len, fnet_bool_t drain )
+fnet_netbuf_t *_fnet_netbuf_from_buf( void *data_ptr, fnet_size_t len, fnet_bool_t drain )
 {
     fnet_netbuf_t *nb;
 
-    nb = fnet_netbuf_new(len, drain);
+    nb = _fnet_netbuf_new(len, drain);
 
     if(nb)
     {
@@ -256,8 +255,7 @@ fnet_netbuf_t *fnet_netbuf_from_buf( void *data_ptr, fnet_size_t len, fnet_bool_
 * DESCRIPTION: Creates a new continuous buffer, which contains
 *              info from all net buffers of the current chain.
 *************************************************************************/
-
-void fnet_netbuf_to_buf( fnet_netbuf_t *nb, fnet_size_t offset, fnet_size_t len, void *data_ptr )
+void _fnet_netbuf_to_buf( fnet_netbuf_t *nb, fnet_size_t offset, fnet_size_t len, void *data_ptr )
 {
     fnet_uint8_t    *u_buf;
     fnet_netbuf_t   *tmp_nb;
@@ -274,7 +272,7 @@ void fnet_netbuf_to_buf( fnet_netbuf_t *nb, fnet_size_t offset, fnet_size_t len,
 
 
     tmp_nb = nb;
-    /* This part is similar to the corresponding part in fnet_netbuf_copy */
+    /* This part is similar to the corresponding part in _fnet_netbuf_copy */
     do
     {
         tot_len += tmp_nb->length;
@@ -295,7 +293,6 @@ void fnet_netbuf_to_buf( fnet_netbuf_t *nb, fnet_size_t offset, fnet_size_t len,
             return; /* if input params aren't correct. */
         }
     }
-
 
     tmp_nb = nb;
 
@@ -329,14 +326,13 @@ void fnet_netbuf_to_buf( fnet_netbuf_t *nb, fnet_size_t offset, fnet_size_t len,
         tmp_nb = tmp_nb->next;   /* go to the next net_buf in the chain */
     }
     while (tot_len);
-
 }
 
 /************************************************************************
 * DESCRIPTION: Frees the memory, which was allocated by net_buf 'nb' and
 *              returns pointer to the next net_buf.
 *************************************************************************/
-fnet_netbuf_t *fnet_netbuf_free( fnet_netbuf_t *nb )
+fnet_netbuf_t *_fnet_netbuf_free( fnet_netbuf_t *nb )
 {
     fnet_netbuf_t *tmp_nb;
 
@@ -344,7 +340,7 @@ fnet_netbuf_t *fnet_netbuf_free( fnet_netbuf_t *nb )
     {
         if(((fnet_uint32_t *)nb->data)[0] == 1u)   /* If nobody uses this data buffer. */
         {
-            fnet_free_netbuf(nb->data);
+            _fnet_free_netbuf(nb->data);
         }
         else                           /* else decrement reference counter */
         {
@@ -353,7 +349,7 @@ fnet_netbuf_t *fnet_netbuf_free( fnet_netbuf_t *nb )
 
         tmp_nb = nb->next;
 
-        fnet_free_netbuf(nb);
+        _fnet_free_netbuf(nb);
 
         return (tmp_nb);
     }
@@ -367,7 +363,7 @@ fnet_netbuf_t *fnet_netbuf_free( fnet_netbuf_t *nb )
 * DESCRIPTION: Frees the memory, which was allocated by all net_bufs
 *              in the chain beginning from the buffer 'nb'
 *************************************************************************/
-void fnet_netbuf_free_chain( fnet_netbuf_t *nb )
+void _fnet_netbuf_free_chain( fnet_netbuf_t *nb )
 {
     fnet_netbuf_t *tmp_nb;
 
@@ -377,14 +373,14 @@ void fnet_netbuf_free_chain( fnet_netbuf_t *nb )
 
         if(((fnet_uint32_t *)nb->data)[0] == 1u)   /* If nobody uses this data buffer. */
         {
-            fnet_free_netbuf(nb->data);
+            _fnet_free_netbuf(nb->data);
         }
         else                            /* Else decrement reference counter */
         {
             ((fnet_uint32_t *)nb->data)[0] = ((fnet_uint32_t *)nb->data)[0] - 1u;
         }
 
-        fnet_free_netbuf(nb);
+        _fnet_free_netbuf(nb);
 
         nb = tmp_nb;
     }
@@ -394,7 +390,7 @@ void fnet_netbuf_free_chain( fnet_netbuf_t *nb )
 * DESCRIPTION: Create a data buffer for the first net_buf with the
 *              length len
 *************************************************************************/
-fnet_return_t fnet_netbuf_pullup( fnet_netbuf_t **nb_ptr, fnet_size_t len)
+fnet_return_t _fnet_netbuf_pullup( fnet_netbuf_t **nb_ptr, fnet_size_t len)
 {
     fnet_netbuf_t   *nb = *nb_ptr;
     fnet_size_t     tot_len = 0u;
@@ -420,7 +416,7 @@ fnet_return_t fnet_netbuf_pullup( fnet_netbuf_t **nb_ptr, fnet_size_t len)
     }
     while((tot_len < len) && tmp_nb);
 
-    new_buf = (struct net_buf_data *)fnet_malloc_netbuf((fnet_size_t)len + sizeof(fnet_uint32_t)/* For reference_counter */);
+    new_buf = (struct net_buf_data *)_fnet_malloc_netbuf((fnet_size_t)len + sizeof(fnet_uint32_t)/* For reference_counter */);
 
     if(new_buf == 0)
     {
@@ -436,7 +432,7 @@ fnet_return_t fnet_netbuf_pullup( fnet_netbuf_t **nb_ptr, fnet_size_t len)
     /* Free old data buffer (for the first net_buf) */
     if(((fnet_uint32_t *)nb->data)[0] == 1u)   /* If nobody uses this data buffer. */
     {
-        fnet_free_netbuf(nb->data);
+        _fnet_free_netbuf(nb->data);
     }
     else                            /* Else decrement reference counter */
     {
@@ -456,7 +452,7 @@ fnet_return_t fnet_netbuf_pullup( fnet_netbuf_t **nb_ptr, fnet_size_t len)
         if(nb_run != tmp_nb)
         {
             offset += nb_run->length;
-            nb_run = fnet_netbuf_free(nb_run);
+            nb_run = _fnet_netbuf_free(nb_run);
         }
     }
 
@@ -471,7 +467,7 @@ fnet_return_t fnet_netbuf_pullup( fnet_netbuf_t **nb_ptr, fnet_size_t len)
 
     if(nb_run->length == 0u)
     {
-        nb_run = fnet_netbuf_free(nb_run);
+        nb_run = _fnet_netbuf_free(nb_run);
     }
     else
     {
@@ -494,14 +490,13 @@ fnet_return_t fnet_netbuf_pullup( fnet_netbuf_t **nb_ptr, fnet_size_t len)
 *              is positive. Otherwise len bytes should be trimmed from the
 *              end of net_buf buffer. If len=0 - do nothing
 *************************************************************************/
-void fnet_netbuf_trim( fnet_netbuf_t **nb_ptr, fnet_int32_t len )
+void _fnet_netbuf_trim( fnet_netbuf_t **nb_ptr, fnet_int32_t len )
 {
     fnet_netbuf_t   *head_nb;
     fnet_netbuf_t   *nb;
     fnet_size_t     tot_len;
     fnet_size_t     total_rem;
     fnet_netbuf_t   *tmp_nb;
-
 
     if(len == 0)
     {
@@ -527,7 +522,7 @@ void fnet_netbuf_trim( fnet_netbuf_t **nb_ptr, fnet_int32_t len )
         {
             *nb_ptr = nb->next;
 
-            nb = fnet_netbuf_free(nb); /* In some cases we delete some net_bufs.*/
+            nb = _fnet_netbuf_free(nb); /* In some cases we delete some net_bufs.*/
             if(nb != 0)
             {
                 tot_len += nb->length;
@@ -561,12 +556,12 @@ void fnet_netbuf_trim( fnet_netbuf_t **nb_ptr, fnet_int32_t len )
 
             while(nb->next != 0) /* Cut the redundant net_bufs. */
             {
-                nb->next = fnet_netbuf_free(nb->next);
+                nb->next = _fnet_netbuf_free(nb->next);
             }
 
             if(nb->length == 0u)  /* if |len| == total_length */
             {
-                head_nb = fnet_netbuf_free(nb);
+                head_nb = _fnet_netbuf_free(nb);
             }
 
             nb = head_nb;
@@ -586,7 +581,7 @@ void fnet_netbuf_trim( fnet_netbuf_t **nb_ptr, fnet_int32_t len )
 * DESCRIPTION: Cuts len bytes in net_buf queue starting from offset "offset"
 *
 *************************************************************************/
-fnet_netbuf_t *fnet_netbuf_cut_center( fnet_netbuf_t **nb_ptr, fnet_size_t offset, fnet_size_t len )
+fnet_netbuf_t *_fnet_netbuf_cut_center( fnet_netbuf_t **nb_ptr, fnet_size_t offset, fnet_size_t len )
 {
     fnet_netbuf_t   *head_nb, *tmp_nb, *nb;
     fnet_size_t     tot_len;
@@ -605,7 +600,7 @@ fnet_netbuf_t *fnet_netbuf_cut_center( fnet_netbuf_t **nb_ptr, fnet_size_t offse
 
     if(offset == 0u) /* The first case - when we cut from the begin of buffer.*/
     {
-        fnet_netbuf_trim(&nb, (fnet_int32_t)len);
+        _fnet_netbuf_trim(&nb, (fnet_int32_t)len);
         *nb_ptr = nb;
         return (nb);
     }
@@ -637,8 +632,8 @@ fnet_netbuf_t *fnet_netbuf_cut_center( fnet_netbuf_t **nb_ptr, fnet_size_t offse
 
     if(tot_len - nb->length == offset)            /* If we start cut from the begin of buffer. */
     {
-        nb->total_length = head_nb->total_length; /* For correct fnet_netbuf_trim execution.*/
-        fnet_netbuf_trim(&tmp_nb->next, (fnet_int32_t)len);
+        nb->total_length = head_nb->total_length; /* For correct _fnet_netbuf_trim execution.*/
+        _fnet_netbuf_trim(&tmp_nb->next, (fnet_int32_t)len);
         head_nb->total_length -= len;
 
         return ((fnet_netbuf_t *) *nb_ptr);
@@ -659,7 +654,7 @@ fnet_netbuf_t *fnet_netbuf_cut_center( fnet_netbuf_t **nb_ptr, fnet_size_t offse
         }
         else
         {
-            head_nb = fnet_netbuf_new(tot_len - offset - len, FNET_FALSE);
+            head_nb = _fnet_netbuf_new(tot_len - offset - len, FNET_FALSE);
 
             if(head_nb == 0) /* If no free memory.*/
             {
@@ -695,8 +690,8 @@ fnet_netbuf_t *fnet_netbuf_cut_center( fnet_netbuf_t **nb_ptr, fnet_size_t offse
         /* (tot_len-offset < len)*/
         nb->length -= tot_len - offset;
 
-        nb->next->total_length = head_nb->total_length; /* For correct fnet_netbuf_trim execution. */
-        fnet_netbuf_trim(&nb->next, (fnet_int32_t)(len - (tot_len - offset)));
+        nb->next->total_length = head_nb->total_length; /* For correct _fnet_netbuf_trim execution. */
+        _fnet_netbuf_trim(&nb->next, (fnet_int32_t)(len - (tot_len - offset)));
 
         head_nb->total_length -= len;
 
@@ -709,7 +704,7 @@ fnet_netbuf_t *fnet_netbuf_cut_center( fnet_netbuf_t **nb_ptr, fnet_size_t offse
 *              is 0, the pointer to the second or first buffer
 *              correspondingly is returned
 *************************************************************************/
-fnet_netbuf_t *fnet_netbuf_concat( fnet_netbuf_t *nb1, fnet_netbuf_t *nb2 )
+fnet_netbuf_t *_fnet_netbuf_concat( fnet_netbuf_t *nb1, fnet_netbuf_t *nb2 )
 {
     fnet_netbuf_t *head_nb;
 
@@ -741,7 +736,7 @@ fnet_netbuf_t *fnet_netbuf_concat( fnet_netbuf_t *nb1, fnet_netbuf_t *nb2 )
 /************************************************************************
 * DESCRIPTION: Adds chain nb_chain into the queue of chains pointed by nb_ptr
 *************************************************************************/
-void fnet_netbuf_add_chain( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain )
+void _fnet_netbuf_queue_add( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain )
 {
     fnet_netbuf_t *nb;
 
@@ -766,7 +761,7 @@ void fnet_netbuf_add_chain( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain )
 /************************************************************************
 * DESCRIPTION: Deletes chain nb_chain, which is in the queue pointed by nb_ptr
 *************************************************************************/
-void fnet_netbuf_del_chain( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain )
+void _fnet_netbuf_queue_del( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain )
 {
     fnet_netbuf_t *nb_current, *nb;
 
@@ -777,7 +772,7 @@ void fnet_netbuf_del_chain( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain )
         if(nb_current == nb_chain)
         {
             nb = nb_current->next_chain;
-            fnet_netbuf_free_chain(nb_current);
+            _fnet_netbuf_free_chain(nb_current);
             *nb_ptr = nb;
         }
         else
@@ -791,7 +786,7 @@ void fnet_netbuf_del_chain( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain )
             {
                 nb = nb_current->next_chain->next_chain;
 
-                fnet_netbuf_free_chain(nb_current->next_chain);
+                _fnet_netbuf_free_chain(nb_current->next_chain);
 
                 nb_current->next_chain = nb;
             }
@@ -803,18 +798,18 @@ void fnet_netbuf_del_chain( fnet_netbuf_t **nb_ptr, fnet_netbuf_t *nb_chain )
 /************************************************************************
 * DESCRIPTION: Heap init
 *************************************************************************/
-fnet_return_t fnet_heap_init( void *heap_ptr, fnet_size_t heap_size )
+fnet_return_t _fnet_heap_init( void *heap_ptr, fnet_size_t heap_size )
 {
     fnet_return_t result;
 
     /* Init memory pools. */
 #if FNET_HEAP_SPLIT
-    if(((fnet_mempool_main = fnet_mempool_init( heap_ptr, heap_size, FNET_MEMPOOL_ALIGN_8 )) != 0) &&
-       ((fnet_mempool_netbuf = fnet_mempool_init( (void *)((fnet_uint32_t)fnet_malloc( FNET_NETBUF_MEMPOOL_SIZE(heap_size))),
+    if(((fnet_mempool_main = _fnet_mempool_init( heap_ptr, heap_size, FNET_MEMPOOL_ALIGN_8 )) != 0) &&
+       ((fnet_mempool_netbuf = _fnet_mempool_init( (void *)((fnet_uint32_t)_fnet_malloc( FNET_NETBUF_MEMPOOL_SIZE(heap_size))),
                                FNET_NETBUF_MEMPOOL_SIZE(heap_size), FNET_MEMPOOL_ALIGN_8 )) != 0) )
 
 #else
-    if((fnet_mempool_main = fnet_mempool_init( heap_ptr, heap_size, FNET_MEMPOOL_ALIGN_8 )) != 0)
+    if((fnet_mempool_main = _fnet_mempool_init( heap_ptr, heap_size, FNET_MEMPOOL_ALIGN_8 )) != 0)
 #endif
     {
         result = FNET_OK;
@@ -830,67 +825,67 @@ fnet_return_t fnet_heap_init( void *heap_ptr, fnet_size_t heap_size )
 /************************************************************************
 * DESCRIPTION: Frees memory in heap for TCP/IP
 *************************************************************************/
-void fnet_free_netbuf( void *ap )
+void _fnet_free_netbuf( void *ap )
 {
-    fnet_mempool_free(fnet_mempool_netbuf, ap);
+    _fnet_mempool_free(fnet_mempool_netbuf, ap);
 }
 
 /************************************************************************
 * DESCRIPTION: Allocates memory in heap for TCP/IP
 *************************************************************************/
-void *fnet_malloc_netbuf( fnet_size_t nbytes )
+void *_fnet_malloc_netbuf( fnet_size_t nbytes )
 {
-    return fnet_mempool_malloc( fnet_mempool_netbuf, nbytes );
+    return _fnet_mempool_malloc( fnet_mempool_netbuf, nbytes );
 }
 
 /************************************************************************
 * DESCRIPTION: Returns a quantity of free memory (for debug needs)
 *************************************************************************/
-fnet_size_t fnet_free_mem_status_netbuf( void )
+fnet_size_t _fnet_free_mem_status_netbuf( void )
 {
-    return fnet_mempool_free_mem_status( fnet_mempool_netbuf );
+    return _fnet_mempool_free_mem_status( fnet_mempool_netbuf );
 }
 
 /************************************************************************
 * DESCRIPTION: Returns a maximum size of posible allocated memory chunk.
 *************************************************************************/
-fnet_size_t fnet_malloc_max_netbuf( void )
+fnet_size_t _fnet_malloc_max_netbuf( void )
 {
-    return fnet_mempool_malloc_max( fnet_mempool_netbuf  );
+    return _fnet_mempool_malloc_max( fnet_mempool_netbuf  );
 }
 
 /************************************************************************
 * DESCRIPTION: Free all Net Memory
 *************************************************************************/
-void fnet_mem_release_netbuf( void )
+void _fnet_mem_release_netbuf( void )
 {
-    fnet_mempool_release(fnet_mempool_netbuf);
+    _fnet_mempool_release(fnet_mempool_netbuf);
 }
 
 /************************************************************************
 * DESCRIPTION: Frees memory in heap for TCP/IP
 *************************************************************************/
-void fnet_free( void *ap )
+void _fnet_free( void *ap )
 {
-    fnet_mempool_free(fnet_mempool_main, ap);
+    _fnet_mempool_free(fnet_mempool_main, ap);
 }
 
 /************************************************************************
 * DESCRIPTION: Allocates memory in heap for TCP/IP
 *************************************************************************/
-void *fnet_malloc( fnet_size_t nbytes )
+void *_fnet_malloc( fnet_size_t nbytes )
 {
-    return fnet_mempool_malloc( fnet_mempool_main, nbytes );
+    return _fnet_mempool_malloc( fnet_mempool_main, nbytes );
 }
 
 /************************************************************************
 * DESCRIPTION: Allocates memory in heap for TCP/IP
 *************************************************************************/
-void *fnet_malloc_zero( fnet_size_t nbytes )
+void *_fnet_malloc_zero( fnet_size_t nbytes )
 {
     void *result;
 
-    result = fnet_malloc(nbytes);
+    result = _fnet_malloc(nbytes);
     if(result)
     {
         fnet_memset_zero(result, nbytes);
@@ -904,7 +899,18 @@ void *fnet_malloc_zero( fnet_size_t nbytes )
 *************************************************************************/
 fnet_size_t fnet_free_mem_status( void )
 {
-    return fnet_mempool_free_mem_status( fnet_mempool_main );
+    fnet_size_t     result;
+
+    _fnet_stack_mutex_lock();
+    result = _fnet_free_mem_status();
+    _fnet_stack_mutex_unlock();
+
+    return result;
+}
+/* Private */
+fnet_size_t _fnet_free_mem_status( void )
+{
+    return  _fnet_mempool_free_mem_status( fnet_mempool_main );
 }
 
 /************************************************************************
@@ -912,24 +918,35 @@ fnet_size_t fnet_free_mem_status( void )
 *************************************************************************/
 fnet_size_t fnet_malloc_max( void )
 {
-    return fnet_mempool_malloc_max( fnet_mempool_main  );
+    fnet_size_t     result;
+
+    _fnet_stack_mutex_lock();
+    result = _fnet_malloc_max();
+    _fnet_stack_mutex_unlock();
+
+    return result;
+}
+/* Private */
+fnet_size_t _fnet_malloc_max( void )
+{
+    return _fnet_mempool_malloc_max( fnet_mempool_main  );
 }
 
 /************************************************************************
 * DESCRIPTION: Free all Net Memory
 *************************************************************************/
-void fnet_mem_release( void )
+void _fnet_mem_release( void )
 {
-    fnet_mempool_release(fnet_mempool_main);
+    _fnet_mempool_release(fnet_mempool_main);
 }
 
 #if 0 /* For Debug needs.*/
-fnet_return_t fnet_netbuf_mempool_check( void )
+fnet_return_t _fnet_netbuf_mempool_check( void )
 {
-    return fnet_mempool_check(fnet_mempool_netbuf);
+    return _fnet_mempool_check(fnet_mempool_netbuf);
 }
 
-void FNET_DEBUG_NETBUF_print_chain( fnet_netbuf_t *nb, fnet_uint8_t *str, fnet_index_t max)
+void _FNET_DEBUG_NETBUF_print_chain( fnet_netbuf_t *nb, fnet_uint8_t *str, fnet_index_t max)
 {
     fnet_index_t i = 0u;
     fnet_println("== %s nb = 0x%08X ==", str, (fnet_uint32_t)nb);

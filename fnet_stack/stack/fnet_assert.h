@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2016 by Andrey Butok. FNET Community.
+* Copyright 2016-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -24,21 +24,28 @@
 #ifndef _FNET_ASSERT_H_
 #define _FNET_ASSERT_H_
 
-#if FNET_CFG_ASSERT
+#define FNET_ASSERT_ERROR_MESSAGE   "ASSERT: %s: %s: %d"
 
-#define FNET_ASSERT_ERROR_MESSAGE   "FNET ASSERT: %s: %s: %d\n\r"
+#if FNET_CFG_ASSERT
 
 /* Checks that the given condition is true, otherwise it prints error message
  * and stops the program execution.*/
-#define FNET_ASSERT(condition)                                                  \
+#define FNET_ASSERT(condition)                                              \
     if (!(condition))                                                       \
     {                                                                       \
-        printf(FNET_ASSERT_ERROR_MESSAGE, __func__, __FILE__, __LINE__);    \
+        fnet_println(FNET_ASSERT_ERROR_MESSAGE, __func__, __FILE__, __LINE__);    \
         while (1);                                                          \
     }
 #else
 #define FNET_ASSERT(condition)  ((void) 0)
 #endif
 
+/* Assert which is not possible to disable */
+#define FNET_ASSERT_CRITICAL(condition)                                     \
+    if (!(condition))                                                       \
+    {                                                                       \
+        fnet_println(FNET_ASSERT_ERROR_MESSAGE, __func__, __FILE__, __LINE__);    \
+        while (1);                                                          \
+    }
 #endif  /* _FNET_ASSERT_H_ */
 

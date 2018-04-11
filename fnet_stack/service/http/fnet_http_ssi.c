@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -33,10 +32,10 @@
 /************************************************************************
 *     Definitions
 ************************************************************************/
-static fnet_size_t fnet_http_ssi_send (struct fnet_http_if *http);
+static fnet_size_t _fnet_http_ssi_send (struct fnet_http_if *http);
 
 #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
-    static fnet_return_t fnet_http_ssi_handle (struct fnet_http_if *http, struct fnet_http_uri *uri);
+    static fnet_return_t _fnet_http_ssi_handle (struct fnet_http_if *http, struct fnet_http_uri *uri);
 #endif
 
 static const fnet_uint8_t fnet_http_ssi_head[] = {'<', '!', '-', '-', '#'};
@@ -44,23 +43,23 @@ static const fnet_uint8_t fnet_http_ssi_tail[] = {'-', '-', '>'};
 
 const struct fnet_http_file_handler fnet_http_ssi_handler =
 {
-    FNET_HTTP_SSI_EXTENSION,
+    .file_extension = FNET_HTTP_SSI_EXTENSION,
 #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
-    fnet_http_ssi_handle,
+    .file_handle = _fnet_http_ssi_handle,
 #else
-    fnet_http_default_handle,
+    .file_handle = _fnet_http_default_handle,
 #endif
-    fnet_http_ssi_send,
-    fnet_http_default_close
+    .file_send = _fnet_http_ssi_send,
+    .file_close = _fnet_http_default_close
 };
 
 #if FNET_CFG_HTTP_VERSION_MAJOR /* HTTP/1.x*/
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_return_t fnet_http_ssi_handle (struct fnet_http_if *http, struct fnet_http_uri *uri)
+static fnet_return_t _fnet_http_ssi_handle (struct fnet_http_if *http, struct fnet_http_uri *uri)
 {
-    fnet_return_t     result = fnet_http_default_handle (http, uri);
+    fnet_return_t     result = _fnet_http_default_handle (http, uri);
     http->session_active->response.content_length = -1; /* No content length.*/
     return result;
 }
@@ -69,7 +68,7 @@ static fnet_return_t fnet_http_ssi_handle (struct fnet_http_if *http, struct fne
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_size_t fnet_http_ssi_send (struct fnet_http_if *http)
+static fnet_size_t _fnet_http_ssi_send (struct fnet_http_if *http)
 {
     fnet_size_t                 result = 0u;
     fnet_size_t                 read_result = 0u;

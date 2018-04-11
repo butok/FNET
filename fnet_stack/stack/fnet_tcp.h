@@ -1,8 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2015 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
-* Copyright 2003 by Alexey Shervashidze, Andrey Butok. Motorola SPS
+* Copyright 2008-2018 by Andrey Butok. FNET Community
 *
 ***************************************************************************
 *
@@ -28,7 +26,7 @@
 
 #define _FNET_TCP_H_
 
-#include "fnet_netbuf.h"
+#include "fnet_netbuf_prv.h"
 #include "fnet_netif.h"
 #include "fnet_netif_prv.h"
 
@@ -165,8 +163,8 @@ extern struct fnet_prot_if fnet_tcp_prot_if;
 *    Comparison of sequence numbers
 *************************************************************************/
 
-#define FNET_TCP_COMP_GE(a,b)   fnet_tcp_hit((fnet_uint32_t)(b), (fnet_uint32_t)((b) + 0x20000000u), (fnet_uint32_t)(a))   /* Greater or equal.*/
-#define FNET_TCP_COMP_G(a,b)    fnet_tcp_hit((fnet_uint32_t)((b)+1u), (fnet_uint32_t)((b) + 0x20000000u), (fnet_uint32_t)(a)) /* Greater.*/
+#define FNET_TCP_COMP_GE(a,b)   _fnet_tcp_hit((fnet_uint32_t)(b), (fnet_uint32_t)((b) + 0x20000000u), (fnet_uint32_t)(a))   /* Greater or equal.*/
+#define FNET_TCP_COMP_G(a,b)    _fnet_tcp_hit((fnet_uint32_t)((b)+1u), (fnet_uint32_t)((b) + 0x20000000u), (fnet_uint32_t)(a)) /* Greater.*/
 
 /************************************************************************
 *    Segment header fields
@@ -293,7 +291,7 @@ FNET_COMP_PACKED_END
 #define FNET_TCP_CBF_FORCE_SEND     (0x10u)  /* Data must be sent in any case.*/
 #define FNET_TCP_CBF_RCVD_SCALE     (0x20u)  /* Another side uses the scale option.*/
 #define FNET_TCP_CBF_SEND_TIMEOUT   (0x40u)  /* Silly window avoidance flag.*/
-#define FNET_TCP_CBF_INSND          (0x80u)  /* The fnet_tcp_snd function is executed now.*/
+#define FNET_TCP_CBF_INSND          (0x80u)  /* The _fnet_tcp_snd function is executed now.*/
 
 /************************************************************************
 *    Standart states for TCP ( described in RFC793)

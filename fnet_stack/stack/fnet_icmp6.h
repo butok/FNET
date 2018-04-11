@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -26,7 +25,7 @@
 #define _FNET_ICMP6_H_
 
 #include "fnet.h"
-#include "fnet_netbuf.h"
+#include "fnet_netbuf_prv.h"
 
 /************************************************************************
 *     Definition of type and code field values.
@@ -150,8 +149,8 @@ extern struct fnet_prot_if fnet_icmp6_prot_if;
 extern "C" {
 #endif
 struct fnet_netif; /* Forward declaration.*/
-void fnet_icmp6_error(struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t code, fnet_uint32_t param, fnet_netbuf_t *origin_nb);
-void fnet_icmp6_output(struct fnet_netif *netif, const fnet_ip6_addr_t *src_ip, const fnet_ip6_addr_t *dest_ip, fnet_uint8_t hop_limit, fnet_netbuf_t *nb );
+void _fnet_icmp6_error(struct fnet_netif *netif, fnet_uint8_t type, fnet_uint8_t code, fnet_uint32_t param, fnet_netbuf_t *origin_nb);
+void _fnet_icmp6_output(struct fnet_netif *netif, const fnet_ip6_addr_t *src_ip, const fnet_ip6_addr_t *dest_ip, fnet_uint8_t hop_limit, fnet_netbuf_t *nb );
 #if defined(__cplusplus)
 }
 #endif

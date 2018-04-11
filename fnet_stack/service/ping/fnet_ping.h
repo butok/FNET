@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -35,7 +35,7 @@
 * It operates by sending Internet Control Message Protocol (ICMPv4/v6) Echo Request
 * messages to the destination device and waiting for a response.
 * @n
-* After the PING service is initialized the @ref fnet_ping_request() function,
+* After the PING service is initialized the @ref fnet_ping_init() function,
 * the user application should call the main service-polling function
 * @ref fnet_service_poll() periodically in background. @n
 * When correct echo response is received, the PING service passes an
@@ -53,23 +53,6 @@
 /*! @{ */
 
 /**************************************************************************/ /*!
- * @brief PING service states.@n
- * Used mainly for debugging purposes.
- ******************************************************************************/
-typedef enum
-{
-    FNET_PING_STATE_DISABLED = 0,   /**< @brief The PING service is not initialized or is released.
-                                     */
-    FNET_PING_STATE_SENDING_REQUEST,/**< @brief The PING service is going to send echo request.
-                                     */
-    FNET_PING_STATE_WAITING_REPLY,  /**< @brief The PING service is waiting for echo reply.
-                                     */
-    FNET_PING_STATE_WAITING_TIMEOUT /**< @brief The PING service is waying a timeout till next request.
-                                     */
-
-} fnet_ping_state_t;
-
-/**************************************************************************/ /*!
  * @brief Prototype of the PING-service callback function that is
  * called when the PING-service has completed the requesting.
  *
@@ -85,12 +68,12 @@ typedef enum
  * @param cookie        User-application specific parameter. It's set during
  *                      the PING service initialization as part of @ref fnet_ping_params.
  *
- * @see fnet_ping_request(), fnet_ping_params
+ * @see fnet_ping_init(), fnet_ping_params
  ******************************************************************************/
 typedef void(*fnet_ping_callback_t)(fnet_error_t result, fnet_size_t packet_count, struct fnet_sockaddr *target_addr, void *cookie);
 
 /**************************************************************************/ /*!
- * @brief Initialization parameters for the @ref fnet_ping_request() function.
+ * @brief Initialization parameters for the @ref fnet_ping_init() function.
  ******************************************************************************/
 struct fnet_ping_params
 {
@@ -128,7 +111,7 @@ extern "C" {
  *
  ******************************************************************************
  *
- * This function initializes the PING service .
+ * This function initializes the PING service.
  * It allocates all resources needed and registers the PING service in
  * the polling list.@n
  * After the initialization, the user application should call the main polling
@@ -141,13 +124,13 @@ extern "C" {
  * Call fnet_ping_release() if you need to terminate it earlier.
  *
  ******************************************************************************/
-fnet_return_t fnet_ping_request( struct fnet_ping_params *params );
+fnet_return_t fnet_ping_init( struct fnet_ping_params *params );
 
 /***************************************************************************/ /*!
  *
  * @brief    Releases the PING service.
  *
- * @see fnet_ping_request()
+ * @see fnet_ping_init()
  *
  ******************************************************************************
  *
@@ -159,23 +142,6 @@ fnet_return_t fnet_ping_request( struct fnet_ping_params *params );
  *
  ******************************************************************************/
 void fnet_ping_release(void);
-
-/***************************************************************************/ /*!
- *
- * @brief    Retrieves the current state of the PING service (for debugging purposes).
- *
- * @return This function returns the current state of the PING service.
- *          The state is defined by the @ref fnet_ping_state_t.
- *
- ******************************************************************************
- *
- * This function returns the current state of the PING service.
- * If the state is @ref FNET_PING_STATE_DISABLED, the PING service is not
- * initialized or released.@n
- * It is used mainly for debugging purposes.
- *
- ******************************************************************************/
-fnet_ping_state_t fnet_ping_state(void);
 
 #if defined(__cplusplus)
 }

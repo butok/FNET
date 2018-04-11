@@ -1,8 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
-* Copyright 2003 by Andrey Butok. Motorola SPS.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -29,12 +27,12 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static fnet_char_t *fnet_inet_ntop_ip4 ( const fnet_ip4_addr_t *addr, fnet_char_t *str, fnet_size_t str_len);
-static fnet_return_t fnet_inet_pton_ip4(const fnet_char_t *str, fnet_ip4_addr_t *addr);
+static fnet_char_t *_fnet_inet_ntop_ip4 ( const fnet_ip4_addr_t *addr, fnet_char_t *str, fnet_size_t str_len);
+static fnet_return_t _fnet_inet_pton_ip4(const fnet_char_t *str, fnet_ip4_addr_t *addr);
 
 #if FNET_CFG_IP6
-    static fnet_char_t *fnet_inet_ntop_ip6 (const fnet_ip6_addr_t *addr, fnet_char_t *str, fnet_size_t str_len);
-    static fnet_return_t fnet_inet_pton_ip6(const fnet_char_t *str, fnet_ip6_addr_t *addr);
+    static fnet_char_t *_fnet_inet_ntop_ip6 (const fnet_ip6_addr_t *addr, fnet_char_t *str, fnet_size_t str_len);
+    static fnet_return_t _fnet_inet_pton_ip6(const fnet_char_t *str, fnet_ip6_addr_t *addr);
 #endif
 
 /************************************************************************
@@ -43,7 +41,7 @@ static fnet_return_t fnet_inet_pton_ip4(const fnet_char_t *str, fnet_ip4_addr_t 
 *************************************************************************/
 fnet_char_t *fnet_inet_ntoa( struct fnet_in_addr addr, fnet_char_t *res_str )
 {
-    return  fnet_inet_ntop_ip4(&addr.s_addr, res_str, FNET_IP4_ADDR_STR_SIZE);
+    return  _fnet_inet_ntop_ip4(&addr.s_addr, res_str, FNET_IP4_ADDR_STR_SIZE);
 }
 
 /************************************************************************
@@ -53,7 +51,7 @@ fnet_char_t *fnet_inet_ntoa( struct fnet_in_addr addr, fnet_char_t *res_str )
 *************************************************************************/
 fnet_return_t fnet_inet_aton( fnet_char_t *cp, struct fnet_in_addr *addr )
 {
-    return fnet_inet_pton_ip4(cp, &addr->s_addr);
+    return _fnet_inet_pton_ip4(cp, &addr->s_addr);
 }
 
 /************************************************************************
@@ -68,12 +66,12 @@ fnet_char_t *fnet_inet_ntop(fnet_address_family_t family, const void *addr, fnet
     {
 #if FNET_CFG_IP4
         case AF_INET:
-            result = fnet_inet_ntop_ip4((const fnet_ip4_addr_t *)addr, str, str_len);
+            result = _fnet_inet_ntop_ip4((const fnet_ip4_addr_t *)addr, str, str_len);
             break;
 #endif
 #if FNET_CFG_IP6
         case AF_INET6:
-            result = fnet_inet_ntop_ip6((const fnet_ip6_addr_t *)addr, str, str_len);
+            result = _fnet_inet_ntop_ip6((const fnet_ip6_addr_t *)addr, str, str_len);
             break;
 #endif
         default:
@@ -102,7 +100,7 @@ fnet_return_t fnet_inet_pton(fnet_address_family_t family, const fnet_char_t *st
             }
             else
             {
-                result = fnet_inet_pton_ip4(str, (fnet_ip4_addr_t *)addr);
+                result = _fnet_inet_pton_ip4(str, (fnet_ip4_addr_t *)addr);
             }
             break;
 #endif /* FNET_CFG_IP4 */
@@ -114,7 +112,7 @@ fnet_return_t fnet_inet_pton(fnet_address_family_t family, const fnet_char_t *st
             }
             else
             {
-                result = fnet_inet_pton_ip6(str, (fnet_ip6_addr_t *)addr);
+                result = _fnet_inet_pton_ip6(str, (fnet_ip6_addr_t *)addr);
             }
             break;
 #endif /* FNET_CFG_IP6 */
@@ -175,7 +173,7 @@ fnet_return_t fnet_inet_ptos (const fnet_char_t *str, struct fnet_sockaddr *addr
 * DESCRIPTION:The function converts from presentation format (string)
 *	        to IPv4 address.
 *************************************************************************/
-static fnet_return_t fnet_inet_pton_ip4( const fnet_char_t *str, fnet_ip4_addr_t *addr)
+static fnet_return_t _fnet_inet_pton_ip4( const fnet_char_t *str, fnet_ip4_addr_t *addr)
 {
     fnet_bool_t         is_digit = FNET_FALSE;
     fnet_size_t         octets = 0u;
@@ -247,7 +245,7 @@ ERROR:
 *	        to IPv6 address.
 *************************************************************************/
 #if FNET_CFG_IP6
-static fnet_return_t fnet_inet_pton_ip6( const fnet_char_t *str, fnet_ip6_addr_t *addr )
+static fnet_return_t _fnet_inet_pton_ip6( const fnet_char_t *str, fnet_ip6_addr_t *addr )
 {
     const fnet_char_t   xdigits_l[] = "0123456789abcdef";
     const fnet_char_t   xdigits_u[] = "0123456789ABCDEF";
@@ -373,7 +371,7 @@ ERROR:
 * DESCRIPTION:The function converts IPv4 address
 *               to presentation format (string).
 *************************************************************************/
-static fnet_char_t *fnet_inet_ntop_ip4 ( const fnet_ip4_addr_t *addr, fnet_char_t *str, fnet_size_t str_len)
+static fnet_char_t *_fnet_inet_ntop_ip4 ( const fnet_ip4_addr_t *addr, fnet_char_t *str, fnet_size_t str_len)
 {
     fnet_char_t            tmp[FNET_IP4_ADDR_STR_SIZE];
     fnet_size_t            length;
@@ -398,7 +396,7 @@ static fnet_char_t *fnet_inet_ntop_ip4 ( const fnet_ip4_addr_t *addr, fnet_char_
 *               presentation (printable) format.
 *************************************************************************/
 #if FNET_CFG_IP6
-static fnet_char_t *fnet_inet_ntop_ip6 (const fnet_ip6_addr_t *addr, fnet_char_t *str, fnet_size_t str_len)
+static fnet_char_t *_fnet_inet_ntop_ip6 (const fnet_ip6_addr_t *addr, fnet_char_t *str, fnet_size_t str_len)
 {
     fnet_char_t                         tmp[FNET_IP6_ADDR_STR_SIZE];
     fnet_char_t                         *tp;

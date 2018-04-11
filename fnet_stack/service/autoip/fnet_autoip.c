@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2016-2017 by Andrey Butok. FNET Community.
+* Copyright 2016-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -107,9 +107,13 @@ typedef struct fnet_autoip_if
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static fnet_bool_t fnet_autoip_is_collision(fnet_autoip_if_t *llif);
-static void fnet_autoip_announce(fnet_autoip_if_t *llif);
-static void fnet_autoip_probe(fnet_autoip_if_t *llif);
+static fnet_bool_t _fnet_autoip_is_collision(fnet_autoip_if_t *llif);
+static void _fnet_autoip_announce(fnet_autoip_if_t *llif);
+static void _fnet_autoip_probe(fnet_autoip_if_t *llif);
+static fnet_ip4_addr_t _fnet_autoip_generate_random_address(void);
+static unsigned long _fnet_autoip_get_random_wait_time(unsigned min, unsigned max);
+static void _fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_t state );
+static void _fnet_autoip_poll( void *fnet_autoip_if_p );
 
 /* The LLMNR Server interface */
 static struct fnet_autoip_if fnet_autoip_if_list[FNET_CFG_AUTOIP];
@@ -117,7 +121,7 @@ static struct fnet_autoip_if fnet_autoip_if_list[FNET_CFG_AUTOIP];
 /************************************************************************
 * DESCRIPTION: Returns a pseudo-random address in the 169.245/16 network
 ************************************************************************/
-static fnet_ip4_addr_t fnet_autoip_generate_random_address(void)
+static fnet_ip4_addr_t _fnet_autoip_generate_random_address(void)
 {
     fnet_ip4_addr_t result;
     fnet_uint32_t random_value = fnet_rand();
@@ -134,7 +138,7 @@ static fnet_ip4_addr_t fnet_autoip_generate_random_address(void)
 * DESCRIPTION: Generates a random wait time between min and max
 * (actually, it is not a time, but number of ticks)
 ************************************************************************/
-static unsigned long fnet_autoip_get_random_wait_time(unsigned min, unsigned max)
+static unsigned long _fnet_autoip_get_random_wait_time(unsigned min, unsigned max)
 {
     unsigned long result;
     result = fnet_rand();
@@ -152,7 +156,7 @@ static unsigned long fnet_autoip_get_random_wait_time(unsigned min, unsigned max
 * - target hardware address: all zeros (fnet_eth_null_addr)
 * - target protocol address: the IP address being probed
 ************************************************************************/
-static void fnet_autoip_probe(fnet_autoip_if_t *llif)
+static void _fnet_autoip_probe(fnet_autoip_if_t *llif)
 {
     /* TODO: The probes need to be sent with the IP source = 0; otherwise
      * they will pollute the arp caches on the other devices on the network.
@@ -160,7 +164,7 @@ static void fnet_autoip_probe(fnet_autoip_if_t *llif)
      * example, the DHCP client may have changed it in the meantime.
      */
     llif->probe_time = fnet_timer_get_ticks();
-    llif->wait_time = fnet_autoip_get_random_wait_time(FNET_AUTOIP_PROBE_MIN, FNET_AUTOIP_PROBE_MAX);
+    llif->wait_time = _fnet_autoip_get_random_wait_time(FNET_AUTOIP_PROBE_MIN, FNET_AUTOIP_PROBE_MAX);
 
     /* RFC 3927 : the term "ARP Probe" is used to refer to an ARP
     * Request packet, broadcast on the local link, with an all-zero 'sender
@@ -185,7 +189,7 @@ static void fnet_autoip_probe(fnet_autoip_if_t *llif)
 * as they were in the probe request, with the only exception that the sender
 * protocol address is set to the address being announced.
 ************************************************************************/
-static void fnet_autoip_announce(fnet_autoip_if_t *llif)
+static void _fnet_autoip_announce(fnet_autoip_if_t *llif)
 {
     /* TODO: Double check: is this gonna work?
      */
@@ -198,7 +202,7 @@ static void fnet_autoip_announce(fnet_autoip_if_t *llif)
 * DESCRIPTION: Detects a conflict (somebody else is using the same IP address)
 * It doesn't return anything but increments the conflicts field of llif
 ************************************************************************/
-static fnet_bool_t fnet_autoip_is_collision(fnet_autoip_if_t *llif)
+static fnet_bool_t _fnet_autoip_is_collision(fnet_autoip_if_t *llif)
 {
     fnet_bool_t  result;
 
@@ -221,7 +225,7 @@ static fnet_bool_t fnet_autoip_is_collision(fnet_autoip_if_t *llif)
 /************************************************************************
 * DESCRIPTION: Apply Link-Local parameters to the interface.
 ************************************************************************/
-static void fnet_autoip_apply_params(fnet_autoip_if_t *llif)
+static void _fnet_autoip_apply_params(fnet_autoip_if_t *llif)
 {
     fnet_netif_set_ip4_addr(llif->netif, llif->ipaddr, FNET_AUTOIP_NETMASK);
     fnet_netif_set_ip4_addr_type(llif->netif, FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE);
@@ -236,7 +240,7 @@ static void fnet_autoip_apply_params(fnet_autoip_if_t *llif)
 /************************************************************************
 * DESCRIPTION: Change state of the Link-Local service.
 ************************************************************************/
-static void fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_t state )
+static void _fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_t state )
 {
     llif->state = state;
     switch (state)
@@ -249,7 +253,7 @@ static void fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_
             fnet_netif_set_ip4_addr(llif->netif, INADDR_ANY, INADDR_ANY); /* Set IP address to zero */
             break;
         case FNET_AUTOIP_STATE_WAIT:
-            llif->wait_time = fnet_autoip_get_random_wait_time(0, FNET_AUTOIP_PROBE_WAIT);
+            llif->wait_time = _fnet_autoip_get_random_wait_time(0, FNET_AUTOIP_PROBE_WAIT);
             if(llif->collisions >= FNET_AUTOIP_MAX_CONFLICTS)
             {
                 llif->wait_time += FNET_AUTOIP_RATE_LIMIT_INTERVAL * FNET_TIMER_TICKS_IN_SEC;
@@ -258,13 +262,13 @@ static void fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_
         case FNET_AUTOIP_STATE_PROBE:
             llif->probes = 0;
             /* Send the first probe right away */
-            fnet_autoip_probe(llif);
+            _fnet_autoip_probe(llif);
             break;
         case FNET_AUTOIP_STATE_ANNOUNCE:
             llif->collisions = 0; /* Reset collisions counter.*/
-            fnet_autoip_apply_params(llif);
+            _fnet_autoip_apply_params(llif);
             /* Let the world know our IP address */
-            fnet_autoip_announce(llif);
+            _fnet_autoip_announce(llif);
             break;
 #if FNET_CFG_AUTOIP_DEFEND_INTERVAL
         case FNET_AUTOIP_STATE_DEFEND:
@@ -272,7 +276,7 @@ static void fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_
             llif->collision_timestamp = fnet_timer_get_ticks();
             /* Clear conflict flag and broadcast ARP announcement.*/
             fnet_netif_clear_ip4_addr_conflict(llif->netif);
-            fnet_autoip_announce(llif);
+            _fnet_autoip_announce(llif);
             break;
 #endif
         case FNET_AUTOIP_STATE_DISABLED:
@@ -288,7 +292,7 @@ static void fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_
 /************************************************************************
 * DESCRIPTION: Link-Local service state machine
 ************************************************************************/
-static void fnet_autoip_poll( void *fnet_autoip_if_p )
+static void _fnet_autoip_poll( void *fnet_autoip_if_p )
 {
     fnet_autoip_if_t *llif = (fnet_autoip_if_t *)fnet_autoip_if_p;
 
@@ -298,7 +302,7 @@ static void fnet_autoip_poll( void *fnet_autoip_if_p )
             if(llif->reuse_addr == FNET_FALSE)
             {
                 /* Generate new address.*/
-                llif->ipaddr = fnet_autoip_generate_random_address();
+                llif->ipaddr = _fnet_autoip_generate_random_address();
             }
             else
             {
@@ -311,12 +315,12 @@ static void fnet_autoip_poll( void *fnet_autoip_if_p )
             /* RFC 3927 : After it has selected an IPv4 Link-Local address, a host MUST test to
             * see if the IPv4 Link-Local address is already in use before beginning
             * to use it.*/
-            fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_WAIT);
+            _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_WAIT);
             break;
         case FNET_AUTOIP_STATE_WAIT:
             if (fnet_timer_get_interval(llif->init_time, fnet_timer_get_ticks()) > llif->wait_time)
             {
-                fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_PROBE);
+                _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_PROBE);
             }
             break;
         case FNET_AUTOIP_STATE_PROBE:
@@ -324,9 +328,9 @@ static void fnet_autoip_poll( void *fnet_autoip_if_p )
              * spaced randomly PROBE_MIN to PROBE_MAX seconds apart.
              * The first probe has already been sent on the state transition.
              */
-            if (fnet_autoip_is_collision(llif) == FNET_TRUE)
+            if (_fnet_autoip_is_collision(llif) == FNET_TRUE)
             {
-                fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_INIT);  /* Restart */
+                _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_INIT);  /* Restart */
             }
             else
             {
@@ -334,14 +338,14 @@ static void fnet_autoip_poll( void *fnet_autoip_if_p )
                 if (llif->probes >= FNET_AUTOIP_PROBE_NUM)
                 {
                     /* We've sent all probes, move to the next state */
-                    fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_ANNOUNCE);
+                    _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_ANNOUNCE);
                 }
                 else
                 {
                     /* There are still probes to be sent, after wait interval. */
                     if (fnet_timer_get_interval(llif->probe_time, fnet_timer_get_ticks()) > llif->wait_time)
                     {
-                        fnet_autoip_probe(llif);
+                        _fnet_autoip_probe(llif);
                     }
                 }
             }
@@ -349,25 +353,25 @@ static void fnet_autoip_poll( void *fnet_autoip_if_p )
         case FNET_AUTOIP_STATE_ANNOUNCE:
             if (llif->announcements >= FNET_AUTOIP_ANNOUNCE_NUM)
             {
-                fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_BOUND);
+                _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_BOUND);
             }
             else
             {
                 if (fnet_netif_is_ip4_addr_conflict(llif->netif))
                 {
-                    fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_INIT);
+                    _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_INIT);
                 }
                 else if (fnet_timer_get_interval(llif->announce_time, fnet_timer_get_ticks())
                          > FNET_AUTOIP_ANNOUNCE_INTERVAL * FNET_TIMER_TICKS_IN_SEC)
                 {
-                    fnet_autoip_announce(llif);
+                    _fnet_autoip_announce(llif);
                 }
             }
             break;
         case FNET_AUTOIP_STATE_BOUND:
             if(fnet_netif_get_ip4_addr_type(llif->netif) != FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE) /* If user changed  address parameters manually or by DHCP.*/
             {
-                fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_DISABLED);
+                _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_DISABLED);
             }
             else if (fnet_netif_is_ip4_addr_conflict(llif->netif))
             {
@@ -386,11 +390,11 @@ static void fnet_autoip_poll( void *fnet_autoip_if_p )
                  * configure a new IPv4 Link-Local address as described above.  This is
                  * necessary to ensure that two hosts do not get stuck in an endless
                  * loop with both hosts trying to defend the same address.*/
-                fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_DEFEND);
+                _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_DEFEND);
 #else
                 /* Upon receiving a conflicting ARP packet, a host
                  * immediately configure a new IPv4 Link-Local address.*/
-                fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_INIT); /* Reset */
+                _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_INIT); /* Reset */
 #endif
             }
             break;
@@ -398,7 +402,7 @@ static void fnet_autoip_poll( void *fnet_autoip_if_p )
         case FNET_AUTOIP_STATE_DEFEND:
             if(fnet_netif_get_ip4_addr_type(llif->netif) != FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE) /* If user changed  address parameters manually or by DHCP.*/
             {
-                fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_DISABLED);
+                _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_DISABLED);
             }
             else if (fnet_netif_is_ip4_addr_conflict(llif->netif))
             {
@@ -406,12 +410,12 @@ static void fnet_autoip_poll( void *fnet_autoip_if_p )
                  * configure a new IPv4 Link-Local address as described above.  This is
                  * necessary to ensure that two hosts do not get stuck in an endless
                  * loop with both hosts trying to defend the same address.*/
-                fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_INIT); /* Reset */
+                _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_INIT); /* Reset */
             }
             else if(fnet_timer_get_interval(llif->collision_timestamp, fnet_timer_get_ticks()) > (FNET_AUTOIP_DEFEND_INTERVAL * FNET_TIMER_TICKS_IN_SEC))
             {
                 /* Return to bound state.*/
-                fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_BOUND);
+                _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_BOUND);
             }
             break;
 #endif
@@ -426,8 +430,10 @@ static void fnet_autoip_poll( void *fnet_autoip_if_p )
 ************************************************************************/
 fnet_autoip_desc_t fnet_autoip_init ( struct fnet_autoip_params *params)
 {
-    fnet_autoip_if_t    *autoip_if = 0;
+    fnet_autoip_if_t    *autoip_if = FNET_NULL;
     fnet_index_t        i;
+
+    fnet_service_mutex_lock();
 
     if ((params == 0) || (params->netif_desc == 0))
     {
@@ -464,9 +470,10 @@ fnet_autoip_desc_t fnet_autoip_init ( struct fnet_autoip_params *params)
 
     autoip_if->netif = params->netif_desc;
 
-    autoip_if->service_descriptor = fnet_service_register(fnet_autoip_poll, (void *) autoip_if);
+    autoip_if->service_descriptor = fnet_service_register(_fnet_autoip_poll, (void *) autoip_if);
     if (autoip_if->service_descriptor == 0)
     {
+        autoip_if = FNET_NULL;
         goto ERROR;
     }
 
@@ -477,14 +484,13 @@ fnet_autoip_desc_t fnet_autoip_init ( struct fnet_autoip_params *params)
         autoip_if->ipaddr = params->ip_address;
     }
 
-    fnet_autoip_change_state(autoip_if, FNET_AUTOIP_STATE_INIT);
+    _fnet_autoip_change_state(autoip_if, FNET_AUTOIP_STATE_INIT);
 
     autoip_if->is_enabled = FNET_TRUE;
 
-    return (fnet_autoip_desc_t)autoip_if;
-
 ERROR:
-    return 0;
+    fnet_service_mutex_unlock();
+    return (fnet_autoip_desc_t)autoip_if;
 }
 
 /************************************************************************
@@ -494,11 +500,13 @@ void fnet_autoip_release( fnet_autoip_desc_t desc )
 {
     struct fnet_autoip_if   *autoip_if = (struct fnet_autoip_if *) desc;
 
+    fnet_service_mutex_lock();
     if (autoip_if && (autoip_if->is_enabled == FNET_TRUE))
     {
-        fnet_autoip_change_state(autoip_if, FNET_AUTOIP_STATE_DISABLED);
-        fnet_autoip_poll(autoip_if); /* 1 pass. */
+        _fnet_autoip_change_state(autoip_if, FNET_AUTOIP_STATE_DISABLED);
+        _fnet_autoip_poll(autoip_if); /* 1 pass. */
     }
+    fnet_service_mutex_unlock();
 }
 
 /************************************************************************
@@ -510,8 +518,10 @@ void fnet_autoip_set_callback_updated (fnet_autoip_desc_t desc, fnet_autoip_call
 
     if(autoip_if)
     {
+        fnet_service_mutex_lock();
         autoip_if->callback_updated = callback_updated;
         autoip_if->callback_updated_cookie = cookie;
+        fnet_service_mutex_unlock();
     }
 }
 
@@ -524,8 +534,10 @@ void fnet_autoip_set_callback_probe (fnet_autoip_desc_t desc, fnet_autoip_callba
 
     if(autoip_if)
     {
+        fnet_service_mutex_lock();
         autoip_if->callback_probe = callback_probe;
         autoip_if->callback_probe_param = param;
+        fnet_service_mutex_unlock();
     }
 }
 

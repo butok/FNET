@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -137,11 +136,11 @@ static const fnet_eth_prot_if_t fnet_eth_prot_if_list[] =
 #if FNET_CFG_IP4
     { /* ARP */
         FNET_HTONS(FNET_ETH_TYPE_ARP),  /* Protocol number */
-        fnet_arp_input                  /* Protocol input function.*/
+        _fnet_arp_input                  /* Protocol input function.*/
     },
     {   /* IPv4 */
         FNET_HTONS(FNET_ETH_TYPE_IP4),  /* Protocol number */
-        fnet_ip4_input                   /* Protocol input function.*/
+        _fnet_ip4_input                  /* Protocol input function.*/
     }
 #endif /* FNET_CFG_IP4 */
 #if FNET_CFG_IP6
@@ -150,7 +149,7 @@ static const fnet_eth_prot_if_t fnet_eth_prot_if_list[] =
 #endif /* FNET_CFG_IP4 */
     {   /* IPv4 */
         FNET_HTONS(FNET_ETH_TYPE_IP6),   /* Protocol number */
-        fnet_ip6_input                   /* Protocol input function.*/
+        _fnet_ip6_input                   /* Protocol input function.*/
     }
 #endif /* FNET_CFG_IP6 */
     /* ADD HERE YOUR NETWORK LAYER PROTOCOL */
@@ -186,21 +185,21 @@ static const fnet_eth_prot_if_t fnet_eth_prot_if_list[] =
         (mac_addr)[5] = (ip6_addr)->addr[15];  \
     }while(0)
 
-#if 0  /* Done by fnet_netif_is_connected()*/
+#if 0  /* Done by _fnet_netif_is_connected()*/
     #define FNET_ETH_TIMER_PERIOD (500U) /*ms*/
 #endif
 
 /******************************************************************************
 *     Function Prototypes
 *******************************************************************************/
-#if 0  /* Done by fnet_netif_is_connected()*/
-    static void fnet_eth_timer(fnet_uint32_t cookie );
+#if 0  /* Done by _fnet_netif_is_connected()*/
+    static void _fnet_eth_timer(fnet_uint32_t cookie );
 #endif
 
 /************************************************************************
 * DESCRIPTION: Eth. input function.
 *************************************************************************/
-void fnet_eth_input( fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t frame_size)
+void _fnet_eth_input( fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t frame_size)
 {
     fnet_index_t        i;
     fnet_eth_header_t   *ethheader = (fnet_eth_header_t *)frame; /* Point to the ethernet header.*/
@@ -210,7 +209,7 @@ void fnet_eth_input( fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t frame
 
     if(netif && frame && (frame_size > sizeof(fnet_eth_header_t)))
     {
-        if(fnet_netif_get_hw_addr(netif, local_mac_addr, sizeof(local_mac_addr)) != FNET_OK)
+        if(_fnet_netif_get_hw_addr(netif, local_mac_addr, sizeof(local_mac_addr)) != FNET_OK)
         {
             goto DROP;
         }
@@ -222,8 +221,8 @@ void fnet_eth_input( fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t frame
 
         fnet_eth_trace("\nRX", ethheader); /* Print ETH header.*/
 
-        nb = fnet_netbuf_from_buf( ((fnet_uint8_t *)ethheader + sizeof(fnet_eth_header_t)),
-                                   (frame_size - sizeof(fnet_eth_header_t)), FNET_TRUE );
+        nb = _fnet_netbuf_from_buf( ((fnet_uint8_t *)ethheader + sizeof(fnet_eth_header_t)),
+                                    (frame_size - sizeof(fnet_eth_header_t)), FNET_TRUE );
         if(nb)
         {
             if(FNET_MAC_ADDR_IS_BROADCAST(ethheader->destination_addr))    /* Broadcast */
@@ -253,7 +252,7 @@ void fnet_eth_input( fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t frame
             if(i == FNET_ETH_PROT_IF_LIST_SIZE)
             {
                 /* No protocol found */
-                fnet_netbuf_free_chain(nb);
+                _fnet_netbuf_free_chain(nb);
             }
         }
     }
@@ -264,7 +263,7 @@ DROP:
 /************************************************************************
 * DESCRIPTION: Ethernet low-level output function.
 *************************************************************************/
-void fnet_eth_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb )
+void _fnet_eth_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb )
 {
     fnet_eth_header_t   *eth_header;
     fnet_netbuf_t       *nb_header;
@@ -277,34 +276,34 @@ void fnet_eth_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_add
     }
 
     /* Construct Eth header */
-    if((nb_header = fnet_netbuf_new(sizeof(fnet_eth_header_t), FNET_TRUE)) == 0)
+    if((nb_header = _fnet_netbuf_new(sizeof(fnet_eth_header_t), FNET_TRUE)) == 0)
     {
         goto DROP;
     }
     eth_header = (fnet_eth_header_t *)nb_header->data_ptr;
 
-    if(fnet_netif_get_hw_addr(netif, eth_header->source_addr, sizeof(eth_header->source_addr)) != FNET_OK)
+    if(_fnet_netif_get_hw_addr(netif, eth_header->source_addr, sizeof(eth_header->source_addr)) != FNET_OK)
     {
         goto DROP;
     }
     fnet_memcpy (eth_header->destination_addr, dest_addr, sizeof(eth_header->destination_addr));
     eth_header->type = fnet_htons(type);
 
-    nb = fnet_netbuf_concat(nb_header, nb);
+    nb = _fnet_netbuf_concat(nb_header, nb);
 
     /* Ethernet driver output */
     eth_if->eth_output(netif, nb);
 
     return;
 DROP:
-    fnet_netbuf_free_chain(nb);
+    _fnet_netbuf_free_chain(nb);
     return;
 }
 
 /************************************************************************
 * DESCRIPTION: Do initialization for an Ethernet-type interface.
 *************************************************************************/
-fnet_return_t fnet_eth_init( fnet_netif_t *netif)
+fnet_return_t _fnet_eth_init( fnet_netif_t *netif)
 {
     fnet_return_t result  = FNET_ERR;
     fnet_eth_if_t *eth_if = (fnet_eth_if_t *)(netif->netif_prv);
@@ -313,7 +312,7 @@ fnet_return_t fnet_eth_init( fnet_netif_t *netif)
     {
 
 #if FNET_CFG_IP4
-        result = fnet_arp_init(netif, &eth_if->arp_if); /* Init ARP for this interface.*/
+        result = _fnet_arp_init(netif, &eth_if->arp_if); /* Init ARP for this interface.*/
 #else
         result = FNET_OK;
 #endif /* FNET_CFG_IP4 */
@@ -323,16 +322,16 @@ fnet_return_t fnet_eth_init( fnet_netif_t *netif)
 
 #if FNET_CFG_IP6
 #if FNET_CFG_IP6_PMTU_DISCOVERY
-            fnet_netif_pmtu_init(netif);
+            _fnet_netif_pmtu_init(netif);
 #endif
 
             /* Init Neighbor Discovery.*/
-            if( ( result = fnet_nd6_init (netif, &eth_if->nd6_if) ) == FNET_OK)
+            if( ( result = _fnet_nd6_init (netif, &eth_if->nd6_if) ) == FNET_OK)
             {
                 /* RFC4861 6.3.3: The host joins the all-nodes multicast address on all
                  * multicastcapable interfaces.
                  */
-                fnet_ip6_multicast_join(netif, &fnet_ip6_addr_linklocal_allnodes);
+                _fnet_ip6_multicast_join(netif, &fnet_ip6_addr_linklocal_allnodes);
 
                 /* To speed the autoconfiguration process, a host may generate its linklocal
                  * address (and verify its uniqueness) in parallel with waiting
@@ -348,8 +347,8 @@ fnet_return_t fnet_eth_init( fnet_netif_t *netif)
                  * and a 64 bit interface identifier.
                  * For all autoconfiguration types, a link-local address is always configured.
                  */
-                fnet_netif_bind_ip6_addr_prv( netif, &fnet_ip6_addr_any, FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE,
-                                              FNET_NETIF_IP6_ADDR_LIFETIME_INFINITE /*in seconds*/, FNET_ND6_PREFIX_LENGTH_DEFAULT /* bits */ );
+                _fnet_netif_bind_ip6_addr( netif, &fnet_ip6_addr_any, FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE,
+                                           FNET_NETIF_IP6_ADDR_LIFETIME_INFINITE /*in seconds*/, FNET_ND6_PREFIX_LENGTH_DEFAULT /* bits */ );
 
                 /* RFC4862: The next phase of autoconfiguration involves obtaining a Router
                  * Advertisement or determining that no routers are present.  If routers
@@ -358,11 +357,11 @@ fnet_return_t fnet_eth_init( fnet_netif_t *netif)
                  * To obtain an advertisement quickly, a host sends one or more Router
                  * Solicitations to the all-routers multicast group.
                  */
-                fnet_nd6_rd_start(netif);
+                _fnet_nd6_rd_start(netif);
             }
 #endif /* FNET_CFG_IP6 */
-#if 0  /* Done by fnet_netif_is_connected()*/
-            eth_if->eth_timer = fnet_timer_new((FNET_ETH_TIMER_PERIOD / FNET_TIMER_PERIOD_MS), fnet_eth_timer, (fnet_uint32_t)netif);
+#if 0  /* Done by _fnet_netif_is_connected()*/
+            eth_if->eth_timer = _fnet_timer_new((FNET_ETH_TIMER_PERIOD / FNET_TIMER_PERIOD_MS), _fnet_eth_timer, (fnet_uint32_t)netif);
 #endif
 
             fnet_eth_number++;
@@ -375,27 +374,27 @@ fnet_return_t fnet_eth_init( fnet_netif_t *netif)
 /************************************************************************
 * DESCRIPTION: Do relaese for an Ethernet-type interface.
 *************************************************************************/
-void fnet_eth_release( fnet_netif_t *netif)
+void _fnet_eth_release( fnet_netif_t *netif)
 {
 
 #if FNET_CFG_IP6
 
-    fnet_ip6_multicast_leave_all(netif);
+    _fnet_ip6_multicast_leave_all(netif);
 
 #if FNET_CFG_IP6_PMTU_DISCOVERY
-    fnet_netif_pmtu_release(netif);
+    _fnet_netif_pmtu_release(netif);
 #endif
 
-    fnet_nd6_release(netif);
+    _fnet_nd6_release(netif);
 
 #endif /* FNET_CFG_IP6 */
 
 #if 0
-    fnet_timer_free(((fnet_eth_if_t *)(netif->netif_prv))->eth_timer);
+    _fnet_timer_free(((fnet_eth_if_t *)(netif->netif_prv))->eth_timer);
 #endif
 
 #if FNET_CFG_IP4
-    fnet_arp_release(netif);
+    _fnet_arp_release(netif);
 #endif
 
     fnet_eth_number--;
@@ -405,10 +404,10 @@ void fnet_eth_release( fnet_netif_t *netif)
 * DESCRIPTION: This function tries to free not critical parts
 *              of memory in the Ethernet driver.
 *************************************************************************/
-void fnet_eth_drain(fnet_netif_t *netif)
+void _fnet_eth_drain(fnet_netif_t *netif)
 {
 #if FNET_CFG_IP4
-    fnet_arp_drain(netif);
+    _fnet_arp_drain(netif);
 #else
     FNET_COMP_UNUSED_ARG(netif);
 #endif /* FNET_CFG_IP4 */
@@ -418,12 +417,12 @@ void fnet_eth_drain(fnet_netif_t *netif)
 * DESCRIPTION:  This function is called on IP address change.
 *               It issues a gratuitous ARP request.
 *************************************************************************/
-void fnet_eth_change_addr_notify(fnet_netif_t *netif)
+void _fnet_eth_change_addr_notify(fnet_netif_t *netif)
 {
 #if FNET_CFG_IP4
     if(netif->ip4_addr.address)
     {
-        fnet_arp_send_request( (fnet_netif_desc_t) netif, netif->ip4_addr.address ); /* Gratuitous ARP request.*/
+        _fnet_arp_send_request( netif, netif->ip4_addr.address ); /* Gratuitous ARP request.*/
         /* When talking about gratuitous ARP, the packets are actually special ARP request packets,
            not ARP reply packets as one would perhaps expect. Some reasons for this are explained in RFC 5227.*/
     }
@@ -435,12 +434,12 @@ void fnet_eth_change_addr_notify(fnet_netif_t *netif)
 /************************************************************************
 * DESCRIPTION:
 *************************************************************************/
-#if 0  /* Done by fnet_netif_is_connected()*/
-static void fnet_eth_timer(fnet_uint32_t cookie )
+#if 0  /* Done by _fnet_netif_is_connected()*/
+static void _fnet_eth_timer(fnet_uint32_t cookie )
 {
     fnet_netif_t    *netif = (fnet_netif_t *) cookie;
 
-    fnet_netif_is_connected(netif);
+    _fnet_netif_is_connected(netif);
 }
 #endif
 
@@ -448,7 +447,7 @@ static void fnet_eth_timer(fnet_uint32_t cookie )
 * DESCRIPTION: Ethernet IPv4 output function.
 *************************************************************************/
 #if FNET_CFG_IP4
-void fnet_eth_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb)
+void _fnet_eth_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb)
 {
     fnet_mac_addr_t destination_addr; /* 48-bit destination address */
 
@@ -456,7 +455,7 @@ void fnet_eth_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet
     * MAC address to use as a destination address. Broadcasts and
     * multicasts are special, all other addresses are looked up in the
     * ARP table. */
-    if(fnet_ip4_addr_is_broadcast (dest_ip_addr, netif))
+    if(_fnet_ip4_addr_is_broadcast(dest_ip_addr, netif))
     {
         fnet_memcpy (destination_addr, fnet_eth_broadcast, sizeof(fnet_mac_addr_t));
     }
@@ -476,13 +475,13 @@ void fnet_eth_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet
     {
         if(fnet_arp_get_mac( (fnet_netif_desc_t) netif, dest_ip_addr, destination_addr) == FNET_FALSE)
         {
-            fnet_arp_resolve(netif, dest_ip_addr, nb);
+            _fnet_arp_resolve(netif, dest_ip_addr, nb);
             goto EXIT;
         }
     }
 
     /* Send Ethernet frame. */
-    fnet_eth_output(netif, FNET_ETH_TYPE_IP4, destination_addr, nb);
+    _fnet_eth_output(netif, FNET_ETH_TYPE_IP4, destination_addr, nb);
 EXIT:
     return;
 }
@@ -492,7 +491,7 @@ EXIT:
 /************************************************************************
 * DESCRIPTION: Ethernet IPv6 output function.
 *************************************************************************/
-void fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr,  const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb)
+void _fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr,  const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb)
 {
     fnet_mac_addr_t dest_mac_addr; /* 48-bit destination address */
     fnet_uint8_t *dest_mac_addr_ptr;
@@ -514,10 +513,10 @@ void fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr
         fnet_nd6_neighbor_entry_t *neighbor;
 
         /* Possible redirection.*/
-        fnet_nd6_redirect_addr(netif, &dest_ip_addr);
+        _fnet_nd6_redirect_addr(netif, &dest_ip_addr);
 
         /* Check Neigbor cache.*/
-        neighbor = fnet_nd6_neighbor_cache_get(netif, dest_ip_addr);
+        neighbor = _fnet_nd6_neighbor_cache_get(netif, dest_ip_addr);
 
         /* RFC4861 7.2.2: When a node has a unicast packet to send to a neighbor, but does not
          * know the neighbor’s link-layer address, it performs address resolution.
@@ -533,29 +532,29 @@ void fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr
              * on-link and for which the sender does not know the corresponding link-layer address.
              * Address resolution is never performed on multicast addresses.*/
 
-            if(fnet_nd6_addr_is_onlink(netif, dest_ip_addr) == FNET_TRUE)
+            if(_fnet_nd6_addr_is_onlink(netif, dest_ip_addr) == FNET_TRUE)
                 /* Destimnation is ON local-link.*/
             {
                 /* Creating a Neighbor Cache entry in the INCOMPLETE state. */
-                neighbor = fnet_nd6_neighbor_cache_add(netif, dest_ip_addr, FNET_NULL, FNET_ND6_NEIGHBOR_STATE_INCOMPLETE);
+                neighbor = _fnet_nd6_neighbor_cache_add(netif, dest_ip_addr, FNET_NULL, FNET_ND6_NEIGHBOR_STATE_INCOMPLETE);
 
                 neighbor->state_time = fnet_timer_get_ms();
                 neighbor->solicitation_send_counter = 0u;
                 FNET_IP6_ADDR_COPY(src_ip_addr, &neighbor->solicitation_src_ip_addr); /* Save src address for later usage.*/
 
                 /* AR: Transmitting a Neighbor Solicitation message targeted at the neighbor.*/
-                fnet_nd6_neighbor_solicitation_send(netif, src_ip_addr, FNET_NULL /* NULL for AR */, dest_ip_addr);
+                _fnet_nd6_neighbor_solicitation_send(netif, src_ip_addr, FNET_NULL /* NULL for AR */, dest_ip_addr);
             }
             /* Destination is OFF local-link.*/
             else
             {
                 /* Try to use the router, if exists.*/
-                neighbor = fnet_nd6_default_router_get(netif);
+                neighbor = _fnet_nd6_default_router_get(netif);
 
                 if(neighbor == FNET_NULL)
                     /* No Router exists.*/
                 {
-                    fnet_netbuf_free_chain(nb); /* Discard datagram */
+                    _fnet_netbuf_free_chain(nb); /* Discard datagram */
                     goto EXIT;
                 }
 
@@ -573,14 +572,14 @@ void fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr
             neighbor->solicitation_send_counter = 0u;
             FNET_IP6_ADDR_COPY(src_ip_addr, &neighbor->solicitation_src_ip_addr); /* Save src address for later usage.*/
             /* AR: Transmitting a Neighbor Solicitation message targeted at the neighbor.*/
-            fnet_nd6_neighbor_solicitation_send(netif, src_ip_addr, FNET_NULL /* NULL for AR */, dest_ip_addr);
+            _fnet_nd6_neighbor_solicitation_send(netif, src_ip_addr, FNET_NULL /* NULL for AR */, dest_ip_addr);
         }
 
         if(neighbor->state == FNET_ND6_NEIGHBOR_STATE_INCOMPLETE)
             /* Queue packet for later transmit.
              */
         {
-            fnet_nd6_neighbor_enqueue_waiting_netbuf(neighbor, nb);
+            _fnet_nd6_neighbor_enqueue_waiting_netbuf(neighbor, nb);
             goto EXIT;
         }
 
@@ -599,7 +598,7 @@ void fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr
     }
 
     /* Send Ethernet frame. */
-    fnet_eth_output(netif, FNET_ETH_TYPE_IP6, dest_mac_addr_ptr, nb);
+    _fnet_eth_output(netif, FNET_ETH_TYPE_IP6, dest_mac_addr_ptr, nb);
 
 EXIT:
     return;
@@ -612,7 +611,7 @@ EXIT:
 /************************************************************************
 * DESCRIPTION: Leavess a multicast group on an Ethernet interface.
 *************************************************************************/
-void fnet_eth_multicast_leave_ip4(fnet_netif_t *netif, fnet_ip4_addr_t multicast_addr )
+void _fnet_eth_multicast_leave_ip4(fnet_netif_t *netif, fnet_ip4_addr_t multicast_addr )
 {
     FNET_ASSERT(netif != FNET_NULL);
     FNET_ASSERT(netif->netif_prv != FNET_NULL);
@@ -630,7 +629,7 @@ void fnet_eth_multicast_leave_ip4(fnet_netif_t *netif, fnet_ip4_addr_t multicast
 /************************************************************************
 * DESCRIPTION: Joins a multicast group on an Ethernet interface.
 *************************************************************************/
-void fnet_eth_multicast_join_ip4(fnet_netif_t *netif, fnet_ip4_addr_t  multicast_addr )
+void _fnet_eth_multicast_join_ip4(fnet_netif_t *netif, fnet_ip4_addr_t  multicast_addr )
 {
     FNET_ASSERT(netif != FNET_NULL);
     FNET_ASSERT(netif->netif_prv != FNET_NULL);
@@ -650,7 +649,7 @@ void fnet_eth_multicast_join_ip4(fnet_netif_t *netif, fnet_ip4_addr_t  multicast
 /************************************************************************
 * DESCRIPTION: Leavess a multicast group on an Ethernet interface.
 *************************************************************************/
-void fnet_eth_multicast_leave_ip6(fnet_netif_t *netif, fnet_ip6_addr_t *multicast_addr )
+void _fnet_eth_multicast_leave_ip6(fnet_netif_t *netif, fnet_ip6_addr_t *multicast_addr )
 {
     FNET_ASSERT(netif != FNET_NULL);
     FNET_ASSERT(netif->netif_prv != FNET_NULL);
@@ -668,7 +667,7 @@ void fnet_eth_multicast_leave_ip6(fnet_netif_t *netif, fnet_ip6_addr_t *multicas
 /************************************************************************
 * DESCRIPTION: Joins a multicast group on an Ethernet interface.
 *************************************************************************/
-void fnet_eth_multicast_join_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t  *multicast_addr )
+void _fnet_eth_multicast_join_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t  *multicast_addr )
 {
     FNET_ASSERT(netif != FNET_NULL);
     FNET_ASSERT(netif->netif_prv != FNET_NULL);

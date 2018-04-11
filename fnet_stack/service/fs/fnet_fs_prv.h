@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2017 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -101,10 +100,10 @@ extern "C" {
 
 extern struct fnet_fs_mount_point fnet_fs_mount_list[FNET_CFG_FS_MOUNT_MAX];
 
-void fnet_fs_register( struct fnet_fs *fs );
-void fnet_fs_unregister( struct fnet_fs *fs );
-struct fnet_fs *fnet_fs_find_name( fnet_char_t *name );
-fnet_int32_t fnet_fs_path_cmp( const fnet_char_t **path, const fnet_char_t *name);
+void _fnet_fs_register( struct fnet_fs *fs );
+void _fnet_fs_unregister( struct fnet_fs *fs );
+struct fnet_fs *_fnet_fs_find_name( fnet_char_t *name );
+fnet_int32_t _fnet_fs_path_cmp( const fnet_char_t **path, const fnet_char_t *name);
 
 #if defined(__cplusplus)
 }

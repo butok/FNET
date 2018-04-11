@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -26,9 +26,7 @@
 
 #if FNET_CFG_PING
 
-#include "stack/fnet_checksum.h"
 #include "stack/fnet_icmp4.h"
-#include "stack/fnet_ip6_prv.h"
 
 #if FNET_CFG_DEBUG_PING && FNET_CFG_DEBUG
     #define FNET_DEBUG_PING   FNET_DEBUG
@@ -52,7 +50,22 @@
 
 #define FNET_PING_BUFFER_SIZE   (sizeof(fnet_icmp4_echo_header_t) + FNET_CFG_PING_PACKET_MAX)
 
-static void fnet_ping_poll(void *fnet_ping_if_p);
+/*******************************************************************************
+ * PING service states.
+ * Used mainly for debugging purposes.
+ ******************************************************************************/
+typedef enum
+{
+    FNET_PING_STATE_DISABLED = 0,   /**< @brief The PING service is not initialized or is released.
+                                     */
+    FNET_PING_STATE_SENDING_REQUEST,/**< @brief The PING service is going to send echo request.
+                                     */
+    FNET_PING_STATE_WAITING_REPLY,  /**< @brief The PING service is waiting for echo reply.
+                                     */
+    FNET_PING_STATE_WAITING_TIMEOUT /**< @brief The PING service is waying a timeout till next request.
+                                     */
+
+} fnet_ping_state_t;
 
 /************************************************************************
 *    PING service interface structure.
@@ -76,6 +89,7 @@ typedef struct
 }
 fnet_ping_if_t;
 
+static void _fnet_ping_poll(void *fnet_ping_if_p);
 
 /* PING interface structure */
 static fnet_ping_if_t fnet_ping_if;
@@ -83,9 +97,11 @@ static fnet_ping_if_t fnet_ping_if;
 /************************************************************************
 * DESCRIPTION: Initializes PING service.
 ************************************************************************/
-fnet_return_t fnet_ping_request( struct fnet_ping_params *params )
+fnet_return_t fnet_ping_init( struct fnet_ping_params *params )
 {
     const fnet_size_t bufsize_option = FNET_PING_BUFFER_SIZE;
+
+    fnet_service_mutex_lock();
 
     /* Check input parameters. */
     if((params == 0) || (params->packet_count == 0u) || (fnet_socket_addr_is_unspecified(&params->target_addr)))
@@ -93,7 +109,6 @@ fnet_return_t fnet_ping_request( struct fnet_ping_params *params )
         FNET_DEBUG_PING(FNET_PING_ERR_PARAMS);
         goto ERROR;
     }
-
 
     /* Check if PING service is free.*/
     if(fnet_ping_if.state != FNET_PING_STATE_DISABLED)
@@ -148,7 +163,7 @@ fnet_return_t fnet_ping_request( struct fnet_ping_params *params )
     fnet_socket_setopt(fnet_ping_if.socket_foreign, SOL_SOCKET, SO_SNDBUF, &bufsize_option, sizeof(bufsize_option));
 
     /* Register PING service. */
-    fnet_ping_if.service_descriptor = fnet_service_register(fnet_ping_poll, (void *) &fnet_ping_if);
+    fnet_ping_if.service_descriptor = fnet_service_register(_fnet_ping_poll, (void *) &fnet_ping_if);
     if(fnet_ping_if.service_descriptor == 0)
     {
         FNET_DEBUG_PING(FNET_PING_ERR_SERVICE);
@@ -157,19 +172,21 @@ fnet_return_t fnet_ping_request( struct fnet_ping_params *params )
 
     fnet_ping_if.state = FNET_PING_STATE_SENDING_REQUEST;
 
+    fnet_service_mutex_unlock();
     return FNET_OK;
 
 ERROR_1:
     fnet_socket_close(fnet_ping_if.socket_foreign);
 
 ERROR:
+    fnet_service_mutex_unlock();
     return FNET_ERR;
 }
 
 /************************************************************************
 * DESCRIPTION: PING service state machine.
 ************************************************************************/
-static void fnet_ping_poll(void *fnet_ping_if_p)
+static void _fnet_ping_poll(void *fnet_ping_if_p)
 {
     fnet_ssize_t            received;
     fnet_icmp4_echo_header_t *hdr;
@@ -198,18 +215,18 @@ static void fnet_ping_poll(void *fnet_ping_if_p)
 #if FNET_CFG_IP4
             if(ping_if->family == AF_INET)
             {
-                hdr->header.checksum = fnet_checksum_buf(&fnet_ping_if.buffer[0], (sizeof(*hdr) + ping_if->packet_size));
+                hdr->header.checksum = fnet_checksum(&fnet_ping_if.buffer[0], (sizeof(*hdr) + ping_if->packet_size));
             }
             else
 #endif
 #if FNET_CFG_IP6
                 if(ping_if->family == AF_INET6)
                 {
-                    const fnet_ip6_addr_t   *src_ip = fnet_ip6_select_src_addr(FNET_NULL, (fnet_ip6_addr_t *)ping_if->target_addr.sa_data); /*TBD  Check result.*/
+                    const fnet_ip6_addr_t   *src_ip = fnet_ip6_select_src_addr((fnet_ip6_addr_t *)ping_if->target_addr.sa_data);
 
                     if(src_ip) /* paranoic check.*/
                     {
-                        hdr->header.checksum = fnet_checksum_pseudo_buf(&fnet_ping_if.buffer[0],
+                        hdr->header.checksum = fnet_checksum_pseudo(&fnet_ping_if.buffer[0],
                                                (fnet_uint16_t)(sizeof(*hdr) + ping_if->packet_size),
                                                FNET_HTONS((fnet_uint16_t)IPPROTO_ICMPV6),
                                                (const fnet_uint8_t *)src_ip,
@@ -245,19 +262,19 @@ static void fnet_ping_poll(void *fnet_ping_if_p)
 #if FNET_CFG_IP4
                 if(ping_if->family == AF_INET)
                 {
-                    checksum = fnet_checksum_buf(&fnet_ping_if.buffer[0], (fnet_size_t)received);
+                    checksum = fnet_checksum(&fnet_ping_if.buffer[0], (fnet_size_t)received);
                 }
                 else
 #endif
 #if 0 /* #if FNET_CFG_IP6  */ /* TBD case to receive from multicast address ff02::1*/
                     if(ping_if->family == AF_INET6)
                     {
-                        checksum = fnet_checksum_pseudo_buf(&fnet_ping_if.buffer[0],
-                                                            (fnet_uint16_t)(received),
-                                                            IPPROTO_ICMPV6,
-                                                            ping_if->local_addr.sa_data,
-                                                            ping_if->target_addr.sa_data,
-                                                            sizeof(fnet_ip6_addr_t));
+                        checksum = fnet_checksum_pseudo(&fnet_ping_if.buffer[0],
+                                                        (fnet_uint16_t)(received),
+                                                        IPPROTO_ICMPV6,
+                                                        ping_if->local_addr.sa_data,
+                                                        ping_if->target_addr.sa_data,
+                                                        sizeof(fnet_ip6_addr_t));
                     }
                     else
 #endif
@@ -353,6 +370,7 @@ void fnet_ping_release( void )
 {
     if(fnet_ping_if.state != FNET_PING_STATE_DISABLED)
     {
+        fnet_service_mutex_lock();
         /* Close socket. */
         fnet_socket_close(fnet_ping_if.socket_foreign);
 
@@ -360,16 +378,8 @@ void fnet_ping_release( void )
         fnet_service_unregister(fnet_ping_if.service_descriptor);
 
         fnet_ping_if.state = FNET_PING_STATE_DISABLED;
+        fnet_service_mutex_unlock();
     }
-}
-
-/************************************************************************
-* DESCRIPTION: Retrieves the current state of the PING service
-*              (for debugging purposes).
-************************************************************************/
-fnet_ping_state_t fnet_ping_state( void )
-{
-    return fnet_ping_if.state;
 }
 
 #endif /* FNET_CFG_PING */

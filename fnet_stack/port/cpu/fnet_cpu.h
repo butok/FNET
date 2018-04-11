@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -390,7 +389,7 @@ fnet_return_t  fnet_cpu_flash_write(fnet_uint8_t *dest, const fnet_uint8_t *data
  *
  * This is CPU-specific ISR which is executed on every FNET interrupt
  * (from Ethernet and timer module).@n
- * It extracts vector number and calls fnet_isr_handler().
+ * It extracts vector number and calls _fnet_isr_handler().
  *
  ******************************************************************************/
 void fnet_cpu_isr(void);

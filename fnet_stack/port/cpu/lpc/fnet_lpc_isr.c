@@ -29,7 +29,7 @@
 /************************************************************************
 * DESCRIPTION: This handler is executed on every FNET interrupt
 *              (from ethernet and timer module).
-*              Extructs vector number and calls fnet_isr_handler().
+*              Extructs vector number and calls _fnet_isr_handler().
 *************************************************************************/
 void fnet_cpu_isr(void)
 {
@@ -37,7 +37,7 @@ void fnet_cpu_isr(void)
     fnet_uint8_t vector_number = (*(volatile fnet_uint8_t *)(0xE000ED04u));
 
     /* Call FNET isr handler.*/
-    fnet_isr_handler((fnet_uint32_t)vector_number );
+    _fnet_isr_handler((fnet_uint32_t)vector_number );
 }
 
 #endif /*FNET_LPC*/

@@ -2134,6 +2134,13 @@ Press any key to continue . . .
 
 FNET public releases:
 
+- Version 4.3.0
+	- Improved WiFi QCA scan and connect.
+	- Added underscore prefix to all private functions.
+	- Moved FreeRTOS-specific demo application source code to separate fapp_freertos.c/h.
+	- Enabled FNET_CFG_MULTITHREADING and added recursive-mutex for FreeRTOS demo examples.
+	- Added multi-thread mutex lock to all user API functions (FNET_CFG_MULTITHREADING is enabled).
+
 - Version 4.2.0
 	- Added fnet_socket_poll() which used to check if one or more sockets become ready to perform input/output activity.
 	- New socket options (FreeBSD like):
@@ -2141,7 +2148,7 @@ FNET public releases:
 		- SO_LISTENQLEN to get unaccepted complete connection queue length.
 	- Added WiFi QCA4004 (Silex SX-ULPAN-2401-SHIELD board) support. 
 	- Added WiFi QCA4002 (GT202) firmware image update to v3.5.6.
-	- Updated mbeTLS to the latest version 2.8.0. 
+	- Updated mbedTLS to the latest version 2.8.0. 
 		
 - Version 4.1.1
 	- LPC54628 support:

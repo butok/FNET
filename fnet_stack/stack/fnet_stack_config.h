@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community
 *
 ***************************************************************************
 *
@@ -467,7 +466,7 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_MULTITHREADING
  * @brief    Multi-threading support:
- *               - @c 1 = is enabled (experimental feature). @n
+ *               - @c 1 = is enabled (experimental feature). User application must provide Mutex API during FNET initialization. @n
  *                 If the FNET User API may be called simultaneously from different RTOS threads, this parameter must be enabled to avoid race conditions.
  *                 This feature is under development. User application must implement Mutex API defined fnet_mutex_api_t.
  *               - @b @c 0 = is disabled (Default value).@n

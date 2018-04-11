@@ -124,4 +124,10 @@
 ******************************************************************************/
 #define FNET_CFG_SOCKET_CALLBACK_ON_RX      (1)
 
+/*****************************************************************************
+* Multi-threading support (enable only if FNET API may be called from different tasks) 
+* Application must provide Mutex API during FNET initialization.
+******************************************************************************/
+#define FNET_CFG_MULTITHREADING             (1)
+
 #endif /* _FNET_USER_CONFIG_H_ */

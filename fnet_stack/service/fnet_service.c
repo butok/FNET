@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community
 *
 ***************************************************************************
 *
@@ -24,6 +23,7 @@
 ***************************************************************************/
 
 #include "fnet.h"
+#include "stack\fnet_stack_prv.h"
 
 /************************************************************************
 *     Definitions
@@ -43,6 +43,18 @@ static struct
     fnet_poll_list_entry_t list[FNET_CFG_SERVICE_MAX]; /* Polling list.*/
 } fnet_poll_if;
 
+
+#if FNET_CFG_MULTITHREADING
+
+    static fnet_mutex_t fnet_service_mutex = FNET_NULL;
+
+    fnet_return_t _fnet_service_mutex_init(void);
+    void _fnet_service_mutex_release(void);
+#else
+    #define _fnet_service_mutex_init()        FNET_OK
+    #define _fnet_service_mutex_release()        do{}while(0)
+#endif
+
 /************************************************************************
 * DESCRIPTION: This function calls all registered service routines in
 *              the polling list.
@@ -55,7 +67,9 @@ void fnet_service_poll( void )
     {
         if(fnet_poll_if.list[i].service)
         {
+            fnet_service_mutex_lock();
             fnet_poll_if.list[i].service(fnet_poll_if.list[i].service_cookie);
+            fnet_service_mutex_unlock();
         }
     }
 }
@@ -70,6 +84,8 @@ fnet_service_desc_t fnet_service_register( fnet_service_poll_t service, void *se
 
     if(service)
     {
+        _fnet_stack_mutex_lock();
+
         while((i < FNET_CFG_SERVICE_MAX) && (fnet_poll_if.list[i].service))
         {
             i++;
@@ -81,6 +97,8 @@ fnet_service_desc_t fnet_service_register( fnet_service_poll_t service, void *se
             fnet_poll_if.list[i].service_cookie = service_cookie;
             poll_entry = &fnet_poll_if.list[i];
         }
+
+        _fnet_stack_mutex_unlock();
     }
 
     return (fnet_service_desc_t)poll_entry;
@@ -95,6 +113,53 @@ void fnet_service_unregister( fnet_service_desc_t desc )
 
     if(poll_entry)
     {
+        _fnet_stack_mutex_lock();
         poll_entry->service = 0;
+        _fnet_stack_mutex_unlock();
     }
 }
+
+/************************************************************************
+* DESCRIPTION: Initialize service module
+*************************************************************************/
+fnet_return_t _fnet_service_init(void)
+{
+    fnet_return_t result;
+
+    result = _fnet_service_mutex_init();
+
+    return result;
+}
+
+/************************************************************************
+* DESCRIPTION: Release service module
+*************************************************************************/
+void _fnet_service_release(void)
+{
+    _fnet_service_mutex_release();
+}
+
+#if FNET_CFG_MULTITHREADING
+
+/* ================ Core Stack Mutex ==========================*/
+fnet_return_t _fnet_service_mutex_init(void)
+{
+    return _fnet_mutex_init(&fnet_service_mutex);
+}
+
+void fnet_service_mutex_lock(void)
+{
+    _fnet_mutex_lock(&fnet_service_mutex);
+}
+
+void fnet_service_mutex_unlock(void)
+{
+    _fnet_mutex_unlock(&fnet_service_mutex);
+}
+
+void _fnet_service_mutex_release(void)
+{
+    _fnet_mutex_release(&fnet_service_mutex);
+}
+
+#endif /* FNET_CFG_MULTITHREADING */

@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community
 *
 ***************************************************************************
 *
@@ -144,6 +143,14 @@ void fnet_service_unregister( fnet_service_desc_t desc );
 #endif
 
 /*! @} */
+
+#if FNET_CFG_MULTITHREADING
+    void fnet_service_mutex_lock(void);
+    void fnet_service_mutex_unlock(void);
+#else
+    #define fnet_service_mutex_lock()        do{}while(0)
+    #define fnet_service_mutex_unlock()      do{}while(0)
+#endif
 
 #endif /* _FNET_SERVICE_H_ */
 

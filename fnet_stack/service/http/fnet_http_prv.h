@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -267,12 +266,12 @@ extern const struct fnet_http_method fnet_http_method_get;
 #if FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR
 extern const struct fnet_http_method fnet_http_method_post;
 #endif
-fnet_return_t fnet_http_default_handle (struct fnet_http_if *http, struct fnet_http_uri *uri);
-fnet_size_t fnet_http_default_send (struct fnet_http_if *http);
-void fnet_http_default_close (struct fnet_http_if *http);
-fnet_char_t *fnet_http_uri_parse(fnet_char_t *in_str, struct fnet_http_uri *uri);
-const struct fnet_http_file_handler *fnet_http_find_handler(struct fnet_http_if *http, struct fnet_http_uri *uri);
-const struct fnet_http_content_type *fnet_http_find_content_type(struct fnet_http_if *http, struct fnet_http_uri *uri);
+fnet_return_t _fnet_http_default_handle (struct fnet_http_if *http, struct fnet_http_uri *uri);
+fnet_size_t _fnet_http_default_send (struct fnet_http_if *http);
+void _fnet_http_default_close (struct fnet_http_if *http);
+fnet_char_t *_fnet_http_uri_parse(fnet_char_t *in_str, struct fnet_http_uri *uri);
+const struct fnet_http_file_handler *_fnet_http_find_handler(struct fnet_http_if *http, struct fnet_http_uri *uri);
+const struct fnet_http_content_type *_fnet_http_find_content_type(struct fnet_http_if *http, struct fnet_http_uri *uri);
 
 #if defined(__cplusplus)
 }

@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -30,7 +29,7 @@
 #include "fnet_timer_prv.h"
 #include "fnet_ip6.h"
 #include "fnet_icmp6.h"
-#include "fnet_netbuf.h"
+#include "fnet_netbuf_prv.h"
 
 /* Neighbor Cache and Default Router List combined to one list.*/
 #define FNET_ND6_NEIGHBOR_CACHE_SIZE         (FNET_CFG_ND6_NEIGHBOR_CACHE_SIZE + FNET_CFG_ND6_ROUTER_LIST_SIZE)
@@ -700,33 +699,25 @@ struct fnet_netif_ip6_addr;
 extern "C" {
 #endif
 
-fnet_return_t fnet_nd6_init (struct fnet_netif *netif, fnet_nd6_if_t *nd6_if_ptr);
-void fnet_nd6_release (struct fnet_netif *netif);
-fnet_nd6_prefix_entry_t *fnet_nd6_prefix_list_add(struct fnet_netif *if_ptr, const fnet_ip6_addr_t *prefix, fnet_size_t prefix_length, fnet_time_t lifetime);
-void fnet_nd6_prefix_list_del(fnet_nd6_prefix_entry_t *prefix_entry);
-fnet_nd6_prefix_entry_t *fnet_nd6_prefix_list_get(struct fnet_netif *netif, fnet_ip6_addr_t *prefix);
-fnet_bool_t fnet_nd6_addr_is_onlink(struct fnet_netif *netif, const fnet_ip6_addr_t *addr);
-fnet_nd6_neighbor_entry_t *fnet_nd6_neighbor_cache_get(struct fnet_netif *netif, const fnet_ip6_addr_t *ip_addr);
-void fnet_nd6_neighbor_cache_del(struct fnet_netif *netif, fnet_nd6_neighbor_entry_t *neighbor_entry);
-fnet_nd6_neighbor_entry_t *fnet_nd6_neighbor_cache_add(struct fnet_netif *netif, const fnet_ip6_addr_t *ip_addr, fnet_netif_ll_addr_t ll_addr, fnet_nd6_neighbor_state_t state);
-void fnet_nd6_neighbor_enqueue_waiting_netbuf(fnet_nd6_neighbor_entry_t *neighbor_entry, fnet_netbuf_t *waiting_netbuf);
-void fnet_nd6_neighbor_send_waiting_netbuf(struct fnet_netif *netif, fnet_nd6_neighbor_entry_t *neighbor_entry);
-void fnet_nd6_router_list_add( fnet_nd6_neighbor_entry_t *neighbor_entry, fnet_time_t lifetime );
-void fnet_nd6_router_list_del( fnet_nd6_neighbor_entry_t *neighbor_entry );
-fnet_nd6_neighbor_entry_t *fnet_nd6_default_router_get(struct fnet_netif *netif);
-void fnet_nd6_neighbor_solicitation_send(struct fnet_netif *netif, const fnet_ip6_addr_t *ipsrc /* NULL for, DAD */, const fnet_ip6_addr_t *ipdest /*set for NUD,  NULL for DAD & AR */, const fnet_ip6_addr_t *target_addr);
-void fnet_nd6_neighbor_solicitation_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
-void fnet_nd6_neighbor_advertisement_send(struct fnet_netif *netif, const fnet_ip6_addr_t *ipsrc, const fnet_ip6_addr_t *ipdest, fnet_uint8_t na_flags);
-void fnet_nd6_neighbor_advertisement_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
-void fnet_nd6_router_solicitation_send(struct fnet_netif *netif);
-void fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
-void fnet_nd6_redirect_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
-void fnet_nd6_redirect_addr(struct fnet_netif *if_ptr, const fnet_ip6_addr_t **destination_addr_p);
-void fnet_nd6_dad_start(struct fnet_netif *netif, struct fnet_netif_ip6_addr *addr_info);
-void fnet_nd6_rd_start(struct fnet_netif *netif);
-void fnet_nd6_debug_print_prefix_list(struct fnet_netif *netif);
+fnet_return_t _fnet_nd6_init (struct fnet_netif *netif, fnet_nd6_if_t *nd6_if_ptr);
+void _fnet_nd6_release (struct fnet_netif *netif);
+fnet_bool_t _fnet_nd6_addr_is_onlink(struct fnet_netif *netif, const fnet_ip6_addr_t *addr);
+fnet_nd6_neighbor_entry_t *_fnet_nd6_neighbor_cache_get(struct fnet_netif *netif, const fnet_ip6_addr_t *ip_addr);
+void _fnet_nd6_neighbor_cache_del(struct fnet_netif *netif, fnet_nd6_neighbor_entry_t *neighbor_entry);
+fnet_nd6_neighbor_entry_t *_fnet_nd6_neighbor_cache_add(struct fnet_netif *netif, const fnet_ip6_addr_t *ip_addr, fnet_netif_ll_addr_t ll_addr, fnet_nd6_neighbor_state_t state);
+void _fnet_nd6_neighbor_enqueue_waiting_netbuf(fnet_nd6_neighbor_entry_t *neighbor_entry, fnet_netbuf_t *waiting_netbuf);
+fnet_nd6_neighbor_entry_t *_fnet_nd6_default_router_get(struct fnet_netif *netif);
+void _fnet_nd6_neighbor_solicitation_send(struct fnet_netif *netif, const fnet_ip6_addr_t *ipsrc /* NULL for, DAD */, const fnet_ip6_addr_t *ipdest /*set for NUD,  NULL for DAD & AR */, const fnet_ip6_addr_t *target_addr);
+void _fnet_nd6_neighbor_solicitation_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
+void _fnet_nd6_neighbor_advertisement_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
+void _fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
+void _fnet_nd6_redirect_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
+void _fnet_nd6_redirect_addr(struct fnet_netif *if_ptr, const fnet_ip6_addr_t **destination_addr_p);
+void _fnet_nd6_dad_start(struct fnet_netif *netif, struct fnet_netif_ip6_addr *addr_info);
+void _fnet_nd6_rd_start(struct fnet_netif *netif);
+void _fnet_nd6_debug_print_prefix_list(struct fnet_netif *netif);
 #if FNET_CFG_ND6_RDNSS && FNET_CFG_DNS
-fnet_bool_t fnet_nd6_rdnss_get_addr(struct fnet_netif *netif, fnet_index_t n, fnet_ip6_addr_t *addr_dns);
+fnet_bool_t _fnet_nd6_rdnss_get_addr(struct fnet_netif *netif, fnet_index_t n, fnet_ip6_addr_t *addr_dns);
 #endif
 
 #if defined(__cplusplus)

@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -29,6 +28,7 @@
 
 #include "fapp_config.h"
 #include "fnet.h"
+#include "fapp_freertos.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -37,9 +37,6 @@ extern "C" {
 void fapp_hw_init( void ); /* Board-specific HW initialization. Default serial port initialization. Interrupt enabling. */
 
 void fapp_main( void ); /* Main entry point of the bare-metal shell demo. */
-#if FAPP_CFG_FREERTOS
-void fapp_main_freertos( void ); /* Main entry point of the FreeRTOS shell demo. */
-#endif
 
 void fapp_poll(void);
 

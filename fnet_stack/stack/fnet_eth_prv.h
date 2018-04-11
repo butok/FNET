@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -105,7 +104,7 @@ typedef struct fnet_eth_if
     void                            ( *eth_multicast_leave)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);   /* Ethernet driver leave multicast group.*/
 #endif /* FNET_CFG_MULTICAST */
     /* Internal parameters.*/
-#if 0  /* Done by fnet_netif_is_connected()*/
+#if 0  /* Done by _fnet_netif_is_connected()*/
     fnet_timer_desc_t               eth_timer;          /* Optional ETH timer.*/
 #endif
 #if FNET_CFG_IP4
@@ -123,31 +122,31 @@ typedef struct fnet_eth_if
 extern "C" {
 #endif
 
-fnet_return_t fnet_eth_init(fnet_netif_t *netif);
-void fnet_eth_release( fnet_netif_t *netif);
-void fnet_eth_drain(fnet_netif_t *netif);
-void fnet_eth_change_addr_notify(fnet_netif_t *netif);
+fnet_return_t _fnet_eth_init(fnet_netif_t *netif);
+void _fnet_eth_release( fnet_netif_t *netif);
+void _fnet_eth_drain(fnet_netif_t *netif);
+void _fnet_eth_change_addr_notify(fnet_netif_t *netif);
 
 #if FNET_CFG_IP4
-void fnet_eth_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb);
+void _fnet_eth_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fnet_netbuf_t *nb);
 #endif
 
-void fnet_eth_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb );
-void fnet_eth_input( fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t frame_size);
+void _fnet_eth_output( fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb );
+void _fnet_eth_input( fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t frame_size);
 
 #if FNET_CFG_MULTICAST
 #if FNET_CFG_IP4
-void fnet_eth_multicast_leave_ip4(fnet_netif_t *netif, fnet_ip4_addr_t multicast_addr );
-void fnet_eth_multicast_join_ip4(fnet_netif_t *netif, fnet_ip4_addr_t  multicast_addr );
+void _fnet_eth_multicast_leave_ip4(fnet_netif_t *netif, fnet_ip4_addr_t multicast_addr );
+void _fnet_eth_multicast_join_ip4(fnet_netif_t *netif, fnet_ip4_addr_t  multicast_addr );
 #endif
 #if FNET_CFG_IP6
-void fnet_eth_multicast_leave_ip6(fnet_netif_t *netif, fnet_ip6_addr_t *multicast_addr );
-void fnet_eth_multicast_join_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t  *multicast_addr );
+void _fnet_eth_multicast_leave_ip6(fnet_netif_t *netif, fnet_ip6_addr_t *multicast_addr );
+void _fnet_eth_multicast_join_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t  *multicast_addr );
 #endif
 #endif /* FNET_CFG_MULTICAST */
 
 #if FNET_CFG_IP6
-void fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr,  const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb);
+void _fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr,  const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb);
 #endif
 
 #if FNET_CFG_DEBUG_TRACE_ETH && FNET_CFG_DEBUG_TRACE

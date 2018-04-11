@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
+* Copyright 2011-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -100,10 +100,10 @@ FNET_COMP_PACKED_END
 extern "C" {
 #endif
 
-void fnet_mld_join(fnet_netif_t *netif, fnet_ip6_addr_t  *group_addr);
-void fnet_mld_leave(fnet_netif_t *netif, fnet_ip6_addr_t  *group_addr);
-void fnet_mld_report_all(fnet_netif_t *netif);
-void fnet_mld_query_receive(fnet_netif_t *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
+void _fnet_mld_join(fnet_netif_t *netif, fnet_ip6_addr_t  *group_addr);
+void _fnet_mld_leave(fnet_netif_t *netif, fnet_ip6_addr_t  *group_addr);
+void _fnet_mld_report_all(fnet_netif_t *netif);
+void _fnet_mld_query_receive(fnet_netif_t *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
 
 #if defined(__cplusplus)
 }

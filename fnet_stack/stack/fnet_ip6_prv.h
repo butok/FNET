@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -382,29 +381,29 @@ extern fnet_ip6_multicast_list_entry_t fnet_ip6_multicast_list[FNET_CFG_MULTICAS
 extern "C" {
 #endif
 
-fnet_return_t fnet_ip6_init(void);
-void fnet_ip6_release(void);
-void fnet_ip6_input(fnet_netif_t *netif, fnet_netbuf_t *nb);
-void fnet_ip6_get_solicited_multicast_addr(const fnet_ip6_addr_t *ip_addr, fnet_ip6_addr_t *solicited_multicast_addr);
-fnet_int32_t fnet_ip6_addr_scope(const fnet_ip6_addr_t *ip_addr);
-fnet_bool_t fnet_ip6_addr_pefix_cmp(const fnet_ip6_addr_t *addr_1, const fnet_ip6_addr_t *addr_2, fnet_size_t prefix_length);
-fnet_size_t fnet_ip6_common_prefix_length(const fnet_ip6_addr_t *ip_addr_1, const fnet_ip6_addr_t *ip_addr_2);
-const fnet_ip6_addr_t *fnet_ip6_select_src_addr(fnet_netif_t *netif /* Optional.*/, const fnet_ip6_addr_t *dest_addr);
-fnet_error_t fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_addr_t *src_ip /*optional*/, const fnet_ip6_addr_t *dest_ip,
-                             fnet_uint8_t protocol, fnet_uint8_t hop_limit /*optional*/, fnet_netbuf_t *nb, FNET_COMP_PACKED_VAR fnet_uint16_t *checksum);
-void fnet_ip6_drain(void);
-fnet_size_t fnet_ip6_mtu(fnet_netif_t *netif);
-fnet_netif_t *fnet_ip6_route(const fnet_ip6_addr_t *src_ip /*optional*/, const fnet_ip6_addr_t *dest_ip);
-fnet_bool_t fnet_ip6_will_fragment( fnet_netif_t *netif, fnet_size_t protocol_message_size);
+fnet_return_t _fnet_ip6_init(void);
+void _fnet_ip6_release(void);
+void _fnet_ip6_input(fnet_netif_t *netif, fnet_netbuf_t *nb);
+void _fnet_ip6_get_solicited_multicast_addr(const fnet_ip6_addr_t *ip_addr, fnet_ip6_addr_t *solicited_multicast_addr);
+fnet_int32_t _fnet_ip6_addr_scope(const fnet_ip6_addr_t *ip_addr);
+fnet_bool_t _fnet_ip6_addr_pefix_cmp(const fnet_ip6_addr_t *addr_1, const fnet_ip6_addr_t *addr_2, fnet_size_t prefix_length);
+fnet_size_t _fnet_ip6_common_prefix_length(const fnet_ip6_addr_t *ip_addr_1, const fnet_ip6_addr_t *ip_addr_2);
+const fnet_ip6_addr_t *_fnet_ip6_select_src_addr(fnet_netif_t *netif /* Optional.*/, const fnet_ip6_addr_t *dest_addr);
+fnet_error_t _fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_addr_t *src_ip /*optional*/, const fnet_ip6_addr_t *dest_ip,
+                              fnet_uint8_t protocol, fnet_uint8_t hop_limit /*optional*/, fnet_netbuf_t *nb, FNET_COMP_PACKED_VAR fnet_uint16_t *checksum);
+void _fnet_ip6_drain(void);
+fnet_size_t _fnet_ip6_mtu(fnet_netif_t *netif);
+fnet_netif_t *_fnet_ip6_route(const fnet_ip6_addr_t *src_ip /*optional*/, const fnet_ip6_addr_t *dest_ip);
+fnet_bool_t _fnet_ip6_will_fragment( fnet_netif_t *netif, fnet_size_t protocol_message_size);
 struct _fnet_socket_if_t; /* Forward declaration.*/
-fnet_error_t fnet_ip6_getsockopt(struct _fnet_socket_if_t *sock, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen);
-fnet_error_t fnet_ip6_setsockopt(struct _fnet_socket_if_t *sock, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen );
-fnet_ip6_multicast_list_entry_t *fnet_ip6_multicast_join(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr);
-void fnet_ip6_multicast_leave_entry(fnet_ip6_multicast_list_entry_t *multicastentry);
-void fnet_ip6_multicast_leave(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr);
-fnet_ip6_multicast_list_entry_t *fnet_ip6_multicast_find_entry(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr);
-void fnet_ip6_multicast_leave_all(fnet_netif_t *netif);
-void fnet_ip6_set_socket_addr(fnet_netif_t *netif, fnet_ip6_header_t *ip_hdr, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr );
+fnet_error_t _fnet_ip6_getsockopt(struct _fnet_socket_if_t *sock, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen);
+fnet_error_t _fnet_ip6_setsockopt(struct _fnet_socket_if_t *sock, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen );
+fnet_ip6_multicast_list_entry_t *_fnet_ip6_multicast_join(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr);
+void _fnet_ip6_multicast_leave_entry(fnet_ip6_multicast_list_entry_t *multicastentry);
+void _fnet_ip6_multicast_leave(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr);
+fnet_ip6_multicast_list_entry_t *_fnet_ip6_multicast_find_entry(fnet_netif_t *netif, const fnet_ip6_addr_t *group_addr);
+void _fnet_ip6_multicast_leave_all(fnet_netif_t *netif);
+void _fnet_ip6_set_socket_addr(fnet_netif_t *netif, fnet_ip6_header_t *ip_hdr, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr );
 
 #if defined(__cplusplus)
 }

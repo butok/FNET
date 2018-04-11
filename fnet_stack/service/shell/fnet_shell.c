@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -43,7 +42,6 @@
 #endif
 
 #if FNET_CFG_DEBUG_MEMPOOL && FNET_CFG_DEBUG
-    #include "fnet_netbuf.h"
     #define FNET_DEBUG_MEMPOOL   FNET_DEBUG
 #else
     #define FNET_DEBUG_MEMPOOL(...) do{}while(0)
@@ -83,15 +81,15 @@ struct fnet_shell_if
 
 /* The Shell interface structure list */
 static struct fnet_shell_if shell_if_list[FNET_CFG_SHELL_MAX];
-static void fnet_shell_echo( struct fnet_shell_if *shell_if, fnet_char_t character );
-static fnet_index_t fnet_shell_make_argv( fnet_char_t *cmdline, fnet_char_t *argv [] );
-static void fnet_shell_poll( void *shell_if_p );
-static void fnet_shell_esc_clear(fnet_char_t *str);
+static void _fnet_shell_echo( struct fnet_shell_if *shell_if, fnet_char_t character );
+static fnet_index_t _fnet_shell_make_argv( fnet_char_t *cmdline, fnet_char_t *argv [] );
+static void _fnet_shell_poll( void *shell_if_p );
+static void _fnet_shell_esc_clear(fnet_char_t *str);
 
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static void fnet_shell_echo( struct fnet_shell_if *shell_if, fnet_char_t character )
+static void _fnet_shell_echo( struct fnet_shell_if *shell_if, fnet_char_t character )
 {
     if(shell_if->echo)
     {
@@ -102,7 +100,7 @@ static void fnet_shell_echo( struct fnet_shell_if *shell_if, fnet_char_t charact
 /************************************************************************
 * DESCRIPTION: Shell state machine.
 ************************************************************************/
-static void fnet_shell_poll( void *shell_if_p )
+static void _fnet_shell_poll( void *shell_if_p )
 {
     struct fnet_shell_if    *shell_if = (struct fnet_shell_if *)shell_if_p;
     const struct fnet_shell *shell = ((struct fnet_shell_if *)shell_if_p)->shell;
@@ -122,7 +120,7 @@ static void fnet_shell_poll( void *shell_if_p )
 
 
                 /* Debug: Prints mempool free memery (max posible allocated chunk) on every enter. */
-                FNET_DEBUG_MEMPOOL("MAIN pool = %d (%d), FNET pool = %d (%d)", fnet_free_mem_status(), fnet_malloc_max(), fnet_free_mem_status_netbuf(), fnet_malloc_max_netbuf());
+                FNET_DEBUG_MEMPOOL("MAIN pool = %d (%d), FNET pool = %d (%d)", _fnet_free_mem_status(), _fnet_malloc_max(), _fnet_free_mem_status_netbuf(), _fnet_malloc_max_netbuf());
                 /* Debug: Prints maximum stack usage. */
                 FNET_DEBUG_STACK("Max Stack usage = %d", fnet_dbg_stack_max);
 
@@ -142,7 +140,7 @@ static void fnet_shell_poll( void *shell_if_p )
                                 if(shell_if->pos > 0u)
                                 {
                                     shell_if->pos -= 1u;
-                                    fnet_shell_echo(shell_if, FNET_SHELL_BACKSPACE);
+                                    _fnet_shell_echo(shell_if, FNET_SHELL_BACKSPACE);
                                     fnet_serial_putchar(shell_if->stream, ' ');
                                     fnet_serial_putchar(shell_if->stream, FNET_SHELL_BACKSPACE);
                                 }
@@ -154,7 +152,7 @@ static void fnet_shell_poll( void *shell_if_p )
                                     if(((fnet_char_t)ch >= FNET_SHELL_SPACE) && ((fnet_char_t)ch <= FNET_SHELL_DELETE))
                                     {
                                         shell_if->cmd_line[shell_if->pos++] = (fnet_uint8_t)ch;
-                                        fnet_shell_echo(shell_if, (fnet_char_t)ch);
+                                        _fnet_shell_echo(shell_if, (fnet_char_t)ch);
                                     }
                                 }
                                 break;
@@ -164,8 +162,8 @@ static void fnet_shell_poll( void *shell_if_p )
                     {
                         shell_if->cmd_line[shell_if->pos] = '\0';
 
-                        fnet_shell_echo(shell_if, FNET_SHELL_CR);
-                        fnet_shell_echo(shell_if, FNET_SHELL_LF);
+                        _fnet_shell_echo(shell_if, FNET_SHELL_CR);
+                        _fnet_shell_echo(shell_if, FNET_SHELL_LF);
 
                         shell_if->state = FNET_SHELL_STATE_EXEC_CMD;
                         /* Reset pointers */
@@ -199,7 +197,7 @@ static void fnet_shell_poll( void *shell_if_p )
 
                 fnet_strncpy(shell_if->cmd_line, shell_if->cmd_line_begin, shell_if->cmd_line_size);
 
-                argc = fnet_shell_make_argv(shell_if->cmd_line, argv);
+                argc = _fnet_shell_make_argv(shell_if->cmd_line, argv);
 
                 if(argc)
                 {
@@ -342,7 +340,7 @@ fnet_shell_desc_t fnet_shell_init( struct fnet_shell_params *params)
         shell_if->stream = FNET_SERIAL_STREAM_DEFAULT;
     }
 
-    shell_if->service_descriptor = fnet_service_register(fnet_shell_poll, (void *) shell_if);
+    shell_if->service_descriptor = fnet_service_register(_fnet_shell_poll, (void *) shell_if);
     if(shell_if->service_descriptor == 0)
     {
         FNET_DEBUG_SHELL("Shell: Service registration error.");
@@ -361,7 +359,7 @@ fnet_shell_desc_t fnet_shell_init( struct fnet_shell_params *params)
 
     return (fnet_shell_desc_t)shell_if;
 ERROR:
-    return 0;
+    return FNET_NULL;
 }
 
 /************************************************************************
@@ -370,17 +368,22 @@ ERROR:
 void fnet_shell_release(fnet_shell_desc_t desc)
 {
     struct fnet_shell_if *shell_if = (struct fnet_shell_if *) desc;
+
+    fnet_service_mutex_lock();
+
     if(shell_if && (shell_if->state != FNET_SHELL_STATE_DISABLED))
     {
         fnet_service_unregister(shell_if->service_descriptor); /* Delete service.*/
         shell_if->state = FNET_SHELL_STATE_DISABLED;
     }
+
+    fnet_service_mutex_unlock();
 }
 
 /************************************************************************
 * DESCRIPTION: Eliminate escape symbols.
 ************************************************************************/
-static void fnet_shell_esc_clear(fnet_char_t *str)
+static void _fnet_shell_esc_clear(fnet_char_t *str)
 {
     fnet_char_t *dest = str;
     fnet_char_t *src = str;
@@ -403,7 +406,7 @@ static void fnet_shell_esc_clear(fnet_char_t *str)
 * DESCRIPTION: Calculates the quantity of arguments and splits them array
 *              argv[]
 ************************************************************************/
-static fnet_index_t fnet_shell_make_argv( fnet_char_t *cmdline, fnet_char_t *argv [] )
+static fnet_index_t _fnet_shell_make_argv( fnet_char_t *cmdline, fnet_char_t *argv [] )
 {
     fnet_index_t    argc;
     fnet_index_t    i;
@@ -429,7 +432,7 @@ static fnet_index_t fnet_shell_make_argv( fnet_char_t *cmdline, fnet_char_t *arg
                     cmdline[i] = '\0';
                     in_text_flag = FNET_FALSE;
                     qouted = FNET_FALSE;
-                    fnet_shell_esc_clear(argv[argc - 1u]); /* Clear escape symbols. */
+                    _fnet_shell_esc_clear(argv[argc - 1u]); /* Clear escape symbols. */
                 }
             }
             else
@@ -556,6 +559,8 @@ fnet_return_t fnet_shell_script(fnet_shell_desc_t desc, fnet_char_t *script )
 
     if(shell_if && script)
     {
+        fnet_service_mutex_lock();
+
         fnet_shell_unblock(desc);
 
         script_size = fnet_strlen(script);
@@ -615,6 +620,7 @@ fnet_return_t fnet_shell_script(fnet_shell_desc_t desc, fnet_char_t *script )
             shell_if->cmd_line_end = shell_if->cmd_line;
         }
         result = FNET_OK;
+        fnet_service_mutex_unlock();
     }
 ERROR:
     return result;
@@ -629,7 +635,9 @@ void fnet_shell_script_stop( fnet_shell_desc_t desc)
 
     if(shell_if)
     {
+        fnet_service_mutex_lock();
         fnet_memset_zero(shell_if->cmd_line, shell_if->cmd_line_size );
+        fnet_service_mutex_unlock();
     }
 }
 
@@ -695,10 +703,12 @@ fnet_return_t fnet_shell_block( fnet_shell_desc_t desc, void (*on_ctrlc)(fnet_sh
 
     if(shell_if && on_ctrlc )
     {
+        fnet_service_mutex_lock();
         shell_if->_blocked = FNET_TRUE;
         shell_if->_exit_blocked = on_ctrlc;
         shell_if->_exit_blocked_cookie = cookie;
         res = FNET_OK;
+        fnet_service_mutex_unlock();
     }
     else
     {
@@ -717,7 +727,9 @@ void fnet_shell_unblock( fnet_shell_desc_t desc)
 
     if(shell_if)
     {
+        fnet_service_mutex_lock();
         shell_if->_blocked = FNET_FALSE;
+        fnet_service_mutex_unlock();
     }
 }
 
@@ -731,6 +743,7 @@ fnet_return_t fnet_shell_switch( fnet_shell_desc_t desc, const struct fnet_shell
 
     if(shell_if)
     {
+        fnet_service_mutex_lock();
         shell_if->cmd_line[0] = '\0'; /* Clear command line. */
 
         if(switch_shell) /* Switch to new shell.*/
@@ -748,6 +761,7 @@ fnet_return_t fnet_shell_switch( fnet_shell_desc_t desc, const struct fnet_shell
         }
 
         res = FNET_OK;
+        fnet_service_mutex_unlock();
     }
     else
     {

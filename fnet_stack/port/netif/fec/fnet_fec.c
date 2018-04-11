@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2018 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -122,26 +121,26 @@ const fnet_netif_api_t fnet_fec_api =
     .netif_init = fnet_fec_init,                        /* Initialization function.*/
     .netif_release = fnet_fec_release,                  /* Shutdown function.*/
 #if FNET_CFG_IP4
-    .netif_output_ip4 = fnet_eth_output_ip4,            /* IPv4 Transmit function.*/
+    .netif_output_ip4 = _fnet_eth_output_ip4,            /* IPv4 Transmit function.*/
 #endif
-    .netif_change_addr_notify = fnet_eth_change_addr_notify,    /* Address change notification function.*/
-    .netif_drain = fnet_eth_drain,                      /* Drain function.*/
+    .netif_change_addr_notify = _fnet_eth_change_addr_notify,    /* Address change notification function.*/
+    .netif_drain = _fnet_eth_drain,                      /* Drain function.*/
     .netif_get_hw_addr = fnet_fec_get_hw_addr,
     .netif_set_hw_addr = fnet_fec_set_hw_addr,
     .netif_is_connected = fnet_fec_is_connected,
     .netif_get_statistics = fnet_fec_get_statistics
 #if FNET_CFG_MULTICAST
 #if FNET_CFG_IP4
-    , .netif_multicast_join_ip4 = fnet_eth_multicast_join_ip4
-    , .netif_multicast_leave_ip4 = fnet_eth_multicast_leave_ip4
+    , .netif_multicast_join_ip4 = _fnet_eth_multicast_join_ip4
+    , .netif_multicast_leave_ip4 = _fnet_eth_multicast_leave_ip4
 #endif
 #if FNET_CFG_IP6
-    , .netif_multicast_join_ip6 = fnet_eth_multicast_join_ip6
-    , .netif_multicast_leave_ip6 = fnet_eth_multicast_leave_ip6
+    , .netif_multicast_join_ip6 = _fnet_eth_multicast_join_ip6
+    , .netif_multicast_leave_ip6 = _fnet_eth_multicast_leave_ip6
 #endif
 #endif
 #if FNET_CFG_IP6
-    , .netif_output_ip6 = fnet_eth_output_ip6           /* IPv6 Transmit function.*/
+    , .netif_output_ip6 = _fnet_eth_output_ip6           /* IPv6 Transmit function.*/
 #endif
 };
 
@@ -237,7 +236,7 @@ static fnet_return_t fnet_fec_init(fnet_netif_t *netif)
     /*======== END of Ethernet buffers initialisation ========*/
 
     /* Install RX Frame interrupt handler.*/
-    result = fnet_isr_vector_init(fec_if->vector_number, fnet_fec_isr_rx_handler_top, fnet_fec_isr_rx_handler_bottom, FNET_CFG_CPU_ETH_VECTOR_PRIORITY, netif);
+    result = _fnet_isr_vector_init(fec_if->vector_number, fnet_fec_isr_rx_handler_top, fnet_fec_isr_rx_handler_bottom, FNET_CFG_CPU_ETH_VECTOR_PRIORITY, netif);
 
     if( result == FNET_OK)
     {
@@ -453,7 +452,7 @@ static void fnet_fec_release(fnet_netif_t *netif)
 
     fnet_isr_unregister(fec_if->vector_number);
 
-    fnet_eth_release(netif); /* Common Ethernet-interface release.*/
+    _fnet_eth_release(netif); /* Common Ethernet-interface release.*/
 }
 
 /************************************************************************
@@ -522,7 +521,7 @@ static void fnet_fec_input(fnet_netif_t *netif)
             }
 
             /* Ethernet input.*/
-            fnet_eth_input( netif, (fnet_uint8_t *)fnet_ntohl((fnet_uint32_t)fec_if->rx_buf_desc_cur->buf_ptr), fnet_ntohs(fec_if->rx_buf_desc_cur->length));
+            _fnet_eth_input( netif, (fnet_uint8_t *)fnet_ntohl((fnet_uint32_t)fec_if->rx_buf_desc_cur->buf_ptr), fnet_ntohs(fec_if->rx_buf_desc_cur->length));
         }
     NEXT_FRAME:
         fnet_fec_rx_buf_next(fec_if);
@@ -704,7 +703,7 @@ void fnet_fec_output(fnet_netif_t *netif, fnet_netbuf_t *nb)
 
         tx_buffer = (fnet_uint8_t *)fnet_ntohl((fnet_uint32_t)fec_if->tx_buf_desc_cur->buf_ptr);
 
-        fnet_netbuf_to_buf(nb, 0u, FNET_NETBUF_COPYALL, tx_buffer);
+        _fnet_netbuf_to_buf(nb, 0u, FNET_NETBUF_COPYALL, tx_buffer);
 
 #if FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM && FNET_FEC_HW_TX_PROTOCOL_CHECKSUM_FIX
         /* If an IP frame with a known protocol is transmitted,
@@ -759,7 +758,7 @@ void fnet_fec_output(fnet_netif_t *netif, fnet_netbuf_t *nb)
     fnet_fec_output_reentry_count = 0;
 #endif
 
-    fnet_netbuf_free_chain(nb);
+    _fnet_netbuf_free_chain(nb);
 }
 
 /************************************************************************
@@ -829,7 +828,7 @@ static fnet_return_t fnet_fec_set_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_
         fec_if->reg->PALR = (fnet_uint32_t)(((fnet_uint32_t)hw_addr[0] << 24U) | ((fnet_uint32_t)hw_addr[1] << 16U) | ((fnet_uint32_t)hw_addr[2] << 8U) | ((fnet_uint32_t)hw_addr[3] << 0U));
         fec_if->reg->PAUR = (fnet_uint32_t)((fnet_uint32_t)hw_addr[4] << 24U) | ((fnet_uint32_t)hw_addr[5] << 16U);
 
-        fnet_eth_change_addr_notify(netif);
+        _fnet_eth_change_addr_notify(netif);
 
         result = FNET_OK;
     }

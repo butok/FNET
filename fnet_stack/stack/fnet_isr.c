@@ -1,8 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
-* Copyright 2003 by Andrey Butok. Motorola SPS.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -27,7 +25,7 @@
 #include "fnet.h"
 #include "fnet_isr.h"
 #include "fnet_timer.h"
-#include "fnet_netbuf.h"
+#include "fnet_netbuf_prv.h"
 
 /************************************************************************
 *     Interrupt entry.
@@ -67,7 +65,7 @@ static fnet_event_desc_t fnet_event_desc_last = FNET_EVENT_VECTOR_NUMBER;
 *              If fnet_locked == 0 - executes the
 *              corresponding handler, else - marks it as pended.
 *************************************************************************/
-void fnet_isr_handler(fnet_uint32_t vector_number)
+void _fnet_isr_handler(fnet_uint32_t vector_number)
 {
     fnet_isr_entry_t *isr_cur;
 
@@ -113,11 +111,11 @@ void fnet_isr_handler(fnet_uint32_t vector_number)
 *              'vector_number' at the internal vector queue and interrupt
 *              handler 'fnet_cpu_isr' at the real vector table
 *************************************************************************/
-fnet_return_t fnet_isr_vector_init(fnet_uint32_t vector_number,
-                                   void (*handler_top)(void *cookie),
-                                   void (*handler_bottom)(void *cookie),
-                                   fnet_uint32_t priority,
-                                   void *cookie)
+fnet_return_t _fnet_isr_vector_init(fnet_uint32_t vector_number,
+                                    void (*handler_top)(void *cookie),
+                                    void (*handler_bottom)(void *cookie),
+                                    fnet_uint32_t priority,
+                                    void *cookie)
 {
     fnet_return_t result;
 
@@ -171,7 +169,7 @@ static fnet_return_t fnet_isr_register(fnet_uint32_t vector_number,
     fnet_return_t       result;
     fnet_isr_entry_t    *isr_temp;
 
-    isr_temp = (fnet_isr_entry_t *)fnet_malloc_zero(sizeof(fnet_isr_entry_t));
+    isr_temp = (fnet_isr_entry_t *)_fnet_malloc_zero(sizeof(fnet_isr_entry_t));
 
     if (isr_temp)
     {
@@ -225,7 +223,7 @@ void fnet_isr_unregister(fnet_uint32_t vector_number)
                 }
             }
 
-            fnet_free(isr_temp);
+            _fnet_free(isr_temp);
             break;
         }
     }

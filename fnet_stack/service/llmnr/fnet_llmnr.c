@@ -195,13 +195,13 @@ static struct fnet_llmnr_if fnet_llmnr_if_list[FNET_CFG_LLMNR];
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fnet_llmnr_poll( void *fnet_llmnr_if_p );
-static fnet_bool_t fnet_llmnr_hostname_cmp(const fnet_uint8_t *req_hostname, const fnet_uint8_t *hostname);
+static void _fnet_llmnr_poll( void *fnet_llmnr_if_p );
+static fnet_bool_t _fnet_llmnr_hostname_cmp(const fnet_uint8_t *req_hostname, const fnet_uint8_t *hostname);
 
 /************************************************************************
 * DESCRIPTION: Checks if this our host name.
 ************************************************************************/
-static fnet_bool_t fnet_llmnr_hostname_cmp(const fnet_uint8_t *req_hostname, const fnet_uint8_t *hostname)
+static fnet_bool_t _fnet_llmnr_hostname_cmp(const fnet_uint8_t *req_hostname, const fnet_uint8_t *hostname)
 {
     fnet_index_t    req_hostname_index = 0u;
     fnet_index_t    hostname_index = 0u;
@@ -247,6 +247,8 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
     fnet_uint32_t           option = FNET_LLMNR_IP_TTL;
     fnet_size_t             host_name_length;
     fnet_scope_id_t         scope_id;
+
+    fnet_service_mutex_lock();
 
     /* Check input paramters. */
     if((params == 0) || (params->netif_desc == 0) || (params->host_name == 0)
@@ -378,7 +380,7 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
 #endif
 
     /* Register service. */
-    llmnr_if->service_descriptor = fnet_service_register(fnet_llmnr_poll, (void *) llmnr_if);
+    llmnr_if->service_descriptor = fnet_service_register(_fnet_llmnr_poll, (void *) llmnr_if);
 
     if(llmnr_if->service_descriptor == 0)
     {
@@ -390,18 +392,20 @@ fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
 
     llmnr_if->is_enabled = FNET_TRUE;
 
+    fnet_service_mutex_unlock();
     return (fnet_llmnr_desc_t)llmnr_if;
 
 ERROR_2:
     fnet_socket_close(llmnr_if->socket_listen);
 ERROR_1:
+    fnet_service_mutex_unlock();
     return FNET_NULL;
 }
 
 /************************************************************************
 * DESCRIPTION: LLMNR server state machine.
 ************************************************************************/
-static void fnet_llmnr_poll( void *fnet_llmnr_if_p )
+static void _fnet_llmnr_poll( void *fnet_llmnr_if_p )
 {
     struct fnet_sockaddr    addr;
     fnet_size_t             addr_len;
@@ -449,7 +453,7 @@ static void fnet_llmnr_poll( void *fnet_llmnr_if_p )
 
                         /* Responders MUST NOT respond to LLMNR queries for names for which
                            they are not authoritative.*/
-                        if(fnet_llmnr_hostname_cmp((const fnet_uint8_t *)req_hostname, (const fnet_uint8_t *)llmnr_if->host_name))
+                        if(_fnet_llmnr_hostname_cmp((const fnet_uint8_t *)req_hostname, (const fnet_uint8_t *)llmnr_if->host_name))
                         {
                             q_tail = (fnet_dns_q_tail_t *)(req_hostname + req_hostname_len);
 
@@ -533,11 +537,13 @@ void fnet_llmnr_release(fnet_llmnr_desc_t desc)
 
     if(llmnr_if && (llmnr_if->is_enabled == FNET_TRUE))
     {
+        fnet_service_mutex_lock();
         fnet_socket_close(llmnr_if->socket_listen);
 
         fnet_service_unregister(llmnr_if->service_descriptor); /* Delete service.*/
         llmnr_if->state = FNET_LLMNR_STATE_DISABLED;
         llmnr_if->is_enabled = FNET_FALSE;
+        fnet_service_mutex_unlock();
     }
 }
 
@@ -573,6 +579,7 @@ fnet_llmnr_desc_t fnet_llmnr_get_by_netif(fnet_netif_desc_t netif)
 
     if(netif)
     {
+        fnet_service_mutex_lock();
         for(i = 0u; i < FNET_CFG_LLMNR; i++)
         {
             llmnr_if = &fnet_llmnr_if_list[i];
@@ -583,6 +590,7 @@ fnet_llmnr_desc_t fnet_llmnr_get_by_netif(fnet_netif_desc_t netif)
                 break;
             }
         }
+        fnet_service_mutex_unlock();
     }
 
     return llmnr_desc;

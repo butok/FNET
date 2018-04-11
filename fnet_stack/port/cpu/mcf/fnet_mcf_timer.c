@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2016 by Andrey Butok. FNET Community.
-* Copyright 2008-2010 by Andrey Butok. Freescale Semiconductor, Inc.
+* Copyright 2008-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -126,9 +125,7 @@ static void fnet_cpu_timer_handler_top(fnet_uint32_t cookie )
 
     /* Update RTC counter.
      */
-    fnet_timer_ticks_inc();
-
-
+    _fnet_timer_ticks_inc();
 
 #if FNET_CFG_DEBUG_STACK  /* Only for debugging needs. */
     {
@@ -195,8 +192,8 @@ fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms )
 
     /* Install interrupt handler.
      */
-    result = fnet_isr_vector_init(FNET_TIMER_VECTOR_NUMBER, fnet_cpu_timer_handler_top,
-                                  fnet_timer_handler_bottom, FNET_TIMER_INT_LEVEL, 0);
+    result = _fnet_isr_vector_init(FNET_TIMER_VECTOR_NUMBER, fnet_cpu_timer_handler_top,
+                                   _fnet_timer_handler_bottom, FNET_TIMER_INT_LEVEL, 0);
 
     fnet_cpu_timer_gpio_init(FNET_TIMER_NUMBER);
 

@@ -119,8 +119,8 @@
 #endif
 
 /* On connect/unconnect scripts:*/
-#define FAPP_CFG_LINK_CONNECT_SCRIPT      "dhcpc autoip; mdns; llmnr;"
-#define FAPP_CFG_LINK_DISCONNECT_SCRIPT   "mdns release; llmnr release; dhcpc release; autoip release;"
+#define FAPP_CFG_LINK_CONNECT_SCRIPT      "dhcpc autoip; mdns; llmnr"
+#define FAPP_CFG_LINK_DISCONNECT_SCRIPT   "mdns release; llmnr release; dhcpc release; autoip release"
 
 #endif /* _FAPP_USER_CONFIG_H_ */
 

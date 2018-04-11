@@ -122,8 +122,8 @@
 #endif
 
 /* On connect/disconnect scripts:*/
-#define FAPP_CFG_LINK_CONNECT_SCRIPT     "dhcpc autoip -n %s; mdns -n %s; llmnr -n %s;" /* "%s" will be replaced by the interface name.*/
-#define FAPP_CFG_LINK_DISCONNECT_SCRIPT   "mdns -n %s release; llmnr -n %s release; dhcpc -n %s release; autoip -n %s release;" /* "%s" will be replaced by the interface name.*/
+#define FAPP_CFG_LINK_CONNECT_SCRIPT     "dhcpc autoip -n %s; mdns -n %s; llmnr -n %s" /* "%s" will be replaced by the interface name.*/
+#define FAPP_CFG_LINK_DISCONNECT_SCRIPT   "mdns -n %s release; llmnr -n %s release; dhcpc -n %s release; autoip -n %s release" /* "%s" will be replaced by the interface name.*/
 
 /* Wi-Fi parameters */ 
 /* Default network interface set to Wi-Fi */
