@@ -27,7 +27,7 @@
 #include "fnet_prot.h"
 #include "fnet_stack_prv.h"
 #include "fnet_loop.h"
-#include "service\fnet_service_prv.h"
+#include "service/fnet_service_prv.h"
 
 
 /************************************************************************

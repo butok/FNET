@@ -18,7 +18,7 @@
 *
 ***************************************************************************
 *
-*  Kinetis Serial port I/O functions.
+*  LPC Serial port I/O functions.
 *
 ***************************************************************************/
 
@@ -148,11 +148,12 @@ static inline void fnet_cpu_serial_gpio_init(fnet_index_t port_number)
 #endif /* FNET_CFG_CPU_SERIAL_IO_INIT */
 
 /********************************************************************/
-void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
+fnet_return_t fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
 {
     usart_config_t  config;
     uint32_t        srcClock_Hzl;
     USART_Type      *base;
+    fnet_return_t   result = FNET_ERR;
 
     if(port_number < FNET_LPC_USART_COUNT)
     {
@@ -170,9 +171,11 @@ void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
         config.enableRx = true;
 
         USART_Init(base, &config, srcClock_Hzl);
+
+        result = FNET_OK;
     }
 
-    //TBD return status code.
+    return result;
 }
 
 #endif /*FNET_LPC*/

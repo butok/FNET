@@ -28,9 +28,8 @@
 
 #include "fnet.h"
 
-#include "fnet_eth.h"
-#include "fnet_arp_prv.h"
 #include "fnet_netif_prv.h"
+#include "fnet_arp_prv.h"
 
 /************************************************************************
 *     Definitions
@@ -43,32 +42,9 @@
 #define FNET_ETH_HDR_SIZE       (14U)    /* Size of Ethernet header.*/
 #define FNET_ETH_CRC_SIZE       (4U)     /* Size of Ethernet CRC.*/
 
-/************************************************************************
-*  IEEE802.3 PHY MII management register set
-*************************************************************************/
-#define FNET_ETH_MII_REG_CR             (0x0000U)   /* Control Register */
-#define FNET_ETH_MII_REG_SR             (0x0001U)   /* Status Register */
-#define FNET_ETH_MII_REG_IDR1           (0x0002U)   /* Identification Register #1 */
-#define FNET_ETH_MII_REG_IDR2           (0x0003U)   /* Identification Register #2 */
-#define FNET_ETH_MII_REG_ANAR           (0x0004U)   /* Auto-Negotiation Advertisement Register */
-#define FNET_ETH_MII_REG_ANLPAR         (0x0005U)   /* Auto-Negotiation Link Partner Ability Register */
-#define FNET_ETH_MII_REG_ANER           (0x0006U)   /* Auto-Negotiation Expansion Register */
-#define FNET_ETH_MII_REG_ANNPTR         (0x0007U)   /* Auto-Negotiation Next Page TX Register */
 
-/* Status Register flags*/
-#define FNET_ETH_MII_REG_SR_LINK_STATUS (0x0004U)
-#define FNET_ETH_MII_REG_SR_AN_ABILITY  (0x0008U)
-#define FNET_ETH_MII_REG_SR_AN_COMPLETE (0x0020U)
-
-/* Control Register flags*/
-#define FNET_ETH_MII_REG_CR_RESET       (0x8000U)    /* Resetting a port is accomplished by setting this bit to 1.*/
-#define FNET_ETH_MII_REG_CR_LOOPBACK    (0x4000U)    /* Determines Digital Loopback Mode. */
-#define FNET_ETH_MII_REG_CR_DATARATE    (0x2000U)    /* Speed Selection bit.*/
-#define FNET_ETH_MII_REG_CR_ANE         (0x1000U)    /* Auto-Negotiation Enable bit. */
-#define FNET_ETH_MII_REG_CR_PDWN        (0x0800U)    /* Power Down bit. */
-#define FNET_ETH_MII_REG_CR_ISOL        (0x0400U)    /* Isolate bit.*/
-#define FNET_ETH_MII_REG_CR_ANE_RESTART (0x0200U)    /* Restart Auto-Negotiation bit.*/
-#define FNET_ETH_MII_REG_CR_DPLX        (0x0100U)    /* Duplex Mode bit.*/
+/* The MDC clock corresponds to a maximum frequency of 2.5 MHz to be compliant with the IEEE 802.3 MII specification. */
+#define FNET_ETH_MII_CLOCK_KHZ                   (2500U)
 
 /************************************************************************
 *    Network Layer Protocol interface control structure.
@@ -91,6 +67,16 @@ typedef struct
 } fnet_eth_header_t;
 FNET_COMP_PACKED_END
 
+/**************************************************************************/ /*!
+ * @internal
+ * @brief    Ethernet interface API structure.
+ ******************************************************************************/
+typedef struct fnet_eth_api
+{
+    fnet_return_t (*phy_read)(fnet_netif_t *netif, fnet_uint32_t reg_addr, fnet_uint16_t *data); /* Read a value from a Ethernet PHY's MII register. */
+    fnet_return_t (*phy_write)(fnet_netif_t *netif, fnet_uint32_t reg_addr, fnet_uint16_t data); /* Write a value to a PHY's MII register. */
+} fnet_eth_api_t;
+
 /*****************************************************************************
 *     Ethernet Control data structure
 ******************************************************************************/
@@ -98,11 +84,15 @@ typedef struct fnet_eth_if
 {
     void                            *eth_prv;           /* Points to Ethernet driver-specific control data structure. */
     fnet_index_t                    eth_mac_number;     /* MAC module number [0-1]. */
+    fnet_uint8_t                    eth_phy_addr;       /* PHY address */
     void                            ( *eth_output)(fnet_netif_t *netif, fnet_netbuf_t *nb); /* Ethernet driver output.*/
 #if FNET_CFG_MULTICAST
-    void                            ( *eth_multicast_join)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);    /* Ethernet driver join multicast group.*/
-    void                            ( *eth_multicast_leave)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);   /* Ethernet driver leave multicast group.*/
+    void                            ( *eth_multicast_join)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);    /* Ethernet driver join multicast group (optional).*/
+    void                            ( *eth_multicast_leave)(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);   /* Ethernet driver leave multicast group (optional).*/
 #endif /* FNET_CFG_MULTICAST */
+    fnet_return_t                   (*eth_cpu_init)(fnet_netif_t *netif);  /* Platform-specific Ethernet module initialization. Used mainly for IO pin and clock initialization (optional).*/
+    fnet_return_t                   (*eth_cpu_phy_init)(fnet_netif_t *netif);  /* Platform-specific PHY module initialization. Used mainly for special reset or special PHY register initialization (optional).*/
+
     /* Internal parameters.*/
 #if 0  /* Done by _fnet_netif_is_connected()*/
     fnet_timer_desc_t               eth_timer;          /* Optional ETH timer.*/
@@ -134,6 +124,14 @@ void _fnet_eth_output_ip4(fnet_netif_t *netif, fnet_ip4_addr_t dest_ip_addr, fne
 void _fnet_eth_output( fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_addr_t dest_addr, fnet_netbuf_t *nb );
 void _fnet_eth_input( fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t frame_size);
 
+fnet_return_t  _fnet_eth_phy_read(fnet_netif_t *netif, fnet_uint32_t reg_addr, fnet_uint16_t *reg_data);
+fnet_return_t  _fnet_eth_phy_write(fnet_netif_t *netif, fnet_uint32_t reg_addr, fnet_uint16_t reg_data);
+void _fnet_eth_phy_set_addr(fnet_netif_t *netif, fnet_uint8_t phy_addr);
+fnet_uint8_t _fnet_eth_phy_get_addr(fnet_netif_t *netif);
+fnet_bool_t _fnet_eth_is_connected(fnet_netif_t *netif);
+void _fnet_eth_phy_discover_addr (fnet_netif_t *netif, fnet_uint8_t phy_addr_start);
+fnet_return_t _fnet_eth_phy_init(fnet_netif_t *netif);
+
 #if FNET_CFG_MULTICAST
 #if FNET_CFG_IP4
 void _fnet_eth_multicast_leave_ip4(fnet_netif_t *netif, fnet_ip4_addr_t multicast_addr );
@@ -148,6 +146,8 @@ void _fnet_eth_multicast_join_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t  *m
 #if FNET_CFG_IP6
 void _fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_addr,  const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb);
 #endif
+
+void fnet_eth_phy_reg_print(fnet_netif_desc_t netif_desc);
 
 #if FNET_CFG_DEBUG_TRACE_ETH && FNET_CFG_DEBUG_TRACE
 void fnet_eth_trace(fnet_char_t *str, fnet_eth_header_t *eth_hdr);

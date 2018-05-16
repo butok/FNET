@@ -191,13 +191,14 @@ static inline void fnet_cpu_serial_gpio_init(fnet_index_t port_number)
 #endif /* FNET_CFG_CPU_SERIAL_IO_INIT */
 
 /********************************************************************/
-void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
+fnet_return_t fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
 {
     fnet_uint32_t			sysclk; /* UART module Clock in kHz.*/
     FNET_MK_UART_MemMapPtr  uartch;
     fnet_uint16_t 			sbr;
     fnet_uint16_t 			brfa;
     fnet_uint8_t 		    temp;
+    fnet_return_t           result = FNET_ERR; /* TBD control UART number */
 
 #if FNET_CFG_CPU_SERIAL_IO_INIT
     /* Init GPIO.*/
@@ -253,6 +254,9 @@ void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
     /* Enable receiver and transmitter */
     FNET_MK_UART_C2_REG(uartch) |= (FNET_MK_UART_C2_TE_MASK | FNET_MK_UART_C2_RE_MASK );
 
+    result = FNET_OK;
+
+    return result;
 }
 
 #endif /*FNET_MK*/

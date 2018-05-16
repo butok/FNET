@@ -97,7 +97,7 @@ fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms )
 }
 
 /************************************************************************
-* DESCRIPTION: Relaeses TCP/IP hardware timer.
+* DESCRIPTION: Release TCP/IP hardware timer.
 *************************************************************************/
 void fnet_cpu_timer_release( void )
 {

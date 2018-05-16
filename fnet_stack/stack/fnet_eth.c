@@ -25,6 +25,7 @@
 #include "fnet.h"
 #include "fnet_eth_prv.h"
 #include "fnet_prot.h"
+#include "fnet_stack_prv.h"
 
 /************************************************************************
 *     Global Data Structures
@@ -684,6 +685,238 @@ void _fnet_eth_multicast_join_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t  *m
 #endif /* FNET_CFG_IP6 */
 
 #endif /* FNET_CFG_MULTICAST */
+
+/************************************************************************
+* DESCRIPTION: Read a value from a Ethernet PHY's MII register.
+*************************************************************************/
+fnet_return_t  fnet_eth_phy_read(fnet_netif_desc_t netif_desc, fnet_uint32_t reg_addr, fnet_uint16_t *reg_data)
+{
+    fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
+    fnet_return_t   result;
+
+    _fnet_stack_mutex_lock();
+    result = _fnet_eth_phy_read(netif, reg_addr, reg_data);
+    _fnet_stack_mutex_unlock();
+
+    return result;
+}
+fnet_return_t  _fnet_eth_phy_read(fnet_netif_t *netif, fnet_uint32_t reg_addr, fnet_uint16_t *reg_data)
+{
+    fnet_return_t   result = FNET_ERR;
+
+    if(netif && (netif->netif_api->netif_type == FNET_NETIF_TYPE_ETHERNET))
+    {
+        if(netif->netif_api->eth_api && netif->netif_api->eth_api->phy_read)
+        {
+            result = netif->netif_api->eth_api->phy_read(netif, reg_addr, reg_data);
+        }
+    }
+
+    return result;
+}
+
+/************************************************************************
+* DESCRIPTION: Write a value to a PHY's MII register.
+*************************************************************************/
+fnet_return_t  fnet_eth_phy_write(fnet_netif_desc_t netif_desc, fnet_uint32_t reg_addr, fnet_uint16_t reg_data)
+{
+    fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
+    fnet_return_t   result;
+
+    _fnet_stack_mutex_lock();
+    result = _fnet_eth_phy_write(netif, reg_addr, reg_data);
+    _fnet_stack_mutex_unlock();
+
+    return result;
+}
+fnet_return_t  _fnet_eth_phy_write(fnet_netif_t *netif, fnet_uint32_t reg_addr, fnet_uint16_t reg_data)
+{
+    fnet_return_t   result = FNET_ERR;
+
+    if(netif && (netif->netif_api->netif_type == FNET_NETIF_TYPE_ETHERNET))
+    {
+        if(netif->netif_api->eth_api && netif->netif_api->eth_api->phy_write)
+        {
+            result = netif->netif_api->eth_api->phy_write(netif, reg_addr, reg_data);
+        }
+    }
+    return result;
+}
+
+/************************************************************************
+* DESCRIPTION: Get Ethernet PHY address.
+*************************************************************************/
+fnet_uint8_t fnet_eth_phy_get_addr(fnet_netif_desc_t netif_desc)
+{
+    fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
+    fnet_uint8_t    result = 0;
+
+    if(netif && (netif->netif_api->netif_type == FNET_NETIF_TYPE_ETHERNET))
+    {
+        _fnet_stack_mutex_lock();
+        result = _fnet_eth_phy_get_addr(netif);
+        _fnet_stack_mutex_unlock();
+    }
+
+    return result;
+}
+fnet_uint8_t _fnet_eth_phy_get_addr(fnet_netif_t *netif)
+{
+    fnet_uint8_t    result;
+
+    result = ((fnet_eth_if_t *)(netif->netif_prv))->eth_phy_addr;
+
+    return result;
+}
+
+/************************************************************************
+* DESCRIPTION: Change Ethernet PHY address.
+*************************************************************************/
+fnet_return_t  fnet_eth_phy_set_addr(fnet_netif_desc_t netif_desc, fnet_uint8_t phy_addr )
+{
+    fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
+    fnet_return_t   result = FNET_ERR;
+
+    if(netif && (netif->netif_api->netif_type == FNET_NETIF_TYPE_ETHERNET))
+    {
+        _fnet_stack_mutex_lock();
+        _fnet_eth_phy_set_addr(netif, phy_addr);
+        _fnet_stack_mutex_unlock();
+        result = FNET_OK;
+    }
+
+    return result;
+}
+void _fnet_eth_phy_set_addr(fnet_netif_t *netif, fnet_uint8_t phy_addr )
+{
+    ((fnet_eth_if_t *)(netif->netif_prv))->eth_phy_addr = phy_addr;
+}
+
+/************************************************************************
+* DESCRIPTION: Link status.
+*************************************************************************/
+fnet_bool_t _fnet_eth_is_connected(fnet_netif_t *netif)
+{
+    fnet_uint16_t   data;
+    fnet_bool_t     res = FNET_FALSE;
+
+    /* Some PHY (e.g.DP8340) returns "unconnected" and than "connected" state
+     *  just to show that was transition event from one state to another.
+     *  As we need only curent state,  read 2 times and returtn
+     *  the current/latest state. */
+    _fnet_eth_phy_read(netif, FNET_ETH_MII_REG_SR, &data);
+
+    if (_fnet_eth_phy_read(netif, FNET_ETH_MII_REG_SR, &data) == FNET_OK)
+    {
+        res = (((data & FNET_ETH_MII_REG_SR_LINK_STATUS) != 0u) ? FNET_TRUE : FNET_FALSE);
+    }
+    else /* Return previous value in case read PHY error. */
+    {
+        res = netif->is_connected;
+    }
+
+    return res;
+}
+
+/************************************************************************
+* DESCRIPTION: Auto-discober Ethernet PHY address.
+*************************************************************************/
+void _fnet_eth_phy_discover_addr (fnet_netif_t *netif, fnet_uint8_t phy_addr_start)
+{
+    fnet_uint8_t i;
+    fnet_uint8_t phy_addr = phy_addr_start;     /* Save old value just in case the discover
+                                               * is failed, in case communication with
+                                               * the PHY via MDIO is not possible.*/
+
+    for (i = (fnet_uint8_t)phy_addr_start; i < 32U; i++)
+    {
+        fnet_uint16_t id;
+
+        _fnet_eth_phy_set_addr(netif, i);
+
+        _fnet_eth_phy_read(netif, FNET_ETH_MII_REG_IDR1, &id);
+
+        if (!((id == 0U) || (id == 0xffffU) || (id == 0x7fffU)))
+        {
+            return; /* FHY address is discovered.*/
+        }
+    }
+
+    _fnet_eth_phy_set_addr(netif, phy_addr );
+}
+
+/************************************************************************
+* DESCRIPTION: PHY initialization/reset.
+*************************************************************************/
+fnet_return_t _fnet_eth_phy_init(fnet_netif_t *netif)
+{
+    fnet_uint16_t       reg_value = 0;
+    fnet_uint32_t       counter = 1000;
+    fnet_return_t       result;
+    fnet_eth_if_t       *eth_if = (fnet_eth_if_t *)(netif->netif_prv);
+
+    /* Looking for a valid PHY address. */
+#if FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER
+    _fnet_eth_phy_discover_addr (netif, _fnet_eth_phy_get_addr(netif));
+#endif
+
+
+    /* == Reset PHY, wait for completion. == */
+    _fnet_eth_phy_write(netif, FNET_ETH_MII_REG_CR, FNET_ETH_MII_REG_CR_RESET);
+    for (counter = 10000; counter > 0; counter--)
+    {
+        _fnet_eth_phy_read(netif, FNET_ETH_MII_REG_CR, &reg_value);
+        if(reg_value & FNET_ETH_MII_REG_CR_RESET)
+        {
+            break; /* Completed */
+        }
+    }
+
+    /* Platform-specific Ethernet PHY initialization */
+    if(eth_if->eth_cpu_phy_init)
+    {
+        result = eth_if->eth_cpu_phy_init(netif);
+    }
+    else
+    {
+        result = FNET_OK;
+    }
+
+    if(result == FNET_OK)
+    {
+        /*== Start auto-negotiation  == */
+        _fnet_eth_phy_read(netif, FNET_ETH_MII_REG_CR, &reg_value);
+        _fnet_eth_phy_write(netif, FNET_ETH_MII_REG_CR, ((reg_value | FNET_ETH_MII_REG_CR_ANE | FNET_ETH_MII_REG_CR_ANE_RESTART) & (~FNET_ETH_MII_REG_CR_ISOL)));
+
+        if(counter) /* No timeout */
+        {
+#if FNET_CFG_CPU_ETH_ATONEGOTIATION_TIMEOUT
+            /* Wait for auto-negotiation completion. */
+            {
+                fnet_time_t     last_time =  fnet_timer_get_ms();
+
+                do
+                {
+                    /* Read Basic Mode Status Register*/
+                    if(_fnet_eth_phy_read(netif, FNET_ETH_MII_REG_SR, &reg_value) == FNET_ERR)
+                    {
+                        break;
+                    }
+
+                    /* Auto-Negotiation Complete */
+                    if(reg_value & FNET_ETH_MII_REG_SR_AN_COMPLETE)
+                    {
+                        break;
+                    }
+                }
+                while((fnet_timer_get_ms() - last_time) < FNET_CFG_CPU_ETH_ATONEGOTIATION_TIMEOUT);
+            }
+#endif /* FNET_CFG_CPU_ETH_ATONEGOTIATION_TIMEOUT */
+        }
+    }
+
+    return result;
+}
 
 /************************************************************************
 * DESCRIPTION: Prints an Ethernet header. For debug needs only.

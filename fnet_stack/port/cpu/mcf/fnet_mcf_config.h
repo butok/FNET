@@ -164,17 +164,6 @@
         #define FNET_CFG_OVERLOAD_CHECKSUM_LOW  (1)
     #endif
 
-    /**************************************************************************/ /*!
-    * @def      FNET_CFG_MCF_CACHE_CACR
-    * @brief    Cache Control Register (CACR) default value,
-    *           used during cache invalidation.@n
-    *           It is used only when FNET_CFG_CPU_CACHE is enabled.
-    * @showinitializer
-    ******************************************************************************/
-    #ifndef FNET_CFG_MCF_CACHE_CACR
-        #define FNET_CFG_MCF_CACHE_CACR             (0)
-    #endif
-
     /*****************************************************************************
     *  On-chip Flash memory start address.
     ******************************************************************************/

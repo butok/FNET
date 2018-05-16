@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2017 by Andrey Butok. FNET Community.
+* Copyright 2017-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -18,14 +18,13 @@
 *
 ***************************************************************************
 *
-*  Kinetis specific SW timers implementation.
+*  LPC specific SW timers implementation.
 *
 ***************************************************************************/
 
-#include "fnet_config.h"
+#include "fnet.h"
 
 #if FNET_LPC
-#include "fnet.h"
 #include "stack/fnet_timer_prv.h"
 
 /* MCUXpresso */
@@ -33,11 +32,10 @@
 #include <fsl_clock.h>
 #include <fsl_ctimer.h>
 
+static void fnet_cpu_timer_handler_top(void *cookie);
+
 /* Array of CTIMER base addresses. */
 static CTIMER_Type *const fnet_lpc_ctimer_base_addr[] = CTIMER_BASE_PTRS;
-#define FNET_LPC_CTIMER_COUNT (sizeof(fnet_lpc_ctimer_base_addr) / sizeof(fnet_lpc_ctimer_base_addr[0]))
-
-static void fnet_cpu_timer_handler_top(void *cookie);
 
 /************************************************************************
 * DESCRIPTION: Top interrupt handler. Increment fnet_current_time
@@ -110,7 +108,7 @@ fnet_return_t fnet_cpu_timer_init( fnet_time_t period_ms )
 }
 
 /************************************************************************
-* DESCRIPTION: Relaeses TCP/IP hardware timer.
+* DESCRIPTION: Release TCP/IP hardware timer.
 *************************************************************************/
 void fnet_cpu_timer_release( void )
 {

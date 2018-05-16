@@ -124,7 +124,7 @@ FNET_COMP_ASM_DC32 MACRO value
     #define FNET_COMP_ASM_CODE  RSEG CODE 
 #endif      
 
-#if FNET_MK || FNET_LPC     
+#if FNET_MK || FNET_LPC || FNET_MIMXRT    
     #define FNET_COMP_ASM_CODE  RSEG .text:CODE
 #endif          
 

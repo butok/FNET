@@ -29,7 +29,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#if 1 //DM
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
@@ -226,5 +225,3 @@ void BOARD_InitSDRAM(void);
 #endif /* __cplusplus */
 
 #endif /* _BOARD_H_ */
-
-#endif

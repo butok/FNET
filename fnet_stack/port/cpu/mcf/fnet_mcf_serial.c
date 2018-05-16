@@ -183,13 +183,14 @@ static inline void fnet_cpu_serial_gpio_init(fnet_index_t port_number)
 }
 #endif /* FNET_CFG_CPU_SERIAL_IO_INIT */
 
-/********************************************************************/
-void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
+/* Initialize UART for serial communications */
+fnet_return_t fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
 {
     /*
      * Initialize UART for serial communications
      */
-    fnet_uint16_t ubgs;
+    fnet_uint16_t  ubgs;
+    fnet_return_t  result = FNET_OK; /* TBD control port number */
 
 #if FNET_CFG_CPU_SERIAL_IO_INIT
     /* Init GPIO.*/
@@ -275,6 +276,7 @@ void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
 
 #endif
 
+    return result;
 }
 
 #endif /*FNET_MCF*/

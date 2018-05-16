@@ -18,7 +18,7 @@
 *
 ***************************************************************************
 *
-* @brief Lowest level routines for LPC.
+*  Lowest level routines for LPC.
 *
 ***************************************************************************/
 #include "port/compiler/fnet_comp_asm.h"

@@ -187,13 +187,10 @@ static inline void fnet_cpu_serial_gpio_init(fnet_int32_t port_number)
 }
 #endif /* FNET_CFG_CPU_SERIAL_IO_INIT */
 
-/********************************************************************/
-void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
+/* Initialize UART for serial communications */
+fnet_return_t fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
 {
-
-    /*
-     * Initialize UART for serial communications
-     */
+    fnet_return_t result = FNET_ERR;    /* TBD check UART port number */
 
     /* Init GPIO.*/
 #if FNET_CFG_CPU_SERIAL_IO_INIT
@@ -238,6 +235,10 @@ void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate)
         FNET_MPC_LIN_CR1(port_number) = FNET_MPC_LIN_CR1(port_number) & 0x0000FFFE;
     }
 #endif
+
+    result = FNET_OK;
+
+    return result;
 }
 
 #endif /*FNET_MPC*/

@@ -1,0 +1,123 @@
+/*
+ * Copyright 2017 NXP
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * o Redistributions of source code must retain the above copyright notice, this list
+ *   of conditions and the following disclaimer.
+ *
+ * o Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * o Neither the name of the copyright holder nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+ 
+void Load_Dcdc_Trim()
+{
+  unsigned int ocotp_base;  
+  unsigned int dcdc_base;  
+  unsigned int ocotp_fuse_bank0_base;  
+  unsigned int reg;
+  unsigned int index;
+  unsigned int trim_value;
+  unsigned int dcdc_trim_loaded;
+
+  ocotp_base = 0x401F4000;
+  ocotp_fuse_bank0_base = 0x401F4000 + 0x400;
+  dcdc_base = 0x40080000;
+
+  dcdc_trim_loaded = 0;
+
+  reg = MEM_ReadU32(ocotp_fuse_bank0_base + 0x90);
+  if (reg & (1<<10))
+  {
+      // DCDC: REG0->VBG_TRM
+      trim_value = (reg & (0x1F << 11)) >> 11;
+      reg = (MEM_ReadU32(dcdc_base + 0x4) & ~(0x1F << 24)) | (trim_value << 24);
+      MEM_WriteU32(dcdc_base + 0x4, reg);
+      dcdc_trim_loaded = 1;
+  }
+
+  reg = MEM_ReadU32(ocotp_fuse_bank0_base + 0x80);
+  if (reg & (1<<30))
+  {
+    index = (reg & (3 << 28)) >> 28;
+    if (index < 4)
+    {
+      // DCDC: REG3->TRG 
+      reg = (MEM_ReadU32(dcdc_base + 0xC) & ~(0x1F)) | (0xF + index);
+      MEM_WriteU32(dcdc_base + 0xC, reg);
+      dcdc_trim_loaded = 1;
+    }
+  }
+
+  if (dcdc_trim_loaded)
+  {
+      // delay 1ms for dcdc to get stable
+      SYS_Sleep(1);
+      Report("DCDC trim value loaded.");
+  }
+}
+
+/* ConfigTarget */
+void ConfigTargetSettings(void)
+{
+  Report("Config JTAG Speed to 4000kHz");
+  JTAG_Speed = 4000;
+}
+
+/* SetupTarget */
+void SetupTarget(void) {
+
+  Report("Enabling i.MXRT SDRAM");
+  Load_Dcdc_Trim();
+}
+
+/* ResetTarget */
+void ResetTarget(void) {
+  unsigned int v;
+  unsigned int Tmp;
+  //
+  // J-Link DLL expects CPU to be reset and halted when leaving this function
+  //
+  Report("J-Link script: ResetTarget()");
+  // Read IDCODE
+  v=JLINK_CORESIGHT_ReadDP(0);
+  Report1("DP0: ", v);
+
+  // Power up Debugger
+  JLINK_CORESIGHT_WriteDP(1, 0x50000000);
+  v=JLINK_CORESIGHT_ReadDP(1);
+  Report1("DP1: ", v);
+
+
+  JLINK_CORESIGHT_WriteAP(0, 0x23000042);
+  v=JLINK_CORESIGHT_ReadAP(0);
+  Report1("AHB-AP0: ", v);  
+
+  JLINK_CORESIGHT_WriteAP(1, 0xE000EDF0);
+  v=JLINK_CORESIGHT_ReadAP(1);
+  Report1("AHB-AP1: ", v); 
+  v=JLINK_CORESIGHT_ReadAP(3);
+  Report1("AHB-AP3: ", v); 
+  JLINK_CORESIGHT_WriteAP(3, 0xa05f0003);
+  v=JLINK_CORESIGHT_ReadAP(3);
+  Report1("AHB-AP3: ", v);
+
+  Load_Dcdc_Trim();
+}

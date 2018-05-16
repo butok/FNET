@@ -27,6 +27,8 @@
 
 #include "port/netif/fec/fnet_fec.h"
 
+static fnet_return_t fnet_mk_eth_init(fnet_netif_t *netif);
+
 /************************************************************************
 * Ethernet interface structure.
 *************************************************************************/
@@ -35,6 +37,8 @@ static fnet_eth_if_t fnet_mk_eth0_if =
     .eth_prv = &fnet_fec0_if,                       /* Points to Ethernet driver-specific control data structure. */
     .eth_mac_number = 0,                            /* MAC module number. */
     .eth_output = fnet_fec_output,                  /* Ethernet driver output.*/
+    .eth_phy_addr = FNET_CFG_CPU_ETH0_PHY_ADDR,     /* Set default PHY address */
+    .eth_cpu_init = fnet_mk_eth_init,
 #if FNET_CFG_MULTICAST
     .eth_multicast_join = fnet_fec_multicast_join,  /* Ethernet driver join multicast group.*/
     .eth_multicast_leave = fnet_fec_multicast_leave /* Ethernet driver leave multicast group.*/
@@ -52,12 +56,12 @@ fnet_netif_t fnet_cpu_eth0_if =
 /************************************************************************
 * DESCRIPTION: Ethernet IO initialization.
 *************************************************************************/
-#if FNET_CFG_CPU_ETH_IO_INIT
-void fnet_eth_io_init(void)
+static fnet_return_t fnet_mk_eth_init(fnet_netif_t *netif)
 {
     FNET_MK_PORT_MemMapPtr pctl;
     FNET_MK_SIM_MemMapPtr  sim  = (FNET_MK_SIM_MemMapPtr)FNET_MK_SIM_BASE_PTR;
 
+#if FNET_CFG_CPU_ETH_IO_INIT
 #if FNET_CFG_CPU_MK64FN1
 
     /* Enable clock */
@@ -129,20 +133,16 @@ void fnet_eth_io_init(void)
 
 #endif
 
+#endif /*!FNET_CFG_CPU_ETH_IO_INIT*/
+
+
     /* Enable clock for ENET module */
     sim->SCGC2 |= FNET_MK_SIM_SCGC2_ENET_MASK;
 
     /*Allow concurrent access to MPU controller. Example: ENET uDMA to SRAM, otherwise bus error*/
     FNET_MK_MPU_CESR = 0u;  /* MPU is disabled. All accesses from all bus masters are allowed.*/
-}
-#endif /*!FNET_CFG_CPU_ETH_IO_INIT*/
 
-/************************************************************************
-* DESCRIPTION: Ethernet Physical Transceiver initialization and/or reset.
-*************************************************************************/
-void fnet_eth_phy_init(fnet_fec_if_t *ethif)
-{
-    FNET_COMP_UNUSED_ARG(ethif);
+    return FNET_OK;
 }
 
 /* If vector table is in ROM, pre-install FNET ISR for ENET Receive Frame interrupt*/

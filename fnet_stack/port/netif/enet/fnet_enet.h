@@ -44,7 +44,6 @@ typedef struct
     uint8_t                         txIdx; /* TX buffer index */
     //TBD
     fnet_uint32_t                   vector_number;      /* Vector number of the Ethernet interrupt.*/
-    fnet_uint8_t                    phy_addr;
     struct fnet_netif_statistics    statistics;     /* Statistic counters.*/
 } fnet_enet_if_t;
 
@@ -60,10 +59,6 @@ extern fnet_enet_if_t fnet_enet0_if;
 extern "C" {
 #endif
 
-/* Ethernet IO initialization.*/
-#if FNET_CFG_CPU_ETH_IO_INIT
-void fnet_eth_io_init(void);
-#endif
 void fnet_enet_output(fnet_netif_t *netif, fnet_netbuf_t *nb);
 #if FNET_CFG_MULTICAST
 void fnet_enet_multicast_join(fnet_netif_t *netif, fnet_mac_addr_t multicast_addr);
@@ -72,8 +67,6 @@ void fnet_enet_multicast_leave(fnet_netif_t *netif, fnet_mac_addr_t multicast_ad
 
 /* For debug needs.*/
 void fnet_enet_poll(fnet_netif_desc_t netif_desc);
-fnet_return_t fnet_enet_mii_read(fnet_enet_if_t *enet_if, fnet_uint32_t reg_addr, fnet_uint16_t *data);
-fnet_return_t fnet_enet_mii_write(fnet_enet_if_t *enet_if, fnet_uint32_t reg_addr, fnet_uint16_t data);
 
 #if defined(__cplusplus)
 }

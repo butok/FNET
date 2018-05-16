@@ -60,7 +60,7 @@ struct fnet_mdns_params
     fnet_netif_desc_t           netif_desc;     /**< @brief Network interface descriptor to be used by the mDNS server.*/
     fnet_address_family_t       addr_family;    /**< @brief Address family (IPv6 or IPv4 or both) the server will listen for MDNS query (it is optional).@n
                                                    Default value is defined by @ref AF_SUPPORTED.*/
-    fnet_uint32_t               rr_ttl;         /**< @brief TTL value that indicates for how many seconds mDNS resource records is valid for mDNS querier, in seconds (it is optional).@n
+    fnet_uint32_t               rr_ttl;         /**< @brief TTL value that indicates for how many seconds mDNS resource record is valid for mDNS querier, in seconds (it is optional).@n
                                                  * Default value is defined by @ref FNET_CFG_MDNS_RR_TTL. */
     const fnet_char_t           *name;          /**< @brief Name used as a host-name and service-names, advertised by the MDNS server. */
 };
@@ -100,7 +100,7 @@ typedef struct fnet_mdns_service
 typedef void *fnet_mdns_desc_t;
 
 /**************************************************************************/ /*!
- * @brief  mDNS advertised-service descriptor.
+ * @brief  mDNS server descriptor.
  * @see fnet_mdns_service_register(), fnet_mdns_service_unregister()
  ******************************************************************************/
 typedef void *fnet_mdns_service_desc_t;

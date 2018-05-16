@@ -26,8 +26,6 @@
 
 #if FNET_CFG_TFTP_CLN
 
-#include "stack/fnet_netif_prv.h"
-
 #if FNET_CFG_DEBUG_TFTP_CLN && FNET_CFG_DEBUG
     #define FNET_DEBUG_TFTP         FNET_DEBUG
 #else

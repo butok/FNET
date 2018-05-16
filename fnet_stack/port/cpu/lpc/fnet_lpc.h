@@ -53,9 +53,6 @@ typedef volatile fnet_uint64_t fnet_vuint64_t;   /* 64 bits */
 /* SCB - Peripheral register structure */
 typedef struct FNET_LPC_SCB_MemMap
 {
-    fnet_vuint8_t RESERVED_0[8];
-    fnet_vuint32_t ACTLR;                                  /* Auxiliary Control Register,, offset: 0x8 */
-    fnet_vuint8_t RESERVED_1[3316];
     fnet_vuint32_t CPUID;                                  /* CPUID Base Register, offset: 0xD00 */
     fnet_vuint32_t ICSR;                                   /* Interrupt Control and State Register, offset: 0xD04 */
     fnet_vuint32_t VTOR;                                   /* Vector Table Offset Register, offset: 0xD08 */
@@ -306,7 +303,7 @@ typedef struct FNET_LPC_SCB_MemMap
 
 /* SCB - Peripheral instance base addresses */
 /* Peripheral SystemControl base pointer */
-#define FNET_LPC_SystemControl_BASE_PTR                   ((FNET_LPC_SCB_MemMapPtr)0xE000E000u)
+#define FNET_LPC_SystemControl_BASE_PTR                   ((FNET_LPC_SCB_MemMapPtr)0xE000ED00u)
 
 /* ----------------------------------------------------------------------------
    -- SCB - Register accessor macros

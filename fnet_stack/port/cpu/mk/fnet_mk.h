@@ -2656,9 +2656,6 @@ typedef struct FNET_MK_FTFL_MemMap
 /* SCB - Peripheral register structure */
 typedef struct FNET_MK_SCB_MemMap
 {
-    fnet_vuint8_t RESERVED_0[8];
-    fnet_vuint32_t ACTLR;                                  /* Auxiliary Control Register,, offset: 0x8 */
-    fnet_vuint8_t RESERVED_1[3316];
     fnet_vuint32_t CPUID;                                  /* CPUID Base Register, offset: 0xD00 */
     fnet_vuint32_t ICSR;                                   /* Interrupt Control and State Register, offset: 0xD04 */
     fnet_vuint32_t VTOR;                                   /* Vector Table Offset Register, offset: 0xD08 */
@@ -2682,7 +2679,6 @@ typedef struct FNET_MK_SCB_MemMap
    ---------------------------------------------------------------------------- */
 
 /* SCB - Register accessors */
-#define FNET_MK_SCB_ACTLR_REG(base)                      ((base)->ACTLR)
 #define FNET_MK_SCB_CPUID_REG(base)                      ((base)->CPUID)
 #define FNET_MK_SCB_ICSR_REG(base)                       ((base)->ICSR)
 #define FNET_MK_SCB_VTOR_REG(base)                       ((base)->VTOR)
@@ -2704,13 +2700,6 @@ typedef struct FNET_MK_SCB_MemMap
    -- SCB Register Masks
    ---------------------------------------------------------------------------- */
 
-/* ACTLR Bit Fields */
-#define FNET_MK_SCB_ACTLR_DISMCYCINT_MASK                0x1u
-#define FNET_MK_SCB_ACTLR_DISMCYCINT_SHIFT               0
-#define FNET_MK_SCB_ACTLR_DISDEFWBUF_MASK                0x2u
-#define FNET_MK_SCB_ACTLR_DISDEFWBUF_SHIFT               1
-#define FNET_MK_SCB_ACTLR_DISFOLD_MASK                   0x4u
-#define FNET_MK_SCB_ACTLR_DISFOLD_SHIFT                  2
 /* CPUID Bit Fields */
 #define FNET_MK_SCB_CPUID_REVISION_MASK                  0xFu
 #define FNET_MK_SCB_CPUID_REVISION_SHIFT                 0
@@ -2909,7 +2898,7 @@ typedef struct FNET_MK_SCB_MemMap
 
 /* SCB - Peripheral instance base addresses */
 /* Peripheral SystemControl base pointer */
-#define FNET_MK_SystemControl_BASE_PTR                   ((FNET_MK_SCB_MemMapPtr)0xE000E000u)
+#define FNET_MK_SystemControl_BASE_PTR                   ((FNET_MK_SCB_MemMapPtr)0xE000ED00u)
 
 /* ----------------------------------------------------------------------------
    -- SCB - Register accessor macros

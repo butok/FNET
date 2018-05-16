@@ -27,6 +27,7 @@
 #define _FNET_WIFI_PRV_H_
 
 #include "fnet.h"
+#include "fnet_netif_prv.h"
 
 /************************************************************************
 *     Definitions
@@ -35,14 +36,14 @@
  * @internal
  * @brief    Wi-Fi interface API structure.
  ******************************************************************************/
-typedef struct
+typedef struct fnet_wifi_api
 {
-    fnet_return_t       (*wifi_connect)(struct fnet_netif *netif, fnet_wifi_connect_params_t *params);                  /* Starts Wi-Fi connection in station mode.*/
-    fnet_return_t       (*wifi_access_point)(struct fnet_netif *netif_desc, fnet_wifi_access_point_params_t *params);   /* Initializes a Wi-Fi access point.*/
-    fnet_return_t       (*wifi_disconnect)(struct fnet_netif *netif);                                                   /* Disconnects from a Wi-Fi network.*/
-    fnet_wifi_op_mode_t (*wifi_get_op_mode)(struct fnet_netif *netif);                                                  /* Retrieves current operation mode of the Wi-Fi interface.*/
-    fnet_uint32_t       (*wifi_fw_get_version)(struct fnet_netif *netif);                                               /* Gets Wi-Fi interface firmware version number (optional).*/
-    fnet_return_t       (*wifi_fw_update)(struct fnet_netif *netif, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size); /* Updates Wi-Fi interface firmware (optional).*/
+    fnet_return_t       (*wifi_connect)(fnet_netif_t *netif, fnet_wifi_connect_params_t *params);                  /* Starts Wi-Fi connection in station mode.*/
+    fnet_return_t       (*wifi_access_point)(fnet_netif_t *netif_desc, fnet_wifi_access_point_params_t *params);   /* Initializes a Wi-Fi access point.*/
+    fnet_return_t       (*wifi_disconnect)(fnet_netif_t *netif);                                                   /* Disconnects from a Wi-Fi network.*/
+    fnet_wifi_op_mode_t (*wifi_get_op_mode)(fnet_netif_t *netif);                                                  /* Retrieves current operation mode of the Wi-Fi interface.*/
+    fnet_uint32_t       (*wifi_fw_get_version)(fnet_netif_t *netif);                                               /* Gets Wi-Fi interface firmware version number (optional).*/
+    fnet_return_t       (*wifi_fw_update)(fnet_netif_t *netif, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size); /* Updates Wi-Fi interface firmware (optional).*/
 } fnet_wifi_api_t;
 
 /************************************************************************

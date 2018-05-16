@@ -423,7 +423,12 @@ void fapp_hw_init(void)
     BOARD_BootClockRUN();
 #endif
 
-#if FNET_LPC /* LPC Board specific initialization */
+#if FNET_LPC  /* LPC Board specific initialization */
+    extern void BOARD_InitHardware(void);
+    BOARD_InitHardware();
+#endif
+
+#if FNET_MIMXRT  /* i.MX RT Board specific initialization */
     extern void BOARD_InitHardware(void);
     BOARD_InitHardware();
 #endif

@@ -26,7 +26,6 @@
 
 #if FNET_CFG_TFTP_SRV
 
-#include "stack/fnet_netif_prv.h"
 
 #if FNET_CFG_DEBUG_TFTP_SRV && FNET_CFG_DEBUG
     #define FNET_DEBUG_TFTP_SRV         FNET_DEBUG

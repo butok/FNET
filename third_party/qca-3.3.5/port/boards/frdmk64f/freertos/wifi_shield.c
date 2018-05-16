@@ -157,7 +157,7 @@ A_STATUS WIFISHIELD_PowerUp(uint32_t enable)
 void WIFISHIELD_NotifyDriverTask(void *param)
 {
     extern QCA_CONTEXT_STRUCT *wlan_get_context(void);
-    QCA_CONTEXT_STRUCT *wifi_ctx = wlan_get_context();;
+    QCA_CONTEXT_STRUCT *wifi_ctx = wlan_get_context();
     void HW_InterruptHandler(void *pCxt);
 
     void *pCxt = wifi_ctx->MAC_CONTEXT_PTR;

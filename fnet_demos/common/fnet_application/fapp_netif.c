@@ -118,6 +118,10 @@ static const fnet_char_t *const fapp_wifi_op_mode[] = { "",                 /* F
                                                         "access point"      /* FNET_WIFI_OP_MODE_ACCESS_POINT */
                                                       };
 
+#ifdef FAPP_NETIF_ETH_PHY_REG_PRINT
+    static void fapp_eth_phy_reg_print(fnet_shell_desc_t desc, fnet_netif_desc_t netif_desc);
+#endif
+
 /************************************************************************
 * DESCRIPTION: Initialization of all supported interfaces.
 *************************************************************************/
@@ -205,7 +209,7 @@ void fapp_netif_info_print( fnet_shell_desc_t desc, fnet_netif_desc_t netif)
         wifi_version = fnet_wifi_fw_get_version(netif);
         if(wifi_version)
         {
-            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_H, "Wi-Fi FW Version", wifi_version);
+            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_H32, "Wi-Fi FW Version", wifi_version);
         }
     }
 
@@ -262,8 +266,44 @@ void fapp_netif_info_print( fnet_shell_desc_t desc, fnet_netif_desc_t netif)
 #if FAPP_CFG_MDNS_CMD && FNET_CFG_MDNS
     fapp_mdns_info(desc, netif);
 #endif
+
+#ifdef FAPP_NETIF_ETH_PHY_REG_PRINT /* For Debug needs */
+    if(netif_type == FNET_NETIF_TYPE_ETHERNET)
+    {
+        fapp_eth_phy_reg_print(desc, netif);
+    }
+#endif
+
     fnet_shell_println(desc, "");
 }
+
+/************************************************************************
+* DESCRIPTION: Prints Eth MII registers.
+* !!!! Used only for debug needs. !!!!!
+*************************************************************************/
+#ifdef FAPP_NETIF_ETH_PHY_REG_PRINT
+static void fapp_eth_phy_reg_print(fnet_shell_desc_t desc, fnet_netif_desc_t netif_desc)
+{
+    fnet_uint16_t reg_value;
+
+    fnet_shell_println(desc, "Ethernet PHY regs:");
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "PHY Addr", fnet_eth_phy_get_addr(netif_desc));
+    fnet_eth_phy_read(netif_desc, FNET_ETH_MII_REG_CR, &reg_value);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_H16, "CR", reg_value);
+    fnet_eth_phy_read(netif_desc, FNET_ETH_MII_REG_SR, &reg_value);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_H16, "SR", reg_value);
+    fnet_eth_phy_read(netif_desc, FNET_ETH_MII_REG_IDR1, &reg_value);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_H16, "IDR1", reg_value);
+    fnet_eth_phy_read(netif_desc, FNET_ETH_MII_REG_IDR2, &reg_value);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_H16, "IDR2", reg_value);
+    fnet_eth_phy_read(netif_desc, FNET_ETH_MII_REG_ANAR, &reg_value);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_H16, "ANAR", reg_value);
+    fnet_eth_phy_read(netif_desc, FNET_ETH_MII_REG_ANLPAR, &reg_value);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_H16, "ANLPAR", reg_value);
+    fnet_eth_phy_read(netif_desc, FNET_ETH_MII_REG_ANER, &reg_value);
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_H16, "ANER", reg_value);
+}
+#endif
 
 /************************************************************************
 * DESCRIPTION: Print Interface IP addresses.

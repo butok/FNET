@@ -28,10 +28,7 @@
 
 #include "fnet.h"
 #include "fnet_netbuf_prv.h"
-#include "fnet_netif.h"
-#include "fnet_eth.h"
 #include "fnet_nd6.h"
-#include "fnet_wifi_prv.h"
 
 /**************************************************************************/ /*!
  * @internal
@@ -96,6 +93,8 @@ typedef struct fnet_netif_ip6_addr
 } fnet_netif_ip6_addr_t;
 
 struct fnet_netif; /* Forward declaration.*/
+struct fnet_eth_api;
+struct fnet_wifi_api;
 /**************************************************************************/ /*!
  * @internal
  * @brief    Network-interface general API structure.
@@ -128,9 +127,10 @@ typedef struct fnet_netif_api
 #if FNET_CFG_IP6
     void                (*netif_output_ip6)(struct fnet_netif *netif, const fnet_ip6_addr_t *src_ip_addr,  const fnet_ip6_addr_t *dest_ip_addr, fnet_netbuf_t *nb); /* IPv6 Transmit function.*/
 #endif
-    union                /* Points to interface specific API structure (Optional). For FNET_NETIF_TYPE_WIFI type it points to fnet_wifi_api_t, for other types it is set to NULL */
+    union                /* Points to interface specific API structure (Optional). */
     {
-        const fnet_wifi_api_t       *wifi_api;
+        const struct fnet_wifi_api   *wifi_api;  /* netif_type = FNET_NETIF_TYPE_WIFI */
+        const struct fnet_eth_api   *eth_api;   /* netif_type = FNET_NETIF_TYPE_ETHERNET */
         /* Put here new type-specific APIs */
     };
 } fnet_netif_api_t;

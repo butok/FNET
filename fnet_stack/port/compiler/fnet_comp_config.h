@@ -84,8 +84,8 @@
     #elif defined(__ghs__)
         #define FNET_CFG_COMP_GHS   (1)
         #define FNET_COMP_STR       "GHS"
-        /* Keil uVision compiler. */
-    #elif defined(__CC_ARM)
+        /* ARM, Keil uVision compiler. */
+    #elif defined(__CC_ARM) || defined(__ARMCC_VERSION)
         #define FNET_CFG_COMP_UV    (1)
         #define FNET_COMP_STR       "UV"
         /* GNU GCC */

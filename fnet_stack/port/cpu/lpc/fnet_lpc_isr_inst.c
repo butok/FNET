@@ -59,7 +59,7 @@ fnet_return_t fnet_cpu_isr_install(fnet_uint32_t vector_number, fnet_uint32_t pr
         /* Make sure that the IRQ is an allowable number. */
         irq_number = vector_number - 16u;
         divider = irq_number / 32u;
-        if(divider < 3u)
+        if(divider < 5u)
         {
             /* Initialize the NVIC to enable the specified IRQ.*/
             FNET_LPC_NVIC_ICPR(divider) |= (fnet_uint32_t)(1u << (irq_number % 32u)); /* Clear-pending. */

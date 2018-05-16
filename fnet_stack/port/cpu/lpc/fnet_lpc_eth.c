@@ -32,14 +32,18 @@
 #include "fsl_iocon.h"
 #include "pin_mux.h"
 
+static fnet_return_t fnet_lpc_eth_init(fnet_netif_t *netif);
+
 /************************************************************************
 * Ethernet interface structure.
 *************************************************************************/
 static fnet_eth_if_t fnet_lpc_eth0_if =
 {
-    .eth_prv = &fnet_enet0_if,                       /* Points to Ethernet driver-specific control data structure. */
+    .eth_prv = &fnet_enet0_if,                      /* Points to Ethernet driver-specific control data structure. */
     .eth_mac_number = 0,                            /* MAC module number. */
-    .eth_output = fnet_enet_output,                  /* Ethernet driver output.*/
+    .eth_output = fnet_enet_output,                 /* Ethernet driver output.*/
+    .eth_phy_addr = FNET_CFG_CPU_ETH0_PHY_ADDR,     /* Set default PHY address */
+    .eth_cpu_init = fnet_lpc_eth_init,
 #if FNET_CFG_MULTICAST
     .eth_multicast_join = fnet_enet_multicast_join,  /* Ethernet driver join multicast group.*/
     .eth_multicast_leave = fnet_enet_multicast_leave /* Ethernet driver leave multicast group.*/
@@ -66,9 +70,10 @@ void ETHERNET_IRQHandler (void)
 /************************************************************************
 * DESCRIPTION: Ethernet IO initialization.
 *************************************************************************/
-#if FNET_CFG_CPU_ETH_IO_INIT
-void fnet_eth_io_init(void)
+static fnet_return_t fnet_lpc_eth_init(fnet_netif_t *netif)
 {
+#if FNET_CFG_CPU_ETH_IO_INIT
+
 #if FNET_CFG_CPU_LPC54628
     /*
       - {pin_num: B14, peripheral: ENET, signal: 'ENET_TXD, 0', pin_signal: PIO4_8/ENET_TXD0/FC2_SCK/USB0_OVERCURRENTN/USB0_UP_LED/SCT0_GPI1, mode: inactive, invert: disabled,
@@ -246,7 +251,8 @@ void fnet_eth_io_init(void)
     /* PORT4 PIN8 (coords: B14) is configured as ENET_TXD0 */
     IOCON_PinMuxSet(IOCON, 4U, 8U, port4_pin8_config);
 #endif
-}
 #endif /*!FNET_CFG_CPU_ETH_IO_INIT*/
+    return FNET_OK;
+}
 
 #endif /* FNET_LPC && FNET_CFG_CPU_ETH0 */

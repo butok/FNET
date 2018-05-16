@@ -28,7 +28,7 @@
 
 #include "fnet_ip4.h"
 #include "fnet_ip6.h"
-#include "fnet_eth.h"
+//#include "fnet_eth.h"
 #include "fnet_socket.h"
 
 /*! @addtogroup fnet_netif
@@ -187,7 +187,7 @@ fnet_netif_desc_t fnet_netif_get_by_name( const fnet_char_t *name );
  *
  * @return This function returns:
  *   - Network interface descriptor that matches the n-th interface.
- *   - @ref FNET_NULL if n-th interface is not available..
+ *   - @ref FNET_NULL if n-th interface is not available.
  *
  * @see fnet_netif_get_by_name()
  *

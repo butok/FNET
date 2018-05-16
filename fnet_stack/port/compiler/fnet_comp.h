@@ -56,6 +56,9 @@
     /* To use _Pragma(), enable C99 Extensions. */
     #define FNET_COMP_PACKED_BEGIN  _Pragma("pack(1)")
     #define FNET_COMP_PACKED_END    _Pragma("pack()")
+
+    /* Inline assembler */
+    #define FNET_COMP_ASM(x)        __asm(x)
 #endif
 
 #if FNET_CFG_COMP_UV
@@ -68,12 +71,17 @@
     #define FNET_COMP_PACKED_END    _Pragma("pack(8)")
 
     #define FNET_COMP_PACKED_VAR    __packed
+
+    /* Inline assembler */
+    #define FNET_COMP_ASM(x)        __asm(x)
 #endif
 
 #if FNET_CFG_COMP_GNUC
     #define FNET_COMP_PACKED_BEGIN  _Pragma("pack(1)")
     #define FNET_COMP_PACKED_END    _Pragma("pack(8)")
-    //#define FNET_COMP_PACKED __attribute__((aligned(1),packed))
+
+    /* Inline assembler */
+    #define FNET_COMP_ASM(x)        __asm(x)
 #endif
 
 #if FNET_CFG_COMP_GHS
@@ -81,12 +89,18 @@
     #define FNET_COMP_PACKED_END    _Pragma("pack()")
 
     #define FNET_COMP_PACKED_VAR    __packed
+
+    /* Inline assembler */
+    #define FNET_COMP_ASM(x)        __asm(x)
 #endif
 
 #if FNET_CFG_COMP_DCC
     #pragma option -Xalign-min=1
     #define FNET_COMP_PACKED_BEGIN  #pragma pack(2,2)
     #define FNET_COMP_PACKED_END    #pragma pack(4,2)
+
+    /* Inline assembler */
+    #define FNET_COMP_ASM(x)        __asm(x)
 #endif
 
 /* Changes the current alignment mode for one member in a structure
@@ -116,6 +130,11 @@ which causes that member to be packed on a 1-byte boundary
 /* Mark unused function argument. To avoid compiler warnings.*/
 #ifndef FNET_COMP_UNUSED_ARG
     #define FNET_COMP_UNUSED_ARG(x) (void)(x)
+#endif
+
+/* Inline assembler */
+#ifndef FNET_COMP_ASM
+    #define FNET_COMP_ASM(x)
 #endif
 
 #endif /* _FNET_COMP_H_ */

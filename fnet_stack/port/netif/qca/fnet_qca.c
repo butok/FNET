@@ -65,22 +65,22 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static fnet_return_t fnet_qca_init(fnet_netif_t *netif);
-static void fnet_qca_release(fnet_netif_t *netif);
-static fnet_return_t fnet_qca_get_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_addr);
-static fnet_return_t fnet_qca_get_statistics(fnet_netif_t *netif, struct fnet_netif_statistics *statistics);
-static fnet_bool_t fnet_qca_is_connected(fnet_netif_t *netif);
-static fnet_return_t fnet_qca_set_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_addr);
-static fnet_return_t fnet_qca_wifi_connect(struct fnet_netif *netif, fnet_wifi_connect_params_t *params);
-static fnet_return_t fnet_qca_wifi_access_point(fnet_netif_t *netif, fnet_wifi_access_point_params_t *params);
-static fnet_return_t fnet_qca_wifi_disconnect(struct fnet_netif *netif);
-static void fnet_qca_on_connect(uint8_t event, uint8_t devId, char *bssid, uint8_t bssConn);
-static fnet_return_t fnet_qca_get_ssid_info(const char *ssid, WLAN_AUTH_MODE *auth_mode, WLAN_CRYPT_TYPE *encrypt_mode);
-static fnet_wifi_op_mode_t fnet_qca_get_op_mode(struct fnet_netif *netif);
-static fnet_uint32_t fnet_qca_fw_get_version(struct fnet_netif *netif);
-static void fnet_qca_input(void *cookie);
+static fnet_return_t _fnet_qca_init(fnet_netif_t *netif);
+static void _fnet_qca_release(fnet_netif_t *netif);
+static fnet_return_t _fnet_qca_get_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_addr);
+static fnet_return_t _fnet_qca_get_statistics(fnet_netif_t *netif, struct fnet_netif_statistics *statistics);
+static fnet_bool_t _fnet_qca_is_connected(fnet_netif_t *netif);
+static fnet_return_t _fnet_qca_set_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_addr);
+static fnet_return_t _fnet_qca_wifi_connect(struct fnet_netif *netif, fnet_wifi_connect_params_t *params);
+static fnet_return_t _fnet_qca_wifi_access_point(fnet_netif_t *netif, fnet_wifi_access_point_params_t *params);
+static fnet_return_t _fnet_qca_wifi_disconnect(struct fnet_netif *netif);
+static void _fnet_qca_on_connect(uint8_t event, uint8_t devId, char *bssid, uint8_t bssConn);
+static fnet_return_t _fnet_qca_get_ssid_info(const char *ssid, WLAN_AUTH_MODE *auth_mode, WLAN_CRYPT_TYPE *encrypt_mode);
+static fnet_wifi_op_mode_t _fnet_qca_get_op_mode(struct fnet_netif *netif);
+static fnet_uint32_t _fnet_qca_fw_get_version(struct fnet_netif *netif);
+static void _fnet_qca_input(void *cookie);
 #if FNET_CFG_CPU_WIFI_FW_UPDATE
-    static fnet_return_t fnet_qca_wifi_fw_update(fnet_netif_t *netif, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size);
+    static fnet_return_t _fnet_qca_wifi_fw_update(fnet_netif_t *netif, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size);
 #endif
 
 /************************************************************************
@@ -88,17 +88,17 @@ static void fnet_qca_input(void *cookie);
 *************************************************************************/
 
 /******************************************************************************
- * Wi-Fi QCA4002 interface API structure.
+ * Wi-Fi QCA4002/4 interface API structure.
  ******************************************************************************/
-const fnet_wifi_api_t fnet_qca_wif_api =
+const fnet_wifi_api_t fnet_qca_wifi_api =
 {
-    .wifi_connect = fnet_qca_wifi_connect,
-    .wifi_access_point = fnet_qca_wifi_access_point,
-    .wifi_disconnect =  fnet_qca_wifi_disconnect,
-    .wifi_get_op_mode = fnet_qca_get_op_mode,
-    .wifi_fw_get_version = fnet_qca_fw_get_version,
+    .wifi_connect = _fnet_qca_wifi_connect,
+    .wifi_access_point = _fnet_qca_wifi_access_point,
+    .wifi_disconnect =  _fnet_qca_wifi_disconnect,
+    .wifi_get_op_mode = _fnet_qca_get_op_mode,
+    .wifi_fw_get_version = _fnet_qca_fw_get_version,
 #if FNET_CFG_CPU_WIFI_FW_UPDATE
-    .wifi_fw_update = fnet_qca_wifi_fw_update,
+    .wifi_fw_update = _fnet_qca_wifi_fw_update,
 #endif
 };
 
@@ -109,17 +109,17 @@ const fnet_netif_api_t fnet_qca_api =
 {
     .netif_type = FNET_NETIF_TYPE_WIFI,                         /* Data-link type. */
     .netif_hw_addr_size = sizeof(fnet_mac_addr_t),
-    .netif_init = fnet_qca_init,                                /* Initialization function.*/
-    .netif_release = fnet_qca_release,                          /* Shutdown function.*/
+    .netif_init = _fnet_qca_init,                                /* Initialization function.*/
+    .netif_release = _fnet_qca_release,                          /* Shutdown function.*/
 #if FNET_CFG_IP4
     .netif_output_ip4 = _fnet_eth_output_ip4,                    /* IPv4 Transmit function.*/
 #endif
     .netif_change_addr_notify = _fnet_eth_change_addr_notify,    /* Address change notification function.*/
     .netif_drain = _fnet_eth_drain,                              /* Drain function.*/
-    .netif_get_hw_addr = fnet_qca_get_hw_addr,
-    .netif_set_hw_addr = fnet_qca_set_hw_addr,
-    .netif_is_connected = fnet_qca_is_connected,
-    .netif_get_statistics = fnet_qca_get_statistics,
+    .netif_get_hw_addr = _fnet_qca_get_hw_addr,
+    .netif_set_hw_addr = _fnet_qca_set_hw_addr,
+    .netif_is_connected = _fnet_qca_is_connected,
+    .netif_get_statistics = _fnet_qca_get_statistics,
 #if FNET_CFG_MULTICAST
 #if FNET_CFG_IP4
     .netif_multicast_join_ip4 = _fnet_eth_multicast_join_ip4,
@@ -133,7 +133,7 @@ const fnet_netif_api_t fnet_qca_api =
 #if FNET_CFG_IP6
     .netif_output_ip6 = _fnet_eth_output_ip6,           /* IPv6 Transmit function.*/
 #endif
-    .wifi_api = &fnet_qca_wif_api,
+    .wifi_api = &fnet_qca_wifi_api,
 };
 
 /* QCA4002 Module control data structure.*/
@@ -174,7 +174,7 @@ static QCOM_WLAN_DEV_MODE   fnet_qca_dev_mode = QCOM_WLAN_DEV_MODE_STATION;
 /************************************************************************
 * DESCRIPTION: QCA4002 Wi-Fi module initialization.
 *************************************************************************/
-static fnet_return_t fnet_qca_init(fnet_netif_t *netif)
+static fnet_return_t _fnet_qca_init(fnet_netif_t *netif)
 {
     FNET_ASSERT(netif != FNET_NULL);
     FNET_ASSERT(netif->netif_prv != FNET_NULL);
@@ -190,7 +190,7 @@ static fnet_return_t fnet_qca_init(fnet_netif_t *netif)
     /* Clear control structure. */
     fnet_memset_zero(qca_if, sizeof(*qca_if));
 
-    qca_if->input_event = fnet_event_init(fnet_qca_input, qca_if);
+    qca_if->input_event = fnet_event_init(_fnet_qca_input, qca_if);
 
     if(qca_if->input_event)
     {
@@ -260,7 +260,7 @@ static fnet_return_t fnet_qca_init(fnet_netif_t *netif)
 /************************************************************************
 * DESCRIPTION: QCA4002 Wi-Fi module release.
 *************************************************************************/
-static void fnet_qca_release(fnet_netif_t *netif)
+static void _fnet_qca_release(fnet_netif_t *netif)
 {
     FNET_ASSERT(netif != FNET_NULL);
     FNET_ASSERT(netif->netif_prv != FNET_NULL);
@@ -268,7 +268,7 @@ static void fnet_qca_release(fnet_netif_t *netif)
     if(fnet_qca_if.netif) /* If initialized */
     {
         if((fnet_qca_if.is_connected == FNET_TRUE)
-           && (fnet_qca_wifi_disconnect(netif) != FNET_OK))
+           && (_fnet_qca_wifi_disconnect(netif) != FNET_OK))
         {
             FNET_DEBUG_QCA("ERROR: qcom_disconnect failed\r\n");
         }
@@ -418,7 +418,7 @@ static void fnet_qca_print_ssid_info(QCA_SCAN_INFO_PTR  scan_info)
 /************************************************************************
 * DESCRIPTION: Scans for SSID authentication parameters.
 *************************************************************************/
-static fnet_return_t fnet_qca_get_ssid_info(const char *ssid, WLAN_AUTH_MODE *auth_mode, WLAN_CRYPT_TYPE *encrypt_mode)
+static fnet_return_t _fnet_qca_get_ssid_info(const char *ssid, WLAN_AUTH_MODE *auth_mode, WLAN_CRYPT_TYPE *encrypt_mode)
 {
     FNET_ASSERT(ssid != FNET_NULL);
     FNET_ASSERT(auth_mode != FNET_NULL);
@@ -550,7 +550,7 @@ static fnet_return_t fnet_qca_get_ssid_info(const char *ssid, WLAN_AUTH_MODE *au
 /************************************************************************
 * DESCRIPTION: Callback function for link status change.
 *************************************************************************/
-static void fnet_qca_on_connect(uint8_t event, uint8_t devId, char *bssid, uint8_t bssConn)
+static void _fnet_qca_on_connect(uint8_t event, uint8_t devId, char *bssid, uint8_t bssConn)
 {
     /* We support only one device.*/
     FNET_ASSERT(devId == FNET_QCA_DEVICE_ID);
@@ -606,7 +606,7 @@ static void fnet_qca_on_connect(uint8_t event, uint8_t devId, char *bssid, uint8
 /************************************************************************
 * DESCRIPTION: Connects to AP.
 *************************************************************************/
-static fnet_return_t fnet_qca_wifi_connect(struct fnet_netif *netif, fnet_wifi_connect_params_t *params)
+static fnet_return_t _fnet_qca_wifi_connect(struct fnet_netif *netif, fnet_wifi_connect_params_t *params)
 {
     fnet_return_t       result = FNET_ERR;
     WLAN_CRYPT_TYPE     encrypt_mode; /* It may be:  WLAN_CRYPT_NONE, WLAN_CRYPT_AES_CRYPT, WLAN_CRYPT_WEP_CRYPT, WLAN_CRYPT_TKIP_CRYPT */
@@ -620,7 +620,7 @@ static fnet_return_t fnet_qca_wifi_connect(struct fnet_netif *netif, fnet_wifi_c
         /* Disconnect. If the host has issued a CONNECT command, it must issue the
            DISCONNECT command before it issues the next CONNECT command.*/
         if((fnet_qca_if.is_connected == FNET_TRUE)
-           && (fnet_qca_wifi_disconnect(netif) != FNET_OK))
+           && (_fnet_qca_wifi_disconnect(netif) != FNET_OK))
         {
             FNET_DEBUG_QCA("ERROR: qcom_disconnect failed\r\n");
         }
@@ -650,9 +650,9 @@ static fnet_return_t fnet_qca_wifi_connect(struct fnet_netif *netif, fnet_wifi_c
             if(params->wpa_passphrase && fnet_strlen(params->wpa_passphrase)) /* Security */
             {
                 /* Scan for security parameters.*/
-                if(fnet_qca_get_ssid_info(params->ssid, &fnet_qca_auth_mode, &encrypt_mode) == FNET_ERR)
+                if(_fnet_qca_get_ssid_info(params->ssid, &fnet_qca_auth_mode, &encrypt_mode) == FNET_ERR)
                 {
-                    FNET_DEBUG_QCA("[QCA] ERROR: fnet_qca_get_ssid_info failed\r\n");
+                    FNET_DEBUG_QCA("[QCA] ERROR: _fnet_qca_get_ssid_info failed\r\n");
                     goto EXIT;
                 }
             }
@@ -726,7 +726,7 @@ static fnet_return_t fnet_qca_wifi_connect(struct fnet_netif *netif, fnet_wifi_c
                 *     onRSNASuccessEvent(uint8_t code, uint8_t devId, NULL, 0)
                 *     onBitRateEvent_tx(wmi_rateTable[rateIndex][0], devId, NULL, 0);
                 * It is not possible to discern the onBitRateEvent_tx event from the others*/
-                if(qcom_set_connect_callback(FNET_QCA_DEVICE_ID, (void *) fnet_qca_on_connect) != A_OK)
+                if(qcom_set_connect_callback(FNET_QCA_DEVICE_ID, (void *) _fnet_qca_on_connect) != A_OK)
                 {
                     FNET_DEBUG_QCA("ERROR: qcom_set_connect_callback failed\r\n");
                     goto EXIT;
@@ -754,7 +754,7 @@ EXIT:
 /************************************************************************
 * DESCRIPTION: Initializes AP.
 *************************************************************************/
-static fnet_return_t fnet_qca_wifi_access_point(fnet_netif_t *netif, fnet_wifi_access_point_params_t *params)
+static fnet_return_t _fnet_qca_wifi_access_point(fnet_netif_t *netif, fnet_wifi_access_point_params_t *params)
 {
     fnet_return_t       result = FNET_ERR;
     WLAN_CRYPT_TYPE     encrypt_mode; /* It may be:  WLAN_CRYPT_NONE, WLAN_CRYPT_AES_CRYPT, WLAN_CRYPT_WEP_CRYPT, WLAN_CRYPT_TKIP_CRYPT */
@@ -768,7 +768,7 @@ static fnet_return_t fnet_qca_wifi_access_point(fnet_netif_t *netif, fnet_wifi_a
         /* Disconnect. If the host has issued a CONNECT command, it must issue the
            DISCONNECT command before it issues the next CONNECT command.*/
         if((fnet_qca_if.is_connected == FNET_TRUE)
-           && (fnet_qca_wifi_disconnect(netif) != FNET_OK))
+           && (_fnet_qca_wifi_disconnect(netif) != FNET_OK))
         {
             FNET_DEBUG_QCA("ERROR: qcom_disconnect failed\r\n");
         }
@@ -862,7 +862,7 @@ static fnet_return_t fnet_qca_wifi_access_point(fnet_netif_t *netif, fnet_wifi_a
                 *     onRSNASuccessEvent(uint8_t code, uint8_t devId, NULL, 0)
                 *     onBitRateEvent_tx(wmi_rateTable[rateIndex][0], devId, NULL, 0);
                 * It is not possible to discern the onBitRateEvent_tx event from the others*/
-                if(qcom_set_connect_callback(FNET_QCA_DEVICE_ID, (void *) fnet_qca_on_connect) != A_OK)
+                if(qcom_set_connect_callback(FNET_QCA_DEVICE_ID, (void *) _fnet_qca_on_connect) != A_OK)
                 {
                     FNET_DEBUG_QCA("ERROR: qcom_set_connect_callback failed\r\n");
                     goto EXIT;
@@ -901,7 +901,7 @@ EXIT:
 /************************************************************************
 * DESCRIPTION: Turns off the Wi-Fi interafce radio.
 *************************************************************************/
-static fnet_return_t fnet_qca_wifi_disconnect(struct fnet_netif *netif)
+static fnet_return_t _fnet_qca_wifi_disconnect(struct fnet_netif *netif)
 {
     fnet_return_t   result;
 
@@ -922,7 +922,7 @@ static fnet_return_t fnet_qca_wifi_disconnect(struct fnet_netif *netif)
 /************************************************************************
 * DESCRIPTION: Gets HW address.
 *************************************************************************/
-static fnet_return_t fnet_qca_get_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_addr)
+static fnet_return_t _fnet_qca_get_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_addr)
 {
     fnet_return_t result = FNET_ERR;
 
@@ -940,7 +940,7 @@ static fnet_return_t fnet_qca_get_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_
 /************************************************************************
 * DESCRIPTION: Returns Ethernet statistics information
 *************************************************************************/
-static fnet_return_t fnet_qca_get_statistics(fnet_netif_t *netif, struct fnet_netif_statistics *statistics)
+static fnet_return_t _fnet_qca_get_statistics(fnet_netif_t *netif, struct fnet_netif_statistics *statistics)
 {
     FNET_ASSERT(netif != FNET_NULL);
     FNET_ASSERT(netif->netif_prv != FNET_NULL);
@@ -969,7 +969,7 @@ void fnet_qca_output(fnet_netif_t *netif, fnet_netbuf_t *nb)
     A_NETBUF        *a_netbuf_ptr;
     fnet_qca_if_t   *qca_if;
 
-    if(netif && netif->netif_prv && (fnet_qca_is_connected(netif) == FNET_TRUE)
+    if(netif && netif->netif_prv && (_fnet_qca_is_connected(netif) == FNET_TRUE)
        && nb && (nb->total_length >= FNET_ETH_HDR_SIZE))
     {
         qca_if = (fnet_qca_if_t *)(((fnet_eth_if_t *)(netif->netif_prv))->eth_prv);
@@ -1016,7 +1016,7 @@ EXIT_2:
 /************************************************************************
 * DESCRIPTION: QCA Firmware update.
 *************************************************************************/
-static fnet_return_t fnet_qca_wifi_fw_update(fnet_netif_t *netif, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size)
+static fnet_return_t _fnet_qca_wifi_fw_update(fnet_netif_t *netif, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size)
 {
     fnet_qca_if_t   *qca_if;
     fnet_return_t   result = FNET_ERR;
@@ -1030,11 +1030,10 @@ static fnet_return_t fnet_qca_wifi_fw_update(fnet_netif_t *netif, const fnet_uin
             ATH_PROGRAM_FLASH_STRUCT flash_msg;
             ATH_IOCTL_PARAM_STRUCT inout_param;
 
-
             /* Switch to BMI mode */
 
             /* Release QCA driver */
-            fnet_qca_release(netif);
+            _fnet_qca_release(netif);
 
             /* Prepare QCA initialization parameters for BMI mode */
             {
@@ -1045,7 +1044,7 @@ static fnet_return_t fnet_qca_wifi_fw_update(fnet_netif_t *netif, const fnet_uin
             }
 
             /* Init QCA driver in BMI mode*/
-            result = fnet_qca_init(netif);
+            result = _fnet_qca_init(netif);
 
 #if 1 /* TARGET_AR400X_REV2 does not support FW update (stuck). Proved on practice. */
             {
@@ -1111,7 +1110,7 @@ static fnet_return_t fnet_qca_wifi_fw_update(fnet_netif_t *netif, const fnet_uin
             /* Switch to the normal mode */
 
             /* Release driver */
-            fnet_qca_release(netif);
+            _fnet_qca_release(netif);
 
             /* Prepare QCA initialization parameters for normal mode */
             {
@@ -1122,7 +1121,7 @@ static fnet_return_t fnet_qca_wifi_fw_update(fnet_netif_t *netif, const fnet_uin
             }
 
             /* Init driver */
-            result = fnet_qca_init(netif);
+            result = _fnet_qca_init(netif);
         }
     }
 
@@ -1133,7 +1132,7 @@ static fnet_return_t fnet_qca_wifi_fw_update(fnet_netif_t *netif, const fnet_uin
 /************************************************************************
 * DESCRIPTION: Retrieves Wi-Fi interface firmware version number.
 *************************************************************************/
-static fnet_uint32_t fnet_qca_fw_get_version(struct fnet_netif *netif)
+static fnet_uint32_t _fnet_qca_fw_get_version(struct fnet_netif *netif)
 {
     fnet_uint32_t       fw_version = 0;
     fnet_qca_if_t       *qca_if;
@@ -1167,7 +1166,7 @@ static fnet_uint32_t fnet_qca_fw_get_version(struct fnet_netif *netif)
 /************************************************************************
 * DESCRIPTION: Link status.
 *************************************************************************/
-static fnet_bool_t fnet_qca_is_connected(fnet_netif_t *netif)
+static fnet_bool_t _fnet_qca_is_connected(fnet_netif_t *netif)
 {
     fnet_bool_t     res = FNET_FALSE;
     fnet_qca_if_t   *qca_if;
@@ -1188,12 +1187,12 @@ static fnet_bool_t fnet_qca_is_connected(fnet_netif_t *netif)
 /************************************************************************
 * DESCRIPTION: Retrieves current operation mode of the Wi-Fi interface.
 *************************************************************************/
-static fnet_wifi_op_mode_t fnet_qca_get_op_mode(struct fnet_netif *netif)
+static fnet_wifi_op_mode_t _fnet_qca_get_op_mode(struct fnet_netif *netif)
 {
     fnet_wifi_op_mode_t result = FNET_WIFI_OP_MODE_NONE;
     fnet_qca_if_t       *qca_if;
 
-    if(netif && netif->netif_prv && fnet_qca_is_connected(netif))
+    if(netif && netif->netif_prv && _fnet_qca_is_connected(netif))
     {
         qca_if = (fnet_qca_if_t *)(((fnet_eth_if_t *)(netif->netif_prv))->eth_prv);
 
@@ -1224,7 +1223,7 @@ static fnet_wifi_op_mode_t fnet_qca_get_op_mode(struct fnet_netif *netif)
 /************************************************************************
 * DESCRIPTION: Sets MAC address.
 *************************************************************************/
-static fnet_return_t fnet_qca_set_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_addr)
+static fnet_return_t _fnet_qca_set_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_addr)
 {
     /* TBD. Not supported.*/
     return FNET_OK;
@@ -1233,7 +1232,7 @@ static fnet_return_t fnet_qca_set_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_
 /************************************************************************
 * DESCRIPTION: QCA low-level input function. Handled as event.
 *************************************************************************/
-static void fnet_qca_input(void *cookie)
+static void _fnet_qca_input(void *cookie)
 {
     fnet_qca_if_t   *qca_if = (fnet_qca_if_t *)cookie;
     void            *pReq;

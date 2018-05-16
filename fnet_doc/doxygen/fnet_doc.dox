@@ -53,6 +53,7 @@ preferred way to configure stack features). @n
 			- @b MK64FN1M (FRDM-K64F board)
 			- @b MK66FN2M (FRDM-K66F board)
 			- @b MK6DN512 (TWR-K60D100M board)
+		- i.MX-RT: MIMXRT1052 (IMXRT1050-EVKB board).
 		- LPC: LPC54628 (OM13098: LPCXpresso54628 board)
 	- Qualcomm/Atheros Wi-Fi 202.11: 
 		- QCA4002 (GT202-GC3013-FRDM4-KIT board).
@@ -186,7 +187,7 @@ fnet                        - FNET root directory.
 |    |-- common                 - Common source code used by demos.
 |    |    |-- fnet_application    - Demo application source code.
 |    |    |-- fnet_webpage        - Demo web page source code.
-|    |    |-- startup             - Platform-specific startup source code.
+|    |    |-- startup             - Platform-specific startup source code and drivers.
 |    |-- build                 - Demo projects.
 |         |-- <board_name>        - Demo projects for a <board_name> board.
 |              |-- boot           - FNET TFTP Bootloader.
@@ -209,9 +210,10 @@ fnet                        - FNET root directory.
 |                                           but in addition it supports the Wi-Fi network interface using the Qualcomm QCA4002/4 module.
 |-- fnet_tools                - FNET PC tools.
 |-- third_party               - Optional, third-party libraries.
+     |-- cmsis-x.x              - ARM CMSIS-Core(M) library, used for ARM Cortex M platforms.
      |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
      |-- freertos-x.x.x         - FreeRTOS, used by the shell_freertos example.
-	 |-- qca-x.x.x              - Qualcomm QCA4002/4 driver, used by shell_freertos_wifi_<board> example.
+     |-- qca-x.x.x              - Qualcomm QCA4002/4 driver, used by shell_freertos_wifi_<board> example.
               
 @endverbatim
 */
@@ -292,6 +294,14 @@ The following table summarizes the supported demo applications, platforms and co
  </tr>
 <tr>
  <td class="fnet_td_grey">LPC54628</td>
+ <td ALIGN=CENTER>IAR8.22</td>
+ <td ALIGN=CENTER>-</td>
+ <td ALIGN=CENTER>IAR8.22</td>
+ <td ALIGN=CENTER>IAR8.22</td>
+ <td ALIGN=CENTER>IAR8.22</td> 
+ <td ALIGN=CENTER>IAR8.22</td> 
+ </tr>
+  <td class="fnet_td_grey">MIMXRT1052</td>
  <td ALIGN=CENTER>IAR8.22</td>
  <td ALIGN=CENTER>-</td>
  <td ALIGN=CENTER>IAR8.22</td>
@@ -909,8 +919,8 @@ Tools used during this quick start:
 - FNET project source code, coming with this document.
 - GT202-GC3013-FRDM4-KIT board (http://www.chip1stop.com/web/USA/en/dispDetail.do?partId=ARRD-0000027) or SX-ULPAN-2401-SHIELD (http://www.silexamerica.com/products/connectivity-solutions/embedded-wireless/IoT-Modules/sx-ulpan-shield/)@n
   @note	- FNET was tested with QCA4002 (firmware version 3.0.8, 3.3.4, 3.3.5 and 3.3.6) and QCA4004 (firmware version 3.3.4). @n
-		- QCA4002 firmware v3.0.8 (target REV2)	has stability issues.
-		- GT202 and SX-ULPAN-2401 boards were tested with frdmk64f rev D board. It does not work with frdmk64f rev B.
+		- It does not work with frdmk64f rev B (rev D is OK).
+		- For IMXRT1050-EVKB Weld 0 resistor to R278,R279,R280 and R281.
 
 @section fnet_stepbystep_shell_freertos_wifi_qca Step by step
 
@@ -2134,6 +2144,13 @@ Press any key to continue . . .
 
 FNET public releases:
 
+- Version 4.4.0
+	- Added basic support for i.MX-RT, MIMXRT1052 platform (IMXRT1050-EVKB board).
+	- Added ARM CMSIS-Core(M) files to "third_party/cmsis-x.x" directory.
+	- Added fnet_eth_phy_reg_read/write() to read/write an Ethernet PHY's MII register (before was private).
+	- Added fnet_eth_phy_get/set_addr() to get/set an Ethernet interface PHY address number (before was private).
+	- Deleted fnet_<cpu>_cache.h. So MPU platforms with enabled data-cache have to allocate FNET_CFG_CPU_NONCACHEABLE_SECTION section.
+
 - Version 4.3.0
 	- Improved WiFi QCA scan and connect.
 	- Added underscore prefix to all private functions.
@@ -3101,10 +3118,10 @@ which includes all service-specific configuration files.
 */
 
 /*! 
-*	@defgroup fnet_platform_eth_config Ethernet Module Configuration Parameters
+*	@defgroup fnet_platform_netif_config Network Interface Configuration Parameters
 *	@ingroup fnet_platform_config 
 *	This section describes parameters that are specific 
-*     for the Ethernet module. @n
+*     for a network interface modules. @n
 *     The user may override and change the default values in the 
 *     application-specific configuration file @c fnet_user_config.h.
 */
@@ -3117,6 +3134,16 @@ which includes all service-specific configuration files.
 *     The user may override and change the default values in the 
 *     application-specific configuration file @c fnet_user_config.h.
 */
+
+/*! 
+*	@defgroup fnet_platform_mimxrt_config i.MX-RT Platform Configuration Parameters
+*	@ingroup fnet_platform_config 
+*	This section describes parameters that are specific only 
+*     for the i.MX RT platform. @n
+*     The user may override and change the default values in the 
+*     application-specific configuration file @c fnet_user_config.h.
+*/
+
 /*! 
 *	@defgroup fnet_service_config Service-Specific Configuration Parameters
 *	@ingroup fnet_config
@@ -3331,6 +3358,12 @@ which includes all service-specific configuration files.
 *	@defgroup fnet_netif_wifi Wi-Fi Interface API
 *	@ingroup fnet_netif 
 *	This section describes API that is only for Wi-Fi network interfaces. 
+*/
+
+/*! 
+*	@defgroup fnet_netif_eth Ethernet Interface API
+*	@ingroup fnet_netif 
+*	This section describes API that is only for Ethernet network interfaces. 
 */
 
 /*! 

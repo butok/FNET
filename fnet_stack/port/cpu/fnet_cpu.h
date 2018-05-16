@@ -40,11 +40,32 @@
     #include "mpc/fnet_mpc.h"
 #endif
 
-#if FNET_LPC     /* NXP's LPC.*/
+#if FNET_LPC     /* LPC.*/
     #include "lpc/fnet_lpc.h"
 #endif
 
+#if FNET_MIMXRT     /* i.MX RT.*/
+    #include "mimxrt/fnet_mimxrt.h"
+#endif
+
 #include "stack/fnet_stdlib.h"
+
+
+/* Non-cacheable region definition macro. */
+/* Used MCUX "NonCacheable" name for this section. */
+#if FNET_CFG_CPU_CACHE
+    #if FNET_CFG_COMP_IAR
+        #define FNET_AT_NONCACHEABLE_SECTION(var) var @FNET_CFG_CPU_NONCACHEABLE_SECTION
+    #elif FNET_CFG_COMP_UV || FNET_CFG_COMP_GNUC || FNET_CFG_COMP_GHS
+        #define FNET_AT_NONCACHEABLE_SECTION(var) __attribute__((section(FNET_CFG_CPU_NONCACHEABLE_SECTION)) var
+    #else
+        #error Compiler is not supported
+        #define FNET_AT_NONCACHEABLE_SECTION(var) var
+    #endif
+#else
+    #define FNET_AT_NONCACHEABLE_SECTION(var) var
+#endif
+
 
 /*! @addtogroup fnet_socket */
 /*! @{ */
@@ -303,31 +324,19 @@ fnet_int32_t fnet_cpu_serial_getchar( fnet_index_t port_number );
  *
  * @param baud_rate       Baud rate to be set to the serial port.
  *
+ * @return This function returns:
+ *   - @ref FNET_OK if successful.
+ *   - @ref FNET_ERR if failed.
+ *
  * @see fnet_cpu_serial_putchar(), fnet_cpu_serial_getchar()
  *
  ******************************************************************************
  *
- * This function executes the  HW initialization of the serial port defined
+ * This function executes the HW initialization of the serial port defined
  * by the @c port_number.
  *
  ******************************************************************************/
-void fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate);
-
-/***************************************************************************/ /*!
- *
- * @brief    Invalidates CPU-cache memory.
- *
- ******************************************************************************
- *
- * If the CPU has cache memory, this function invalidates it.@n
- * This function is called only if @c FNET_CFG_CPU_CACHE is @c 1.
- *
- ******************************************************************************/
-#if FNET_CFG_CPU_CACHE || defined(__DOXYGEN__)
-void fnet_cpu_cache_invalidate(void);
-#else
-#define fnet_cpu_cache_invalidate()        do{}while(0)
-#endif
+fnet_return_t fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_rate);
 
 /***************************************************************************/ /*!
  *
@@ -433,6 +442,22 @@ void fnet_cpu_isr(void);
 #ifndef FNET_CPU_INSTRUCTION_TO_ADDR
 #define FNET_CPU_INSTRUCTION_TO_ADDR(addr)    (addr)
 #endif
+
+/***************************************************************************/ /*!
+ * @def FNET_CPU_DATA_MEMORY_BARRIER
+ *
+ * @brief       Ensures that all data memory transfers are completed.
+ *
+ ******************************************************************************
+ *
+ * This is barrier which ensures that all data memory transfers are completed.
+ * It is required between a CPU memory access and a DMA operation.
+ *
+ ******************************************************************************/
+#ifndef FNET_CPU_DATA_MEMORY_BARRIER
+#define FNET_CPU_DATA_MEMORY_BARRIER
+#endif
+
 
 struct fnet_netif; /* Forward declaration.*/
 #if FNET_CFG_CPU_ETH0

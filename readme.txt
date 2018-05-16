@@ -64,6 +64,8 @@ FNET project directory structure:
 	|                                           but in addition it supports the Wi-Fi network interface using the Qualcomm QCA4002/4 module.
 	|-- fnet_tools                - FNET PC tools.
 	|-- third_party               - Optional, third-party libraries.
+		 |-- cmsis-x.x              - ARM CMSIS-Core(M) library, used for ARM Cortex M platforms.
 		 |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
 		 |-- freertos-x.x.x         - FreeRTOS, used by the shell_freertos example.
 		 |-- qca-x.x.x              - Qualcomm QCA4002/4 driver, used by shell_freertos_wifi_<board> example.
+				 

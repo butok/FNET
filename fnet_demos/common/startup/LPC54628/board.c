@@ -28,8 +28,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#if 1 //DM
-
 #include "board.h"
 #include <stdint.h>
 #include "clock_config.h"
@@ -114,5 +112,3 @@ void BOARD_InitHardware(void)
 
     BOARD_BootClockPLL220M();
 }
-
-#endif

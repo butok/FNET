@@ -96,7 +96,8 @@ const fnet_char_t FAPP_PARAM_ERR[] = "Error: Invalid paremeter \'%s\'";
 const fnet_char_t FAPP_INIT_ERR[]  = "Error: %s initialization is failed!";
 const fnet_char_t FAPP_SHELL_INFO_FORMAT_S[]  = " %-20s : %s";
 const fnet_char_t FAPP_SHELL_INFO_FORMAT_D[]  = " %-20s : %u";
-const fnet_char_t FAPP_SHELL_INFO_FORMAT_H[]  = " %-20s : 0x%8x";
+const fnet_char_t FAPP_SHELL_INFO_FORMAT_H32[]  = " %-20s : 0x%08X";
+const fnet_char_t FAPP_SHELL_INFO_FORMAT_H16[]  = " %-20s : 0x%04X";
 const fnet_char_t FAPP_SHELL_CANCELED_CTRL_C[]  = "Canceled by [Ctrl+C]!";
 
 /* Service release command */

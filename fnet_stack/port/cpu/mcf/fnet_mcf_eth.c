@@ -26,6 +26,9 @@
 #if FNET_MCF && (FNET_CFG_CPU_ETH0 ||FNET_CFG_CPU_ETH1)
 #include "port/netif/fec/fnet_fec.h"
 
+static fnet_return_t fnet_mcf_eth_init(fnet_netif_t *netif);
+static fnet_return_t fnet_mcf_eth_phy_init(fnet_netif_t *netif);
+
 #if FNET_CFG_CPU_ETH0
 /************************************************************************
 * FEC0 interface structure.
@@ -34,7 +37,10 @@ struct fnet_eth_if fnet_mcf_eth0_if =
 {
     .eth_prv = &fnet_fec0_if,							/* Points to Ethernet driver-specific control data structure. */
     .eth_mac_number = 0,                            	/* MAC module number.*/
+    .eth_phy_addr = FNET_CFG_CPU_ETH0_PHY_ADDR,         /* Set default PHY address */
     .eth_output = fnet_fec_output,						/* Ethernet driver output.*/
+    .eth_cpu_init = fnet_mcf_eth_init,
+    .eth_cpu_phy_init = fnet_mcf_eth_phy_init,
 #if FNET_CFG_MULTICAST
     .eth_multicast_join = fnet_fec_multicast_join,		/* Ethernet driver join multicast group.*/
     .eth_multicast_leave = fnet_fec_multicast_leave,	/* Ethernet driver leave multicast group.*/
@@ -60,7 +66,9 @@ struct fnet_eth_if fnet_mcf_eth1_if =
 {
     .eth_prv = &fnet_fec1_if,							/* Points to Ethernet driver-specific control data structure. */
     .eth_mac_number = 1,                  				/* MAC module number.*/
+    .eth_phy_addr = FNET_CFG_CPU_ETH1_PHY_ADDR,         /* Set default PHY address */
     .eth_output = fnet_fec_output,						/* Ethernet driver output.*/
+    .eth_cpu_init = fnet_mcf_eth_init,
 #if FNET_CFG_MULTICAST
     .eth_multicast_join = fnet_fec_multicast_join,		/* Ethernet driver join multicast group.*/
     .eth_multicast_leave = fnet_fec_multicast_leave,	/* Ethernet driver leave multicast group.*/
@@ -81,10 +89,9 @@ fnet_netif_t fnet_cpu_eth1_if =
 /************************************************************************
 * DESCRIPTION: Ethernet IO initialization.
 *************************************************************************/
-#if FNET_CFG_CPU_ETH_IO_INIT
-void fnet_eth_io_init()
+static fnet_return_t fnet_mcf_eth_init(fnet_netif_t *netif)
 {
-
+#if FNET_CFG_CPU_ETH_IO_INIT
 #if FNET_CFG_CPU_MCF52235 /* Kirin2 */
 
     FNET_MCF5223X_GPIO_PLDPAR = (0
@@ -161,17 +168,19 @@ void fnet_eth_io_init()
     FNET_MCF5441X_GPIO_PODR_G &= ~FNET_MCF5441X_GPIO_PODR_G_PODR_G4; 	/* Clear GPIO4 pin to enable RMMI1 on the QS3VH16233PAG QUICKSWITCH*/
 
 #endif /* FNET_CFG_CPU_MCF54418 */
-}
 #endif /*FNET_CFG_CPU_ETH_IO_INIT*/
+
+    return FNET_OK;
+}
+
 
 /************************************************************************
 * DESCRIPTION: Ethernet Physical Transceiver initialization and/or reset.
 *************************************************************************/
-void fnet_eth_phy_init(fnet_fec_if_t *ethif)
+static fnet_return_t fnet_mcf_eth_phy_init(fnet_netif_t *netif)
 {
 
 #if FNET_CFG_CPU_MCF52235
-#if 1
     fnet_uint16_t reg_value;
     /* Enable EPHY module, Enable auto_neg at start-up, Let PHY PLLs be determined by PHY.*/
     FNET_MCF_EPHY_EPHYCTL0 = (fnet_uint8_t)(FNET_MCF_EPHY_EPHYCTL0_EPHYEN);
@@ -180,45 +189,8 @@ void fnet_eth_phy_init(fnet_fec_if_t *ethif)
     fnet_timer_delay(1); /* Delay for 1 timer tick (100ms) */
 
     /* Disable ANE that causes problems with some routers.  Enable full-duplex and 100Mbps */
-    fnet_fec_mii_read(ethif, FNET_FEC_MII_REG_CR, &reg_value);
-    fnet_fec_mii_write(ethif, FNET_FEC_MII_REG_CR, (fnet_uint16_t)(reg_value & (~FNET_FEC_MII_REG_CR_ANE) | FNET_FEC_MII_REG_CR_DPLX | FNET_FEC_MII_REG_CR_DATARATE));
-
-#else /* Old version, just in case.*/
-    fnet_uint16_t reg_value;
-
-    /* Set phy address */
-    FNET_MCF_EPHY_EPHYCTL1 = (fnet_uint8)FNET_MCF_EPHY_EPHYCTL1_PHYADD(ethif->phy_addr);
-
-    /* Disable device, PHY clocks disabled, Enable autonigatiation, Turn on leds.*/
-    FNET_MCF_EPHY_EPHYCTL0 = FNET_MCF_EPHY_EPHYCTL0_DIS100 | FNET_MCF_EPHY_EPHYCTL0_DIS10 | FNET_MCF_EPHY_EPHYCTL0_LEDEN ;
-
-    /* Enable EPHY module.*/
-    FNET_MCF_EPHY_EPHYCTL0 |= FNET_MCF_EPHY_EPHYCTL0_EPHYEN;
-
-    /* Reset PHY.*/
-    fnet_timer_delay(10);
-    fnet_fec_mii_write(ethif, FNET_FEC_MII_REG_CR, FNET_ETH_MII_REG_CR_RESET);
-
-    /* SECF128: EPHY Incorrectly Advertises It Can Receive Next Pages
-    * Description:The EPHY from reset incorrectly advertises that it can receive next pages
-    *    from the link partner. These next pages are most often used to send gigabit
-    *    Ethernet ability information between link partners. This device is 10/100 Mbit
-    *    only, so there is no need to advertise this capability. In fact if advertised this
-    *    additional pages of information must be handled in a special manor not typical
-    *    of 10/100 Ethernet drivers.
-    * Workaround: The NXTP bit in the auto-negotiate (A/N) advertisement register (4.15) should
-    *    be cleared as soon as possible after reset; ideally before enabling
-    *    auto-negotiation.
-    */
-    if (fnet_fec_mii_read(ethif, FNET_FEC_MII_REG_ANAR, &reg_value) == FNET_OK)
-    {
-        anar_value &= (~ ( FNET_ETH_MII_REG_ANAR_NEXT_PAGE));/* Turn off next page mode.*/
-        fnet_fec_mii_write(ethif, FNET_FEC_MII_REG_ANAR, reg_value);
-    }
-
-    /* Turns clocks on. Let PHY PLLs be determined by PHY. */
-    FNET_MCF_EPHY_EPHYCTL0 &= (~(FNET_MCF_EPHY_EPHYCTL0_DIS100 | FNET_MCF_EPHY_EPHYCTL0_DIS10));
-#endif
+    _fnet_eth_phy_read(netif, FNET_ETH_MII_REG_CR, &reg_value);
+    _fnet_eth_phy_write(netif, FNET_ETH_MII_REG_CR, (fnet_uint16_t)(reg_value & (~FNET_ETH_MII_REG_CR_ANE) | FNET_ETH_MII_REG_CR_DPLX | FNET_ETH_MII_REG_CR_DATARATE));
 #endif
 
 #if FNET_CFG_CPU_MCF52259
@@ -237,7 +209,7 @@ void fnet_eth_phy_init(fnet_fec_if_t *ethif)
     FNET_MCF5225X_GPIO_PORTTJ = 0x00;
 
     /* Reset PHY.*/
-    fnet_fec_mii_write(ethif, FNET_FEC_MII_REG_CR, FNET_FEC_MII_REG_CR_RESET);
+    _fnet_eth_phy_write(netif, FNET_ETH_MII_REG_CR, FNET_ETH_MII_REG_CR_RESET);
     fnet_timer_delay(5);
 
     /* RSTO signal.*/
@@ -253,16 +225,17 @@ void fnet_eth_phy_init(fnet_fec_if_t *ethif)
         /* Check if the PHY is powered down or isolated, before using it.*/
         fnet_uint16_t reg_value;
 
-        if (fnet_fec_mii_read(ethif, FNET_FEC_MII_REG_CR, &reg_value) == FNET_OK)
+        if (_fnet_eth_phy_read(netif, FNET_ETH_MII_REG_CR, &reg_value) == FNET_OK)
         {
-            if(reg_value & (FNET_FEC_MII_REG_CR_PDWN | FNET_FEC_MII_REG_CR_ISOL))
+            if(reg_value & (FNET_ETH_MII_REG_CR_PDWN | FNET_ETH_MII_REG_CR_ISOL))
             {
-                reg_value &= ~(FNET_FEC_MII_REG_CR_PDWN | FNET_FEC_MII_REG_CR_ISOL);
-                fnet_fec_mii_write(ethif, FNET_FEC_MII_REG_CR, reg_value);
+                reg_value &= ~(FNET_ETH_MII_REG_CR_PDWN | FNET_ETH_MII_REG_CR_ISOL);
+                _fnet_eth_phy_write(netif, FNET_ETH_MII_REG_CR, reg_value);
             }
         }
     }
 
+    return FNET_OK;
 }
 
 #endif /* FNET_MCF && FNET_CFG_ETH */

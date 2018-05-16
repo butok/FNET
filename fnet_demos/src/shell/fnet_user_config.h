@@ -114,8 +114,4 @@
 ******************************************************************************/
 #define FNET_CFG_LINK                       (1)
 
-
-//DM
-#define FNET_CFG_CPU_ETH_ATONEGOTIATION_TIMEOUT     (20000U) /*ms*/
-
 #endif /* _FNET_USER_CONFIG_H_ */

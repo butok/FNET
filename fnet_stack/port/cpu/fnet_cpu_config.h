@@ -54,6 +54,7 @@
  *            - @c FNET_CFG_CPU_MCF54418  = Used platform is MCF54418.
  *            - @c FNET_CFG_CPU_S32R274 = Used platform is S32R274.
  *            - @c FNET_CFG_CPU_LPC54628 = Used platform is LPC54628.
+ *            - @c FNET_CFG_CPU_MIMXRT1052 = Used platform is MIMXRT1052.
  *            @n @n
  *            Selected processor definition should be only one and must be defined as 1.
  *            All others may be defined but must have the 0 value.
@@ -118,6 +119,9 @@
 #ifndef FNET_CFG_CPU_LPC54628
     #define FNET_CFG_CPU_LPC54628  	(0)
 #endif
+#ifndef FNET_CFG_CPU_MIMXRT1052
+    #define FNET_CFG_CPU_MIMXRT1052 (0)
+#endif
 
 /*********** MFC ********************/
 #if FNET_CFG_CPU_MCF52235 /* Kirin2 */
@@ -125,7 +129,7 @@
         #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
-    #include "cpu/mcf/fnet_mcf52235_config.h"
+    #include "port/cpu/mcf/fnet_mcf52235_config.h"
     #define FNET_CPU_STR    "MCF52235"
 #endif
 
@@ -134,7 +138,7 @@
         #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
-    #include "cpu/mcf/fnet_mcf52259_config.h"
+    #include "port/cpu/mcf/fnet_mcf52259_config.h"
     #define FNET_CPU_STR    "MCF52259"
 #endif
 
@@ -143,7 +147,7 @@
         #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
-    #include "cpu/mcf/fnet_mcf5235_config.h"
+    #include "port/cpu/mcf/fnet_mcf5235_config.h"
     #define FNET_CPU_STR    "MCF5235"
 #endif
 
@@ -152,7 +156,7 @@
         #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
-    #include "cpu/mcf/fnet_mcf5282_config.h"
+    #include "port/cpu/mcf/fnet_mcf5282_config.h"
     #define FNET_CPU_STR    "MCF5282"
 #endif
 
@@ -161,7 +165,7 @@
         #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
-    #include "cpu/mcf/fnet_mcf51cn128_config.h"
+    #include "port/cpu/mcf/fnet_mcf51cn128_config.h"
     #define FNET_CPU_STR    "MCF51CN128"
 #endif
 
@@ -170,7 +174,7 @@
         #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
 
-    #include "cpu/mcf/fnet_mcf54418_config.h"
+    #include "port/cpu/mcf/fnet_mcf54418_config.h"
     #define FNET_CPU_STR    "MCF54418"
 #endif
 
@@ -282,7 +286,7 @@
 #endif
 
 /*********** NXP's LPC ********************/
-#if FNET_CFG_CPU_LPC54628 /* NXP's LPC54628 MCU */
+#if FNET_CFG_CPU_LPC54628 /* Aruba */
     #ifdef FNET_CPU_STR
         #error "More than one CPU selected FNET_CFG_CPU_XXXX"
     #endif
@@ -291,6 +295,17 @@
     #define FNET_CPU_STR    "LPC54628"
 #endif
 
+/*********** iMX RT ********************/
+#if FNET_CFG_CPU_MIMXRT1052
+    #ifdef FNET_CPU_STR
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
+    #endif
+
+    #include "port/cpu/mimxrt/fnet_mimxrt1052_config.h"
+    #define FNET_CPU_STR    "MIMXRT1052"
+#endif
+
+
 /*-----------*/
 #ifndef FNET_CPU_STR
     #error "Select/Define proper CPU FNET_CFG_CPU_XXXX !"
@@ -298,19 +313,23 @@
 
 /*-----------*/
 #ifndef FNET_MCF
-    #define FNET_MCF  (0)
+    #define FNET_MCF    (0)
 #endif
 
 #ifndef FNET_MK
-    #define FNET_MK   (0)
+    #define FNET_MK     (0)
 #endif
 
 #ifndef FNET_MPC
-    #define FNET_MPC  (0)
+    #define FNET_MPC    (0)
 #endif
 
 #ifndef FNET_LPC
-    #define FNET_LPC  (0)
+    #define FNET_LPC    (0)
+#endif
+
+#ifndef FNET_MIMXRT
+    #define FNET_MIMXRT (0)
 #endif
 
 /*-----------*/
@@ -328,6 +347,10 @@
 
 #if FNET_LPC
     #include "port/cpu/lpc/fnet_lpc_config.h"
+#endif
+
+#if FNET_MIMXRT
+    #include "port/cpu/mimxrt/fnet_mimxrt_config.h"
 #endif
 
 /**************************************************************************/ /*!
@@ -467,24 +490,22 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_CPU_CACHE
  * @brief    Data Cache:
- *               - @c 1 = is present on current platform (for MCF5282/5235, MPC).
- *               - @c 0 = is absent on current platform. For platforms that do not have cache.
- *  @n @n NOTE: User application should not change this parameter.
- * @see FNET_CFG_CPU_CACHE_INVALIDATE
+ *               - @c 1 = is present and enabled on current platform (for MCF5282/5235, MPC, i.MX-RT).
+ *                     @note The MPU platforms have to define @ref FNET_CFG_CPU_NONCACHEABLE_SECTION section - non-cacheable memory region.
+ *               - @c 0 = is absent or disabled on current platform.
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_CACHE
     #define FNET_CFG_CPU_CACHE              (0)
 #endif
 
 /**************************************************************************/ /*!
- * @def      FNET_CFG_CPU_CACHE_INVALIDATE
- * @brief    Cache invalidation in runtime:
- *               - @c 1 = is enabled (by default).
- *               - @c 0 = is disabled. i.e code is already placed in non-cacheable memory region.
- * @see FNET_CFG_CPU_CACHE
+ * @def      FNET_CFG_CPU_NONCACHEABLE_SECTION
+ * @brief    Name of the non-cacheable memory region. The MPU platforms with
+ *           enabled Data-cache (@ref FNET_CFG_CPU_CACHE) must define it.
+ *           It is used my network driver for data buffers accessed by DMA.
  ******************************************************************************/
-#ifndef FNET_CFG_CPU_CACHE_INVALIDATE
-    #define FNET_CFG_CPU_CACHE_INVALIDATE   (1)
+#ifndef FNET_CFG_CPU_NONCACHEABLE_SECTION
+    #define FNET_CFG_CPU_NONCACHEABLE_SECTION              "NonCacheable"
 #endif
 
 /**************************************************************************/ /*!
@@ -554,7 +575,7 @@
 
 /*! @} */
 
-/*! @addtogroup fnet_platform_eth_config  */
+/*! @addtogroup fnet_platform_netif_config  */
 /*! @{ */
 
 /**************************************************************************/ /*!
@@ -610,7 +631,8 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_CPU_ETH0_PHY_ADDR
  * @brief    Default PHY address used by the Ethernet-0 module. @n
- *           Specifies one of up to 32 attached PHY devices.
+ *           Specifies one of up to 32 attached PHY devices. @n
+ *           In run-time, the address may be changed  by @ref fnet_eth_phy_set_addr().
  * @see FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER
  * @showinitializer
  ******************************************************************************/
@@ -621,7 +643,8 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_CPU_ETH1_PHY_ADDR
  * @brief    Default PHY address used by the Ethernet-1 module. @n
- *           Specifies one of up to 32 attached PHY devices.
+ *           Specifies one of up to 32 attached PHY devices. @n
+ *           In run-time, the address may be changed  by @ref fnet_eth_phy_set_addr().
  * @see FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER
  * @showinitializer
  ******************************************************************************/
@@ -632,14 +655,14 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER
  * @brief    PHY address discover:
- *               - @c 1 = is enabled (default value). @n
+ *               - @c 1 = is enabled. @n
  *                        Ethernet driver trying to discover a valid PHY address.
- *               - @c 0 = is disabled (for MCF52235).@n
+ *               - @c 0 = is disabled (default value).@n
  *                        PHY address is set to FNET_CFG_CPU_ETHx_PHY_ADDR.
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER
-    #define FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER	(1)
+    #define FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER	(0)
 #endif
 
 /**************************************************************************/ /*!
@@ -707,7 +730,11 @@
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_CPU_ETH_VECTOR_PRIORITY
-    #define FNET_CFG_CPU_ETH_VECTOR_PRIORITY    (2u)
+    #if FNET_MCF || FNET_MPC  /* Timer should have a higher priority to provide correct tick value */
+        #define FNET_CFG_CPU_ETH_VECTOR_PRIORITY    (FNET_CFG_CPU_TIMER_VECTOR_PRIORITY-1u)
+    #else /* ARM */
+        #define FNET_CFG_CPU_ETH_VECTOR_PRIORITY    (FNET_CFG_CPU_TIMER_VECTOR_PRIORITY+1u)
+    #endif
 #endif
 
 /**************************************************************************/ /*!

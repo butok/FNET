@@ -1148,7 +1148,7 @@ static fnet_int32_t fnet_cpu_flash_init(
 
     /*D-Cache must be disabled for proper operation of the Flash Driver (SSD)
       See User's Manual SSD_C55_UM_v1.1.pdf, chapter 3.3 Notes and Limitations point 3*/
-    fnet_cpu_cache_invalidate();
+    fnet_mpc5744p_dcache_disable();
 
     DisableFlashControllerCache(FLASH_PFCR1, FLASH_FMC_BFEN, &pflash_pfcr1);
 
