@@ -22,34 +22,34 @@
 *
 ***************************************************************************/
 
-#ifndef _FNET_HTTP_AUTH_PRV_H_
+#ifndef _FNET_HTTP_SRV_AUTH_PRV_H_
 
-#define _FNET_HTTP_AUTH_PRV_H_
+#define _FNET_HTTP_SRV_AUTH_PRV_H_
 
 #include "fnet.h"
 
-#if FNET_CFG_HTTP && FNET_CFG_HTTP_AUTHENTICATION_BASIC && FNET_CFG_HTTP_VERSION_MAJOR
+#if FNET_CFG_HTTP_SRV && FNET_CFG_HTTP_SRV_AUTHENTICATION_BASIC && FNET_CFG_HTTP_SRV_VERSION_MAJOR
 
-#include "fnet_http_auth.h"
+#include "fnet_http_srv_auth.h"
 
-typedef fnet_return_t(*fnet_http_auth_scheme_validate_t)(const struct fnet_http_auth *auth_entry, fnet_char_t *auth_param);
-typedef fnet_size_t(*fnet_http_auth_scheme_generate_t)(struct fnet_http_if *http, fnet_uint8_t *buffer, fnet_size_t buffer_size);
+typedef fnet_return_t(*fnet_http_srv_auth_scheme_validate_t)(const struct fnet_http_srv_auth *auth_entry, fnet_char_t *auth_param);
+typedef fnet_size_t(*fnet_http_srv_auth_scheme_generate_t)(struct fnet_http_srv_if *http, fnet_uint8_t *buffer, fnet_size_t buffer_size);
 
-struct fnet_http_auth_scheme
+struct fnet_http_srv_auth_scheme
 {
-    fnet_http_auth_scheme_t             id;
+    fnet_http_srv_auth_scheme_t             id;
     fnet_char_t                                *name;
-    fnet_http_auth_scheme_validate_t    validate; /* Validate credentials params.*/
-    fnet_http_auth_scheme_generate_t    generate; /* Generate challenge params.*/
+    fnet_http_srv_auth_scheme_validate_t    validate; /* Validate credentials params.*/
+    fnet_http_srv_auth_scheme_generate_t    generate; /* Generate challenge params.*/
 };
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-void _fnet_http_auth_validate_uri(struct fnet_http_if *http);
-fnet_return_t _fnet_http_auth_validate_credentials(struct fnet_http_if *http, fnet_char_t *credentials);
-fnet_size_t _fnet_http_auth_generate_challenge(struct fnet_http_if *http, fnet_uint8_t *buffer, fnet_size_t buffer_size);
+void _fnet_http_srv_auth_validate_uri(struct fnet_http_srv_if *http);
+fnet_return_t _fnet_http_srv_auth_validate_credentials(struct fnet_http_srv_if *http, fnet_char_t *credentials);
+fnet_size_t _fnet_http_srv_auth_generate_challenge(struct fnet_http_srv_if *http, fnet_uint8_t *buffer, fnet_size_t buffer_size);
 
 #if defined(__cplusplus)
 }

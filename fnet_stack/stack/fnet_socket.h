@@ -341,10 +341,11 @@ typedef enum
  ******************************************************************************/
 typedef enum
 {
-    SS_UNCONNECTED = (0),   /**< @brief Not connected to any socket.*/
-    SS_CONNECTING  = (1),   /**< @brief In process of connecting.*/
-    SS_CONNECTED   = (2),   /**< @brief Connected to a socket.*/
-    SS_LISTENING   = (3)    /**< @brief In listening state.*/
+    SS_CLOSED = (0),    /**< @brief Not connected to any socket.*/
+    SS_CLOSING,         /**< @brief In process of closing connection. For TCP, after FIN receive.*/
+    SS_CONNECTING,      /**< @brief In process of connecting.*/
+    SS_CONNECTED,       /**< @brief Connected to a socket.*/
+    SS_LISTENING        /**< @brief In listening state.*/
 } fnet_socket_state_t;
 
 /**************************************************************************/ /*!
@@ -406,7 +407,7 @@ typedef enum
  *<td>@ref FNET_CFG_SOCKET_UDP_RX_BUF_SIZE for UDP @n @ref FNET_CFG_SOCKET_TCP_RX_BUF_SIZE for TCP</td><td>RW</td>
  *</tr>
  *<tr>
- *<td>@ref SO_STATE</td><td>@ref fnet_socket_state_t</td><td>@ref SS_UNCONNECTED</td><td>R</td>
+ *<td>@ref SO_STATE</td><td>@ref fnet_socket_state_t</td><td>@ref SS_CLOSED</td><td>R</td>
  *</tr>
  *<tr>
  *<td>@ref SO_ERROR</td><td>@ref fnet_error_t</td><td>@ref FNET_ERR_OK</td><td>R</td>
@@ -919,7 +920,7 @@ fnet_socket_t fnet_socket_accept( fnet_socket_t s, struct fnet_sockaddr *addr, f
  * Use the @ref fnet_socket_getopt() function to determine the completion of the
  * connection request by checking the @ref SO_STATE to see if the socket is
  * connected (@ref SS_CONNECTED), is still connecting (@ref SS_CONNECTING)
- * or the connection has failed (@ref SS_UNCONNECTED). @n
+ * or the connection has failed (@ref SS_CLOSED). @n
  * @n
  * For a connectionless socket (@ref SOCK_DGRAM), the operation performed
  * by @ref fnet_socket_connect() is merely to establish a default destination address

@@ -40,7 +40,7 @@
     #include "fapp_autoip.h"
 #endif
 
-#if ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP)|| (FAPP_CFG_EXP_CMD && FNET_CFG_FS)
+#if ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD || FAPP_CFG_HTTPC_CMD) && FNET_CFG_HTTP_SRV)|| (FAPP_CFG_EXP_CMD && FNET_CFG_FS)
     #include "fapp_http.h"
     #include "fapp_fs.h"
 #endif
@@ -165,11 +165,14 @@ const struct fnet_shell_command fapp_cmd_table [] =
 #if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP && FNET_CFG_IP4
     { .name = "autoip",     .min_args = 0u, .max_args = 3u,     .cmd_ptr = fapp_autoip_cmd,  .description = "Start Auto-IP service", .syntax = "[-n <if name>] [release]"},
 #endif
-#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
-    { .name = "http",       .min_args = 0u, .max_args = 1u,     .cmd_ptr = fapp_http_cmd,    .description = "Start HTTP server", .syntax = "[release]"},
+#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP_SRV
+    { .name = "http",       .min_args = 0u, .max_args = 1u,     .cmd_ptr = fapp_http_srv_cmd,    .description = "Start HTTP server", .syntax = "[release]"},
 #endif
-#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP && FNET_CFG_HTTP_TLS && FNET_CFG_TLS
-    { .name = "https",      .min_args = 0u, .max_args = 1u,     .cmd_ptr = fapp_http_tls_cmd,   .description = "Start HTTPS server", .syntax = "[release]"},
+#if FAPP_CFG_HTTPC_CMD && FNET_CFG_HTTP_CLN
+    { .name = "httpc",      .min_args = 1u, .max_args = 3u,     .cmd_ptr = fapp_http_cln_cmd,    .description = "Start HTTP GET request", .syntax = "[-n <if name>] -s <server ip> [-u <uri>]"},
+#endif
+#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP_SRV && FNET_CFG_HTTP_SRV_TLS && FNET_CFG_TLS
+    { .name = "https",      .min_args = 0u, .max_args = 1u,     .cmd_ptr = fapp_http_srv_tls_cmd,   .description = "Start HTTPS server", .syntax = "[release]"},
 #endif
 #if FAPP_CFG_EXP_CMD && FNET_CFG_FS
     { .name = "exp",        .min_args = 0u, .max_args = 1u,     .cmd_ptr = fapp_exp_cmd,     .description = "File Explorer submenu...", .syntax = ""},
@@ -298,6 +301,9 @@ static void fapp_reset_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char
     fnet_release(); /* Release FNET stack (it's optional).*/
 
     fnet_cpu_reset();
+
+    /* Reset failed. Should never reach here. */
+    fnet_shell_println(desc, "Reset board manually!");
 }
 #endif
 

@@ -28,7 +28,6 @@
 
 #include "fnet_ip4.h"
 #include "fnet_ip6.h"
-//#include "fnet_eth.h"
 #include "fnet_socket.h"
 
 /*! @addtogroup fnet_netif

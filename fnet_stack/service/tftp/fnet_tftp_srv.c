@@ -279,7 +279,7 @@ static void _fnet_tftp_srv_send_error(struct fnet_tftp_srv_if *tftp_srv_if, fnet
 
     if(error_message)
     {
-        fnet_strncpy( (fnet_char_t *)tftp_srv_if->packet.packet_error.error_message, error_message, FNET_TFTP_DATA_SIZE_MAX - 1u );
+        fnet_strlcpy( (fnet_char_t *)tftp_srv_if->packet.packet_error.error_message, error_message, FNET_TFTP_DATA_SIZE_MAX - 1u );
     }
     else
     {

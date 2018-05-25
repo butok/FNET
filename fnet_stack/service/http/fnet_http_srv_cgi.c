@@ -24,32 +24,32 @@
 
 #include "fnet.h"
 
-#if FNET_CFG_HTTP && FNET_CFG_HTTP_CGI
+#if FNET_CFG_HTTP_SRV && FNET_CFG_HTTP_SRV_CGI
 
-#include "fnet_http_prv.h"
+#include "fnet_http_srv_prv.h"
 
-static fnet_return_t _fnet_http_cgi_handle (struct fnet_http_if *http, struct fnet_http_uri *uri);
-static fnet_size_t _fnet_http_cgi_send (struct fnet_http_if *http);
+static fnet_return_t _fnet_http_srv_cgi_handle (struct fnet_http_srv_if *http, struct fnet_http_srv_uri *uri);
+static fnet_size_t _fnet_http_srv_cgi_send (struct fnet_http_srv_if *http);
 
 /************************************************************************
 *     Definitions
 ************************************************************************/
-const struct fnet_http_file_handler fnet_http_cgi_handler =
+const struct fnet_http_srv_file_handler fnet_http_srv_cgi_handler =
 {
-    .file_extension = FNET_HTTP_CGI_EXTENSION,
-    .file_handle = _fnet_http_cgi_handle,
-    .file_send = _fnet_http_cgi_send,
+    .file_extension = FNET_HTTP_SRV_CGI_EXTENSION,
+    .file_handle = _fnet_http_srv_cgi_handle,
+    .file_send = _fnet_http_srv_cgi_send,
     .file_close = 0
 };
 
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_return_t _fnet_http_cgi_handle (struct fnet_http_if *http, struct fnet_http_uri *uri)
+static fnet_return_t _fnet_http_srv_cgi_handle (struct fnet_http_srv_if *http, struct fnet_http_srv_uri *uri)
 {
     fnet_return_t               result = FNET_ERR;
-    const struct fnet_http_cgi  *cgi_ptr;
-    struct fnet_http_session_if *session =  http->session_active;
+    const struct fnet_http_srv_cgi  *cgi_ptr;
+    struct fnet_http_srv_session_if *session =  http->session_active;
 
     if(http->cgi_table)
         /* CGI table is initialized.*/
@@ -72,7 +72,7 @@ static fnet_return_t _fnet_http_cgi_handle (struct fnet_http_if *http, struct fn
                 session->data_ptr = cgi_ptr;
                 if(cgi_ptr->handle)
                 {
-                    result = cgi_ptr->handle((fnet_http_session_t)session, uri->query, &session->response.cookie);
+                    result = cgi_ptr->handle((fnet_http_srv_session_t)session, uri->query, &session->response.cookie);
                 }
                 else
                 {
@@ -89,15 +89,15 @@ static fnet_return_t _fnet_http_cgi_handle (struct fnet_http_if *http, struct fn
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_size_t _fnet_http_cgi_send (struct fnet_http_if *http)
+static fnet_size_t _fnet_http_srv_cgi_send (struct fnet_http_srv_if *http)
 {
-    const struct fnet_http_cgi  *cgi_ptr;
+    const struct fnet_http_srv_cgi  *cgi_ptr;
     fnet_size_t                 result = 0u;
-    struct fnet_http_session_if *session =  http->session_active;
+    struct fnet_http_srv_session_if *session =  http->session_active;
 
     if(session->data_ptr)
     {
-        cgi_ptr = (const struct fnet_http_cgi *) session->data_ptr;
+        cgi_ptr = (const struct fnet_http_srv_cgi *) session->data_ptr;
 
         if(cgi_ptr->send)
         {
@@ -108,4 +108,4 @@ static fnet_size_t _fnet_http_cgi_send (struct fnet_http_if *http)
     return result;
 }
 
-#endif /* FNET_CFG_HTTP && FNET_CFG_HTTP_CGI */
+#endif /* FNET_CFG_HTTP_SRV && FNET_CFG_HTTP_SRV_CGI */

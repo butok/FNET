@@ -24,40 +24,40 @@
 
 #include "fnet.h"
 
-#if FNET_CFG_HTTP && FNET_CFG_FS
+#if FNET_CFG_HTTP_SRV && FNET_CFG_FS
 
-#include "fnet_http_prv.h"
+#include "fnet_http_srv_prv.h"
 
 /* Prototypes */
-static fnet_return_t _fnet_http_get_handle(struct fnet_http_if *http, struct fnet_http_uri *uri);
-static fnet_return_t _fnet_http_get_send(struct fnet_http_if *http);
-static void _fnet_http_get_close(struct fnet_http_if *http);
+static fnet_return_t _fnet_http_srv_get_handle(struct fnet_http_srv_if *http, struct fnet_http_srv_uri *uri);
+static fnet_return_t _fnet_http_srv_get_send(struct fnet_http_srv_if *http);
+static void _fnet_http_srv_get_close(struct fnet_http_srv_if *http);
 
 /* GET method. */
-const struct fnet_http_method fnet_http_method_get =
+const struct fnet_http_srv_method fnet_http_srv_method_get =
 {
     .token = "GET",
-    .handle = _fnet_http_get_handle,
+    .handle = _fnet_http_srv_get_handle,
     .receive = 0,
-    .send = _fnet_http_get_send,
-    .close = _fnet_http_get_close
+    .send = _fnet_http_srv_get_send,
+    .close = _fnet_http_srv_get_close
 };
 
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_return_t _fnet_http_get_handle(struct fnet_http_if *http, struct fnet_http_uri *uri)
+static fnet_return_t _fnet_http_srv_get_handle(struct fnet_http_srv_if *http, struct fnet_http_srv_uri *uri)
 {
-    struct fnet_http_session_if *session =  http->session_active;
+    struct fnet_http_srv_session_if *session =  http->session_active;
     fnet_return_t               result = FNET_ERR;
 
     /* Request is found */
     if(uri)
     {
-        session->response.send_file_handler = _fnet_http_find_handler(http, uri);           /* Find file handler.*/
+        session->response.send_file_handler = _fnet_http_srv_find_handler(http, uri);           /* Find file handler.*/
 
-#if FNET_CFG_HTTP_VERSION_MAJOR
-        session->response.send_file_content_type = _fnet_http_find_content_type(http, uri); /* Find file content-type.*/
+#if FNET_CFG_HTTP_SRV_VERSION_MAJOR
+        session->response.send_file_content_type = _fnet_http_srv_find_content_type(http, uri); /* Find file content-type.*/
 #endif
 
         result = session->response.send_file_handler->file_handle(http, uri);              /* Initial handling. */
@@ -70,9 +70,9 @@ static fnet_return_t _fnet_http_get_handle(struct fnet_http_if *http, struct fne
 * DESCRIPTION: Simple-Response. Simple-responce consists only of the
 * entity body and is terminated by the server closing connection.
 ************************************************************************/
-static fnet_return_t _fnet_http_get_send(struct fnet_http_if *http)
+static fnet_return_t _fnet_http_srv_get_send(struct fnet_http_srv_if *http)
 {
-    struct fnet_http_session_if *session =  http->session_active;
+    struct fnet_http_srv_session_if *session =  http->session_active;
     fnet_return_t               result;
 
     if((session->buffer_actual_size = session->response.send_file_handler->file_send(http)) > 0u)
@@ -90,9 +90,9 @@ static fnet_return_t _fnet_http_get_send(struct fnet_http_if *http)
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static void _fnet_http_get_close(struct fnet_http_if *http)
+static void _fnet_http_srv_get_close(struct fnet_http_srv_if *http)
 {
-    struct fnet_http_session_if *session =  http->session_active;
+    struct fnet_http_srv_session_if *session =  http->session_active;
 
     if((session->response.send_file_handler) && (session->response.send_file_handler->file_close))
     {

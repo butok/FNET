@@ -22,28 +22,28 @@
 *
 ***************************************************************************/
 
-#ifndef _FNET_HTTP_AUTH_H_
+#ifndef _FNET_HTTP_SRV_AUTH_H_
 
-#define _FNET_HTTP_AUTH_H_
+#define _FNET_HTTP_SRV_AUTH_H_
 
-#if (FNET_CFG_HTTP && FNET_CFG_HTTP_AUTHENTICATION_BASIC && FNET_CFG_HTTP_VERSION_MAJOR) || defined(__DOXYGEN__)
+#if (FNET_CFG_HTTP_SRV && FNET_CFG_HTTP_SRV_AUTHENTICATION_BASIC && FNET_CFG_HTTP_SRV_VERSION_MAJOR) || defined(__DOXYGEN__)
 
-/*! @addtogroup fnet_http
+/*! @addtogroup fnet_http_srv
  @{ */
 
 /**************************************************************************/ /*!
  * @brief Type of Authentication Scheme
- * @see fnet_http_auth
+ * @see fnet_http_srv_auth
  ******************************************************************************/
 typedef enum
 {
-    FNET_HTTP_AUTH_SCHEME_NONE = 0,     /**< @brief No authentication.
+    FNET_HTTP_SRV_AUTH_SCHEME_NONE = 0,     /**< @brief No authentication.
                                          */
-    FNET_HTTP_AUTH_SCHEME_BASIC = 1,    /**< @brief Basic Access Authentication Scheme.
+    FNET_HTTP_SRV_AUTH_SCHEME_BASIC = 1,    /**< @brief Basic Access Authentication Scheme.
                                          */
-    FNET_HTTP_AUTH_SCHEME_DIGEST = 2    /**< @brief Digest Access Authentication Scheme (NOT YET IMPLEMENTED).
+    FNET_HTTP_SRV_AUTH_SCHEME_DIGEST = 2    /**< @brief Digest Access Authentication Scheme (NOT YET IMPLEMENTED).
                                          */
-} fnet_http_auth_scheme_t;
+} fnet_http_srv_auth_scheme_t;
 
 
 /**************************************************************************/ /*!
@@ -59,9 +59,9 @@ typedef enum
 *   -# The client submits the user name and password to the server.
 *   -# The server validates the credentials and, if successful, returns the requested resource.
 *
-* @see fnet_http_auth_scheme_t, fnet_http_params
+* @see fnet_http_srv_auth_scheme_t, fnet_http_srv_params
 ******************************************************************************/
-struct fnet_http_auth
+struct fnet_http_srv_auth
 {
     fnet_char_t *realm;	            /**< @brief Name of realm. A realm can be seen as an area for which the credentials are used.
                                          This is also the string that is shown when a WEB browser pops up the login window, for example: "Please enter your username and password for <realm>"
@@ -69,12 +69,12 @@ struct fnet_http_auth
     fnet_char_t *dir_name;	        /**< @brief Name of the directory to protect.*/
     fnet_char_t *userid;            /**< @brief Required user name to access this directory.*/
     fnet_char_t *password;          /**< @brief Required password to access this directory.*/
-    fnet_http_auth_scheme_t scheme; /**< @brief Used Authentication Scheme.*/
+    fnet_http_srv_auth_scheme_t scheme; /**< @brief Used Authentication Scheme.*/
 
 };
 
 /*! @} */
 
-#endif /* FNET_CFG_HTTP && FNET_CFG_HTTP_AUTHENTICATION_BASIC */
+#endif /* FNET_CFG_HTTP_SRV && FNET_CFG_HTTP_SRV_AUTHENTICATION_BASIC */
 
 #endif

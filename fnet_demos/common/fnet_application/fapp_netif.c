@@ -103,13 +103,13 @@ static const fnet_char_t *const fapp_netif_ip_addr_type_str[] = {"manual",      
                                                                 };
 
 /* Connection state string */
-const fnet_char_t *const fapp_netif_connection_state_str[] = {"disconnected", /* false */
-                                                              "connected"    /* true */
+const fnet_char_t *const fapp_netif_connection_state_str[] = {"disconnected",   /* false */
+                                                              "connected"       /* true */
                                                              };
 
 static const fnet_char_t *const fapp_netif_type_str[] = {   "",            /* FNET_NETIF_TYPE_OTHER */
                                                             "Ethernet",    /* FNET_NETIF_TYPE_ETHERNET */
-                                                            "Wi-Fi",       /* FNET_NETIF_TYPE_WIFI */
+                                                            "WiFi",        /* FNET_NETIF_TYPE_WIFI */
                                                             "Loopback"     /* FNET_NETIF_TYPE_LOOPBACK */
                                                         };
 
@@ -197,19 +197,25 @@ void fapp_netif_info_print( fnet_shell_desc_t desc, fnet_netif_desc_t netif)
     {
         fnet_wifi_op_mode_t     wifi_op_mode;
         fnet_uint32_t           wifi_version;
+        fnet_char_t             country_code[3];
 
         /* Operation mode. */
         wifi_op_mode = fnet_wifi_get_op_mode(netif);
         if(wifi_op_mode)
         {
-            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Wi-Fi Mode", fapp_wifi_op_mode[wifi_op_mode]);
+            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "WiFi Mode", fapp_wifi_op_mode[wifi_op_mode]);
         }
 
         /* Firmware version number. */
         wifi_version = fnet_wifi_fw_get_version(netif);
         if(wifi_version)
         {
-            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_H32, "Wi-Fi FW Version", wifi_version);
+            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_H32, "WiFi FW Version", wifi_version);
+        }
+
+        if(fnet_wifi_get_country_code(netif, country_code) == FNET_OK)
+        {
+            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "WiFi Country", country_code);
         }
     }
 
@@ -415,11 +421,11 @@ void fapp_netif_info_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t
         }
     }
 
-#if ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP) || (FAPP_CFG_TELNET_CMD && FNET_CFG_TELNET) || (FAPP_CFG_TFTP_CMD && FNET_CFG_TFTP_SRV) || (FAPP_CFG_BENCH_CMD && FNET_CFG_BENCH_SRV)
+#if ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP_SRV) || (FAPP_CFG_TELNET_CMD && FNET_CFG_TELNET) || (FAPP_CFG_TFTP_CMD && FNET_CFG_TFTP_SRV) || (FAPP_CFG_BENCH_CMD && FNET_CFG_BENCH_SRV)
     fnet_shell_println(desc, "Services:");
     /* General services.*/
-#if (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP
-    fapp_http_info(desc);
+#if (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP_SRV
+    fapp_http_srv_info(desc);
 #endif
 
 #if FAPP_CFG_TELNET_CMD && FNET_CFG_TELNET

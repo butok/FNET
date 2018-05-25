@@ -134,7 +134,7 @@
 
 /* Wi-Fi interface connect/disconnect scripts, in the access point operation mode.*/
 #define FAPP_CFG_LINK_CONNECT_WIFI_ACCESS_POINT_SCRIPT      "dhcp -n %s; mdns -n %s; llmnr -n %s;" /* "%s" will be replaced by the interface name.*/
-#define FAPP_CFG_LINK_DISCONNECT_WIFI_ACCESS_POINT_SCRIPT   "mdns -n %s release; llmnr -n; dhcp -n %s release;" /* "%s" will be replaced by the interface name.*/
+#define FAPP_CFG_LINK_DISCONNECT_WIFI_ACCESS_POINT_SCRIPT   "mdns -n %s release; llmnr -n %s release; dhcp -n %s release;" /* "%s" will be replaced by the interface name.*/
 
 #endif /* _FAPP_USER_CONFIG_H_ */
 

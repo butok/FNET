@@ -29,30 +29,46 @@
 
 #define _FAPP_HTTP_H_
 
-#if (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP
+#if (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP_SRV
 
-#define FAPP_HTTP_MOUNT_NAME   FAPP_FS_MOUNT_NAME
-#define FAPP_HTTP_INDEX_FILE   "index.html"
+#define FAPP_HTTP_SRV_MOUNT_NAME   FAPP_FS_MOUNT_NAME
+#define FAPP_HTTP_SRV_INDEX_FILE   "index.html"
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
-extern fnet_http_desc_t fapp_http_desc; /* HTTP service descriptor. */
+extern fnet_http_srv_desc_t fapp_http_srv_desc; /* HTTP service descriptor. */
 
-void fapp_http_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
-void fapp_http_info(fnet_shell_desc_t desc);
-void fapp_http_release(void);
+void fapp_http_srv_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
+void fapp_http_srv_info(fnet_shell_desc_t desc);
+void fapp_http_srv_release(void);
 
-#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP_TLS && FNET_CFG_TLS
-extern fnet_http_desc_t fapp_http_tls_desc; /* HTTPS service descriptor. */
-void fapp_http_tls_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
-void fapp_http_tls_release(void);
+#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP_SRV_TLS && FNET_CFG_TLS
+extern fnet_http_srv_desc_t fapp_http_srv_tls_desc; /* HTTPS service descriptor. */
+void fapp_http_srv_tls_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
+void fapp_http_srv_tls_release(void);
 #endif
 
 #if defined(__cplusplus)
 }
 #endif
 
+#endif /* (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP_SRV */
+
+#if FAPP_CFG_HTTPC_CMD && FNET_CFG_HTTP_CLN
+
+#if defined(__cplusplus)
+extern "C" {
 #endif
 
+void fapp_http_cln_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
+void fapp_http_cln_release(void);
+
+#if defined(__cplusplus)
+}
 #endif
+
+#endif /* FAPP_CFG_HTTPC_CMD && FNET_CFG_HTTP_CLN */
+
+
+#endif /*_FAPP_HTTP_H_*/

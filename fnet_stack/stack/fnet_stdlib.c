@@ -300,7 +300,7 @@ void fnet_strcat (fnet_char_t *dest, const fnet_char_t *src)
 /************************************************************************
 * DESCRIPTION:
 *************************************************************************/
-void fnet_strncat (fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n)
+void fnet_strlcat (fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n)
 {
     fnet_char_t        *dp;
     const fnet_char_t  *sp = src;
@@ -339,7 +339,7 @@ void fnet_strcpy (fnet_char_t *dest, const fnet_char_t *src)
 /************************************************************************
 * DESCRIPTION:
 *************************************************************************/
-void fnet_strncpy( fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n )
+void fnet_strlcpy( fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n )
 {
     fnet_char_t        *dp = dest;
     const fnet_char_t  *sp = src;

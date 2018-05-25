@@ -807,7 +807,7 @@ void fnet_netif_get_name( fnet_netif_desc_t netif_desc, fnet_char_t *name, fnet_
 
     if(netif && name)
     {
-        fnet_strncpy(name, netif->netif_name, name_size);
+        fnet_strlcpy(name, netif->netif_name, name_size);
     }
 }
 

@@ -79,6 +79,8 @@ static fnet_return_t _fnet_qca_get_ssid_info(const char *ssid, WLAN_AUTH_MODE *a
 static fnet_wifi_op_mode_t _fnet_qca_get_op_mode(struct fnet_netif *netif);
 static fnet_uint32_t _fnet_qca_fw_get_version(struct fnet_netif *netif);
 static void _fnet_qca_input(void *cookie);
+static fnet_return_t _fnet_qca_wifi_get_country_code(fnet_netif_t *netif, fnet_char_t *country_code);
+static fnet_return_t _fnet_qca_wifi_set_country_code(fnet_netif_t *netif, const fnet_char_t *country_code);
 #if FNET_CFG_CPU_WIFI_FW_UPDATE
     static fnet_return_t _fnet_qca_wifi_fw_update(fnet_netif_t *netif, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size);
 #endif
@@ -97,6 +99,8 @@ const fnet_wifi_api_t fnet_qca_wifi_api =
     .wifi_disconnect =  _fnet_qca_wifi_disconnect,
     .wifi_get_op_mode = _fnet_qca_get_op_mode,
     .wifi_fw_get_version = _fnet_qca_fw_get_version,
+    .wifi_set_country_code = _fnet_qca_wifi_set_country_code,
+    .wifi_get_country_code = _fnet_qca_wifi_get_country_code,
 #if FNET_CFG_CPU_WIFI_FW_UPDATE
     .wifi_fw_update = _fnet_qca_wifi_fw_update,
 #endif
@@ -577,6 +581,7 @@ static void _fnet_qca_on_connect(uint8_t event, uint8_t devId, char *bssid, uint
                ((fnet_qca_dev_mode == QCOM_WLAN_DEV_MODE_AP) && (bssConn == 1)))
             {
                 fnet_qca_if.is_connected = FNET_FALSE;
+                fnet_qca_if.was_disconneced = FNET_TRUE;
             }
             break;
         case PEER_FIRST_NODE_JOIN_EVENT:
@@ -595,6 +600,7 @@ static void _fnet_qca_on_connect(uint8_t event, uint8_t devId, char *bssid, uint
                ((fnet_qca_dev_mode == QCOM_WLAN_DEV_MODE_AP) && (bssConn == 1)))
             {
                 fnet_qca_if.is_connected = FNET_FALSE;
+                fnet_qca_if.was_disconneced = FNET_TRUE;
             }
             break;
         default:
@@ -629,6 +635,7 @@ static fnet_return_t _fnet_qca_wifi_connect(struct fnet_netif *netif, fnet_wifi_
             FNET_DEBUG_QCA("[QCA] (MODE) Station\r\n");
 
 #if 1 /* Reduce background scan period for better reconnection (optional).*/
+            if( _fnet_qca_fw_get_version(netif) > 0x30080e38) /* For old GT202 (v3.0) it may cause disconnection */
             {
                 qcom_scan_params_t scan_params = {.fgStartPeriod = 1,
                                                   .fgEndPeriod = 2,
@@ -905,6 +912,8 @@ static fnet_return_t _fnet_qca_wifi_disconnect(struct fnet_netif *netif)
 {
     fnet_return_t   result;
 
+    fnet_qca_if.is_connected = FNET_FALSE; /* To avoid TX before QCA event */
+
     /* Disconnect the QCA4002 wifi */
     if(qcom_disconnect(FNET_QCA_DEVICE_ID) != A_OK)
     {
@@ -969,12 +978,12 @@ void fnet_qca_output(fnet_netif_t *netif, fnet_netbuf_t *nb)
     A_NETBUF        *a_netbuf_ptr;
     fnet_qca_if_t   *qca_if;
 
-    if(netif && netif->netif_prv && (_fnet_qca_is_connected(netif) == FNET_TRUE)
+    if(netif && netif->netif_prv
        && nb && (nb->total_length >= FNET_ETH_HDR_SIZE))
     {
         qca_if = (fnet_qca_if_t *)(((fnet_eth_if_t *)(netif->netif_prv))->eth_prv);
 
-        if(qca_if)
+        if(qca_if && (qca_if->is_connected == FNET_TRUE))
         {
             /* Allocate atheros pcb. */
             if ((a_netbuf_ptr = (A_NETBUF *)A_NETBUF_ALLOC(nb->total_length)) == NULL)
@@ -1177,7 +1186,16 @@ static fnet_bool_t _fnet_qca_is_connected(fnet_netif_t *netif)
 
         if(qca_if)
         {
-            res = qca_if->is_connected;
+
+            if(qca_if->was_disconneced == FNET_TRUE)
+            {
+                res = FNET_FALSE;
+                qca_if->was_disconneced = FNET_FALSE; /* Reset flag */
+            }
+            else
+            {
+                res = qca_if->is_connected;
+            }
         }
     }
 
@@ -1192,11 +1210,11 @@ static fnet_wifi_op_mode_t _fnet_qca_get_op_mode(struct fnet_netif *netif)
     fnet_wifi_op_mode_t result = FNET_WIFI_OP_MODE_NONE;
     fnet_qca_if_t       *qca_if;
 
-    if(netif && netif->netif_prv && _fnet_qca_is_connected(netif))
+    if(netif && netif->netif_prv)
     {
         qca_if = (fnet_qca_if_t *)(((fnet_eth_if_t *)(netif->netif_prv))->eth_prv);
 
-        if(qca_if)
+        if(qca_if && (qca_if->is_connected == FNET_TRUE))
         {
             QCOM_WLAN_DEV_MODE mode;
 
@@ -1227,6 +1245,62 @@ static fnet_return_t _fnet_qca_set_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw
 {
     /* TBD. Not supported.*/
     return FNET_OK;
+}
+
+/************************************************************************
+* DESCRIPTION: Retrieve country code used by the Wi-Fi interface.
+*************************************************************************/
+static fnet_return_t _fnet_qca_wifi_get_country_code(fnet_netif_t *netif, fnet_char_t *country_code)
+{
+    fnet_return_t   result = FNET_ERR;
+    fnet_qca_if_t   *qca_if;
+
+    if(netif && netif->netif_prv && country_code)
+    {
+        qca_if = (fnet_qca_if_t *)(((fnet_eth_if_t *)(netif->netif_prv))->eth_prv);
+
+        if(qca_if)
+        {
+            if(qcom_get_country_code(FNET_QCA_DEVICE_ID, (uint8_t *)country_code) == A_OK)
+            {
+                result = FNET_OK;
+            }
+            else
+            {
+                FNET_DEBUG_QCA("[QCA] ERROR: Failed to get country code\r\n");
+            }
+        }
+    }
+
+    return result;
+}
+
+/************************************************************************
+* DESCRIPTION: Set country code of the Wi-Fi interface.
+*************************************************************************/
+static fnet_return_t _fnet_qca_wifi_set_country_code(fnet_netif_t *netif, const fnet_char_t *country_code)
+{
+    fnet_return_t       result = FNET_ERR;
+    fnet_qca_if_t       *qca_if;
+
+    if(netif && netif->netif_prv && country_code)
+    {
+        qca_if = (fnet_qca_if_t *)(((fnet_eth_if_t *)(netif->netif_prv))->eth_prv);
+
+        if(qca_if)
+        {
+            if(qcom_set_country_code(FNET_QCA_DEVICE_ID, (uint8_t *)country_code) == A_OK)
+            {
+                result = FNET_OK;
+            }
+            else
+            {
+                FNET_DEBUG_QCA("[QCA] ERROR: Failed to set country code\r\n");
+            }
+        }
+    }
+
+    return result;
 }
 
 /************************************************************************

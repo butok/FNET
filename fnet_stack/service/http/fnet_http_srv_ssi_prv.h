@@ -22,32 +22,32 @@
 *
 ***************************************************************************/
 
-#ifndef _FNET_HTTP_SSI_PRV_H_
+#ifndef _FNET_HTTP_SRV_SSI_PRV_H_
 
-#define _FNET_HTTP_SSI_PRV_H_
+#define _FNET_HTTP_SRV_SSI_PRV_H_
 
 #include "fnet.h"
 
-#if FNET_CFG_HTTP && FNET_CFG_HTTP_SSI
+#if FNET_CFG_HTTP_SRV && FNET_CFG_HTTP_SRV_SSI
 
 /* SSI statemachine state. */
 typedef enum
 {
-    FNET_HTTP_SSI_WAIT_HEAD = 0,
-    FNET_HTTP_SSI_WAIT_TAIL,
-    FNET_HTTP_SSI_INCLUDING
+    FNET_HTTP_SRV_SSI_WAIT_HEAD = 0,
+    FNET_HTTP_SRV_SSI_WAIT_TAIL,
+    FNET_HTTP_SRV_SSI_INCLUDING
 }
-fnet_http_ssi_state_t;
+fnet_http_srv_ssi_state_t;
 
 /* SSI private control structure. */
-struct fnet_http_ssi_if
+struct fnet_http_srv_ssi_if
 {
-    const struct fnet_http_ssi *ssi_table; /* Pointer to the SSI table.*/
-    fnet_http_ssi_send_t send;    /* Pointer to the respond callback.*/
-    fnet_http_ssi_state_t state;        /* State. */
+    const struct fnet_http_srv_ssi *ssi_table; /* Pointer to the SSI table.*/
+    fnet_http_srv_ssi_send_t send;    /* Pointer to the respond callback.*/
+    fnet_http_srv_ssi_state_t state;        /* State. */
 };
 
-extern const struct fnet_http_file_handler fnet_http_ssi_handler; /* SSI file handler. */
+extern const struct fnet_http_srv_file_handler fnet_http_srv_ssi_handler; /* SSI file handler. */
 
 #endif
 

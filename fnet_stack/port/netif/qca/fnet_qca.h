@@ -38,7 +38,8 @@
 typedef struct
 {
     struct fnet_netif_statistics    statistics;     /* Statistic counters.*/
-    fnet_bool_t                     is_connected;   /* Link status. */
+    fnet_bool_t                     is_connected;   /* Current Link status. */
+    fnet_bool_t                     was_disconneced; /* Used to avoid possible skip of the disconnection state */
     fnet_netif_t                    *netif;         /* Netif. */
     void                            *pReq;          /* Input request */
     fnet_event_desc_t               input_event;    /* Input event */

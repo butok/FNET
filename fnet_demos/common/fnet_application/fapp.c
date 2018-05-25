@@ -30,7 +30,7 @@
 
 #include "fapp_netif.h"
 
-#if ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP)|| (FAPP_CFG_EXP_CMD && FNET_CFG_FS)
+#if ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP_SRV)|| (FAPP_CFG_EXP_CMD && FNET_CFG_FS)
     #include "fapp_fs.h"
 #endif
 #if FAPP_CFG_FREERTOS
@@ -246,7 +246,7 @@ static void fapp_init(void)
 #endif
 
         /* Init FS and mount FS Image. */
-#if (FAPP_CFG_EXP_CMD && FNET_CFG_FS) || ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP)
+#if (FAPP_CFG_EXP_CMD && FNET_CFG_FS) || ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP_SRV)
         fapp_fs_mount();
 #endif
 
@@ -317,16 +317,16 @@ static void fapp_release(fnet_shell_desc_t desc)
     fapp_telnet_release();
 #endif
 
-#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP          /* Release HTTP server. */
-    fapp_http_release();
+#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP_SRV          /* Release HTTP server. */
+    fapp_http_srv_release();
 #endif
 
 #if FAPP_CFG_BENCH_CMD && FNET_CFG_BENCH_SRV    /* Release BENCH server. */
     fapp_bench_srv_release();
 #endif
 
-#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP && FNET_CFG_HTTP_TLS && FNET_CFG_TLS /* Release HTTPS server. */
-    fapp_http_tls_release();
+#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP_SRV && FNET_CFG_HTTP_SRV_TLS && FNET_CFG_TLS /* Release HTTPS server. */
+    fapp_http_srv_tls_release();
 #endif
 
 #if FAPP_CFG_TFTP_CMD                          /* Release TFTP server. */
@@ -337,7 +337,7 @@ static void fapp_release(fnet_shell_desc_t desc)
     fapp_dhcp_srv_release();                    /* Release DHCP server. */
 #endif
 
-#if (FAPP_CFG_EXP_CMD && FNET_CFG_FS) || ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP)
+#if (FAPP_CFG_EXP_CMD && FNET_CFG_FS) || ((FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP_SRV)
     fapp_fs_unmount();                          /* Unmount and release FS. */
 #endif
 

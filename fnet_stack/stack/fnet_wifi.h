@@ -112,7 +112,7 @@ extern "C" {
 
 /***************************************************************************/ /*!
  *
- * @brief    Starts Wi-Fi connection in station mode.
+ * @brief    Start Wi-Fi connection in station mode.
  *
  * @param netif_desc    Network interface descriptor.
  *
@@ -136,7 +136,7 @@ fnet_return_t fnet_wifi_connect(fnet_netif_desc_t netif_desc, fnet_wifi_connect_
 
 /***************************************************************************/ /*!
  *
- * @brief    Disconnects from a Wi-Fi network.
+ * @brief    Disconnect from a Wi-Fi network.
  *
  * @param netif_desc    Network interface descriptor.
  *
@@ -156,7 +156,7 @@ fnet_return_t fnet_wifi_disconnect(fnet_netif_desc_t netif_desc);
 
 /***************************************************************************/ /*!
  *
- * @brief    Initializes a Wi-Fi access point.
+ * @brief    Initialize a Wi-Fi access point.
  *
  * @param netif_desc    Network interface descriptor.
  *
@@ -180,7 +180,7 @@ fnet_return_t fnet_wifi_access_point(fnet_netif_desc_t netif_desc, fnet_wifi_acc
 
 /***************************************************************************/ /*!
  *
- * @brief    Retrieves current operation mode of the Wi-Fi interface.
+ * @brief    Retrieve current operation mode of the Wi-Fi interface.
  *
  * @param netif_desc  Network interface descriptor.
  *
@@ -197,7 +197,7 @@ fnet_wifi_op_mode_t fnet_wifi_get_op_mode(fnet_netif_desc_t netif_desc);
 
 /***************************************************************************/ /*!
  *
- * @brief    Retrieves firmware version number of the Wi-Fi interface module.
+ * @brief    Retrieve firmware version number of the Wi-Fi interface module.
  *
  * @param netif_desc       Network interface descriptor.
  *
@@ -214,7 +214,54 @@ fnet_uint32_t fnet_wifi_fw_get_version(fnet_netif_desc_t netif_desc);
 
 /***************************************************************************/ /*!
  *
- * @brief    Updates firmware of the Wi-Fi interface.
+ * @brief    Set country code of the Wi-Fi interface.
+ *
+ * @param[in] netif_desc  Network interface descriptor.
+ *
+ * @param[in] country_code  A two-letter country code (3 bytes - null-terminated string).
+ *
+ * @return This function returns:
+ *   - @ref FNET_OK if no error occurs.
+ *   - @ref FNET_ERR if an error occurs.
+ *
+ * @see fnet_wifi_get_country_code()
+ *
+ ******************************************************************************
+ *
+ * This function sets the country code (ISO3166) to indicate
+ * the country-specific regulatory domain in with the W-Fi device is operating. @n
+ * For example, "US" - United State, "JP" - Japan.
+ * @note QCA4002/4 WiFi module supports only up to three set operations.
+ *
+ ******************************************************************************/
+fnet_return_t fnet_wifi_set_country_code(fnet_netif_desc_t netif_desc, const fnet_char_t *country_code);
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Retrieve country code used by the Wi-Fi interface.
+ *
+ * @param[in] netif_desc  Network interface descriptor.
+ *
+ * @param[out] country_code        String buffer that receives a two-letter country code (3 bytes - null-terminated string).
+ *
+ * @return This function returns:
+ *   - @ref FNET_OK if no error occurs.
+ *   - @ref FNET_ERR if an error occurs.
+ *
+ * @see fnet_wifi_set_country_code()
+ *
+ ******************************************************************************
+ *
+ * This function retrieves the active country code (ISO3166) indicating
+ * the country-specific regulatory domain in with the W-Fi device is operating. @n
+ * For example, "US" - United State, "JP" - Japan.
+ *
+ ******************************************************************************/
+fnet_return_t fnet_wifi_get_country_code(fnet_netif_desc_t netif_desc, fnet_char_t *country_code);
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Update firmware of the Wi-Fi interface.
  *
  * @param netif_desc       Network interface descriptor.
  *

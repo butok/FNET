@@ -254,7 +254,7 @@ void fnet_strcat (fnet_char_t *dest, const fnet_char_t *src);
  * The resulting string is null-terminated.
  *
  ******************************************************************************/
-void fnet_strncat (fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n);
+void fnet_strlcat (fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n);
 
 /***************************************************************************/ /*!
  *
@@ -291,7 +291,7 @@ void fnet_strcpy (fnet_char_t *dest, const fnet_char_t *src);
  * The result string is null-terminated.
  *
  ******************************************************************************/
-void fnet_strncpy( fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n );
+void fnet_strlcpy( fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n );
 
 /***************************************************************************/ /*!
  *

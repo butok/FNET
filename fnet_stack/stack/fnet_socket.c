@@ -392,7 +392,7 @@ fnet_socket_if_t *_fnet_socket_copy( fnet_socket_if_t *sock )
         sock_cp->next = 0;
         sock_cp->prev = 0;
         sock_cp->descriptor = FNET_NULL;
-        sock_cp->state = SS_UNCONNECTED;
+        sock_cp->state = SS_CLOSED;
         sock_cp->protocol_control = 0;
         sock_cp->head_con = 0;
         sock_cp->partial_con = 0;
@@ -452,7 +452,7 @@ fnet_socket_t fnet_socket( fnet_address_family_t family, fnet_socket_type_t type
     _fnet_socket_desc_set(res, sock);
     sock->protocol_interface = prot;
     sock->local_addr.sa_family = family;
-    sock->state = SS_UNCONNECTED;
+    sock->state = SS_CLOSED;
 
     /* Save protocol number.*/
     sock->protocol_number = protocol;
@@ -2020,7 +2020,7 @@ fnet_size_t fnet_socket_poll(fnet_socket_poll_t *socket_poll, fnet_size_t socket
                             {
                                 /* The protocol is connection oriented (TCP).*/
                                 if((sock->protocol_interface->socket_api->con_req) &&
-                                   (sock->state == SS_UNCONNECTED)) /* If the socket is disconnected*/
+                                   ((sock->state == SS_CLOSED) || (sock->state == SS_CLOSING))) /* If the socket is disconnected*/
                                 {
                                     _fnet_socket_set_error(sock, FNET_ERR_NOTCONN); /* Will be catched later if FNET_SOCKET_EVENT_ERR is set. */
                                 }
@@ -2039,7 +2039,7 @@ fnet_size_t fnet_socket_poll(fnet_socket_poll_t *socket_poll, fnet_size_t socket
                                 {
                                     socket_poll->events_occurred |= FNET_SOCKET_EVENT_OUT;
                                 }
-                                else if(sock->state == SS_UNCONNECTED) /* If the socket is disconnected*/
+                                else if((sock->state == SS_CLOSED) || (sock->state == SS_CLOSING)) /* If the socket is disconnected*/
                                 {
                                     _fnet_socket_set_error(sock, FNET_ERR_NOTCONN); /* Will be catched later if FNET_SOCKET_EVENT_ERR is set. */
                                 }

@@ -24,34 +24,34 @@
 
 #include "fnet.h"
 
-#if FNET_CFG_HTTP && FNET_CFG_HTTP_POST && FNET_CFG_HTTP_VERSION_MAJOR
+#if FNET_CFG_HTTP_SRV && FNET_CFG_HTTP_SRV_POST && FNET_CFG_HTTP_SRV_VERSION_MAJOR
 
-#include "fnet_http_prv.h"
-#include "fnet_http_post.h"
+#include "fnet_http_srv_prv.h"
+#include "fnet_http_srv_post.h"
 
 /* Prototypes */
-static fnet_return_t _fnet_http_post_handle(struct fnet_http_if *http, struct fnet_http_uri *uri);
-static fnet_return_t _fnet_http_post_receive(struct fnet_http_if *http);
-static fnet_return_t _fnet_http_post_send(struct fnet_http_if *http);
+static fnet_return_t _fnet_http_srv_post_handle(struct fnet_http_srv_if *http, struct fnet_http_srv_uri *uri);
+static fnet_return_t _fnet_http_srv_post_receive(struct fnet_http_srv_if *http);
+static fnet_return_t _fnet_http_srv_post_send(struct fnet_http_srv_if *http);
 
 /* POST method. */
-const struct fnet_http_method fnet_http_method_post =
+const struct fnet_http_srv_method fnet_http_srv_method_post =
 {
     .token = "POST",
-    .handle = _fnet_http_post_handle,
-    .receive = _fnet_http_post_receive,
-    .send = _fnet_http_post_send,
+    .handle = _fnet_http_srv_post_handle,
+    .receive = _fnet_http_srv_post_receive,
+    .send = _fnet_http_srv_post_send,
     .close = FNET_NULL
 };
 
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_return_t _fnet_http_post_handle(struct fnet_http_if *http, struct fnet_http_uri *uri)
+static fnet_return_t _fnet_http_srv_post_handle(struct fnet_http_srv_if *http, struct fnet_http_srv_uri *uri)
 {
-    struct fnet_http_session_if *session =  http->session_active;
+    struct fnet_http_srv_session_if *session =  http->session_active;
     fnet_return_t                result = FNET_ERR;
-    const struct fnet_http_post *post_ptr;
+    const struct fnet_http_srv_post *post_ptr;
 
     if(http->post_table)
         /* POST table is initialized.*/
@@ -72,7 +72,7 @@ static fnet_return_t _fnet_http_post_handle(struct fnet_http_if *http, struct fn
                 session->data_ptr = post_ptr;
                 if(post_ptr->post_handle)
                 {
-                    result = post_ptr->post_handle((fnet_http_session_t)session, uri->query, &session->response.cookie);
+                    result = post_ptr->post_handle((fnet_http_srv_session_t)session, uri->query, &session->response.cookie);
                 }
                 else
                 {
@@ -89,19 +89,19 @@ static fnet_return_t _fnet_http_post_handle(struct fnet_http_if *http, struct fn
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_return_t _fnet_http_post_receive(struct fnet_http_if *http)
+static fnet_return_t _fnet_http_srv_post_receive(struct fnet_http_srv_if *http)
 {
-    struct fnet_http_session_if *session =  http->session_active;
+    struct fnet_http_srv_session_if *session =  http->session_active;
     fnet_return_t                result = FNET_ERR;
-    const struct fnet_http_post *post_ptr;
+    const struct fnet_http_srv_post *post_ptr;
 
     if(session->data_ptr)
     {
-        post_ptr = (const struct fnet_http_post *)session->data_ptr;
+        post_ptr = (const struct fnet_http_srv_post *)session->data_ptr;
 
         if(post_ptr->post_receive)
         {
-            result = post_ptr->post_receive((fnet_http_session_t)session, session->buffer, session->buffer_actual_size, &session->response.cookie);
+            result = post_ptr->post_receive((fnet_http_srv_session_t)session, session->buffer, session->buffer_actual_size, &session->response.cookie);
         }
         else
         {
@@ -115,11 +115,11 @@ static fnet_return_t _fnet_http_post_receive(struct fnet_http_if *http)
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_return_t _fnet_http_post_send(struct fnet_http_if *http)
+static fnet_return_t _fnet_http_srv_post_send(struct fnet_http_srv_if *http)
 {
-    struct fnet_http_session_if *session =  http->session_active;
+    struct fnet_http_srv_session_if *session =  http->session_active;
     fnet_return_t               result = FNET_ERR;
-    const struct fnet_http_post *post_ptr = (const struct fnet_http_post *) session->data_ptr;
+    const struct fnet_http_srv_post *post_ptr = (const struct fnet_http_srv_post *) session->data_ptr;
 
     if(post_ptr && (post_ptr->post_send)
        && ((session->buffer_actual_size = post_ptr->post_send(session->buffer, sizeof(session->buffer), &session->response.send_eof, &session->response.cookie)) > 0u) )

@@ -160,10 +160,10 @@ static void fapp_fs_cd_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char
         /* Add splitter if not yet.*/
         if((size_cd == 0) || (fapp_fs_current_path[size_cd - 1U] != FNET_FS_SPLITTER))
         {
-            fnet_strncat( &fapp_fs_current_path[0], splitter, FAPP_FS_DIR_PATH_MAX);
+            fnet_strlcat( &fapp_fs_current_path[0], splitter, FAPP_FS_DIR_PATH_MAX);
         }
 
-        fnet_strncat( &fapp_fs_current_path[0], path, FAPP_FS_DIR_PATH_MAX);
+        fnet_strlcat( &fapp_fs_current_path[0], path, FAPP_FS_DIR_PATH_MAX);
         path = fapp_fs_current_path;
     }
     else /* Full path. */
@@ -192,10 +192,10 @@ static void fapp_fs_cd_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char
     if (dir)
     {
         /* Update cur path. */
-        fnet_strncpy( &fapp_fs_current_path[0], path, FAPP_FS_DIR_PATH_MAX);
+        fnet_strlcpy( &fapp_fs_current_path[0], path, FAPP_FS_DIR_PATH_MAX);
         if(fapp_fs_current_path[0] == '\0') /* root dir */
         {
-            fnet_strncat( &fapp_fs_current_path[0], splitter, FAPP_FS_DIR_PATH_MAX);
+            fnet_strlcat( &fapp_fs_current_path[0], splitter, FAPP_FS_DIR_PATH_MAX);
         }
 
         /* Change shell prompt. */
@@ -238,10 +238,10 @@ static void fapp_fs_view_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_ch
         /* Add splitter if not yet.*/
         if((size_cd == 0) || (fapp_fs_current_path[size_cd - 1U] != FNET_FS_SPLITTER))
         {
-            fnet_strncat( &fapp_fs_current_path[0], splitter, FAPP_FS_DIR_PATH_MAX);
+            fnet_strlcat( &fapp_fs_current_path[0], splitter, FAPP_FS_DIR_PATH_MAX);
         }
 
-        fnet_strncat( &fapp_fs_current_path[0], path, FAPP_FS_DIR_PATH_MAX);
+        fnet_strlcat( &fapp_fs_current_path[0], path, FAPP_FS_DIR_PATH_MAX);
         path = fapp_fs_current_path;
     }
     else /* Full path. */

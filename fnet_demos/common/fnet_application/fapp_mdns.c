@@ -29,12 +29,12 @@
 #include "fapp_prv.h"
 #include "fapp_mdns.h"
 
-#if (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP
+#if (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP_SRV
 #include "fapp_http.h"
 static const fnet_mdns_txt_key_t *fapp_mdns_service_get_txt(void);
-static const fnet_mdns_service_t fapp_mdns_http_service = {.service_type =  "_http._tcp", .service_port = FNET_CFG_HTTP_PORT, .service_get_txt = fapp_mdns_service_get_txt};        /* HTTP service parameters.*/
-#if FNET_CFG_HTTP_TLS
-static const fnet_mdns_service_t fapp_mdns_http_tls_service = {.service_type =  "_https._tcp", .service_port = FNET_CFG_HTTP_TLS_PORT, .service_get_txt = fapp_mdns_service_get_txt};   /* HTTPS service parameters.*/
+static const fnet_mdns_service_t fapp_mdns_http_service = {.service_type =  "_http._tcp", .service_port = FNET_CFG_HTTP_SRV_PORT, .service_get_txt = fapp_mdns_service_get_txt};        /* HTTP service parameters.*/
+#if FNET_CFG_HTTP_SRV_TLS
+static const fnet_mdns_service_t fapp_mdns_http_tls_service = {.service_type =  "_https._tcp", .service_port = FNET_CFG_HTTP_SRV_TLS_PORT, .service_get_txt = fapp_mdns_service_get_txt};   /* HTTPS service parameters.*/
 #endif
 
 const fnet_mdns_txt_key_t fapp_mdns_txt_key_http_table[] =
@@ -118,7 +118,7 @@ void fapp_mdns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
             fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Host Name", params.name );
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
 
-#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
+#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP_SRV
             /* Register HTTP server to mDNS-SD, if availble.*/
             fapp_mdns_service_register_http();
 #endif
@@ -140,7 +140,7 @@ ERROR_PARAMETER:
     return;
 }
 
-#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
+#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP_SRV
 static const fnet_mdns_txt_key_t *fapp_mdns_service_get_txt(void)
 {
     return fapp_mdns_txt_key_http_table;
@@ -152,12 +152,12 @@ static const fnet_mdns_txt_key_t *fapp_mdns_service_get_txt(void)
 *************************************************************************/
 void fapp_mdns_service_register_http( void )
 {
-#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
+#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP_SRV
     fnet_netif_desc_t   netif;
     fnet_index_t        i;
     fnet_mdns_desc_t    mdns;
 
-    if(fapp_http_desc)
+    if(fapp_http_srv_desc)
     {
         for(i = 0; (netif = fnet_netif_get_by_number(i)); i++)
         {
@@ -176,12 +176,12 @@ void fapp_mdns_service_register_http( void )
 *************************************************************************/
 void fapp_mdns_service_register_http_tls( void )
 {
-#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP && FNET_CFG_HTTP_TLS
+#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP_SRV && FNET_CFG_HTTP_SRV_TLS
     fnet_netif_desc_t   netif;
     fnet_index_t        i;
     fnet_mdns_desc_t    mdns;
 
-    if(fapp_http_tls_desc)
+    if(fapp_http_srv_tls_desc)
     {
         for(i = 0; (netif = fnet_netif_get_by_number(i)); i++)
         {
@@ -200,7 +200,7 @@ void fapp_mdns_service_register_http_tls( void )
 *************************************************************************/
 void fapp_mdns_service_unregister_http( void )
 {
-#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP
+#if FAPP_CFG_HTTP_CMD && FNET_CFG_HTTP_SRV
     fnet_netif_desc_t   netif;
     fnet_index_t        i;
     fnet_mdns_desc_t    mdns;
@@ -228,7 +228,7 @@ void fapp_mdns_service_unregister_http( void )
 *************************************************************************/
 void fapp_mdns_service_unregister_http_tls( void )
 {
-#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP && FNET_CFG_HTTP_TLS
+#if FAPP_CFG_HTTP_TLS_CMD && FNET_CFG_HTTP_SRV && FNET_CFG_HTTP_SRV_TLS
     fnet_netif_desc_t   netif;
     fnet_index_t        i;
     fnet_mdns_desc_t    mdns;

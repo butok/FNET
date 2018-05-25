@@ -68,14 +68,14 @@
 /*****************************************************************************
 * HTTP Server service support.
 ******************************************************************************/
-#define FNET_CFG_HTTP                       (2) /* Add possibility to start two HTTP servers (one normal and one over TLS). */
-#define FNET_CFG_HTTP_AUTHENTICATION_BASIC  (1) /* Enable HTTP authentication.*/
-#define FNET_CFG_HTTP_POST                  (1) /* Enable HTTP POST-method support.*/
+#define FNET_CFG_HTTP_SRV                       (2) /* Add possibility to start two HTTP servers (one normal and one over TLS). */
+#define FNET_CFG_HTTP_SRV_AUTHENTICATION_BASIC  (1) /* Enable HTTP authentication.*/
+#define FNET_CFG_HTTP_SRV_POST                  (1) /* Enable HTTP POST-method support.*/
 
 /*****************************************************************************
 * HTTP over TLS (HTTPS) support.
 ******************************************************************************/
-#define FNET_CFG_HTTP_TLS                   (1)
+#define FNET_CFG_HTTP_SRV_TLS                   (1)
 
 /*****************************************************************************
 * TLS library support.

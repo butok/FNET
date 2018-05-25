@@ -48,7 +48,7 @@
 *      { "show", 0, 0, fapp_show, "Show parameters.", "" },
 *      { "info", 0, 0, fapp_netif_info_cmd, "Show interface info.", ""},
 *      { "dhcp", 0, 1, fapp_dhcp_cln_cmd, "Start DHCP client.", "[release|reboot]"},
-*      { "http", 0, 1, fapp_http_cmd, "Start HTTP Server.", "[release]"},
+*      { "http", 0, 1, fapp_http_srv_cmd, "Start HTTP Server.", "[release]"},
 *      { 0, 0, 0, 0, 0, 0},
 *  };
 * // ************************************************************************
@@ -321,7 +321,7 @@ void fnet_shell_release(fnet_shell_desc_t desc);
  *      { FNET_SHELL_CMD_TYPE_NORMAL, "get", 0, 0, fapp_show,    "Get parameters.", "[<parameter>]" },
  *      { FNET_SHELL_CMD_TYPE_NORMAL, "info", 0, 0, fapp_netif_info_cmd,    "Show interface info.", ""},
  *      { FNET_SHELL_CMD_TYPE_NORMAL, "dhcp", 0, 1, fapp_dhcp_cln_cmd,    "Start DHCP client.", "[release|reboot]"},
- *      { FNET_SHELL_CMD_TYPE_NORMAL, "http", 0, 1, fapp_http_cmd,    "Start HTTP Server.", "[release]"},
+ *      { FNET_SHELL_CMD_TYPE_NORMAL, "http", 0, 1, fapp_http_srv_cmd,    "Start HTTP Server.", "[release]"},
  *      { FNET_SHELL_CMD_TYPE_SHELL, "exp", 0, 1, &fapp_fs_shell,   "File Explorer submenu...", ""},
  *  };
  * ...

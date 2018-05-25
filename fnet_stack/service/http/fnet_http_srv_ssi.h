@@ -22,13 +22,13 @@
 *
 ***************************************************************************/
 
-#ifndef _FNET_HTTP_SSI_H_
+#ifndef _FNET_HTTP_SRV_SSI_H_
 
-#define _FNET_HTTP_SSI_H_
+#define _FNET_HTTP_SRV_SSI_H_
 
-#if (FNET_CFG_HTTP && FNET_CFG_HTTP_SSI)|| defined(__DOXYGEN__)
+#if (FNET_CFG_HTTP_SRV && FNET_CFG_HTTP_SRV_SSI)|| defined(__DOXYGEN__)
 
-/*! @addtogroup fnet_http
+/*! @addtogroup fnet_http_srv
  @{ */
 
 /**************************************************************************/ /*!
@@ -36,7 +36,7 @@
  * All files that have this extension will be parsed by the SSI parser.
  * @showinitializer
  ******************************************************************************/
-#define FNET_HTTP_SSI_EXTENSION     "shtml"
+#define FNET_HTTP_SRV_SSI_EXTENSION     "shtml"
 
 /**************************************************************************/ /*!
  * @brief Callback function prototype of the SSI parameters handler.
@@ -56,7 +56,7 @@
  *   - @ref FNET_ERR if an error occurs. @n
  *     SSI directive will be eliminated from the result HTTP page.
  *
- * @see fnet_http_ssi, fnet_http_ssi_send_t
+ * @see fnet_http_srv_ssi, fnet_http_srv_ssi_send_t
  *
  * The SSI parser invokes this callback function, when it meets SSI directive
  * in the HTML file and the SSI command name corresponds to the name
@@ -66,7 +66,7 @@
  * blank string.
  *
  ******************************************************************************/
-typedef fnet_return_t(*fnet_http_ssi_handle_t)(fnet_char_t *query, fnet_uint32_t *cookie);
+typedef fnet_return_t(*fnet_http_srv_ssi_handle_t)(fnet_char_t *query, fnet_uint32_t *cookie);
 
 /**************************************************************************/ /*!
  * @brief Callback function prototype of the SSI include function.
@@ -77,10 +77,10 @@ typedef fnet_return_t(*fnet_http_ssi_handle_t)(fnet_char_t *query, fnet_uint32_t
  *
  * @param eof              Condition flag:
  *                         - @c FNET_FALSE =  there is still more data to include.
- *                           The @ref fnet_http_ssi_send_t function will be called
+ *                           The @ref fnet_http_srv_ssi_send_t function will be called
  *                           during the next iteration again.
  *                         - @c FNET_TRUE =  no more data is available for the SSI to include.
- *                           It was the last call of the @ref fnet_http_ssi_send_t
+ *                           It was the last call of the @ref fnet_http_srv_ssi_send_t
  *                           function for the current SSI.
  * @param cookie    This parameter points to the value,
  *                  which can be used to associate a custom information
@@ -93,17 +93,17 @@ typedef fnet_return_t(*fnet_http_ssi_handle_t)(fnet_char_t *query, fnet_uint32_t
  *         pointed to by @c buffer.@n
  *         The condition flag @c eof indicates, if the SSI end condition has occurred.
  *
- * @see fnet_http_ssi, fnet_http_ssi_handle_t
+ * @see fnet_http_srv_ssi, fnet_http_srv_ssi_handle_t
  *
  * This function creates SSI dynamic content.@n
  * An application should use the @c buffer as output buffer for the dynamic content
  * and set @c eof flag to @c 1 if no data are available to include.@n
  * The SSI parser invokes this callback function after successful call of the
- * @ref fnet_http_ssi_handle_t function and continues to call this function repeatedly,
+ * @ref fnet_http_srv_ssi_handle_t function and continues to call this function repeatedly,
  * till the @c eof will be set to @c 1 or the return result is set to @c 0.
  *
  ******************************************************************************/
-typedef fnet_size_t (*fnet_http_ssi_send_t)(fnet_uint8_t *buffer, fnet_size_t buffer_size, fnet_bool_t *eof, fnet_uint32_t *cookie);
+typedef fnet_size_t (*fnet_http_srv_ssi_send_t)(fnet_uint8_t *buffer, fnet_size_t buffer_size, fnet_bool_t *eof, fnet_uint32_t *cookie);
 
 /**************************************************************************/ /*!
  * @brief SSI callback function table.
@@ -121,19 +121,19 @@ typedef fnet_size_t (*fnet_http_ssi_send_t)(fnet_uint8_t *buffer, fnet_size_t bu
  * the client unparsed, the HTML comment format means the directive's
  * coding will not be visible.
  *
- * @see fnet_http_params
+ * @see fnet_http_srv_params
  ******************************************************************************/
-struct fnet_http_ssi
+struct fnet_http_srv_ssi
 {
     fnet_char_t             *name;	    /**< @brief SSI command name. */
-    fnet_http_ssi_handle_t  handle;     /**< @brief Pointer to the SSI parameters
+    fnet_http_srv_ssi_handle_t  handle;     /**< @brief Pointer to the SSI parameters
 	                                     *   handler. It's optional. */
-    fnet_http_ssi_send_t    send;       /**< @brief Pointer to the SSI include function.
+    fnet_http_srv_ssi_send_t    send;       /**< @brief Pointer to the SSI include function.
                                          * This function actually inserts dynamic content to
                                          * an existing HTML page. It's optional. */
 };
 /*! @} */
 
-#endif /* FNET_CFG_HTTP && FNET_CFG_HTTP_SSI */
+#endif /* FNET_CFG_HTTP_SRV && FNET_CFG_HTTP_SRV_SSI */
 
 #endif

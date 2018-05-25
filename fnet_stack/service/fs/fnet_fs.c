@@ -177,7 +177,7 @@ fnet_return_t fnet_fs_mount( fnet_char_t *fs_name, const fnet_char_t *mount_name
                 {
                     mount_point->arg = arg; /* Fill mount info structure. */
                     mount_point->fs = fs;
-                    fnet_strncpy( mount_point->name, mount_name, FNET_CFG_FS_MOUNT_NAME_MAX + 1U );
+                    fnet_strlcpy( mount_point->name, mount_name, FNET_CFG_FS_MOUNT_NAME_MAX + 1U );
                 }
             }
         }

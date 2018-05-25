@@ -1,6 +1,64 @@
 FNET TCP/IP Stack.
-
+==================
 Please read the FNET Quick Start chapter. You can find it in the /fnet_doc/fnet_user_manual.chm file.
+
+The stack provides following protocols and services:
+- Supported Platforms:
+	- ARM Cortex-M4
+		- Kinetis:
+			- MK64FN1M (FRDM-K64F board)
+			- MK66FN2M (FRDM-K66F board)
+			- MK6DN512 (TWR-K60D100M board)
+		- i.MX-RT: MIMXRT1052 (IMXRT1050-EVKB board).
+		- LPC: LPC54628 (OM13098: LPCXpresso54628 board)
+	- Qualcomm/Atheros Wi-Fi 202.11: 
+		- QCA4002 (GT202-GC3013-FRDM4-KIT board).
+		- QCA4004 (SX-ULPAN-2401-SHIELD board). 
+- Supported Compilers:
+	- IAR: Embedded Workbench for ARM, version 8.22
+	- GCC: Kinetis Design Studio, version 3.2 
+- Bare-metal TCP/IP stack. No underlying RTOS is required, although it can be used with it. FreeRTOS example is provided.
+- Non-blocking Socket API (DGRAM, STREAM, RAW).
+- Core Protocols:
+	- TCP (Transmission Control Protocol).
+	- UDP (User Datagram Protocol).
+	- IPv4.
+		- @b ICMPv4 (Internet Control Message Protocol).
+		- @b IGMP (Internet Group Management Protocol).
+		- @b ARP (Address Resolution Protocol).
+	- IPv6. 
+		- Passed the "IPv6 Ready Logo" Phase-2 IPv6 Core Protocols Conformance Tests, for host.
+		- @b ICMPv6 (Internet Control Message Protocol).
+		- @b MLDv1 (Multicast Listener Discovery).
+		- Neighbor Discovery for IPv6.
+		- IPv6 Stateless Address Autoconfiguration.
+		- Path MTU Discovery for IPv6
+- Network Interfaces:
+	- Ethernet (FEC/ENET module).
+	- Wi-Fi (QCA4002/4 module).
+	- Loopback.
+- Services:
+	- HTTP server:
+		- HTTP/1.0 or HTTP/0.9 protocols.
+		- GET and POST requests.
+		- CGI and SSI.
+		- Basic access authentication.
+		- HTTP over TLS (HTTPS).
+	- TELNET server. 
+	- DHCPv4 client and server.
+	- Auto-IP service. Passed "Phase 1, Link-Local Address Allocation", Bonjour Conformance Test suite Version 1.3.1.
+	- DNS client/resolver.
+	- Link-Detection service.
+	- Multicast DNS (mDNS) "Bonjour" Server/Responder.
+	- LLMNR Server/Responder.
+	- PING service.
+	- SNTP client.	
+	- TFTP server and client. Both Read and Write requests are supported.
+	- TLS using mbedTLS library.
+	- ROM File System.
+	- On-chip Flash Memory driver.
+	- Command line shell.
+ 	- Serial driver.
 
 FNET project directory structure:
 	fnet                        - FNET root directory.

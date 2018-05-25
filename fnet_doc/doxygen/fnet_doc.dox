@@ -2144,6 +2144,15 @@ Press any key to continue . . .
 
 FNET public releases:
 
+- Version 4.4.1
+	- Added fnet_wifi_get/set_country_code() to get/set country code used by a WiFi interface.
+	- Renamed HTTP server API from fnet_http_<name> to fnet_http_srv_<name>.
+	- Renamed fnet_strncpy() to fnet_strlcpy(), fnet_strncat() to fnet_strlcat().
+	- Added SS_CLOSING state to fnet_socket_state_t. Renamed SS_UNCONNECTED to SS_CLOSED.
+	- Fixed fnet_socket_poll() to return FNET_SOCKET_EVENT_ERR on a connection closing by a remote peer.
+	- Fixed possible skipping of WiFi-QCA disconnection.
+	- Other minor fixes.
+	
 - Version 4.4.0
 	- Added basic support for i.MX-RT, MIMXRT1052 platform (IMXRT1050-EVKB board).
 	- Added ARM CMSIS-Core(M) files to "third_party/cmsis-x.x" directory.
@@ -2560,13 +2569,13 @@ FNET public releases:
 	- Added "bind/unbind" IPv6 address commands to the Shell Demo.
 	- Added "cookie" parameter to interrupt handlers.
 	- New/renamed configuration parameters:
-		- @ref FNET_CFG_CPU_ETH_RMII enables/disables RMII mode. 
-		- @ref FNET_CFG_CPU_ETH_RMII_10T sets 10Mbps or 100Mbps in RMII mode.
+		- FNET_CFG_CPU_ETH_RMII enables/disables RMII mode. 
+		- FNET_CFG_CPU_ETH_RMII_10T sets 10Mbps or 100Mbps in RMII mode.
 		- FNET_CFG_CPU_ETHx enables/disables Externet-x module.
 		- FNET_CFG_CPU_ETHx_MAC_ADDR defines default MAC address of Externet-x module. 
 		- FNET_CFG_CPU_ETHx_MTU defines default MTU of Externet-x module.
 		- FNET_CFG_CPU_ETHx_PHY_ADDR defines default PHY address used by Ethernet-x module.
-		- @ref FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER enables/disables PHY addresses discover.
+		- FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER enables/disables PHY addresses discover.
 		- FNET_CFG_DEFAULT_IF defines default interface.
 		- FNET_CFG_OS_TIMER enables/disables OS-specific timer initialization/release.
 		- Others.
@@ -2576,12 +2585,12 @@ FNET public releases:
 	- Added multiple-session support to the HTTP server.	
 	- Added HW Checksum Calculation support by ENET module (for K60).
 	- New configuration parameters:
-		- @ref FNET_CFG_HTTP_SESSION_MAX defines maximum number of simultaneous user-session that can be handled by the HTTP server.
-		- @ref FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM enables/disables insertion of protocol checksum by Ethernet-module.
-		- @ref FNET_CFG_CPU_ETH_HW_TX_IP_CHECKSUM enables/disables insertion of IPv4 header checksum by Ethernet-module.
-		- @ref FNET_CFG_CPU_ETH_HW_RX_PROTOCOL_CHECKSUM enables/disables discard of frames with wrong protocol checksum by Ethernet-module.
-		- @ref FNET_CFG_CPU_ETH_HW_RX_IP_CHECKSUM enables/disables discard of frames with wrong IPv4 header checksum by Ethernet-module.
-		- @ref FNET_CFG_CPU_ETH_HW_RX_MAC_ERR enables/disables discard of frames with MAC layer errors by Ethernet-module.
+		- FNET_CFG_HTTP_SESSION_MAX defines maximum number of simultaneous user-session that can be handled by the HTTP server.
+		- FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM enables/disables insertion of protocol checksum by Ethernet-module.
+		- FNET_CFG_CPU_ETH_HW_TX_IP_CHECKSUM enables/disables insertion of IPv4 header checksum by Ethernet-module.
+		- FNET_CFG_CPU_ETH_HW_RX_PROTOCOL_CHECKSUM enables/disables discard of frames with wrong protocol checksum by Ethernet-module.
+		- FNET_CFG_CPU_ETH_HW_RX_IP_CHECKSUM enables/disables discard of frames with wrong IPv4 header checksum by Ethernet-module.
+		- FNET_CFG_CPU_ETH_HW_RX_MAC_ERR enables/disables discard of frames with MAC layer errors by Ethernet-module.
 	- Other minor changes.
 
 - Version 2.3.0:
@@ -2788,8 +2797,8 @@ FNET public releases:
 - Version 0.8.0:
 	- HTTP Server:
 		- Added support of the HTTP/1.0 response.
-		- Added support of the Basic Access Authentication according to RFC2617 (@ref FNET_CFG_HTTP_AUTHENTICATION_BASIC).
-		- Added support of the HTTP POST method (@ref FNET_CFG_HTTP_POST).
+		- Added support of the Basic Access Authentication according to RFC2617 (FNET_CFG_HTTP_AUTHENTICATION_BASIC).
+		- Added support of the HTTP POST method (FNET_CFG_HTTP_POST).
 		- Added the "cookie" parameter to the POST, SSI and CGI callback functions, which can be used to associate custom information with a connection instance.
 	- Added the HTTP POST and Access Authentication demos to the Shell demo application.
 	- Added @ref fnet_snprintf() function. The save version of @ref fnet_sprintf() that does not suffer from buffer overrun.
@@ -3031,7 +3040,7 @@ which includes all service-specific configuration files.
 /*****************************************************************************
 * DHCP Client service support.
 ******************************************************************************/
-#define FNET_CFG_DHCP               (1)
+#define FNET_CFG_DHCP_CLN               (1)
 
 /*****************************************************************************
 * Auto-IP service support.
@@ -3041,9 +3050,9 @@ which includes all service-specific configuration files.
 /*****************************************************************************
 * HTTP Server service support.
 ******************************************************************************/
-#define FNET_CFG_HTTP                       (1)
-#define FNET_CFG_HTTP_AUTHENTICATION_BASIC  (1) /* Enable HTTP authentication.*/
-#define FNET_CFG_HTTP_POST                  (1) /* Enable HTTP POST-method support.*/
+#define FNET_CFG_HTTP_SRV                       (1)
+#define FNET_CFG_HTTP_SRV_AUTHENTICATION_BASIC  (1) /* Enable HTTP authentication.*/
+#define FNET_CFG_HTTP_SRV_POST                  (1) /* Enable HTTP POST-method support.*/
 
 /*****************************************************************************
 * Telnet Server service support.
@@ -3059,7 +3068,6 @@ which includes all service-specific configuration files.
 * DNS client/resolver service support.
 ******************************************************************************/
 #define FNET_CFG_DNS                        (1)
-#define FNET_CFG_DNS_RESOLVER               (1)
 
 /*****************************************************************************
 * Link-Local Multicast Name Resolution (LLMNR) server/responder support.
@@ -3244,7 +3252,7 @@ which includes all service-specific configuration files.
 */
 
 /*! 
-*	@defgroup fnet_http_config HTTP Server Configuration Parameters
+*	@defgroup fnet_http_srv_config HTTP Server Configuration Parameters
 *	@ingroup fnet_service_config 
 *	This section describes the parameters specific to the HTTP Server.
 *	@n
@@ -3409,7 +3417,7 @@ which includes all service-specific configuration files.
 */
 
 /*! 
-*	@defgroup fnet_http HTTP server API
+*	@defgroup fnet_http_srv HTTP server API
 *	@ingroup fnet_service 
 */
 /*! 

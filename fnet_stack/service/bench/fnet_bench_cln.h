@@ -86,7 +86,8 @@ typedef void(*fnet_bench_cln_callback_session_end_t)(fnet_bench_cln_desc_t bench
  ******************************************************************************/
 struct fnet_bench_cln_params
 {
-    struct fnet_sockaddr                    address;            /**< @brief Socket address of the remote benchmark server to connect to. */
+    struct fnet_sockaddr                    address;            /**< @brief Socket address of the remote benchmark server to connect to.@n
+                                                                 * If the address port number is set to @c 0, it will be assigned to the default port number defined by @ref FNET_CFG_BENCH_CLN_PORT.*/
     fnet_socket_type_t                      type;               /**< @brief Protocol type. It can be @ref SOCK_STREAM (TCP) or @ref SOCK_DGRAM (UDP).*/
     fnet_size_t                             message_size;       /**< @brief Size of one message to send. Its value must be less than @ref FNET_CFG_BENCH_CLN_BUFFER_SIZE. */
     fnet_index_t                            message_number;     /**< @brief Number of messages to send. */
@@ -124,8 +125,8 @@ extern "C" {
  * in the background.@n
  * The benchmark results will be passed to the @ref fnet_bench_cln_callback_session_end_t callback function,
  * which is set @c params.@n
- * The DNS service is released automatically as soon as the
- * resolving is finished.
+ * The Benchmark service is released automatically as soon as the
+ * session is finished.
  *
  ******************************************************************************/
 fnet_bench_cln_desc_t fnet_bench_cln_init( struct fnet_bench_cln_params *params );

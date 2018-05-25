@@ -194,8 +194,7 @@ static void _fnet_shell_poll( void *shell_if_p )
                 }
                 while(shell_if->cmd_line_end);
 
-
-                fnet_strncpy(shell_if->cmd_line, shell_if->cmd_line_begin, shell_if->cmd_line_size);
+                fnet_strlcpy(shell_if->cmd_line, shell_if->cmd_line_begin, shell_if->cmd_line_size);
 
                 argc = _fnet_shell_make_argv(shell_if->cmd_line, argv);
 
@@ -607,7 +606,7 @@ fnet_return_t fnet_shell_script(fnet_shell_desc_t desc, fnet_char_t *script )
             }
 
             /* Add new script */
-            fnet_strncpy( shell_if->cmd_line, script, shell_if->cmd_line_size);
+            fnet_strlcpy( shell_if->cmd_line, script, shell_if->cmd_line_size);
             if(previous_script == FNET_TRUE)
             {
                 /* Add splitter between scripts.*/

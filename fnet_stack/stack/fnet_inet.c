@@ -385,7 +385,7 @@ static fnet_char_t *_fnet_inet_ntop_ip4 ( const fnet_ip4_addr_t *addr, fnet_char
     }
     else
     {
-        fnet_strncpy(str, tmp, str_len);
+        fnet_strlcpy(str, tmp, str_len);
 
         return (str);
     }
@@ -495,7 +495,7 @@ static fnet_char_t *_fnet_inet_ntop_ip6 (const fnet_ip6_addr_t *addr, fnet_char_
     {
         return (FNET_NULL);
     }
-    fnet_strncpy(str, tmp, str_len);
+    fnet_strlcpy(str, tmp, str_len);
     return (str);
 }
 #endif /* FNET_CFG_IP6 */

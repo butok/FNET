@@ -218,9 +218,9 @@ fnet_return_t fnet_tftp_cln_init( struct fnet_tftp_cln_params *params )
     }
 
     data_ptr = fnet_tftp_if.packet.packet_request.filename_mode;
-    fnet_strncpy( data_ptr, params->file_name, FNET_TFTP_FILENAME_SIZE_MAX);
+    fnet_strlcpy( data_ptr, params->file_name, FNET_TFTP_FILENAME_SIZE_MAX);
     data_ptr += fnet_strlen(params->file_name) + 1u;
-    fnet_strncpy((fnet_char_t *)data_ptr, FNET_TFTP_MODE, FNET_TFTP_MODE_SIZE_MAX);
+    fnet_strlcpy((fnet_char_t *)data_ptr, FNET_TFTP_MODE, FNET_TFTP_MODE_SIZE_MAX);
 
     fnet_tftp_if.packet_size = sizeof(fnet_tftp_if.packet.packet_request.opcode) + fnet_strlen(params->file_name) + 1u + sizeof(FNET_TFTP_MODE);
 

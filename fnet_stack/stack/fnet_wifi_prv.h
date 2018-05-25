@@ -42,6 +42,11 @@ typedef struct fnet_wifi_api
     fnet_return_t       (*wifi_access_point)(fnet_netif_t *netif_desc, fnet_wifi_access_point_params_t *params);   /* Initializes a Wi-Fi access point.*/
     fnet_return_t       (*wifi_disconnect)(fnet_netif_t *netif);                                                   /* Disconnects from a Wi-Fi network.*/
     fnet_wifi_op_mode_t (*wifi_get_op_mode)(fnet_netif_t *netif);                                                  /* Retrieves current operation mode of the Wi-Fi interface.*/
+    fnet_return_t       (*wifi_set_country_code)(fnet_netif_t *netif, const fnet_char_t *country_code);            /* Set two-letter country code (ISO3166) to indicate the country-specific regulatory domain in with the W-Fi device is operating.
+                                                                                                                      Null-terminated string. For example, "US" - United State, "JP" - Japan.*/
+    fnet_return_t       (*wifi_get_country_code)(fnet_netif_t *netif, fnet_char_t *country_code);                  /* Get two letter country code (ISO3166) indicating the country-specific regulatory domain in with the W-Fi device is operating.
+                                                                                                                      Null-terminated string. For example, "US" - United State, "JP" - Japan.*/
+
     fnet_uint32_t       (*wifi_fw_get_version)(fnet_netif_t *netif);                                               /* Gets Wi-Fi interface firmware version number (optional).*/
     fnet_return_t       (*wifi_fw_update)(fnet_netif_t *netif, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size); /* Updates Wi-Fi interface firmware (optional).*/
 } fnet_wifi_api_t;

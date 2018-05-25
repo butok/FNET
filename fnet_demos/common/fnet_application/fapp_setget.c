@@ -366,7 +366,7 @@ static void fapp_set_cmd_mac(fnet_shell_desc_t desc, fnet_char_t *value)
 static void fapp_set_cmd_hostname(fnet_shell_desc_t desc, fnet_char_t *value )
 {
     (void)desc;
-    fnet_strncpy(fapp_params_host_name, value, FAPP_PARAMS_HOST_NAME_SIZE);
+    fnet_strlcpy(fapp_params_host_name, value, FAPP_PARAMS_HOST_NAME_SIZE);
 }
 #endif
 
@@ -421,7 +421,7 @@ static void fapp_get_cmd_mac(fnet_shell_desc_t desc)
 static void fapp_set_cmd_bootscript(fnet_shell_desc_t desc, fnet_char_t *value )
 {
     (void)desc;
-    fnet_strncpy( fapp_params_boot_config.script, value, FAPP_PARAMS_BOOT_SCRIPT_SIZE );
+    fnet_strlcpy( fapp_params_boot_config.script, value, FAPP_PARAMS_BOOT_SCRIPT_SIZE );
 }
 #endif
 /************************************************************************
@@ -526,7 +526,7 @@ static void fapp_get_cmd_tftp(fnet_shell_desc_t desc)
 static void fapp_set_cmd_image(fnet_shell_desc_t desc, fnet_char_t *value )
 {
     (void)desc;
-    fnet_strncpy( fapp_params_tftp_config.file_name, value, FAPP_PARAMS_TFTP_FILE_NAME_SIZE );
+    fnet_strlcpy( fapp_params_tftp_config.file_name, value, FAPP_PARAMS_TFTP_FILE_NAME_SIZE );
 }
 #endif
 /************************************************************************
@@ -632,7 +632,7 @@ static void fapp_get_cmd_raw(fnet_shell_desc_t desc)
 static void fapp_set_cmd_ssid(fnet_shell_desc_t desc, fnet_char_t *value )
 {
     (void)desc;
-    fnet_strncpy(fapp_params_wifi_config.ssid, value, FAPP_PARAMS_WIFI_SSID_SIZE);
+    fnet_strlcpy(fapp_params_wifi_config.ssid, value, FAPP_PARAMS_WIFI_SSID_SIZE);
 }
 #endif
 
@@ -653,7 +653,7 @@ static void fapp_get_cmd_ssid(fnet_shell_desc_t desc)
 static void fapp_set_cmd_passphrase(fnet_shell_desc_t desc, fnet_char_t *value )
 {
     (void)desc;
-    fnet_strncpy(fapp_params_wifi_config.passphrase, value, FAPP_PARAMS_WIFI_PASSPHRASE_SIZE);
+    fnet_strlcpy(fapp_params_wifi_config.passphrase, value, FAPP_PARAMS_WIFI_PASSPHRASE_SIZE);
 }
 #endif
 

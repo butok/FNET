@@ -167,7 +167,7 @@ fnet_return_t fapp_params_to_flash(void)
     fnet_netif_get_name(netif, fapp_params_ram.fnet_params.netif_name, sizeof(fapp_params_ram.fnet_params.netif_name));
 
     /* Host name.*/
-    fnet_strncpy(fapp_params_ram.fnet_params.host_name, fapp_params_host_name, FAPP_PARAMS_HOST_NAME_SIZE);
+    fnet_strlcpy(fapp_params_ram.fnet_params.host_name, fapp_params_host_name, FAPP_PARAMS_HOST_NAME_SIZE);
 
     /* Write Signature.*/
     fnet_memcpy( fapp_params_ram.signature, FAPP_PARAMS_SIGNATURE, sizeof(FAPP_PARAMS_SIGNATURE));
@@ -238,7 +238,7 @@ fnet_return_t fapp_params_from_flash(void)
 #endif /* FNET_CFG_IP4 */
 
         /* Host name.*/
-        fnet_strncpy(fapp_params_host_name, fnet_params->fnet_params.host_name, FAPP_PARAMS_HOST_NAME_SIZE);
+        fnet_strlcpy(fapp_params_host_name, fnet_params->fnet_params.host_name, FAPP_PARAMS_HOST_NAME_SIZE);
 
 #if FAPP_CFG_PARAMS_BOOT
         fapp_params_boot_config = fnet_params->boot_params; /* Boot parameters. */

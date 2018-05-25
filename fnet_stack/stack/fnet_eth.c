@@ -800,11 +800,13 @@ fnet_bool_t _fnet_eth_is_connected(fnet_netif_t *netif)
     fnet_uint16_t   data;
     fnet_bool_t     res = FNET_FALSE;
 
+#if 0 /* 0 = We do not want to skip disconnection. */
     /* Some PHY (e.g.DP8340) returns "unconnected" and than "connected" state
      *  just to show that was transition event from one state to another.
      *  As we need only curent state,  read 2 times and returtn
      *  the current/latest state. */
     _fnet_eth_phy_read(netif, FNET_ETH_MII_REG_SR, &data);
+#endif
 
     if (_fnet_eth_phy_read(netif, FNET_ETH_MII_REG_SR, &data) == FNET_OK)
     {

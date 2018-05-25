@@ -38,7 +38,8 @@
 #include "fs/fnet_fs.h"
 #include "fs/fnet_fs_rom.h"
 #include "tls/fnet_tls.h"
-#include "http/fnet_http.h"
+#include "http/fnet_http_srv.h"
+#include "http/fnet_http_cln.h"
 #include "dns/fnet_dns.h"
 #include "ping/fnet_ping.h"
 #include "llmnr/fnet_llmnr.h"
@@ -54,7 +55,7 @@
 * (DHCP client, TFTP client, Shell, Telnet server or HTTP server) in
 * "background" - during the application
 * idle time. Typically, the polling callback is registered during the service
-* initialization (for example the @ref fnet_http_init() or other service initialization
+* initialization (for example the @ref fnet_http_srv_init() or other service initialization
 * function).
 * In order to make the polling mechanism work, the user application should
 * call the @ref fnet_service_poll() API function periodically, during the idle time.@n

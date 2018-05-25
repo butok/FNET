@@ -42,7 +42,6 @@
 #define FNET_BENCH_CLN_ERR_PARAMS             "[BENCH cln] Wrong input parameters"
 #define FNET_BENCH_CLN_ERR_SOCKET_CREATION    "[BENCH cln] Socket creation error"
 #define FNET_BENCH_CLN_ERR_SOCKET_CONNECT     "[BENCH cln] Socket connect error"
-#define FNET_BENCH_CLN_ERR_SOCKET_LISTEN      "[BENCH cln] Socket listen error"
 #define FNET_BENCH_CLN_ERR_SOCKET_OPTION      "[BENCH cln] Socket option error"
 #define FNET_BENCH_CLN_ERR_SOCKET_MULTICAST   "[BENCH cln] Socket multicast join error"
 #define FNET_BENCH_CLN_ERR_SERVICE            "[BENCH cln] Service registration error."
@@ -76,10 +75,10 @@ typedef struct fnet_bench_cln_if
     struct fnet_bench_cln_result            bench_cln_result;
 } fnet_bench_cln_if_t;
 
-/* Tx buffer */
+/* Internal buffer */
 static fnet_uint8_t fnet_bench_cln_buffer[FNET_CFG_BENCH_CLN_BUFFER_SIZE];
 
-/* The Benchmark server interface list*/
+/* The Benchmark client interface list*/
 static  fnet_bench_cln_if_t fnet_bench_cln_if_list[FNET_CFG_BENCH_CLN];
 
 /************************************************************************

@@ -32,6 +32,8 @@
 
 static void fapp_link_script_add_netif_name(fnet_char_t *script_out, fnet_size_t script_out_size, fnet_char_t *script_in, fnet_char_t *netif_name);
 
+static fnet_wifi_op_mode_t _fapp_link_wifi_op_mode = FNET_WIFI_OP_MODE_STATION;
+
 /************************************************************************
 * DESCRIPTION: Link-Detection event handler callback.
 *************************************************************************/
@@ -44,17 +46,33 @@ static void fapp_link_callback(fnet_netif_desc_t netif, fnet_bool_t connected, v
 
     fnet_netif_get_name(netif, netif_name, sizeof(netif_name));
 
-    /* connect/disconnect script.*/
-    if(fnet_wifi_get_op_mode(netif) == FNET_WIFI_OP_MODE_ACCESS_POINT)
+    /* Choose connect/disconnect script.*/
+    if(fnet_netif_get_type(netif) == FNET_NETIF_TYPE_WIFI) /* WiFi */
     {
-        /* Wi-Fi interface in the access point operation mode. */
         if(connected == FNET_TRUE)
         {
-            script_p = FAPP_CFG_LINK_CONNECT_WIFI_ACCESS_POINT_SCRIPT;
+            _fapp_link_wifi_op_mode = fnet_wifi_get_op_mode(netif);
+            /* Wi-Fi interface in the access point operation mode. */
+            if(_fapp_link_wifi_op_mode ==  FNET_WIFI_OP_MODE_ACCESS_POINT)
+            {
+                script_p = FAPP_CFG_LINK_CONNECT_WIFI_ACCESS_POINT_SCRIPT;
+            }
+            else
+            {
+                script_p = FAPP_CFG_LINK_CONNECT_SCRIPT;
+            }
         }
         else
         {
-            script_p = FAPP_CFG_LINK_DISCONNECT_WIFI_ACCESS_POINT_SCRIPT;
+            /* Wi-Fi interface in the access point operation mode. */
+            if(_fapp_link_wifi_op_mode ==  FNET_WIFI_OP_MODE_ACCESS_POINT) /* Take mode during connection */
+            {
+                script_p = FAPP_CFG_LINK_DISCONNECT_WIFI_ACCESS_POINT_SCRIPT;
+            }
+            else
+            {
+                script_p = FAPP_CFG_LINK_DISCONNECT_SCRIPT;
+            }
         }
     }
     else

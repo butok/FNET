@@ -3,7 +3,7 @@
   <ProjectSettings>
     <OutputFullPath>..\fnet_application\fapp_fs_image.c</OutputFullPath>
     <ImageName>fnet_fs_image</ImageName>
-    <ConditionIf>FNET_CFG_FS &amp;&amp; FNET_CFG_FS_ROM &amp;&amp; FNET_CFG_HTTP_VERSION_MAJOR</ConditionIf>
+    <ConditionIf>FNET_CFG_FS &amp;&amp; FNET_CFG_FS_ROM</ConditionIf>
   </ProjectSettings>
   <FileTree>
     <Node Type="Directory" Name="auth">

@@ -74,9 +74,9 @@ static void _fnet_tcp_get_synopt( fnet_socket_if_t *sk );
 static fnet_error_t _fnet_tcp_addopt( fnet_netbuf_t *segment, fnet_size_t len, void *data );
 static void _fnet_tcp_get_opt( fnet_socket_if_t *sk, fnet_netbuf_t *segment );
 static fnet_uint32_t _fnet_tcp_get_size( fnet_uint32_t pos1, fnet_uint32_t pos2 );
-static void _fnet_tcp_rtimeo( fnet_socket_if_t *sk );
-static void _fnet_tcp_ktimeo( fnet_socket_if_t *sk );
-static void _fnet_tcp_ptimeo( fnet_socket_if_t *sk );
+static void _fnet_tcp_retransmission_timeo( fnet_socket_if_t *sk );
+static void _fnet_tcp_keepalive_timeo( fnet_socket_if_t *sk );
+static void _fnet_tcp_persist_timeo( fnet_socket_if_t *sk );
 static fnet_bool_t _fnet_tcp_hit( fnet_uint32_t startpos, fnet_uint32_t endpos, fnet_uint32_t pos );
 static fnet_bool_t _fnet_tcp_add_inpbuf( fnet_socket_if_t *sk, fnet_netbuf_t *insegment, fnet_flag_t *ackparam );
 static fnet_socket_if_t *_fnet_tcp_find_socket( struct fnet_sockaddr *src_addr, struct fnet_sockaddr *dest_addr );
@@ -448,7 +448,7 @@ static fnet_return_t _fnet_tcp_close( fnet_socket_if_t *sk )
     fnet_tcp_control_t *cb = (fnet_tcp_control_t *)sk->protocol_control;
 
     /* If the connection is closed, free the memory.*/
-    if(sk->state == SS_UNCONNECTED)
+    if(sk->state == SS_CLOSED)
     {
         cb->tcpcb_flags |= FNET_TCP_CBF_CLOSE;
         _fnet_tcp_close_socket(sk);
@@ -497,7 +497,7 @@ static fnet_return_t _fnet_tcp_close( fnet_socket_if_t *sk )
     cb->tcpcb_flags |= FNET_TCP_CBF_CLOSE;
 
     /* If the socket is already unconnected, close the socket.*/
-    if(sk->state == SS_UNCONNECTED)
+    if(sk->state == SS_CLOSED)
     {
         _fnet_tcp_close_socket(sk);
     }
@@ -2631,6 +2631,8 @@ static void _fnet_tcp_process_fin( fnet_socket_if_t *sk, fnet_uint32_t ack )
             /*RStevens: The connection can remain in this state forever.
              * The other end is still in the CLOSE_WAIT state, and can remain
              * there forever, until the application decides to issue its close.*/
+
+            sk->state = SS_CLOSING;
             break;
 
         case FNET_TCP_CS_FIN_WAIT_1:
@@ -2651,6 +2653,8 @@ static void _fnet_tcp_process_fin( fnet_socket_if_t *sk, fnet_uint32_t ack )
             }
 
             cb->tcpcb_timers.keepalive = FNET_TCP_TIMER_OFF;
+
+            sk->state = SS_CLOSING;
             break;
 
         default:
@@ -2787,7 +2791,7 @@ static void _fnet_tcp_slowtimosk( fnet_socket_if_t *sk )
     fnet_tcp_control_t *cb = (fnet_tcp_control_t *)sk->protocol_control;
 
     /* If the socket is not connected, return.*/
-    if(sk->state != SS_UNCONNECTED)
+    if(sk->state != SS_CLOSED)
     {
         /* Check the abort timer.*/
         if(cb->tcpcb_timers.abort != FNET_TCP_TIMER_OFF)
@@ -2802,7 +2806,6 @@ static void _fnet_tcp_slowtimosk( fnet_socket_if_t *sk )
                 {
                     sk->options.local_error = FNET_ERR_CONNABORTED;
                 }
-
                 _fnet_tcp_close_socket(sk);
                 return;
             }
@@ -2850,7 +2853,7 @@ static void _fnet_tcp_slowtimosk( fnet_socket_if_t *sk )
             if(!cb->tcpcb_timers.retransmission)
             {
                 cb->tcpcb_timers.retransmission = FNET_TCP_TIMER_OFF;
-                _fnet_tcp_rtimeo(sk);
+                _fnet_tcp_retransmission_timeo(sk);
             }
         }
 
@@ -2862,7 +2865,7 @@ static void _fnet_tcp_slowtimosk( fnet_socket_if_t *sk )
             if(!cb->tcpcb_timers.keepalive)
             {
                 cb->tcpcb_timers.keepalive = FNET_TCP_TIMER_OFF;
-                _fnet_tcp_ktimeo(sk);
+                _fnet_tcp_keepalive_timeo(sk);
             }
         }
 
@@ -2874,7 +2877,7 @@ static void _fnet_tcp_slowtimosk( fnet_socket_if_t *sk )
             if(!cb->tcpcb_timers.persist)
             {
                 cb->tcpcb_timers.persist = FNET_TCP_TIMER_OFF;
-                _fnet_tcp_ptimeo(sk);
+                _fnet_tcp_persist_timeo(sk);
             }
         }
 
@@ -2894,7 +2897,7 @@ static void _fnet_tcp_fasttimosk( fnet_socket_if_t *sk )
 {
     fnet_tcp_control_t *cb = (fnet_tcp_control_t *)sk->protocol_control;
 
-    if(sk->state != SS_UNCONNECTED)
+    if(sk->state != SS_CLOSED)
     {
         /* Check the delayed acknowledgment timer.*/
         if(cb->tcpcb_timers.delayed_ack != FNET_TCP_TIMER_OFF)
@@ -2913,7 +2916,7 @@ static void _fnet_tcp_fasttimosk( fnet_socket_if_t *sk )
 * DESCRIPTION: This function processes the timeout of the retransmission
 *              timer.
 *************************************************************************/
-static void _fnet_tcp_rtimeo( fnet_socket_if_t *sk )
+static void _fnet_tcp_retransmission_timeo( fnet_socket_if_t *sk )
 {
     fnet_tcp_control_t  *cb = (fnet_tcp_control_t *)sk->protocol_control;
     fnet_uint8_t        options[FNET_TCP_MAX_OPT_SIZE];
@@ -3009,7 +3012,7 @@ static void _fnet_tcp_rtimeo( fnet_socket_if_t *sk )
 * DESCRIPTION: This function processes the timeout of the keepalive
 *              timer.
 *************************************************************************/
-static void _fnet_tcp_ktimeo( fnet_socket_if_t *sk )
+static void _fnet_tcp_keepalive_timeo( fnet_socket_if_t *sk )
 {
     fnet_netbuf_t           *data;
     fnet_uint16_t           rcvwnd;
@@ -3058,7 +3061,7 @@ static void _fnet_tcp_ktimeo( fnet_socket_if_t *sk )
 * DESCRIPTION: This function processes the timeout of the persist
 *              timer.
 *************************************************************************/
-static void _fnet_tcp_ptimeo( fnet_socket_if_t *sk )
+static void _fnet_tcp_persist_timeo( fnet_socket_if_t *sk )
 {
     fnet_tcp_control_t *cb = (fnet_tcp_control_t *)sk->protocol_control;
 
@@ -3592,7 +3595,7 @@ static void _fnet_tcp_send_rstsk( fnet_socket_if_t *sk )
     /* Initialize the pointer to the control block.*/
     fnet_tcp_control_t *cb = (fnet_tcp_control_t *)sk->protocol_control;
 
-    if((sk->state != SS_UNCONNECTED) && (cb->tcpcb_connection_state != FNET_TCP_CS_SYN_SENT)
+    if((sk->state != SS_CLOSED) && (cb->tcpcb_connection_state != FNET_TCP_CS_SYN_SENT)
        && (cb->tcpcb_connection_state != FNET_TCP_CS_TIME_WAIT))
     {
         if(cb->tcpcb_connection_state == FNET_TCP_CS_SYN_RCVD)
@@ -3854,7 +3857,7 @@ static fnet_socket_if_t *_fnet_tcp_find_socket( struct fnet_sockaddr *src_addr, 
             else
             {
                 /* Not listening socket.*/
-                if((fnet_socket_addr_are_equal(&sk->local_addr, dest_addr)) && (sk->state != SS_UNCONNECTED) &&
+                if((fnet_socket_addr_are_equal(&sk->local_addr, dest_addr)) && (sk->state != SS_CLOSED) &&
                    (fnet_socket_addr_are_equal(&sk->foreign_addr, src_addr)) && (sk->foreign_addr.sa_port == src_addr->sa_port))
                 {
                     break;
@@ -3974,7 +3977,7 @@ static void _fnet_tcp_close_socket( fnet_socket_if_t *sk )
             _fnet_tcp_del_tmpbuf(cb);
 #endif
             _fnet_socket_buffer_release(&sk->send_buffer);
-            sk->state = SS_UNCONNECTED;
+            sk->state = SS_CLOSED;
             fnet_memset_zero(&sk->foreign_addr, sizeof(sk->foreign_addr));
         }
     }

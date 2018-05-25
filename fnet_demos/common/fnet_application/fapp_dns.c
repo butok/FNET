@@ -111,7 +111,7 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
                 goto ERROR_PARAMETER;
             }
         }
-        else if (!fnet_strcmp(argv[i], "-s")) /*[-s <server name>] */
+        else if (!fnet_strcmp(argv[i], "-s")) /*[-s <server ip>] */
         {
             i++;
             if(i < argc)

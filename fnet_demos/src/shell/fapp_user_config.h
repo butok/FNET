@@ -67,6 +67,9 @@
 /*  "http" command.*/
 #define FAPP_CFG_HTTP_CMD               (1)
 
+/*  "httpc" command.*/
+#define FAPP_CFG_HTTPC_CMD              (1)
+
 /*  "exp" command.*/
 #define FAPP_CFG_EXP_CMD                (1)
 
