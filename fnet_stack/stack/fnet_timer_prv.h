@@ -44,6 +44,7 @@ void _fnet_timer_release( void );
 fnet_timer_desc_t _fnet_timer_new( fnet_time_t period_ticks, void (*handler)( fnet_uint32_t cookie ), fnet_uint32_t cookie );
 void _fnet_timer_free( fnet_timer_desc_t timer );
 void _fnet_timer_ticks_inc( void );
+void _fnet_timer_poll(void);
 #if FNET_CFG_TIMER_POLL_AUTOMATIC
 void _fnet_timer_handler_bottom(void *cookie);
 #else

@@ -353,10 +353,7 @@ static void fapp_release(fnet_shell_desc_t desc)
 ************************************************************************/
 void fapp_poll(void)
 {
-#if !FNET_CFG_TIMER_POLL_AUTOMATIC
-    fnet_timer_poll(); /* Poll FNET stack timeouts.*/
-#endif
-    fnet_service_poll(); /* Poll registered services.*/
+    fnet_poll(); /* Poll registered services.*/
 
 #if FAPP_CFG_FREERTOS /* FreeRTOS poll=>sleep */
     fapp_freertos_poll();

@@ -264,18 +264,42 @@ fnet_size_t fnet_strlen (const fnet_char_t *str)
     const fnet_char_t  *s = str;
     fnet_size_t         len = 0U;
 
-    if (s == 0)
+    if(s)
     {
-        return 0U;
+        while (*s++ != '\0')
+        {
+            len++;
+        }
     }
+    return len;
+}
 
-    while (*s++ != '\0')
+/************************************************************************
+* DESCRIPTION: Calculate the length of a fixed-size string.
+*************************************************************************/
+fnet_size_t fnet_strnlen (const fnet_char_t *str, fnet_size_t max_len)
+{
+    const fnet_char_t  *s = str;
+    fnet_size_t         len = 0U;
+
+    if(s)
     {
-        ++len;
+        while (*s++ != '\0')
+        {
+            if(max_len == len)
+            {
+                break;
+            }
+            else
+            {
+                len++;
+            }
+        }
     }
 
     return len;
 }
+
 
 /************************************************************************
 * DESCRIPTION:

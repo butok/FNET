@@ -547,6 +547,7 @@ fnet_return_t fnet_socket_connect( fnet_socket_t s, struct fnet_sockaddr *name, 
         }
 
         fnet_memcpy(&local_addr_tmp, &sock->local_addr, sizeof(local_addr_tmp));
+        local_addr_tmp.sa_family &= foreign_addr.sa_family; /* In case sa_family  is AF_SUPPORTED */
 
         if (fnet_socket_addr_is_unspecified(&local_addr_tmp))
         {
@@ -589,7 +590,9 @@ fnet_return_t fnet_socket_connect( fnet_socket_t s, struct fnet_sockaddr *name, 
                 }
                 break;
 #endif /* FNET_CFG_IP6 */
-                default:
+                default: /* Wrang family. */
+                    error = FNET_ERR_AFNOSUPPORT;
+                    goto ERROR_SOCK;
                     break;
             }
         }

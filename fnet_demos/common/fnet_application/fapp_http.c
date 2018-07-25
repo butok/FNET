@@ -59,13 +59,13 @@ struct fapp_http_echo_variable
 
 static const struct fapp_http_echo_variable fapp_http_echo_variables[] =
 {
-    {"NAME", FNET_DESCRIPTION},
-    {"CPU", FNET_CPU_STR},
-    {"VERSION", FNET_VERSION},
-    {"DATE", FNET_BUILD_DATE},
-    {"COPYRIGHT", FNET_COPYRIGHT},
-    {"LICENSE", FNET_LICENSE},
-    {0, 0} /* End of the table.*/
+    { .variable = "NAME", .value = FNET_DESCRIPTION},
+    { .variable = "CPU", .value = FNET_CPU_STR},
+    { .variable = "VERSION", .value = FNET_VERSION},
+    { .variable = "DATE", .value = FNET_BUILD_DATE},
+    { .variable = "COPYRIGHT", .value = FNET_COPYRIGHT},
+    { .variable = "LICENSE", .value = FNET_LICENSE},
+    { .variable = 0} /* End of the table.*/
 };
 
 static fnet_uint8_t fapp_http_ssi_buffer[FAPP_HTTP_SSI_BUFFER_MAX];    /* Temporary buffer for run-time SSIs. */
@@ -75,8 +75,8 @@ static fnet_return_t fapp_http_ssi_echo_handle(fnet_char_t *query, fnet_uint32_t
 /* SSI table */
 static const struct fnet_http_srv_ssi fapp_ssi_table[] =
 {
-    {FAPP_HTTP_SSI_COMMAND_ECHO, fapp_http_ssi_echo_handle, fapp_http_string_buffer_respond},
-    {0, 0, 0} /* End of the table. */
+    { .name = FAPP_HTTP_SSI_COMMAND_ECHO, .handle = fapp_http_ssi_echo_handle, .send = fapp_http_string_buffer_respond},
+    { .name = 0 } /* End of the table. */
 };
 
 #endif /* FNET_CFG_HTTP_SRV_SSI */
@@ -99,12 +99,12 @@ static fnet_uint32_t fapp_http_cgi_rand(void);
 /* CGI table */
 static const struct fnet_http_srv_cgi fapp_cgi_table[] =
 {
-    {"stdata.cgi", fapp_http_cgi_stdata_handle, fapp_http_string_buffer_respond},
-    {"graph.cgi", fapp_http_cgi_graph_handle, fapp_http_string_buffer_respond},
+    { .name = "stdata.cgi", .handle = fapp_http_cgi_stdata_handle, .send = fapp_http_string_buffer_respond},
+    { .name = "graph.cgi", .handle = fapp_http_cgi_graph_handle, .send = fapp_http_string_buffer_respond},
 #if FNET_CFG_HTTP_SRV_POST && FNET_CFG_HTTP_SRV_VERSION_MAJOR
-    {"post.cgi", fapp_http_cgi_post_handle, fapp_http_string_buffer_respond},
+    { .name = "post.cgi", .handle = fapp_http_cgi_post_handle, .send = fapp_http_string_buffer_respond},
 #endif
-    {0, 0, 0} /* End of the table. */
+    { .name = 0} /* End of the table. */
 };
 static fnet_uint8_t fapp_http_cgi_buffer[CGI_MAX]; /* CGI Temporary buffer. */
 
@@ -116,8 +116,8 @@ static fnet_uint8_t fapp_http_cgi_buffer[CGI_MAX]; /* CGI Temporary buffer. */
 #if FNET_CFG_HTTP_SRV_AUTHENTICATION_BASIC && FNET_CFG_HTTP_SRV_VERSION_MAJOR
 static const struct fnet_http_srv_auth fapp_auth_table[] =
 {
-    {"Please use User Name:fnet Password:fnet to login", "auth", "fnet", "fnet", FNET_HTTP_SRV_AUTH_SCHEME_BASIC},
-    {0, 0, 0, 0, FNET_HTTP_SRV_AUTH_SCHEME_NONE}
+    {.realm = "Please use User Name:fnet Password:fnet to login", .dir_name = "auth", .userid = "fnet", .password = "fnet", .scheme = FNET_HTTP_SRV_AUTH_SCHEME_BASIC},
+    {.scheme = FNET_HTTP_SRV_AUTH_SCHEME_NONE}  /* End of the table. */
 };
 #endif
 
@@ -130,8 +130,8 @@ static fnet_return_t fapp_http_post_receive (fnet_http_srv_session_t session, fn
 
 static const struct fnet_http_srv_post fapp_post_table[] =
 {
-    {"post.cgi", 0, fapp_http_post_receive, 0},
-    {0, 0, 0, 0}
+    {.name = "post.cgi", .post_handle = 0, .post_receive = fapp_http_post_receive, .post_send = 0},
+    {.name = 0} /* End of the table. */
 };
 
 #define FAPP_HTTP_POST_BUFFER_SIZE    (50u)
@@ -145,7 +145,7 @@ static fnet_uint8_t fapp_http_post_buffer[FAPP_HTTP_POST_BUFFER_SIZE + 1u/* For 
 static fnet_size_t fapp_http_string_buffer_respond(fnet_uint8_t *buffer, fnet_size_t buffer_size, fnet_bool_t *eof, fnet_uint32_t *cookie)
 {
     fnet_size_t     result = 0U;
-    fnet_char_t            *string_buffer_ptr = (fnet_char_t *) *cookie;
+    fnet_char_t     *string_buffer_ptr = (fnet_char_t *) *cookie;
     fnet_size_t     send_size = fnet_strlen(string_buffer_ptr);
 
     *eof = FNET_TRUE; /* No aditional send by default. */
@@ -209,7 +209,7 @@ static fnet_return_t fapp_http_ssi_echo_handle(fnet_char_t *query, fnet_uint32_t
             fnet_inet_ntoa(*(struct fnet_in_addr *)( &ip_adr), ip_str);
             fnet_snprintf((fnet_char_t *)fapp_http_ssi_buffer, sizeof(fapp_http_ssi_buffer), "%s", ip_str);
 #else
-            fnet_snprintf(fapp_http_ssi_buffer, sizeof(fapp_http_ssi_buffer), "...");
+            fnet_snprintf((fnet_char_t *)fapp_http_ssi_buffer, sizeof(fapp_http_ssi_buffer), "...");
 #endif /* FNET_CFG_IP4 */
         }
         else if (!fnet_strcmp( query, "SUBNET_MASK"))
@@ -219,7 +219,7 @@ static fnet_return_t fapp_http_ssi_echo_handle(fnet_char_t *query, fnet_uint32_t
             fnet_inet_ntoa(*(struct fnet_in_addr *)( &ip_adr), ip_str);
             fnet_snprintf((fnet_char_t *)fapp_http_ssi_buffer, sizeof(fapp_http_ssi_buffer), "%s", ip_str);
 #else
-            fnet_snprintf(fapp_http_ssi_buffer, sizeof(fapp_http_ssi_buffer), "...");
+            fnet_snprintf((fnet_char_t *)fapp_http_ssi_buffer, sizeof(fapp_http_ssi_buffer), "...");
 #endif /* FNET_CFG_IP4 */
         }
         else if (!fnet_strcmp( query, "GATEWAY"))
@@ -229,7 +229,7 @@ static fnet_return_t fapp_http_ssi_echo_handle(fnet_char_t *query, fnet_uint32_t
             fnet_inet_ntoa(*(struct fnet_in_addr *)( &ip_adr), ip_str);
             fnet_snprintf((fnet_char_t *)fapp_http_ssi_buffer, sizeof(fapp_http_ssi_buffer), "%s", ip_str);
 #else
-            fnet_snprintf(fapp_http_ssi_buffer, sizeof(fapp_http_ssi_buffer), "...");
+            fnet_snprintf((fnet_char_t *)fapp_http_ssi_buffer, sizeof(fapp_http_ssi_buffer), "...");
 #endif /* FNET_CFG_IP4 */
         }
         else if (!fnet_strcmp( query, "MAC"))
@@ -464,7 +464,7 @@ void fapp_http_srv_tls_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char
 
     if(argc == 1u) /* By default is "init".*/
     {
-        fnet_memset_zero(&params, sizeof(struct fnet_http_srv_params));
+        fnet_memset_zero(&params, sizeof(params));
 
         params.root_path = FAPP_HTTP_SRV_MOUNT_NAME;    /* Root directory path */
         params.index_path = FAPP_HTTP_SRV_INDEX_FILE;   /* Index file path, relative to the root_path */
@@ -480,6 +480,7 @@ void fapp_http_srv_tls_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char
 #if FNET_CFG_HTTP_SRV_POST && FNET_CFG_HTTP_SRV_VERSION_MAJOR
         params.post_table = fapp_post_table;
 #endif
+        fnet_memset_zero(&tls_params, sizeof(tls_params));
 
         /* Set TLS parameters. Use mbedTLS test certificate and key. */
         tls_params.certificate_buffer = (const fnet_uint8_t *)mbedtls_test_srv_crt; /* Certificate data. */
@@ -527,7 +528,7 @@ void fapp_http_srv_tls_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char
 #endif /*(FNET_CFG_HTTP_SRV_TLS && FNET_CFG_TLS)*/
 
 /************************************************************************
-* DESCRIPTION:
+* DESCRIPTION: Print HTTP server status
 *************************************************************************/
 void fapp_http_srv_info(fnet_shell_desc_t desc)
 {
@@ -656,6 +657,4 @@ ERROR_PARAMETER:
     return;
 }
 
-
 #endif /* FAPP_CFG_HTTPC_CMD && FNET_CFG_HTTP_CLN */
-

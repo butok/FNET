@@ -165,6 +165,19 @@ fnet_return_t fnet_init( struct fnet_init_params *init_params );
  ******************************************************************************/
 void fnet_release(void);
 
+/***************************************************************************/ /*!
+ *
+ * @brief    General polling function.
+ *
+ * @see fnet_service_poll(), fnet_timer_poll()
+ ******************************************************************************
+ *
+ * This function calls service and timer polling functions (if @ref FNET_CFG_TIMER_POLL_AUTOMATIC is 0).@n
+ * The user application should call this function periodically.
+ *
+ ******************************************************************************/
+void fnet_poll(void);
+
 #if defined(__cplusplus)
 }
 #endif

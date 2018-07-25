@@ -25,9 +25,15 @@
 #include "fnet.h"
 #include "fnet_timer_prv.h"
 #include "fnet_netbuf_prv.h"
+#include "fnet_stack_prv.h"
+
+#if FNET_CFG_DEBUG_TIMER && FNET_CFG_DEBUG
+    #define FNET_DEBUG_TIMER   FNET_DEBUG
+#else
+    #define FNET_DEBUG_TIMER(...)
+#endif
 
 /* Queue of the software timers*/
-
 struct fnet_net_timer
 {
     struct fnet_net_timer *next;            /* Next timer in list.*/
@@ -37,14 +43,16 @@ struct fnet_net_timer
     fnet_uint32_t cookie;                   /* Handler Cookie. */
 };
 
-static struct fnet_net_timer *fnet_tl_head = 0;
+#if FNET_CFG_TIME
+    static void _fnet_time_set(time_t sec);
+#endif
 
-static volatile fnet_time_t fnet_current_time;
+static struct fnet_net_timer *_fnet_timer_head;
+static volatile fnet_time_t _fnet_timer_counter;
 
-#if FNET_CFG_DEBUG_TIMER && FNET_CFG_DEBUG
-    #define FNET_DEBUG_TIMER   FNET_DEBUG
-#else
-    #define FNET_DEBUG_TIMER(...)
+#if FNET_CFG_TIME
+    static time_t       _fnet_time_start;
+    static fnet_time_t  _fnet_timer_start;
 #endif
 
 /************************************************************************
@@ -54,8 +62,14 @@ fnet_return_t _fnet_timer_init( fnet_time_t period_ms )
 {
     fnet_return_t result;
 
-    fnet_current_time = 0u;           /* Reset RTC counter. */
-    result = FNET_HW_TIMER_INIT(period_ms);  /* Start HW timer. */
+    _fnet_timer_counter = 0u;                   /* Reset RTC counter. */
+
+#if FNET_CFG_TIME
+    _fnet_time_start = 0;
+    _fnet_timer_start = 0;
+#endif
+
+    result = FNET_HW_TIMER_INIT(period_ms);     /* Start HW timer. */
 
     return result;
 }
@@ -70,13 +84,13 @@ void _fnet_timer_release( void )
 
     FNET_HW_TIMER_RELEASE();
 
-    while(fnet_tl_head != 0)
+    while(_fnet_timer_head != 0)
     {
-        tmp_tl = fnet_tl_head->next;
+        tmp_tl = _fnet_timer_head->next;
 
-        _fnet_free(fnet_tl_head);
+        _fnet_free(_fnet_timer_head);
 
-        fnet_tl_head = tmp_tl;
+        _fnet_timer_head = tmp_tl;
     }
 }
 
@@ -85,7 +99,7 @@ void _fnet_timer_release( void )
 *************************************************************************/
 fnet_time_t fnet_timer_get_ticks( void )
 {
-    return fnet_current_time;
+    return _fnet_timer_counter;
 }
 
 /************************************************************************
@@ -93,7 +107,7 @@ fnet_time_t fnet_timer_get_ticks( void )
 *************************************************************************/
 fnet_time_t fnet_timer_get_seconds( void )
 {
-    return (fnet_current_time / FNET_TIMER_TICKS_IN_SEC);
+    return (_fnet_timer_counter / FNET_TIMER_TICKS_IN_SEC);
 }
 
 /************************************************************************
@@ -102,7 +116,7 @@ fnet_time_t fnet_timer_get_seconds( void )
 *************************************************************************/
 fnet_time_t fnet_timer_get_ms( void )
 {
-    return (fnet_current_time * FNET_TIMER_PERIOD_MS);
+    return (_fnet_timer_counter * FNET_TIMER_PERIOD_MS);
 }
 
 /************************************************************************
@@ -110,11 +124,11 @@ fnet_time_t fnet_timer_get_ms( void )
 *************************************************************************/
 void _fnet_timer_ticks_inc( void )
 {
-    fnet_current_time++;
+    _fnet_timer_counter++;
 
 #if FNET_CFG_DEBUG_TIMER && FNET_CFG_DEBUG
     /* Print once per second */
-    if((fnet_current_time % (1000 / FNET_TIMER_PERIOD_MS)) == 0)
+    if((_fnet_timer_counter % (1000 / FNET_TIMER_PERIOD_MS)) == 0)
     {
         FNET_DEBUG_TIMER("!");
     }
@@ -129,7 +143,7 @@ void _fnet_timer_handler_bottom(void *cookie)
 {
     FNET_COMP_UNUSED_ARG(cookie);
 
-    fnet_timer_poll();
+    _fnet_timer_poll();
 }
 #endif
 
@@ -138,17 +152,23 @@ void _fnet_timer_handler_bottom(void *cookie)
 *************************************************************************/
 void fnet_timer_poll(void)
 {
+    _fnet_stack_mutex_lock();
+    fnet_timer_poll();
+    _fnet_stack_mutex_unlock();
+}
+void _fnet_timer_poll(void)
+{
     struct fnet_net_timer *timer;
 
     fnet_isr_lock();
 
-    timer = fnet_tl_head;
+    timer = _fnet_timer_head;
 
     while(timer)
     {
-        if(fnet_timer_get_interval(timer->timer_cnt, fnet_current_time) >= timer->timer_rv)
+        if(fnet_timer_get_interval(timer->timer_cnt, _fnet_timer_counter) >= timer->timer_rv)
         {
-            timer->timer_cnt = fnet_current_time;
+            timer->timer_cnt = _fnet_timer_counter;
 
             if(timer->handler)
             {
@@ -175,9 +195,9 @@ fnet_timer_desc_t _fnet_timer_new( fnet_time_t period_ticks, void (*handler)(fne
 
         if(timer)
         {
-            timer->next = fnet_tl_head;
+            timer->next = _fnet_timer_head;
 
-            fnet_tl_head = timer;
+            _fnet_timer_head = timer;
 
             timer->timer_rv = period_ticks;
             timer->handler = handler;
@@ -198,13 +218,13 @@ void _fnet_timer_free( fnet_timer_desc_t timer )
 
     if(tl)
     {
-        if(tl == fnet_tl_head)
+        if(tl == _fnet_timer_head)
         {
-            fnet_tl_head = fnet_tl_head->next;
+            _fnet_timer_head = _fnet_timer_head->next;
         }
         else
         {
-            tl_temp = fnet_tl_head;
+            tl_temp = _fnet_timer_head;
 
             while(tl_temp->next != tl)
             {
@@ -238,7 +258,7 @@ fnet_time_t fnet_timer_get_interval( fnet_time_t start, fnet_time_t end )
 *************************************************************************/
 void fnet_timer_delay( fnet_time_t delay_ticks )
 {
-    fnet_time_t start_ticks = fnet_current_time;
+    fnet_time_t start_ticks = _fnet_timer_counter;
 
     while(fnet_timer_get_interval(start_ticks, fnet_timer_get_ticks()) < delay_ticks)
     {}
@@ -251,3 +271,83 @@ fnet_time_t fnet_timer_ms2ticks( fnet_time_t time_ms )
 {
     return time_ms / FNET_TIMER_PERIOD_MS;
 }
+
+
+#if FNET_CFG_TIME
+/************************************************************************
+* DESCRIPTION: Set current time as the elapsed time in seconds since 00:00:00, January 1, 1970.
+************************************************************************/
+void fnet_time_set(time_t sec)
+{
+    _fnet_stack_mutex_lock();
+    _fnet_time_set(sec);
+    _fnet_stack_mutex_unlock();
+}
+static void _fnet_time_set(time_t sec)
+{
+    /* Get the timer counter value in seconds */
+    _fnet_timer_start = fnet_timer_get_seconds();
+    _fnet_time_start = sec;
+}
+/************************************************************************
+* DESCRIPTION: Get current time as the elapsed time in seconds since 00:00:00, January 1, 1970.
+************************************************************************/
+time_t fnet_time(time_t *sec)
+{
+    time_t result;
+
+    if(_fnet_time_start == 0) /* Never initialized before */
+    {
+        time_t      time_buld; /* The number of seconds elapsed since the Epoch, 1970-01-01 00:00:00 +0000 (UTC).*/
+        struct tm   date_time;
+
+        /* Get buld time as the elapsed time in seconds since 00:00:00, January 1, 1970.*/
+
+        /* __DATE__: This macro expands to a string constant that describes the date on which the preprocessor is being run. The string constant contains eleven characters and looks
+        like "Feb 12 1996". If the day of the month is less than 10, it is padded with a space on the left.
+        __TIME__: This macro expands to a string constant that describes the time at which the preprocessor is being run. The string constant contains eight characters and looks like "23:59:01"*/
+
+        /* Seconds after the minute	0-61 */
+        date_time.tm_sec = ((__TIME__[0] == '?') ? 0 :  ((__TIME__[6] - '0') * 10 + __TIME__[7] - '0'));
+        /* Minutes after the hour	0-59 */
+        date_time.tm_min = ((__TIME__[0] == '?') ? 0 :  ((__TIME__[3] - '0') * 10 + __TIME__[4] - '0'));
+        /* Hours since midnight	0-23 */
+        date_time.tm_hour = ((__TIME__[0] == '?') ? 0 :  ((__TIME__[0] - '0') * 10 + __TIME__[1] - '0'));
+        /* Day of the month	1-31 */
+        date_time.tm_mday = ((__DATE__[0] == '?') ? 14 : (((__DATE__[4] >= '0') ? (__DATE__[4] - '0') * 10 : 0) + (__DATE__[5] - '0')));
+        /* Months since January	0-11 */
+        date_time.tm_mon = ((__DATE__[0] == '?') ? 6 : ((__DATE__[0] == 'J' && __DATE__[1] == 'a' && __DATE__[2] == 'n') ?  1 :
+                            (__DATE__[0] == 'F') ?  2 :
+                            (__DATE__[0] == 'M' && __DATE__[1] == 'a' && __DATE__[2] == 'r') ?  3 :
+                            (__DATE__[0] == 'A' && __DATE__[1] == 'p') ?  4 :
+                            (__DATE__[0] == 'M' && __DATE__[1] == 'a' && __DATE__[2] == 'y') ?  5 :
+                            (__DATE__[0] == 'J' && __DATE__[1] == 'u' && __DATE__[2] == 'n') ?  6 :
+                            (__DATE__[0] == 'J' && __DATE__[1] == 'u' && __DATE__[2] == 'l') ?  7 :
+                            (__DATE__[0] == 'A' && __DATE__[1] == 'u') ?  8 :
+                            (__DATE__[0] == 'S') ?  9 :
+                            (__DATE__[0] == 'O') ? 10 :
+                            (__DATE__[0] == 'N') ? 11 :
+                            (__DATE__[0] == 'D') ? 12 : 6 )) - 1;
+        /* Years since 1900 */
+        date_time.tm_year = ((__DATE__[0] == '?') ? 2018 : (((__DATE__[ 7] - '0') * 1000) + ((__DATE__[ 8] - '0') * 100) + ((__DATE__[ 9] - '0') * 10) + (__DATE__[10] - '0'))) - 1900;
+        /* Days since Sunday	0-6 */
+        date_time.tm_wday = -1;
+        /* Days since January 1	0-365 */
+        date_time.tm_yday = -1;
+        /* Daylight Saving Time flag */
+        date_time.tm_isdst = -1;
+
+        time_buld = mktime(&date_time);
+
+        fnet_time_set(time_buld);
+    }
+
+    result = _fnet_time_start + (fnet_timer_get_seconds() - _fnet_timer_start);
+
+    if(sec)
+    {
+        *sec = result;
+    }
+    return result;
+}
+#endif /* FNET_CFG_TIME */

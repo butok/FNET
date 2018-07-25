@@ -23,13 +23,13 @@ The stack provides following protocols and services:
 	- TCP (Transmission Control Protocol).
 	- UDP (User Datagram Protocol).
 	- IPv4.
-		- @b ICMPv4 (Internet Control Message Protocol).
-		- @b IGMP (Internet Group Management Protocol).
-		- @b ARP (Address Resolution Protocol).
+		- ICMPv4 (Internet Control Message Protocol).
+		- IGMP (Internet Group Management Protocol).
+		- ARP (Address Resolution Protocol).
 	- IPv6. 
 		- Passed the "IPv6 Ready Logo" Phase-2 IPv6 Core Protocols Conformance Tests, for host.
-		- @b ICMPv6 (Internet Control Message Protocol).
-		- @b MLDv1 (Multicast Listener Discovery).
+		- ICMPv6 (Internet Control Message Protocol).
+		- MLDv1 (Multicast Listener Discovery).
 		- Neighbor Discovery for IPv6.
 		- IPv6 Stateless Address Autoconfiguration.
 		- Path MTU Discovery for IPv6
@@ -46,10 +46,11 @@ The stack provides following protocols and services:
 		- HTTP over TLS (HTTPS).
 	- TELNET server. 
 	- DHCPv4 client and server.
-	- Auto-IP service. Passed "Phase 1, Link-Local Address Allocation", Bonjour Conformance Test suite Version 1.3.1.
+	- Auto-IP service. Passed "Phase 1, Link-Local Address Allocation", Bonjour Conformance Test.
+	- Azure IoT Hub client.
 	- DNS client/resolver.
 	- Link-Detection service.
-	- Multicast DNS (mDNS) "Bonjour" Server/Responder.
+	- Multicast DNS (mDNS) "Bonjour" Server/Responder. Passed the Bonjour Conformance Test.
 	- LLMNR Server/Responder.
 	- PING service.
 	- SNTP client.	
@@ -66,6 +67,7 @@ FNET project directory structure:
 	|    |-- stack                  - FNET TCP/IP stack platform-independent source code.
 	|    |-- service                - FNET Services.
 	|    |    |-- autoip              - Auto-IP service.
+	|    |    |-- azure               - Azure IoT Hub adapter.
 	|    |    |-- bench               - Benchmark client and server.
 	|    |    |-- dhcp                - DHCPv4 client and server.
 	|    |    |-- dns                 - DNS client/resolver.
@@ -99,9 +101,10 @@ FNET project directory structure:
 	|    |-- common                 - Common source code used by demos.
 	|    |    |-- fnet_application    - Demo application source code.
 	|    |    |-- fnet_webpage        - Demo web page source code.
-	|    |    |-- startup             - Platform-specific startup source code.
+	|    |    |-- startup             - Platform-specific start-up source code and drivers.
 	|    |-- build                 - Demo projects.
 	|         |-- <board_name>        - Demo projects for a <board_name> board.
+	|              |-- azure          - FNET Azure IoT Hub client example.
 	|              |-- boot           - FNET TFTP Bootloader.
 	|              |-- benchmark      - TCP/UDP Throughput Benchmark application. 
 	|              |-- shell          - "Shell" demo is a fully featured shell. It allows
@@ -122,8 +125,9 @@ FNET project directory structure:
 	|                                           but in addition it supports the Wi-Fi network interface using the Qualcomm QCA4002/4 module.
 	|-- fnet_tools                - FNET PC tools.
 	|-- third_party               - Optional, third-party libraries.
+		 |-- azure_iot-x.x.x        - Azure IoT Hub Device C SDK.
 		 |-- cmsis-x.x              - ARM CMSIS-Core(M) library, used for ARM Cortex M platforms.
 		 |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
-		 |-- freertos-x.x.x         - FreeRTOS, used by the shell_freertos example.
+		 |-- freertos-x.x.x         - FreeRTOS, used by freertos examples.
 		 |-- qca-x.x.x              - Qualcomm QCA4002/4 driver, used by shell_freertos_wifi_<board> example.
-				 
+		 

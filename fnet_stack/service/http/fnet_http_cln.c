@@ -66,6 +66,7 @@ typedef struct fnet_http_cln_if
     fnet_socket_t                           socket_foreign;     /* Foreign socket.*/
     fnet_uint8_t                            buffer[FNET_CFG_HTTP_CLN_BUFFER_SIZE]; /* Internal buffer */
     fnet_index_t                            buffer_offset;
+    fnet_size_t                             message_size;
 
     //TBD
     void                                    *cookie;
@@ -169,6 +170,7 @@ fnet_http_cln_desc_t fnet_http_cln_init( struct fnet_http_cln_params *params )
     fnet_strlcat ((fnet_char_t *)http_cln_if->buffer, " ", sizeof(http_cln_if->buffer));
     fnet_strlcat ((fnet_char_t *)http_cln_if->buffer, FNET_HTTP_CLN_VERSION_HEADER, sizeof(http_cln_if->buffer));
     fnet_strlcat ((fnet_char_t *)http_cln_if->buffer, "\r\n\r\n", sizeof(http_cln_if->buffer));
+    http_cln_if->message_size = fnet_strlen((fnet_char_t *)http_cln_if->buffer);
 
     http_cln_if->is_enabled = FNET_TRUE;
 
@@ -247,7 +249,7 @@ static void _fnet_http_cln_poll( void *fnet_http_cln_if_p )
             {
                 fnet_bool_t     is_session_end = FNET_FALSE;
 
-                send_result = fnet_socket_send(http_cln_if->socket_foreign, &http_cln_if->buffer[http_cln_if->buffer_offset], fnet_strlen((char *)&http_cln_if->buffer[http_cln_if->buffer_offset]), 0);
+                send_result = fnet_socket_send(http_cln_if->socket_foreign, &http_cln_if->buffer[http_cln_if->buffer_offset], (http_cln_if->message_size - http_cln_if->buffer_offset), 0);
 
                 if (send_result == FNET_ERR)
                 {

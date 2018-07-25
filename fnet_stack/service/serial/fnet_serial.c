@@ -230,12 +230,8 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
     fnet_size_t         field_width;
     fnet_bool_t         cont_xd = FNET_FALSE;
     fnet_bool_t         cont_u = FNET_FALSE;
-
-#if 0
-    fnet_bool_t precision_used;
-    fnet_size_t precision_width;
-    fnet_int32_t length_modifier;
-#endif
+    fnet_bool_t         precision_is_present;
+    fnet_size_t         precision_width;
 
     fnet_int32_t        ival;
     fnet_char_t         schar;
@@ -331,21 +327,28 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
             }
         }
 
-        /*
-         * Next check for the width and precision field separator.
-         */
-        if( /* (c = *++p) */*++p == '.')
+        /* Next check for the width and precision field separator.*/
+        /* For s: this is the maximum number of characters to be printed.
+        By default all characters are printed until the ending null character is encountered.*/
+        precision_width = 0;
+        if( *++p == '.')
         {
-            /*
-             * Must get precision field width, if present.
-             */
+            precision_is_present = FNET_TRUE;
+            /* Must get precision field width, if present. */
             done = FNET_FALSE;
 
             while(done == FNET_FALSE)
             {
                 c = (*++p);
-                if((c >= '0') && (c <= '9'))
+                if((c >= '0') && (c <= '9'))    /* .number */
                 {
+                    precision_width = (precision_width * 10) + (c - '0');
+                }
+                else if(c == '*') /* .* */
+                {
+                    /* The precision is not specified in the format string, but as an additional integer value argument preceding the argument that has to be formatted. */
+                    precision_width = (fnet_uint32_t)va_arg(arg, fnet_uint32_t);
+                    done = FNET_TRUE;
                 }
                 else
                 {
@@ -357,6 +360,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
         }
         else
         {
+            precision_is_present = FNET_FALSE;
             /* we've gone one char too far */
             --p;
         }
@@ -372,12 +376,17 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                 break;
             case 'L':
                 break;
+            case 'z':
+                break;
             default:
                 /* we've gone one char too far */
                 --p;
                 break;
         }
 
+
+        cont_xd = FNET_FALSE;
+        cont_u = FNET_FALSE;
         /*
          * Now we're ready to examine the format.
          */
@@ -552,14 +561,21 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
 
                 if(sval)
                 {
-                    vlen = fnet_strlen(sval);
+                    if(precision_is_present == FNET_TRUE)
+                    {
+                        vlen = fnet_strnlen(sval, precision_width);
+                    }
+                    else
+                    {
+                        vlen = fnet_strlen(sval);
+                    }
 
                     if(!FNET_SERIAL_IS_FLAG_MINUS(flags_used))
                     {
                         _fnet_serial_printk_pad(' ', stream, vlen, field_width, &count);
                     }
 
-                    while(*sval)
+                    for(fnet_index_t i = 0; i < vlen; i++) /* Print string */
                     {
                         count++;
                         fnet_serial_putchar(stream, (*sval++));
@@ -635,7 +651,9 @@ fnet_size_t fnet_serial_printf(fnet_serial_stream_t stream, const fnet_char_t *f
     return result;
 }
 
-/********************************************************************/
+/************************************************************************
+* DESCRIPTION: Print formatted text to the default stream.
+************************************************************************/
 fnet_size_t fnet_printf(const fnet_char_t *format, ... )
 {
     va_list     ap;
@@ -643,13 +661,14 @@ fnet_size_t fnet_printf(const fnet_char_t *format, ... )
 
     /* Initialize the pointer to the variable length argument list. */
     va_start(ap, format);
-    result = fnet_serial_vprintf(FNET_SERIAL_STREAM_DEFAULT, format, ap);
+    result = fnet_vprintf(format, ap);
     va_end(ap);
     return result;
 }
 
 /************************************************************************
-* DESCRIPTION:
+* DESCRIPTION: Print formatted text to the default stream and terminates the
+*            printed text by the line separator string.
 ************************************************************************/
 fnet_size_t fnet_println(const fnet_char_t *format, ... )
 {
@@ -658,10 +677,20 @@ fnet_size_t fnet_println(const fnet_char_t *format, ... )
 
     /* Initialize the pointer to the variable length argument list.*/
     va_start(ap, format);
-    result = fnet_serial_vprintf(FNET_SERIAL_STREAM_DEFAULT, format, ap);
+    result = fnet_vprintf(format, ap);
     va_end(ap);
     result += fnet_printf("\n");
 
+    return result;
+}
+
+/************************************************************************
+* DESCRIPTION: Prints formatted variable argument list to the default stream.
+************************************************************************/
+fnet_size_t fnet_vprintf(const fnet_char_t *format, va_list arg )
+{
+    fnet_size_t     result;
+    result = fnet_serial_vprintf(FNET_SERIAL_STREAM_DEFAULT, format, arg);
     return result;
 }
 

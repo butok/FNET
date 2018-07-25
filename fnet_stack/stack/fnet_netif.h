@@ -419,7 +419,7 @@ void fnet_netif_set_ip4_dns( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t dns )
  * @return       This function returns the DNS server IP address of the @c netif
  *               interface.
  *
- * @see fnet_netif_set_ip4_dns(), FNET_CFG_DNS
+ * @see fnet_netif_set_ip4_dns(), fnet_netif_set_ip6_dns(), FNET_CFG_DNS
  *
  ******************************************************************************
  *
@@ -594,6 +594,9 @@ fnet_bool_t fnet_netif_is_connected( fnet_netif_desc_t netif_desc );
  ******************************************************************************/
 fnet_return_t fnet_netif_get_statistics( fnet_netif_desc_t netif_desc, struct fnet_netif_statistics *statistics );
 
+
+#if FNET_CFG_IP4 || defined(__DOXYGEN__)
+
 /**************************************************************************/ /*!
  * @brief Event handler callback function prototype, that is
  * called when there is an IP address conflict with another system
@@ -665,6 +668,8 @@ fnet_bool_t fnet_netif_is_ip4_addr_conflict(fnet_netif_desc_t netif_desc);
  *
  ******************************************************************************/
 void fnet_netif_clear_ip4_addr_conflict( fnet_netif_desc_t netif_desc );
+
+#endif /* FNET_CFG_IP4 */
 
 #if (FNET_CFG_MULTICAST & FNET_CFG_IP4) || defined(__DOXYGEN__)
 

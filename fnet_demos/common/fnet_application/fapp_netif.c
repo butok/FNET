@@ -144,11 +144,13 @@ fnet_return_t fapp_netif_init(fnet_shell_desc_t desc)
         }
         else
         {
+#if FNET_CFG_IP4
             fnet_netif_set_ip4_addr(netif, fapp_netif_init_param_list[i].netif_ip4_addr, fapp_netif_init_param_list[i].netif_ip4_subnet_mask);
             fnet_netif_set_ip4_gateway(netif, fapp_netif_init_param_list[i].netif_ip4_gateway);
 #if FNET_CFG_DNS
             fnet_netif_set_ip4_dns(netif, fapp_netif_init_param_list[i].netif_ip4_dns);
 #endif
+#endif /* FNET_CFG_IP4 */
 
 #if FNET_CFG_LINK
             /* Start Link-Detection. */
@@ -439,6 +441,14 @@ void fapp_netif_info_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t
 #if FAPP_CFG_BENCH_CMD && FNET_CFG_BENCH_SRV
     fapp_bench_srv_info(desc);
 #endif
+#endif
+
+#if FNET_CFG_TIME
+    {
+        time_t current_time = time(FNET_NULL);
+
+        fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "UTC", ctime(&current_time));
+    }
 #endif
 
     return;

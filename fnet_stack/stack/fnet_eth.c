@@ -868,7 +868,8 @@ fnet_return_t _fnet_eth_phy_init(fnet_netif_t *netif)
     for (counter = 10000; counter > 0; counter--)
     {
         _fnet_eth_phy_read(netif, FNET_ETH_MII_REG_CR, &reg_value);
-        if(reg_value & FNET_ETH_MII_REG_CR_RESET)
+        /* When the reset operation is done, CR_RESET bit is cleared to 0 automatically.*/
+        if((reg_value & FNET_ETH_MII_REG_CR_RESET) == 0)
         {
             break; /* Completed */
         }

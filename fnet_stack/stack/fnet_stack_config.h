@@ -634,6 +634,20 @@
 #endif
 
 /**************************************************************************/ /*!
+ * @def      FNET_CFG_TIME
+ * @brief    FNET time() implementation, defined by <time.h>:
+ *               - @c 1 = is enabled.
+ *               - @c 0 = is disabled.
+ * @note Required by Azure IoT Hub client.
+ *       Also it may be used by mbedTLS when MBEDTLS_HAVE_TIME is defined.
+ * @see fnet_time(), fnet_time_set()
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_TIME
+    #define FNET_CFG_TIME                           (0)
+#endif
+
+/**************************************************************************/ /*!
  * @def      FNET_CFG_ASSERT
  * @brief    FNET assert macro FNET_ASSERT():
  *               - @c 1 = is enabled.
@@ -739,8 +753,12 @@
     #define FNET_CFG_DEBUG_DNS          (0)
 #endif
 
-#ifndef FNET_CFG_DEBUG_STARTUP_MS
-    #define FNET_CFG_DEBUG_STARTUP_MS   (0)
+#ifndef FNET_CFG_DEBUG_DNS
+    #define FNET_CFG_DEBUG_DNS          (0)
+#endif
+
+#ifndef FNET_CFG_DEBUG_AZURE
+    #define FNET_CFG_DEBUG_AZURE        (0)
 #endif
 
 #ifndef FNET_CFG_DEBUG_IP6

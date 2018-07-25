@@ -128,7 +128,7 @@ static void _fnet_shell_poll( void *shell_if_p )
                 break;
             /*-------------------------------------*/
             case FNET_SHELL_STATE_GET_USER_INPUT:
-                if( (ch = fnet_serial_getchar(shell_if->stream)) != FNET_ERR)
+                while( (ch = fnet_serial_getchar(shell_if->stream)) != FNET_ERR) /* Read all buffered characters from serial port. */
                 {
                     /* CR or Buffer is full. */
                     if(((fnet_char_t)ch != FNET_SHELL_CR) && (shell_if->pos < shell_if->cmd_line_size))
@@ -289,6 +289,20 @@ static void _fnet_shell_poll( void *shell_if_p )
         }
         shell_if->is_active = FNET_FALSE;
     }
+    else
+    {
+        if(shell_if->_blocked)
+        {
+            if(fnet_shell_is_ctrlc ((fnet_shell_desc_t)shell_if_p))
+            {
+                if(shell_if->_exit_blocked)
+                {
+                    shell_if->_exit_blocked((fnet_shell_desc_t) shell_if, shell_if->_exit_blocked_cookie);
+                }
+                shell_if->_blocked = FNET_FALSE;
+            }
+        }
+    }
 }
 
 /************************************************************************
@@ -323,6 +337,8 @@ fnet_shell_desc_t fnet_shell_init( struct fnet_shell_params *params)
         FNET_DEBUG_SHELL("SHELL: No free Sheell service.");
         goto ERROR;
     }
+
+    fnet_memset_zero(shell_if, sizeof(*shell_if));
 
     shell_if->shell = params->shell;
     shell_if->top_shell = shell_if->shell;
@@ -574,6 +590,7 @@ fnet_return_t fnet_shell_script(fnet_shell_desc_t desc, fnet_char_t *script )
             if(shell_if->cmd_line_end) /* If previous script is not finished.*/
             {
                 fnet_size_t     cmd_line_end_size = fnet_strlen(shell_if->cmd_line_end);
+
                 if(cmd_line_end_size)
                 {
                     fnet_int32_t    cmd_line_shift;

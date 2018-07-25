@@ -1,7 +1,7 @@
 
 #include "qca_firmware.h"
 
-/* Andrey Butok: It was revers-engineered from flashotp binary file.
+/* Andrey Butok: It was reverse-engineered from flashotp binary file.
 1) flashotp_<target>.bin - delete first 36 bytes and last 24 bytes
 2) Append QCA_FIRMWARE_INSERT
 2) Append QCA_FIRMWARE_DSET

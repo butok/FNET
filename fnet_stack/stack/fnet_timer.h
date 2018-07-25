@@ -66,7 +66,7 @@ typedef fnet_uint32_t fnet_time_t;
 
 /***************************************************************************/ /*!
  *
- * @brief    Gets the timer counter value in ticks.
+ * @brief    Get the timer counter value in ticks.
  *
  * @return   This function returns a current value of the timer counter in ticks.
  *
@@ -84,7 +84,7 @@ fnet_time_t fnet_timer_get_ticks( void );
 
 /***************************************************************************/ /*!
  *
- * @brief    Gets the timer counter value in seconds.
+ * @brief    Get the timer counter value in seconds.
  *
  * @return   This function returns a current value of the timer counter
  *           in seconds.
@@ -102,7 +102,7 @@ fnet_time_t fnet_timer_get_seconds( void );
 
 /***************************************************************************/ /*!
  *
- * @brief    Gets the timer counter value in milliseconds.
+ * @brief    Get the timer counter value in milliseconds.
  *
  * @return   This function returns a current value of the timer counter
  *           in milliseconds.
@@ -120,7 +120,7 @@ fnet_time_t fnet_timer_get_ms( void );
 
 /***************************************************************************/ /*!
  *
- * @brief    Converts milliseconds to timer ticks.
+ * @brief    Convert milliseconds to timer ticks.
  *
  * @param    time_ms Time value in milliseconds.
  *
@@ -137,7 +137,7 @@ fnet_time_t fnet_timer_ms2ticks( fnet_time_t time_ms );
 
 /***************************************************************************/ /*!
  *
- * @brief    Calculates an interval between two moments in time.
+ * @brief    Calculate an interval between two moments in time.
  *
  * @param    start Start time in ticks.
  *
@@ -157,7 +157,7 @@ fnet_time_t fnet_timer_get_interval( fnet_time_t start, fnet_time_t end );
 
 /***************************************************************************/ /*!
  *
- * @brief    Performs a delay for the given number of timer ticks.
+ * @brief    Perform a delay for the given number of timer ticks.
  *
  * @param    delay_ticks Time value used for delay, in ticks.
  *
@@ -171,7 +171,7 @@ void fnet_timer_delay( fnet_time_t delay_ticks );
 
 /***************************************************************************/ /*!
  *
- * @brief    SW Timer polling function.
+ * @brief    Poll SW timers.
  *
  * @see FNET_CFG_TIMER_POLL_AUTOMATIC
  *
@@ -186,6 +186,49 @@ void fnet_timer_delay( fnet_time_t delay_ticks );
  *
  ******************************************************************************/
 void fnet_timer_poll(void);
+
+#if FNET_CFG_TIME || defined(__DOXYGEN__)
+#include <time.h>
+
+#define fnet_time   time  /* Compliance with <time.h> */
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Set time since the Epoch (00:00:00 UTC, January 1, 1970).
+ *
+ * @param [in] sec     Time since the Epoch (00:00:00 UTC, January 1, 1970), in seconds.
+ *
+ * @see fnet_time(), FNET_CFG_TIME
+ *
+ ******************************************************************************
+ *
+ * This function sets the time since the Epoch (00:00:00 UTC, January 1, 1970),
+ * in seconds. @n
+ * This function is available only if FNET_CFG_TIME is set.
+ *
+ ******************************************************************************/
+void fnet_time_set(time_t sec);
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Get time since the Epoch (00:00:00 UTC, January 1, 1970).
+ *
+ * @param [out] sec     If the pointer is not NULL, it will get the time since the Epoch (00:00:00 UTC, January 1, 1970), in seconds.
+ *
+ * @return   This function returns time since the Epoch, in seconds.
+ *
+ * @see fnet_time_set(), FNET_CFG_TIME
+ *
+ ******************************************************************************
+ *
+ * This function returns the time since the Epoch (00:00:00 UTC, January 1, 1970),
+ * in seconds. It is defined by standard C library @c time.h, and may be used as time(). @n
+ * This function is available only if FNET_CFG_TIME is set.
+ *
+ ******************************************************************************/
+time_t fnet_time(time_t *sec);
+
+#endif /* FNET_CFG_TIME */
 
 /*! @} */
 

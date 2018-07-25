@@ -122,7 +122,7 @@ typedef fnet_size_t (*fnet_http_srv_cgi_send_t)(fnet_uint8_t *buffer, fnet_size_
  ******************************************************************************/
 struct fnet_http_srv_cgi
 {
-    fnet_char_t             *name;      /**< @brief CGI file name. */
+    fnet_char_t                 *name;      /**< @brief CGI file name. */
     fnet_http_srv_cgi_handle_t  handle;     /**< @brief Pointer to the CGI query handler. It's optional. */
     fnet_http_srv_cgi_send_t    send;       /**< @brief Pointer to the CGI response function.
                                          * This function actually creates dynamic content of

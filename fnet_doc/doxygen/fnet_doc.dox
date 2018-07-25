@@ -29,7 +29,7 @@ The FNET Overview is divided into the following sections:
 - @subpage fnet_history  
 @n
 @n
-NOTE: This document was generated from the project source code by "Doxygen tool".  
+NOTE: This document was generated from the FNET source code by "Doxygen tool".  
 */
 
 
@@ -53,11 +53,11 @@ preferred way to configure stack features). @n
 			- @b MK64FN1M (FRDM-K64F board)
 			- @b MK66FN2M (FRDM-K66F board)
 			- @b MK6DN512 (TWR-K60D100M board)
-		- i.MX-RT: MIMXRT1052 (IMXRT1050-EVKB board).
-		- LPC: LPC54628 (OM13098: LPCXpresso54628 board)
+		- i.MX-RT: @b MIMXRT1052 (IMXRT1050-EVKB board).
+		- LPC: @b LPC54628 (OM13098: LPCXpresso54628 board)
 	- Qualcomm/Atheros Wi-Fi 202.11: 
-		- QCA4002 (GT202-GC3013-FRDM4-KIT board).
-		- QCA4004 (SX-ULPAN-2401-SHIELD board). 
+		- @b QCA4002 (GT202-GC3013-FRDM4-KIT board).
+		- @b QCA4004 (SX-ULPAN-2401-SHIELD board). 
 	- Other platforms (not supported):
 		- ColdFire: MCF51CN128, MCF5282, MCF52235, MCF54418, MCF52259
 		- PowerPC: MPC5668G, MPC5566, MPC564xBC, MPC5744P, S32R274.
@@ -75,7 +75,7 @@ preferred way to configure stack features). @n
 		- @b IGMP (Internet Group Management Protocol).
 		- @b ARP (Address Resolution Protocol).
 	- @b IPv6. 
-		- Passed the "IPv6 Ready Logo" Phase-2 IPv6 Core Protocols Conformance Tests, for host.
+		- Passed the "IPv6 Ready Logo" Phase-2 (Golden) IPv6 Core Protocols Conformance Tests, for host.
 		- @b ICMPv6 (Internet Control Message Protocol).
 		- @b MLDv1 (Multicast Listener Discovery).
 		- Neighbor Discovery for IPv6.
@@ -94,10 +94,11 @@ preferred way to configure stack features). @n
 		- HTTP over TLS (HTTPS).
 	- @b TELNET server. 
 	- @b DHCPv4 client and server.
-	- @b Auto-IP service. Passed "Phase 1, Link-Local Address Allocation", Bonjour Conformance Test suite Version 1.3.1.
+	- @b Auto-IP service. Passed "Phase 1, Link-Local Address Allocation", Bonjour Conformance Test.
+	- @b Azure IoT Hub client.
 	- @b DNS client/resolver.
 	- @b Link-Detection service.
-	- @b Multicast @b DNS @b (mDNS) "Bonjour" Server/Responder.
+	- @b Multicast @b DNS @b (mDNS) "Bonjour" Server/Responder. Passed the Bonjour Conformance Test.
 	- @b LLMNR Server/Responder.
 	- @b PING service.
 	- @b SNTP client.	
@@ -115,7 +116,7 @@ preferred way to configure stack features). @n
 	- @ref quick_start_shell "Shell Application, bare-metal".
 	- @ref quick_start_shell_freertos "Shell Application, using FreeRTOS".
 	- @ref quick_start_shell_mbedtls "Shell Application, using mbedTLS".
-	- @ref quick_start_shell_freertos_wifi_qca "Shell Application, using Wi-Fi QCA4002/4 interface".
+	- @ref quick_start_shell_wifi_qca "Shell Application, using Wi-Fi QCA4002/4 interface".
 	- @ref quick_start_boot "TCP/UDP Throughput Benchmark Application".
 - Source-code based User documentation, by Doxygen.
 - RFC list supported by the FNET stack: 
@@ -154,6 +155,7 @@ fnet                        - FNET root directory.
 |    |-- stack                  - FNET TCP/IP stack platform-independent source code.
 |    |-- service                - FNET Services.
 |    |    |-- autoip              - Auto-IP service.
+|    |    |-- azure               - Azure IoT Hub adapter.
 |    |    |-- bench               - Benchmark client and server.
 |    |    |-- dhcp                - DHCPv4 client and server.
 |    |    |-- dns                 - DNS client/resolver.
@@ -187,9 +189,10 @@ fnet                        - FNET root directory.
 |    |-- common                 - Common source code used by demos.
 |    |    |-- fnet_application    - Demo application source code.
 |    |    |-- fnet_webpage        - Demo web page source code.
-|    |    |-- startup             - Platform-specific startup source code and drivers.
+|    |    |-- startup             - Platform-specific start-up source code and drivers.
 |    |-- build                 - Demo projects.
 |         |-- <board_name>        - Demo projects for a <board_name> board.
+|              |-- azure          - FNET Azure IoT Hub client example.
 |              |-- boot           - FNET TFTP Bootloader.
 |              |-- benchmark      - TCP/UDP Throughput Benchmark application. 
 |              |-- shell          - "Shell" demo is a fully featured shell. It allows
@@ -210,9 +213,10 @@ fnet                        - FNET root directory.
 |                                           but in addition it supports the Wi-Fi network interface using the Qualcomm QCA4002/4 module.
 |-- fnet_tools                - FNET PC tools.
 |-- third_party               - Optional, third-party libraries.
+     |-- azure_iot-x.x.x        - Azure IoT Hub Device C SDK.
      |-- cmsis-x.x              - ARM CMSIS-Core(M) library, used for ARM Cortex M platforms.
      |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
-     |-- freertos-x.x.x         - FreeRTOS, used by the shell_freertos example.
+     |-- freertos-x.x.x         - FreeRTOS, used by freertos examples.
      |-- qca-x.x.x              - Qualcomm QCA4002/4 driver, used by shell_freertos_wifi_<board> example.
               
 @endverbatim
@@ -224,9 +228,10 @@ fnet                        - FNET root directory.
 *- @subpage quick_start_shell
 *- @subpage quick_start_shell_mbedtls
 *- @subpage quick_start_shell_freertos
-*- @subpage quick_start_shell_freertos_wifi_qca
+*- @subpage quick_start_shell_wifi_qca
 *- @subpage quick_start_boot
 *- @subpage quick_start_benchmark 
+*- @subpage quick_start_azure 
 
 The FNET project supplied with several demo applications. They can be used for demonstration of FNET features or as an example of FNET User-API usage. @n
 It is recommended to use them as starting point for your new applications.@n 
@@ -249,9 +254,11 @@ There are six types of demo projects:
   More information can be found in @ref quick_start_shell_freertos.
 - @c shell_freertos_wifi_[gt202|sx2401] - This is the example application using Wi-Fi network interface.
   This demo has the same features as the "Shell FreeRTOS" demo, but in addition it includes Wi-Fi QCA4002/4 network interface.@n
-  More information can be found in @ref quick_start_shell_freertos_wifi_qca.
+  More information can be found in @ref quick_start_shell_wifi_qca.
 - @c benchmark - This is the TCP/UDP Throughput Benchmark application. @n
   More information can be found in @ref quick_start_benchmark.
+- @c azure - This is the Azure IoT Hub client example. @n
+  More information can be found in @ref quick_start_azure.
 
 The following table summarizes the supported demo applications, platforms and compilers:
  <table>
@@ -264,6 +271,7 @@ The following table summarizes the supported demo applications, platforms and co
  <th ALIGN=CENTER>Shell mbedTLS</th>
  <th ALIGN=CENTER>Shell FreeRTOS</th>
  <th ALIGN=CENTER>Shell FreeRTOS QCA Wi-Fi</th>
+ <th ALIGN=CENTER>Azure</th>
  </tr>
 <tr>
  <td class="fnet_td_grey">MK64FN1M</td>
@@ -271,6 +279,7 @@ The following table summarizes the supported demo applications, platforms and co
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td> 
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td> 
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td> 
  </tr>
@@ -281,6 +290,7 @@ The following table summarizes the supported demo applications, platforms and co
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td> 
+ <td ALIGN=CENTER>-</td>
  <td ALIGN=CENTER>-</td> 
  </tr>
 <tr>
@@ -291,6 +301,7 @@ The following table summarizes the supported demo applications, platforms and co
  <td ALIGN=CENTER>-</td> 
  <td ALIGN=CENTER>-</td>
  <td ALIGN=CENTER>-</td> 
+ <td ALIGN=CENTER>-</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">LPC54628</td>
@@ -299,13 +310,16 @@ The following table summarizes the supported demo applications, platforms and co
  <td ALIGN=CENTER>IAR8.22</td>
  <td ALIGN=CENTER>IAR8.22</td>
  <td ALIGN=CENTER>IAR8.22</td> 
- <td ALIGN=CENTER>IAR8.22</td> 
+ <td ALIGN=CENTER>IAR8.22</td>
+ <td ALIGN=CENTER>-</td> 
  </tr>
+ <tr>
   <td class="fnet_td_grey">MIMXRT1052</td>
  <td ALIGN=CENTER>IAR8.22</td>
  <td ALIGN=CENTER>-</td>
  <td ALIGN=CENTER>IAR8.22</td>
  <td ALIGN=CENTER>IAR8.22</td>
+ <td ALIGN=CENTER>IAR8.22</td> 
  <td ALIGN=CENTER>IAR8.22</td> 
  <td ALIGN=CENTER>IAR8.22</td> 
  </tr>
@@ -348,10 +362,8 @@ Follow these steps to run the FNET Shell demo application:
       - Data bits: 8.
       - Parity: none.
       - Stop bits: 1.
-      - Flow control: None. 	
-	@n @n
-      @image html fnet_serial_setup.jpg "Serial port setup"
-
+      - Flow control: None. 
+	  
 - Launch IDE.
 - Open the project:
 @verbatim fnet\fnet_demos\build\<board_name>\shell\<compiler_name>\
@@ -456,10 +468,10 @@ So you can use the host name "fnet" instead of an IP address to find this node o
 >      http [release]                          - Start HTTP server
 >       exp                                    - File Explorer submenu...
 >    telnet [release]                          - Start Telnet server
->       dns <host name> 4|6 [<server ip>]      - Resolve IPv4|6 address of <host name>
+>       dns [-n <if name>] [-s <server ip>] [4|6] <host name> - Resolve IPv4|6 address of <host name>
 >     llmnr [-n <if name>] [release]           - Start LLMNR server
 >      mdns [-n <if name>] [release]           - Start MDNS server
->      sntp <server ip>                        - Resolve time over SNTP
+>      sntp [<server name|ip>]                 - Resolve time over SNTP
 >      save                                    - Save parameters to the FLASH
 >     reset                                    - Reset the board
 >      ping [-c <count>][-i <seconds>]
@@ -680,60 +692,74 @@ SHELL>
 - If you need to get know an IP address of the domain/host name (like www.google.com or others), you may use DNS client/resolver, by typing the command @c dns @c \<host_name\> @c 4|6 into the command shell window. @n
 For example, if you want to get know the IPv4 address of www.google.com, enter @c dns @c www.google.com @c 4 in your terminal program window:
 @verbatim
-SHELL> dns www.google.com 4
+SHELL> dns 4 www.google.com
 ************************************************
- Resolving        : www.google.com
- DNS Server       : 192.168.0.1
+ Resolving            : www.google.com
+ DNS Server           : 192.168.0.1
 Press [Ctr+C] to cancel.
 ************************************************
- Resolved address : 216.58.208.100       TTL=1241513984
+ Resolved address     : 172.217.19.68    TTL=2147483648
+ Resolved address     : 216.239.32.10    TTL=2013724672
+ Resolved address     : 216.239.34.10    TTL=2013724672
+ Resolved address     : 216.239.36.10    TTL=2013724672
+ Resolved address     : 216.239.38.10    TTL=2013724672
 @endverbatim
 For example, if you want to get know the IPv6 address of www.google.com, enter @c dns @c www.google.com @c 6 in your terminal program window:
 @verbatim
-SHELL> dns www.google.com 6
+SHELL> dns 6 www.google.com
 ************************************************
- Resolving        : www.google.com
- DNS Server       : 192.168.0.1
+ Resolving            : www.google.com
+ DNS Server           : 192.168.0.1
 Press [Ctr+C] to cancel.
 ************************************************
- Resolved address : 2a00:1450:4017:802::2004     TTL=167772160
+ Resolved address     : 2a00:1450:4005:803::2004         TTL=604045312
+ Resolved address     : 2001:4860:4802:32::a     TTL=2653487104
+ Resolved address     : 2001:4860:4802:34::a     TTL=2653487104
+ Resolved address     : 2001:4860:4802:36::a     TTL=2653487104
+ Resolved address     : 2001:4860:4802:38::a     TTL=2653487104
 @endverbatim
 @note
 Be sure that the @c dns parameter is set to correct IP address of the DNS server on your network. It can be set manually by the @c set command or can be obtained automatically by the DHCP IPv4 client service. 
 
-- If you need to get know the current date and time, you may use SNTP client, by typing the command @c sntp @c \<server ip\> @c 4|6 into the command shell window. @n
-For example, you may use public pool of NTP servers addressed by "pool.ntp.org". Use the "dns" command to resolve its IP addresses.
+- If you need to get know the current date and time, you may use SNTP client, by typing the command @c sntp @c [\<server name|ip\>] into the command shell window. @n
+For example, you may use public pool of NTP servers addressed by "pool.ntp.org".
 @verbatim
-SHELL> dns pool.ntp.org 4
+SHELL> sntp pool.ntp.org
 ************************************************
- Resolving        : pool.ntp.org
- DNS Server       : 192.168.0.1
+ Resolving            : pool.ntp.org
+ DNS Server           : 192.168.0.1
 Press [Ctr+C] to cancel.
 ************************************************
- Resolved address : 52.209.118.149       TTL=1627389952
- Resolved address : 89.163.241.149       TTL=1627389952
- Resolved address : 213.251.53.187       TTL=1627389952
- Resolved address : 108.59.2.24  TTL=1627389952
- Resolved address : 207.171.17.42        TTL=4100195584
- Resolved address : 212.25.19.23         TTL=1427308544
- Resolved address : 174.127.124.192      TTL=1427308544
- Resolved address : 193.243.171.138      TTL=1427308544
- Resolved address : 89.36.18.22  TTL=1427308544
- Resolved address : 199.249.224.53       TTL=1427308544
- Resolved address : 85.214.25.217        TTL=1427308544
- Resolved address : 178.63.120.205       TTL=1427308544
- Resolved address : 199.188.48.59        TTL=1427308544
-SHELL> sntp 89.163.241.149
+ Resolved address     : 31.31.74.35      TTL=486539264
+ Resolved address     : 147.251.48.140   TTL=486539264
+ Resolved address     : 212.96.160.147   TTL=486539264
+ Resolved address     : 37.187.104.44    TTL=486539264
+ Resolved address     : 207.171.17.42    TTL=1209337600
+ Resolved address     : 185.120.22.23    TTL=348913664
+ Resolved address     : 185.121.173.155  TTL=348913664
+ Resolved address     : 212.25.19.23     TTL=348913664
+ Resolved address     : 174.127.124.192  TTL=348913664
+ Resolved address     : 85.214.25.217    TTL=348913664
+ Resolved address     : 185.82.172.118   TTL=348913664
+ Resolved address     : 199.249.224.53   TTL=348913664
+ Resolved address     : 178.63.120.205   TTL=348913664
 ************************************************
  SNTP Resolving
- SNTP Server      : 89.163.241.149
+ SNTP Server          : 31.31.74.35
 Press [Ctr+C] to cancel.
 ************************************************
- UTC: 2017-6-8 8:38:14.886
+************************************************
+ SNTP Resolving
+ SNTP Server          : 147.251.48.140
+Press [Ctr+C] to cancel.
+************************************************
+ UTC: 2018-6-19 7:48:28.134
+SHELL>
 @endverbatim
 @note
-- If one SNTP server is failed, try another one from the resolved address list.
 - If you do not have access to public NTP servers, for testing you may use a local SNTP server provided by the http://tftpd32.jounin.net/ application.
+- The pool.ntp.org server provides time service on a volunteer basis and with no guarantee of accuracy or availability.
+- It's recommended to orange own NTP server.
 
 */
 
@@ -768,8 +794,6 @@ Follow these steps to run the FNET Shell demo application:
       - Parity: none.
       - Stop bits: 1.
       - Flow control: None. 	
-	@n @n
-      @image html fnet_serial_setup.jpg "Serial port setup"
 
 - Launch IDE.
 - Open the project:
@@ -880,7 +904,7 @@ https:// [fe80::211:22ff:fe33:4455]
 /*!
 * @page quick_start_shell_freertos FNET Shell FreeRTOS Demo Quick Start
 
-- This application has absolutely the same features and behavior as the Shell demo application. 
+- This application has absolutely the same features and behaviour as the Shell demo application. 
   So follow steps described in @ref quick_start_shell.
 - In addition, the application:
 	- runs in FreeRTOS task.
@@ -904,13 +928,13 @@ https:// [fe80::211:22ff:fe33:4455]
 
 
 //********************************************************************
-//**************** Shell FreeRTOS WiFi QCA Demo Quick Start **********
+//**************** Shell WiFi QCA Demo Quick Start *******************
 //********************************************************************
 
 /*!
-* @page quick_start_shell_freertos_wifi_qca FNET Shell FreeRTOS Wi-Fi Demo Quick Start
+* @page quick_start_shell_wifi_qca FNET Shell Wi-Fi Demo Quick Start
 
-@section fnet_requirements_shell_freertos_wifi_qca Requirements
+@section fnet_requirements_shell_wifi_qca Requirements
 
 Tools used during this quick start:
 - Supported IDE.
@@ -922,7 +946,7 @@ Tools used during this quick start:
 		- It does not work with frdmk64f rev B (rev D is OK).
 		- For IMXRT1050-EVKB Weld 0 resistor to R278,R279,R280 and R281.
 
-@section fnet_stepbystep_shell_freertos_wifi_qca Step by step
+@section fnet_stepbystep_shell_wifi_qca Step by step
 
 Follow these steps to run the FNET Shell demo application: 
 - Prepare your evaluation board according to your board User Manual.
@@ -935,14 +959,11 @@ Follow these steps to run the FNET Shell demo application:
       - Parity: none.
       - Stop bits: 1.
       - Flow control: None. 	
-	@n @n
-      @image html fnet_serial_setup.jpg "Serial port setup"
-
+	  
 - Launch IDE.
 - Open the project:
 @verbatim fnet\fnet_demos\build\<board_name>\shell_mbedtls\<compiler_name>\
 @endverbatim
-@note So far, it is was tested only with frdmk64f board.
 
 - In the IDE, choose a project target you want to compile.
 - Compile, load (or flash) the application to the board and run the project.
@@ -1219,8 +1240,7 @@ Follow these steps to run the FNET Bootloader:
       - Parity: none.
       - Stop bits: 1.
       - Flow control: None.
-	@n @n
-      @image html fnet_serial_setup.jpg "Serial port setup"
+	  
 - Start TFTP Server: 
       - Start TFTP Server application. Go to @c [Start]->[Programs]->[Tftpd32]->[Tftpd32]
       - Press the [Settings] button and set the TFTP server base directory (for example @c C:@\TFTP-Root):  
@@ -1725,8 +1745,7 @@ Follow these steps to run the FNET Throughput benchmark:
       - Parity: none.
       - Stop bits: 1.
       - Flow control: None.
-	@n @n
-      @image html fnet_serial_setup.jpg "Serial port setup"
+
 - Start FBENCH Throughput Benchmark tool. You can find it in the:
 @verbatim 
 fnet\fnet_tools\fbench.exe 
@@ -1905,6 +1924,227 @@ BENCH>
 */
 
 
+
+
+
+
+//********************************************************************
+//**************** Shell Azure Demo Quick Start *******************
+//********************************************************************
+
+/*!
+* @page quick_start_azure FNET Azure IoT Hub Demo Quick Start
+
+In this demo, you will learn how to connect your device to the cloud by using <a href="https://docs.microsoft.com/en-us/azure/iot-hub/about-iot-hub">Azure IoT Hub</a> @n
+What you do:
+- Create an IoT hub.
+- Register a device in your IoT hub.
+- Run the FNET Azure IoT demo application to send data to your IoT hub.
+
+@section fnet_requirements_azure What you need
+- An Azure subscription. If you don't have an Azure subscription, create a <a href="https://azure.microsoft.com/en-us/free">free account</a> before you begin.
+- MS Azure Device Explorer tool for IoT Hub devices: https://github.com/Azure/azure-iot-sdk-csharp/releases/download/2018-1-23/SetupDeviceExplorer.msi
+- An internet connection.
+- A supported IDE (IAR, KDS).
+- A terminal program (Tera Term Pro v4.63 http://ttssh2.sourceforge.jp).
+- The FNET project source code, coming with this document.
+
+@section fnet_azure_create_iot_hub Create an IoT hub
+- Sign in to the <a href="https://portal.azure.com/">Azure portal</a>.
+- Select [Create a resource] -> [Internet of Things] -> [IoT Hub].
+- In the IoT hub pane, choose your Subscription, Resource group, Region, Hub Name and Pricing. 
+- Finally, select [Create]. Your IoT hub might take a few minutes to create. 
+- In your IoT hub navigation menu, open [Shared access policies]. @n
+  Select the [iothubowner] policy, and then copy the [Connection string---primary key].
+  You need this service connection string later to enable a back-end application to connect to your IoT hub. 
+
+@section fnet_azure_register_device Register a device in the IoT hub
+- A device must be registered with your IoT hub before it can connect.
+- In your IoT hub navigation menu, open [IoT devices], then click [Add] to register a device.
+- Enter a Device ID for the new device, then click [Save].
+- After the device is created, open the device from the list in the [IoT devices] pane.
+- Copy the [Connection string---primary key] content to use later. You need this connection string to connect your device to your IoT hub. 
+
+@section fnet_stepbystep_azure Run Azure demo application
+
+- Prepare your evaluation board according to your board User Manual.
+- Use USB or RS-232 male/female DB-9 serial cable to connect your PC (through COM port) to the evaluation board.
+- Connect the evaluation board to an Ethernet network, which must be connected to Internet.
+- Power the board up. 
+- Invoke the terminal program on the PC to which the evaluation board is connected and configure it to:
+      - Bits per second: 115200.
+      - Data bits: 8.
+      - Parity: none.
+      - Stop bits: 1.
+      - Flow control: None.
+	  
+- Launch IDE.
+- Open the FNET demo project:
+@verbatim fnet\fnet_demos\build\<board_name>\azure\<compiler_name>\
+@endverbatim
+- Open the demo application configuration file: 
+	@verbatim \fnet\fnet_demos\src\azure\fapp_user_config.h @endverbatim 
+	and add the following line to it
+	@verbatim #define FAPP_CFG_AZURE_CMD_DEVICE_CONNECTION_STRING "Your_device_connection_string"  @endverbatim
+  "your_device_connection_string"  must be replaced by the device connection string you made a note of previously. Then save your changes.
+- Compile, load/flash and run the application on the board.
+- In your terminal program window you should see the FNET application welcome message:
+@verbatim
+[FREERTOS] Starting scheduler.
+
+************************************************
+ FNET Shell Application (Azure)
+************************************************
+ FNET TCP/IP Stack for MK64FN1
+ Version 4.5.0
+ Built Jul 19 2018 at 10:46:38 by IAR
+
+ Enter '?' for command list.
+************************************************
+[FAPP] Application parameters loaded from Flash.
+SHELL>
+@endverbatim
+- If you have connected the Ethernet interface to a local link, you should see in the terminal window:
+@verbatim
+[LINK] eth0: connected => Script: dhcpc autoip; mdns; llmnr; sntp
+************************************************
+ DHCPv4 Client started.
+ Interface            : eth0
+************************************************
+Press [Ctr+C] to cancel.
+[DHCP] Discovering...
+[DHCP] Discovering...
+
+************************************************
+ IPv4 parameters updated :
+************************************************
+Ethernet Interface <default>:
+ Name                 : eth0
+ ScopeID              : 1
+ Media State          : connected
+ MAC Address          : 00:11:22:33:44:55
+ IPv4 Address         : 192.168.0.105 <dhcp>
+ IPv6 Address         : fe80::211:22ff:fe33:4455 <autoconfigurable>
+ IPv4 Subnet mask     : 255.255.255.0
+ IPv4 Gateway         : 192.168.0.1
+ IPv4 DNS             : 192.168.0.1
+ DHCP Client          : on
+ DHCP Server Address  : 192.168.0.1
+ AUTOIP Service       : off
+ LLMNR Server         : off
+ MDNS Server          : off
+
+************************************************
+ mDNS server started.
+ Interface            : eth0
+ Host Name            : fnet
+************************************************
+************************************************
+ LLMNR server started.
+ Interface            : eth0
+ Host Name            : fnet
+************************************************
+************************************************
+ SNTP Requesting
+ SNTP Server          : 89.221.210.188
+Press [Ctr+C] to cancel.
+************************************************
+ UTC: 2018-7-23 12:43:13.582
+SHELL>
+@endverbatim
+
+- This application has absolutely the same features and behaviour as the Shell demo application.
+  So before next steps, read about it in @ref quick_start_shell. @n
+  In addition, the application has:
+	- Azure-specific shell command:
+		@verbatim
+		>     azure                                     - Azure-IOT client.
+		@endverbatim
+	- application parameters:
+		- FAPP_CFG_AZURE_CMD_DEVICE_CONNECTION_STRING - Device connection string.
+		- FAPP_CFG_AZURE_CMD_MESSAGE_COUNT - Number of Azure messages to be transmitted.
+		- FAPP_CFG_AZURE_CMD_MESSAGE_PERIOD - Period between Azure messages (sec).
+		- FAPP_CFG_AZURE_CMD_LOG - Azure log support.
+		- FAPP_CFG_AZURE_CMD_TRACE - Azure packet trace support.
+- Install and run the Device Explorer tool:
+	- It is available here (https://github.com/Azure/azure-iot-sdk-csharp/releases/download/2018-1-23/SetupDeviceExplorer.msi) @n
+	- You can use this tool to monitor events from your device, and send messages to your device. More information <a href="https://github.com/Azure/azure-iot-sdk-csharp/tree/master/tools/DeviceExplorer">here</a> 
+	
+	- In the [Configuration] tab, add the connection string for your IoT Hub. The service connection string you made a note of previously, during @ref fnet_azure_create_iot_hub. @n
+      Then click [Update].
+	- Navigate to [Data] tab. Select the device name you created from the drop-down list of device IDs and click [Monitor] button. @n
+	  Device Explorer is now monitoring data sent from the selected device to the IoT Hub.
+- Run the Azure IoT demo application which connects to a device endpoint on your IoT hub, sends simulated temperature and humidity telemetry messages, and listens for messages from your hub.@n
+ Type the @c azure command into your terminal program window: @n
+@verbatim
+SHELL> azure
+************************************************
+ Azure IoT Hub Telemetry example
+ Period (sec)         : 15
+Press [Ctr+C] to cancel.
+************************************************
+[AZURE_APP] IoT Hub Connection is authenticated (OK)
+[AZURE_APP] Sending message [0]: {"temperature":29.00,"humidity":70.00}
+[AZURE_APP] Message [0] is received by IoT Hub
+[AZURE_APP] Sending message [1]: {"temperature":24.00,"humidity":69.00}
+[AZURE_APP] Message [1] is received by IoT Hub
+[AZURE_APP] Sending message [2]: {"temperature":22.00,"humidity":77.00}
+[AZURE_APP] Message [2] is received by IoT Hub
+[AZURE_APP] Sending message [3]: {"temperature":27.00,"humidity":65.00}
+[AZURE_APP] Message [3] is received by IoT Hub
+@endverbatim
+- The Device Explorer shows that the IoT hub has successfully received device-to-cloud data from your device:  
+      @image html azure_receive_events.jpg "Device Explore receiving events"
+- To verify that you can send messages from the IoT Hub to your device:
+	- Go to the [Messages to Device] tab in Device Explorer.
+	- Select the device using [Device ID] drop down.
+	- Add some text to the [Message] field, then click [Send].
+      @image html azure_send_message.jpg "Device Explore receiving events"
+	- You should be able to see the message received in the terminal window:
+@verbatim	
+[AZURE_APP] Received Message [0]
+ Message ID: 69b9fb96-8fb6-407b-b13c-9d30d22cabf6
+ Correlation ID: <null>
+ Content-Type: <null>
+ Content-Encoding: <null>
+ Data: <<<Hello from IoT hub!>>> & Size=19
+@endverbatim
+- To stop the demo application press [Ctr+C] in the terminal window, or send "quit" message to the device using the Device Explorer application.
+		
+@note
+- More information about MS Azure IoT Hub: https://docs.microsoft.com/en-us/azure/iot-hub/
+- The application project includes:
+	- FreeRTOS. Its source code is located in fnet/third_party/freertos-x.x.x/.
+	- MbedTLS. Its source code is located in fnet/third_party/mbedtls-x.x.x/.
+	- Azure IoT Hub Device C SDK. Its source code is located in fnet/third_party/azure_iot-x.x.x/.	
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//****************************************************************************************************************************************
+//************************* How-To *******************************************************************************************************
+//****************************************************************************************************************************************
+
 /*!
 * @page how_to FNET How-To 
 *- @subpage how_to_add_fnet  
@@ -1912,7 +2152,6 @@ BENCH>
 *- @subpage how_to_generate_rom_fs 
 
 */
-
 
 //********************************************************************
 //************************* How-To: Add FNET *************************
@@ -2143,6 +2382,31 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+
+- Version 4.5.0
+	- Added basic support of the Microsoft Azure IoT Hub, enabled by FNET_CFG_AZURE:
+		- Added Azure IoT Hub TLS and Socket IO adapters.
+		- Added Azure IoT Hub client example.
+	- Added FNET_CFG_TIME which enables/disables <time.h> support.
+		- Added time() implementation.
+		- Added UTC time information to the "info" shell command.
+		- Added UTC time update by SNTP client.
+	- Extended TLS interface:
+		- Added TLS client role.
+		- Added fnet_tls_socket_connect() to perform TLS handshake.
+		- Added fnet_tls_set_own_certificate() to set own certificate chain and private key.
+		- Added fnet_tls_set_ca_certificate() to assign Certificate Authority certificate.
+		- Added fnet_tls_socket_set_hostname() to set the host name to check against the received server certificate.
+		- Other minor changes.
+	- Improved DNS resolver. DNS server address parameter is optional now.
+	- Added fnet_poll() general polling function, covering fnet_service_poll() and optional fnet_timer_poll().
+	- Changed the "sntp" shell command syntax to @c sntp @c [\<server name|ip\>]. Default server name defined by FAPP_CFG_SNTP_CMD_SERVER_NAME.
+	- Added fnet_vprintf().
+	- Added fnet_strnlen() which calculates the length of a fixed-size string.
+	- Added @c %[.precision]s format string support by fnet_printf().
+	- Fixed HTTP server basic authentication with more than one entries in the authentication table. Thanks to Joe. 
+	- Fixed possible garbage print by fnet_printf(), in specific case.
+	- Other minor fixes.
 
 - Version 4.4.1
 	- Added fnet_wifi_get/set_country_code() to get/set country code used by a WiFi interface.
@@ -3321,6 +3585,14 @@ which includes all service-specific configuration files.
 *   The user may override and change the default values in the application-specific 
 *   configuration file @c fnet_user_config.h.
 */
+/*! 
+*	@defgroup fnet_azure_config Azure IoT Hub Adapter Configuration Parameters
+*	@ingroup fnet_service_config 
+*	This section describes the parameters specific to the Azure IoT Hub Adapter.
+*	@n
+*   The user may override and change the default values in the application-specific 
+*   configuration file @c fnet_user_config.h.
+*/
 
 
 //***********************************************************************
@@ -3504,7 +3776,10 @@ which includes all service-specific configuration files.
 *	@defgroup fnet_serial Serial Input/Output library API
 *	@ingroup fnet_service 
 */
-
+/*! 
+*	@defgroup fnet_azure Azure IoT Hub API
+*	@ingroup fnet_service 
+*/
 
 
 

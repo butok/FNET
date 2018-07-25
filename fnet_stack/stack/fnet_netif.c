@@ -46,7 +46,9 @@ fnet_netif_t *fnet_netif_list;          /* The list of network interfaces. */
 fnet_netif_t *fnet_netif_default;       /* Default net_if. */
 
 /* Duplicated IP event handler.*/
-static fnet_netif_callback_ip4_addr_conflict_t         fnet_netif_callback_ip4_addr_conflict;
+#if FNET_CFG_IP4
+    static fnet_netif_callback_ip4_addr_conflict_t         fnet_netif_callback_ip4_addr_conflict;
+#endif
 
 /************************************************************************
 *     Function Prototypes
@@ -63,7 +65,9 @@ void _fnet_netif_release_all( void )
 {
     fnet_netif_t *net_if_ptr;
 
+#if FNET_CFG_IP4
     fnet_netif_set_callback_on_ip4_addr_conflict(0); /* Reset dupip handler.*/
+#endif
 
     for (net_if_ptr = fnet_netif_list; net_if_ptr; net_if_ptr = net_if_ptr->next)
     {
@@ -1068,6 +1072,7 @@ fnet_return_t fnet_netif_get_statistics( fnet_netif_desc_t netif_desc, struct fn
 /************************************************************************
 * DESCRIPTION: Registers the "duplicated IP address" event handler.
 ************************************************************************/
+#if FNET_CFG_IP4
 void fnet_netif_set_callback_on_ip4_addr_conflict(fnet_netif_callback_ip4_addr_conflict_t callback)
 {
     _fnet_stack_mutex_lock();
@@ -1076,10 +1081,12 @@ void fnet_netif_set_callback_on_ip4_addr_conflict(fnet_netif_callback_ip4_addr_c
     fnet_isr_unlock();
     _fnet_stack_mutex_unlock();
 }
+#endif
 
 /************************************************************************
 * DESCRIPTION: This function detects if there is IPv4 adress conflict on network.
 *************************************************************************/
+#if FNET_CFG_IP4
 fnet_bool_t fnet_netif_is_ip4_addr_conflict( fnet_netif_desc_t netif_desc )
 {
     fnet_bool_t     result = FNET_FALSE;
@@ -1096,10 +1103,12 @@ fnet_bool_t fnet_netif_is_ip4_addr_conflict( fnet_netif_desc_t netif_desc )
 
     return result;
 }
+#endif
 
 /************************************************************************
 * DESCRIPTION: This function clears IPv4 adress conflict flag.
 *************************************************************************/
+#if FNET_CFG_IP4
 void fnet_netif_clear_ip4_addr_conflict( fnet_netif_desc_t netif_desc )
 {
     fnet_netif_t    *netif = (fnet_netif_t *)netif_desc;
@@ -1113,10 +1122,12 @@ void fnet_netif_clear_ip4_addr_conflict( fnet_netif_desc_t netif_desc )
         _fnet_stack_mutex_unlock();
     }
 }
+#endif
 
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
+#if FNET_CFG_IP4
 void _fnet_netif_signal_ip4_addr_conflict(fnet_netif_desc_t netif )
 {
     if(fnet_netif_callback_ip4_addr_conflict)
@@ -1124,6 +1135,7 @@ void _fnet_netif_signal_ip4_addr_conflict(fnet_netif_desc_t netif )
         fnet_netif_callback_ip4_addr_conflict(netif);
     }
 }
+#endif
 
 /************************************************************************
 * DESCRIPTION: This function assign unique Scope ID to the interface.

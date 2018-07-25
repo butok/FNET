@@ -152,7 +152,7 @@
  * @showinitializer
  ******************************************************************************/
 #ifndef FAPP_CFG_FREERTOS_TASK_STACK_SIZE
-    #define FAPP_CFG_FREERTOS_TASK_STACK_SIZE   (0x2000)
+    #define FAPP_CFG_FREERTOS_TASK_STACK_SIZE   (0x4000)
 #endif
 
 /**************************************************************************/ /*!
@@ -161,7 +161,7 @@
  * @showinitializer
  ******************************************************************************/
 #ifndef FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS
-    #define FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS (1) /* ms */
+    #define FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS   (1) /* ms */
 #endif
 
 /************************************************************************
@@ -291,6 +291,13 @@
 *************************************************************************/
 #ifndef FAPP_CFG_INFO_CMD
     #define FAPP_CFG_INFO_CMD           (0)
+#endif
+
+/************************************************************************
+*    "azure" command.
+*************************************************************************/
+#ifndef FAPP_CFG_AZURE_CMD
+    #define FAPP_CFG_AZURE_CMD          (0)
 #endif
 
 /************************************************************************
@@ -485,6 +492,16 @@
 *************************************************************************/
 #ifndef FAPP_CFG_SNTP_CMD
     #define FAPP_CFG_SNTP_CMD           (0)
+#endif
+
+/************************************************************************
+*    Default NTP server name.
+*************************************************************************/
+#ifndef FAPP_CFG_SNTP_CMD_SERVER_NAME
+    #define FAPP_CFG_SNTP_CMD_SERVER_NAME   "pool.ntp.org"; /* Good addresses   "89.221.210.188";
+    "37.187.104.44";
+    "77.78.107.252";
+    "147.251.48.140" */
 #endif
 
 /************************************************************************

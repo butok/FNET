@@ -81,6 +81,10 @@
     #include "fapp_wifi.h"
 #endif
 
+#if FAPP_CFG_AZURE_CMD && FNET_CFG_AZURE
+    #include "fapp_azure.h"
+#endif
+
 #include "fapp_netif.h"
 
 /************************************************************************
@@ -202,7 +206,7 @@ const struct fnet_shell_command fapp_cmd_table [] =
     { .name = "mdnscn",     .min_args = 0u, .max_args = 2u,     .cmd_ptr = fapp_mdns_change_name_cmd,  .description = "Change MDNS service name, Bonjour test", .syntax = "[-n <if name>]"},
 #endif
 #if FAPP_CFG_SNTP_CMD && FNET_CFG_SNTP
-    { .name = "sntp",       .min_args = 1u, .max_args = 1u,     .cmd_ptr = fapp_sntp_cmd,     .description = "Resolve time over SNTP", .syntax = "<server ip>"},
+    { .name = "sntp",       .min_args = 0u, .max_args = 1u,     .cmd_ptr = fapp_sntp_cmd,     .description = "Resolve time over SNTP", .syntax = "[<server name|ip>]"},
 #endif
 #if FAPP_CFG_MEM_CMD
     { .name = "mem",        .min_args = 0u, .max_args = 0u,     .cmd_ptr = fapp_mem_cmd,     .description = "Show memory map", .syntax = ""},
@@ -244,11 +248,14 @@ const struct fnet_shell_command fapp_cmd_table [] =
 #if FNET_CFG_PING && FAPP_CFG_PING6_CMD /*absolutly the same as the "ping" command */
     { .name = "ping6",      .min_args = 1u, .max_args = 14u,    .cmd_ptr = fapp_ping_cmd,   .description = "Send ICMP ECHO requests", .syntax = "[-c <count>][-i <seconds>]\n\r\t[-p <pattern>][-s <size>]\n\r\t[-h <hoplimit/ttl>] <ip>\t"}, /* -s -n should be ignored.*/
 #endif
-#if FAPP_CFG_DEBUG_CMD   /* Used for DEBUGING needs only. */
-    { .name = "d",          .min_args = 0u, .max_args = 0u,     .cmd_ptr = fapp_debug_cmd,   .description = "Print debug info.", .syntax = ""},
-#endif
 #if FNET_CFG_PING && FAPP_CFG_PING_CMD
     { .name = "ping",       .min_args = 1u, .max_args = 14u,    .cmd_ptr = fapp_ping_cmd,   .description = "Send ICMP ECHO requests", .syntax = "[-c <count>][-i <seconds>]\n\r\t\t[-p <pattern>][-s <size>]\n\r\t\t[-h <hoplimit/ttl>] <ip>\t"}, /* -s -n should be ignored.*/
+#endif
+#if FAPP_CFG_AZURE_CMD && FNET_CFG_AZURE
+    { .name = "azure",      .min_args = 0u, .max_args = 0u,     .cmd_ptr = fapp_azure_cmd,   .description = "Azure-IOT client.", .syntax = ""},
+#endif
+#if FAPP_CFG_DEBUG_CMD   /* Used for DEBUGING needs only. */
+    { .name = "d",          .min_args = 0u, .max_args = 0u,     .cmd_ptr = fapp_debug_cmd,   .description = "Print debug info.", .syntax = ""},
 #endif
     { .name = 0}
 };

@@ -61,7 +61,7 @@
  * @def     FNET_CFG_SNTP_RETRANSMISSION_MAX
  * @brief   The maximum number of times the SNTP client will retransmit
  *          the request message to a SNTP server.@n
- *          Default value is @b @c 5.
+ *          Default value is @b @c 2.
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_SNTP_RETRANSMISSION_MAX
@@ -74,11 +74,11 @@
  *          @n
  *          If the SNTP client does not receive any response from a SNTP server,
  *          it sends new request message.@n
- *          Default value is @b @c 1.
+ *          Default value is @b @c 2.
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_SNTP_RETRANSMISSION_TIMEOUT
-    #define FNET_CFG_SNTP_RETRANSMISSION_TIMEOUT     (1U)  /* seconds */
+    #define FNET_CFG_SNTP_RETRANSMISSION_TIMEOUT     (2U)  /* seconds */
 #endif
 
 /*! @} */

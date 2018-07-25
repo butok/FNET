@@ -191,6 +191,7 @@ static const fapp_setget_cmd_t fapp_setget_cmd_table [] =
 #if FAPP_CFG_SETGET_CMD_PASSPHRASE
     { .name = "passphrase", .set = fapp_set_cmd_passphrase, .get = fapp_get_cmd_passphrase, .syntax = "<wifi passphrase>" },
 #endif
+
 };
 
 #define FAPP_SET_CMD_NUM  ((fnet_index_t)(sizeof(fapp_setget_cmd_table)/sizeof(fapp_setget_cmd_t)))

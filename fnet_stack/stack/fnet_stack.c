@@ -165,6 +165,17 @@ static void _fnet_stack_release( void )
     _fnet_mem_release();
 }
 
+/************************************************************************
+* DESCRIPTION: General FNET poll.
+************************************************************************/
+void fnet_poll( void )
+{
+#if !FNET_CFG_TIMER_POLL_AUTOMATIC
+    fnet_timer_poll();      /* Poll FNET stack timer.*/
+#endif
+    fnet_service_poll();    /* Poll registered services.*/
+}
+
 #if FNET_CFG_MULTITHREADING
 
 /* =============== General mutex API ==============================*/

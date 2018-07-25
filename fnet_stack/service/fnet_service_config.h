@@ -60,6 +60,7 @@
 #include "service/flash/fnet_flash_config.h"
 #include "service/link/fnet_link_config.h"
 #include "service/bench/fnet_bench_config.h"
+#include "service/azure/fnet_azure_config.h"
 
 /*! @} */
 

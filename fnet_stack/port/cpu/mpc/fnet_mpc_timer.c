@@ -35,8 +35,7 @@
 
 
 /************************************************************************
-* DESCRIPTION: Top interrupt handler. Increment fnet_current_time
-*              and interrupt flag.
+* DESCRIPTION: Top interrupt handler.
 *************************************************************************/
 static void fnet_cpu_timer_handler_top(fnet_uint32_t cookie )
 {

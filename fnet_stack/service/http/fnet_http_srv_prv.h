@@ -129,7 +129,7 @@ struct fnet_http_srv_if; /* Forward declaration.*/
 *************************************************************************/
 struct fnet_http_srv_response
 {
-    const struct fnet_http_srv_file_handler     *send_file_handler;
+    const struct fnet_http_srv_file_handler *send_file_handler;
     fnet_return_t                           (*tx_data)(struct fnet_http_srv_if *http);  /* TX state handler.*/
     fnet_bool_t                             send_eof;                   /* Optional EOF flag. It means nomore data for send*/
     fnet_size_t                             buffer_sent;                /* A number of bytes were sent.*/
@@ -137,14 +137,14 @@ struct fnet_http_srv_response
     fnet_uint32_t                           cookie;
 #if FNET_CFG_HTTP_SRV_VERSION_MAJOR /* HTTP/1.x*/
     fnet_bool_t                             no_header;                  /* Flag do not send HTTP respnse status line and header*/
-    const struct fnet_http_srv_content_type     *send_file_content_type;    /* MIME Content-Type.*/
-    struct fnet_http_srv_status                 status;                     /* Status of the response.*/
-    struct fnet_http_srv_version                version;                    /* Protocol version used for current request.*/
+    const struct fnet_http_srv_content_type *send_file_content_type;    /* MIME Content-Type.*/
+    struct fnet_http_srv_status             status;                     /* Status of the response.*/
+    struct fnet_http_srv_version            version;                    /* Protocol version used for current request.*/
     fnet_int32_t                            content_length;             /* The total size of the data to send (is -1 if unknown).*/
 #endif
 #if FNET_CFG_HTTP_SRV_AUTHENTICATION_BASIC && FNET_CFG_HTTP_SRV_VERSION_MAJOR
-    const struct fnet_http_srv_auth             *auth_entry;
-    const struct fnet_http_srv_auth_scheme      *auth_scheme;
+    const struct fnet_http_srv_auth         *auth_entry;
+    const struct fnet_http_srv_auth_scheme  *auth_scheme;
 #endif
 };
 

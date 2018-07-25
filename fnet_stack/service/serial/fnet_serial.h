@@ -202,7 +202,7 @@ extern "C" {
 
 /***************************************************************************/ /*!
  *
- * @brief    Writes character to the stream.
+ * @brief    Write character to the stream.
  *
  * @param stream        Stream descriptor.
  *
@@ -219,7 +219,7 @@ void fnet_serial_putchar(fnet_serial_stream_t stream, fnet_char_t character);
 
 /***************************************************************************/ /*!
  *
- * @brief    Reads character from the stream.
+ * @brief    Read character from the stream.
  *
  * @param stream          Stream descriptor.
  *
@@ -239,7 +239,7 @@ fnet_int32_t fnet_serial_getchar(fnet_serial_stream_t stream);
 
 /***************************************************************************/ /*!
  *
- * @brief    Sends data from the internal stream buffer to the stream client.
+ * @brief    Send data from the internal stream buffer to the stream client.
  *
  * @param stream          Stream descriptor.
  *
@@ -258,7 +258,7 @@ void fnet_serial_flush(fnet_serial_stream_t stream);
 
 /***************************************************************************/ /*!
  *
- * @brief    Writes character to the default stream.
+ * @brief    Write character to the default stream.
  *
  * @param character     Character to be written.
  *
@@ -273,7 +273,7 @@ void fnet_putchar(fnet_char_t character);
 
 /***************************************************************************/ /*!
  *
- * @brief    Reads character from the default stream.
+ * @brief    Read character from the default stream.
  *
  * @return This function returns:
  *          - character from the default stream.
@@ -291,7 +291,7 @@ fnet_int32_t fnet_getchar(void);
 
 /***************************************************************************/ /*!
  *
- * @brief    Prints formatted text to the stream.
+ * @brief    Print formatted text to the stream.
  *
  * @param stream      Stream descriptor.
  *
@@ -346,7 +346,7 @@ fnet_size_t fnet_serial_printf(fnet_serial_stream_t stream, const fnet_char_t *f
 
 /***************************************************************************/ /*!
  *
- * @brief    Prints formatted variable argument list to the stream.
+ * @brief    Print formatted variable argument list to the stream.
  *
  * @param stream      Stream descriptor.
  *
@@ -402,7 +402,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
 
 /***************************************************************************/ /*!
  *
- * @brief    Prints formatted text to the default stream.
+ * @brief    Print formatted text to the default stream.
  *
  * @param format      Format string.
  *
@@ -454,9 +454,62 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
  ******************************************************************************/
 fnet_size_t fnet_printf( const fnet_char_t *format, ... );
 
+/***************************************************************************/ /*!
+ *
+ * @brief    Print formatted variable argument list to the default stream.
+ *
+ * @param format      Format string.
+ *
+ * @param arg         Variable arguments list. It shall have been initialized by @c va_start() macro
+ *
+ * @return This function returns the number of characters that were
+ *         successfully written, excluding the trailing null.
+ *
+ * @see fnet_printf()
+ *
+ ******************************************************************************
+ *
+ * This function outputs formatted text to the default stream, expanding the format
+ * placeholders with the value of the argument list @c arg. @n
+ * This function behaves exactly as @c printf except that the variable argument
+ * list is passed as a @c va_list instead of a succession of arguments,
+ * which becomes specially useful when the argument list to be passed comes
+ * itself from a variable argument list in the calling function. @n
+ * @n
+ * The syntax for a format placeholder is @a "%[Flags][Width][Length]Type".
+ * - @a Flags can be omitted or be any of:
+ *    - @c - : Left justify.
+ *    - @c + : Right justify.
+ *    - @c 0 : Pad with leading zeros.
+ *    - @a space  : Print space if no sign.
+ * - @a Width is minimum field width. It can be omitted.
+ * - @a Length is conversion character. It can be omitted or by any of:
+ *    - @c h : Short integer.
+ *    - @c l : Long integer.
+ * - @a Type can by any of:
+ *    - @c d, @c i : Integer.
+ *    - @c u : Unsigned.
+ *    - @c x, @c X : Hexadecimal.
+ *    - @c o : Octal.
+ *    - @c b : Binary.
+ *    - @c p : Pointer.
+ *    - @c c : Single char.
+ *    - @c s : Char string.
+ *    - @c n : Nothing.
+ *
+ * @note
+ * To save some bytes from all the hard coded strings the fnet_(s)printf() functions will
+ * expand all line feeds ("\n") inside the format string to CR LF ("\r\n").
+ * So do not use "\r\n" in	the format string - it will be expanded to
+ * "\r\r\n". It is save to add it via a parameter though, e.g.
+ * fnet_printf("%s", "\r\n");@n
+ * This feature can be disable/enabled by the @ref FNET_CFG_SERIAL_PRINTF_N_TO_RN
+ * configuration parameter.
+ ******************************************************************************/
+fnet_size_t fnet_vprintf(const fnet_char_t *format, va_list arg );
 
 /***************************************************************************/ /*!
- * @brief    Prints formatted text to the default stream and terminates the
+ * @brief    Print formatted text to the default stream and terminates the
  *           printed text by the line separator string.
 
  * @param format      Format string.
@@ -511,7 +564,7 @@ fnet_size_t fnet_printf( const fnet_char_t *format, ... );
 fnet_size_t fnet_println(const fnet_char_t *format, ... );
 
 /***************************************************************************/ /*!
- * @brief    Prints formatted text to the buffer.
+ * @brief    Print formatted text to the buffer.
  *
  * @param str         Pointer to buffer where the resulting string is stored.
  *
@@ -570,7 +623,7 @@ fnet_size_t fnet_sprintf( fnet_char_t *str, const fnet_char_t *format, ... );
 
 /***************************************************************************/ /*!
  *
- * @brief    Prints formatted text to the buffer.
+ * @brief    Print formatted text to the buffer.
  *           The length of the buffer is given, that prevents the buffer overflows.
  *
  * @param str         Pointer to buffer where the resulting string is stored.

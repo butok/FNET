@@ -65,15 +65,52 @@ TBD
 typedef void *fnet_http_cln_desc_t;
 
 /**************************************************************************/ /*!
+ * @brief Callback function prototype of the HTTP client receive function.
+ *
+ * @param buffer           Data buffer that contains data received from
+ *                         the remote HTTP server.
+ *
+ * @param buffer_size      Size of the input @c buffer in bytes.
+ *
+ * @param cookie            User-application specific parameter. It's set during
+ *                          the HTTP-client service initialization as part of
+ *                          @ref fnet_http_cln_params.
+ *
+ * @return This function must return:
+ *   - @ref FNET_OK if no error occurs.
+ *   - @ref FNET_ERR if an error occurs.
+ * @see fnet_http_cln_init
+ *
+ * This function is invoked by the HTTP client when there is any data
+ * in the entity-body of the HTTP response message.
+ * This function can be invoked multiple times to process all received data.
+ * At each invocation a new chunk of data must be processed.
+ * //DM The HTTP server invokes this callback function after call of the
+ * //DM @ref fnet_http_srv_post_handle_t function.@n
+ *
+ ******************************************************************************/
+//response
+//DM resposnse_staus_code: returns the status code from the HTTP response (200, 201, 400, 401, etc.)
+//DM response_header: HTTP response headers so caller may inspect them
+//    name:The name of the HTTP header to add. It is invalid for the name to include the ':' character or character codes outside the range 33-126.
+//    value: The value to be assigned to the header.
+//DM response_content: This is a buffer that is filled by the contents of the HTTP response body.
+typedef fnet_return_t(*fnet_http_cln_receive_t)(fnet_http_cln_desc_t http_cln_desc, fnet_uint8_t *buffer, fnet_size_t buffer_size, void *cookie);
+
+
+/**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_http_cln_init() function.
  ******************************************************************************/
 struct fnet_http_cln_params
 {
     struct fnet_sockaddr                    address;            /**< @brief Socket address of the remote HTTP server to connect to.@n
                                                                  * If the address port number is set to @c 0, it will be assigned to the default port number defined by @ref FNET_CFG_HTTP_CLN_PORT.*/
-    //DM fnet_char_t                             *method;
-    fnet_char_t                             *uri;               /* Uniform Resource Identifier (URI) */
+    //DM fnet_char_t                             *method;   Specifies which HTTP method is used (GET, POST, DELETE, PUT, PATCH).
+    fnet_char_t                             *uri;               /* Uniform Resource Identifier (URI). Specifies the relative path of the URL excluding the host name. */
     //TBD
+    //header: Specifies a set of HTTP headers (name-value pairs) to be added to the HTTP request.
+    //body: Specifies a pointer to the request body. This value is optional and can be NULL.
+    //body_length: Specifies the request body size (this is typically added into the HTTP headers as the Content-Length header). This value is optional and can be 0.
     void                                    *cookie;            /**< @brief Optional application-specific parameter. @n
                                                                 * It's passed to the @c callback
                                                                 * functions as input parameter. */

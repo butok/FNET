@@ -48,6 +48,7 @@ typedef enum
 } fnet_dns_state_t;
 
 #define FNET_DNS_ERR_PARAMS            "ERROR: Wrong input parameters."
+#define FNET_DNS_ERR_DNS_UNKNOWN       "ERROR: DNS server unknown."
 #define FNET_DNS_ERR_SOCKET_CREATION   "ERROR: Socket creation error."
 #define FNET_DNS_ERR_SOCKET_CONNECT    "ERROR: Socket Error during connect."
 #define FNET_DNS_ERR_SERVICE           "ERROR: Service registration is failed."
@@ -55,6 +56,7 @@ typedef enum
 
 static void _fnet_dns_poll( void *fnet_dns_if_p );
 static fnet_size_t _fnet_dns_add_question( fnet_uint8_t *message, fnet_uint16_t type, const fnet_char_t *host_name);
+static fnet_bool_t _fnet_dns_get_server_addr(struct fnet_sockaddr *dns_server_addr );
 
 /************************************************************************
 *    DNS-client resolved IPv4 address structure.
@@ -197,14 +199,23 @@ fnet_dns_desc_t fnet_dns_init( struct fnet_dns_params *params )
 
     /* Check input parameters. */
     if((params == 0)
-       || (params->dns_server_addr.sa_family == AF_UNSPEC)
-       || (fnet_socket_addr_is_unspecified(&params->dns_server_addr))
        || (params->callback == 0)
        /* Check length of host_name.*/
        || ((host_name_length = fnet_strlen(params->host_name)) == 0U) || (host_name_length >= FNET_DNS_MAME_SIZE))
     {
         FNET_DEBUG_DNS(FNET_DNS_ERR_PARAMS);
         goto ERROR;
+    }
+
+    fnet_memcpy(&remote_addr, &params->dns_server_addr, sizeof(remote_addr));
+
+    if(fnet_socket_addr_is_unspecified(&remote_addr) == FNET_TRUE) /* If DNS server is unspecified, get any registered one */
+    {
+        if(_fnet_dns_get_server_addr(&remote_addr) == FNET_FALSE)
+        {
+            FNET_DEBUG_DNS(FNET_DNS_ERR_DNS_UNKNOWN);
+            goto ERROR;
+        }
     }
 
     /* Try to find free DNS client descriptor. */
@@ -252,7 +263,7 @@ fnet_dns_desc_t fnet_dns_init( struct fnet_dns_params *params )
     dns_if->id = dns_id;        /* Save query ID.*/
 
     /* Create socket */
-    if((dns_if->socket_cln = fnet_socket(params->dns_server_addr.sa_family, SOCK_DGRAM, 0u)) == FNET_NULL)
+    if((dns_if->socket_cln = fnet_socket(remote_addr.sa_family, SOCK_DGRAM, 0u)) == FNET_NULL)
     {
         FNET_DEBUG_DNS(FNET_DNS_ERR_SOCKET_CREATION);
         goto ERROR;
@@ -264,8 +275,6 @@ fnet_dns_desc_t fnet_dns_init( struct fnet_dns_params *params )
 
     /* Bind/connect to the server.*/
     FNET_DEBUG_DNS("Connecting to DNS Server.");
-    fnet_memset_zero(&remote_addr, sizeof(remote_addr));
-    fnet_memcpy(&remote_addr, &params->dns_server_addr, sizeof(remote_addr));
     if(remote_addr.sa_port == 0U)
     {
         remote_addr.sa_port = FNET_CFG_DNS_PORT;
@@ -331,6 +340,86 @@ ERROR_1:
 ERROR:
     fnet_service_mutex_unlock();
     return FNET_NULL;
+}
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Get any registered DNS server IP address.
+ *
+ * @param dns_server_addr [in,out]  If dns_server_addr->sa_family and/or dns_server_addr->sa_scope_id are set, it is used as a filter to search a DNS sever address.
+ *                                  It is filled by registered DNS server IP address.
+ *
+ * @return This function returns:
+ *   - @ref FNET_TRUE if the @c dns_server_addr is filled.
+ *   - @ref FNET_FALSE if no DNS address is not available.
+ *
+ * @see fnet_netif_get_ip4_dns(), fnet_netif_get_ip6_dns(), FNET_CFG_DNS
+ ******************************************************************************
+ *
+ * This function is used to retrieve any registered DNS IP addresses.@n
+ * It is present only if @ref FNET_CFG_DNS is set to 1.
+ *
+ ******************************************************************************/
+/************************************************************************
+*  Get any registered DNS Server address.
+ * dns_server_addr [in,out]  If dns_server_addr->sa_family and/or dns_server_addr->sa_scope_id are set, it is used as a filter to search a DNS sever address.
+ *                                  It is filled by registered DNS server IP address.
+ *
+ * This function returns:
+ *   - FNET_TRUE if the @c dns_server_addr is filled.
+ *   - FNET_FALSE if no DNS address is not available.
+*************************************************************************/
+static fnet_bool_t _fnet_dns_get_server_addr(struct fnet_sockaddr *dns_server_addr )
+{
+    fnet_bool_t         result = FNET_FALSE;
+    fnet_index_t        netif_index = 0;
+    fnet_netif_desc_t   netif;
+
+    if(dns_server_addr)
+    {
+        netif = fnet_netif_get_by_scope_id(dns_server_addr->sa_scope_id);
+
+        if(netif == FNET_NULL)
+        {
+            netif = fnet_netif_get_default();     /* Get default interface */
+        }
+
+        while(netif)
+        {
+#if FNET_CFG_IP4 /* IPv4 DNS has higher priority.*/
+            if( ((dns_server_addr->sa_family == AF_UNSPEC) || (dns_server_addr->sa_family & AF_INET)) &&
+                ((((struct fnet_sockaddr_in *)(dns_server_addr))->sin_addr.s_addr = fnet_netif_get_ip4_dns(netif)) != (fnet_ip4_addr_t)0))
+            {
+                dns_server_addr->sa_family = AF_INET;
+                break;
+            }
+            else
+#endif
+#if FNET_CFG_IP6 && FNET_CFG_ND6_RDNSS
+                if(((dns_server_addr->sa_family == AF_UNSPEC) || (dns_server_addr->sa_family & AF_INET6)) &&
+                   (fnet_netif_get_ip6_dns(netif, 0, (fnet_ip6_addr_t *)&dns_server_addr->sa_data) == FNET_TRUE))
+                {
+                    dns_server_addr->sa_family = AF_INET6;
+                    break;
+                }
+                else
+#endif
+                {
+                    if(dns_server_addr->sa_scope_id == 0) /* Any interface */
+                    {
+                        netif = fnet_netif_get_by_number(netif_index++);
+                    }
+                }
+        }
+
+        if(fnet_socket_addr_is_unspecified(dns_server_addr) == FNET_FALSE) /* If DNS address is specified */
+        {
+            dns_server_addr->sa_scope_id = fnet_netif_get_scope_id(netif);
+            result = FNET_TRUE;
+        }
+    }
+
+    return result;
 }
 
 /************************************************************************

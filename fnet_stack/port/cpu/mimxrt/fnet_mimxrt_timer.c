@@ -47,8 +47,7 @@
 static void fnet_cpu_timer_handler_top(void *cookie);
 
 /************************************************************************
-* DESCRIPTION: Top interrupt handler. Increment fnet_current_time
-*              and clear interrupt flag.
+* DESCRIPTION: Top interrupt handler.
 *************************************************************************/
 static void fnet_cpu_timer_handler_top(void *cookie)
 {
@@ -145,8 +144,7 @@ static void fnet_cpu_timer_handler_top(void *cookie);
 static TMR_Type *const fnet_mimxrt_qtmr_base_addr[] = TMR_BASE_PTRS;
 
 /************************************************************************
-* DESCRIPTION: Top interrupt handler. Increment fnet_current_time
-*              and clear interrupt flag.
+* DESCRIPTION: Top interrupt handler.
 *************************************************************************/
 static void fnet_cpu_timer_handler_top(void *cookie)
 {

@@ -211,10 +211,29 @@ fnet_int32_t fnet_memcmp(const void *src1, const void *src2, fnet_size_t count )
  ******************************************************************************
  *
  * This function computes the number of bytes in the string to which @c str
- * points, not including the terminating null byte.
+ * points, not including the terminating null character.
  *
  ******************************************************************************/
 fnet_size_t fnet_strlen (const fnet_char_t *str);
+
+/***************************************************************************/ /*!
+ *
+ * @brief           Calculate the length of a fixed-size string.
+ *
+ * @param str       Pointer to the null-terminated string to be examined.
+ * @param max_len   Maximum number of characters to examine.
+ *
+ * @return          This function returns the number of characters in the
+ *                  @c str string or max_len if the null character was not found.
+ *
+ ******************************************************************************
+ *
+ * This function computes the number of bytes in the string to which @c str
+ * points, not including the terminating null character, but at most max_len.
+ * The function never examines more than @c max_len bytes of the string.
+ *
+ ******************************************************************************/
+fnet_size_t fnet_strnlen (const fnet_char_t *str, fnet_size_t max_len);
 
 /***************************************************************************/ /*!
  *

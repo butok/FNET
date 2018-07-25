@@ -141,42 +141,26 @@ void fapp_dns_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv
         }
     }
 
-    /* The DNS server address is not provided by user.*/
-    if(dns_params.dns_server_addr.sa_family == AF_UNSPEC)
+    if(netif)
     {
-#if FNET_CFG_IP4 /* IPv4 DNS has higher priority.*/
-        if( (((struct fnet_sockaddr_in *)(&dns_params.dns_server_addr))->sin_addr.s_addr = fnet_netif_get_ip4_dns(netif)) != (fnet_ip4_addr_t)0)
-        {
-            dns_params.dns_server_addr.sa_family = AF_INET;
-        }
-        else
-#endif
-#if FNET_CFG_IP6
-            if(fnet_netif_get_ip6_dns(netif, 0U, (fnet_ip6_addr_t *)&dns_params.dns_server_addr.sa_data) == FNET_TRUE)
-            {
-                dns_params.dns_server_addr.sa_family = AF_INET6;
-            }
-            else
-#endif
-            {
-                fnet_shell_println(desc, FNET_DNS_UNKNOWN);
-                return;
-            }
+        dns_params.dns_server_addr.sa_scope_id = fnet_netif_get_scope_id(netif); /* Add interface filter.*/
     }
 
     dns_params.host_name = argv[argc - 1];              /* Host name to resolve - last parameter.*/
     dns_params.callback = fapp_dns_callback_resolved;   /* Callback function.*/
     dns_params.cookie = desc;                           /* Application-specific parameter
                                                         which will be passed to fapp_dns_callback_resolved().*/
-
     /* Run DNS client/resolver. */
     dns_desc = fnet_dns_init(&dns_params);
     if(dns_desc)
     {
         fnet_shell_println(desc, FAPP_DELIMITER_STR);
         fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Resolving", dns_params.host_name);
-        fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "DNS Server",
-                           fnet_inet_ntop(dns_params.dns_server_addr.sa_family, dns_params.dns_server_addr.sa_data, ip_str, sizeof(ip_str)));
+        if(fnet_socket_addr_is_unspecified(&dns_params.dns_server_addr) == FNET_FALSE) /* If DNS server is specified */
+        {
+            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "DNS Server",
+                               fnet_inet_ntop(dns_params.dns_server_addr.sa_family, dns_params.dns_server_addr.sa_data, ip_str, sizeof(ip_str)));
+        }
         fnet_shell_println(desc, FAPP_TOCANCEL_STR);
         fnet_shell_println(desc, FAPP_DELIMITER_STR);
 

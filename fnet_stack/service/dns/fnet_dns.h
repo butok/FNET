@@ -107,14 +107,14 @@ typedef void(*fnet_dns_callback_resolved_t)(const struct fnet_dns_resolved_addr 
  ******************************************************************************/
 struct fnet_dns_params
 {
-    struct fnet_sockaddr            dns_server_addr;    /**< @brief Socket address of the remote DNS server to
-                                                        * connect to. */
+    struct fnet_sockaddr            dns_server_addr;    /**< @brief Socket address of the remote DNS server to connect to. @n
+                                                        * If it is unspecified, any registered DNS server is used. And if dns_server_addr->sa_family and/or dns_server_addr->sa_scope_id are set, they are used as a tip for DNS sever address.*/
     const fnet_char_t               *host_name;         /**< @brief Host name to resolve (null-terminated string). */
     fnet_address_family_t           addr_family;        /**< @brief Family of the IP Address which is queried.*/
     fnet_dns_callback_resolved_t    callback;            /**< @brief Pointer to the callback function defined by
                                                         * @ref fnet_dns_callback_resolved_t. It is called when the
                                                         * DNS-client resolving is finished or a timeout is occurred. */
-    void                             *cookie;             /**< @brief Optional application-specific parameter. @n
+    void                            *cookie;            /**< @brief Optional application-specific parameter. @n
                                                         * It's passed to the @c callback
                                                         * function as input parameter. */
 };

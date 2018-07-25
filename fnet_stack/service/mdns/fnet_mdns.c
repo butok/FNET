@@ -264,8 +264,12 @@ static fnet_uint8_t *_fnet_mdns_add_rr_ptr(fnet_mdns_if_t *mdns_if, fnet_uint8_t
     static fnet_uint8_t *_fnet_mdns_add_rr_ptr_enum(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_mdns_service_if_t *service_if, fnet_uint32_t ttl, fnet_bool_t compression);
 #endif
 static fnet_uint8_t *_fnet_mdns_add_rr_srv(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_mdns_service_if_t *service_if, fnet_uint32_t ttl, fnet_bool_t flush, fnet_bool_t compression);
-static fnet_uint8_t *_fnet_mdns_add_rr_a(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_uint32_t ttl, fnet_bool_t flush, fnet_bool_t compression);
-static fnet_uint8_t *_fnet_mdns_add_rr_aaaa(fnet_mdns_if_t *mdns_if,  fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_uint32_t ttl, fnet_bool_t flush, fnet_bool_t compression);
+#if FNET_CFG_IP4
+    static fnet_uint8_t *_fnet_mdns_add_rr_a(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_uint32_t ttl, fnet_bool_t flush, fnet_bool_t compression);
+#endif
+#if FNET_CFG_IP6
+    static fnet_uint8_t *_fnet_mdns_add_rr_aaaa(fnet_mdns_if_t *mdns_if,  fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_uint32_t ttl, fnet_bool_t flush, fnet_bool_t compression);
+#endif
 static fnet_uint8_t *_fnet_mdns_add_qe_any(fnet_uint8_t *buf, fnet_uint32_t buf_size);
 static fnet_uint8_t *_fnet_mdns_add_host_name(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_bool_t compression);
 static fnet_uint8_t *_fnet_mdns_add_service_name(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_mdns_service_if_t *service_if, fnet_bool_t compression);
@@ -306,7 +310,9 @@ static fnet_uint8_t *_fnet_mdns_add_txt_key(fnet_uint8_t *buf, fnet_uint32_t buf
    when generating a reply to a query that explicitly requested a
    unicast response*/
 #define FNET_MDNS_IP4_MULTICAST_ADDR   FNET_IP4_ADDR_INIT(224u, 0u, 0u, 251u)
-static const fnet_ip6_addr_t fnet_mdns_ip6_multicast_addr = FNET_IP6_ADDR_INIT(0xFF, 0x02, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xFB);
+#if FNET_CFG_IP6
+    static const fnet_ip6_addr_t fnet_mdns_ip6_multicast_addr = FNET_IP6_ADDR_INIT(0xFF, 0x02, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xFB);
+#endif
 
 /* The MDNS interface list*/
 static  fnet_mdns_if_t fnet_mdns_if_list[FNET_CFG_MDNS];
@@ -1301,16 +1307,24 @@ static void _fnet_mdns_process_duplicate_answer(fnet_mdns_if_t *mdns_if, const f
                 }
                 break;
             case FNET_MDNS_QUERY_AAAA:
+#if FNET_CFG_IP6
                 if(_fnet_mdns_add_rr_aaaa(mdns_if, our_rr,  sizeof(our_rr), mdns_if->rr_ttl, FNET_FALSE, FNET_FALSE) == NULL)
                 {
                     goto ERROR;
                 }
+#else
+                skip = FNET_TRUE;
+#endif
                 break;
             case FNET_MDNS_QUERY_A:
+#if FNET_CFG_IP4
                 if(_fnet_mdns_add_rr_a(mdns_if, our_rr,  sizeof(our_rr), mdns_if->rr_ttl, FNET_FALSE, FNET_FALSE) == NULL)
                 {
                     goto ERROR;
                 }
+#else
+                skip = FNET_TRUE;
+#endif
                 break;
             default:
                 skip = FNET_TRUE;
@@ -1360,6 +1374,7 @@ static void _fnet_mdns_process_simultaneous_probe(fnet_mdns_if_t *mdns_if, const
 
     FNET_DEBUG_MDNS("MDNS: RX Simultaneous probe");
 
+#if FNET_CFG_IP4
     /* Prepare and Compare Our RR A record */
     if(_fnet_mdns_add_rr_a(mdns_if, our_rr,  sizeof(our_rr), mdns_if->rr_ttl, FNET_FALSE, FNET_FALSE) == NULL)
     {
@@ -1367,13 +1382,16 @@ static void _fnet_mdns_process_simultaneous_probe(fnet_mdns_if_t *mdns_if, const
     }
 
     if(_fnet_mdns_is_rr_win(our_rr, ns_ptr, ns_count, packet) == FNET_TRUE)
+#endif
     {
+#if FNET_CFG_IP6
         /* Prepare and Compare Our RR AAAA record */
         if(_fnet_mdns_add_rr_aaaa(mdns_if, our_rr,  sizeof(our_rr), mdns_if->rr_ttl, FNET_FALSE, FNET_FALSE) == NULL)
         {
             goto ERROR;
         }
         if(_fnet_mdns_is_rr_win(our_rr, ns_ptr, ns_count, packet) == FNET_TRUE)
+#endif
         {
             fnet_uint32_t    i;
 
@@ -2047,6 +2065,7 @@ static void _fnet_mdns_send_probe(fnet_mdns_if_t *mdns_if)
         }
     }
 
+#if FNET_CFG_IP4
     /* Prepare RR A record */
     ptr = _fnet_mdns_add_rr_a(mdns_if, ptr, (buf_end - ptr), mdns_if->rr_ttl, FNET_FALSE, FNET_TRUE);
     if(ptr == NULL)
@@ -2054,7 +2073,9 @@ static void _fnet_mdns_send_probe(fnet_mdns_if_t *mdns_if)
         goto ERROR;
     }
     nscount++;
+#endif
 
+#if FNET_CFG_IP6
     /* Prepare RR AAAA record */
     ptr = _fnet_mdns_add_rr_aaaa(mdns_if, ptr, (buf_end - ptr), mdns_if->rr_ttl, FNET_FALSE, FNET_TRUE);
     if(ptr == NULL)
@@ -2062,6 +2083,7 @@ static void _fnet_mdns_send_probe(fnet_mdns_if_t *mdns_if)
         goto ERROR;
     }
     nscount++;
+#endif
 
     mdns_header->nscount = fnet_htons(nscount);
 
@@ -2256,6 +2278,7 @@ static void _fnet_mdns_send_response(fnet_mdns_if_t *mdns_if, fnet_uint32_t ttl)
         }
     }
 
+#if FNET_CFG_IP4
     /* Prepare RR A record */
     if(mdns_if->response_type & FNET_MDNS_QUERY_A)
     {
@@ -2266,7 +2289,9 @@ static void _fnet_mdns_send_response(fnet_mdns_if_t *mdns_if, fnet_uint32_t ttl)
         }
         answer_count++;
     }
+#endif
 
+#if FNET_CFG_IP6
     /* Prepare RR AAAA record */
     if(mdns_if->response_type & FNET_MDNS_QUERY_AAAA)
     {
@@ -2277,6 +2302,7 @@ static void _fnet_mdns_send_response(fnet_mdns_if_t *mdns_if, fnet_uint32_t ttl)
         }
         answer_count++;
     }
+#endif
 
     /* Additional records */
 
@@ -2323,6 +2349,7 @@ static void _fnet_mdns_send_response(fnet_mdns_if_t *mdns_if, fnet_uint32_t ttl)
     o  All address records (type "A" and "AAAA") named in the SRV rdata.*/
     if((has_ptr == FNET_TRUE) || (has_srv == FNET_TRUE))
     {
+#if FNET_CFG_IP4
         if((mdns_if->response_type & FNET_MDNS_QUERY_A) == 0)
         {
             /* Prepare RR A record */
@@ -2333,6 +2360,8 @@ static void _fnet_mdns_send_response(fnet_mdns_if_t *mdns_if, fnet_uint32_t ttl)
             }
             additional_count++;
         }
+#endif
+#if FNET_CFG_IP6
         if((mdns_if->response_type & FNET_MDNS_QUERY_AAAA) == 0)
         {
             /* Prepare RR AAAA record */
@@ -2343,6 +2372,7 @@ static void _fnet_mdns_send_response(fnet_mdns_if_t *mdns_if, fnet_uint32_t ttl)
             }
             additional_count++;
         }
+#endif
     }
 
     /* RFC6762:  Multicast DNS responses MUST NOT contain any questions in the
@@ -2622,6 +2652,7 @@ ERROR:
 /************************************************************************
 * DESCRIPTION:  Add A record to buffer.
 ************************************************************************/
+#if FNET_CFG_IP4
 static fnet_uint8_t *_fnet_mdns_add_rr_a(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_uint32_t ttl, fnet_bool_t flush, fnet_bool_t compression)
 {
     FNET_ASSERT(mdns_if != FNET_NULL);
@@ -2657,10 +2688,12 @@ static fnet_uint8_t *_fnet_mdns_add_rr_a(fnet_mdns_if_t *mdns_if, fnet_uint8_t *
 ERROR:
     return result;
 }
+#endif
 
 /************************************************************************
 * DESCRIPTION:  Add AAAA record to buffer.
 ************************************************************************/
+#if FNET_CFG_IP6
 static fnet_uint8_t *_fnet_mdns_add_rr_aaaa(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_uint32_t ttl, fnet_bool_t flush, fnet_bool_t compression)
 {
     FNET_ASSERT(mdns_if != FNET_NULL);
@@ -2696,6 +2729,7 @@ static fnet_uint8_t *_fnet_mdns_add_rr_aaaa(fnet_mdns_if_t *mdns_if, fnet_uint8_
 ERROR:
     return result;
 }
+#endif
 
 /************************************************************************
 * DESCRIPTION:  Add ANY Question Entry to buffer.

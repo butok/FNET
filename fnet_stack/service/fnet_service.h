@@ -49,6 +49,7 @@
 #include "tls/fnet_tls.h"
 #include "bench/fnet_bench_srv.h"
 #include "bench/fnet_bench_cln.h"
+#include "azure/fnet_azure.h"
 
 /*! @addtogroup fnet_service
 * The polling mechanism enables the execution of registered services

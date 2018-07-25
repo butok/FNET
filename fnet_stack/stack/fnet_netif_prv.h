@@ -202,11 +202,11 @@ fnet_netif_t *_fnet_netif_get_by_number(fnet_index_t n);
 fnet_netif_t *_fnet_netif_get_by_ip4_addr(fnet_ip4_addr_t addr);
 fnet_netif_t *_fnet_netif_get_by_sockaddr( const struct fnet_sockaddr *addr );
 fnet_return_t _fnet_netif_get_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw_addr, fnet_size_t hw_addr_size);
-void _fnet_netif_signal_ip4_addr_conflict( fnet_netif_desc_t netif );
 fnet_netif_desc_t _fnet_netif_get_by_scope_id(fnet_scope_id_t scope_id);
 fnet_return_t _fnet_netif_init(fnet_netif_t *netif, fnet_uint8_t *hw_addr, fnet_size_t hw_addr_size );
 
 #if FNET_CFG_IP4
+void _fnet_netif_signal_ip4_addr_conflict( fnet_netif_desc_t netif );
 void _fnet_netif_set_ip4_addr(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_ip4_addr_t subnet_mask);
 #if FNET_CFG_MULTICAST
 void _fnet_netif_join_ip4_multicast (fnet_netif_desc_t netif_desc, fnet_ip4_addr_t multicast_addr);

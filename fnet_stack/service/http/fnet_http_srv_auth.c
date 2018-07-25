@@ -92,10 +92,10 @@ void _fnet_http_srv_auth_validate_uri(struct fnet_http_srv_if *http)
 ************************************************************************/
 fnet_return_t _fnet_http_srv_auth_validate_credentials(struct fnet_http_srv_if *http, fnet_char_t *credentials)
 {
-    const struct fnet_http_srv_auth         *auth_entry = http->auth_table;
     struct fnet_http_srv_session_if         *session =  http->session_active;
+    const struct fnet_http_srv_auth         *auth_entry = session->response.auth_entry;
     const struct fnet_http_srv_auth_scheme  *scheme = session->response.auth_scheme;
-    fnet_return_t                       result = FNET_ERR;
+    fnet_return_t                           result = FNET_ERR;
 
     while (*credentials == ' ')
     {

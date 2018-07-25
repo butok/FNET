@@ -442,7 +442,7 @@ static void _fnet_llmnr_poll( void *fnet_llmnr_if_p )
                     && (llmnr_header->nscount == 0u)
                   )
                 {
-                    fnet_char_t                *req_hostname = (fnet_char_t *)&llmnr_if->message[sizeof(fnet_llmnr_header_t)];
+                    fnet_char_t         *req_hostname = (fnet_char_t *)&llmnr_if->message[sizeof(fnet_llmnr_header_t)];
                     fnet_dns_q_tail_t   *q_tail;
                     fnet_size_t         req_hostname_len = fnet_strlen(req_hostname);
 

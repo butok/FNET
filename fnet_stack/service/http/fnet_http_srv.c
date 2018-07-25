@@ -206,6 +206,15 @@ static void _fnet_http_srv_poll( void *http_if_p )
                                 session->state = FNET_HTTP_SRV_STATE_CLOSING;
                                 break;
                             }
+
+#if 0 /* Optional */
+                            if(fnet_tls_socket_connect(session->tls_sock) == FNET_ERR)
+                            {
+                                FNET_DEBUG_HTTP("HTTP: TLS connect() failed");
+                                session->state = FNET_HTTP_SRV_STATE_CLOSING;
+                                break;
+                            }
+#endif
                         }
 #endif
                         session->state = FNET_HTTP_SRV_STATE_RX_REQUEST; /* => WAITING HTTP REQUEST */
@@ -737,18 +746,20 @@ fnet_http_srv_desc_t fnet_http_srv_init( struct fnet_http_srv_params *params )
 #if (FNET_CFG_HTTP_SRV_TLS && FNET_CFG_TLS)
     if(params->tls_params)
     {
-        struct fnet_tls_params tls_params;
-
-        tls_params.certificate_buffer = params->tls_params->certificate_buffer;
-        tls_params.certificate_buffer_size = params->tls_params->certificate_buffer_size;
-        tls_params.private_key_buffer = params->tls_params->private_key_buffer;
-        tls_params.private_key_buffer_size = params->tls_params->private_key_buffer_size;
-
-        http_if->tls_desc = fnet_tls_init(&tls_params);
+        http_if->tls_desc = fnet_tls_init(FNET_TLS_ROLE_SERVER);
         if(http_if->tls_desc == 0)
         {
             FNET_DEBUG_HTTP("HTTP: TLS initialization error.");
             goto ERROR_5;
+        }
+        else
+        {
+            /* Set own certificate chain and private key */
+            if(fnet_tls_set_own_certificate(http_if->tls_desc, params->tls_params->certificate_buffer, params->tls_params->certificate_buffer_size, params->tls_params->private_key_buffer, params->tls_params->private_key_buffer_size) == FNET_ERR)
+            {
+                FNET_DEBUG_HTTP("HTTP: TLS certificate error.");
+                goto ERROR_6;
+            }
         }
     }
 #endif
@@ -760,6 +771,8 @@ fnet_http_srv_desc_t fnet_http_srv_init( struct fnet_http_srv_params *params )
     return (fnet_http_srv_desc_t)http_if;
 
 #if (FNET_CFG_HTTP_SRV_TLS && FNET_CFG_TLS)
+ERROR_6:
+    fnet_tls_release(http_if->tls_desc);
 ERROR_5:
     fnet_service_unregister(http_if->service_descriptor);
 #endif

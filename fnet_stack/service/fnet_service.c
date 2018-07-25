@@ -40,7 +40,7 @@ typedef struct
 /* Polling interface structure */
 static struct
 {
-    fnet_poll_list_entry_t list[FNET_CFG_SERVICE_MAX]; /* Polling list.*/
+    volatile fnet_poll_list_entry_t list[FNET_CFG_SERVICE_MAX]; /* Polling list.*/
 } fnet_poll_if;
 
 
@@ -80,22 +80,21 @@ void fnet_service_poll( void )
 fnet_service_desc_t fnet_service_register( fnet_service_poll_t service, void *service_cookie )
 {
     fnet_index_t            i = 0u;
-    fnet_poll_list_entry_t  *poll_entry = 0;
+    volatile fnet_poll_list_entry_t  *poll_entry = 0;
 
     if(service)
     {
         _fnet_stack_mutex_lock();
 
-        while((i < FNET_CFG_SERVICE_MAX) && (fnet_poll_if.list[i].service))
+        for(i = 0; i < FNET_CFG_SERVICE_MAX; i++)
         {
-            i++;
-        }
-
-        if(i != FNET_CFG_SERVICE_MAX)
-        {
-            fnet_poll_if.list[i].service = service;
-            fnet_poll_if.list[i].service_cookie = service_cookie;
-            poll_entry = &fnet_poll_if.list[i];
+            if(fnet_poll_if.list[i].service == FNET_NULL)
+            {
+                poll_entry = &fnet_poll_if.list[i];
+                poll_entry->service_cookie = service_cookie;
+                poll_entry->service = service;
+                break;
+            }
         }
 
         _fnet_stack_mutex_unlock();
@@ -125,6 +124,8 @@ void fnet_service_unregister( fnet_service_desc_t desc )
 fnet_return_t _fnet_service_init(void)
 {
     fnet_return_t result;
+
+    fnet_memset_zero(&fnet_poll_if, sizeof(fnet_poll_if));
 
     result = _fnet_service_mutex_init();
 
