@@ -153,7 +153,7 @@ void _fnet_timer_handler_bottom(void *cookie)
 void fnet_timer_poll(void)
 {
     _fnet_stack_mutex_lock();
-    fnet_timer_poll();
+    _fnet_timer_poll();
     _fnet_stack_mutex_unlock();
 }
 void _fnet_timer_poll(void)

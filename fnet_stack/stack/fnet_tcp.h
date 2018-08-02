@@ -61,7 +61,7 @@ extern struct fnet_prot_if fnet_tcp_prot_if;
 /************************************************************************
 *    Step of Initial sequence number (ISN)
 *************************************************************************/
-#define FNET_TCP_STEPISN            (64000u)
+#define FNET_TCP_INITIAL_SEQ_NUMBER_STEP    (64000u)
 
 /************************************************************************
 *    Defaults values

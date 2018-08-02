@@ -593,6 +593,11 @@ void fnet_fec_output(fnet_netif_t *netif, fnet_netbuf_t *nb)
             /* If you are blocked here forever, there is a communication issue between ENET and PHY.*/
         }
         while((fec_if->tx_buf_desc_cur->status & FNET_HTONS(FNET_FEC_TX_BD_R)) != 0u);
+        //TBD 
+        /* It may be best to have a short timeout in the wait loop, 
+        since it is best to drop a transmission rather than 
+        lock up the board. This wait would normally be very short, even in heavily loaded networks.*/
+
 
         tx_buffer = (fnet_uint8_t *)fnet_ntohl((fnet_uint32_t)fec_if->tx_buf_desc_cur->buf_ptr);
 

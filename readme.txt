@@ -27,7 +27,7 @@ The stack provides following protocols and services:
 		- IGMP (Internet Group Management Protocol).
 		- ARP (Address Resolution Protocol).
 	- IPv6. 
-		- Passed the "IPv6 Ready Logo" Phase-2 IPv6 Core Protocols Conformance Tests, for host.
+		- "IPv6 Ready Logo Certified". Passed IPv6 Core Protocols Conformance and Interoperability tests.
 		- ICMPv6 (Internet Control Message Protocol).
 		- MLDv1 (Multicast Listener Discovery).
 		- Neighbor Discovery for IPv6.
@@ -46,8 +46,8 @@ The stack provides following protocols and services:
 		- HTTP over TLS (HTTPS).
 	- TELNET server. 
 	- DHCPv4 client and server.
-	- Auto-IP service. Passed "Phase 1, Link-Local Address Allocation", Bonjour Conformance Test.
-	- Azure IoT Hub client.
+	- Auto-IP service. Passed "Link-Local Address Allocation", Bonjour Conformance Test.
+	- Azure IoT Hub client adapter. Microsoft Azure certified.
 	- DNS client/resolver.
 	- Link-Detection service.
 	- Multicast DNS (mDNS) "Bonjour" Server/Responder. Passed the Bonjour Conformance Test.
@@ -104,30 +104,29 @@ FNET project directory structure:
 	|    |    |-- startup             - Platform-specific start-up source code and drivers.
 	|    |-- build                 - Demo projects.
 	|         |-- <board_name>        - Demo projects for a <board_name> board.
-	|              |-- azure          - FNET Azure IoT Hub client example.
-	|              |-- boot           - FNET TFTP Bootloader.
-	|              |-- benchmark      - TCP/UDP Throughput Benchmark application. 
 	|              |-- shell          - "Shell" demo is a fully featured shell. It allows
 	|              |                    view/change various parameters (e.g. IP address,
 	|              |                    subnet mask), explore mounted file systems, run 
 	|              |                    DHCP client, HTTP and Telnet servers.
-	|              |-- shell_boot     - Example application used for the FNET TFTP Bootloader
+	|              |-- shell_azure    - FNET Azure IoT Hub client example.
+	|              |-- shell_boot     - FNET TFTP Bootloader.
+	|              |-- shell_boot_app - Example application used for the FNET TFTP Bootloader
 	|              |                    demonstration. This demo has the same features as
 	|              |                    the "Shell" demo, but it`s modified to be able to
 	|              |                    work with the FNET Bootloader.
-	|              |-- shell_mbedtls  - Example application used for the HTTPS server demonstration.
+	|              |-- shell_bench    - TCP/UDP Throughput Benchmark application. 
+	|              |-- shell_tls      - Example application used for the HTTPS server demonstration.
 	|              |                    This demo has the same features as the "Shell" demo,
 	|              |                    but in addition it includes the mbedTLS library.
-	|              |-- shell_freertos - Example application using FreeRTOS.
-	|              |                    This demo has the same features as the "Shell" demo.
-	|              |-- shell_freertos_wifi_<board> - Example application used for the Wi-Fi interface demonstration.
-	|                                           It has the same features as the "Shell FreeRTOS" demo,
-	|                                           but in addition it supports the Wi-Fi network interface using the Qualcomm QCA4002/4 module.
+	|              |-- shell_wifi_<board> - Example application used for the Wi-Fi interface demonstration.
+	|                                       It has the same features as the "Shell FreeRTOS" demo,
+	|                                       but in addition it supports the Wi-Fi network interface using the Qualcomm QCA4002/4 module.
 	|-- fnet_tools                - FNET PC tools.
 	|-- third_party               - Optional, third-party libraries.
 		 |-- azure_iot-x.x.x        - Azure IoT Hub Device C SDK.
 		 |-- cmsis-x.x              - ARM CMSIS-Core(M) library, used for ARM Cortex M platforms.
 		 |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
 		 |-- freertos-x.x.x         - FreeRTOS, used by freertos examples.
-		 |-- qca-x.x.x              - Qualcomm QCA4002/4 driver, used by shell_freertos_wifi_<board> example.
+		 |-- qca-x.x.x              - Qualcomm QCA4002/4 driver, used by shell_wifi_<board> example.
+		 
 		 

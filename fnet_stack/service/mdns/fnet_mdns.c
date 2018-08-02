@@ -293,14 +293,14 @@ static const fnet_uint8_t *_fnet_mdns_process_query(fnet_mdns_if_t *mdns_if, fne
 static const fnet_uint8_t *_fnet_mdns_process_response(fnet_mdns_if_t *mdns_if, const fnet_uint8_t *ptr, fnet_uint8_t *packet, fnet_uint32_t packet_size);
 static fnet_int32_t _fnet_mdns_cmp_rr(fnet_uint8_t *our_rr, const fnet_uint8_t **rr, const fnet_uint8_t *packet);
 /******************************************************************************
- * @brief    Adds TXT record key.
- * @param buf      Buffer where the TXT record key to be added.
- * @param buf_size Buffer size.
- * @param txt_key  TXT record key name (Null-terminated).
- * @param txt_key_value  TXT record key value (Null-terminated).
- * @return This function returns:
- *          - @ref Pointer to the next byte after the added TXT record key.
- *          - @ref FNET_NULL if adding key is failed cause of small buffer size or any other error.
+ * Adds TXT record key.
+ * buf      Buffer where the TXT record key to be added.
+ * buf_size Buffer size.
+ * txt_key  TXT record key name (Null-terminated).
+ * txt_key_value  TXT record key value (Null-terminated).
+ * This function returns:
+ *          - Pointer to the next byte after the added TXT record key.
+ *          - FNET_NULL if adding key is failed cause of small buffer size or any other error.
  ******************************************************************************/
 static fnet_uint8_t *_fnet_mdns_add_txt_key(fnet_uint8_t *buf, fnet_uint32_t buf_size, const fnet_char_t *txt_key, const fnet_char_t *txt_key_value);
 
@@ -318,7 +318,7 @@ static fnet_uint8_t *_fnet_mdns_add_txt_key(fnet_uint8_t *buf, fnet_uint32_t buf
 static  fnet_mdns_if_t fnet_mdns_if_list[FNET_CFG_MDNS];
 
 /************************************************************************
-* DESCRIPTION: Initializes mDNS server/responder.
+* Initialize mDNS server/responder.
 ************************************************************************/
 fnet_mdns_desc_t fnet_mdns_init( struct fnet_mdns_params *params )
 {
@@ -487,7 +487,7 @@ ERROR_1:
 }
 
 /************************************************************************
-* DESCRIPTION: Registers application-specific service in the mDNS server.
+* Register application-specific service in the mDNS server.
 ************************************************************************/
 fnet_mdns_service_desc_t fnet_mdns_service_register(fnet_mdns_desc_t mdns_desc, const fnet_mdns_service_t *service)
 {
@@ -529,7 +529,7 @@ fnet_mdns_service_desc_t fnet_mdns_service_register(fnet_mdns_desc_t mdns_desc, 
 }
 
 /************************************************************************
-* DESCRIPTION: Unregisters application service from the mDNS server.
+* Unregister application service from the mDNS server.
 ************************************************************************/
 void fnet_mdns_service_unregister(fnet_mdns_service_desc_t service_desc)
 {
@@ -545,7 +545,7 @@ void fnet_mdns_service_unregister(fnet_mdns_service_desc_t service_desc)
 }
 
 /************************************************************************
-* DESCRIPTION: Gets mDNS service descriptor by type.
+* Get mDNS service descriptor by type.
 ************************************************************************/
 fnet_mdns_service_desc_t fnet_mdns_service_get_by_type(fnet_mdns_desc_t mdns_desc, const char  *service_type)
 {
@@ -574,7 +574,7 @@ fnet_mdns_service_desc_t fnet_mdns_service_get_by_type(fnet_mdns_desc_t mdns_des
 }
 
 /************************************************************************
-* DESCRIPTION: Sends unsolicited mDNS announcement.
+* Send unsolicited mDNS announcement.
 ************************************************************************/
 void fnet_mdns_announce(fnet_mdns_desc_t mdns_desc)
 {
@@ -599,7 +599,34 @@ void fnet_mdns_announce(fnet_mdns_desc_t mdns_desc)
 }
 
 /************************************************************************
-* DESCRIPTION: Releases the mDNS server/responder.
+* Restart mDNS probing.
+************************************************************************/
+void fnet_mdns_probe(fnet_mdns_desc_t mdns_desc)
+{
+    fnet_mdns_if_t   *mdns_if = (fnet_mdns_if_t *)mdns_desc;
+
+    if(mdns_if)
+    {
+        fnet_service_mutex_lock();
+        /* RFC6762: At any time, if the rdata of any of a host's Multicast DNS records
+        changes, the host MUST repeat the Announcing step described above to
+        update neighboring caches.  For example, if any of a host's IP
+        addresses change, it MUST re-announce those address records.  The
+        host does not need to repeat the Probing step because it has already
+        established unique ownership of that name.*/
+        if((mdns_if->state == FNET_MDNS_STATE_WAITING_REQUEST)
+           || (mdns_if->state == FNET_MDNS_STATE_ANNOUNCING))
+        {
+            /* Start probing.*/
+            mdns_if->probe_wait_interval = FNET_MDNS_PROBE_INIT_WAIT;
+            _fnet_mdns_change_state(mdns_if, FNET_MDNS_STATE_PROBING_WAIT);
+        }
+        fnet_service_mutex_unlock();
+    }
+}
+
+/************************************************************************
+* Release the mDNS server/responder.
 ************************************************************************/
 void fnet_mdns_release(fnet_mdns_desc_t mdns_desc)
 {
@@ -621,8 +648,7 @@ void fnet_mdns_release(fnet_mdns_desc_t mdns_desc)
 }
 
 /************************************************************************
-* DESCRIPTION: This function returns FNET_TRUE if the mDNS server
-*              is enabled/initialised.
+* Return FNET_TRUE if the mDNS server is enabled/initialised.
 ************************************************************************/
 fnet_bool_t fnet_mdns_is_enabled(fnet_mdns_desc_t desc)
 {
@@ -642,7 +668,7 @@ fnet_bool_t fnet_mdns_is_enabled(fnet_mdns_desc_t desc)
 }
 
 /************************************************************************
-* DESCRIPTION: Looks for a mDNS server assigned to the specified network interface.
+* Look for a mDNS server assigned to the specified network interface.
 ************************************************************************/
 fnet_mdns_desc_t fnet_mdns_get_by_netif(fnet_netif_desc_t netif)
 {
@@ -670,7 +696,7 @@ fnet_mdns_desc_t fnet_mdns_get_by_netif(fnet_netif_desc_t netif)
 }
 
 /************************************************************************
-* DESCRIPTION: Generate host and service name.
+* Generate host and service name.
 ************************************************************************/
 static void fnet_mdns_update_name(fnet_mdns_if_t *mdns_if, const fnet_char_t *name)
 {
@@ -718,7 +744,7 @@ static void fnet_mdns_update_name(fnet_mdns_if_t *mdns_if, const fnet_char_t *na
     FNET_DEBUG_MDNS("MDNS: Host-name set to (%s).", mdns_if->host_name);
 }
 /************************************************************************
-* DESCRIPTION: Update counter of host.
+* Update counter of host.
 ************************************************************************/
 static void _fnet_mdns_update_host_name_counter(fnet_mdns_if_t *mdns_if)
 {
@@ -741,7 +767,7 @@ static void _fnet_mdns_update_host_name_counter(fnet_mdns_if_t *mdns_if)
 }
 
 /************************************************************************
-* DESCRIPTION: Update counter of service name.
+* Update counter of service name.
 ************************************************************************/
 static void _fnet_mdns_update_service_name_counter(fnet_mdns_if_t *mdns_if)
 {
@@ -764,7 +790,7 @@ static void _fnet_mdns_update_service_name_counter(fnet_mdns_if_t *mdns_if)
 }
 
 /************************************************************************
-* DESCRIPTION: mDNS server poll (state machine).
+* mDNS server poll (state machine).
 ************************************************************************/
 static void _fnet_mdns_poll( void *fnet_mdns_if_p )
 {
@@ -850,7 +876,7 @@ static void _fnet_mdns_poll( void *fnet_mdns_if_p )
 }
 
 /************************************************************************
-* DESCRIPTION: Change state of the mDNS server.
+* Change state of the mDNS server.
 ************************************************************************/
 static void _fnet_mdns_change_state(fnet_mdns_if_t *mdns_if, fnet_mdns_state_t state )
 {
@@ -890,7 +916,7 @@ static void _fnet_mdns_change_state(fnet_mdns_if_t *mdns_if, fnet_mdns_state_t s
 }
 
 /************************************************************************
-* DESCRIPTION: Compare R names.
+* Compare R names.
 ************************************************************************/
 static fnet_bool_t _fnet_mdns_cmp_rr_name(const char *rr_name, const char *name_1, const char *name_2)
 {
@@ -914,7 +940,7 @@ static fnet_bool_t _fnet_mdns_cmp_rr_name(const char *rr_name, const char *name_
 }
 
 /************************************************************************
-* DESCRIPTION: Compare R name with sub-name.
+* Compare R name with sub-name.
 ************************************************************************/
 static fnet_bool_t _fnet_mdns_cmp_name(const char **rr_name_p, const char *name)
 {
@@ -955,8 +981,8 @@ static fnet_bool_t _fnet_mdns_cmp_name(const char **rr_name_p, const char *name)
 }
 
 /************************************************************************
-* DESCRIPTION: Put RR name to rr_name. Returns updated next pointer; 0 if error.
-If rr_name or rr_name_size are 0, just skip name.
+* Put RR name to rr_name. Returns updated next pointer; 0 if error.
+* If rr_name or rr_name_size are 0, just skip name.
 ************************************************************************/
 static const fnet_uint8_t *_fnet_mdns_get_rr_name(char *rr_name, fnet_uint32_t rr_name_size, const fnet_uint8_t *rr, const fnet_uint8_t *packet)
 {
@@ -1033,7 +1059,7 @@ ERROR:
 }
 
 /************************************************************************
-* DESCRIPTION: Get query type.
+* Get query type.
 ************************************************************************/
 static fnet_mdns_query_type_t _fnet_mdns_get_query_type(fnet_uint16_t type)
 {
@@ -1067,9 +1093,8 @@ static fnet_mdns_query_type_t _fnet_mdns_get_query_type(fnet_uint16_t type)
     return query_rr_type;
 }
 
-/* Print query name */
 /************************************************************************
-* DESCRIPTION: Print MDNS query name.
+* Print MDNS query name.
 ************************************************************************/
 #if FNET_CFG_DEBUG_MDNS && FNET_CFG_DEBUG
 static void _fnet_mdns_print_qe_name(const fnet_char_t *prefix, const fnet_char_t *qe_name)
@@ -1098,7 +1123,7 @@ static void _fnet_mdns_print_qe_name(const fnet_char_t *prefix, const fnet_char_
 #endif
 
 /************************************************************************
-* DESCRIPTION: Received MDNS query (request) and process it.
+* Receive MDNS query (request) and process it.
 ************************************************************************/
 static const fnet_uint8_t *_fnet_mdns_process_query(fnet_mdns_if_t *mdns_if, fnet_address_family_t address_family, const fnet_uint8_t *ptr, fnet_uint8_t *packet, fnet_uint32_t packet_size)
 {
@@ -1227,7 +1252,7 @@ static const fnet_uint8_t *_fnet_mdns_process_query(fnet_mdns_if_t *mdns_if, fne
 }
 
 /************************************************************************
-* DESCRIPTION: Avoid duplicate answer.
+* Avoid duplicate answer.
 ************************************************************************/
 static void _fnet_mdns_process_duplicate_answer(fnet_mdns_if_t *mdns_if, const fnet_uint8_t *an_ptr, const fnet_uint8_t *packet, fnet_uint32_t packet_size)
 {
@@ -1359,7 +1384,7 @@ ERROR:
 }
 
 /************************************************************************
-* DESCRIPTION: Simultaneous Probe Tiebreaking.
+* Simultaneous Probe Tiebreaking.
 ************************************************************************/
 static void _fnet_mdns_process_simultaneous_probe(fnet_mdns_if_t *mdns_if, const fnet_uint8_t *ns_ptr, fnet_uint8_t *packet, fnet_uint32_t packet_size)
 {
@@ -1434,7 +1459,7 @@ ERROR:
 }
 
 /************************************************************************
-* DESCRIPTION: Get pointer to Answer Record.
+* Get pointer to Answer Record.
 ************************************************************************/
 static const fnet_uint8_t *_fnet_mdns_get_an(const fnet_uint8_t *packet, fnet_uint32_t packet_size)
 {
@@ -1482,7 +1507,7 @@ ERROR:
 }
 
 /************************************************************************
-* DESCRIPTION: Get pointer to Name Server (Authority Record).
+* Get pointer to Name Server (Authority Record).
 ************************************************************************/
 static const fnet_uint8_t *_fnet_mdns_get_ns(fnet_uint8_t *packet, fnet_uint32_t packet_size)
 {
@@ -1551,7 +1576,7 @@ ERROR:
 }
 
 /************************************************************************
-* DESCRIPTION: Compare RRs.
+* Compare RRs.
 ************************************************************************/
 static fnet_int32_t _fnet_mdns_cmp_rr(fnet_uint8_t *our_rr, const fnet_uint8_t **rr, const fnet_uint8_t *packet)
 {
@@ -1703,7 +1728,7 @@ static fnet_int32_t _fnet_mdns_cmp_rr(fnet_uint8_t *our_rr, const fnet_uint8_t *
 }
 
 /************************************************************************
-* DESCRIPTION: Is our RR winner.
+* Is our RR winner.
 ************************************************************************/
 static fnet_bool_t _fnet_mdns_is_rr_win(fnet_uint8_t *our_rr, const fnet_uint8_t *ns_ptr, fnet_uint16_t ns_count, fnet_uint8_t *packet)
 {
@@ -1745,7 +1770,7 @@ static fnet_bool_t _fnet_mdns_is_rr_win(fnet_uint8_t *our_rr, const fnet_uint8_t
 }
 
 /************************************************************************
-* DESCRIPTION: Process MDNS response
+* Process MDNS response
 ************************************************************************/
 static const fnet_uint8_t *_fnet_mdns_process_response(fnet_mdns_if_t *mdns_if, const fnet_uint8_t *ptr, fnet_uint8_t *packet, fnet_uint32_t packet_size)
 {
@@ -1827,7 +1852,7 @@ static const fnet_uint8_t *_fnet_mdns_process_response(fnet_mdns_if_t *mdns_if, 
 }
 
 /************************************************************************
-* DESCRIPTION: MDNS receive.
+* MDNS receive.
 ************************************************************************/
 static void _fnet_mdns_recv(fnet_mdns_if_t *mdns_if)
 {
@@ -1927,7 +1952,7 @@ static void _fnet_mdns_recv(fnet_mdns_if_t *mdns_if)
 }
 
 /************************************************************************
-* DESCRIPTION: Prepare domain name - replace dots by length of string
+* Prepare domain name - replace dots by length of string
 ************************************************************************/
 static fnet_uint8_t *_fnet_mdns_add_domain_name(fnet_uint8_t *buf, fnet_uint32_t buf_size, const char *domain_name)
 {
@@ -1964,7 +1989,7 @@ static fnet_uint8_t *_fnet_mdns_add_domain_name(fnet_uint8_t *buf, fnet_uint32_t
 }
 
 /************************************************************************
-* DESCRIPTION: Send probe query.
+* Send probe query.
    RFC: All probe queries SHOULD be done
    using the desired resource record name and class (usually class 1,
    "Internet"), and query type "ANY" (255), to elicit answers for all
@@ -2112,7 +2137,7 @@ ERROR:
 }
 
 /************************************************************************
-* DESCRIPTION: Actual Send.
+*  Actual Send.
 ************************************************************************/
 static void _fnet_mdns_send(fnet_mdns_if_t *mdns_if, fnet_address_family_t address_family, fnet_uint8_t *buffer, fnet_uint32_t send_size)
 {
@@ -2186,7 +2211,7 @@ static void _fnet_mdns_send(fnet_mdns_if_t *mdns_if, fnet_address_family_t addre
 }
 
 /************************************************************************
-* DESCRIPTION: Prepare all mdns records to send.
+* Prepare all mdns records to send.
 ************************************************************************/
 static void _fnet_mdns_send_response(fnet_mdns_if_t *mdns_if, fnet_uint32_t ttl)
 {
@@ -2408,7 +2433,7 @@ ERROR:
 }
 
 /************************************************************************
-* DESCRIPTION: Send announcement.
+* Send announcement.
 ************************************************************************/
 static void _fnet_mdns_send_announcement(fnet_mdns_if_t *mdns_if, fnet_uint32_t ttl)
 {
@@ -2428,7 +2453,7 @@ static void _fnet_mdns_send_announcement(fnet_mdns_if_t *mdns_if, fnet_uint32_t 
 }
 
 /************************************************************************
-* DESCRIPTION: Add record header.
+* Add record header.
 ************************************************************************/
 static fnet_uint8_t *_fnet_mdns_add_rr_header(fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_mdns_rr_type_t type, fnet_bool_t flush, fnet_uint32_t ttl, fnet_uint16_t data_length)
 {
@@ -2457,7 +2482,7 @@ static fnet_uint8_t *_fnet_mdns_add_rr_header(fnet_uint8_t *buf, fnet_uint32_t b
 }
 
 /************************************************************************
-* DESCRIPTION: Add TXT record to buffer.
+* Add TXT record to buffer.
 ************************************************************************/
 fnet_uint8_t *_fnet_mdns_add_rr_txt(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_mdns_service_if_t *service_if, fnet_uint32_t ttl, fnet_bool_t flush, fnet_bool_t compression)
 {
@@ -2521,7 +2546,7 @@ ERROR:
 }
 
 /************************************************************************
-* DESCRIPTION: Add PTR record to buffer.
+* Add PTR record to buffer.
 ************************************************************************/
 static fnet_uint8_t *_fnet_mdns_add_rr_ptr(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_mdns_service_if_t *service_if, fnet_uint32_t ttl, fnet_bool_t compression)
 {
@@ -2602,7 +2627,7 @@ ERROR:
 #endif
 
 /************************************************************************
-* DESCRIPTION:  Add SRV record to buffer.
+* Add SRV record to buffer.
 ************************************************************************/
 static fnet_uint8_t *_fnet_mdns_add_rr_srv(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_mdns_service_if_t *service_if, fnet_uint32_t ttl, fnet_bool_t flush, fnet_bool_t compression)
 {
@@ -2650,7 +2675,7 @@ ERROR:
 }
 
 /************************************************************************
-* DESCRIPTION:  Add A record to buffer.
+* Add A record to buffer.
 ************************************************************************/
 #if FNET_CFG_IP4
 static fnet_uint8_t *_fnet_mdns_add_rr_a(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_uint32_t ttl, fnet_bool_t flush, fnet_bool_t compression)
@@ -2691,7 +2716,7 @@ ERROR:
 #endif
 
 /************************************************************************
-* DESCRIPTION:  Add AAAA record to buffer.
+* Add AAAA record to buffer.
 ************************************************************************/
 #if FNET_CFG_IP6
 static fnet_uint8_t *_fnet_mdns_add_rr_aaaa(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_uint32_t ttl, fnet_bool_t flush, fnet_bool_t compression)
@@ -2732,7 +2757,7 @@ ERROR:
 #endif
 
 /************************************************************************
-* DESCRIPTION:  Add ANY Question Entry to buffer.
+* Add ANY Question Entry to buffer.
 ************************************************************************/
 static fnet_uint8_t *_fnet_mdns_add_qe_any(fnet_uint8_t *buf, fnet_uint32_t buf_size)
 {
@@ -2756,7 +2781,7 @@ static fnet_uint8_t *_fnet_mdns_add_qe_any(fnet_uint8_t *buf, fnet_uint32_t buf_
 }
 
 /************************************************************************
-* DESCRIPTION:  Add domain name compression.
+* Add domain name compression.
 ************************************************************************/
 static fnet_uint8_t *_fnet_mdns_add_domain_name_compression(fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_uint16_t name_offset)
 {
@@ -2779,7 +2804,7 @@ static fnet_uint8_t *_fnet_mdns_add_domain_name_compression(fnet_uint8_t *buf, f
 }
 
 /************************************************************************
-* DESCRIPTION:  Add host name string.
+* Add host name string.
 ************************************************************************/
 static fnet_uint8_t *_fnet_mdns_add_host_name(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_bool_t compression)
 {
@@ -2835,7 +2860,7 @@ ERROR:
 }
 
 /************************************************************************
-* DESCRIPTION:  Add service name string.
+* Add service name string.
 ************************************************************************/
 static fnet_uint8_t *_fnet_mdns_add_service_name(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_mdns_service_if_t *service_if, fnet_bool_t compression)
 {
@@ -2907,7 +2932,7 @@ ERROR:
 }
 
 /************************************************************************
-* DESCRIPTION:  Add service type string.
+* Add service type string.
 ************************************************************************/
 static fnet_uint8_t *_fnet_mdns_add_service_type_name(fnet_mdns_if_t *mdns_if, fnet_uint8_t *buf, fnet_uint32_t buf_size, fnet_mdns_service_if_t *service_if, fnet_bool_t compression)
 {
@@ -2963,8 +2988,7 @@ ERROR:
 }
 
 /************************************************************************
-* DESCRIPTION:  Determines if host_name is our fully qualified domain
-*               name FQDN (hostname.domain).
+* Determine if host_name is our fully qualified domain name FQDN (hostname.domain).
 ************************************************************************/
 static fnet_bool_t _fnet_mdns_is_our_host_name(fnet_mdns_if_t *mdns_if, char *host_name)
 {
@@ -2974,7 +2998,7 @@ static fnet_bool_t _fnet_mdns_is_our_host_name(fnet_mdns_if_t *mdns_if, char *ho
 }
 
 /************************************************************************
-* DESCRIPTION:  Determines if service_name is our service name.
+* Determine if service_name is our service name.
 ************************************************************************/
 static fnet_bool_t _fnet_mdns_is_our_service_name(fnet_mdns_if_t *mdns_if, char *service_name)
 {
@@ -2984,7 +3008,7 @@ static fnet_bool_t _fnet_mdns_is_our_service_name(fnet_mdns_if_t *mdns_if, char 
 }
 
 /************************************************************************
-* DESCRIPTION:  Gets service interfcase by name (servicename.type.domain).
+* Get service interfcase by name (servicename.type.domain).
 ************************************************************************/
 static fnet_mdns_service_if_t *_fnet_mdns_get_service_by_name(fnet_mdns_if_t *mdns_if, char *service_name)
 {
@@ -3009,7 +3033,7 @@ static fnet_mdns_service_if_t *_fnet_mdns_get_service_by_name(fnet_mdns_if_t *md
 }
 
 /************************************************************************
-* DESCRIPTION: Gets service interfcase by type (type.domain).
+* Get service interfcase by type (type.domain).
 ************************************************************************/
 static fnet_mdns_service_if_t *_fnet_mdns_get_service_by_type(fnet_mdns_if_t *mdns_if, char *service_type)
 {
@@ -3034,7 +3058,7 @@ static fnet_mdns_service_if_t *_fnet_mdns_get_service_by_type(fnet_mdns_if_t *md
 }
 
 /************************************************************************
-* DESCRIPTION:  Adds TXT record key
+* Add TXT record key
 ************************************************************************/
 static fnet_uint8_t *_fnet_mdns_add_txt_key(fnet_uint8_t *buf, fnet_uint32_t buf_size, const fnet_char_t *txt_key, const fnet_char_t *txt_key_value)
 {

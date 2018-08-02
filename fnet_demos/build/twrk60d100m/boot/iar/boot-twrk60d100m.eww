@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<workspace>
-<batchBuild><batchDefinition><name>intflash-debug</name><member><project>boot-twrk60d100m</project><configuration>int flash debug</configuration></member></batchDefinition><batchDefinition><name>intflash-release</name><member><project>boot-twrk60d100m</project><configuration>int flash release</configuration></member></batchDefinition></batchBuild><project><path>$WS_DIR$\boot-twrk60d100m.ewp</path></project></workspace>

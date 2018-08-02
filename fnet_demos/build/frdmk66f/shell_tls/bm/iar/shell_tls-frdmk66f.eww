@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<workspace>
+<batchBuild><batchDefinition><name>intflash-debug</name><member><project>shell_tls-frdmk66f</project><configuration>int flash debug</configuration></member></batchDefinition><batchDefinition><name>intflash-release</name><member><project>shell_tls-frdmk66f</project><configuration>int flash release</configuration></member></batchDefinition></batchBuild><project><path>$WS_DIR$\shell_tls-frdmk66f.ewp</path></project></workspace>

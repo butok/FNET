@@ -111,7 +111,7 @@ extern "C" {
 
 /***************************************************************************/ /*!
  *
- * @brief    Initializes Multicast DNS (mDNS) server/responder.
+ * @brief    Initialize Multicast DNS (mDNS) server/responder.
  *
  * @param params     Initialization parameters defined by @ref fnet_mdns_params.
  *
@@ -134,7 +134,7 @@ fnet_mdns_desc_t fnet_mdns_init( struct fnet_mdns_params *params );
 
 /***************************************************************************/ /*!
  *
- * @brief    Releases the Multicast DNS (mDNS) server/responder.
+ * @brief    Release the Multicast DNS (mDNS) server/responder.
  *
  * @param mdns_desc     mDNS server descriptor to be unregistered.
  *
@@ -152,7 +152,7 @@ void fnet_mdns_release(fnet_mdns_desc_t mdns_desc);
 
 /***************************************************************************/ /*!
  *
- * @brief    Registers application-specific service in the mDNS server.
+ * @brief    Register application-specific service in the mDNS server.
  *
  * @param mdns_desc     mDNS server descriptor.
  *
@@ -174,7 +174,7 @@ fnet_mdns_service_desc_t fnet_mdns_service_register(fnet_mdns_desc_t mdns_desc, 
 
 /***************************************************************************/ /*!
  *
- * @brief    Unregisters application service from the mDNS server.
+ * @brief    Unregister application service from the mDNS server.
  *
  * @param service_desc     Service descriptor to be unregistered.
  *
@@ -190,7 +190,7 @@ void fnet_mdns_service_unregister(fnet_mdns_service_desc_t service_desc);
 
 /***************************************************************************/ /*!
  *
- * @brief    Looks for a registered mDNS application service according to the specified type.
+ * @brief    Look for a registered mDNS application service according to the specified type.
  *
  * @param mdns_desc         mDNS server descriptor.
  *
@@ -212,7 +212,7 @@ fnet_mdns_service_desc_t fnet_mdns_service_get_by_type(fnet_mdns_desc_t mdns_des
 
 /***************************************************************************/ /*!
  *
- * @brief    Sends unsolicited mDNS announcement.
+ * @brief    Send unsolicited mDNS announcement.
  *
  * @param mdns_desc     mDNS server descriptor.
  *
@@ -233,7 +233,25 @@ void fnet_mdns_announce(fnet_mdns_desc_t mdns_desc);
 
 /***************************************************************************/ /*!
  *
- * @brief    Detects if the mDNS Server is enabled or disabled.
+ * @brief    Restart mDNS probing.
+ *
+ * @param mdns_desc     mDNS server descriptor.
+ *
+ * @see fnet_mdns_init()
+ *
+ ******************************************************************************
+ *
+ * This function restarts mDNS probing.@n
+ * Application may call it when the device was switched to a different 
+ * network and it requires to repeat resource probing and conflict detection.@n
+ * It puts the mDNS responder to the same state as after its initialization.
+ *
+ ******************************************************************************/
+void fnet_mdns_probe(fnet_mdns_desc_t mdns_desc);
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Detect if the mDNS Server is enabled or disabled.
  *
  * @param desc     mDNS server descriptor
  *
@@ -250,7 +268,7 @@ fnet_bool_t fnet_mdns_is_enabled(fnet_mdns_desc_t desc);
 
 /***************************************************************************/ /*!
  *
- * @brief    Looks for a mDNS Server assigned to the specified network interface.
+ * @brief    Look for a mDNS Server assigned to the specified network interface.
  *
  * @param netif      Network interface descriptor.
  *

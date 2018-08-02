@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<workspace xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="workingsets.xsd">
-  <projects>
-  <project><name>boot_frdmk66f</name><path/><open>true</open><activeconfig>int flash debug</activeconfig><buildreferences config="int flash debug">false</buildreferences><activeconfig>int flash release</activeconfig><buildreferences config="int flash release">false</buildreferences></project></projects>
-  <workingsets>
-  <workingSet editPageId="org.eclipse.cdt.ui.CElementWorkingSetPage" id="1323268527287_1" label="boot_frdmk66f" name="boot_frdmk66f"><item factoryID="org.eclipse.cdt.ui.PersistableCElementFactory" path="/boot_frdmk66f" type="4"/></workingSet></workingsets>
-  <cdtconfigurations>
-  <workingSet name="boot_frdmk66f"><config name="intflash-debug"><project config="com.freescale.arm.cdt.toolchain.config.arm.release.695495605" name="boot_frdmk66f" configName="intflash-debug"/></config><config name="intflash-release"><project config="com.freescale.arm.cdt.toolchain.config.arm.release.695495605" name="boot_frdmk66f" configName="intflash-release"/></config></workingSet></cdtconfigurations>
-</workspace>

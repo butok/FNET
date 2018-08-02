@@ -98,13 +98,11 @@ typedef enum
                                                  * address is not considered assigned to an interface in the usual
                                                  * sense. An interface discards received packets addressed to a
                                                  * tentative address, but accepts Neighbor Discovery packets related
-                                                 * to Duplicate Address Detection for the tentative address.
-                                                 */
+                                                 * to Duplicate Address Detection for the tentative address.*/
     FNET_NETIF_IP6_ADDR_STATE_PREFERRED = 2 	/**< @brief Preferred address - (RFC4862) an address assigned to an interface whose use by
                                                  * upper-layer protocols is unrestricted. Preferred addresses may be
                                                  * used as the source (or destination) address of packets sent from
-                                                 * (or to) the interface.
-                                                 */
+                                                 * (or to) the interface.*/
 } fnet_netif_ip6_addr_state_t;
 
 /**************************************************************************/ /*!
@@ -319,24 +317,6 @@ fnet_ip4_addr_t fnet_netif_get_ip4_addr( fnet_netif_desc_t netif_desc );
 
 /***************************************************************************/ /*!
  *
- * @brief    Sets the subnet mask of the specified network interface.
- *
- * @param netif_desc     Network interface descriptor.
- *
- * @param subnet_mask   The subnet mask of the network interface.
- *
- * @see fnet_netif_get_ip4_subnet_mask()
- *
- ******************************************************************************
- *
- * This function sets the subnet mask of the @c netif interface
- * to the @c netmask value.
- *
- ******************************************************************************/
-void fnet_netif_set_ip4_subnet_mask( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t subnet_mask );
-
-/***************************************************************************/ /*!
- *
  * @brief    Retrieves a subnet mask of the specified network interface.
  *
  * @param netif_desc  Network interface descriptor.
@@ -344,7 +324,7 @@ void fnet_netif_set_ip4_subnet_mask( fnet_netif_desc_t netif_desc, fnet_ip4_addr
  * @return       This function returns the subnet mask of the @c netif
  *               interface.
  *
- * @see fnet_netif_set_ip4_subnet_mask()
+ * @see fnet_netif_set_ip4_addr()
  *
  ******************************************************************************
  *
@@ -446,9 +426,8 @@ fnet_ip4_addr_t fnet_netif_get_ip4_dns( fnet_netif_desc_t netif_desc );
  *                       FNET_NETIF_TYPE_ETHERNET and FNET_NETIF_TYPE_WIFI interface types, it
  *                       equals @c 6).
  *
- * @return This function returns:
- *   - @ref FNET_OK if no error occurs.
- *   - @ref FNET_ERR if an error occurs.
+ * @return  @ref FNET_OK if no error occurs.
+ * @return  @ref FNET_ERR if an error occurs.
  *
  * @see fnet_netif_get_hw_addr()
  *

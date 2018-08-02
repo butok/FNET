@@ -75,7 +75,7 @@ preferred way to configure stack features). @n
 		- @b IGMP (Internet Group Management Protocol).
 		- @b ARP (Address Resolution Protocol).
 	- @b IPv6. 
-		- Passed the "IPv6 Ready Logo" Phase-2 (Golden) IPv6 Core Protocols Conformance Tests, for host.
+		- "IPv6 Ready Logo Certified". Passed IPv6 Core Protocols Conformance and Interoperability tests.
 		- @b ICMPv6 (Internet Control Message Protocol).
 		- @b MLDv1 (Multicast Listener Discovery).
 		- Neighbor Discovery for IPv6.
@@ -94,14 +94,14 @@ preferred way to configure stack features). @n
 		- HTTP over TLS (HTTPS).
 	- @b TELNET server. 
 	- @b DHCPv4 client and server.
-	- @b Auto-IP service. Passed "Phase 1, Link-Local Address Allocation", Bonjour Conformance Test.
-	- @b Azure IoT Hub client.
+	- @b Auto-IP service. Passed "Link-Local Address Allocation", Bonjour Conformance Test.
+	- @b Azure IoT Hub client adapter. Microsoft Azure certified.
 	- @b DNS client/resolver.
 	- @b Link-Detection service.
 	- @b Multicast @b DNS @b (mDNS) "Bonjour" Server/Responder. Passed the Bonjour Conformance Test.
 	- @b LLMNR Server/Responder.
 	- @b PING service.
-	- @b SNTP client.	
+	- @b SNTP client.
 	- @b TFTP server and client. Both Read and Write requests are supported.
 	- @b TLS using mbedTLS library.
 	- ROM File System.
@@ -112,12 +112,12 @@ preferred way to configure stack features). @n
 	- @ref how_to_generate_rom_fs "GUI File System Generation Tool.
 	- @ref quick_start_boot "GUI Throughput Benchmark Tool".
 - Applications:
+	- @ref quick_start_shell "Shell application".
+	- @ref quick_start_azure "Azure IoT Hub client application".
 	- @ref quick_start_boot "TFTP Bootloader".
-	- @ref quick_start_shell "Shell Application, bare-metal".
-	- @ref quick_start_shell_freertos "Shell Application, using FreeRTOS".
-	- @ref quick_start_shell_mbedtls "Shell Application, using mbedTLS".
-	- @ref quick_start_shell_wifi_qca "Shell Application, using Wi-Fi QCA4002/4 interface".
-	- @ref quick_start_boot "TCP/UDP Throughput Benchmark Application".
+	- @ref quick_start_shell_mbedtls "Shell application, using TLS".
+	- @ref quick_start_shell_wifi_qca "Shell application, using Wi-Fi QCA4002/4 interface".
+	- @ref quick_start_boot "TCP/UDP Throughput Benchmark application".
 - Source-code based User documentation, by Doxygen.
 - RFC list supported by the FNET stack: 
 	- RFC 768 - UDP.
@@ -192,32 +192,30 @@ fnet                        - FNET root directory.
 |    |    |-- startup             - Platform-specific start-up source code and drivers.
 |    |-- build                 - Demo projects.
 |         |-- <board_name>        - Demo projects for a <board_name> board.
-|              |-- azure          - FNET Azure IoT Hub client example.
-|              |-- boot           - FNET TFTP Bootloader.
-|              |-- benchmark      - TCP/UDP Throughput Benchmark application. 
 |              |-- shell          - "Shell" demo is a fully featured shell. It allows
 |              |                    view/change various parameters (e.g. IP address,
 |              |                    subnet mask), explore mounted file systems, run 
 |              |                    DHCP client, HTTP and Telnet servers.
-|              |-- shell_boot     - Example application used for the FNET TFTP Bootloader
+|              |-- shell_azure    - FNET Azure IoT Hub client example.
+|              |-- shell_boot     - FNET TFTP Bootloader.
+|              |-- shell_boot_app - Example application used for the FNET TFTP Bootloader
 |              |                    demonstration. This demo has the same features as
 |              |                    the "Shell" demo, but it`s modified to be able to
 |              |                    work with the FNET Bootloader.
-|              |-- shell_mbedtls  - Example application used for the HTTPS server demonstration.
+|              |-- shell_bench    - TCP/UDP Throughput Benchmark application. 
+|              |-- shell_tls      - Example application used for the HTTPS server demonstration.
 |              |                    This demo has the same features as the "Shell" demo,
 |              |                    but in addition it includes the mbedTLS library.
-|              |-- shell_freertos - Example application using FreeRTOS.
-|              |                    This demo has the same features as the "Shell" demo.
-|              |-- shell_freertos_wifi_<board> - Example application used for the Wi-Fi interface demonstration.
-|                                           It has the same features as the "Shell FreeRTOS" demo,
-|                                           but in addition it supports the Wi-Fi network interface using the Qualcomm QCA4002/4 module.
+|              |-- shell_wifi_<board> - Example application used for the Wi-Fi interface demonstration.
+|                                       It has the same features as the "Shell FreeRTOS" demo,
+|                                       but in addition it supports the Wi-Fi network interface using the Qualcomm QCA4002/4 module.
 |-- fnet_tools                - FNET PC tools.
 |-- third_party               - Optional, third-party libraries.
      |-- azure_iot-x.x.x        - Azure IoT Hub Device C SDK.
      |-- cmsis-x.x              - ARM CMSIS-Core(M) library, used for ARM Cortex M platforms.
      |-- mbedtls-x.x.x          - mbedTLS library, used by FNET TLS.
      |-- freertos-x.x.x         - FreeRTOS, used by freertos examples.
-     |-- qca-x.x.x              - Qualcomm QCA4002/4 driver, used by shell_freertos_wifi_<board> example.
+     |-- qca-x.x.x              - Qualcomm QCA4002/4 driver, used by shell_wifi_<board> example.
               
 @endverbatim
 */
@@ -227,7 +225,6 @@ fnet                        - FNET root directory.
 @page demos FNET Demo Applications
 *- @subpage quick_start_shell
 *- @subpage quick_start_shell_mbedtls
-*- @subpage quick_start_shell_freertos
 *- @subpage quick_start_shell_wifi_qca
 *- @subpage quick_start_boot
 *- @subpage quick_start_benchmark 
@@ -240,25 +237,24 @@ There are six types of demo projects:
 - @c shell - This is the main demo application. @n 
   The "Shell" demo allows to view/change various system parameters (e.g. IP address, subnet mask), to explore mounted file systems, to run DHCP and DNS clients, HTTP and Telnet servers, via a serial-terminal application. @n
   More information can be found in @ref quick_start_shell.
-- @c shell_boot - This is the example application used with the FNET TFTP Bootloader. @n
-  This demo has the same features as the "Shell" demo, but it was modified to be able to work with the FNET Bootloader. @n
-  More information can be found in @ref quick_start_boot.
-- @c boot - This is the TFTP Client and Server Firmware Bootloader. @n 
+- @c shell_azure - This is the Azure IoT Hub client example. @n
+  More information can be found in @ref quick_start_azure.
+- @c shell_bench - This is the TCP/UDP Throughput Benchmark application. @n
+  More information can be found in @ref quick_start_benchmark.
+- @c shell_boot - This is the TFTP Client and Server Firmware Bootloader. @n 
   It allows to update or backup a firmware application, placed in on-chip Flash memory, using the TFTP protocol. @n 
   More information can be found in @ref quick_start_boot.
-- @c shell_mbedtls - This is the example application used for the HTTPS server demonstration.
+- @c shell_boot_app - This is the example application used with the FNET TFTP Bootloader. @n
+  This demo has the same features as the "Shell" demo, but it was modified to be able to work with the FNET Bootloader. @n
+  More information can be found in @ref quick_start_boot.
+- @c shell_tls - This is the example application used for the HTTPS server demonstration.
   This demo has the same features as the "Shell" demo, but in addition it includes the mbedTLS library.@n
   More information can be found in @ref quick_start_shell_mbedtls.
-- @c shell_freertos - This is the example application using FreeRTOS.
-  This demo has the same features as the "Shell" demo, but in addition it includes FreeRTOS.@n
-  More information can be found in @ref quick_start_shell_freertos.
-- @c shell_freertos_wifi_[gt202|sx2401] - This is the example application using Wi-Fi network interface.
-  This demo has the same features as the "Shell FreeRTOS" demo, but in addition it includes Wi-Fi QCA4002/4 network interface.@n
+- @c shell_wifi_[gt202|sx2401] - This is the example application using Wi-Fi network interface.
+  This demo has the same features as the "Shell" demo, but in addition it includes Wi-Fi QCA4002/4 network interface.@n
   More information can be found in @ref quick_start_shell_wifi_qca.
-- @c benchmark - This is the TCP/UDP Throughput Benchmark application. @n
-  More information can be found in @ref quick_start_benchmark.
-- @c azure - This is the Azure IoT Hub client example. @n
-  More information can be found in @ref quick_start_azure.
+
+
 
 The following table summarizes the supported demo applications, platforms and compilers:
  <table>
@@ -268,9 +264,8 @@ The following table summarizes the supported demo applications, platforms and co
  <th ALIGN=CENTER>Shell</th>
  <th ALIGN=CENTER>Bootloader</th>
  <th ALIGN=CENTER>Benchmark</th>
- <th ALIGN=CENTER>Shell mbedTLS</th>
- <th ALIGN=CENTER>Shell FreeRTOS</th>
- <th ALIGN=CENTER>Shell FreeRTOS QCA Wi-Fi</th>
+ <th ALIGN=CENTER>Shell TLS</th>
+ <th ALIGN=CENTER>Shell QCA Wi-Fi</th>
  <th ALIGN=CENTER>Azure</th>
  </tr>
 <tr>
@@ -281,7 +276,6 @@ The following table summarizes the supported demo applications, platforms and co
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td> 
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td> 
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">MK66FN2M</td>
@@ -289,9 +283,8 @@ The following table summarizes the supported demo applications, platforms and co
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td> 
  <td ALIGN=CENTER>-</td>
- <td ALIGN=CENTER>-</td> 
+ <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">MK60DN512</td>
@@ -299,7 +292,6 @@ The following table summarizes the supported demo applications, platforms and co
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
  <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
  <td ALIGN=CENTER>-</td> 
- <td ALIGN=CENTER>-</td>
  <td ALIGN=CENTER>-</td> 
  <td ALIGN=CENTER>-</td> 
  </tr>
@@ -309,9 +301,8 @@ The following table summarizes the supported demo applications, platforms and co
  <td ALIGN=CENTER>-</td>
  <td ALIGN=CENTER>IAR8.22</td>
  <td ALIGN=CENTER>IAR8.22</td>
- <td ALIGN=CENTER>IAR8.22</td> 
  <td ALIGN=CENTER>IAR8.22</td>
- <td ALIGN=CENTER>-</td> 
+ <td ALIGN=CENTER>IAR8.22</td> 
  </tr>
  <tr>
   <td class="fnet_td_grey">MIMXRT1052</td>
@@ -319,7 +310,6 @@ The following table summarizes the supported demo applications, platforms and co
  <td ALIGN=CENTER>-</td>
  <td ALIGN=CENTER>IAR8.22</td>
  <td ALIGN=CENTER>IAR8.22</td>
- <td ALIGN=CENTER>IAR8.22</td> 
  <td ALIGN=CENTER>IAR8.22</td> 
  <td ALIGN=CENTER>IAR8.22</td> 
  </tr>
@@ -366,8 +356,20 @@ Follow these steps to run the FNET Shell demo application:
 	  
 - Launch IDE.
 - Open the project:
-@verbatim fnet\fnet_demos\build\<board_name>\shell\<compiler_name>\
-@endverbatim 
+	- Baremetal:
+		@verbatim fnet\fnet_demos\build\<board_name>\shell\bm\<compiler_name>\@endverbatim 
+	- FreeRTOS:
+		@verbatim fnet\fnet_demos\build\<board_name>\shell\freertos\<compiler_name>\@endverbatim
+		This FreeRTOS application has absolutely the same features and behaviour as the baremetal one. @n
+		In addition, the application:
+			- runs in FreeRTOS task.
+			- polls application protocol with a period.
+			- has additional application parameters:
+				- FAPP_CFG_FREERTOS_TASK_PRIORITY - FreeRTOS task priority.
+				- FAPP_CFG_FREERTOS_TASK_STACK_SIZE - FreeRTOS task stack size.
+				- FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS - Polling period for calling the fnet_poll_service() function.
+			- The application project includes FreeRTOS. Its source code is located in fnet/third_party/freertos-x.x.x/.
+			- FreeRTOS FNET application configuration parameters are in the FreeRTOSConfig.h file.
 
 - In the IDE, choose a project target you want to compile.
 - Compile, load (or flash) the application to the board and run the project.
@@ -797,7 +799,7 @@ Follow these steps to run the FNET Shell demo application:
 
 - Launch IDE.
 - Open the project:
-@verbatim fnet\fnet_demos\build\<board_name>\shell_mbedtls\<compiler_name>\
+@verbatim fnet\fnet_demos\build\<board_name>\shell_tls\bm\<compiler_name>\
 @endverbatim
 
 - In the IDE, choose a project target you want to compile.
@@ -893,40 +895,6 @@ https:// [fe80::211:22ff:fe33:4455]
 
 
 
-
-
-
-
-//********************************************************************
-//************************* Shell FreeRTOS Demo Quick Start **********
-//********************************************************************
-
-/*!
-* @page quick_start_shell_freertos FNET Shell FreeRTOS Demo Quick Start
-
-- This application has absolutely the same features and behaviour as the Shell demo application. 
-  So follow steps described in @ref quick_start_shell.
-- In addition, the application:
-	- runs in FreeRTOS task.
-	- polls application protocol with a period.
-	- has additional application parameters:
-		- FAPP_CFG_FREERTOS_TASK_PRIORITY - FreeRTOS task priority.
-		- FAPP_CFG_FREERTOS_TASK_STACK_SIZE - FreeRTOS task stack size.
-		- FAPP_CFG_FREERTOS_TASK_POLL_PERIOD_MS - Polling period for calling the fnet_poll_service() function.
-  
-@note
-- The application project includes FreeRTOS. Its source code is located in fnet/third_party/freertos-x.x.x/.
-- FreeRTOS FNET application configuration parameters are in the FreeRTOSConfig.h file.
-
-*/
-
-
-
-
-
-
-
-
 //********************************************************************
 //**************** Shell WiFi QCA Demo Quick Start *******************
 //********************************************************************
@@ -962,7 +930,7 @@ Follow these steps to run the FNET Shell demo application:
 	  
 - Launch IDE.
 - Open the project:
-@verbatim fnet\fnet_demos\build\<board_name>\shell_mbedtls\<compiler_name>\
+@verbatim fnet\fnet_demos\build\<board_name>\shell_wifi_qca_<board>\freertos\<compiler_name>\
 @endverbatim
 
 - In the IDE, choose a project target you want to compile.
@@ -1254,7 +1222,7 @@ Follow these steps to run the FNET Bootloader:
 @par Prepare the example-application image file that is to be downloaded by the TFTP Bootloader:
 
 - Open the project:
-@verbatim fnet\fnet_demos\build\<board_name>\shell_boot\<compiler_name>\
+@verbatim fnet\fnet_demos\build\<board_name>\shell_boot_app\bm\<compiler_name>\
 @endverbatim 
 - In the IDE choose the @a Release target.
 - Compile the project.
@@ -1264,7 +1232,7 @@ Follow these steps to run the FNET Bootloader:
 @par Prepare the FNET TFTP Bootloader:
 
 - Open the project:
-@verbatim fnet\fnet_demos\build\<board_name>\boot\<compiler_name>\
+@verbatim fnet\fnet_demos\build\<board_name>\shell_boot\bm\<compiler_name>\
 @endverbatim 
 - In the IDE choose @a Release target.
 - Compile the project.
@@ -1759,7 +1727,7 @@ or on http://fbench.sf.net
 @par Prepare the FNET Throughput Benchmark application:
 
 - Open the project:
-@verbatim fnet\fnet_demos\build\<board_name>\bench\<compiler_name>\
+@verbatim fnet\fnet_demos\build\<board_name>\shell_bench\bm\<compiler_name>\
 @endverbatim 
 - In the IDE choose the @a Release target.
 - Compile the project.
@@ -1980,10 +1948,10 @@ What you do:
 	  
 - Launch IDE.
 - Open the FNET demo project:
-@verbatim fnet\fnet_demos\build\<board_name>\azure\<compiler_name>\
+@verbatim fnet\fnet_demos\build\<board_name>\shell_azure\freertos\<compiler_name>\
 @endverbatim
 - Open the demo application configuration file: 
-	@verbatim \fnet\fnet_demos\src\azure\fapp_user_config.h @endverbatim 
+	@verbatim \fnet\fnet_demos\src\shell_azure\fapp_user_config.h @endverbatim 
 	and add the following line to it
 	@verbatim #define FAPP_CFG_AZURE_CMD_DEVICE_CONNECTION_STRING "Your_device_connection_string"  @endverbatim
   "your_device_connection_string"  must be replaced by the device connection string you made a note of previously. Then save your changes.
@@ -2382,6 +2350,20 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 4.5.1
+	- Certified for Microsoft Azure IoT.
+	- Updated Azure IoT SDK to version 1.2.5.
+	- Updated mbedTLS to version 2.12.0.
+	- Added fnet_mdns_probe() which restarts mDNS probing.
+	- Added "freertos" or "bm" sub-folders to the demo application directory fnet_demos/build/\<board_name\>/\<demo_name\>/[freertos|bm]
+	- Renamed demo applications:
+		- azure to shell_azure.
+		- bench to shell_bench.
+		- boot to shell_boot.
+		- shell_boot to shell_boot_app.
+		- shell_mbedtls to shell_tls
+		- shell_freertos_wifi to shell_wifi 
+	- Fixed fnet_timer_poll() which caused infinite loop for the WiFi example.
 
 - Version 4.5.0
 	- Added basic support of the Microsoft Azure IoT Hub, enabled by FNET_CFG_AZURE:

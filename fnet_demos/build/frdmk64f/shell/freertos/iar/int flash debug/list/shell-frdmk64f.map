@@ -1,0 +1,2868 @@
+###############################################################################
+#
+# IAR ELF Linker V8.22.2.15995/W32 for ARM                27/Jul/2018  12:23:18
+# Copyright 2007-2018 IAR Systems AB.
+#
+#    Output file  =  
+#        C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\shell-frdmk64f.out
+#    Map file     =  
+#        C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\list\shell-frdmk64f.map
+#    Command line =  
+#        -f C:\Users\nxa12205\AppData\Local\Temp\1\EW823.tmp
+#        ("C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\clock_config.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\croutine.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\event_groups.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_autoip.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_azure.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_bench.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_dhcp.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_dns.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_freertos.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_fs.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_fs_image.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_http.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_link.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_llmnr.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_mdns.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_mem.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_netif.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_params.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_ping.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_setget.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_shell.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_sntp.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_telnet.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_tftp.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fapp_wifi.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_arp.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_autoip.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_azure_platform.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_azure_socketio.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_azure_tlsio.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_bench_cln.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_bench_srv.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_checksum.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_cpu.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_dhcp.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_dhcp_cln.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_dhcp_srv.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_dns.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_enet.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_error.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_eth.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_fec.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_flash.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_fs.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_fs_rom.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_fs_root.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_http_cln.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_http_srv.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_http_srv_auth.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_http_srv_cgi.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_http_srv_get.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_http_srv_post.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_http_srv_ssi.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_icmp4.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_icmp6.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_igmp.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_inet.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_ip.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_ip4.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_ip6.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_isr.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_link.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_llmnr.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_loop.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_lpc.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_lpc_eth.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_lpc_flash.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_lpc_isr.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_lpc_isr_inst.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_lpc_low.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_lpc_serial.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_lpc_timer.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_lpc_wifi.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mcf.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mcf_checksum.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mcf_eth.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mcf_flash.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mcf_isr.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mcf_isr_inst.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mcf_low.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mcf_serial.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mcf_timer.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mdns.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mempool.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mimxrt.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mimxrt_eth.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mimxrt_isr.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mimxrt_isr_inst.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mimxrt_low.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mimxrt_serial.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mimxrt_timer.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mimxrt_wifi.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mk.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mk_eth.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mk_flash.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mk_isr.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mk_isr_inst.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mk_low.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mk_serial.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mk_timer.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mk_wifi.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mld.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mpc.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mpc5744p_cache.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mpc5744p_flash.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mpc_eth.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mpc_isr.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mpc_isr_inst.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mpc_serial.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_mpc_timer.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_nd6.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_netbuf.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_netif.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_ping.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_prot.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_qca.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_raw.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_serial.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_service.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_shell.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_sntp.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_socket.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_stack.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_stdlib.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_tcp.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_telnet.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_tftp_cln.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_tftp_srv.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_timer.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_tls.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_udp.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fnet_wifi.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fsl_clock.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fsl_dmamux.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fsl_dspi.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fsl_dspi_edma.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fsl_edma.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fsl_gpio.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fsl_sbrk.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fsl_smc.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\fsl_tickless_systick.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\heap_3.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\list.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\main.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\port.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\portasm.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\queue.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\startup_MK64F12.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\system_MK64F12.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\tasks.o"
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\obj\timers.o" --redirect _Printf=_PrintfFullNoMb
+#        --redirect _Scanf=_ScanfFullNoMb -o
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\shell-frdmk64f.out" --config_def __ram_vector_table__=1
+#        --config_def __heap_size__=0x20000 --config_def __stack_size__=0x4000
+#        --map
+#        "C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int
+#        flash debug\list\shell-frdmk64f.map" --config
+#        C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar/../../../../../common/startup/MK64F12/iar/MK64FN1M0xxx12_flash_fnet.icf
+#        --semihosting --entry __iar_program_start --vfe --text_out locale)
+#
+###############################################################################
+
+*******************************************************************************
+*** RUNTIME MODEL ATTRIBUTES
+***
+
+CppFlavor       = *
+__Heap_Handler  = DLMalloc
+__SystemLibrary = DLib
+__dlib_version  = 6
+
+
+*******************************************************************************
+*** HEAP SELECTION
+***
+
+The advanced heap was selected because the application calls memory
+allocation functions outside of system library functions, and there
+are calls to deallocation functions in the application.
+
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+"A0":  place at 0x00000000 { ro section .intvec };
+"P1":  place in [from 0x00000400 to 0x0000040f] { section FlashConfig };
+"P2":  place in [from 0x00000000 to 0x000003ff] |
+                [from 0x00000410 to 0x000fffff] { ro };
+define block RW { rw };
+"P3":  place in [from 0x1fff0400 to 0x1fffffff] |
+                [from 0x20000000 to 0x2002bfff] { block RW };
+define block ZI { zi };
+"P4":  place in [from 0x1fff0400 to 0x1fffffff] |
+                [from 0x20000000 to 0x2002bfff] { block ZI };
+define block HEAP with size = 128K, alignment = 8 { };
+"P5":  place in [from 0x1fff0400 to 0x1fffffff] |
+                [from 0x20000000 to 0x2002bfff] { last block HEAP };
+define block CSTACK with size = 16K, alignment = 8 { };
+"P6":  place in [from 0x2002c000 to 0x2002ffff] { block CSTACK };
+"A1":  place at 0x000ff000 { section fapp_params };
+initialize by copy { rw, section .textrw };
+
+No sections matched the following patterns:
+
+  section m_interrupts_ram  in "P7"
+
+
+  Section            Kind        Address     Size  Object
+  -------            ----        -------     ----  ------
+"A0":                                       0x400
+  .intvec            ro code  0x00000000    0x400  startup_MK64F12.o [1]
+                            - 0x00000400    0x400
+
+"P1":                                        0x10
+  FlashConfig        ro code  0x00000400     0x10  startup_MK64F12.o [1]
+                            - 0x00000410     0x10
+
+"P2":                                     0x208c3
+  .text              ro code  0x00000410   0x2558  fnet_tcp.o [1]
+  .text              ro code  0x00002968    0x114  fnet_timer.o [1]
+  .text              ro code  0x00002a7c    0x1c0  fnet_isr.o [1]
+  .text              ro code  0x00002c3c    0x744  fnet_netbuf.o [1]
+  .text              ro code  0x00003380    0x260  fnet_checksum.o [1]
+  .text              ro code  0x000035e0   0x10ce  fnet_socket.o [1]
+  .rodata            const    0x000046ae      0x2  fapp_fs.o [1]
+  .text              ro code  0x000046b0    0x57c  fnet_stdlib.o [1]
+  .text              ro code  0x00004c2c     0xa6  ABImemcpy.o [5]
+  .text              ro code  0x00004cd2    0x16e  fnet_ip.o [1]
+  .text              ro code  0x00004e40     0x2c  fnet_cpu.o [1]
+  .text              ro code  0x00004e6c    0xc9e  fnet_netif.o [1]
+  .rodata            const    0x00005b0a      0x2  fapp_fs.o [1]
+  .text              ro code  0x00005b0c    0xc38  fnet_ip4.o [1]
+  .text              ro code  0x00006744   0x136a  fnet_ip6.o [1]
+  .rodata            const    0x00007aae      0x2  fapp_fs.o [1]
+  .text              ro code  0x00007ab0     0x9c  fnet_mk_timer.o [1]
+  .text              ro code  0x00007b4c     0x84  fnet_mk_isr_inst.o [1]
+  .text              ro code  0x00007bd0    0x144  fnet_prot.o [1]
+  .text              ro code  0x00007d14    0x1ea  fnet_mempool.o [1]
+  .rodata            const    0x00007efe      0x2  fapp_shell.o [1]
+  .text              ro code  0x00007f00    0x1dc  fnet_stack.o [1]
+  .text              ro code  0x000080dc     0x14  fnet_error.o [1]
+  .text              ro code  0x000080f0    0x22e  I64DivMod.o [5]
+  .text              ro code  0x0000831e      0x2  startup_MK64F12.o [1]
+  .text              ro code  0x00008320    0x6c0  fnet_eth.o [1]
+  .text              ro code  0x000089e0   0x152c  fnet_nd6.o [1]
+  .text              ro code  0x00009f0c    0x492  fnet_raw.o [1]
+  .text              ro code  0x0000a39e    0x3e4  fnet_icmp4.o [1]
+  .text              ro code  0x0000a782      0x2  startup_MK64F12.o [1]
+  .text              ro code  0x0000a784    0x310  fnet_icmp6.o [1]
+  .text              ro code  0x0000aa94     0x3c  fnet_mk.o [1]
+  .text              ro code  0x0000aad0     0xcc  fnet_service.o [1]
+  .text              ro code  0x0000ab9c      0x2  I64DivZer.o [5]
+  .text              ro code  0x0000ab9e      0x2  startup_MK64F12.o [1]
+  .text              ro code  0x0000aba0    0x6a8  fnet_serial.o [1]
+  .text              ro code  0x0000b248    0x5f8  fnet_arp.o [1]
+  .text              ro code  0x0000b840      0xe  fnet_mk_low.o [1]
+  .text              ro code  0x0000b84e      0x2  startup_MK64F12.o [1]
+  .text              ro code  0x0000b850   0x1c54  fnet_mdns.o [1]
+  .text              ro code  0x0000d4a4      0x6  ABImemclr4.o [5]
+  .text              ro code  0x0000d4aa      0x2  startup_MK64F12.o [1]
+  .text              ro code  0x0000d4ac     0x32  ABImemset48.o [5]
+  .text              ro code  0x0000d4de      0x2  startup_MK64F12.o [1]
+  .text              ro code  0x0000d4e0   0x14d4  dlmalloc.o [3]
+  .text              ro code  0x0000e9b4      0x6  abort.o [3]
+  .rodata            const    0x0000e9ba      0x1  fapp_fs.o [1]
+  .rodata            const    0x0000e9bb      0x1  fapp_fs_image.o [1]
+  .text              ro code  0x0000e9bc     0x2c  xgetmemchunk.o [3]
+  .text              ro code  0x0000e9e8     0x14  exit.o [6]
+  .rodata            const    0x0000e9fc    0xd98  fapp_fs_image.o [1]
+  .rodata            const    0x0000f794    0xd98  fapp_fs_image.o [1]
+  .rodata            const    0x0001052c    0xbf8  fapp_fs_image.o [1]
+  .text              ro code  0x00011124    0xb48  tasks.o [1]
+  .text              ro code  0x00011c6c     0x30  heap_3.o [1]
+  .text              ro code  0x00011c9c     0x66  ABImemset.o [5]
+  .text              ro code  0x00011d02     0x98  list.o [1]
+  .rodata            const    0x00011d9a      0x1  fapp_netif.o [1]
+  .rodata            const    0x00011d9b      0x1  fapp_shell.o [1]
+  .text              ro code  0x00011d9c    0x22c  port.o [1]
+  .text              ro code  0x00011fc8    0x44c  timers.o [1]
+  .text              ro code  0x00012414      0x4  heaptramp0.o [3]
+  .text              ro code  0x00012418     0x30  fsl_tickless_systick.o [1]
+  CODE               ro code  0x00012448     0xa8  portasm.o [1]
+  .text              ro code  0x000124f0    0x812  queue.o [1]
+  .rodata            const    0x00012d02      0x1  fnet_http_srv.o [1]
+  .rodata            const    0x00012d04    0xabc  fapp_fs_image.o [1]
+  .rodata            const    0x000137c0    0xa6c  fapp_fs_image.o [1]
+  .text              ro code  0x0001422c    0xa44  fnet_http_srv.o [1]
+  .text              ro code  0x00014c70    0x260  fnet_http_srv_auth.o [1]
+  .text              ro code  0x00014ed0    0x4b6  fnet_fs.o [1]
+  .text              ro code  0x00015388     0xc4  fnet_fs_root.o [1]
+  .text              ro code  0x0001544c    0xa24  fnet_dhcp_cln.o [1]
+  .text              ro code  0x00015e70     0x2c  fnet_dhcp.o [1]
+  .rodata            const    0x00015e9c    0x958  fapp_fs_image.o [1]
+  .rodata            const    0x000167f4    0x6ec  fapp_fs_image.o [1]
+  .rodata            const    0x00016ee0    0x678  fapp_fs_image.o [1]
+  .text              ro code  0x00017558    0x63e  fnet_shell.o [1]
+  .text              ro code  0x00017b98    0x634  fapp_netif.o [1]
+  .text              ro code  0x000181cc    0x110  fapp_link.o [1]
+  .text              ro code  0x000182dc     0xb2  fnet_wifi.o [1]
+  .text              ro code  0x00018390    0x454  fnet_inet.o [1]
+  .text              ro code  0x000187e4    0x294  fapp_dhcp.o [1]
+  .text              ro code  0x00018a78    0x1c0  fapp_autoip.o [1]
+  .text              ro code  0x00018c38    0x138  fapp_llmnr.o [1]
+  .text              ro code  0x00018d70    0x1a4  fapp_mdns.o [1]
+  .text              ro code  0x00018f14    0x378  fapp_http.o [1]
+  .text              ro code  0x0001928c     0xe0  fapp_telnet.o [1]
+  .text              ro code  0x0001936c     0xa4  fnet_link.o [1]
+  .text              ro code  0x00019410    0x194  fapp.o [1]
+  .text              ro code  0x000195a4    0x408  fnet_autoip.o [1]
+  .text              ro code  0x000199ac    0x3c4  fnet_llmnr.o [1]
+  .text              ro code  0x00019d70    0x554  fnet_telnet.o [1]
+  .text              ro code  0x0001a2c4    0x138  fapp_freertos.o [1]
+  .text              ro code  0x0001a3fc    0x2cc  fapp_fs.o [1]
+  .text              ro code  0x0001a6c8    0x23c  fapp_shell.o [1]
+  .text              ro code  0x0001a904    0x130  fapp_params.o [1]
+  .text              ro code  0x0001aa34     0x70  clock_config.o [1]
+  .text              ro code  0x0001aaa4    0x1fc  fnet_mk_serial.o [1]
+  .text              ro code  0x0001aca0    0x228  event_groups.o [1]
+  .text              ro code  0x0001aec8    0x290  fnet_fs_rom.o [1]
+  .text              ro code  0x0001b158    0x110  fnet_flash.o [1]
+  .text              ro code  0x0001b268    0x360  fsl_clock.o [1]
+  .text              ro code  0x0001b5c8    0x11a  fnet_mk_flash.o [1]
+  .text              ro code  0x0001b6e4     0x24  ABIassert.o [6]
+  .text              ro code  0x0001b708    0x62c  fnet_fec.o [1]
+  .text              ro code  0x0001bd34    0x610  fnet_udp.o [1]
+  .rodata            const    0x0001c344    0x580  fapp_fs_image.o [1]
+  .text              ro code  0x0001c8c4    0x4be  fnet_dns.o [1]
+  .text              ro code  0x0001cd84    0x370  fnet_ping.o [1]
+  .text              ro code  0x0001d0f4    0x2f8  fapp_ping.o [1]
+  .text              ro code  0x0001d3ec    0x2f8  fnet_sntp.o [1]
+  .text              ro code  0x0001d6e4    0x2c8  fapp_sntp.o [1]
+  .rodata            const    0x0001d9ac    0x2b0  fapp_fs_image.o [1]
+  .text              ro code  0x0001dc5c    0x278  fapp_setget.o [1]
+  .text              ro code  0x0001ded4    0x1fc  fapp_dns.o [1]
+  .text              ro code  0x0001e0d0    0x1f8  fnet_http_srv_ssi.o [1]
+  .rodata            const    0x0001e2c8    0x1e0  fapp_shell.o [1]
+  .text              ro code  0x0001e4a8    0x19c  fsl_edma.o [1]
+  .text              ro code  0x0001e644     0xda  fnet_http_srv_post.o [1]
+  .rodata            const    0x0001e720     0xd0  fapp_fs_image.o [1]
+  .text              ro code  0x0001e7f0     0xc4  fsl_dspi.o [1]
+  .text              ro code  0x0001e8b4     0xa6  fnet_http_srv_cgi.o [1]
+  .text              ro code  0x0001e95a     0x9c  packbits_init.o [5]
+  .rodata            const    0x0001e9f8     0x90  fapp_fs.o [1]
+  .text              ro code  0x0001ea88     0x90  fnet_mk_eth.o [1]
+  .rodata            const    0x0001eb18     0x8c  fnet_ip6.o [1]
+  .text              ro code  0x0001eba4     0x78  fnet_http_srv_get.o [1]
+  .text              ro code  0x0001ec1c     0x74  system_MK64F12.o [1]
+  .rodata            const    0x0001ec90     0x58  fapp_freertos.o [1]
+  .rodata            const    0x0001ece8     0x58  fapp_shell.o [1]
+  .rodata            const    0x0001ed40     0x54  fsl_clock.o [1]
+  .rodata            const    0x0001ed94     0x54  fsl_dspi.o [1]
+  .rodata            const    0x0001ede8     0x54  fsl_edma.o [1]
+  .rodata            const    0x0001ee3c     0x50  fapp_setget.o [1]
+  .rodata            const    0x0001ee8c     0x4c  fapp.o [1]
+  .rodata            const    0x0001eed8     0x44  fnet_fec.o [1]
+  .rodata            const    0x0001ef1c     0x40  fapp_link.o [1]
+  .text              ro code  0x0001ef5c     0x40  zero_init3.o [5]
+  .rodata            const    0x0001ef9c     0x3c  fapp_link.o [1]
+  .rodata            const    0x0001efd8     0x38  fapp_http.o [1]
+  .rodata            const    0x0001f010     0x34  fapp.o [1]
+  .rodata            const    0x0001f044     0x34  fapp_http.o [1]
+  .rodata            const    0x0001f078     0x34  fapp_shell.o [1]
+  .rodata            const    0x0001f0ac     0x34  fapp_shell.o [1]
+  .rodata            const    0x0001f0e0     0x30  fapp.o [1]
+  .rodata            const    0x0001f110     0x30  fapp_http.o [1]
+  .rodata            const    0x0001f140     0x2c  fapp_freertos.o [1]
+  .rodata            const    0x0001f16c     0x2c  fapp_http.o [1]
+  .rodata            const    0x0001f198     0x2c  fapp_http.o [1]
+  .rodata            const    0x0001f1c4     0x2c  fnet_raw.o [1]
+  .rodata            const    0x0001f1f0     0x2c  fnet_tcp.o [1]
+  .rodata            const    0x0001f21c     0x2c  fnet_udp.o [1]
+  .rodata            const    0x0001f248     0x28  fapp_fs.o [1]
+  .rodata            const    0x0001f270     0x28  fapp_http.o [1]
+  .rodata            const    0x0001f298     0x28  fapp_link.o [1]
+  .rodata            const    0x0001f2c0     0x28  fapp_shell.o [1]
+  .text              ro code  0x0001f2e8     0x28  data_init.o [5]
+  .rodata            const    0x0001f310     0x24  fapp_freertos.o [1]
+  .rodata            const    0x0001f334     0x24  fapp_freertos.o [1]
+  .rodata            const    0x0001f358     0x24  fapp_setget.o [1]
+  .rodata            const    0x0001f37c     0x24  fapp_setget.o [1]
+  .rodata            const    0x0001f3a0     0x24  fapp_shell.o [1]
+  .rodata            const    0x0001f3c4     0x24  fapp_shell.o [1]
+  .text              ro code  0x0001f3e8     0x24  startup_MK64F12.o [1]
+  .text              ro code  0x0001f40c     0x22  fpinit_M.o [4]
+  .iar.init_table    const    0x0001f430     0x2c  - Linker created -
+  .rodata            const    0x0001f45c     0x20  clock_config.o [1]
+  .rodata            const    0x0001f47c     0x20  fapp_freertos.o [1]
+  .rodata            const    0x0001f49c     0x20  fapp_fs.o [1]
+  .rodata            const    0x0001f4bc     0x20  fapp_fs.o [1]
+  .rodata            const    0x0001f4dc     0x20  fapp_fs.o [1]
+  .rodata            const    0x0001f4fc     0x20  fapp_http.o [1]
+  .rodata            const    0x0001f51c     0x20  fapp_link.o [1]
+  .rodata            const    0x0001f53c     0x20  fapp_setget.o [1]
+  .rodata            const    0x0001f55c     0x20  fapp_shell.o [1]
+  .rodata            const    0x0001f57c     0x20  fapp_shell.o [1]
+  .rodata            const    0x0001f59c     0x20  fapp_shell.o [1]
+  .rodata            const    0x0001f5bc     0x20  fapp_shell.o [1]
+  .rodata            const    0x0001f5dc     0x20  fapp_shell.o [1]
+  .rodata            const    0x0001f5fc     0x20  fapp_shell.o [1]
+  .rodata            const    0x0001f61c     0x20  fnet_eth.o [1]
+  .rodata            const    0x0001f63c     0x20  fnet_shell.o [1]
+  .text              ro code  0x0001f65c     0x1e  cmain.o [5]
+  .text              ro code  0x0001f67a      0x4  low_level_init.o [3]
+  .text              ro code  0x0001f67e      0xe  main.o [1]
+  .text              ro code  0x0001f68c      0x4  exit.o [3]
+  .text              ro code  0x0001f690      0xa  cexit.o [5]
+  .rodata            const    0x0001f69c     0x1c  fapp_autoip.o [1]
+  .rodata            const    0x0001f6b8     0x1c  fapp_freertos.o [1]
+  .rodata            const    0x0001f6d4     0x1c  fapp_freertos.o [1]
+  .rodata            const    0x0001f6f0     0x1c  fapp_fs.o [1]
+  .rodata            const    0x0001f70c     0x1c  fapp_fs.o [1]
+  .rodata            const    0x0001f728     0x1c  fapp_fs.o [1]
+  .rodata            const    0x0001f744     0x1c  fapp_fs.o [1]
+  .rodata            const    0x0001f760     0x1c  fapp_fs.o [1]
+  .rodata            const    0x0001f77c     0x1c  fapp_http.o [1]
+  .rodata            const    0x0001f798     0x1c  fapp_link.o [1]
+  .rodata            const    0x0001f7b4     0x1c  fapp_setget.o [1]
+  .rodata            const    0x0001f7d0     0x1c  fapp_shell.o [1]
+  .rodata            const    0x0001f7ec     0x1c  fapp_shell.o [1]
+  .rodata            const    0x0001f808     0x1c  fapp_shell.o [1]
+  .rodata            const    0x0001f824     0x1c  fapp_shell.o [1]
+  .rodata            const    0x0001f840     0x1c  fapp_shell.o [1]
+  .rodata            const    0x0001f85c     0x1c  fapp_shell.o [1]
+  .rodata            const    0x0001f878     0x1c  fapp_shell.o [1]
+  .rodata            const    0x0001f894     0x1c  fapp_sntp.o [1]
+  .rodata            const    0x0001f8b0     0x1c  fapp_sntp.o [1]
+  .rodata            const    0x0001f8cc     0x1c  fnet_shell.o [1]
+  .rodata            const    0x0001f8e8     0x18  fapp_dhcp.o [1]
+  .rodata            const    0x0001f900     0x18  fapp_dhcp.o [1]
+  .rodata            const    0x0001f918     0x18  fapp_dns.o [1]
+  .rodata            const    0x0001f930     0x18  fapp_fs.o [1]
+  .rodata            const    0x0001f948     0x18  fapp_fs.o [1]
+  .rodata            const    0x0001f960     0x18  fapp_fs.o [1]
+  .rodata            const    0x0001f978     0x18  fapp_http.o [1]
+  .rodata            const    0x0001f990     0x18  fapp_http.o [1]
+  .rodata            const    0x0001f9a8     0x18  fapp_http.o [1]
+  .rodata            const    0x0001f9c0     0x18  fapp_llmnr.o [1]
+  .rodata            const    0x0001f9d8     0x18  fapp_mdns.o [1]
+  .rodata            const    0x0001f9f0     0x18  fapp_netif.o [1]
+  .rodata            const    0x0001fa08     0x18  fapp_netif.o [1]
+  .rodata            const    0x0001fa20     0x18  fapp_setget.o [1]
+  .rodata            const    0x0001fa38     0x18  fapp_shell.o [1]
+  .rodata            const    0x0001fa50     0x18  fapp_shell.o [1]
+  .rodata            const    0x0001fa68     0x18  fapp_shell.o [1]
+  .rodata            const    0x0001fa80     0x18  fapp_shell.o [1]
+  .rodata            const    0x0001fa98     0x18  fapp_shell.o [1]
+  .rodata            const    0x0001fab0     0x18  fapp_shell.o [1]
+  .rodata            const    0x0001fac8     0x18  fapp_sntp.o [1]
+  .rodata            const    0x0001fae0     0x18  fapp_telnet.o [1]
+  .rodata            const    0x0001faf8     0x18  fnet_eth.o [1]
+  .rodata            const    0x0001fb10     0x18  fnet_http_srv.o [1]
+  .rodata            const    0x0001fb28     0x18  fnet_http_srv.o [1]
+  .rodata            const    0x0001fb40     0x18  fnet_mdns.o [1]
+  .rodata            const    0x0001fb58     0x14  fapp.o [1]
+  .rodata            const    0x0001fb6c     0x14  fapp_autoip.o [1]
+  .rodata            const    0x0001fb80     0x14  fapp_dhcp.o [1]
+  .rodata            const    0x0001fb94     0x14  fapp_dns.o [1]
+  .rodata            const    0x0001fba8     0x14  fapp_freertos.o [1]
+  .rodata            const    0x0001fbbc     0x14  fapp_fs.o [1]
+  .rodata            const    0x0001fbd0     0x14  fapp_fs_image.o [1]
+  .rodata            const    0x0001fbe4     0x14  fapp_http.o [1]
+  .rodata            const    0x0001fbf8     0x14  fapp_netif.o [1]
+  .rodata            const    0x0001fc0c     0x14  fapp_netif.o [1]
+  .rodata            const    0x0001fc20     0x14  fapp_netif.o [1]
+  .rodata            const    0x0001fc34     0x14  fapp_netif.o [1]
+  .rodata            const    0x0001fc48     0x14  fapp_ping.o [1]
+  .rodata            const    0x0001fc5c     0x14  fapp_ping.o [1]
+  .rodata            const    0x0001fc70     0x14  fapp_shell.o [1]
+  .rodata            const    0x0001fc84     0x14  fapp_shell.o [1]
+  .rodata            const    0x0001fc98     0x14  fapp_shell.o [1]
+  .rodata            const    0x0001fcac     0x14  fapp_shell.o [1]
+  .rodata            const    0x0001fcc0     0x14  fapp_shell.o [1]
+  .rodata            const    0x0001fcd4     0x14  fapp_shell.o [1]
+  .rodata            const    0x0001fce8     0x14  fapp_shell.o [1]
+  .rodata            const    0x0001fcfc     0x14  fapp_shell.o [1]
+  .rodata            const    0x0001fd10     0x14  fapp_shell.o [1]
+  .rodata            const    0x0001fd24     0x14  fapp_shell.o [1]
+  .rodata            const    0x0001fd38     0x14  fapp_sntp.o [1]
+  .rodata            const    0x0001fd4c     0x14  fapp_sntp.o [1]
+  .rodata            const    0x0001fd60     0x14  fnet_http_srv.o [1]
+  .rodata            const    0x0001fd74     0x14  fnet_http_srv.o [1]
+  .rodata            const    0x0001fd88     0x14  fnet_http_srv.o [1]
+  .rodata            const    0x0001fd9c     0x14  fnet_http_srv.o [1]
+  .rodata            const    0x0001fdb0     0x14  fnet_http_srv.o [1]
+  .rodata            const    0x0001fdc4     0x14  fnet_http_srv.o [1]
+  .rodata            const    0x0001fdd8     0x14  fnet_http_srv_get.o [1]
+  .rodata            const    0x0001fdec     0x14  fnet_http_srv_post.o [1]
+  .rodata            const    0x0001fe00     0x14  fnet_inet.o [1]
+  .rodata            const    0x0001fe14     0x14  fnet_inet.o [1]
+  .rodata            const    0x0001fe28     0x14  fnet_prot.o [1]
+  .rodata            const    0x0001fe3c     0x14  fnet_shell.o [1]
+  .text              ro code  0x0001fe50     0x14  fnet_mk_isr.o [1]
+  .rodata            const    0x0001fe64     0x10  fapp.o [1]
+  .rodata            const    0x0001fe74     0x10  fapp_autoip.o [1]
+  .rodata            const    0x0001fe84     0x10  fapp_dhcp.o [1]
+  .rodata            const    0x0001fe94     0x10  fapp_dhcp.o [1]
+  .rodata            const    0x0001fea4     0x10  fapp_freertos.o [1]
+  .rodata            const    0x0001feb4     0x10  fapp_fs_image.o [1]
+  .rodata            const    0x0001fec4     0x10  fapp_fs_image.o [1]
+  .rodata            const    0x0001fed4     0x10  fapp_fs_image.o [1]
+  .rodata            const    0x0001fee4     0x10  fapp_fs_image.o [1]
+  .rodata            const    0x0001fef4     0x10  fapp_fs_image.o [1]
+  .rodata            const    0x0001ff04     0x10  fapp_link.o [1]
+  .rodata            const    0x0001ff14     0x10  fapp_llmnr.o [1]
+  .rodata            const    0x0001ff24     0x10  fapp_mdns.o [1]
+  .rodata            const    0x0001ff34     0x10  fapp_netif.o [1]
+  .rodata            const    0x0001ff44     0x10  fapp_netif.o [1]
+  .rodata            const    0x0001ff54     0x10  fapp_netif.o [1]
+  .rodata            const    0x0001ff64     0x10  fapp_netif.o [1]
+  .rodata            const    0x0001ff74     0x10  fapp_netif.o [1]
+  .rodata            const    0x0001ff84     0x10  fapp_netif.o [1]
+  .rodata            const    0x0001ff94     0x10  fapp_netif.o [1]
+  .rodata            const    0x0001ffa4     0x10  fapp_netif.o [1]
+  .rodata            const    0x0001ffb4     0x10  fapp_netif.o [1]
+  .rodata            const    0x0001ffc4     0x10  fapp_netif.o [1]
+  .rodata            const    0x0001ffd4     0x10  fapp_ping.o [1]
+  .rodata            const    0x0001ffe4     0x10  fapp_ping.o [1]
+  .rodata            const    0x0001fff4     0x10  fapp_ping.o [1]
+  .rodata            const    0x00020004     0x10  fapp_ping.o [1]
+  .rodata            const    0x00020014     0x10  fapp_shell.o [1]
+  .rodata            const    0x00020024     0x10  fapp_shell.o [1]
+  .rodata            const    0x00020034     0x10  fapp_shell.o [1]
+  .rodata            const    0x00020044     0x10  fapp_shell.o [1]
+  .rodata            const    0x00020054     0x10  fapp_shell.o [1]
+  .rodata            const    0x00020064     0x10  fapp_shell.o [1]
+  .rodata            const    0x00020074     0x10  fapp_shell.o [1]
+  .rodata            const    0x00020084     0x10  fapp_sntp.o [1]
+  .rodata            const    0x00020094     0x10  fapp_telnet.o [1]
+  .rodata            const    0x000200a4     0x10  fnet_fs_rom.o [1]
+  .rodata            const    0x000200b4     0x10  fnet_http_srv.o [1]
+  .rodata            const    0x000200c4     0x10  fnet_http_srv.o [1]
+  .rodata            const    0x000200d4     0x10  fnet_http_srv.o [1]
+  .rodata            const    0x000200e4     0x10  fnet_http_srv.o [1]
+  .rodata            const    0x000200f4     0x10  fnet_http_srv.o [1]
+  .rodata            const    0x00020104     0x10  fnet_http_srv.o [1]
+  .rodata            const    0x00020114     0x10  fnet_http_srv.o [1]
+  .rodata            const    0x00020124     0x10  fnet_http_srv.o [1]
+  .rodata            const    0x00020134     0x10  fnet_http_srv.o [1]
+  .rodata            const    0x00020144     0x10  fnet_http_srv_auth.o [1]
+  .rodata            const    0x00020154     0x10  fnet_http_srv_auth.o [1]
+  .rodata            const    0x00020164     0x10  fnet_http_srv_cgi.o [1]
+  .rodata            const    0x00020174     0x10  fnet_http_srv_ssi.o [1]
+  .rodata            const    0x00020184     0x10  fnet_ip6.o [1]
+  .rodata            const    0x00020194     0x10  fnet_ip6.o [1]
+  .rodata            const    0x000201a4     0x10  fnet_ip6.o [1]
+  .rodata            const    0x000201b4     0x10  fnet_ip6.o [1]
+  .rodata            const    0x000201c4     0x10  fnet_ip6.o [1]
+  .rodata            const    0x000201d4     0x10  fnet_llmnr.o [1]
+  .rodata            const    0x000201e4     0x10  fnet_mdns.o [1]
+  .rodata            const    0x000201f4     0x10  fnet_serial.o [1]
+  .rodata            const    0x00020204      0xc  fapp_autoip.o [1]
+  .rodata            const    0x00020210      0xc  fapp_dhcp.o [1]
+  .rodata            const    0x0002021c      0xc  fapp_dhcp.o [1]
+  .rodata            const    0x00020228      0xc  fapp_dns.o [1]
+  .rodata            const    0x00020234      0xc  fapp_dns.o [1]
+  .rodata            const    0x00020240      0xc  fapp_dns.o [1]
+  .rodata            const    0x0002024c      0xc  fapp_fs.o [1]
+  .rodata            const    0x00020258      0xc  fapp_fs.o [1]
+  .rodata            const    0x00020264      0xc  fapp_fs.o [1]
+  .rodata            const    0x00020270      0xc  fapp_fs.o [1]
+  .rodata            const    0x0002027c      0xc  fapp_fs_image.o [1]
+  .rodata            const    0x00020288      0xc  fapp_fs_image.o [1]
+  .rodata            const    0x00020294      0xc  fapp_fs_image.o [1]
+  .rodata            const    0x000202a0      0xc  fapp_fs_image.o [1]
+  .rodata            const    0x000202ac      0xc  fapp_fs_image.o [1]
+  .rodata            const    0x000202b8      0xc  fapp_http.o [1]
+  .rodata            const    0x000202c4      0xc  fapp_http.o [1]
+  .rodata            const    0x000202d0      0xc  fapp_http.o [1]
+  .rodata            const    0x000202dc      0xc  fapp_http.o [1]
+  .rodata            const    0x000202e8      0xc  fapp_http.o [1]
+  .rodata            const    0x000202f4      0xc  fapp_http.o [1]
+  .rodata            const    0x00020300      0xc  fapp_http.o [1]
+  .rodata            const    0x0002030c      0xc  fapp_http.o [1]
+  .rodata            const    0x00020318      0xc  fapp_http.o [1]
+  .rodata            const    0x00020324      0xc  fapp_llmnr.o [1]
+  .rodata            const    0x00020330      0xc  fapp_llmnr.o [1]
+  .rodata            const    0x0002033c      0xc  fapp_mdns.o [1]
+  .rodata            const    0x00020348      0xc  fapp_mdns.o [1]
+  .rodata            const    0x00020354      0xc  fapp_mdns.o [1]
+  .rodata            const    0x00020360      0xc  fapp_mdns.o [1]
+  .rodata            const    0x0002036c      0xc  fapp_mdns.o [1]
+  .rodata            const    0x00020378      0xc  fapp_mdns.o [1]
+  .rodata            const    0x00020384      0xc  fapp_netif.o [1]
+  .rodata            const    0x00020390      0xc  fapp_netif.o [1]
+  .rodata            const    0x0002039c      0xc  fapp_netif.o [1]
+  .rodata            const    0x000203a8      0xc  fapp_netif.o [1]
+  .rodata            const    0x000203b4      0xc  fapp_netif.o [1]
+  .rodata            const    0x000203c0      0xc  fapp_netif.o [1]
+  .rodata            const    0x000203cc      0xc  fapp_netif.o [1]
+  .rodata            const    0x000203d8      0xc  fapp_netif.o [1]
+  .rodata            const    0x000203e4      0xc  fapp_netif.o [1]
+  .rodata            const    0x000203f0      0xc  fapp_netif.o [1]
+  .rodata            const    0x000203fc      0xc  fapp_netif.o [1]
+  .rodata            const    0x00020408      0xc  fapp_netif.o [1]
+  .rodata            const    0x00020414      0xc  fapp_netif.o [1]
+  .rodata            const    0x00020420      0xc  fapp_netif.o [1]
+  .rodata            const    0x0002042c      0xc  fapp_netif.o [1]
+  .rodata            const    0x00020438      0xc  fapp_netif.o [1]
+  .rodata            const    0x00020444      0xc  fapp_netif.o [1]
+  .rodata            const    0x00020450      0xc  fapp_ping.o [1]
+  .rodata            const    0x0002045c      0xc  fapp_setget.o [1]
+  .rodata            const    0x00020468      0xc  fapp_setget.o [1]
+  .rodata            const    0x00020474      0xc  fapp_shell.o [1]
+  .rodata            const    0x00020480      0xc  fapp_shell.o [1]
+  .rodata            const    0x0002048c      0xc  fapp_shell.o [1]
+  .rodata            const    0x00020498      0xc  fapp_shell.o [1]
+  .rodata            const    0x000204a4      0xc  fapp_shell.o [1]
+  .rodata            const    0x000204b0      0xc  fapp_shell.o [1]
+  .rodata            const    0x000204bc      0xc  fapp_shell.o [1]
+  .rodata            const    0x000204c8      0xc  fapp_sntp.o [1]
+  .rodata            const    0x000204d4      0xc  fapp_sntp.o [1]
+  .rodata            const    0x000204e0      0xc  fapp_sntp.o [1]
+  .rodata            const    0x000204ec      0xc  fapp_sntp.o [1]
+  .rodata            const    0x000204f8      0xc  fapp_telnet.o [1]
+  .rodata            const    0x00020504      0xc  fnet_fs_rom.o [1]
+  .rodata            const    0x00020510      0xc  fnet_http_srv.o [1]
+  .rodata            const    0x0002051c      0xc  fnet_http_srv.o [1]
+  .rodata            const    0x00020528      0xc  fnet_http_srv.o [1]
+  .rodata            const    0x00020534      0xc  fnet_http_srv.o [1]
+  .rodata            const    0x00020540      0xc  fnet_http_srv.o [1]
+  .rodata            const    0x0002054c      0xc  fnet_http_srv.o [1]
+  .rodata            const    0x00020558      0xc  fnet_http_srv.o [1]
+  .rodata            const    0x00020564      0xc  fnet_http_srv.o [1]
+  .rodata            const    0x00020570      0xc  fnet_http_srv.o [1]
+  .rodata            const    0x0002057c      0xc  fnet_inet.o [1]
+  .rodata            const    0x00020588      0xc  fnet_mk_flash.o [1]
+  .rodata            const    0x00020594      0xc  fnet_sntp.o [1]
+  .rodata            const    0x000205a0      0xc  fnet_sntp.o [1]
+  .text              ro code  0x000205ac      0xc  cstartup_M.o [5]
+  .rodata            const    0x000205b8      0x8  fapp.o [1]
+  .rodata            const    0x000205c0      0x8  fapp.o [1]
+  .rodata            const    0x000205c8      0x8  fapp.o [1]
+  .rodata            const    0x000205d0      0x8  fapp_autoip.o [1]
+  .rodata            const    0x000205d8      0x8  fapp_dhcp.o [1]
+  .rodata            const    0x000205e0      0x8  fapp_fs.o [1]
+  .rodata            const    0x000205e8      0x8  fapp_fs.o [1]
+  .rodata            const    0x000205f0      0x8  fapp_fs.o [1]
+  .rodata            const    0x000205f8      0x8  fapp_fs.o [1]
+  .rodata            const    0x00020600      0x8  fapp_fs.o [1]
+  .rodata            const    0x00020608      0x8  fapp_fs.o [1]
+  .rodata            const    0x00020610      0x8  fapp_fs.o [1]
+  .rodata            const    0x00020618      0x8  fapp_fs_image.o [1]
+  .rodata            const    0x00020620      0x8  fapp_http.o [1]
+  .rodata            const    0x00020628      0x8  fapp_http.o [1]
+  .rodata            const    0x00020630      0x8  fapp_http.o [1]
+  .rodata            const    0x00020638      0x8  fapp_http.o [1]
+  .rodata            const    0x00020640      0x8  fapp_http.o [1]
+  .rodata            const    0x00020648      0x8  fapp_http.o [1]
+  .rodata            const    0x00020650      0x8  fapp_http.o [1]
+  .rodata            const    0x00020658      0x8  fapp_http.o [1]
+  .rodata            const    0x00020660      0x8  fapp_http.o [1]
+  .rodata            const    0x00020668      0x8  fapp_http.o [1]
+  .rodata            const    0x00020670      0x8  fapp_link.o [1]
+  .rodata            const    0x00020678      0x8  fapp_llmnr.o [1]
+  .rodata            const    0x00020680      0x8  fapp_mdns.o [1]
+  .rodata            const    0x00020688      0x8  fapp_mdns.o [1]
+  .rodata            const    0x00020690      0x8  fapp_netif.o [1]
+  .rodata            const    0x00020698      0x8  fapp_netif.o [1]
+  .rodata            const    0x000206a0      0x8  fapp_netif.o [1]
+  .rodata            const    0x000206a8      0x8  fapp_netif.o [1]
+  .rodata            const    0x000206b0      0x8  fapp_netif.o [1]
+  .rodata            const    0x000206b8      0x8  fapp_netif.o [1]
+  .rodata            const    0x000206c0      0x8  fapp_netif.o [1]
+  .rodata            const    0x000206c8      0x8  fapp_netif.o [1]
+  .rodata            const    0x000206d0      0x8  fapp_netif.o [1]
+  .rodata            const    0x000206d8      0x8  fapp_netif.o [1]
+  .rodata            const    0x000206e0      0x8  fapp_netif.o [1]
+  .rodata            const    0x000206e8      0x8  fapp_params.o [1]
+  .rodata            const    0x000206f0      0x8  fapp_ping.o [1]
+  .rodata            const    0x000206f8      0x8  fapp_ping.o [1]
+  .rodata            const    0x00020700      0x8  fapp_ping.o [1]
+  .rodata            const    0x00020708      0x8  fapp_setget.o [1]
+  .rodata            const    0x00020710      0x8  fapp_setget.o [1]
+  .rodata            const    0x00020718      0x8  fapp_setget.o [1]
+  .rodata            const    0x00020720      0x8  fapp_setget.o [1]
+  .rodata            const    0x00020728      0x8  fapp_shell.o [1]
+  .rodata            const    0x00020730      0x8  fapp_shell.o [1]
+  .rodata            const    0x00020738      0x8  fapp_shell.o [1]
+  .rodata            const    0x00020740      0x8  fapp_shell.o [1]
+  .rodata            const    0x00020748      0x8  fapp_shell.o [1]
+  .rodata            const    0x00020750      0x8  fapp_shell.o [1]
+  .rodata            const    0x00020758      0x8  fapp_shell.o [1]
+  .rodata            const    0x00020760      0x8  fapp_shell.o [1]
+  .rodata            const    0x00020768      0x8  fapp_shell.o [1]
+  .rodata            const    0x00020770      0x8  fapp_shell.o [1]
+  .rodata            const    0x00020778      0x8  fapp_shell.o [1]
+  .rodata            const    0x00020780      0x8  fapp_shell.o [1]
+  .rodata            const    0x00020788      0x8  fapp_shell.o [1]
+  .rodata            const    0x00020790      0x8  fapp_shell.o [1]
+  .rodata            const    0x00020798      0x8  fapp_shell.o [1]
+  .rodata            const    0x000207a0      0x8  fapp_shell.o [1]
+  .rodata            const    0x000207a8      0x8  fapp_shell.o [1]
+  .rodata            const    0x000207b0      0x8  fapp_shell.o [1]
+  .rodata            const    0x000207b8      0x8  fapp_shell.o [1]
+  .rodata            const    0x000207c0      0x8  fapp_shell.o [1]
+  .rodata            const    0x000207c8      0x8  fapp_sntp.o [1]
+  .rodata            const    0x000207d0      0x8  fapp_telnet.o [1]
+  .rodata            const    0x000207d8      0x8  fapp_telnet.o [1]
+  .rodata            const    0x000207e0      0x8  fnet_eth.o [1]
+  .rodata            const    0x000207e8      0x8  fnet_eth.o [1]
+  .rodata            const    0x000207f0      0x8  fnet_fec.o [1]
+  .rodata            const    0x000207f8      0x8  fnet_fs.o [1]
+  .rodata            const    0x00020800      0x8  fnet_fs_rom.o [1]
+  .rodata            const    0x00020808      0x8  fnet_fs_rom.o [1]
+  .rodata            const    0x00020810      0x8  fnet_fs_root.o [1]
+  .rodata            const    0x00020818      0x8  fnet_fs_root.o [1]
+  .rodata            const    0x00020820      0x8  fnet_http_srv.o [1]
+  .rodata            const    0x00020828      0x8  fnet_http_srv.o [1]
+  .rodata            const    0x00020830      0x8  fnet_http_srv.o [1]
+  .rodata            const    0x00020838      0x8  fnet_http_srv.o [1]
+  .rodata            const    0x00020840      0x8  fnet_http_srv.o [1]
+  .rodata            const    0x00020848      0x8  fnet_http_srv.o [1]
+  .rodata            const    0x00020850      0x8  fnet_http_srv.o [1]
+  .rodata            const    0x00020858      0x8  fnet_http_srv.o [1]
+  .rodata            const    0x00020860      0x8  fnet_http_srv.o [1]
+  .rodata            const    0x00020868      0x8  fnet_http_srv.o [1]
+  .rodata            const    0x00020870      0x8  fnet_http_srv.o [1]
+  .rodata            const    0x00020878      0x8  fnet_http_srv.o [1]
+  .rodata            const    0x00020880      0x8  fnet_http_srv_auth.o [1]
+  .rodata            const    0x00020888      0x8  fnet_http_srv_post.o [1]
+  .rodata            const    0x00020890      0x8  fnet_http_srv_ssi.o [1]
+  .rodata            const    0x00020898      0x8  fnet_http_srv_ssi.o [1]
+  .rodata            const    0x000208a0      0x8  fnet_mdns.o [1]
+  .rodata            const    0x000208a8      0x8  fnet_mdns.o [1]
+  .rodata            const    0x000208b0      0x8  fsl_clock.o [1]
+  .rodata            const    0x000208b8      0x8  fsl_dspi.o [1]
+  .rodata            const    0x000208c0      0x8  fsl_edma.o [1]
+  .rodata            const    0x000208c8      0x8  tasks.o [1]
+  .rodata            const    0x000208d0      0x8  timers.o [1]
+  .rodata            const    0x000208d8      0x8  timers.o [1]
+  .text              ro code  0x000208e0      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x000208e8      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x000208f0      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x000208f8      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020900      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020908      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020910      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020918      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020920      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020928      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020930      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020938      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020940      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020948      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020950      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020958      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020960      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020968      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020970      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020978      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020980      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020988      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020990      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020998      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x000209a0      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x000209a8      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x000209b0      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x000209b8      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x000209c0      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x000209c8      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x000209d0      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x000209d8      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x000209e0      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x000209e8      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x000209f0      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x000209f8      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020a00      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020a08      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020a10      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020a18      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020a20      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020a28      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020a30      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020a38      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020a40      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020a48      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020a50      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020a58      0x8  startup_MK64F12.o [1]
+  .text              ro code  0x00020a60      0x8  startup_MK64F12.o [1]
+  .rodata            const    0x00020a68      0x4  fapp_fs.o [1]
+  .rodata            const    0x00020a6c      0x4  fapp_fs.o [1]
+  .rodata            const    0x00020a70      0x4  fapp_fs.o [1]
+  .rodata            const    0x00020a74      0x4  fapp_http.o [1]
+  .rodata            const    0x00020a78      0x4  fapp_setget.o [1]
+  .rodata            const    0x00020a7c      0x4  fapp_setget.o [1]
+  .rodata            const    0x00020a80      0x4  fapp_shell.o [1]
+  .rodata            const    0x00020a84      0x4  fapp_shell.o [1]
+  .rodata            const    0x00020a88      0x4  fapp_shell.o [1]
+  .rodata            const    0x00020a8c      0x4  fapp_shell.o [1]
+  .rodata            const    0x00020a90      0x4  fapp_shell.o [1]
+  .rodata            const    0x00020a94      0x4  fapp_shell.o [1]
+  .rodata            const    0x00020a98      0x4  fnet_dhcp.o [1]
+  .rodata            const    0x00020a9c      0x4  fnet_http_srv.o [1]
+  .rodata            const    0x00020aa0      0x4  fnet_http_srv.o [1]
+  .rodata            const    0x00020aa4      0x4  fnet_http_srv.o [1]
+  .rodata            const    0x00020aa8      0x4  fnet_http_srv.o [1]
+  .rodata            const    0x00020aac      0x4  fnet_http_srv.o [1]
+  .rodata            const    0x00020ab0      0x4  fnet_http_srv.o [1]
+  .rodata            const    0x00020ab4      0x4  fnet_http_srv.o [1]
+  .rodata            const    0x00020ab8      0x4  fnet_http_srv.o [1]
+  .rodata            const    0x00020abc      0x4  fnet_http_srv_cgi.o [1]
+  .rodata            const    0x00020ac0      0x4  fnet_http_srv_get.o [1]
+  .rodata            const    0x00020ac4      0x4  fnet_http_srv_ssi.o [1]
+  .rodata            const    0x00020ac8      0x4  fnet_telnet.o [1]
+  .rodata            const    0x00020acc      0x4  port.o [1]
+  .text              ro code  0x00020ad0      0x4  startup_MK64F12.o [1]
+  .rodata            const    0x00020ad4      0x0  zero_init3.o [5]
+  .rodata            const    0x00020ad4      0x0  packbits_init.o [5]
+  Initializer bytes  const    0x00020ad4    0x1ff  <for RW-1>
+                            - 0x00020cd3  0x208c3
+
+"A1":                                       0x14c
+  fapp_params        const    0x000ff000    0x14c  fapp_params.o [1]
+                            - 0x000ff14c    0x14c
+
+"P3-P4", part 1 of 2:                       0x903
+  RW                          0x20000000    0x903  <Block>
+    RW-1                      0x20000000    0x903  <Init block>
+      .data          inited   0x20000000     0x34  fapp_fs.o [1]
+      .data          inited   0x20000034     0x38  fapp_netif.o [1]
+      .data          inited   0x2000006c     0x28  fapp_params.o [1]
+      .data          inited   0x20000094      0x8  fnet_dhcp_cln.o [1]
+      .data          inited   0x2000009c     0x2c  fnet_fec.o [1]
+      .data          inited   0x200000c8     0x18  fnet_fs_rom.o [1]
+      .data          inited   0x200000e0     0x18  fnet_fs_root.o [1]
+      .data          inited   0x200000f8      0xc  fnet_http_srv.o [1]
+      .data          inited   0x20000104      0xc  fnet_http_srv.o [1]
+      .data          inited   0x20000110     0x20  fnet_http_srv.o [1]
+      .data          inited   0x20000130     0x80  fnet_http_srv.o [1]
+      .data          inited   0x200001b0     0x24  fnet_icmp4.o [1]
+      .data          inited   0x200001d4     0x24  fnet_icmp6.o [1]
+      .data          inited   0x200001f8     0x28  fnet_ip6.o [1]
+      .data          inited   0x20000220      0x4  fnet_isr.o [1]
+      .data          inited   0x20000224    0x4c8  fnet_mk_eth.o [1]
+      .data          inited   0x200006ec    0x184  fnet_mk_eth.o [1]
+      .data          inited   0x20000870     0x18  fnet_mk_serial.o [1]
+      .data          inited   0x20000888     0x24  fnet_raw.o [1]
+      .data          inited   0x200008ac      0x4  fnet_tcp.o [1]
+      .data          inited   0x200008b0     0x24  fnet_tcp.o [1]
+      .data          inited   0x200008d4     0x24  fnet_udp.o [1]
+      .data          inited   0x200008f8      0x4  port.o [1]
+      .data          inited   0x200008fc      0x4  system_MK64F12.o [1]
+      .data          inited   0x20000900      0x2  fnet_socket.o [1]
+      .data          inited   0x20000902      0x1  fapp_link.o [1]
+                            - 0x20000903    0x903
+
+"P3-P4", part 2 of 2:                      0xb670
+  ZI                          0x20000904   0xb670  <Block>
+    .bss             zero     0x20000904      0x4  fapp.o [1]
+    .bss             zero     0x20000908   0x7800  fapp.o [1]
+    .bss             zero     0x20008108      0x4  fapp_autoip.o [1]
+    .bss             zero     0x2000810c      0x4  fapp_autoip.o [1]
+    .bss             zero     0x20008110      0x4  fapp_dhcp.o [1]
+    .bss             zero     0x20008114      0x4  fapp_dhcp.o [1]
+    .bss             zero     0x20008118      0x4  fapp_dhcp.o [1]
+    .bss             zero     0x2000811c      0x4  fapp_dns.o [1]
+    .bss             zero     0x20008120      0x4  fapp_freertos.o [1]
+    .bss             zero     0x20008124     0x3c  fapp_fs.o [1]
+    .bss             zero     0x20008160      0x4  fapp_http.o [1]
+    .bss             zero     0x20008164     0x14  fapp_http.o [1]
+    .bss             zero     0x20008178     0x38  fapp_http.o [1]
+    .bss             zero     0x200081b0     0x34  fapp_http.o [1]
+    .bss             zero     0x200081e4     0x64  fapp_shell.o [1]
+    .bss             zero     0x20008248      0x4  fapp_sntp.o [1]
+    .bss             zero     0x2000824c      0x4  fapp_sntp.o [1]
+    .bss             zero     0x20008250      0x4  fapp_sntp.o [1]
+    .bss             zero     0x20008254      0x4  fapp_telnet.o [1]
+    .bss             zero     0x20008258     0x48  fnet_autoip.o [1]
+    .bss             zero     0x200082a0    0x2c8  fnet_dhcp_cln.o [1]
+    .bss             zero     0x20008568    0x22c  fnet_dns.o [1]
+    .bss             zero     0x20008794      0x4  fnet_eth.o [1]
+    .bss             zero     0x20008798   0x248c  fnet_fec.o [1]
+    .bss             zero     0x2000ac24     0x28  fnet_fs.o [1]
+    .bss             zero     0x2000ac4c     0x3c  fnet_fs.o [1]
+    .bss             zero     0x2000ac88      0x4  fnet_fs.o [1]
+    .bss             zero     0x2000ac8c    0x500  fnet_http_srv.o [1]
+    .bss             zero     0x2000b18c      0x4  fnet_ip4.o [1]
+    .bss             zero     0x2000b190      0x4  fnet_ip4.o [1]
+    .bss             zero     0x2000b194      0x8  fnet_ip4.o [1]
+    .bss             zero     0x2000b19c      0x4  fnet_ip4.o [1]
+    .bss             zero     0x2000b1a0     0x78  fnet_ip4.o [1]
+    .bss             zero     0x2000b218      0x8  fnet_ip6.o [1]
+    .bss             zero     0x2000b220      0x4  fnet_ip6.o [1]
+    .bss             zero     0x2000b224      0x4  fnet_ip6.o [1]
+    .bss             zero     0x2000b228      0x4  fnet_ip6.o [1]
+    .bss             zero     0x2000b22c     0xf0  fnet_ip6.o [1]
+    .bss             zero     0x2000b31c      0x4  fnet_ip6.o [1]
+    .bss             zero     0x2000b320      0x4  fnet_isr.o [1]
+    .bss             zero     0x2000b324      0x4  fnet_isr.o [1]
+    .bss             zero     0x2000b328     0x18  fnet_link.o [1]
+    .bss             zero     0x2000b340    0x218  fnet_llmnr.o [1]
+    .bss             zero     0x2000b558    0x340  fnet_mdns.o [1]
+    .bss             zero     0x2000b898      0x4  fnet_mk_flash.o [1]
+    .bss             zero     0x2000b89c      0xc  fnet_mk_flash.o [1]
+    .bss             zero     0x2000b8a8      0x4  fnet_netbuf.o [1]
+    .bss             zero     0x2000b8ac      0x4  fnet_netif.o [1]
+    .bss             zero     0x2000b8b0      0x4  fnet_netif.o [1]
+    .bss             zero     0x2000b8b4      0x4  fnet_netif.o [1]
+    .bss             zero     0x2000b8b8     0x8c  fnet_ping.o [1]
+    .bss             zero     0x2000b944     0x60  fnet_service.o [1]
+    .bss             zero     0x2000b9a4      0x4  fnet_service.o [1]
+    .bss             zero     0x2000b9a8     0x70  fnet_shell.o [1]
+    .bss             zero     0x2000ba18     0x54  fnet_sntp.o [1]
+    .bss             zero     0x2000ba6c     0x30  fnet_socket.o [1]
+    .bss             zero     0x2000ba9c      0x4  fnet_socket.o [1]
+    .bss             zero     0x2000baa0      0x4  fnet_socket.o [1]
+    .bss             zero     0x2000baa4      0x4  fnet_stack.o [1]
+    .bss             zero     0x2000baa8      0x4  fnet_stack.o [1]
+    .bss             zero     0x2000baac      0x4  fnet_stdlib.o [1]
+    .bss             zero     0x2000bab0      0x4  fnet_tcp.o [1]
+    .bss             zero     0x2000bab4      0x4  fnet_tcp.o [1]
+    .bss             zero     0x2000bab8     0xd8  fnet_telnet.o [1]
+    .bss             zero     0x2000bb90      0x4  fnet_timer.o [1]
+    .bss             zero     0x2000bb94      0x4  fnet_timer.o [1]
+    .bss             zero     0x2000bb98      0x4  fsl_clock.o [1]
+    .bss             zero     0x2000bb9c      0xc  fsl_dspi.o [1]
+    .bss             zero     0x2000bba8      0x4  fsl_dspi.o [1]
+    .bss             zero     0x2000bbac      0x4  fsl_dspi.o [1]
+    .bss             zero     0x2000bbb0     0x40  fsl_edma.o [1]
+    .bss             zero     0x2000bbf0      0x4  port.o [1]
+    .bss             zero     0x2000bbf4     0x40  queue.o [1]
+    .bss             zero     0x2000bc34      0x4  tasks.o [1]
+    .bss             zero     0x2000bc38     0x64  tasks.o [1]
+    .bss             zero     0x2000bc9c     0x14  tasks.o [1]
+    .bss             zero     0x2000bcb0     0x14  tasks.o [1]
+    .bss             zero     0x2000bcc4      0x4  tasks.o [1]
+    .bss             zero     0x2000bcc8      0x4  tasks.o [1]
+    .bss             zero     0x2000bccc     0x14  tasks.o [1]
+    .bss             zero     0x2000bce0     0x14  tasks.o [1]
+    .bss             zero     0x2000bcf4      0x4  tasks.o [1]
+    .bss             zero     0x2000bcf8     0x14  tasks.o [1]
+    .bss             zero     0x2000bd0c      0x4  tasks.o [1]
+    .bss             zero     0x2000bd10      0x4  tasks.o [1]
+    .bss             zero     0x2000bd14      0x4  tasks.o [1]
+    .bss             zero     0x2000bd18      0x4  tasks.o [1]
+    .bss             zero     0x2000bd1c      0x4  tasks.o [1]
+    .bss             zero     0x2000bd20      0x4  tasks.o [1]
+    .bss             zero     0x2000bd24      0x4  tasks.o [1]
+    .bss             zero     0x2000bd28      0x4  tasks.o [1]
+    .bss             zero     0x2000bd2c      0x4  tasks.o [1]
+    .bss             zero     0x2000bd30      0x4  tasks.o [1]
+    .bss             zero     0x2000bd34      0x4  tasks.o [1]
+    .bss             zero     0x2000bd38     0x14  timers.o [1]
+    .bss             zero     0x2000bd4c     0x14  timers.o [1]
+    .bss             zero     0x2000bd60      0x4  timers.o [1]
+    .bss             zero     0x2000bd64      0x4  timers.o [1]
+    .bss             zero     0x2000bd68      0x4  timers.o [1]
+    .bss             zero     0x2000bd6c      0x4  timers.o [1]
+    .bss             zero     0x2000bd70      0x4  timers.o [1]
+    .bss             zero     0x2000bd74     0x18  dlmalloc.o [3]
+    .bss             zero     0x2000bd8c    0x1d8  dlmalloc.o [3]
+    .bss             zero     0x2000bf64      0x4  xgetmemchunk.o [3]
+    .bss             zero     0x2000bf68      0x2  fnet_dns.o [1]
+    .bss             zero     0x2000bf6a      0x2  fnet_ip4.o [1]
+    .bss             zero     0x2000bf6c      0x1  fapp_dhcp.o [1]
+    .bss             zero     0x2000bf6d      0x1  fnet_error.o [1]
+    .bss             zero     0x2000bf6e      0x1  fnet_fs_rom.o [1]
+    .bss             zero     0x2000bf6f      0x1  fnet_fs_root.o [1]
+    .bss             zero     0x2000bf70      0x1  fnet_stack.o [1]
+    .bss             zero     0x2000bf71      0x1  port.o [1]
+                            - 0x2000bf74   0xb670
+
+"P5":                                     0x20000
+  HEAP                        0x2000bf78  0x20000  <Block>
+    HEAP             uninit   0x2000bf78  0x20000  <Block tail>
+                            - 0x2002bf78  0x20000
+
+"P6":                                      0x4000
+  CSTACK                      0x2002c000   0x4000  <Block>
+    CSTACK           uninit   0x2002c000   0x4000  <Block tail>
+                            - 0x20030000   0x4000
+
+
+*******************************************************************************
+*** INIT TABLE
+***
+
+          Address     Size
+          -------     ----
+Zero (__iar_zero_init3)
+    1 destination range, total size 0xb66e:
+          0x20000904  0xb66e
+
+Copy/packbits (__iar_packbits_init3)
+    1 source range, total size 0x1ff (22% of destination):
+          0x00020ad4   0x1ff
+    1 destination range, total size 0x903:
+          0x20000000   0x903
+
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module                  ro code  ro data  rw data
+    ------                  -------  -------  -------
+C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int flash debug\obj: [1]
+    clock_config.o              112       32
+    event_groups.o              552
+    fapp.o                      404      236   30 724
+    fapp_autoip.o               448       84        8
+    fapp_dhcp.o                 660      132       13
+    fapp_dns.o                  508       80        4
+    fapp_freertos.o             312      328        4
+    fapp_fs.o                   716      646      112
+    fapp_fs_image.o                   23 733
+    fapp_http.o                 888      628      132
+    fapp_link.o                 272      249        1
+    fapp_llmnr.o                312       72
+    fapp_mdns.o                 420      128
+    fapp_netif.o              1 588      593       56
+    fapp_params.o               304      349       40
+    fapp_ping.o                 760      140
+    fapp_setget.o               632      300
+    fapp_shell.o                572    1 899      100
+    fapp_sntp.o                 712      192       12
+    fapp_telnet.o               224       68        4
+    fnet_arp.o                1 528
+    fnet_autoip.o             1 032                72
+    fnet_checksum.o             608
+    fnet_cpu.o                   44
+    fnet_dhcp.o                  44        4
+    fnet_dhcp_cln.o           2 596        2      720
+    fnet_dns.o                1 214               558
+    fnet_error.o                 20                 1
+    fnet_eth.o                1 728       72        4
+    fnet_fec.o                1 580       86    9 400
+    fnet_flash.o                272
+    fnet_fs.o                 1 206        8      104
+    fnet_fs_rom.o               656       49       25
+    fnet_fs_root.o              196       21       25
+    fnet_http_srv.o           2 628      590    1 464
+    fnet_http_srv_auth.o        608       40
+    fnet_http_srv_cgi.o         166       20
+    fnet_http_srv_get.o         120       24
+    fnet_http_srv_post.o        218       28
+    fnet_http_srv_ssi.o         504       36
+    fnet_icmp4.o                996        8       36
+    fnet_icmp6.o                784        8       36
+    fnet_inet.o               1 108       52
+    fnet_ip.o                   366
+    fnet_ip4.o                3 128               142
+    fnet_ip6.o                4 970      229      304
+    fnet_isr.o                  448        1       12
+    fnet_link.o                 164                24
+    fnet_llmnr.o                964       16      536
+    fnet_mdns.o               7 252       56      832
+    fnet_mempool.o              490
+    fnet_mk.o                    60
+    fnet_mk_eth.o               144      357    1 612
+    fnet_mk_flash.o             282       12       16
+    fnet_mk_isr.o                20
+    fnet_mk_isr_inst.o          132
+    fnet_mk_low.o                14
+    fnet_mk_serial.o            508        5       24
+    fnet_mk_timer.o             156
+    fnet_nd6.o                5 420
+    fnet_netbuf.o             1 860                 4
+    fnet_netif.o              3 230                12
+    fnet_ping.o                 880               140
+    fnet_prot.o                 324       20
+    fnet_raw.o                1 170       52       36
+    fnet_serial.o             1 704       16
+    fnet_service.o              204               100
+    fnet_shell.o              1 598       80      112
+    fnet_sntp.o                 760       24       84
+    fnet_socket.o             4 302                58
+    fnet_stack.o                476                 9
+    fnet_stdlib.o             1 404                 4
+    fnet_tcp.o                9 560       53       48
+    fnet_telnet.o             1 364        4      216
+    fnet_timer.o                276                 8
+    fnet_udp.o                1 552       52       36
+    fnet_wifi.o                 178
+    fsl_clock.o                 864       92        4
+    fsl_dspi.o                  196       92       20
+    fsl_edma.o                  412       92       64
+    fsl_tickless_systick.o       48
+    heap_3.o                     48
+    list.o                      152
+    main.o                       14
+    port.o                      556        5        9
+    portasm.o                   168
+    queue.o                   2 066                64
+    startup_MK64F12.o         1 484
+    system_MK64F12.o            116        1        4
+    tasks.o                   2 888        8      260
+    timers.o                  1 100       16       60
+    -------------------------------------------------
+    Total:                   95 724   32 220   48 509
+
+command line: [2]
+    -------------------------------------------------
+    Total:
+
+dl7M_tln.a: [3]
+    abort.o                       6
+    dlmalloc.o                5 332               496
+    exit.o                        4
+    heaptramp0.o                  4
+    low_level_init.o              4
+    xgetmemchunk.o               44                 4
+    -------------------------------------------------
+    Total:                    5 394               500
+
+m7M_tls.a: [4]
+    fpinit_M.o                   34
+    -------------------------------------------------
+    Total:                       34
+
+rt7M_tl.a: [5]
+    ABImemclr4.o                  6
+    ABImemcpy.o                 166
+    ABImemset.o                 102
+    ABImemset48.o                50
+    I64DivMod.o                 558
+    I64DivZer.o                   2
+    cexit.o                      10
+    cmain.o                      30
+    cstartup_M.o                 12
+    data_init.o                  40
+    packbits_init.o             156
+    zero_init3.o                 64
+    -------------------------------------------------
+    Total:                    1 196
+
+shb_l.a: [6]
+    ABIassert.o                  36
+    exit.o                       20
+    -------------------------------------------------
+    Total:                       56
+
+    Gaps                         10        9
+    Linker created                        44  147 456
+-----------------------------------------------------
+    Grand Total:            102 414   32 273  196 465
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                      Address    Size  Type      Object
+-----                      -------    ----  ----      ------
+.iar.init_table$$Base   0x0001f430           --   Gb  - Linker created -
+.iar.init_table$$Limit  0x0001f45c           --   Gb  - Linker created -
+?main                   0x0001f65d          Code  Gb  cmain.o [5]
+BOARD_BootClockRUN      0x0001aa45    0x3e  Code  Gb  clock_config.o [1]
+CLOCK_BootToPeeMode     0x0001b55d    0x4c  Code  Gb  fsl_clock.o [1]
+CLOCK_EnablePll0        0x0001b40f    0x60  Code  Gb  fsl_clock.o [1]
+CLOCK_GetOscRangeFromFreq
+                        0x0001b2b7    0x1e  Code  Lc  fsl_clock.o [1]
+CLOCK_InitOsc0          0x0001b46f    0x4e  Code  Gb  fsl_clock.o [1]
+CLOCK_SetEr32kClock     0x0001b269    0x1a  Code  Lc  fsl_clock.o [1]
+CLOCK_SetExternalRefClkConfig
+                        0x0001b2ef    0x64  Code  Gb  fsl_clock.o [1]
+CLOCK_SetInternalRefClkConfig
+                        0x0001b353    0xbc  Code  Gb  fsl_clock.o [1]
+CLOCK_SetPbeMode        0x0001b4e9    0x74  Code  Gb  fsl_clock.o [1]
+CLOCK_SetPllFllSelClock
+                        0x0001b283    0x1a  Code  Lc  fsl_clock.o [1]
+CLOCK_SetSimConfig      0x0001b2d5    0x1a  Code  Gb  fsl_clock.o [1]
+CLOCK_SetSimSafeDivs    0x0001aa35     0xa  Code  Lc  clock_config.o [1]
+CLOCK_SetXtal0Freq      0x0001aa3f     0x6  Code  Lc  clock_config.o [1]
+CSTACK$$Base            0x2002c000           --   Gb  - Linker created -
+CSTACK$$Limit           0x20030000           --   Gb  - Linker created -
+DMA0_DriverIRQHandler   0x0001e577     0xc  Code  Gb  fsl_edma.o [1]
+DMA10_DriverIRQHandler  0x0001e5ef     0xc  Code  Gb  fsl_edma.o [1]
+DMA11_DriverIRQHandler  0x0001e5fb     0xc  Code  Gb  fsl_edma.o [1]
+DMA12_DriverIRQHandler  0x0001e607     0xc  Code  Gb  fsl_edma.o [1]
+DMA13_DriverIRQHandler  0x0001e613     0xc  Code  Gb  fsl_edma.o [1]
+DMA14_DriverIRQHandler  0x0001e61f     0xc  Code  Gb  fsl_edma.o [1]
+DMA15_DriverIRQHandler  0x0001e62b     0xc  Code  Gb  fsl_edma.o [1]
+DMA1_DriverIRQHandler   0x0001e583     0xc  Code  Gb  fsl_edma.o [1]
+DMA2_DriverIRQHandler   0x0001e58f     0xc  Code  Gb  fsl_edma.o [1]
+DMA3_DriverIRQHandler   0x0001e59b     0xc  Code  Gb  fsl_edma.o [1]
+DMA4_DriverIRQHandler   0x0001e5a7     0xc  Code  Gb  fsl_edma.o [1]
+DMA5_DriverIRQHandler   0x0001e5b3     0xc  Code  Gb  fsl_edma.o [1]
+DMA6_DriverIRQHandler   0x0001e5bf     0xc  Code  Gb  fsl_edma.o [1]
+DMA7_DriverIRQHandler   0x0001e5cb     0xc  Code  Gb  fsl_edma.o [1]
+DMA8_DriverIRQHandler   0x0001e5d7     0xc  Code  Gb  fsl_edma.o [1]
+DMA9_DriverIRQHandler   0x0001e5e3     0xc  Code  Gb  fsl_edma.o [1]
+DSPI_CommonIRQHandler   0x0001e7f9    0x28  Code  Lc  fsl_dspi.o [1]
+DSPI_IsMaster           0x0001e7f1     0x8  Code  Lc  fsl_dspi.o [1]
+EDMA_HandleIRQ          0x0001e4a9    0xce  Code  Gb  fsl_edma.o [1]
+FAPP_CANCELLED_STR      0x00020498     0xc  Data  Gb  fapp_shell.o [1]
+FAPP_COMMAND_RELEASE    0x000207b8     0x8  Data  Gb  fapp_shell.o [1]
+FAPP_DELIMITER_STR      0x0001f0ac    0x34  Data  Gb  fapp_shell.o [1]
+FAPP_FS_PROMPT_STR      0x20008124    0x3c  Data  Lc  fapp_fs.o [1]
+FAPP_FS_PROMPT_STR_HEADER
+                        0x00020610     0x8  Data  Lc  fapp_fs.o [1]
+FAPP_FS_PROMPT_STR_TRAILER
+                        0x00020a70     0x4  Data  Lc  fapp_fs.o [1]
+FAPP_INIT_ERR           0x0001f3c4    0x24  Data  Gb  fapp_shell.o [1]
+FAPP_PARAM_ERR          0x0001f5fc    0x20  Data  Gb  fapp_shell.o [1]
+FAPP_SHELL_INFO_FORMAT_D
+                        0x000204b0     0xc  Data  Gb  fapp_shell.o [1]
+FAPP_SHELL_INFO_FORMAT_H32
+                        0x00020074    0x10  Data  Gb  fapp_shell.o [1]
+FAPP_SHELL_INFO_FORMAT_S
+                        0x000204a4     0xc  Data  Gb  fapp_shell.o [1]
+FAPP_TOCANCEL_STR       0x0001f85c    0x1c  Data  Gb  fapp_shell.o [1]
+FAPP_UPDATED_IP_STR     0x0001f878    0x1c  Data  Gb  fapp_shell.o [1]
+FNET_ERR_NUMBER         0x2000bf6d     0x1  Data  Lc  fnet_error.o [1]
+HEAP$$Base              0x2000bf78           --   Gb  - Linker created -
+HEAP$$Limit             0x2002bf78           --   Gb  - Linker created -
+OSC_SetCapLoad          0x0001b2ab     0xc  Code  Lc  fsl_clock.o [1]
+OSC_SetExtRefClkConfig  0x0001b29d     0xe  Code  Lc  fsl_clock.o [1]
+PendSV_Handler          0x00012449          Code  Gb  portasm.o [1]
+RW$$Base                0x20000000           --   Gb  - Linker created -
+RW$$Limit               0x20000903           --   Gb  - Linker created -
+Region$$Table$$Base     0x0001f430           --   Gb  - Linker created -
+Region$$Table$$Limit    0x0001f45c           --   Gb  - Linker created -
+SPI0_DriverIRQHandler   0x0001e821    0x26  Code  Gb  fsl_dspi.o [1]
+SPI1_DriverIRQHandler   0x0001e84d    0x26  Code  Gb  fsl_dspi.o [1]
+SPI2_DriverIRQHandler   0x0001e873    0x26  Code  Gb  fsl_dspi.o [1]
+SVC_Handler             0x000124a1          Code  Gb  portasm.o [1]
+SysTick_Handler         0x00011f25    0x28  Code  Gb  port.o [1]
+SystemCoreClock         0x200008fc     0x4  Data  Gb  system_MK64F12.o [1]
+SystemInit              0x0001ec1d    0x56  Code  Gb  system_MK64F12.o [1]
+ZI$$Base                0x20000904           --   Gb  - Linker created -
+ZI$$Limit               0x2000bf74           --   Gb  - Linker created -
+__RAM_VECTOR_TABLE_SIZE {Abs}
+                        0x00000400          Data  Gb  command line/config [2]
+__VECTOR_RAM {Abs}      0x1fff0000          Data  Gb  command line/config [2]
+__VECTOR_TABLE {Abs}    0x00000000          Data  Gb  command line/config [2]
+__Vectors               0x00000000           --   Gb  startup_MK64F12.o [1]
+__Vectors_End           0x00000400          Data  Gb  startup_MK64F12.o [1]
+__Vectors_Size {Abs}    0x00000400           --   Gb  startup_MK64F12.o [1]
+__aeabi_assert          0x0001b6e5    0x24  Code  Gb  ABIassert.o [6]
+__aeabi_ldiv0           0x0000ab9d          Code  Gb  I64DivZer.o [5]
+__aeabi_memclr4         0x0000d4a5          Code  Gb  ABImemclr4.o [5]
+__aeabi_memcpy          0x00004c2d          Code  Gb  ABImemcpy.o [5]
+__aeabi_memcpy4         0x00004c4d          Code  Gb  ABImemcpy.o [5]
+__aeabi_memcpy8         0x00004c4d          Code  Gb  ABImemcpy.o [5]
+__aeabi_memset          0x00011c9d          Code  Gb  ABImemset.o [5]
+__aeabi_uldivmod        0x000080f1          Code  Gb  I64DivMod.o [5]
+__cmain                 0x0001f65d          Code  Gb  cmain.o [5]
+__data_GetMemChunk      0x0000e9bd    0x2c  Code  Gb  xgetmemchunk.o [3]
+__data_GetMemChunk::start
+                        0x2000bf64     0x4  Data  Lc  xgetmemchunk.o [3]
+__exit                  0x0000e9e9    0x14  Code  Gb  exit.o [6]
+__iar_Memset            0x00011c9d          Code  Gb  ABImemset.o [5]
+__iar_Memset4_word      0x0000d4ad          Code  Gb  ABImemset48.o [5]
+__iar_Memset8_word      0x0000d4ad          Code  Gb  ABImemset48.o [5]
+__iar_Memset_word       0x00011ca5          Code  Gb  ABImemset.o [5]
+__iar_data_init3        0x0001f2e9    0x28  Code  Gb  data_init.o [5]
+__iar_dlfree            0x0000e4bb   0x4f6  Code  Gb  dlmalloc.o [3]
+__iar_dlmalloc          0x0000e205   0x2b6  Code  Gb  dlmalloc.o [3]
+__iar_init_vfp          0x0001f40d          Code  Gb  fpinit_M.o [4]
+__iar_packbits_init3    0x0001e95b    0x9c  Code  Gb  packbits_init.o [5]
+__iar_program_start     0x000205ad          Code  Gb  cstartup_M.o [5]
+__iar_systems$$module {Abs}
+                        0x00000001          Data  Gb  command line/config [2]
+__iar_zero_init3        0x0001ef5d    0x40  Code  Gb  zero_init3.o [5]
+__low_level_init        0x0001f67b     0x4  Code  Gb  low_level_init.o [3]
+__vector_table          0x00000000          Data  Gb  startup_MK64F12.o [1]
+__vector_table_0x1c     0x0000001c          Data  Gb  startup_MK64F12.o [1]
+_call_main              0x0001f669          Code  Gb  cmain.o [5]
+_exit                   0x0001f691          Code  Gb  cexit.o [5]
+_fapp_link_wifi_op_mode
+                        0x20000902     0x1  Data  Lc  fapp_link.o [1]
+_fapp_sntp_addr_list    0x2000824c     0x4  Data  Gb  fapp_sntp.o [1]
+_fapp_sntp_addr_list_size
+                        0x20008248     0x4  Data  Lc  fapp_sntp.o [1]
+_fnet_arp_add_entry     0x0000b325   0x106  Code  Lc  fnet_arp.o [1]
+_fnet_arp_drain         0x0000b78d    0x4c  Code  Gb  fnet_arp.o [1]
+_fnet_arp_init          0x0000b249    0x64  Code  Gb  fnet_arp.o [1]
+_fnet_arp_input         0x0000b58d   0x138  Code  Gb  fnet_arp.o [1]
+_fnet_arp_ip4_addr_conflict
+                        0x0000b785     0x8  Code  Lc  fnet_arp.o [1]
+_fnet_arp_lookup        0x0000b4b3    0x3e  Code  Gb  fnet_arp.o [1]
+_fnet_arp_release       0x0000b2ad    0x18  Code  Gb  fnet_arp.o [1]
+_fnet_arp_resolve       0x0000b4f1    0x9c  Code  Gb  fnet_arp.o [1]
+_fnet_arp_send_request  0x0000b6dd    0x9a  Code  Gb  fnet_arp.o [1]
+_fnet_arp_timer         0x0000b2c5    0x60  Code  Lc  fnet_arp.o [1]
+_fnet_arp_update_entry  0x0000b42b    0x4a  Code  Lc  fnet_arp.o [1]
+_fnet_autoip_announce   0x0001962b    0x1a  Code  Lc  fnet_autoip.o [1]
+_fnet_autoip_apply_params
+                        0x00019671    0x2a  Code  Lc  fnet_autoip.o [1]
+_fnet_autoip_change_state
+                        0x0001969b    0x8e  Code  Lc  fnet_autoip.o [1]
+_fnet_autoip_generate_random_address
+                        0x000195a5    0x30  Code  Lc  fnet_autoip.o [1]
+_fnet_autoip_get_random_wait_time
+                        0x000195d5    0x22  Code  Lc  fnet_autoip.o [1]
+_fnet_autoip_is_collision
+                        0x00019645    0x2c  Code  Lc  fnet_autoip.o [1]
+_fnet_autoip_poll       0x00019729   0x146  Code  Lc  fnet_autoip.o [1]
+_fnet_autoip_probe      0x000195f7    0x34  Code  Lc  fnet_autoip.o [1]
+_fnet_checksum32_low    0x00003381    0xd6  Code  Lc  fnet_checksum.o [1]
+_fnet_checksum32_nb     0x00003457    0x6e  Code  Lc  fnet_checksum.o [1]
+_fnet_checksum_netbuf   0x000034c5    0x24  Code  Gb  fnet_checksum.o [1]
+_fnet_checksum_pseudo_netbuf_end
+                        0x000035a9    0x38  Code  Gb  fnet_checksum.o [1]
+_fnet_checksum_pseudo_netbuf_start
+                        0x0000356d    0x3c  Code  Gb  fnet_checksum.o [1]
+_fnet_dhcp_add_option   0x00015e71    0x2c  Code  Gb  fnet_dhcp.o [1]
+_fnet_dhcp_cln_apply_params
+                        0x000159c1    0x58  Code  Lc  fnet_dhcp_cln.o [1]
+_fnet_dhcp_cln_next_option
+                        0x0001544d    0x46  Code  Lc  fnet_dhcp_cln.o [1]
+_fnet_dhcp_cln_parse_options
+                        0x00015493    0xb6  Code  Lc  fnet_dhcp_cln.o [1]
+_fnet_dhcp_cln_poll     0x00015a19   0x256  Code  Lc  fnet_dhcp_cln.o [1]
+_fnet_dhcp_cln_receive_message
+                        0x00015779    0xec  Code  Lc  fnet_dhcp_cln.o [1]
+_fnet_dhcp_cln_send_message
+                        0x00015549   0x230  Code  Lc  fnet_dhcp_cln.o [1]
+_fnet_dhcp_cln_set_state
+                        0x00015865   0x15c  Code  Lc  fnet_dhcp_cln.o [1]
+_fnet_dns_add_question  0x0001c8c5    0x54  Code  Lc  fnet_dns.o [1]
+_fnet_dns_get_server_addr
+                        0x0001caad    0x8c  Code  Lc  fnet_dns.o [1]
+_fnet_dns_poll          0x0001cb39   0x222  Code  Lc  fnet_dns.o [1]
+_fnet_eth_change_addr_notify
+                        0x000085bf    0x10  Code  Gb  fnet_eth.o [1]
+_fnet_eth_drain         0x000085b7     0x8  Code  Gb  fnet_eth.o [1]
+_fnet_eth_init          0x00008523    0x6c  Code  Gb  fnet_eth.o [1]
+_fnet_eth_input         0x000083f9    0xbe  Code  Gb  fnet_eth.o [1]
+_fnet_eth_is_connected  0x00008909    0x2a  Code  Gb  fnet_eth.o [1]
+_fnet_eth_multicast_join_ip4
+                        0x000087eb    0x44  Code  Gb  fnet_eth.o [1]
+_fnet_eth_multicast_join_ip6
+                        0x00008867    0x38  Code  Gb  fnet_eth.o [1]
+_fnet_eth_multicast_leave_ip4
+                        0x000087a7    0x44  Code  Gb  fnet_eth.o [1]
+_fnet_eth_multicast_leave_ip6
+                        0x0000882f    0x38  Code  Gb  fnet_eth.o [1]
+_fnet_eth_output        0x000084b7    0x6c  Code  Gb  fnet_eth.o [1]
+_fnet_eth_output_ip4    0x000085cf    0x8a  Code  Gb  fnet_eth.o [1]
+_fnet_eth_output_ip6    0x00008671   0x136  Code  Gb  fnet_eth.o [1]
+_fnet_eth_phy_init      0x00008933    0xae  Code  Gb  fnet_eth.o [1]
+_fnet_eth_phy_read      0x0000889f    0x34  Code  Gb  fnet_eth.o [1]
+_fnet_eth_phy_write     0x000088d3    0x36  Code  Gb  fnet_eth.o [1]
+_fnet_eth_release       0x0000858f    0x28  Code  Gb  fnet_eth.o [1]
+_fnet_fec_get_hw_addr   0x0001baa7    0x2a  Code  Lc  fnet_fec.o [1]
+_fnet_fec_get_statistics
+                        0x0001bafd    0x2c  Code  Lc  fnet_fec.o [1]
+_fnet_fec_init          0x0001b709   0x1ec  Code  Lc  fnet_fec.o [1]
+_fnet_fec_input         0x0001b925    0x5c  Code  Lc  fnet_fec.o [1]
+_fnet_fec_phy_read      0x0001bb51    0x70  Code  Lc  fnet_fec.o [1]
+_fnet_fec_phy_write     0x0001bbc1    0x6e  Code  Lc  fnet_fec.o [1]
+_fnet_fec_release       0x0001b8f5    0x30  Code  Lc  fnet_fec.o [1]
+_fnet_fec_rx_buf_next   0x0001b981    0x36  Code  Lc  fnet_fec.o [1]
+_fnet_fec_set_hw_addr   0x0001ba2b    0x7c  Code  Lc  fnet_fec.o [1]
+_fnet_flash_write_low   0x0001b17b    0x2a  Code  Lc  fnet_flash.o [1]
+_fnet_free              0x00003317     0xe  Code  Gb  fnet_netbuf.o [1]
+_fnet_free_mem_status   0x00003363     0xc  Code  Gb  fnet_netbuf.o [1]
+_fnet_free_netbuf       0x000032ef     0xe  Code  Gb  fnet_netbuf.o [1]
+_fnet_fs_find_mount     0x00015021    0x3e  Code  Lc  fnet_fs.o [1]
+_fnet_fs_find_name      0x00014f17    0x2a  Code  Gb  fnet_fs.o [1]
+_fnet_fs_path_cmp       0x00014fd5    0x4c  Code  Gb  fnet_fs.o [1]
+_fnet_fs_register       0x00014ef5    0x22  Code  Gb  fnet_fs.o [1]
+_fnet_fs_rom_fill_dirent
+                        0x0001afc1    0x1a  Code  Lc  fnet_fs_rom.o [1]
+_fnet_fs_rom_find       0x0001af1d    0x72  Code  Lc  fnet_fs_rom.o [1]
+_fnet_fs_rom_finfo      0x0001b137    0x22  Code  Lc  fnet_fs_rom.o [1]
+_fnet_fs_rom_fopen      0x0001b03f    0x46  Code  Lc  fnet_fs_rom.o [1]
+_fnet_fs_rom_fread      0x0001b085    0x60  Code  Lc  fnet_fs_rom.o [1]
+_fnet_fs_rom_fseek      0x0001b0e5    0x52  Code  Lc  fnet_fs_rom.o [1]
+_fnet_fs_rom_mount      0x0001aee9    0x26  Code  Lc  fnet_fs_rom.o [1]
+_fnet_fs_rom_opendir    0x0001af8f    0x32  Code  Lc  fnet_fs_rom.o [1]
+_fnet_fs_rom_readdir    0x0001afdb    0x64  Code  Lc  fnet_fs_rom.o [1]
+_fnet_fs_root_opendir   0x000153a1    0x1a  Code  Lc  fnet_fs_root.o [1]
+_fnet_fs_root_readdir   0x000153bb    0x80  Code  Lc  fnet_fs_root.o [1]
+_fnet_fs_root_register  0x00015389    0x18  Code  Gb  fnet_fs_root.o [1]
+_fnet_heap_init         0x000032d3    0x1c  Code  Gb  fnet_netbuf.o [1]
+_fnet_http_srv_auth_decode_base64
+                        0x00014dcd    0xc0  Code  Lc  fnet_http_srv_auth.o [1]
+_fnet_http_srv_auth_generate_challenge
+                        0x00014d11    0x3c  Code  Gb  fnet_http_srv_auth.o [1]
+_fnet_http_srv_auth_scheme_basic_generate
+                        0x00014e8d    0x36  Code  Lc  fnet_http_srv_auth.o [1]
+_fnet_http_srv_auth_scheme_basic_validate
+                        0x00014d4d    0x42  Code  Lc  fnet_http_srv_auth.o [1]
+_fnet_http_srv_auth_validate_credentials
+                        0x00014cc5    0x4c  Code  Gb  fnet_http_srv_auth.o [1]
+_fnet_http_srv_auth_validate_uri
+                        0x00014c71    0x54  Code  Gb  fnet_http_srv_auth.o [1]
+_fnet_http_srv_cgi_handle
+                        0x0001e8b5    0x74  Code  Lc  fnet_http_srv_cgi.o [1]
+_fnet_http_srv_cgi_send
+                        0x0001e929    0x32  Code  Lc  fnet_http_srv_cgi.o [1]
+_fnet_http_srv_decode_base64_char
+                        0x00014d8f    0x3e  Code  Lc  fnet_http_srv_auth.o [1]
+_fnet_http_srv_default_close
+                        0x00014b01    0x18  Code  Gb  fnet_http_srv.o [1]
+_fnet_http_srv_default_handle
+                        0x00014a83    0x5e  Code  Gb  fnet_http_srv.o [1]
+_fnet_http_srv_default_send
+                        0x00014aed    0x14  Code  Gb  fnet_http_srv.o [1]
+_fnet_http_srv_find_content_type
+                        0x00014a47    0x3c  Code  Gb  fnet_http_srv.o [1]
+_fnet_http_srv_find_handler
+                        0x00014a0d    0x3a  Code  Gb  fnet_http_srv.o [1]
+_fnet_http_srv_get_close
+                        0x0001ebfd    0x20  Code  Lc  fnet_http_srv_get.o [1]
+_fnet_http_srv_get_handle
+                        0x0001eba5    0x38  Code  Lc  fnet_http_srv_get.o [1]
+_fnet_http_srv_get_send
+                        0x0001ebdd    0x20  Code  Lc  fnet_http_srv_get.o [1]
+_fnet_http_srv_poll     0x0001422d   0x43c  Code  Lc  fnet_http_srv.o [1]
+_fnet_http_srv_post_handle
+                        0x0001e645    0x6c  Code  Lc  fnet_http_srv_post.o [1]
+_fnet_http_srv_post_receive
+                        0x0001e6b1    0x34  Code  Lc  fnet_http_srv_post.o [1]
+_fnet_http_srv_post_send
+                        0x0001e6e5    0x3a  Code  Lc  fnet_http_srv_post.o [1]
+_fnet_http_srv_recv     0x00014c59     0xc  Code  Lc  fnet_http_srv.o [1]
+_fnet_http_srv_send     0x00014c65     0xc  Code  Lc  fnet_http_srv.o [1]
+_fnet_http_srv_ssi_handle
+                        0x0001e0d1    0x18  Code  Lc  fnet_http_srv_ssi.o [1]
+_fnet_http_srv_ssi_send
+                        0x0001e0e9   0x1d8  Code  Lc  fnet_http_srv_ssi.o [1]
+_fnet_http_srv_tx_status_line
+                        0x00014855   0x1b2  Code  Lc  fnet_http_srv.o [1]
+_fnet_http_srv_uri_parse
+                        0x00014b19    0x80  Code  Gb  fnet_http_srv.o [1]
+_fnet_http_srv_version_parse
+                        0x00014b99    0x72  Code  Lc  fnet_http_srv.o [1]
+_fnet_icmp4_error       0x0000a5c3   0x1c0  Code  Gb  fnet_icmp4.o [1]
+_fnet_icmp4_input       0x0000a39f   0x14a  Code  Lc  fnet_icmp4.o [1]
+_fnet_icmp4_notify_protocol
+                        0x0000a4e9    0x8e  Code  Lc  fnet_icmp4.o [1]
+_fnet_icmp4_output      0x0000a577    0x4c  Code  Lc  fnet_icmp4.o [1]
+_fnet_icmp6_error       0x0000a9a9    0xe6  Code  Gb  fnet_icmp6.o [1]
+_fnet_icmp6_input       0x0000a785   0x1d8  Code  Lc  fnet_icmp6.o [1]
+_fnet_icmp6_output      0x0000a95d    0x4c  Code  Gb  fnet_icmp6.o [1]
+_fnet_inet_ntop_ip4     0x0001863b    0x3c  Code  Lc  fnet_inet.o [1]
+_fnet_inet_ntop_ip6     0x00018677   0x15e  Code  Lc  fnet_inet.o [1]
+_fnet_inet_pton_ip4     0x00018469    0x92  Code  Lc  fnet_inet.o [1]
+_fnet_inet_pton_ip6     0x000184fb   0x140  Code  Lc  fnet_inet.o [1]
+_fnet_ip4_addr_is_broadcast
+                        0x000064ed    0x6c  Code  Gb  fnet_ip4.o [1]
+_fnet_ip4_addr_is_onlink
+                        0x00005ec7    0x26  Code  Lc  fnet_ip4.o [1]
+_fnet_ip4_drain         0x00006369    0x38  Code  Gb  fnet_ip4.o [1]
+_fnet_ip4_frag_add      0x00006413    0x2c  Code  Lc  fnet_ip4.o [1]
+_fnet_ip4_frag_del      0x0000643f    0x24  Code  Lc  fnet_ip4.o [1]
+_fnet_ip4_frag_list_add
+                        0x000063dd    0x16  Code  Lc  fnet_ip4.o [1]
+_fnet_ip4_frag_list_del
+                        0x000063f3    0x20  Code  Lc  fnet_ip4.o [1]
+_fnet_ip4_frag_list_free
+                        0x000063a1    0x3c  Code  Lc  fnet_ip4.o [1]
+_fnet_ip4_getsockopt    0x00006581    0x68  Code  Gb  fnet_ip4.o [1]
+_fnet_ip4_init          0x00005b0d    0x56  Code  Gb  fnet_ip4.o [1]
+_fnet_ip4_input         0x00005f21    0x30  Code  Gb  fnet_ip4.o [1]
+_fnet_ip4_input_low     0x00005f55   0x174  Code  Lc  fnet_ip4.o [1]
+_fnet_ip4_maximum_packet
+                        0x00006575     0xc  Code  Gb  fnet_ip4.o [1]
+_fnet_ip4_multicast_join
+                        0x00006463    0x6e  Code  Gb  fnet_ip4.o [1]
+_fnet_ip4_multicast_leave_entry
+                        0x000064d1    0x1c  Code  Gb  fnet_ip4.o [1]
+_fnet_ip4_netif_output  0x00005e65    0x62  Code  Lc  fnet_ip4.o [1]
+_fnet_ip4_output        0x00005bdf   0x286  Code  Gb  fnet_ip4.o [1]
+_fnet_ip4_output::ip_id
+                        0x2000bf6a     0x2  Data  Lc  fnet_ip4.o [1]
+_fnet_ip4_reassembly    0x000060c9   0x26e  Code  Lc  fnet_ip4.o [1]
+_fnet_ip4_release       0x00005b63    0x1a  Code  Gb  fnet_ip4.o [1]
+_fnet_ip4_route         0x00005b7d    0x62  Code  Gb  fnet_ip4.o [1]
+_fnet_ip4_set_socket_addr
+                        0x00005eed    0x34  Code  Gb  fnet_ip4.o [1]
+_fnet_ip4_setsockopt    0x000065e9   0x15c  Code  Gb  fnet_ip4.o [1]
+_fnet_ip4_timer         0x00006339    0x30  Code  Lc  fnet_ip4.o [1]
+_fnet_ip6_addr_pefix_cmp
+                        0x00006cc1    0x48  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_addr_scope    0x00006bd7    0x68  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_common_prefix_length
+                        0x00006c3f    0x2c  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_drain         0x00007753    0x44  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_ext_header_handler_fragment_header
+                        0x000069c5    0x2a  Code  Lc  fnet_ip6.o [1]
+_fnet_ip6_ext_header_handler_no_next_header
+                        0x0000687f    0x14  Code  Lc  fnet_ip6.o [1]
+_fnet_ip6_ext_header_handler_options
+                        0x00006893    0xf0  Code  Lc  fnet_ip6.o [1]
+_fnet_ip6_ext_header_handler_routing_header
+                        0x00006983    0x42  Code  Lc  fnet_ip6.o [1]
+_fnet_ip6_ext_header_process
+                        0x000067b5    0xca  Code  Lc  fnet_ip6.o [1]
+_fnet_ip6_frag_add      0x000072ef    0x40  Code  Lc  fnet_ip6.o [1]
+_fnet_ip6_frag_del      0x0000732f    0x3c  Code  Lc  fnet_ip6.o [1]
+_fnet_ip6_frag_list_add
+                        0x000072b9    0x16  Code  Lc  fnet_ip6.o [1]
+_fnet_ip6_frag_list_del
+                        0x000072cf    0x20  Code  Lc  fnet_ip6.o [1]
+_fnet_ip6_frag_list_free
+                        0x00007257    0x46  Code  Lc  fnet_ip6.o [1]
+_fnet_ip6_get_solicited_multicast_addr
+                        0x00007215    0x42  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_getsockopt    0x000077a5    0x4c  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_init          0x00006745    0x56  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_input         0x00006a37    0x30  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_input_low     0x00006a69   0x16e  Code  Lc  fnet_ip6.o [1]
+_fnet_ip6_mtu           0x00006e9b    0x36  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_multicast_find_entry
+                        0x000079df    0x56  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_multicast_join
+                        0x00007959    0x86  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_multicast_leave
+                        0x00007a35     0xc  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_multicast_leave_all
+                        0x00007a41    0x3c  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_multicast_leave_entry
+                        0x00007a8d    0x22  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_netif_output  0x0000720b     0xa  Code  Lc  fnet_ip6.o [1]
+_fnet_ip6_output        0x00006ed1   0x33a  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_output{11}{12}::ip6_id
+                        0x2000b31c     0x4  Data  Lc  fnet_ip6.o [1]
+_fnet_ip6_policy_label  0x00006c6b    0x56  Code  Lc  fnet_ip6.o [1]
+_fnet_ip6_reassembly    0x0000736b   0x300  Code  Lc  fnet_ip6.o [1]
+_fnet_ip6_release       0x0000679b    0x1a  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_select_src_addr
+                        0x00006d23   0x178  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_set_socket_addr
+                        0x000069ef    0x48  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_setsockopt    0x000077f1   0x168  Code  Gb  fnet_ip6.o [1]
+_fnet_ip6_timer         0x0000766b    0xe8  Code  Lc  fnet_ip6.o [1]
+_fnet_ip_getsockopt     0x00004dcb    0x76  Code  Gb  fnet_ip.o [1]
+_fnet_ip_queue_append   0x00004cd3    0x50  Code  Gb  fnet_ip.o [1]
+_fnet_ip_queue_read     0x00004d23    0x38  Code  Gb  fnet_ip.o [1]
+_fnet_ip_setsockopt     0x00004d5b    0x70  Code  Gb  fnet_ip.o [1]
+_fnet_is_enabled        0x2000bf70     0x1  Data  Gb  fnet_stack.o [1]
+_fnet_isr_handler       0x00002a7d    0x40  Code  Gb  fnet_isr.o [1]
+_fnet_isr_vector_init   0x00002abd    0x22  Code  Gb  fnet_isr.o [1]
+_fnet_link_poll         0x000193e9    0x22  Code  Lc  fnet_link.o [1]
+_fnet_llmnr_hostname_cmp
+                        0x000199ad    0x90  Code  Lc  fnet_llmnr.o [1]
+_fnet_llmnr_poll        0x00019bc9   0x126  Code  Lc  fnet_llmnr.o [1]
+_fnet_malloc            0x00003325     0xe  Code  Gb  fnet_netbuf.o [1]
+_fnet_malloc_max_netbuf
+                        0x0000330b     0xc  Code  Gb  fnet_netbuf.o [1]
+_fnet_malloc_netbuf     0x000032fd     0xe  Code  Gb  fnet_netbuf.o [1]
+_fnet_malloc_zero       0x00003333    0x1c  Code  Gb  fnet_netbuf.o [1]
+_fnet_mdns_add_domain_name
+                        0x0000c7bd    0x50  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_add_domain_name_compression
+                        0x0000d191    0x1c  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_add_host_name
+                        0x0000d1ad    0x84  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_add_qe_any   0x0000d179    0x18  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_add_rr_a     0x0000d095    0x6a  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_add_rr_aaaa  0x0000d0ff    0x7a  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_add_rr_header
+                        0x0000ce2b    0x50  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_add_rr_ptr   0x0000cf13    0x74  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_add_rr_ptr_enum
+                        0x0000cf87    0x76  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_add_rr_srv   0x0000cffd    0x98  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_add_rr_txt   0x0000ce7b    0x98  Code  Gb  fnet_mdns.o [1]
+_fnet_mdns_add_service_name
+                        0x0000d231    0xc0  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_add_service_type_name
+                        0x0000d2f1    0x82  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_add_txt_key  0x0000d42f    0x60  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_change_state
+                        0x0000bd47    0x50  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_cmp_name     0x0000bdd1    0x62  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_cmp_rr       0x0000c467   0x150  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_cmp_rr_name  0x0000bd97    0x30  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_get_an       0x0000c369    0x5e  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_get_ns       0x0000c3c7    0xa0  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_get_query_type
+                        0x0000bef3    0x46  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_get_rr_name  0x0000be33    0xc0  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_get_service_by_name
+                        0x0000d399    0x4c  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_get_service_by_type
+                        0x0000d3e5    0x4a  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_is_our_host_name
+                        0x0000d373    0x12  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_is_our_service_name
+                        0x0000d385    0x14  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_is_rr_win    0x0000c5b7    0x36  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_poll         0x0000bc6d    0xda  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_process_duplicate_answer
+                        0x0000c0e1   0x1a2  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_process_query
+                        0x0000bf39   0x190  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_process_response
+                        0x0000c5ed    0x8a  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_process_simultaneous_probe
+                        0x0000c283    0xe6  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_recv         0x0000c677   0x146  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_send         0x0000c99b    0xee  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_send_announcement
+                        0x0000cdff    0x2c  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_send_probe   0x0000c80d   0x18e  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_send_response
+                        0x0000ca89   0x376  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_update_host_name_counter
+                        0x0000bc03    0x2e  Code  Lc  fnet_mdns.o [1]
+_fnet_mdns_update_service_name_counter
+                        0x0000bc31    0x38  Code  Lc  fnet_mdns.o [1]
+_fnet_mem_release       0x0000336f     0xc  Code  Gb  fnet_netbuf.o [1]
+_fnet_mempool_free      0x00007d67    0x84  Code  Gb  fnet_mempool.o [1]
+_fnet_mempool_free_mem_status
+                        0x00007e75    0x3c  Code  Gb  fnet_mempool.o [1]
+_fnet_mempool_init      0x00007d15    0x4c  Code  Gb  fnet_mempool.o [1]
+_fnet_mempool_malloc    0x00007deb    0x8a  Code  Gb  fnet_mempool.o [1]
+_fnet_mempool_malloc_max
+                        0x00007eb1    0x4e  Code  Gb  fnet_mempool.o [1]
+_fnet_mempool_release   0x00007d61     0x6  Code  Gb  fnet_mempool.o [1]
+_fnet_mutex_init        0x00007ff3    0x2e  Code  Gb  fnet_stack.o [1]
+_fnet_mutex_lock        0x00008021    0x28  Code  Gb  fnet_stack.o [1]
+_fnet_mutex_release     0x00008071    0x30  Code  Gb  fnet_stack.o [1]
+_fnet_mutex_unlock      0x00008049    0x28  Code  Gb  fnet_stack.o [1]
+_fnet_nd6_addr_is_onlink
+                        0x000090e3    0x46  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_dad_failed    0x00009ce1    0x48  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_dad_start     0x00009c5b    0x28  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_dad_timer     0x00009c83    0x5e  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_default_router_get
+                        0x00008da1    0x60  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_init          0x000089e1    0x7e  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_is_firsthop_router
+                        0x00008e01    0x50  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_neighbor_advertisement_receive
+                        0x000094b5   0x1ae  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_neighbor_advertisement_send
+                        0x0000938f    0x8a  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_neighbor_cache_add
+                        0x00008b19    0xa0  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_neighbor_cache_del
+                        0x00008af7    0x22  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_neighbor_cache_get
+                        0x00008aaf    0x48  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_neighbor_cache_timer
+                        0x00008bb9   0x176  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_neighbor_enqueue_waiting_netbuf
+                        0x00008d2f    0x1e  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_neighbor_send_waiting_netbuf
+                        0x00008d4d    0x20  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_neighbor_solicitation_receive
+                        0x000091ed   0x1a2  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_neighbor_solicitation_send
+                        0x00009129    0xc4  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_prefix_list_add
+                        0x00008e9f    0x70  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_prefix_list_del
+                        0x00008e95     0xa  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_prefix_list_get
+                        0x00008e51    0x44  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_prefix_timer  0x00008f0f    0x56  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_rd_start      0x00009bcb    0x2a  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_rd_timer      0x00009bf5    0x66  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_rdnss_get_addr
+                        0x00009e4f    0x4a  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_rdnss_list_del
+                        0x00009e45     0xa  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_rdnss_list_update
+                        0x00009d29   0x11c  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_rdnss_timer   0x00009e99    0x6a  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_redirect_addr
+                        0x000090a5    0x3e  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_redirect_receive
+                        0x00009a83   0x148  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_redirect_table_add
+                        0x00008f65    0xfe  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_redirect_table_del
+                        0x00009063    0x42  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_release       0x00008a5f    0x24  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_router_advertisement_receive
+                        0x00009663   0x420  Code  Gb  fnet_nd6.o [1]
+_fnet_nd6_router_list_add
+                        0x00008d6d    0x24  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_router_list_del
+                        0x00008d91    0x10  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_router_solicitation_send
+                        0x00009419    0x92  Code  Lc  fnet_nd6.o [1]
+_fnet_nd6_timer         0x00008a85    0x2a  Code  Lc  fnet_nd6.o [1]
+_fnet_netbuf_concat     0x0000324d    0x32  Code  Gb  fnet_netbuf.o [1]
+_fnet_netbuf_copy       0x00002cb1   0x152  Code  Gb  fnet_netbuf.o [1]
+_fnet_netbuf_cut_center
+                        0x000030a9   0x1a4  Code  Gb  fnet_netbuf.o [1]
+_fnet_netbuf_free       0x00002e9b    0x32  Code  Gb  fnet_netbuf.o [1]
+_fnet_netbuf_free_chain
+                        0x00002ecd    0x30  Code  Gb  fnet_netbuf.o [1]
+_fnet_netbuf_from_buf   0x00002e03    0x24  Code  Gb  fnet_netbuf.o [1]
+_fnet_netbuf_new        0x00002c3d    0x74  Code  Gb  fnet_netbuf.o [1]
+_fnet_netbuf_pullup     0x00002efd    0xda  Code  Gb  fnet_netbuf.o [1]
+_fnet_netbuf_queue_add  0x0000327f    0x16  Code  Gb  fnet_netbuf.o [1]
+_fnet_netbuf_queue_del  0x00003295    0x3e  Code  Gb  fnet_netbuf.o [1]
+_fnet_netbuf_to_buf     0x00002e27    0x74  Code  Gb  fnet_netbuf.o [1]
+_fnet_netbuf_trim       0x00002fd7    0xd2  Code  Gb  fnet_netbuf.o [1]
+_fnet_netif_assign_scope_id
+                        0x000056af    0x28  Code  Lc  fnet_netif.o [1]
+_fnet_netif_bind_ip6_addr
+                        0x0000595d    0xda  Code  Gb  fnet_netif.o [1]
+_fnet_netif_drain       0x00004e9b    0x2a  Code  Gb  fnet_netif.o [1]
+_fnet_netif_get_by_ip4_addr
+                        0x00004f2d    0x1c  Code  Gb  fnet_netif.o [1]
+_fnet_netif_get_by_ip6_addr
+                        0x00005883    0x28  Code  Gb  fnet_netif.o [1]
+_fnet_netif_get_by_number
+                        0x00004f11    0x1c  Code  Gb  fnet_netif.o [1]
+_fnet_netif_get_by_scope_id
+                        0x00005707    0x1e  Code  Gb  fnet_netif.o [1]
+_fnet_netif_get_by_sockaddr
+                        0x00004f49    0x2c  Code  Gb  fnet_netif.o [1]
+_fnet_netif_get_default
+                        0x00005273     0x8  Code  Gb  fnet_netif.o [1]
+_fnet_netif_get_hw_addr
+                        0x0000548d    0x36  Code  Gb  fnet_netif.o [1]
+_fnet_netif_get_ip6_addr_info
+                        0x000057d3    0x52  Code  Gb  fnet_netif.o [1]
+_fnet_netif_init        0x00005001    0xbe  Code  Gb  fnet_netif.o [1]
+_fnet_netif_ip6_addr_timer
+                        0x00005aa1    0x6a  Code  Gb  fnet_netif.o [1]
+_fnet_netif_is_connected
+                        0x00005591    0x6c  Code  Gb  fnet_netif.o [1]
+_fnet_netif_is_initialized
+                        0x0000511b    0x1c  Code  Gb  fnet_netif.o [1]
+_fnet_netif_is_my_ip6_addr
+                        0x00005825    0x14  Code  Gb  fnet_netif.o [1]
+_fnet_netif_is_my_ip6_solicited_multicast_addr
+                        0x00005839    0x4a  Code  Gb  fnet_netif.o [1]
+_fnet_netif_join_ip4_multicast
+                        0x0000553b    0x16  Code  Gb  fnet_netif.o [1]
+_fnet_netif_join_ip6_multicast
+                        0x000057a7    0x16  Code  Gb  fnet_netif.o [1]
+_fnet_netif_leave_ip4_multicast
+                        0x00005551    0x16  Code  Gb  fnet_netif.o [1]
+_fnet_netif_leave_ip6_multicast
+                        0x000057bd    0x16  Code  Gb  fnet_netif.o [1]
+_fnet_netif_pmtu_init   0x00004fab    0x20  Code  Gb  fnet_netif.o [1]
+_fnet_netif_pmtu_release
+                        0x00004fcb    0x14  Code  Gb  fnet_netif.o [1]
+_fnet_netif_pmtu_timer  0x00004f87    0x24  Code  Lc  fnet_netif.o [1]
+_fnet_netif_release     0x000050bf    0x5c  Code  Gb  fnet_netif.o [1]
+_fnet_netif_release_all
+                        0x00004e6d    0x2e  Code  Gb  fnet_netif.o [1]
+_fnet_netif_set_hw_addr
+                        0x000054e5    0x56  Code  Gb  fnet_netif.o [1]
+_fnet_netif_set_ip4_addr
+                        0x00005167    0xcc  Code  Gb  fnet_netif.o [1]
+_fnet_netif_set_ip6_addr_autoconf
+                        0x000058b5    0x74  Code  Gb  fnet_netif.o [1]
+_fnet_netif_set_pmtu    0x00004f75    0x12  Code  Gb  fnet_netif.o [1]
+_fnet_netif_signal_ip4_addr_conflict
+                        0x00005699    0x16  Code  Gb  fnet_netif.o [1]
+_fnet_netif_unbind_ip6_addr
+                        0x00005a77    0x2a  Code  Gb  fnet_netif.o [1]
+_fnet_ping_poll         0x0001cec9   0x1ee  Code  Lc  fnet_ping.o [1]
+_fnet_prot_drain        0x00007ce1    0x30  Code  Gb  fnet_prot.o [1]
+_fnet_prot_find         0x00007c6b    0x76  Code  Gb  fnet_prot.o [1]
+_fnet_prot_init         0x00007bd1    0x66  Code  Gb  fnet_prot.o [1]
+_fnet_prot_release      0x00007c37    0x34  Code  Gb  fnet_prot.o [1]
+_fnet_raw_attach        0x0000a1eb    0x22  Code  Lc  fnet_raw.o [1]
+_fnet_raw_connect       0x0000a25d    0x36  Code  Lc  fnet_raw.o [1]
+_fnet_raw_detach        0x0000a20d    0x18  Code  Lc  fnet_raw.o [1]
+_fnet_raw_input         0x00009fd7   0x214  Code  Gb  fnet_raw.o [1]
+_fnet_raw_output        0x00009f25    0xb2  Code  Lc  fnet_raw.o [1]
+_fnet_raw_rcv           0x0000a329    0x76  Code  Lc  fnet_raw.o [1]
+_fnet_raw_release       0x00009f0d    0x18  Code  Lc  fnet_raw.o [1]
+_fnet_raw_shutdown      0x0000a229    0x34  Code  Lc  fnet_raw.o [1]
+_fnet_raw_snd           0x0000a293    0x96  Code  Lc  fnet_raw.o [1]
+_fnet_serial_buffer_putchar
+                        0x0000b1ad    0x18  Code  Lc  fnet_serial.o [1]
+_fnet_serial_printk_mknumstr
+                        0x0000abed    0x78  Code  Lc  fnet_serial.o [1]
+_fnet_serial_printk_pad
+                        0x0000ac65    0x30  Code  Lc  fnet_serial.o [1]
+_fnet_service_init      0x0000ab51    0x12  Code  Gb  fnet_service.o [1]
+_fnet_service_mutex_init
+                        0x0000ab6b     0xa  Code  Gb  fnet_service.o [1]
+_fnet_service_mutex_release
+                        0x0000ab89     0xa  Code  Gb  fnet_service.o [1]
+_fnet_service_release   0x0000ab63     0x8  Code  Gb  fnet_service.o [1]
+_fnet_shell_echo        0x00017559    0x14  Code  Lc  fnet_shell.o [1]
+_fnet_shell_esc_clear   0x00017877    0x28  Code  Lc  fnet_shell.o [1]
+_fnet_shell_make_argv   0x0001789f    0xbc  Code  Lc  fnet_shell.o [1]
+_fnet_shell_poll        0x0001756d   0x240  Code  Lc  fnet_shell.o [1]
+_fnet_sntp_poll         0x0001d4dd    0xd6  Code  Lc  fnet_sntp.o [1]
+_fnet_socket_addr_check_len
+                        0x000044dd    0x3a  Code  Lc  fnet_socket.o [1]
+_fnet_socket_addr_copy  0x0000462d    0x30  Code  Gb  fnet_socket.o [1]
+_fnet_socket_addr_is_broadcast
+                        0x0000454d    0x1c  Code  Gb  fnet_socket.o [1]
+_fnet_socket_addr_route
+                        0x0000465d    0x52  Code  Gb  fnet_socket.o [1]
+_fnet_socket_buffer_append_address
+                        0x000043af    0x64  Code  Gb  fnet_socket.o [1]
+_fnet_socket_buffer_append_record
+                        0x00004375    0x3a  Code  Gb  fnet_socket.o [1]
+_fnet_socket_buffer_read_address
+                        0x00004469    0x74  Code  Gb  fnet_socket.o [1]
+_fnet_socket_buffer_read_record
+                        0x0000441d    0x4c  Code  Gb  fnet_socket.o [1]
+_fnet_socket_buffer_release
+                        0x00004345    0x30  Code  Gb  fnet_socket.o [1]
+_fnet_socket_conflict   0x0000372d    0x78  Code  Gb  fnet_socket.o [1]
+_fnet_socket_copy       0x000038d3    0x5e  Code  Gb  fnet_socket.o [1]
+_fnet_socket_desc_alloc
+                        0x000036a3    0x3a  Code  Lc  fnet_socket.o [1]
+_fnet_socket_desc_find  0x000036e9    0x16  Code  Lc  fnet_socket.o [1]
+_fnet_socket_desc_free  0x000036e3     0x6  Code  Lc  fnet_socket.o [1]
+_fnet_socket_desc_set   0x000036dd     0x6  Code  Lc  fnet_socket.o [1]
+_fnet_socket_get_uniqueport
+                        0x00003871    0x62  Code  Gb  fnet_socket.o [1]
+_fnet_socket_init       0x000035e1    0x30  Code  Gb  fnet_socket.o [1]
+_fnet_socket_ip_addr_copy
+                        0x000045f7    0x36  Code  Gb  fnet_socket.o [1]
+_fnet_socket_is_activity
+                        0x00003611    0x16  Code  Lc  fnet_socket.o [1]
+_fnet_socket_list_add   0x00003651    0x24  Code  Gb  fnet_socket.o [1]
+_fnet_socket_list_del   0x00003675    0x2e  Code  Gb  fnet_socket.o [1]
+_fnet_socket_lookup     0x000037a5    0xcc  Code  Gb  fnet_socket.o [1]
+_fnet_socket_release    0x000036ff    0x2e  Code  Gb  fnet_socket.o [1]
+_fnet_socket_set_error  0x0000362f    0x22  Code  Gb  fnet_socket.o [1]
+_fnet_stack_init        0x00007f97    0x40  Code  Lc  fnet_stack.o [1]
+_fnet_stack_mutex_init  0x000080a1     0xa  Code  Gb  fnet_stack.o [1]
+_fnet_stack_mutex_lock  0x000080ab     0xa  Code  Gb  fnet_stack.o [1]
+_fnet_stack_mutex_release
+                        0x000080bf     0xa  Code  Gb  fnet_stack.o [1]
+_fnet_stack_mutex_unlock
+                        0x000080b5     0xa  Code  Gb  fnet_stack.o [1]
+_fnet_stack_release     0x00007fd7    0x14  Code  Lc  fnet_stack.o [1]
+_fnet_tcp_abort_socket  0x00002565    0x3e  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_accept        0x00000887    0x3c  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_add_inpbuf    0x000016ed   0x312  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_add_partial_socket
+                        0x0000281d    0x12  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_addopt        0x000025a3    0x74  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_attach        0x0000065d    0x74  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_close         0x000006d1    0xf8  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_close_socket  0x0000285f    0x50  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_connect       0x000007c9    0xbe  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_control_input
+                        0x000005dd    0x80  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_dataprocess   0x000013f9   0x2f0  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_del_cb        0x000028f1    0x16  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_del_incomingsocket
+                        0x000028d9    0x18  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_del_partialsocket
+                        0x000028c1    0x18  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_del_socket    0x00002925    0x16  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_del_tmpbuf    0x00002907    0x1e  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_drain         0x00000ccb    0x44  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_fasttimo      0x00001c8f    0x30  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_fasttimosk    0x00001dcf    0x24  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_find_socket   0x0000274b    0xd2  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_get_opt       0x00002617    0xc2  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_get_rcvwnd    0x00001c05    0x38  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_get_size      0x0000295d     0xc  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_get_synopt    0x00002727    0x24  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_getsockopt    0x00000be9    0x82  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_hit           0x0000293b    0x22  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_init          0x00000411    0x5c  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_init_connection
+                        0x00000d0f    0x98  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_initial_seq_number
+                        0x200008ac     0x4  Data  Lc  fnet_tcp.o [1]
+_fnet_tcp_input         0x000004c7   0x116  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_inputsk       0x00000dc1   0x62e  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_keepalive_timeo
+                        0x00001ee7    0x9a  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_listen        0x00000c6b    0x60  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_move_socket2incominglist
+                        0x0000282f    0x30  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_persist_timeo
+                        0x00001f81    0x66  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_process_fin   0x00001b9b    0x6a  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_rcv           0x000008c3    0xbe  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_release       0x0000046d    0x5a  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_retransmission_timeo
+                        0x00001df3    0xf4  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_send_ack      0x000023d3    0x60  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_send_anydata  0x000019ff   0x19c  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_send_dataseg  0x00002269   0x16a  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_send_headseg  0x00002163   0x106  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_send_rst      0x00002433    0xac  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_send_rstsk    0x000024df    0x86  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_send_seg      0x00001fe7   0x17c  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_set_synopt    0x000026d9    0x4e  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_setsockopt    0x00000b25    0xc4  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_shutdown      0x00000ac3    0x62  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_slowtimo      0x00001c3d    0x52  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_slowtimosk    0x00001cbf   0x110  Code  Lc  fnet_tcp.o [1]
+_fnet_tcp_snd           0x00000981   0x142  Code  Lc  fnet_tcp.o [1]
+_fnet_telnet_flush      0x00019e09     0x8  Code  Lc  fnet_telnet.o [1]
+_fnet_telnet_getchar    0x00019df3    0x16  Code  Lc  fnet_telnet.o [1]
+_fnet_telnet_poll       0x00019e9b   0x1cc  Code  Lc  fnet_telnet.o [1]
+_fnet_telnet_putchar    0x00019dcf    0x24  Code  Lc  fnet_telnet.o [1]
+_fnet_telnet_rx_buffer_free_space
+                        0x00019dbf    0x10  Code  Lc  fnet_telnet.o [1]
+_fnet_telnet_rx_buffer_read
+                        0x00019da1    0x1e  Code  Lc  fnet_telnet.o [1]
+_fnet_telnet_rx_buffer_write
+                        0x00019d87    0x1a  Code  Lc  fnet_telnet.o [1]
+_fnet_telnet_send       0x00019e11    0x5e  Code  Lc  fnet_telnet.o [1]
+_fnet_telnet_send_cmd   0x00019e6f    0x2c  Code  Lc  fnet_telnet.o [1]
+_fnet_telnet_tx_buffer_free_space
+                        0x00019d7f     0x8  Code  Lc  fnet_telnet.o [1]
+_fnet_telnet_tx_buffer_write
+                        0x00019d71     0xe  Code  Lc  fnet_telnet.o [1]
+_fnet_timer_counter     0x2000bb94     0x4  Data  Lc  fnet_timer.o [1]
+_fnet_timer_free        0x00002a37    0x32  Code  Gb  fnet_timer.o [1]
+_fnet_timer_handler_bottom
+                        0x000029c5     0x8  Code  Gb  fnet_timer.o [1]
+_fnet_timer_head        0x2000bb90     0x4  Data  Lc  fnet_timer.o [1]
+_fnet_timer_init        0x00002969    0x10  Code  Gb  fnet_timer.o [1]
+_fnet_timer_new         0x00002a07    0x30  Code  Gb  fnet_timer.o [1]
+_fnet_timer_poll        0x000029cd    0x3a  Code  Gb  fnet_timer.o [1]
+_fnet_timer_release     0x00002979    0x24  Code  Gb  fnet_timer.o [1]
+_fnet_timer_ticks_inc   0x000029b9     0xc  Code  Gb  fnet_timer.o [1]
+_fnet_udp_attach        0x0001c0e7    0x2e  Code  Lc  fnet_udp.o [1]
+_fnet_udp_connect       0x0001c161    0x2a  Code  Lc  fnet_udp.o [1]
+_fnet_udp_control_input
+                        0x0001c2b3    0x8e  Code  Lc  fnet_udp.o [1]
+_fnet_udp_detach        0x0001c115    0x18  Code  Lc  fnet_udp.o [1]
+_fnet_udp_input         0x0001be57   0x290  Code  Lc  fnet_udp.o [1]
+_fnet_udp_output        0x0001bd53   0x104  Code  Lc  fnet_udp.o [1]
+_fnet_udp_rcv           0x0001c23b    0x78  Code  Lc  fnet_udp.o [1]
+_fnet_udp_release       0x0001bd35    0x1e  Code  Lc  fnet_udp.o [1]
+_fnet_udp_shutdown      0x0001c12d    0x34  Code  Lc  fnet_udp.o [1]
+_fnet_udp_snd           0x0001c18b    0xb0  Code  Lc  fnet_udp.o [1]
+_gm_                    0x2000bd8c   0x1d8  Data  Lc  dlmalloc.o [3]
+_main                   0x0001f677          Code  Gb  cmain.o [5]
+abort                   0x0000e9b5     0x6  Code  Gb  abort.o [3]
+add_segment             0x0000d8a5   0x1f2  Code  Lc  dlmalloc.o [3]
+dns_id                  0x2000bf68     0x2  Data  Lc  fnet_dns.o [1]
+dns_if_list             0x20008568   0x22c  Data  Lc  fnet_dns.o [1]
+exit                    0x0001f68d     0x4  Code  Gb  exit.o [3]
+fapp_addr_callback_updated
+                        0x0001951d    0x30  Code  Gb  fapp.o [1]
+fapp_auth_table         0x0001f270    0x28  Data  Lc  fapp_http.o [1]
+fapp_autoip_callback_probe
+                        0x00018aab     0xc  Code  Lc  fapp_autoip.o [1]
+fapp_autoip_callback_updated
+                        0x00018aa1     0xa  Code  Lc  fapp_autoip.o [1]
+fapp_autoip_cmd         0x00018ab7   0x114  Code  Gb  fapp_autoip.o [1]
+fapp_autoip_info        0x00018bcb    0x22  Code  Gb  fapp_autoip.o [1]
+fapp_autoip_ip_old      0x20008108     0x4  Data  Lc  fapp_autoip.o [1]
+fapp_autoip_on_ctrlc    0x00018a79    0x28  Code  Lc  fapp_autoip.o [1]
+fapp_autoip_subnet_mask_old
+                        0x2000810c     0x4  Data  Lc  fapp_autoip.o [1]
+fapp_bind_cmd           0x0001a787    0x8a  Code  Lc  fapp_shell.o [1]
+fapp_boot               0x00019411    0x30  Code  Lc  fapp.o [1]
+fapp_cgi_table          0x0001f110    0x30  Data  Lc  fapp_http.o [1]
+fapp_cmd_line_buffer    0x200081e4    0x64  Data  Lc  fapp_shell.o [1]
+fapp_cmd_table          0x0001e2c8   0x1e0  Data  Gb  fapp_shell.o [1]
+fapp_dhcp_cln_autoip    0x2000bf6c     0x1  Data  Lc  fapp_dhcp.o [1]
+fapp_dhcp_cln_callback_discover
+                        0x0001881d    0x6a  Code  Lc  fapp_dhcp.o [1]
+fapp_dhcp_cln_callback_updated
+                        0x0001880d    0x10  Code  Lc  fapp_dhcp.o [1]
+fapp_dhcp_cln_cmd       0x00018887   0x136  Code  Gb  fapp_dhcp.o [1]
+fapp_dhcp_cln_discover_counter
+                        0x20008110     0x4  Data  Lc  fapp_dhcp.o [1]
+fapp_dhcp_cln_info      0x000189bd    0x5c  Code  Gb  fapp_dhcp.o [1]
+fapp_dhcp_cln_ip_old    0x20008114     0x4  Data  Lc  fapp_dhcp.o [1]
+fapp_dhcp_cln_on_ctrlc  0x000187e5    0x28  Code  Lc  fapp_dhcp.o [1]
+fapp_dhcp_cln_subnet_mask_old
+                        0x20008118     0x4  Data  Lc  fapp_dhcp.o [1]
+fapp_dns_callback_resolved
+                        0x0001ded5    0x54  Code  Lc  fapp_dns.o [1]
+fapp_dns_cmd            0x0001df3f   0x146  Code  Gb  fapp_dns.o [1]
+fapp_dns_desc           0x2000811c     0x4  Data  Lc  fapp_dns.o [1]
+fapp_dns_on_ctrlc       0x0001df29    0x16  Code  Lc  fapp_dns.o [1]
+fapp_dup_ip_callback    0x00019441    0x2a  Code  Lc  fapp.o [1]
+fapp_exp_cmd            0x0001a899     0xa  Code  Lc  fapp_shell.o [1]
+fapp_freertos_event_group
+                        0x20008120     0x4  Data  Lc  fapp_freertos.o [1]
+fapp_freertos_main      0x0001a30d    0x4e  Code  Gb  fapp_freertos.o [1]
+fapp_freertos_mutex_api
+                        0x0001fea4    0x10  Data  Lc  fapp_freertos.o [1]
+fapp_freertos_mutex_init
+                        0x0001a361    0x20  Code  Lc  fapp_freertos.o [1]
+fapp_freertos_mutex_lock
+                        0x0001a38b    0x20  Code  Lc  fapp_freertos.o [1]
+fapp_freertos_mutex_lock::__func__
+                        0x0001f6b8    0x1c  Data  Lc  fapp_freertos.o [1]
+fapp_freertos_mutex_release
+                        0x0001a381     0xa  Code  Lc  fapp_freertos.o [1]
+fapp_freertos_mutex_unlock
+                        0x0001a3ab    0x1c  Code  Lc  fapp_freertos.o [1]
+fapp_freertos_mutex_unlock::__func__
+                        0x0001f6d4    0x1c  Data  Lc  fapp_freertos.o [1]
+fapp_freertos_params_init
+                        0x0001a35b     0x6  Code  Gb  fapp_freertos.o [1]
+fapp_freertos_poll      0x0001a2c5    0x16  Code  Gb  fapp_freertos.o [1]
+fapp_freertos_socket_callback_on_rx
+                        0x0001a2db    0x2a  Code  Lc  fapp_freertos.o [1]
+fapp_freertos_task      0x0001a305     0x8  Code  Lc  fapp_freertos.o [1]
+fapp_fs_cd_cmd          0x0001a489    0xd2  Code  Lc  fapp_fs.o [1]
+fapp_fs_cmd_tab         0x0001e9f8    0x90  Data  Lc  fapp_fs.o [1]
+fapp_fs_current_path    0x20000000    0x34  Data  Lc  fapp_fs.o [1]
+fapp_fs_dir_cmd         0x0001a43b    0x4e  Code  Lc  fapp_fs.o [1]
+fapp_fs_exit_cmd        0x0001a631     0xa  Code  Lc  fapp_fs.o [1]
+fapp_fs_init            0x0001a3fd    0x3e  Code  Lc  fapp_fs.o [1]
+fapp_fs_mount           0x0001a63b    0x2e  Code  Gb  fapp_fs.o [1]
+fapp_fs_shell           0x00020270     0xc  Data  Gb  fapp_fs.o [1]
+fapp_fs_view_cmd        0x0001a55b    0xd0  Code  Lc  fapp_fs.o [1]
+fapp_get_cmd            0x0001de33    0x70  Code  Gb  fapp_setget.o [1]
+fapp_get_cmd_gateway    0x0001dce9     0xa  Code  Lc  fapp_setget.o [1]
+fapp_get_cmd_hostname   0x0001dd6d     0xc  Code  Lc  fapp_setget.o [1]
+fapp_get_cmd_ip         0x0001dcd5     0xa  Code  Lc  fapp_setget.o [1]
+fapp_get_cmd_mac        0x0001dd79    0x28  Code  Lc  fapp_setget.o [1]
+fapp_get_cmd_netmask    0x0001dd29     0xa  Code  Lc  fapp_setget.o [1]
+fapp_get_ip             0x0001dc87    0x22  Code  Lc  fapp_setget.o [1]
+fapp_help_cmd           0x0001a77f     0x8  Code  Gb  fapp_shell.o [1]
+fapp_http_cgi_buffer    0x20008178    0x38  Data  Lc  fapp_http.o [1]
+fapp_http_cgi_graph_handle
+                        0x000190d7    0x44  Code  Lc  fapp_http.o [1]
+fapp_http_cgi_post_handle
+                        0x0001911b     0x8  Code  Lc  fapp_http.o [1]
+fapp_http_cgi_rand      0x000190c1    0x16  Code  Lc  fapp_http.o [1]
+fapp_http_cgi_stdata_handle
+                        0x00019059    0x68  Code  Lc  fapp_http.o [1]
+fapp_http_echo_variables
+                        0x0001efd8    0x38  Data  Lc  fapp_http.o [1]
+fapp_http_post_buffer   0x200081b0    0x34  Data  Lc  fapp_http.o [1]
+fapp_http_post_receive  0x00019123    0x2e  Code  Lc  fapp_http.o [1]
+fapp_http_srv_cmd       0x00019163    0x9e  Code  Gb  fapp_http.o [1]
+fapp_http_srv_desc      0x20008160     0x4  Data  Gb  fapp_http.o [1]
+fapp_http_srv_info      0x00019201    0x20  Code  Gb  fapp_http.o [1]
+fapp_http_srv_release   0x00019151    0x12  Code  Gb  fapp_http.o [1]
+fapp_http_ssi_buffer    0x20008164    0x14  Data  Lc  fapp_http.o [1]
+fapp_http_ssi_echo_handle
+                        0x00018f65    0xf4  Code  Lc  fapp_http.o [1]
+fapp_http_string_buffer_respond
+                        0x00018f15    0x50  Code  Lc  fapp_http.o [1]
+fapp_hw_init            0x0001958d    0x18  Code  Gb  fapp.o [1]
+fapp_init               0x0001946b    0x9a  Code  Lc  fapp.o [1]
+fapp_init::stack_heap   0x20000908  0x7800  Data  Lc  fapp.o [1]
+fapp_is_enabled_str     0x000207c0     0x8  Data  Gb  fapp_shell.o [1]
+fapp_link_callback      0x000181cd    0x9a  Code  Lc  fapp_link.o [1]
+fapp_link_init          0x00018285    0x2c  Code  Gb  fapp_link.o [1]
+fapp_link_script_add_netif_name
+                        0x00018267    0x1e  Code  Lc  fapp_link.o [1]
+fapp_llmnr_cmd          0x00018c39    0xe2  Code  Gb  fapp_llmnr.o [1]
+fapp_llmnr_info         0x00018d1b    0x22  Code  Gb  fapp_llmnr.o [1]
+fapp_main               0x00019511     0xc  Code  Gb  fapp.o [1]
+fapp_mdns_cmd           0x00018d71    0xe6  Code  Gb  fapp_mdns.o [1]
+fapp_mdns_http_service  0x00020378     0xc  Data  Lc  fapp_mdns.o [1]
+fapp_mdns_info          0x00018eb1    0x22  Code  Gb  fapp_mdns.o [1]
+fapp_mdns_service_get_txt
+                        0x00018e57     0x4  Code  Lc  fapp_mdns.o [1]
+fapp_mdns_service_register_http
+                        0x00018e5b    0x2a  Code  Gb  fapp_mdns.o [1]
+fapp_mdns_service_unregister_http
+                        0x00018e85    0x2c  Code  Gb  fapp_mdns.o [1]
+fapp_mdns_txt_key_http_table
+                        0x0001ff24    0x10  Data  Gb  fapp_mdns.o [1]
+fapp_netif_addr_print   0x00017df1    0xc8  Code  Gb  fapp_netif.o [1]
+fapp_netif_connection_state_str
+                        0x000206e0     0x8  Data  Gb  fapp_netif.o [1]
+fapp_netif_info_cmd     0x00017eb9    0x7c  Code  Gb  fapp_netif.o [1]
+fapp_netif_info_print   0x00017c4b   0x1a6  Code  Gb  fapp_netif.o [1]
+fapp_netif_init         0x00017b99    0xb2  Code  Gb  fapp_netif.o [1]
+fapp_netif_init_param_list
+                        0x20000034    0x38  Data  Gb  fapp_netif.o [1]
+fapp_netif_ip_addr_type_str
+                        0x00020438     0xc  Data  Lc  fapp_netif.o [1]
+fapp_netif_stat_cmd     0x000180b5    0x78  Code  Gb  fapp_netif.o [1]
+fapp_netif_stat_print   0x00017f39   0x174  Code  Lc  fapp_netif.o [1]
+fapp_netif_type_str     0x0001ffc4    0x10  Data  Lc  fapp_netif.o [1]
+fapp_params_config      0x000ff000   0x14c  Data  Lc  fapp_params.o [1]
+fapp_params_from_flash  0x0001a9d1    0x5c  Code  Gb  fapp_params.o [1]
+fapp_params_host_name   0x2000006c    0x28  Data  Gb  fapp_params.o [1]
+fapp_params_to_flash    0x0001a905    0xcc  Code  Gb  fapp_params.o [1]
+fapp_ping_callback      0x0001d0f5    0x5a  Code  Lc  fapp_ping.o [1]
+fapp_ping_cmd           0x0001d161   0x224  Code  Gb  fapp_ping.o [1]
+fapp_ping_on_ctrlc      0x0001d14f    0x12  Code  Lc  fapp_ping.o [1]
+fapp_poll               0x00019505     0xc  Code  Gb  fapp.o [1]
+fapp_post_table         0x0001f4fc    0x20  Data  Lc  fapp_http.o [1]
+fapp_reset_cmd          0x0001a6ed    0x16  Code  Lc  fapp_shell.o [1]
+fapp_save_cmd           0x0001a759    0x26  Code  Lc  fapp_shell.o [1]
+fapp_set_cmd            0x0001dda1    0x92  Code  Gb  fapp_setget.o [1]
+fapp_set_cmd_gateway    0x0001dcdf     0xa  Code  Lc  fapp_setget.o [1]
+fapp_set_cmd_hostname   0x0001dd61     0xc  Code  Lc  fapp_setget.o [1]
+fapp_set_cmd_ip         0x0001dca9    0x2c  Code  Lc  fapp_setget.o [1]
+fapp_set_cmd_mac        0x0001dd33    0x2e  Code  Lc  fapp_setget.o [1]
+fapp_set_cmd_netmask    0x0001dcf3    0x36  Code  Lc  fapp_setget.o [1]
+fapp_set_ip             0x0001dc5d    0x2a  Code  Lc  fapp_setget.o [1]
+fapp_setget_cmd_table   0x0001ee3c    0x50  Data  Lc  fapp_setget.o [1]
+fapp_shell              0x000204bc     0xc  Data  Lc  fapp_shell.o [1]
+fapp_shell_desc         0x20000904     0x4  Data  Lc  fapp.o [1]
+fapp_shell_init         0x0001a6c9    0x24  Code  Gb  fapp_shell.o [1]
+fapp_shell_on_init      0x0001a703    0x56  Code  Gb  fapp_shell.o [1]
+fapp_sntp_callback_resolved
+                        0x0001d6e5    0x70  Code  Lc  fapp_sntp.o [1]
+fapp_sntp_cmd           0x0001d7f9    0xce  Code  Gb  fapp_sntp.o [1]
+fapp_sntp_dns_callback_resolved
+                        0x0001d767    0x7c  Code  Lc  fapp_sntp.o [1]
+fapp_sntp_dns_desc      0x20008250     0x4  Data  Lc  fapp_sntp.o [1]
+fapp_sntp_dns_on_ctrlc  0x0001d7e3    0x16  Code  Lc  fapp_sntp.o [1]
+fapp_sntp_init          0x0001d8c7    0x80  Code  Lc  fapp_sntp.o [1]
+fapp_sntp_on_ctrlc      0x0001d755    0x12  Code  Lc  fapp_sntp.o [1]
+fapp_ssi_table          0x0001f9a8    0x18  Data  Lc  fapp_http.o [1]
+fapp_telnet_cmd         0x0001929f    0x82  Code  Gb  fapp_telnet.o [1]
+fapp_telnet_desc        0x20008254     0x4  Data  Lc  fapp_telnet.o [1]
+fapp_telnet_info        0x00019321    0x20  Code  Gb  fapp_telnet.o [1]
+fapp_telnet_release     0x0001928d    0x12  Code  Gb  fapp_telnet.o [1]
+fapp_telnet_shell       0x000204f8     0xc  Data  Gb  fapp_telnet.o [1]
+fapp_unbind_cmd         0x0001a811    0x88  Code  Lc  fapp_shell.o [1]
+fapp_wifi_op_mode       0x00020444     0xc  Data  Lc  fapp_netif.o [1]
+fnet_arp_get_entry      0x0000b7d9    0x68  Code  Gb  fnet_arp.o [1]
+fnet_arp_get_mac        0x0000b475    0x3e  Code  Gb  fnet_arp.o [1]
+fnet_arp_send_request   0x0000b6c5    0x18  Code  Gb  fnet_arp.o [1]
+fnet_autoip_get_by_netif
+                        0x00019975    0x30  Code  Gb  fnet_autoip.o [1]
+fnet_autoip_if_list     0x20008258    0x48  Data  Lc  fnet_autoip.o [1]
+fnet_autoip_init        0x0001986f    0x9e  Code  Gb  fnet_autoip.o [1]
+fnet_autoip_is_enabled  0x00019967     0xe  Code  Gb  fnet_autoip.o [1]
+fnet_autoip_release     0x0001990d    0x26  Code  Gb  fnet_autoip.o [1]
+fnet_autoip_set_callback_probe
+                        0x0001994d    0x1a  Code  Gb  fnet_autoip.o [1]
+fnet_autoip_set_callback_updated
+                        0x00019933    0x1a  Code  Gb  fnet_autoip.o [1]
+fnet_checksum           0x000034e9    0x28  Code  Gb  fnet_checksum.o [1]
+fnet_checksum_pseudo    0x00003511    0x5c  Code  Gb  fnet_checksum.o [1]
+fnet_cpu_eth0_if        0x200006ec   0x184  Data  Gb  fnet_mk_eth.o [1]
+fnet_cpu_flash_erase    0x0001b69d    0x36  Code  Gb  fnet_mk_flash.o [1]
+fnet_cpu_flash_write    0x0001b6d3    0x10  Code  Gb  fnet_mk_flash.o [1]
+fnet_cpu_irq_disable    0x0000aa9d     0x8  Code  Gb  fnet_mk.o [1]
+fnet_cpu_irq_enable     0x0000aaa5     0x8  Code  Gb  fnet_mk.o [1]
+fnet_cpu_isr            0x0001fe51    0x14  Code  Gb  fnet_mk_isr.o [1]
+fnet_cpu_isr_install    0x00007b4d    0x84  Code  Gb  fnet_mk_isr_inst.o [1]
+fnet_cpu_reset          0x0000aa95     0x8  Code  Gb  fnet_mk.o [1]
+fnet_cpu_serial_getchar
+                        0x0001aab5    0x16  Code  Gb  fnet_mk_serial.o [1]
+fnet_cpu_serial_gpio_init
+                        0x0001aacb   0x10e  Code  Lc  fnet_mk_serial.o [1]
+fnet_cpu_serial_init    0x0001abd9    0x84  Code  Gb  fnet_mk_serial.o [1]
+fnet_cpu_serial_putchar
+                        0x0001aaa5    0x10  Code  Gb  fnet_mk_serial.o [1]
+fnet_cpu_timer_handler_top
+                        0x00007ab1    0x18  Code  Lc  fnet_mk_timer.o [1]
+fnet_cpu_timer_init     0x00007ac9    0x52  Code  Gb  fnet_mk_timer.o [1]
+fnet_cpu_timer_release  0x00007b1b    0x16  Code  Gb  fnet_mk_timer.o [1]
+fnet_dhcp_cln_get_by_netif
+                        0x00015dbd    0x3c  Code  Gb  fnet_dhcp_cln.o [1]
+fnet_dhcp_cln_get_options
+                        0x00015e11    0x24  Code  Gb  fnet_dhcp_cln.o [1]
+fnet_dhcp_cln_if_list   0x200082a0   0x2c8  Data  Lc  fnet_dhcp_cln.o [1]
+fnet_dhcp_cln_init      0x00015c6f   0x120  Code  Gb  fnet_dhcp_cln.o [1]
+fnet_dhcp_cln_is_enabled
+                        0x00015daf     0xe  Code  Gb  fnet_dhcp_cln.o [1]
+fnet_dhcp_cln_parameter_request_list
+                        0x20000094     0x8  Data  Lc  fnet_dhcp_cln.o [1]
+fnet_dhcp_cln_release   0x00015d8f    0x20  Code  Gb  fnet_dhcp_cln.o [1]
+fnet_dhcp_cln_set_callback_discover
+                        0x00015e53    0x1e  Code  Gb  fnet_dhcp_cln.o [1]
+fnet_dhcp_cln_set_callback_updated
+                        0x00015e35    0x1e  Code  Gb  fnet_dhcp_cln.o [1]
+fnet_dhcp_magic_cookie  0x00020a98     0x4  Data  Gb  fnet_dhcp.o [1]
+fnet_dns_init           0x0001c919   0x184  Code  Gb  fnet_dns.o [1]
+fnet_dns_release        0x0001cd5b    0x28  Code  Gb  fnet_dns.o [1]
+fnet_error_get          0x000080dd     0x8  Code  Gb  fnet_error.o [1]
+fnet_error_set          0x000080e5     0x6  Code  Gb  fnet_error.o [1]
+fnet_eth_broadcast      0x000207e8     0x8  Data  Gb  fnet_eth.o [1]
+fnet_eth_null_addr      0x000207e0     0x8  Data  Gb  fnet_eth.o [1]
+fnet_eth_number         0x20008794     0x4  Data  Lc  fnet_eth.o [1]
+fnet_eth_prot_if_list   0x0001faf8    0x18  Data  Lc  fnet_eth.o [1]
+fnet_event_desc_last    0x20000220     0x4  Data  Lc  fnet_isr.o [1]
+fnet_event_init         0x00002adf    0x28  Code  Gb  fnet_isr.o [1]
+fnet_event_raise        0x00002bd7    0x4a  Code  Gb  fnet_isr.o [1]
+fnet_fec0_buf           0x20008798  0x248c  Data  Gb  fnet_fec.o [1]
+fnet_fec0_if            0x2000009c    0x2c  Data  Gb  fnet_fec.o [1]
+fnet_fec_api            0x0001eed8    0x44  Data  Gb  fnet_fec.o [1]
+fnet_fec_crc_hash       0x0001bc2f    0x3e  Code  Lc  fnet_fec.o [1]
+fnet_fec_eth_api        0x000207f0     0x8  Data  Gb  fnet_fec.o [1]
+fnet_fec_get_mac_addr   0x0001bad1    0x2c  Code  Lc  fnet_fec.o [1]
+fnet_fec_isr_rx_handler_bottom
+                        0x0001bb3d    0x14  Code  Lc  fnet_fec.o [1]
+fnet_fec_isr_rx_handler_top
+                        0x0001bb2d     0xe  Code  Lc  fnet_fec.o [1]
+fnet_fec_multicast_join
+                        0x0001bc85    0x64  Code  Gb  fnet_fec.o [1]
+fnet_fec_multicast_leave
+                        0x0001bce9    0x4c  Code  Gb  fnet_fec.o [1]
+fnet_fec_output         0x0001b9b7    0x74  Code  Gb  fnet_fec.o [1]
+fnet_flash_erase        0x0001b15d    0x1e  Code  Gb  fnet_flash.o [1]
+fnet_flash_flush        0x0001b159     0x4  Code  Gb  fnet_flash.o [1]
+fnet_flash_memcpy       0x0001b1a5    0xc4  Code  Gb  fnet_flash.o [1]
+fnet_free_mem_status    0x0000334f    0x14  Code  Gb  fnet_netbuf.o [1]
+fnet_fs_closedir        0x000150e5    0x22  Code  Gb  fnet_fs.o [1]
+fnet_fs_desc_list       0x2000ac4c    0x3c  Data  Lc  fnet_fs.o [1]
+fnet_fs_fclose          0x00015251    0x22  Code  Gb  fnet_fs.o [1]
+fnet_fs_finfo           0x00015337    0x50  Code  Gb  fnet_fs.o [1]
+fnet_fs_fopen           0x00015157     0xa  Code  Gb  fnet_fs.o [1]
+fnet_fs_fopen_re        0x00015161    0xde  Code  Gb  fnet_fs.o [1]
+fnet_fs_fread           0x00015289    0x58  Code  Gb  fnet_fs.o [1]
+fnet_fs_fseek           0x000152e1    0x56  Code  Gb  fnet_fs.o [1]
+fnet_fs_image           0x000202ac     0xc  Data  Gb  fapp_fs_image.o [1]
+fnet_fs_image_nodes     0x0001e720    0xd0  Data  Lc  fapp_fs_image.o [1]
+fnet_fs_init            0x00014ed1    0x24  Code  Gb  fnet_fs.o [1]
+fnet_fs_list            0x2000ac88     0x4  Data  Lc  fnet_fs.o [1]
+fnet_fs_mount           0x00014f41    0x94  Code  Gb  fnet_fs.o [1]
+fnet_fs_mount_list      0x2000ac24    0x28  Data  Gb  fnet_fs.o [1]
+fnet_fs_opendir         0x0001505f    0x80  Code  Gb  fnet_fs.o [1]
+fnet_fs_readdir         0x00015107    0x50  Code  Gb  fnet_fs.o [1]
+fnet_fs_rewind          0x00015273    0x16  Code  Gb  fnet_fs.o [1]
+fnet_fs_rom             0x200000c8    0x18  Data  Lc  fnet_fs_rom.o [1]
+fnet_fs_rom_dir_operations
+                        0x00020800     0x8  Data  Lc  fnet_fs_rom.o [1]
+fnet_fs_rom_file_operations
+                        0x000200a4    0x10  Data  Lc  fnet_fs_rom.o [1]
+fnet_fs_rom_operations  0x00020808     0x8  Data  Lc  fnet_fs_rom.o [1]
+fnet_fs_rom_register    0x0001aec9    0x20  Code  Gb  fnet_fs_rom.o [1]
+fnet_fs_rom_registered  0x2000bf6e     0x1  Data  Lc  fnet_fs_rom.o [1]
+fnet_fs_root            0x200000e0    0x18  Data  Lc  fnet_fs_root.o [1]
+fnet_fs_root_dir_operations
+                        0x00020818     0x8  Data  Lc  fnet_fs_root.o [1]
+fnet_fs_root_registered
+                        0x2000bf6f     0x1  Data  Lc  fnet_fs_root.o [1]
+fnet_ftfl_command       0x0001b5c9    0x94  Code  Lc  fnet_mk_flash.o [1]
+fnet_ftfl_command_lunch_inram_buf
+                        0x2000b89c     0xc  Data  Lc  fnet_mk_flash.o [1]
+fnet_ftfl_command_lunch_inram_ptr
+                        0x2000b898     0x4  Data  Lc  fnet_mk_flash.o [1]
+fnet_ftfl_command_lunch_inram_s
+                        0x00020588     0xc  Data  Lc  fnet_mk_flash.o [1]
+fnet_htonl              0x00004e51    0x1c  Code  Gb  fnet_cpu.o [1]
+fnet_htons              0x00004e41    0x10  Code  Gb  fnet_cpu.o [1]
+fnet_http_srv_auth_scheme_table
+                        0x00020154    0x10  Data  Lc  fnet_http_srv_auth.o [1]
+fnet_http_srv_cgi_handler
+                        0x00020164    0x10  Data  Gb  fnet_http_srv_cgi.o [1]
+fnet_http_srv_content_css
+                        0x00020848     0x8  Data  Lc  fnet_http_srv.o [1]
+fnet_http_srv_content_gif
+                        0x00020858     0x8  Data  Lc  fnet_http_srv.o [1]
+fnet_http_srv_content_gzip
+                        0x00020868     0x8  Data  Lc  fnet_http_srv.o [1]
+fnet_http_srv_content_jpg
+                        0x00020850     0x8  Data  Lc  fnet_http_srv.o [1]
+fnet_http_srv_content_js
+                        0x00020860     0x8  Data  Lc  fnet_http_srv.o [1]
+fnet_http_srv_content_json
+                        0x00020878     0x8  Data  Lc  fnet_http_srv.o [1]
+fnet_http_srv_content_type_list
+                        0x20000110    0x20  Data  Lc  fnet_http_srv.o [1]
+fnet_http_srv_content_zip
+                        0x00020870     0x8  Data  Lc  fnet_http_srv.o [1]
+fnet_http_srv_default_handler
+                        0x00020134    0x10  Data  Lc  fnet_http_srv.o [1]
+fnet_http_srv_file_handler_list
+                        0x20000104     0xc  Data  Lc  fnet_http_srv.o [1]
+fnet_http_srv_init      0x00014669   0x17c  Code  Gb  fnet_http_srv.o [1]
+fnet_http_srv_is_enabled
+                        0x00014847     0xe  Code  Gb  fnet_http_srv.o [1]
+fnet_http_srv_method_get
+                        0x0001fdd8    0x14  Data  Gb  fnet_http_srv_get.o [1]
+fnet_http_srv_method_list
+                        0x200000f8     0xc  Data  Lc  fnet_http_srv.o [1]
+fnet_http_srv_method_post
+                        0x0001fdec    0x14  Data  Gb  fnet_http_srv_post.o [1]
+fnet_http_srv_release   0x000147e5    0x62  Code  Gb  fnet_http_srv.o [1]
+fnet_http_srv_ssi_handler
+                        0x00020174    0x10  Data  Gb  fnet_http_srv_ssi.o [1]
+fnet_http_srv_ssi_head  0x00020898     0x8  Data  Lc  fnet_http_srv_ssi.o [1]
+fnet_http_srv_ssi_tail  0x00020ac4     0x4  Data  Lc  fnet_http_srv_ssi.o [1]
+fnet_http_srv_status_list
+                        0x20000130    0x80  Data  Gb  fnet_http_srv.o [1]
+fnet_icmp4_prot_if      0x200001b0    0x24  Data  Gb  fnet_icmp4.o [1]
+fnet_icmp6_prot_if      0x200001d4    0x24  Data  Gb  fnet_icmp6.o [1]
+fnet_inet_aton          0x0001839d     0x8  Code  Gb  fnet_inet.o [1]
+fnet_inet_ntoa          0x00018391     0xc  Code  Gb  fnet_inet.o [1]
+fnet_inet_ntop          0x000183a5    0x28  Code  Gb  fnet_inet.o [1]
+fnet_inet_pton          0x000183cd    0x3e  Code  Gb  fnet_inet.o [1]
+fnet_inet_ptos          0x0001840b    0x5e  Code  Gb  fnet_inet.o [1]
+fnet_init               0x00007f01    0x6a  Code  Gb  fnet_stack.o [1]
+fnet_ip4_multicast_list
+                        0x2000b1a0    0x78  Data  Gb  fnet_ip4.o [1]
+fnet_ip6_addr_any       0x00020184    0x10  Data  Gb  fnet_ip6.o [1]
+fnet_ip6_addr_linklocal_allnodes
+                        0x000201a4    0x10  Data  Gb  fnet_ip6.o [1]
+fnet_ip6_addr_linklocal_allrouters
+                        0x000201b4    0x10  Data  Gb  fnet_ip6.o [1]
+fnet_ip6_addr_linklocal_prefix
+                        0x000201c4    0x10  Data  Gb  fnet_ip6.o [1]
+fnet_ip6_addr_loopback  0x00020194    0x10  Data  Gb  fnet_ip6.o [1]
+fnet_ip6_ext_header_list
+                        0x200001f8    0x28  Data  Lc  fnet_ip6.o [1]
+fnet_ip6_if_policy_table
+                        0x0001eb18    0x8c  Data  Lc  fnet_ip6.o [1]
+fnet_ip6_multicast_list
+                        0x2000b22c    0xf0  Data  Gb  fnet_ip6.o [1]
+fnet_ip6_select_src_addr
+                        0x00006d09    0x1a  Code  Gb  fnet_ip6.o [1]
+fnet_isr_init           0x00002c21     0xe  Code  Gb  fnet_isr.o [1]
+fnet_isr_lock           0x00002b89     0xc  Code  Gb  fnet_isr.o [1]
+fnet_isr_register       0x00002b07    0x32  Code  Lc  fnet_isr.o [1]
+fnet_isr_table          0x2000b324     0x4  Data  Lc  fnet_isr.o [1]
+fnet_isr_unlock         0x00002b95    0x42  Code  Gb  fnet_isr.o [1]
+fnet_isr_unregister     0x00002b39    0x50  Code  Gb  fnet_isr.o [1]
+fnet_link_if_list       0x2000b328    0x18  Data  Lc  fnet_link.o [1]
+fnet_link_init          0x0001936d    0x7c  Code  Gb  fnet_link.o [1]
+fnet_llmnr_get_by_netif
+                        0x00019d29    0x3a  Code  Gb  fnet_llmnr.o [1]
+fnet_llmnr_if_list      0x2000b340   0x218  Data  Lc  fnet_llmnr.o [1]
+fnet_llmnr_init         0x00019a3d   0x18c  Code  Gb  fnet_llmnr.o [1]
+fnet_llmnr_ip6_multicast_addr
+                        0x000201d4    0x10  Data  Lc  fnet_llmnr.o [1]
+fnet_llmnr_is_enabled   0x00019d1b     0xe  Code  Gb  fnet_llmnr.o [1]
+fnet_llmnr_release      0x00019cef    0x2c  Code  Gb  fnet_llmnr.o [1]
+fnet_locked             0x2000b320     0x4  Data  Lc  fnet_isr.o [1]
+fnet_mac_to_str         0x00008321    0x2a  Code  Gb  fnet_eth.o [1]
+fnet_mdns_get_by_netif  0x0000bb51    0x3c  Code  Gb  fnet_mdns.o [1]
+fnet_mdns_if_list       0x2000b558   0x340  Data  Lc  fnet_mdns.o [1]
+fnet_mdns_init          0x0000b851   0x1c2  Code  Gb  fnet_mdns.o [1]
+fnet_mdns_ip6_multicast_addr
+                        0x000201e4    0x10  Data  Lc  fnet_mdns.o [1]
+fnet_mdns_is_enabled    0x0000bb43     0xe  Code  Gb  fnet_mdns.o [1]
+fnet_mdns_release       0x0000bb11    0x32  Code  Gb  fnet_mdns.o [1]
+fnet_mdns_service_get_by_type
+                        0x0000bab9    0x58  Code  Gb  fnet_mdns.o [1]
+fnet_mdns_service_register
+                        0x0000ba13    0x90  Code  Gb  fnet_mdns.o [1]
+fnet_mdns_service_unregister
+                        0x0000baa3    0x16  Code  Gb  fnet_mdns.o [1]
+fnet_mdns_update_name   0x0000bb8d    0x76  Code  Lc  fnet_mdns.o [1]
+fnet_memcmp             0x000047c5    0x24  Code  Gb  fnet_stdlib.o [1]
+fnet_memcpy             0x000046b1    0xe0  Code  Gb  fnet_stdlib.o [1]
+fnet_memcpy_func        0x00004791    0x16  Code  Gb  fnet_stdlib.o [1]
+fnet_mempool_main       0x2000b8a8     0x4  Data  Lc  fnet_netbuf.o [1]
+fnet_memset             0x000047a7     0xe  Code  Gb  fnet_stdlib.o [1]
+fnet_memset_zero        0x000047b5    0x10  Code  Gb  fnet_stdlib.o [1]
+fnet_mk_eth0_if         0x20000224   0x4c8  Data  Lc  fnet_mk_eth.o [1]
+fnet_mk_eth_init        0x0001ea89    0x90  Code  Lc  fnet_mk_eth.o [1]
+fnet_mk_get_uart_port_ptr
+                        0x20000870    0x18  Data  Lc  fnet_mk_serial.o [1]
+fnet_mk_irq_disable     0x0000b847          Code  Gb  fnet_mk_low.o [1]
+fnet_mk_irq_enable      0x0000b841          Code  Gb  fnet_mk_low.o [1]
+fnet_mk_periph_clk_khz  0x0000aaad    0x12  Code  Gb  fnet_mk.o [1]
+fnet_mutex_api          0x2000baa4     0x4  Data  Gb  fnet_stack.o [1]
+fnet_netif_bind_ip6_addr
+                        0x00005929    0x34  Code  Gb  fnet_netif.o [1]
+fnet_netif_callback_ip4_addr_conflict
+                        0x2000b8b4     0x4  Data  Lc  fnet_netif.o [1]
+fnet_netif_clear_ip4_addr_conflict
+                        0x00005679    0x20  Code  Gb  fnet_netif.o [1]
+fnet_netif_default      0x2000b8b0     0x4  Data  Gb  fnet_netif.o [1]
+fnet_netif_get_by_name  0x00004ec5    0x34  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_by_number
+                        0x00004ef9    0x18  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_by_scope_id
+                        0x000056ef    0x18  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_default  0x0000525f    0x14  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_hw_addr  0x0000546b    0x22  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_ip4_addr
+                        0x0000527b    0x18  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_ip4_addr_type
+                        0x00005437    0x1c  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_ip4_dns  0x000052c3    0x18  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_ip4_gateway
+                        0x000052ab    0x18  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_ip4_subnet_mask
+                        0x00005293    0x18  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_ip6_addr
+                        0x00005725    0x82  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_ip6_dns  0x000052db    0x2c  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_ip6_neighbor_cache
+                        0x0000537f    0xa2  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_ip6_prefix
+                        0x00005307    0x78  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_name     0x00005421    0x16  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_scope_id
+                        0x000056d7    0x18  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_statistics
+                        0x000055fd    0x3c  Code  Gb  fnet_netif.o [1]
+fnet_netif_get_type     0x00005567    0x10  Code  Gb  fnet_netif.o [1]
+fnet_netif_init         0x00004fdf    0x22  Code  Gb  fnet_netif.o [1]
+fnet_netif_is_connected
+                        0x00005577    0x1a  Code  Gb  fnet_netif.o [1]
+fnet_netif_is_ip4_addr_conflict
+                        0x00005655    0x24  Code  Gb  fnet_netif.o [1]
+fnet_netif_list         0x2000b8ac     0x4  Data  Gb  fnet_netif.o [1]
+fnet_netif_set_callback_on_ip4_addr_conflict
+                        0x00005639    0x1c  Code  Gb  fnet_netif.o [1]
+fnet_netif_set_default  0x00005137    0x14  Code  Gb  fnet_netif.o [1]
+fnet_netif_set_hw_addr  0x000054c3    0x22  Code  Gb  fnet_netif.o [1]
+fnet_netif_set_ip4_addr
+                        0x0000514b    0x1c  Code  Gb  fnet_netif.o [1]
+fnet_netif_set_ip4_addr_type
+                        0x00005453    0x18  Code  Gb  fnet_netif.o [1]
+fnet_netif_set_ip4_dns  0x00005249    0x16  Code  Gb  fnet_netif.o [1]
+fnet_netif_set_ip4_gateway
+                        0x00005233    0x16  Code  Gb  fnet_netif.o [1]
+fnet_netif_unbind_ip6_addr
+                        0x00005a49    0x2e  Code  Gb  fnet_netif.o [1]
+fnet_ping_if            0x2000b8b8    0x8c  Data  Lc  fnet_ping.o [1]
+fnet_ping_init          0x0001cd85   0x144  Code  Gb  fnet_ping.o [1]
+fnet_ping_release       0x0001d0b7    0x2a  Code  Gb  fnet_ping.o [1]
+fnet_poll               0x00007feb     0x8  Code  Gb  fnet_stack.o [1]
+fnet_poll_if            0x2000b944    0x60  Data  Lc  fnet_service.o [1]
+fnet_port_last          0x20000900     0x2  Data  Lc  fnet_socket.o [1]
+fnet_printf             0x0000b173     0xe  Code  Gb  fnet_serial.o [1]
+fnet_println            0x0000b181    0x1e  Code  Gb  fnet_serial.o [1]
+fnet_prot_if_list       0x0001fe28    0x14  Data  Lc  fnet_prot.o [1]
+fnet_rand               0x00004beb    0x2e  Code  Gb  fnet_stdlib.o [1]
+fnet_rand_seed          0x2000baac     0x4  Data  Lc  fnet_stdlib.o [1]
+fnet_raw_prot_if        0x20000888    0x24  Data  Gb  fnet_raw.o [1]
+fnet_raw_socket_api     0x0001f1c4    0x2c  Data  Lc  fnet_raw.o [1]
+fnet_release            0x00007f6b    0x2c  Code  Gb  fnet_stack.o [1]
+fnet_serial_flush       0x0000abd3    0x1a  Code  Gb  fnet_serial.o [1]
+fnet_serial_getchar     0x0000abbb    0x18  Code  Gb  fnet_serial.o [1]
+fnet_serial_putchar     0x0000aba1    0x1a  Code  Gb  fnet_serial.o [1]
+fnet_serial_stream_port0
+                        0x000201f4    0x10  Data  Gb  fnet_serial.o [1]
+fnet_serial_vprintf     0x0000ac95   0x4de  Code  Gb  fnet_serial.o [1]
+fnet_service_mutex      0x2000b9a4     0x4  Data  Lc  fnet_service.o [1]
+fnet_service_mutex_lock
+                        0x0000ab75     0xa  Code  Gb  fnet_service.o [1]
+fnet_service_mutex_unlock
+                        0x0000ab7f     0xa  Code  Gb  fnet_service.o [1]
+fnet_service_poll       0x0000aad1    0x30  Code  Gb  fnet_service.o [1]
+fnet_service_register   0x0000ab01    0x3a  Code  Gb  fnet_service.o [1]
+fnet_service_unregister
+                        0x0000ab3b    0x16  Code  Gb  fnet_service.o [1]
+fnet_shell_block        0x00017b09    0x32  Code  Gb  fnet_shell.o [1]
+fnet_shell_help         0x00017aaf    0x24  Code  Gb  fnet_shell.o [1]
+fnet_shell_init         0x000177ad    0xa4  Code  Gb  fnet_shell.o [1]
+fnet_shell_is_ctrlc     0x00017af1    0x18  Code  Gb  fnet_shell.o [1]
+fnet_shell_printf       0x0001795b    0x24  Code  Gb  fnet_shell.o [1]
+fnet_shell_println      0x0001797f    0x30  Code  Gb  fnet_shell.o [1]
+fnet_shell_putchar      0x000179af    0x18  Code  Gb  fnet_shell.o [1]
+fnet_shell_release      0x00017855    0x22  Code  Gb  fnet_shell.o [1]
+fnet_shell_script       0x000179c7    0xce  Code  Gb  fnet_shell.o [1]
+fnet_shell_script_stop  0x00017a95    0x1a  Code  Gb  fnet_shell.o [1]
+fnet_shell_switch       0x00017b53    0x44  Code  Gb  fnet_shell.o [1]
+fnet_shell_unblock      0x00017b3b    0x18  Code  Gb  fnet_shell.o [1]
+fnet_snprintf           0x0000b1f9    0x44  Code  Gb  fnet_serial.o [1]
+fnet_sntp_if            0x2000ba18    0x54  Data  Lc  fnet_sntp.o [1]
+fnet_sntp_init          0x0001d3ed    0xee  Code  Gb  fnet_sntp.o [1]
+fnet_sntp_leap_year_days
+                        0x000205a0     0xc  Data  Lc  fnet_sntp.o [1]
+fnet_sntp_release       0x0001d5b3    0x2a  Code  Gb  fnet_sntp.o [1]
+fnet_sntp_timestamp2utc
+                        0x0001d5dd    0xec  Code  Gb  fnet_sntp.o [1]
+fnet_sntp_year_days     0x00020594     0xc  Data  Lc  fnet_sntp.o [1]
+fnet_socket             0x00003931    0xcc  Code  Gb  fnet_socket.o [1]
+fnet_socket_accept      0x00003d99    0xd6  Code  Gb  fnet_socket.o [1]
+fnet_socket_addr_are_equal
+                        0x000045ad    0x4a  Code  Gb  fnet_socket.o [1]
+fnet_socket_addr_is_multicast
+                        0x00004517    0x36  Code  Gb  fnet_socket.o [1]
+fnet_socket_addr_is_unspecified
+                        0x00004569    0x44  Code  Gb  fnet_socket.o [1]
+fnet_socket_bind        0x00003b8f    0xfe  Code  Gb  fnet_socket.o [1]
+fnet_socket_callback_on_rx
+                        0x2000ba9c     0x4  Data  Lc  fnet_socket.o [1]
+fnet_socket_close       0x00003c8d    0x92  Code  Gb  fnet_socket.o [1]
+fnet_socket_connect     0x00003a09   0x186  Code  Gb  fnet_socket.o [1]
+fnet_socket_desc        0x2000ba6c    0x30  Data  Lc  fnet_socket.o [1]
+fnet_socket_event_rx    0x2000baa0     0x4  Data  Gb  fnet_socket.o [1]
+fnet_socket_getopt      0x0000412d   0x214  Code  Gb  fnet_socket.o [1]
+fnet_socket_listen      0x00003d1f    0x7a  Code  Gb  fnet_socket.o [1]
+fnet_socket_recv        0x00003ffb    0x10  Code  Gb  fnet_socket.o [1]
+fnet_socket_recvfrom    0x00003f3d    0xbe  Code  Gb  fnet_socket.o [1]
+fnet_socket_send        0x00003f2d    0x10  Code  Gb  fnet_socket.o [1]
+fnet_socket_sendto      0x00003e6f    0xbe  Code  Gb  fnet_socket.o [1]
+fnet_socket_set_callback_on_rx
+                        0x00003627     0x8  Code  Gb  fnet_socket.o [1]
+fnet_socket_setopt      0x0000400b   0x11c  Code  Gb  fnet_socket.o [1]
+fnet_sprintf            0x0000b1c5    0x34  Code  Gb  fnet_serial.o [1]
+fnet_srand              0x00004c19     0xc  Code  Gb  fnet_stdlib.o [1]
+fnet_stack_mutex        0x2000baa8     0x4  Data  Lc  fnet_stack.o [1]
+fnet_str_to_mac         0x0000834b    0xae  Code  Gb  fnet_eth.o [1]
+fnet_strcasecmp         0x00004ae5    0x42  Code  Gb  fnet_stdlib.o [1]
+fnet_strchr             0x000048f7    0x2e  Code  Gb  fnet_stdlib.o [1]
+fnet_strcmp             0x000047e9    0x1c  Code  Gb  fnet_stdlib.o [1]
+fnet_strcmp_splitter    0x00004b27    0x4e  Code  Gb  fnet_stdlib.o [1]
+fnet_strcpy             0x00004873    0x20  Code  Gb  fnet_stdlib.o [1]
+fnet_strlcat            0x00004839    0x3a  Code  Gb  fnet_stdlib.o [1]
+fnet_strlcpy            0x00004893    0x2c  Code  Gb  fnet_stdlib.o [1]
+fnet_strlen             0x00004805    0x18  Code  Gb  fnet_stdlib.o [1]
+fnet_strncmp            0x00004987    0x34  Code  Gb  fnet_stdlib.o [1]
+fnet_strnlen            0x0000481d    0x1c  Code  Gb  fnet_stdlib.o [1]
+fnet_strrchr            0x000048bf    0x38  Code  Gb  fnet_stdlib.o [1]
+fnet_strstr             0x00004925    0x62  Code  Gb  fnet_stdlib.o [1]
+fnet_strtok_r           0x00004b75    0x76  Code  Gb  fnet_stdlib.o [1]
+fnet_strtoul            0x000049bb   0x116  Code  Gb  fnet_stdlib.o [1]
+fnet_tcp_fasttimer      0x2000bab0     0x4  Data  Lc  fnet_tcp.o [1]
+fnet_tcp_prot_if        0x200008b0    0x24  Data  Gb  fnet_tcp.o [1]
+fnet_tcp_slowtimer      0x2000bab4     0x4  Data  Lc  fnet_tcp.o [1]
+fnet_tcp_socket_api     0x0001f1f0    0x2c  Data  Lc  fnet_tcp.o [1]
+fnet_telnet_init        0x0001a067   0x1dc  Code  Gb  fnet_telnet.o [1]
+fnet_telnet_is_enabled  0x0001a2b7     0xe  Code  Gb  fnet_telnet.o [1]
+fnet_telnet_release     0x0001a261    0x56  Code  Gb  fnet_telnet.o [1]
+fnet_timer_get_interval
+                        0x00002a69     0xc  Code  Gb  fnet_timer.o [1]
+fnet_timer_get_ms       0x000029af     0xa  Code  Gb  fnet_timer.o [1]
+fnet_timer_get_seconds  0x000029a3     0xc  Code  Gb  fnet_timer.o [1]
+fnet_timer_get_ticks    0x0000299d     0x6  Code  Gb  fnet_timer.o [1]
+fnet_tolower            0x00004ad1    0x14  Code  Gb  fnet_stdlib.o [1]
+fnet_udp_prot_if        0x200008d4    0x24  Data  Gb  fnet_udp.o [1]
+fnet_udp_socket_api     0x0001f21c    0x2c  Data  Lc  fnet_udp.o [1]
+fnet_vprintf            0x0000b19f     0xe  Code  Gb  fnet_serial.o [1]
+fnet_wifi_fw_get_version
+                        0x0001831b    0x30  Code  Gb  fnet_wifi.o [1]
+fnet_wifi_get_country_code
+                        0x0001834b    0x44  Code  Gb  fnet_wifi.o [1]
+fnet_wifi_get_op_mode   0x000182dd    0x3e  Code  Gb  fnet_wifi.o [1]
+free                    0x00012415     0x4  Code  Gb  heaptramp0.o [3]
+g_defaultClockConfigRun
+                        0x0001f45c    0x20  Data  Gb  clock_config.o [1]
+g_dspiHandle            0x2000bb9c     0xc  Data  Lc  fsl_dspi.o [1]
+g_xtal0Freq             0x2000bb98     0x4  Data  Gb  fsl_clock.o [1]
+http_if_list            0x2000ac8c   0x500  Data  Lc  fnet_http_srv.o [1]
+init_mparams            0x0000d4ff    0x32  Code  Lc  dlmalloc.o [3]
+init_top                0x0000d531    0x32  Code  Lc  dlmalloc.o [3]
+ip6_event               0x2000b220     0x4  Data  Lc  fnet_ip6.o [1]
+ip6_frag_list_head      0x2000b224     0x4  Data  Lc  fnet_ip6.o [1]
+ip6_queue               0x2000b218     0x8  Data  Lc  fnet_ip6.o [1]
+ip6_timer_ptr           0x2000b228     0x4  Data  Lc  fnet_ip6.o [1]
+ip_event                0x2000b19c     0x4  Data  Lc  fnet_ip4.o [1]
+ip_frag_list_head       0x2000b18c     0x4  Data  Lc  fnet_ip4.o [1]
+ip_queue                0x2000b194     0x8  Data  Lc  fnet_ip4.o [1]
+ip_timer_ptr            0x2000b190     0x4  Data  Lc  fnet_ip4.o [1]
+main                    0x0001f67f     0xe  Code  Gb  main.o [1]
+mparams                 0x2000bd74    0x18  Data  Lc  dlmalloc.o [3]
+node_10                 0x00015e9c   0x958  Data  Lc  fapp_fs_image.o [1]
+node_11                 0x000137c0   0xa6c  Data  Lc  fapp_fs_image.o [1]
+node_2                  0x0000e9fc   0xd98  Data  Lc  fapp_fs_image.o [1]
+node_3                  0x0001d9ac   0x2b0  Data  Lc  fapp_fs_image.o [1]
+node_4                  0x0001c344   0x580  Data  Lc  fapp_fs_image.o [1]
+node_5                  0x0000f794   0xd98  Data  Lc  fapp_fs_image.o [1]
+node_6                  0x0001052c   0xbf8  Data  Lc  fapp_fs_image.o [1]
+node_7                  0x000167f4   0x6ec  Data  Lc  fapp_fs_image.o [1]
+node_8                  0x00012d04   0xabc  Data  Lc  fapp_fs_image.o [1]
+node_9                  0x00016ee0   0x678  Data  Lc  fapp_fs_image.o [1]
+pcInterruptPriorityRegisters
+                        0x00020acc     0x4  Data  Lc  port.o [1]
+prepend_alloc           0x0000d563   0x342  Code  Lc  dlmalloc.o [3]
+prvAddCurrentTaskToDelayedList
+                        0x00011bb1    0x7c  Code  Lc  tasks.o [1]
+prvAddNewTaskToReadyList
+                        0x00011251    0xc2  Code  Lc  tasks.o [1]
+prvCheckForValidListAndQueue
+                        0x0001237f    0x4c  Code  Lc  timers.o [1]
+prvCheckTasksWaitingTermination
+                        0x00011927    0x64  Code  Lc  tasks.o [1]
+prvCopyDataFromQueue    0x00012b8b    0x2a  Code  Lc  queue.o [1]
+prvCopyDataToQueue      0x00012b05    0x86  Code  Lc  queue.o [1]
+prvDeleteTCB            0x0001198b    0x12  Code  Lc  tasks.o [1]
+prvGetNextExpireTime    0x0001216f    0x2c  Code  Lc  timers.o [1]
+prvIdleTask             0x000118a1    0x24  Code  Lc  tasks.o [1]
+prvInitialiseMutex      0x000125f3    0x1e  Code  Lc  queue.o [1]
+prvInitialiseNewQueue   0x000125d1    0x22  Code  Lc  queue.o [1]
+prvInitialiseNewTask    0x00011193    0xbe  Code  Lc  tasks.o [1]
+prvInitialiseTaskLists  0x000118cd    0x5a  Code  Lc  tasks.o [1]
+prvInsertTimerInActiveList
+                        0x000121c5    0x3e  Code  Lc  timers.o [1]
+prvIsQueueEmpty         0x00012c27    0x1c  Code  Lc  queue.o [1]
+prvIsQueueFull          0x00012c43    0x1e  Code  Lc  queue.o [1]
+prvProcessExpiredTimer  0x00012089    0x5a  Code  Lc  timers.o [1]
+prvProcessReceivedCommands
+                        0x00012203    0xfe  Code  Lc  timers.o [1]
+prvProcessTimerOrBlockTask
+                        0x000120f9    0x76  Code  Lc  timers.o [1]
+prvResetNextTaskUnblockTime
+                        0x0001199d    0x28  Code  Lc  tasks.o [1]
+prvSampleTimeNow        0x0001219b    0x2a  Code  Lc  timers.o [1]
+prvSampleTimeNow::xLastTime
+                        0x2000bd70     0x4  Data  Lc  timers.o [1]
+prvSwitchTimerLists     0x00012301    0x7e  Code  Lc  timers.o [1]
+prvTaskExitError        0x00011dc5    0x2a  Code  Lc  port.o [1]
+prvTestWaitCondition    0x0001ae95    0x1a  Code  Lc  event_groups.o [1]
+prvTimerTask            0x000120e5    0x14  Code  Lc  timers.o [1]
+prvUnlockQueue          0x00012bb5    0x72  Code  Lc  queue.o [1]
+pvPortMalloc            0x00011c6d    0x18  Code  Gb  heap_3.o [1]
+pvTaskIncrementMutexHeldCount
+                        0x00011b6f    0x1e  Code  Gb  tasks.o [1]
+pxCurrentTCB            0x2000bc34     0x4  Data  Gb  tasks.o [1]
+pxCurrentTimerList      0x2000bd60     0x4  Data  Lc  timers.o [1]
+pxDelayedTaskList       0x2000bcc4     0x4  Data  Lc  tasks.o [1]
+pxOverflowDelayedTaskList
+                        0x2000bcc8     0x4  Data  Lc  tasks.o [1]
+pxOverflowTimerList     0x2000bd64     0x4  Data  Lc  timers.o [1]
+pxPortInitialiseStack   0x00011d9d    0x28  Code  Gb  port.o [1]
+pxReadyTasksLists       0x2000bc38    0x64  Data  Lc  tasks.o [1]
+s_EDMAHandle            0x2000bbb0    0x40  Data  Lc  fsl_edma.o [1]
+s_dspiMasterIsr         0x2000bba8     0x4  Data  Lc  fsl_dspi.o [1]
+s_dspiSlaveIsr          0x2000bbac     0x4  Data  Lc  fsl_dspi.o [1]
+segment_holding         0x0000d4e1    0x1e  Code  Lc  dlmalloc.o [3]
+shell_if_list           0x2000b9a8    0x70  Data  Lc  fnet_shell.o [1]
+sys_alloc               0x0000da9d   0x164  Code  Lc  dlmalloc.o [3]
+sys_trim                0x0000dc01    0x66  Code  Lc  dlmalloc.o [3]
+telnet_if_list          0x2000bab8    0xd8  Data  Lc  fnet_telnet.o [1]
+tmalloc_large           0x0000dc75   0x384  Code  Lc  dlmalloc.o [3]
+tmalloc_small           0x0000dff9   0x1fe  Code  Lc  dlmalloc.o [3]
+ucMaxSysCallPriority    0x2000bf71     0x1  Data  Lc  port.o [1]
+ulMaxPRIGROUPValue      0x2000bbf0     0x4  Data  Lc  port.o [1]
+uxCriticalNesting       0x200008f8     0x4  Data  Lc  port.o [1]
+uxCurrentNumberOfTasks  0x2000bd0c     0x4  Data  Lc  tasks.o [1]
+uxDeletedTasksWaitingCleanUp
+                        0x2000bcf4     0x4  Data  Lc  tasks.o [1]
+uxListRemove            0x00011d75    0x26  Code  Gb  list.o [1]
+uxPendedTicks           0x2000bd1c     0x4  Data  Lc  tasks.o [1]
+uxSchedulerSuspended    0x2000bd34     0x4  Data  Lc  tasks.o [1]
+uxTaskNumber            0x2000bd28     0x4  Data  Lc  tasks.o [1]
+uxTaskResetEventItemValue
+                        0x00011b51    0x1e  Code  Gb  tasks.o [1]
+uxTopReadyPriority      0x2000bd14     0x4  Data  Lc  tasks.o [1]
+vEventGroupSetBitsCallback
+                        0x0001ae8d     0x8  Code  Gb  event_groups.o [1]
+vListInitialise         0x00011d03    0x1e  Code  Gb  list.o [1]
+vListInitialiseItem     0x00011d21     0x6  Code  Gb  list.o [1]
+vListInsert             0x00011d3f    0x36  Code  Gb  list.o [1]
+vListInsertEnd          0x00011d27    0x18  Code  Gb  list.o [1]
+vPortEnableVFP          0x000124d5          Code  Gb  portasm.o [1]
+vPortEnterCritical      0x00011eb9    0x3a  Code  Gb  port.o [1]
+vPortExitCritical       0x00011ef3    0x32  Code  Gb  port.o [1]
+vPortFree               0x00011c85    0x18  Code  Gb  heap_3.o [1]
+vPortSetupTimerInterrupt
+                        0x00012419    0x30  Code  Wk  fsl_tickless_systick.o [1]
+vPortStartFirstTask     0x000124bd          Code  Gb  portasm.o [1]
+vPortValidateInterruptPriority
+                        0x00011f4d    0x4a  Code  Gb  port.o [1]
+vQueueAddToRegistry     0x00012c61    0x24  Code  Gb  queue.o [1]
+vQueueDelete            0x00012adf    0x26  Code  Gb  queue.o [1]
+vQueueUnregisterQueue   0x00012c85    0x2a  Code  Gb  queue.o [1]
+vQueueWaitForMessageRestricted
+                        0x00012cb9    0x4a  Code  Gb  queue.o [1]
+vTaskMissedYield        0x00011893     0xa  Code  Gb  tasks.o [1]
+vTaskPlaceOnEventList   0x000115ff    0x2e  Code  Gb  tasks.o [1]
+vTaskPlaceOnEventListRestricted
+                        0x00011695    0x38  Code  Gb  tasks.o [1]
+vTaskPlaceOnUnorderedEventList
+                        0x00011635    0x52  Code  Gb  tasks.o [1]
+vTaskPriorityInherit    0x000119ef    0xac  Code  Gb  tasks.o [1]
+vTaskSetTimeOutState    0x000117e5    0x26  Code  Gb  tasks.o [1]
+vTaskStartScheduler     0x00011313    0x6c  Code  Gb  tasks.o [1]
+vTaskSuspendAll         0x0001137f    0x10  Code  Gb  tasks.o [1]
+vTaskSwitchContext      0x00011591    0x6e  Code  Gb  tasks.o [1]
+xActiveTimerList1       0x2000bd38    0x14  Data  Lc  timers.o [1]
+xActiveTimerList2       0x2000bd4c    0x14  Data  Lc  timers.o [1]
+xDelayedTaskList1       0x2000bc9c    0x14  Data  Lc  tasks.o [1]
+xDelayedTaskList2       0x2000bcb0    0x14  Data  Lc  tasks.o [1]
+xEventGroupCreate       0x0001aca1    0x1c  Code  Gb  event_groups.o [1]
+xEventGroupSetBits      0x0001ade1    0xac  Code  Gb  event_groups.o [1]
+xEventGroupSetBitsFromISR
+                        0x0001aeaf    0x10  Code  Gb  event_groups.o [1]
+xEventGroupWaitBits     0x0001acbd   0x124  Code  Gb  event_groups.o [1]
+xIdleTaskHandle         0x2000bd30     0x4  Data  Lc  tasks.o [1]
+xNextTaskUnblockTime    0x2000bd2c     0x4  Data  Lc  tasks.o [1]
+xNumOfOverflows         0x2000bd24     0x4  Data  Lc  tasks.o [1]
+xPendingReadyList       0x2000bccc    0x14  Data  Lc  tasks.o [1]
+xPortStartScheduler     0x00011def    0xca  Code  Gb  port.o [1]
+xQueueCreateMutex       0x00012611    0x1a  Code  Gb  queue.o [1]
+xQueueGenericCreate     0x00012587    0x4a  Code  Gb  queue.o [1]
+xQueueGenericReceive    0x00012925   0x1ba  Code  Gb  queue.o [1]
+xQueueGenericReset      0x000124f1    0x96  Code  Gb  queue.o [1]
+xQueueGenericSend       0x000126b3   0x196  Code  Gb  queue.o [1]
+xQueueGenericSendFromISR
+                        0x00012849    0xdc  Code  Gb  queue.o [1]
+xQueueGiveMutexRecursive
+                        0x0001262b    0x42  Code  Gb  queue.o [1]
+xQueueRegistry          0x2000bbf4    0x40  Data  Gb  queue.o [1]
+xQueueTakeMutexRecursive
+                        0x0001266d    0x46  Code  Gb  queue.o [1]
+xSchedulerRunning       0x2000bd18     0x4  Data  Lc  tasks.o [1]
+xSuspendedTaskList      0x2000bcf8    0x14  Data  Lc  tasks.o [1]
+xTaskCheckForTimeOut    0x00011811    0x82  Code  Gb  tasks.o [1]
+xTaskCreate             0x00011125    0x6e  Code  Gb  tasks.o [1]
+xTaskGetCurrentTaskHandle
+                        0x000119c5     0x8  Code  Gb  tasks.o [1]
+xTaskGetSchedulerState  0x000119cd    0x20  Code  Gb  tasks.o [1]
+xTaskGetTickCount       0x00011487     0x8  Code  Gb  tasks.o [1]
+xTaskIncrementTick      0x0001148f   0x102  Code  Gb  tasks.o [1]
+xTaskPriorityDisinherit
+                        0x00011a9b    0xb6  Code  Gb  tasks.o [1]
+xTaskRemoveFromEventList
+                        0x000116d5    0x84  Code  Gb  tasks.o [1]
+xTaskRemoveFromUnorderedEventList
+                        0x00011759    0x86  Code  Gb  tasks.o [1]
+xTaskResumeAll          0x0001138f    0xf8  Code  Gb  tasks.o [1]
+xTasksWaitingTermination
+                        0x2000bce0    0x14  Data  Lc  tasks.o [1]
+xTickCount              0x2000bd10     0x4  Data  Lc  tasks.o [1]
+xTimerCreateTimerTask   0x00011fc9    0x48  Code  Gb  timers.o [1]
+xTimerGenericCommand    0x00012011    0x78  Code  Gb  timers.o [1]
+xTimerPendFunctionCallFromISR
+                        0x000123cb    0x22  Code  Gb  timers.o [1]
+xTimerQueue             0x2000bd68     0x4  Data  Lc  timers.o [1]
+xTimerTaskHandle        0x2000bd6c     0x4  Data  Lc  timers.o [1]
+xYieldPending           0x2000bd20     0x4  Data  Lc  tasks.o [1]
+
+
+[1] = C:\@ccwork\FNET\gitcodedev\src\fnet\fnet_demos\build\frdmk64f\shell\freertos\iar\int flash debug\obj
+[2] = command line
+[3] = dl7M_tln.a
+[4] = m7M_tls.a
+[5] = rt7M_tl.a
+[6] = shb_l.a
+
+  102 414 bytes of readonly  code memory
+   32 273 bytes of readonly  data memory
+  196 465 bytes of readwrite data memory
+
+Errors: none
+Warnings: none
