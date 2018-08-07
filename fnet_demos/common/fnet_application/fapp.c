@@ -396,8 +396,6 @@ void fapp_reinit_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **
 #if FNET_CFG_IP4 &&((FAPP_CFG_DHCPC_CMD && FNET_CFG_DHCP_CLN) || FNET_CFG_AUTOIP)
 void fapp_addr_callback_updated(fnet_shell_desc_t desc, fnet_netif_desc_t netif)
 {
-    fnet_shell_unblock(desc); /* Unblock the shell. */
-
     /* Print updated parameters info. */
     fnet_shell_println( desc, "\n%s", FAPP_DELIMITER_STR);
     fnet_shell_println( desc, FAPP_UPDATED_IP_STR);

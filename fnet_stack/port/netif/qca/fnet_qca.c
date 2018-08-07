@@ -84,6 +84,8 @@ static fnet_return_t _fnet_qca_wifi_set_country_code(fnet_netif_t *netif, const 
 #if FNET_CFG_CPU_WIFI_FW_UPDATE
     static fnet_return_t _fnet_qca_wifi_fw_update(fnet_netif_t *netif, const fnet_uint8_t *fw_buffer, fnet_size_t fw_buffer_size);
 #endif
+static A_NETBUF *_fnet_qca_frame_read(fnet_qca_if_t *qca_if);
+static void _fnet_qca_frame_write(fnet_qca_if_t *qca_if, void *frame);
 
 /************************************************************************
 *     Global Data Structures
@@ -194,8 +196,10 @@ static fnet_return_t _fnet_qca_init(fnet_netif_t *netif)
     /* Clear control structure. */
     fnet_memset_zero(qca_if, sizeof(*qca_if));
 
-    qca_if->input_event = fnet_event_init(_fnet_qca_input, qca_if);
+    qca_if->frame_read = &qca_if->frame[0];
+    qca_if->frame_write = &qca_if->frame[0];
 
+    qca_if->input_event = fnet_event_init(_fnet_qca_input, qca_if);
     if(qca_if->input_event)
     {
         WIFISHIELD_Init(); /* Initialize Wi-Fi shield. */
@@ -1309,20 +1313,19 @@ static fnet_return_t _fnet_qca_wifi_set_country_code(fnet_netif_t *netif, const 
 static void _fnet_qca_input(void *cookie)
 {
     fnet_qca_if_t   *qca_if = (fnet_qca_if_t *)cookie;
-    void            *pReq;
     A_NETBUF        *a_netbuf_ptr;
     fnet_uint8_t    *frame;
     fnet_size_t     frame_len;
 
     taskENTER_CRITICAL();
 
-    pReq = qca_if->pReq;
-    a_netbuf_ptr = (A_NETBUF *)(pReq);
 
-    if(a_netbuf_ptr && qca_if->netif)
+    a_netbuf_ptr = _fnet_qca_frame_read(qca_if);
+
+    while(a_netbuf_ptr && qca_if->netif)
     {
-        frame_len = A_NETBUF_LEN(pReq);
-        frame = A_NETBUF_DATA(pReq);
+        frame_len = A_NETBUF_LEN(a_netbuf_ptr);
+        frame = A_NETBUF_DATA(a_netbuf_ptr);
 
         qca_if->statistics.rx_packet++;
 
@@ -1331,14 +1334,67 @@ static void _fnet_qca_input(void *cookie)
         /* Ethernet input.*/
         _fnet_eth_input(qca_if->netif, frame, frame_len);
 
-        fnet_isr_unlock();
-    }
+        A_NETBUF_FREE(a_netbuf_ptr); //DM
 
-    A_NETBUF_FREE(pReq);
-    qca_if->pReq = FNET_NULL;
+        fnet_isr_unlock();
+
+        a_netbuf_ptr = _fnet_qca_frame_read(qca_if);
+    }
 
     taskEXIT_CRITICAL();
 }
+
+/************************************************************************
+* Read RX frame.
+*************************************************************************/
+static A_NETBUF *_fnet_qca_frame_read(fnet_qca_if_t *qca_if)
+{
+    A_NETBUF *result = FNET_NULL;
+
+    if(qca_if && *qca_if->frame_read)
+    {
+        result = (A_NETBUF *)(*qca_if->frame_read);
+        *qca_if->frame_read = FNET_NULL;
+        if(qca_if->frame_read == &qca_if->frame[FNET_CFG_QCA_FRAME_MAX - 1])
+        {
+            qca_if->frame_read = &qca_if->frame[0];
+        }
+        else
+        {
+            qca_if->frame_read++;
+        }
+    }
+
+    return result;
+}
+
+/************************************************************************
+* Write RX frame.
+*************************************************************************/
+static void _fnet_qca_frame_write(fnet_qca_if_t *qca_if, void *frame)
+{
+    if(frame)
+    {
+        if(qca_if && (*qca_if->frame_write == FNET_NULL))
+        {
+            *qca_if->frame_write = frame;
+            if(qca_if->frame_write == &qca_if->frame[FNET_CFG_QCA_FRAME_MAX - 1])
+            {
+                qca_if->frame_write = &qca_if->frame[0];
+            }
+            else
+            {
+                qca_if->frame_write++;
+            }
+        }
+        else
+        {
+            /* Drop frame */
+            A_NETBUF_FREE(frame);
+        }
+    }
+}
+
 
 /************************************************************************
 ***********************  QCA Interface adapter **************************
@@ -1353,11 +1409,7 @@ static void _fnet_qca_input(void *cookie)
  *****************************************************************************/
 void Custom_DeliverFrameToNetworkStack(void *pCxt, void *pReq)
 {
-    if(fnet_qca_if.pReq) /* Just in case */
-    {
-        A_NETBUF_FREE(fnet_qca_if.pReq);
-    }
-    fnet_qca_if.pReq = pReq;
+    _fnet_qca_frame_write(&fnet_qca_if, pReq);
 
     /* Initiate S/W Interrupt*/
     fnet_event_raise(fnet_qca_if.input_event);

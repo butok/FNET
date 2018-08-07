@@ -270,48 +270,48 @@ The following table summarizes the supported demo applications, platforms and co
  </tr>
 <tr>
  <td class="fnet_td_grey">MK64FN1M</td>
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td> 
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td> 
+ <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td> 
+ <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">MK66FN2M</td>
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
  <td ALIGN=CENTER>-</td>
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td> 
+ <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">MK60DN512</td>
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.22<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
  <td ALIGN=CENTER>-</td> 
  <td ALIGN=CENTER>-</td> 
  <td ALIGN=CENTER>-</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">LPC54628</td>
- <td ALIGN=CENTER>IAR8.22</td>
+ <td ALIGN=CENTER>IAR8.30</td>
  <td ALIGN=CENTER>-</td>
- <td ALIGN=CENTER>IAR8.22</td>
- <td ALIGN=CENTER>IAR8.22</td>
- <td ALIGN=CENTER>IAR8.22</td>
- <td ALIGN=CENTER>IAR8.22</td> 
+ <td ALIGN=CENTER>IAR8.30</td>
+ <td ALIGN=CENTER>IAR8.30</td>
+ <td ALIGN=CENTER>IAR8.30</td>
+ <td ALIGN=CENTER>IAR8.30</td> 
  </tr>
  <tr>
   <td class="fnet_td_grey">MIMXRT1052</td>
- <td ALIGN=CENTER>IAR8.22</td>
+ <td ALIGN=CENTER>IAR8.30</td>
  <td ALIGN=CENTER>-</td>
- <td ALIGN=CENTER>IAR8.22</td>
- <td ALIGN=CENTER>IAR8.22</td>
- <td ALIGN=CENTER>IAR8.22</td> 
- <td ALIGN=CENTER>IAR8.22</td> 
+ <td ALIGN=CENTER>IAR8.30</td>
+ <td ALIGN=CENTER>IAR8.30</td>
+ <td ALIGN=CENTER>IAR8.30</td> 
+ <td ALIGN=CENTER>IAR8.30</td> 
  </tr>
 </table>
 
@@ -2048,7 +2048,8 @@ SHELL>
 SHELL> azure
 ************************************************
  Azure IoT Hub Telemetry example
- Period (sec)         : 15
+ Period (sec)         : 16
+ Message number       : infinite
 Press [Ctr+C] to cancel.
 ************************************************
 [AZURE_APP] IoT Hub Connection is authenticated (OK)
@@ -2350,6 +2351,13 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+
+- Version 4.5.2
+	- Redesigned Azure client example as a service.
+	- Added frame buffering to QCA WiFi adapter to avoid possible frame dropping.
+	- Fixed fnet_service_poll() to avoid possible recursion.
+	- Made fnet_shell_block/unblock() nested.
+
 - Version 4.5.1
 	- Certified for Microsoft Azure IoT.
 	- Updated Azure IoT SDK to version 1.2.5.

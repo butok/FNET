@@ -34,7 +34,8 @@
 typedef struct
 {
     fnet_service_poll_t service;
-    void *service_cookie;
+    fnet_bool_t         is_running;         /* Run flag, to avoid possible recursion. */
+    void                *service_cookie;
 } fnet_poll_list_entry_t;
 
 /* Polling interface structure */
@@ -63,15 +64,17 @@ void fnet_service_poll( void )
 {
     fnet_index_t i;
 
+    fnet_service_mutex_lock();
     for (i = 0u; i < FNET_CFG_SERVICE_MAX; i++)
     {
-        if(fnet_poll_if.list[i].service)
+        if(fnet_poll_if.list[i].service && (fnet_poll_if.list[i].is_running == FNET_FALSE))
         {
-            fnet_service_mutex_lock();
+            fnet_poll_if.list[i].is_running = FNET_TRUE;
             fnet_poll_if.list[i].service(fnet_poll_if.list[i].service_cookie);
-            fnet_service_mutex_unlock();
+            fnet_poll_if.list[i].is_running = FNET_FALSE;
         }
     }
+    fnet_service_mutex_unlock();
 }
 
 /************************************************************************

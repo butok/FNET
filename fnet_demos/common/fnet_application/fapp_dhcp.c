@@ -51,6 +51,7 @@
 #if FAPP_CFG_DHCPC_CMD && FNET_CFG_DHCP_CLN
     static void fapp_dhcp_cln_on_ctrlc(fnet_shell_desc_t desc, void *cookie);
     static void fapp_dhcp_cln_callback_updated(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
+    static void fapp_dhcp_cln_callback_updated_unblock(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
     static void fapp_dhcp_cln_callback_discover(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
 #endif
 
@@ -77,9 +78,18 @@ static void fapp_dhcp_cln_callback_updated(fnet_dhcp_cln_desc_t dhcp_desc, fnet_
 {
     fnet_shell_desc_t desc = (fnet_shell_desc_t) shl_desc;
 
-    fapp_dhcp_cln_discover_counter = FAPP_CFG_DHCPC_CMD_DISCOVER_MAX; /* reset counter.*/
-
     fapp_addr_callback_updated(desc, netif);
+}
+static void fapp_dhcp_cln_callback_updated_unblock(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc )
+{
+    fnet_shell_desc_t desc = (fnet_shell_desc_t) shl_desc;
+
+    fnet_dhcp_cln_set_callback_discover(dhcp_desc, FNET_NULL, FNET_NULL); /* Disable discovery callback */
+    fnet_dhcp_cln_set_callback_updated(dhcp_desc, fapp_dhcp_cln_callback_updated, shl_desc); /* Use shell non-blocking version */
+
+    fapp_dhcp_cln_callback_updated(dhcp_desc, netif, shl_desc);
+
+    fnet_shell_unblock(desc); /* Unblock the shell. */
 }
 
 /************************************************************************
@@ -100,17 +110,7 @@ static void fapp_dhcp_cln_callback_discover(fnet_dhcp_cln_desc_t dhcp_desc, fnet
         /* Satrt AutoIP */
         if(fapp_dhcp_cln_autoip == FNET_TRUE)
         {
-            fnet_char_t netif_name[FNET_NETIF_NAMELEN];
-            fnet_char_t script[FAPP_CFG_SHELL_MAX_LINE_LENGTH];
-
-            fnet_netif_get_name(netif, netif_name, sizeof(netif_name));
-
-            fnet_snprintf(script, sizeof(script), "autoip -n %s", netif_name);
-
-            if(fnet_shell_script(desc, script) == FNET_ERR)
-            {
-                fnet_shell_println(desc, "Script error!");
-            }
+            fapp_autoip_init(desc, netif);
         }
 #endif
     }
@@ -209,7 +209,7 @@ void fapp_dhcp_cln_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
             fnet_netif_get_name(netif, netif_name, sizeof(netif_name));
 
             /* Register DHCP event handler callbacks. */
-            fnet_dhcp_cln_set_callback_updated(dhcp_desc, fapp_dhcp_cln_callback_updated, (void *)desc);
+            fnet_dhcp_cln_set_callback_updated(dhcp_desc, fapp_dhcp_cln_callback_updated_unblock, (void *)desc);
             fnet_dhcp_cln_set_callback_discover(dhcp_desc, fapp_dhcp_cln_callback_discover, (void *)desc);
 
             fnet_shell_println(desc, FAPP_DELIMITER_STR);

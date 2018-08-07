@@ -31,7 +31,11 @@
 #include "stack/fnet_eth_prv.h"
 
 #ifndef FNET_CFG_QCA_SCAN_MAX
-    #define FNET_CFG_QCA_SCAN_MAX        (20)   /* Maximum number of SSID scans. */
+    #define FNET_CFG_QCA_SCAN_MAX       (20)   /* Maximum number of SSID scans. */
+#endif
+
+#ifndef FNET_CFG_QCA_FRAME_MAX
+    #define FNET_CFG_QCA_FRAME_MAX      (5)   /* Maximum number of buffered WiFi Rx frames. */
 #endif
 
 /* QCA4002 Module Control data structure */
@@ -41,7 +45,9 @@ typedef struct
     fnet_bool_t                     is_connected;   /* Current Link status. */
     fnet_bool_t                     was_disconneced; /* Used to avoid possible skip of the disconnection state */
     fnet_netif_t                    *netif;         /* Netif. */
-    void                            *pReq;          /* Input request */
+    void                            *frame[FNET_CFG_QCA_FRAME_MAX]; /* RX frame ring buffer */
+    void                            **frame_read;
+    void                            **frame_write;
     fnet_event_desc_t               input_event;    /* Input event */
 } fnet_qca_if_t;
 

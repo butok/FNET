@@ -92,6 +92,7 @@ static void fapp_link_callback(fnet_netif_desc_t netif, fnet_bool_t connected, v
 
     /* Print interface connection status.*/
     fnet_shell_println(desc, "\n[LINK] %s: %s => Script: %s", netif_name, fapp_netif_connection_state_str[fnet_netif_is_connected(netif)], script);
+    fnet_shell_script_stop(desc); /* Stop previous script, just in case */
     if(fnet_shell_script(desc, script) == FNET_ERR)
     {
         fnet_shell_println(desc, "Script error!");

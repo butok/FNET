@@ -68,7 +68,7 @@ struct fnet_shell_if
     fnet_char_t             *cmd_line_end;
     fnet_char_t             *cmd_line;                              /* Command line buffer.*/
     fnet_size_t             cmd_line_size;
-    fnet_bool_t             _blocked;                               /* Flag that current command is blocked. */
+    fnet_index_t            block_index;                            /* >0 Flag that current command is blocked. */
     void                    (*_exit_blocked)(fnet_shell_desc_t shl_desc, void *cookie);/* Pointer to the callback function,
                                                                     * occurring on exit from command blocked
                                                                     * state. It happens when a user press
@@ -244,7 +244,7 @@ static void _fnet_shell_poll( void *shell_if_p )
 
                 }
 
-                if(shell_if->_blocked)
+                if(shell_if->block_index)
                 {
                     shell_if->state = FNET_SHELL_STATE_BLOCKED;
                 }
@@ -258,7 +258,7 @@ static void _fnet_shell_poll( void *shell_if_p )
                 break;
             /*----------------------------------*/
             case FNET_SHELL_STATE_BLOCKED:
-                if(shell_if->_blocked)
+                if(shell_if->block_index)
                 {
                     if(fnet_shell_is_ctrlc ((fnet_shell_desc_t)shell_if_p))
                     {
@@ -266,7 +266,7 @@ static void _fnet_shell_poll( void *shell_if_p )
                         {
                             shell_if->_exit_blocked((fnet_shell_desc_t) shell_if, shell_if->_exit_blocked_cookie);
                         }
-                        shell_if->_blocked = FNET_FALSE;
+                        shell_if->block_index--;
                     }
                 }
                 else if(shell_if->cmd_line_end == 0)
@@ -291,7 +291,7 @@ static void _fnet_shell_poll( void *shell_if_p )
     }
     else
     {
-        if(shell_if->_blocked)
+        if(shell_if->block_index) /* If blocked */
         {
             if(fnet_shell_is_ctrlc ((fnet_shell_desc_t)shell_if_p))
             {
@@ -299,7 +299,7 @@ static void _fnet_shell_poll( void *shell_if_p )
                 {
                     shell_if->_exit_blocked((fnet_shell_desc_t) shell_if, shell_if->_exit_blocked_cookie);
                 }
-                shell_if->_blocked = FNET_FALSE;
+                shell_if->block_index--;
             }
         }
     }
@@ -720,7 +720,7 @@ fnet_return_t fnet_shell_block( fnet_shell_desc_t desc, void (*on_ctrlc)(fnet_sh
     if(shell_if && on_ctrlc )
     {
         fnet_service_mutex_lock();
-        shell_if->_blocked = FNET_TRUE;
+        shell_if->block_index++;
         shell_if->_exit_blocked = on_ctrlc;
         shell_if->_exit_blocked_cookie = cookie;
         res = FNET_OK;
@@ -744,7 +744,10 @@ void fnet_shell_unblock( fnet_shell_desc_t desc)
     if(shell_if)
     {
         fnet_service_mutex_lock();
-        shell_if->_blocked = FNET_FALSE;
+        if(shell_if->block_index)
+        {
+            shell_if->block_index--;
+        }
         fnet_service_mutex_unlock();
     }
 }

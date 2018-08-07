@@ -50,32 +50,59 @@
 #endif
 
 /************************************************************************
+*     Definitions
+*************************************************************************/
+typedef enum
+{
+    FAPP_AZURE_STATE_DISABLED = 0,  /* Disabled */
+    FAPP_AZURE_STATE_ENABLED,       /* Sending/receiving Azure messages */
+    FAPP_AZURE_STATE_RELEASING,     /* Releasing Azure client */
+} fapp_azure_state_t;
+
+/************************************************************************
+*    Azure client example interface structure.
+*************************************************************************/
+typedef struct
+{
+    IOTHUB_CLIENT_LL_HANDLE iothub_client_handle;
+    fapp_azure_state_t      state;
+    fnet_time_t             state_timestamp;
+    fnet_bool_t             is_unauthenticated;
+    fnet_service_desc_t     service_descriptor;
+    fnet_shell_desc_t       shell_desc;
+    fnet_index_t            message_counter;
+}
+fapp_azure_client_if_t;
+
+/************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fapp_azure_client_mqtt(void);
+static fnet_return_t _fapp_azure_client_mqtt_init(fnet_shell_desc_t shell_desc);
 #ifndef NO_LOGGING
     static void _fapp_azure_log_function(LOG_CATEGORY log_category, const char *file, const char *func, int line, unsigned int options, const char *format, ...);
 #endif
 static void _fapp_azure_on_ctrlc(fnet_shell_desc_t desc, void *cookie);
-static fnet_return_t _fapp_azure_client_send_message(IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle);
+static fnet_return_t _fapp_azure_client_send_message(fapp_azure_client_if_t *azure_client_if);
 static IOTHUBMESSAGE_DISPOSITION_RESULT _fapp_azure_receive_message_callback(IOTHUB_MESSAGE_HANDLE message, void *userContextCallback);
+static void _fapp_azure_client_mqtt_poll(void *iotHubClientHandle_p);
 
 /************************************************************************
-*     Definitions.
+*     Variables
 *************************************************************************/
-static fnet_bool_t  _fapp_azure_is_running;
-static fnet_bool_t  _fapp_azure_is_unauthenticated;
-static fnet_index_t _fapp_azure_message_counter;
-static char         _fapp_azure_message_buffer[512];
+/* Azure client interface structure */
+static fapp_azure_client_if_t   _fapp_azure_client_if;
 
 /************************************************************************
 * Ctr+C termination handler.
 ************************************************************************/
 static void _fapp_azure_on_ctrlc(fnet_shell_desc_t desc, void *cookie)
 {
+    fapp_azure_client_if_t *azure_client_if = (fapp_azure_client_if_t *)cookie;
+
     /* Terminate Azure example. */
-    _fapp_azure_is_running = FNET_FALSE;
-    fnet_shell_println( desc, FAPP_CANCELLED_STR);
+    azure_client_if->state_timestamp = fnet_timer_get_seconds();
+    azure_client_if->state = FAPP_AZURE_STATE_RELEASING;
+    fnet_shell_println(desc, FAPP_CANCELLED_STR);
 }
 
 /************************************************************************
@@ -83,21 +110,24 @@ static void _fapp_azure_on_ctrlc(fnet_shell_desc_t desc, void *cookie)
 ************************************************************************/
 void fapp_azure_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
-    fnet_shell_println(desc, FAPP_DELIMITER_STR);
-    fnet_shell_println(desc, " Azure IoT Hub Telemetry example");
-    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "Period (sec)", FAPP_CFG_AZURE_CMD_MESSAGE_PERIOD );
-    fnet_shell_println(desc, FAPP_TOCANCEL_STR);
-    fnet_shell_println(desc, FAPP_DELIMITER_STR);
-
 #ifndef NO_LOGGING
     xlogging_set_log_function(_fapp_azure_log_function); /* Register Azure log function (optional) */
 #endif
 
-    fnet_shell_block(desc, _fapp_azure_on_ctrlc, FNET_NULL); /* Block the shell input.*/
-
-    fapp_azure_client_mqtt(); /* Start Azure client example (over MQTT) */
-
-    fnet_shell_unblock(desc); /* Unblock shell, just in case.*/
+    /* Initialize Azure client example (over MQTT) */
+    if(_fapp_azure_client_mqtt_init(desc) == FNET_OK)
+    {
+        fnet_shell_println(desc, FAPP_DELIMITER_STR);
+        fnet_shell_println(desc, " Azure IoT Hub Telemetry example");
+        fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "Period (sec)", FAPP_CFG_AZURE_CMD_MESSAGE_PERIOD );
+#if FAPP_CFG_AZURE_CMD_MESSAGE_NUMBER != (-1)
+        fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_D, "Message number", FAPP_CFG_AZURE_CMD_MESSAGE_NUMBER );
+#else
+        fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Message number", "infinite" );
+#endif
+        fnet_shell_println(desc, FAPP_TOCANCEL_STR);
+        fnet_shell_println(desc, FAPP_DELIMITER_STR);
+    }
 }
 
 /************************************************************************
@@ -186,7 +216,9 @@ static IOTHUBMESSAGE_DISPOSITION_RESULT _fapp_azure_receive_message_callback(IOT
         /* If we receive the work 'quit' then we stop running */
         if (size == (strlen("quit") * sizeof(char)) && memcmp(buffer, "quit", size) == 0)
         {
-            _fapp_azure_is_running = FNET_FALSE;
+            /* Terminate Azure example. */
+            _fapp_azure_client_if.state_timestamp = fnet_timer_get_seconds();
+            _fapp_azure_client_if.state = FAPP_AZURE_STATE_RELEASING;
         }
     }
 
@@ -257,15 +289,17 @@ static void _fapp_azure_client_connection_callback(IOTHUB_CLIENT_CONNECTION_STAT
     fnet_char_t *status_str;
     fnet_char_t *reason_str;
 
+    fapp_azure_client_if_t *azure_client_if = (fapp_azure_client_if_t *)userContextCallback;
+
     switch(result)
     {
         case IOTHUB_CLIENT_CONNECTION_AUTHENTICATED:
             status_str = "authenticated";
-            _fapp_azure_is_unauthenticated = FNET_TRUE;
+            azure_client_if->is_unauthenticated = FNET_TRUE;
             break;
         case IOTHUB_CLIENT_CONNECTION_UNAUTHENTICATED:
             status_str = "unauthenticated";
-            _fapp_azure_is_unauthenticated = FNET_FALSE;
+            azure_client_if->is_unauthenticated = FNET_FALSE;
             break;
         default:
             status_str = "unknown"; /* Should never happen */
@@ -300,15 +334,15 @@ static void _fapp_azure_client_connection_callback(IOTHUB_CLIENT_CONNECTION_STAT
             break;
     }
 
-    fnet_println("[AZURE_APP] IoT Hub Connection is %s (%s)", status_str, reason_str);
+    fnet_shell_println(azure_client_if->shell_desc, "[AZURE_APP] IoT Hub Connection is %s (%s)", status_str, reason_str);
 }
 
 /************************************************************************
 *  Prepare and send telemetry message to Azure IoT hub
 ************************************************************************/
-static fnet_return_t _fapp_azure_client_send_message(IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle)
+static fnet_return_t _fapp_azure_client_send_message(fapp_azure_client_if_t *azure_client_if)
 {
-    /* Now that we are ready to receive commands, let's send some messages */
+    static char     message_buffer[512];
     fnet_return_t   result = FNET_ERR;
     double          temperature = 20.0;
     double          humidity = 60.0;
@@ -318,13 +352,17 @@ static fnet_return_t _fapp_azure_client_send_message(IOTHUB_CLIENT_LL_HANDLE iot
     /* Prepare and send telemetry message to Azure IoT hub */
     temperature += (rand() % 10);
     humidity += (rand() % 20);
-    sprintf_s(_fapp_azure_message_buffer, sizeof(_fapp_azure_message_buffer), "{\"temperature\":%.2f,\"humidity\":%.2f}", temperature, humidity);
+    sprintf_s(message_buffer, sizeof(message_buffer), "{\"temperature\":%.2f,\"humidity\":%.2f}", temperature, humidity);
 
     /* Creates a new IoT hub message from a byte array */
-    if ((messageHandle = IoTHubMessage_CreateFromByteArray((unsigned char *)_fapp_azure_message_buffer, strlen(_fapp_azure_message_buffer))) == NULL)
+    if ((messageHandle = IoTHubMessage_CreateFromByteArray((unsigned char *)message_buffer, strlen(message_buffer))) == NULL)
     {
         fnet_println("ERROR: IoTHubMessage_CreateFromByteArray() is failed!");
-        _fapp_azure_is_running = FNET_FALSE;
+#if 0
+        /* Terminate Azure example. */
+        azure_client_if->state_timestamp = fnet_timer_get_seconds();
+        azure_client_if->state = FAPP_AZURE_STATE_RELEASING;
+#endif
     }
     else
     {
@@ -334,18 +372,25 @@ static fnet_return_t _fapp_azure_client_send_message(IOTHUB_CLIENT_LL_HANDLE iot
         (void)IoTHubMessage_SetContentEncodingSystemProperty(messageHandle, "utf-8");
 
         /* Send message */
-        if (IoTHubClient_LL_SendEventAsync(iotHubClientHandle, messageHandle, _fapp_azure_send_confirmation_callback, (void *)_fapp_azure_message_counter) != IOTHUB_CLIENT_OK)
+        if (IoTHubClient_LL_SendEventAsync(azure_client_if->iothub_client_handle, messageHandle, _fapp_azure_send_confirmation_callback, (void *)azure_client_if->message_counter) != IOTHUB_CLIENT_OK)
         {
             fnet_println("[AZURE_APP] ERROR: IoTHubClient_LL_SendEventAsync() is failed");
         }
         else
         {
-            fnet_println("[AZURE_APP] Sending message [%d]: %s", _fapp_azure_message_counter, _fapp_azure_message_buffer);
+            fnet_println("[AZURE_APP] Sending message [%d]: %s", azure_client_if->message_counter, message_buffer);
         }
 
         IoTHubMessage_Destroy(messageHandle);
 
-        _fapp_azure_message_counter++;
+        azure_client_if->message_counter++;
+
+#if FAPP_CFG_AZURE_CMD_MESSAGE_NUMBER != (-1)
+        if(azure_client_if->message_counter >= FAPP_CFG_AZURE_CMD_MESSAGE_NUMBER)
+        {
+            azure_client_if->state = FAPP_AZURE_STATE_RELEASING;
+        }
+#endif
 
         result = FNET_OK;
     }
@@ -356,85 +401,113 @@ static fnet_return_t _fapp_azure_client_send_message(IOTHUB_CLIENT_LL_HANDLE iot
 /************************************************************************
 *  Start Azure client example (over MQTT)
 ************************************************************************/
-static void fapp_azure_client_mqtt(void)
+static fnet_return_t _fapp_azure_client_mqtt_init(fnet_shell_desc_t shell_desc)
 {
-    IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle;
-
-    _fapp_azure_is_running = FNET_TRUE;
-    _fapp_azure_is_unauthenticated = FNET_FALSE;
-
+    fnet_memset_zero(&_fapp_azure_client_if, sizeof(_fapp_azure_client_if));
+    _fapp_azure_client_if.shell_desc = shell_desc;
     int receiveContext = 0;
 
     /* Creates a IoT Hub client for communication with an existing IoT Hub using the specified connection string parameter. */
-    iotHubClientHandle = IoTHubClient_LL_CreateFromConnectionString(FAPP_CFG_AZURE_CMD_DEVICE_CONNECTION_STRING, MQTT_Protocol);
-    if (iotHubClientHandle == NULL)
+    _fapp_azure_client_if.iothub_client_handle = IoTHubClient_LL_CreateFromConnectionString(FAPP_CFG_AZURE_CMD_DEVICE_CONNECTION_STRING, MQTT_Protocol);
+    if (_fapp_azure_client_if.iothub_client_handle == NULL)
     {
-        fnet_println("ERROR: iotHubClient initialization is failed!");
+        fnet_shell_println(shell_desc, "ERROR: iotHubClient initialization is failed!");
     }
     else
     {
+
 #if FAPP_CFG_AZURE_CMD_TRACE /* Enable Azure message trace. */
         {
             bool traceOn = true;
-            IoTHubClient_LL_SetOption(iotHubClientHandle, OPTION_LOG_TRACE, &traceOn);
+            IoTHubClient_LL_SetOption(_fapp_azure_client_if.iothub_client_handle, OPTION_LOG_TRACE, &traceOn);
         }
 #endif
 
         /* Add the trustet certificate information */
-        if (IoTHubClient_LL_SetOption(iotHubClientHandle, OPTION_TRUSTED_CERT, certificates) != IOTHUB_CLIENT_OK)
+        if (IoTHubClient_LL_SetOption(_fapp_azure_client_if.iothub_client_handle, OPTION_TRUSTED_CERT, certificates) != IOTHUB_CLIENT_OK)
         {
-            fnet_println("ERROR: Trusted certificate is failed.");
+            fnet_shell_println(shell_desc, "ERROR: Trusted certificate is failed.");
         }
         else
             /* Set the receive message call back. */
-            if (IoTHubClient_LL_SetMessageCallback(iotHubClientHandle, _fapp_azure_receive_message_callback, &receiveContext) != IOTHUB_CLIENT_OK)
+            if (IoTHubClient_LL_SetMessageCallback(_fapp_azure_client_if.iothub_client_handle, _fapp_azure_receive_message_callback, &receiveContext) != IOTHUB_CLIENT_OK)
             {
-                fnet_println("ERROR: IoTHubClient_LL_SetMessageCallback() is failed");
+                fnet_shell_println(shell_desc, "ERROR: IoTHubClient_LL_SetMessageCallback() is failed");
             }
             else
                 /* Set up the connection status callback to be invoked representing the status of the connection to IOT Hub. (Optional). */
-                if (IoTHubClient_LL_SetConnectionStatusCallback(iotHubClientHandle, _fapp_azure_client_connection_callback, NULL) != IOTHUB_CLIENT_OK)
+                if (IoTHubClient_LL_SetConnectionStatusCallback(_fapp_azure_client_if.iothub_client_handle, _fapp_azure_client_connection_callback, &_fapp_azure_client_if) != IOTHUB_CLIENT_OK)
                 {
-                    fnet_println("ERROR: IoTHubClient_LL_SetConnectionStatusCallback() is failed");
+                    fnet_shell_println(shell_desc, "ERROR: IoTHubClient_LL_SetConnectionStatusCallback() is failed");
                 }
                 else
                 {
-                    fnet_time_t timestamp = fnet_timer_get_seconds() + FAPP_CFG_AZURE_CMD_MESSAGE_PERIOD;
 
-                    _fapp_azure_message_counter = 0;
-
-                    do
+                    /* Register Azure client as a service. */
+                    _fapp_azure_client_if.service_descriptor = fnet_service_register(_fapp_azure_client_mqtt_poll, &_fapp_azure_client_if);
+                    if(_fapp_azure_client_if.service_descriptor)
                     {
-                        if((_fapp_azure_is_unauthenticated == FNET_TRUE)
-                           && ((fnet_timer_get_seconds() - timestamp) > FAPP_CFG_AZURE_CMD_MESSAGE_PERIOD ))
-                        {
-                            if(_fapp_azure_client_send_message(iotHubClientHandle) == FNET_ERR)
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                timestamp = fnet_timer_get_seconds();
-                            }
-                        }
+                        fnet_shell_block(_fapp_azure_client_if.shell_desc, _fapp_azure_on_ctrlc, &_fapp_azure_client_if); /* Block the shell input.*/
+                        _fapp_azure_client_if.state_timestamp = fnet_timer_get_seconds() + FAPP_CFG_AZURE_CMD_MESSAGE_PERIOD;
+                        _fapp_azure_client_if.state = FAPP_AZURE_STATE_ENABLED;
 
-                        /* Poll IoT Hub Client */
-                        IoTHubClient_LL_DoWork(iotHubClientHandle);
-                        ThreadAPI_Sleep(1);
-                    }
-                    while((_fapp_azure_is_running == FNET_TRUE) && (_fapp_azure_message_counter < FAPP_CFG_AZURE_CMD_MESSAGE_COUNT));
-
-                    /* Finish work (send, confim received messages etc.). Required before client destroy.*/
-                    timestamp = fnet_timer_get_seconds();
-                    while( (fnet_timer_get_seconds() - timestamp) < 2 /* sec */ )
-                    {
-                        IoTHubClient_LL_DoWork(iotHubClientHandle); /* Poll IoT Hub Client */
-                        ThreadAPI_Sleep(1);
+                        return FNET_OK;
                     }
                 }
 
-        /* Release Azure IoT Hub client */
-        IoTHubClient_LL_Destroy(iotHubClientHandle);
+        /* Release Azure IoT Hub client if any error*/
+        IoTHubClient_LL_Destroy(_fapp_azure_client_if.iothub_client_handle);
+    }
+
+    return FNET_ERR;
+}
+
+/************************************************************************
+*   Azure client example poll
+************************************************************************/
+static void _fapp_azure_client_mqtt_poll(void *fapp_azure_client_if_p)
+{
+    fapp_azure_client_if_t *azure_client_if = (fapp_azure_client_if_t *)fapp_azure_client_if_p;
+
+    switch(azure_client_if->state)
+    {
+        case FAPP_AZURE_STATE_ENABLED:
+            if((azure_client_if->is_unauthenticated == FNET_TRUE)
+               && ((fnet_timer_get_seconds() - azure_client_if->state_timestamp) > FAPP_CFG_AZURE_CMD_MESSAGE_PERIOD ))
+            {
+                if(_fapp_azure_client_send_message(azure_client_if) == FNET_ERR)
+                {
+                    break;
+                }
+                else
+                {
+                    azure_client_if->state_timestamp = fnet_timer_get_seconds();
+                }
+            }
+
+            /* Poll IoT Hub Client */
+            IoTHubClient_LL_DoWork(azure_client_if->iothub_client_handle);
+
+            break;
+        case FAPP_AZURE_STATE_RELEASING:
+            /* Finish work (send, confim received messages etc.). Required before client destroy.*/
+            IoTHubClient_LL_DoWork(azure_client_if->iothub_client_handle); /* Poll IoT Hub Client */
+
+            /* Finish work (send, confim received messages etc.). Required before client destroy.*/
+            if( (fnet_timer_get_seconds() - azure_client_if->state_timestamp) > 2 /* sec */ )
+            {
+                /* Release Azure IoT Hub client */
+                IoTHubClient_LL_Destroy(azure_client_if->iothub_client_handle);
+                azure_client_if->state = FAPP_AZURE_STATE_DISABLED;
+
+                fnet_service_unregister(azure_client_if->service_descriptor);
+
+                fnet_shell_unblock(azure_client_if->shell_desc); /* Unblock shell, just in case.*/
+            }
+            break;
+        default:
+            break;
     }
 }
+
 #endif /* FAPP_CFG_AZURE_CMD && FNET_CFG_AZURE */

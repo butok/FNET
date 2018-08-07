@@ -61,7 +61,7 @@
 *        if(fnet_dhcp_cln_init(&dhcp_params))
 *        {
 *            // Register DHCP event handler callbacks.
-*            fnet_dhcp_cln_set_callback_updated(fapp_dhcp_cln_callback_updated, shl);
+*            fnet_dhcp_cln_set_callback_updated(fapp_dhcp_cln_callback_updated_unblock, shl);
 *            fnet_dhcp_cln_set_callback_discover(fapp_dhcp_cln_callback_discover, shl);
 *        }
 *        else

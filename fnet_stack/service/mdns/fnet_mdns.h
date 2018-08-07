@@ -242,7 +242,7 @@ void fnet_mdns_announce(fnet_mdns_desc_t mdns_desc);
  ******************************************************************************
  *
  * This function restarts mDNS probing.@n
- * Application may call it when the device was switched to a different 
+ * Application may call it when the device was switched to a different
  * network and it requires to repeat resource probing and conflict detection.@n
  * It puts the mDNS responder to the same state as after its initialization.
  *

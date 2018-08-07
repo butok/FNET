@@ -38,6 +38,7 @@ extern "C" {
 void fapp_autoip_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 void fapp_autoip_info(fnet_shell_desc_t desc, fnet_netif_desc_t  netif);
 void fapp_autoip_release(void);
+void fapp_autoip_init(fnet_shell_desc_t desc, fnet_netif_desc_t netif);
 
 #if defined(__cplusplus)
 }

@@ -90,7 +90,7 @@ extern "C" {
  * @brief Macros which converts the unsigned short integer from host byte order to
  * network byte order.
  ******************************************************************************/
-#define FNET_HTONS(short_var)   ((((short_var) & 0x00FFU) << 8U) | (((short_var) & 0xFF00U) >> 8U))
+#define FNET_HTONS(short_var)   (((((fnet_uint16_t)(short_var)) & 0x00FFU) << 8U) | (((fnet_uint16_t)(short_var) & 0xFF00U) >> 8U))
 /**************************************************************************/ /*!
  * @def FNET_NTOHS
  * @param short_var A 16-bit number in network byte order.

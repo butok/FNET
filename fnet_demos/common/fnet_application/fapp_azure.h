@@ -31,16 +31,16 @@
 #if FAPP_CFG_AZURE_CMD && FNET_CFG_AZURE
 
 /* Number of Azure messages to be transmitted by "azure" command.
-    Set to (0xFFFFFFFF) for infinit sending
+    Set to (-1) for infinit sending
     WARNING: The Azure free subscription supports only 8000 messages per day.*/
-#ifndef FAPP_CFG_AZURE_CMD_MESSAGE_COUNT
-    #define FAPP_CFG_AZURE_CMD_MESSAGE_COUNT    (0xFFFFFFFF)
+#ifndef FAPP_CFG_AZURE_CMD_MESSAGE_NUMBER
+    #define FAPP_CFG_AZURE_CMD_MESSAGE_NUMBER    (-1)
 #endif
 
 /* Period between Azure messages.
     WARNING: The Azure free subscription supports only 8000 messages per day.*/
 #ifndef FAPP_CFG_AZURE_CMD_MESSAGE_PERIOD
-    #define FAPP_CFG_AZURE_CMD_MESSAGE_PERIOD   (15) /* sec */
+    #define FAPP_CFG_AZURE_CMD_MESSAGE_PERIOD   (16) /* sec */
 #endif
 
 /* Azure log support */

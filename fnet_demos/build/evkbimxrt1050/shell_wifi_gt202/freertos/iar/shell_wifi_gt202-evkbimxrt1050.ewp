@@ -261,7 +261,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state>Pa082,Pe186</state>
+                    <state>Pa082,Pe186,Pa182</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
@@ -1279,7 +1279,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state>Pa082,Pe186</state>
+                    <state>Pa082,Pe186,Pa182</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
@@ -2299,7 +2299,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state>Pa082,Pe186</state>
+                    <state>Pa082,Pe186,Pa182</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
@@ -3317,7 +3317,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state>Pa082,Pe186</state>
+                    <state>Pa082,Pe186,Pa182</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
