@@ -2352,6 +2352,11 @@ Press any key to continue . . .
 
 FNET public releases:
 
+- Version 4.5.3
+	- Updated Azure IoT SDK to version 1.2.8
+	- Fixed possible first packet loss for the AirPort Wi-Fi router.
+	- Minor fixes.
+	
 - Version 4.5.2
 	- Redesigned Azure client example as a service.
 	- Added frame buffering to QCA WiFi adapter to avoid possible frame dropping.

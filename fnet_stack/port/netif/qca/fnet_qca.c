@@ -1334,7 +1334,7 @@ static void _fnet_qca_input(void *cookie)
         /* Ethernet input.*/
         _fnet_eth_input(qca_if->netif, frame, frame_len);
 
-        A_NETBUF_FREE(a_netbuf_ptr); //DM
+        A_NETBUF_FREE(a_netbuf_ptr);
 
         fnet_isr_unlock();
 

@@ -114,7 +114,7 @@ keep{ section .boot_hdr.conf, section .boot_hdr.ivt, section .boot_hdr.boot_data
 place in TEXT_region                        { readonly };
 place in DATA_region                        { block RW };
 place in DATA_region                        { block ZI };
-place in DATA_region                        { last block HEAP };
+place in DATA2_region                       { last block HEAP };
 place in DATA_region                        { block NCACHE_VAR };
 place in CSTACK_region                      { block CSTACK };
 

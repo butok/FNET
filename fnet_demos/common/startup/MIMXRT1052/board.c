@@ -104,15 +104,15 @@ void BOARD_ConfigMPU(void)
     MPU->RASR = ARM_MPU_RASR(0, ARM_MPU_AP_FULL, 2, 0, 0, 0, 0, ARM_MPU_REGION_SIZE_1GB);
 
     /* Region 4 setting: Memory with Normal type, not shareable, outer/inner write back */
-    MPU->RBAR = ARM_MPU_RBAR(4, 0x00000000U);
-    MPU->RASR = ARM_MPU_RASR(0, ARM_MPU_AP_FULL, 0, 0, 1, 1, 0, ARM_MPU_REGION_SIZE_128KB);
+    MPU->RBAR = ARM_MPU_RBAR(4, 0x00000000U); /* ITCM */
+    MPU->RASR = ARM_MPU_RASR(0, ARM_MPU_AP_FULL, 0, 0, 1, 1, 0, ARM_MPU_REGION_SIZE_128KB); 
 
-    /* Region 5 setting: Memory with Normal type, not shareable, outer/inner write back */
-    MPU->RBAR = ARM_MPU_RBAR(5, 0x20000000U);
+    /* Region 5 setting: Memory with Normal type, not shareable, outer/inner write back */ 
+    MPU->RBAR = ARM_MPU_RBAR(5, 0x20000000U); /* DTCM */
     MPU->RASR = ARM_MPU_RASR(0, ARM_MPU_AP_FULL, 0, 0, 1, 1, 0, ARM_MPU_REGION_SIZE_128KB);
 
     /* Region 6 setting: Memory with Normal type, not shareable, outer/inner write back */
-    MPU->RBAR = ARM_MPU_RBAR(6, 0x20200000U);
+    MPU->RBAR = ARM_MPU_RBAR(6, 0x20200000U); /* OCRAM */
     MPU->RASR = ARM_MPU_RASR(0, ARM_MPU_AP_FULL, 0, 0, 1, 1, 0, ARM_MPU_REGION_SIZE_256KB);
  
     /* The define sets the cacheable memory to shareable, 

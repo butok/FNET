@@ -38,6 +38,7 @@
 #define FNET_ETH_TYPE_IP4       (0x0800U)
 #define FNET_ETH_TYPE_ARP       (0x0806U)
 #define FNET_ETH_TYPE_IP6       (0x86DDU)
+#define FNET_ETH_TYPE_RESERVED  (0xFFFFU)
 
 #define FNET_ETH_HDR_SIZE       (14U)    /* Size of Ethernet header.*/
 #define FNET_ETH_CRC_SIZE       (4U)     /* Size of Ethernet CRC.*/

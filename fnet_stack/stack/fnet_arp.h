@@ -116,6 +116,7 @@ fnet_bool_t fnet_arp_get_mac( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ip_a
  ******************************************************************************/
 void fnet_arp_send_request( fnet_netif_desc_t netif_desc, fnet_ip4_addr_t ip_addr );
 
+
 #if defined(__cplusplus)
 }
 #endif

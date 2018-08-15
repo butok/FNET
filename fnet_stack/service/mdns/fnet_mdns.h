@@ -74,8 +74,8 @@ struct fnet_mdns_params
  ******************************************************************************/
 typedef struct fnet_mdns_txt_key
 {
-    const fnet_char_t       *key_name;	    /**< @brief TXT key name string (null-terminated). */
-    const fnet_char_t       *key_value;     /**< @brief TXT key value string (null-terminated). */
+    fnet_char_t       *key_name;	  /**< @brief TXT key name string (null-terminated). */
+    fnet_char_t       *key_value;     /**< @brief TXT key value string (null-terminated). */
 } fnet_mdns_txt_key_t;
 
 /**************************************************************************/ /*!

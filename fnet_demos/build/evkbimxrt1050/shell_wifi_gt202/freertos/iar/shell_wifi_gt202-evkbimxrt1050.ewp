@@ -761,7 +761,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$/../../../../../common/startup/MIMXRT1052/iar/MIMXRT1052xxxxx_flexspi_nor_sdram.icf</state>
+                    <state>$PROJ_DIR$/../../../../../common/startup/MIMXRT1052/iar/MIMXRT1052xxxxx_flexspi_nor.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -1779,7 +1779,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$/../../../../../common/startup/MIMXRT1052/iar/MIMXRT1052xxxxx_flexspi_nor_sdram.icf</state>
+                    <state>$PROJ_DIR$/../../../../../common/startup/MIMXRT1052/iar/MIMXRT1052xxxxx_flexspi_nor.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>

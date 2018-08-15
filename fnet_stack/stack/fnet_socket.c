@@ -593,7 +593,6 @@ fnet_return_t fnet_socket_connect( fnet_socket_t s, struct fnet_sockaddr *name, 
                 default: /* Wrang family. */
                     error = FNET_ERR_AFNOSUPPORT;
                     goto ERROR_SOCK;
-                    break;
             }
         }
 

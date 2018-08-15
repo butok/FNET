@@ -271,9 +271,12 @@ void _fnet_eth_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_ad
     fnet_eth_if_t       *eth_if = (fnet_eth_if_t *)(netif->netif_prv);
 
     /* Check MTU */
-    if(nb->total_length > netif->netif_mtu)
+    if(nb)
     {
-        goto DROP;
+        if(nb->total_length > netif->netif_mtu)
+        {
+            goto DROP;
+        }
     }
 
     /* Construct Eth header */
@@ -290,7 +293,14 @@ void _fnet_eth_output(fnet_netif_t *netif, fnet_uint16_t type, const fnet_mac_ad
     fnet_memcpy (eth_header->destination_addr, dest_addr, sizeof(eth_header->destination_addr));
     eth_header->type = fnet_htons(type);
 
-    nb = _fnet_netbuf_concat(nb_header, nb);
+    if(nb)
+    {
+        nb = _fnet_netbuf_concat(nb_header, nb);
+    }
+    else
+    {
+        nb = nb_header;
+    }
 
     /* Ethernet driver output */
     eth_if->eth_output(netif, nb);
@@ -426,6 +436,17 @@ void _fnet_eth_change_addr_notify(fnet_netif_t *netif)
         _fnet_arp_send_request( netif, netif->ip4_addr.address ); /* Gratuitous ARP request.*/
         /* When talking about gratuitous ARP, the packets are actually special ARP request packets,
            not ARP reply packets as one would perhaps expect. Some reasons for this are explained in RFC 5227.*/
+    }
+    else
+    {
+        fnet_mac_addr_t     sender_addr;
+        if(_fnet_netif_get_hw_addr(netif, sender_addr, sizeof(fnet_mac_addr_t)) == FNET_OK)
+        {
+            /* Inform switches of the MAC address of the machine on a given switch port, 
+            so that the switch knows that it should transmit packets sent to that MAC address on that switch port.
+            This is added mainly to work around first packet losing issue of the AirPort router. */
+            _fnet_eth_output(netif, FNET_ETH_TYPE_RESERVED, sender_addr, FNET_NULL); /* Send dummy unicast Ethernet frame to myself*/
+        }
     }
 #else
     FNET_COMP_UNUSED_ARG(netif);

@@ -33,8 +33,8 @@
 
 #define FNET_AUTOIP_ERR_IS_INITIALIZED    "ERROR: No free service."
 
-/**************************************************************************/ /*!
- * @brief Constants defined in the section 9 of RFC3927 @n
+/*******************************************************************************
+ * Constants defined in the section 9 of RFC3927 @n
  * They are  not intended to be user configurable.
  ******************************************************************************/
 #define FNET_AUTOIP_PROBE_WAIT            (1)  /* second  (initial random delay) */
@@ -48,24 +48,23 @@
 #define FNET_AUTOIP_RATE_LIMIT_INTERVAL   (6)  /* seconds  (delay between successive attempts). RFC says 60 secons, we decided to minimise it. */
 #define FNET_AUTOIP_DEFEND_INTERVAL       (10) /* seconds  (minimum interval between defensive ARPs).*/
 
-/**************************************************************************/ /*!
- * @brief Link-Local states.@n
+/******************************************************************************
+ * Link-Local states.@n
  ******************************************************************************/
 typedef enum
 {
-    FNET_AUTOIP_STATE_DISABLED = 0,     /* @brief The Link-Local service is not initialized */
-    FNET_AUTOIP_STATE_INIT,             /* @brief The Link-Local service is
+    FNET_AUTOIP_STATE_DISABLED = 0,     /* The Link-Local service is not initialized */
+    FNET_AUTOIP_STATE_INIT,             /* The Link-Local service is
                                         * initialized. A random address is generated.*/
-    FNET_AUTOIP_STATE_WAIT,             /* @brief Wait zero to PROBE_WAIT seconds*/
-    FNET_AUTOIP_STATE_PROBE,            /* @brief Sends out @ref FNET_AUTOIP_PROBE_NUM
+    FNET_AUTOIP_STATE_WAIT,             /* Wait zero to PROBE_WAIT seconds*/
+    FNET_AUTOIP_STATE_PROBE,            /* Sends out @ref FNET_AUTOIP_PROBE_NUM
                                         * probes and checks whether the address
                                         * is in use by some other device*/
-    FNET_AUTOIP_STATE_ANNOUNCE,         /* @brief Sends  out @ref FNET_AUTOIP_ANNOUNCE_NUM
+    FNET_AUTOIP_STATE_ANNOUNCE,         /* Sends  out @ref FNET_AUTOIP_ANNOUNCE_NUM
                                         * frames to make itself known in the network*/
     /* The defend state is probably the same as BOUND Basically, we're not giving up the address*/
-    FNET_AUTOIP_STATE_BOUND,            /* @brief The Link-Local address is set.*/
-    FNET_AUTOIP_STATE_DEFEND_2,            /* @brief Host in DEFEND_INTERVAL.*/
-    FNET_AUTOIP_STATE_DEFEND            /* @brief Host in DEFEND_INTERVAL.*/
+    FNET_AUTOIP_STATE_BOUND,            /* The Link-Local address is set.*/
+    FNET_AUTOIP_STATE_DEFEND            /* Host in DEFEND_INTERVAL.*/
 } fnet_autoip_state_t;
 
 /************************************************************************

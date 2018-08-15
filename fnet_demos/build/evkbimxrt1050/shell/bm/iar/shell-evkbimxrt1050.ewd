@@ -11,7 +11,7 @@
             <name>C-SPY</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>29</version>
+                <version>30</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -88,7 +88,7 @@
                 </option>
                 <option>
                     <name>OCLastSavedByProductVersion</name>
-                    <state>8.22.2.15993</state>
+                    <state>8.30.1.17146</state>
                 </option>
                 <option>
                     <name>UseFlashLoader</name>
@@ -213,6 +213,10 @@
                 <option>
                     <name>MassEraseBeforeFlashing</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>OCMulticoreNrOfCoresSlave</name>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -1097,7 +1101,7 @@
                 </option>
                 <option>
                     <name>CCSTLinkJtagSpeedList</name>
-                    <version>0</version>
+                    <version>1</version>
                     <state>0</state>
                 </option>
                 <option>
@@ -1214,7 +1218,7 @@
             <name>XDS100_ID</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>6</version>
+                <version>8</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -1376,6 +1380,18 @@
                     <name>CCXds100SWOPort</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>CCXDSTargetVccEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CCXDSTargetVoltage</name>
+                    <state>###Uninitialized###</state>
+                </option>
+                <option>
+                    <name>OCXDSDigitalStatesConfigFile</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <debuggerPlugins>
@@ -1397,6 +1413,10 @@
             </plugin>
             <plugin>
                 <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin.ENU.ewplugin</file>
+                <loadFlag>0</loadFlag>
+            </plugin>
+            <plugin>
+                <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin2.ENU.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
@@ -1463,7 +1483,7 @@
             <name>C-SPY</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>29</version>
+                <version>30</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -1665,6 +1685,10 @@
                 <option>
                     <name>MassEraseBeforeFlashing</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>OCMulticoreNrOfCoresSlave</name>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -2549,7 +2573,7 @@
                 </option>
                 <option>
                     <name>CCSTLinkJtagSpeedList</name>
-                    <version>0</version>
+                    <version>1</version>
                     <state>0</state>
                 </option>
                 <option>
@@ -2666,7 +2690,7 @@
             <name>XDS100_ID</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>6</version>
+                <version>8</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -2828,6 +2852,18 @@
                     <name>CCXds100SWOPort</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>CCXDSTargetVccEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CCXDSTargetVoltage</name>
+                    <state>###Uninitialized###</state>
+                </option>
+                <option>
+                    <name>OCXDSDigitalStatesConfigFile</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <debuggerPlugins>
@@ -2849,6 +2885,10 @@
             </plugin>
             <plugin>
                 <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin.ENU.ewplugin</file>
+                <loadFlag>0</loadFlag>
+            </plugin>
+            <plugin>
+                <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin2.ENU.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
@@ -2915,7 +2955,7 @@
             <name>C-SPY</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>29</version>
+                <version>30</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -2992,7 +3032,7 @@
                 </option>
                 <option>
                     <name>OCLastSavedByProductVersion</name>
-                    <state>8.22.2.15993</state>
+                    <state>8.30.1.17146</state>
                 </option>
                 <option>
                     <name>UseFlashLoader</name>
@@ -3117,6 +3157,10 @@
                 <option>
                     <name>MassEraseBeforeFlashing</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>OCMulticoreNrOfCoresSlave</name>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -4001,7 +4045,7 @@
                 </option>
                 <option>
                     <name>CCSTLinkJtagSpeedList</name>
-                    <version>0</version>
+                    <version>1</version>
                     <state>0</state>
                 </option>
                 <option>
@@ -4118,7 +4162,7 @@
             <name>XDS100_ID</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>6</version>
+                <version>8</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -4280,6 +4324,18 @@
                     <name>CCXds100SWOPort</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>CCXDSTargetVccEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CCXDSTargetVoltage</name>
+                    <state>###Uninitialized###</state>
+                </option>
+                <option>
+                    <name>OCXDSDigitalStatesConfigFile</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <debuggerPlugins>
@@ -4301,6 +4357,10 @@
             </plugin>
             <plugin>
                 <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin.ENU.ewplugin</file>
+                <loadFlag>0</loadFlag>
+            </plugin>
+            <plugin>
+                <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin2.ENU.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
@@ -4367,7 +4427,7 @@
             <name>C-SPY</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>29</version>
+                <version>30</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -4444,7 +4504,7 @@
                 </option>
                 <option>
                     <name>OCLastSavedByProductVersion</name>
-                    <state>8.22.2.15993</state>
+                    <state>8.30.1.17146</state>
                 </option>
                 <option>
                     <name>UseFlashLoader</name>
@@ -4569,6 +4629,10 @@
                 <option>
                     <name>MassEraseBeforeFlashing</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>OCMulticoreNrOfCoresSlave</name>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -5453,7 +5517,7 @@
                 </option>
                 <option>
                     <name>CCSTLinkJtagSpeedList</name>
-                    <version>0</version>
+                    <version>1</version>
                     <state>0</state>
                 </option>
                 <option>
@@ -5570,7 +5634,7 @@
             <name>XDS100_ID</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>6</version>
+                <version>8</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -5732,6 +5796,18 @@
                     <name>CCXds100SWOPort</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>CCXDSTargetVccEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CCXDSTargetVoltage</name>
+                    <state>###Uninitialized###</state>
+                </option>
+                <option>
+                    <name>OCXDSDigitalStatesConfigFile</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <debuggerPlugins>
@@ -5753,6 +5829,10 @@
             </plugin>
             <plugin>
                 <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin.ENU.ewplugin</file>
+                <loadFlag>0</loadFlag>
+            </plugin>
+            <plugin>
+                <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin2.ENU.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
@@ -5819,7 +5899,7 @@
             <name>C-SPY</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>29</version>
+                <version>30</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -5844,7 +5924,7 @@
                 </option>
                 <option>
                     <name>MacFile</name>
-                    <state>$PROJ_DIR$/../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.mac</state>
+                    <state>$PROJ_DIR$/../../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.mac</state>
                 </option>
                 <option>
                     <name>MemOverride</name>
@@ -5868,7 +5948,7 @@
                 </option>
                 <option>
                     <name>CExtraOptions</name>
-                    <state>--jlink_script_file=$PROJ_DIR$/../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.jlinkscript</state>
+                    <state>--jlink_script_file=$PROJ_DIR$/../../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.jlinkscript</state>
                 </option>
                 <option>
                     <name>CFpuProcessor</name>
@@ -5896,7 +5976,7 @@
                 </option>
                 <option>
                     <name>OCLastSavedByProductVersion</name>
-                    <state>8.22.2.15993</state>
+                    <state>8.30.1.17146</state>
                 </option>
                 <option>
                     <name>UseFlashLoader</name>
@@ -6021,6 +6101,10 @@
                 <option>
                     <name>MassEraseBeforeFlashing</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>OCMulticoreNrOfCoresSlave</name>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -6905,7 +6989,7 @@
                 </option>
                 <option>
                     <name>CCSTLinkJtagSpeedList</name>
-                    <version>0</version>
+                    <version>1</version>
                     <state>0</state>
                 </option>
                 <option>
@@ -7022,7 +7106,7 @@
             <name>XDS100_ID</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>6</version>
+                <version>8</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -7184,6 +7268,18 @@
                     <name>CCXds100SWOPort</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>CCXDSTargetVccEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CCXDSTargetVoltage</name>
+                    <state>###Uninitialized###</state>
+                </option>
+                <option>
+                    <name>OCXDSDigitalStatesConfigFile</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <debuggerPlugins>
@@ -7205,6 +7301,10 @@
             </plugin>
             <plugin>
                 <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin.ENU.ewplugin</file>
+                <loadFlag>0</loadFlag>
+            </plugin>
+            <plugin>
+                <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin2.ENU.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
@@ -7271,7 +7371,7 @@
             <name>C-SPY</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>29</version>
+                <version>30</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -7296,7 +7396,7 @@
                 </option>
                 <option>
                     <name>MacFile</name>
-                    <state>$PROJ_DIR$/../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.mac</state>
+                    <state>$PROJ_DIR$/../../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.mac</state>
                 </option>
                 <option>
                     <name>MemOverride</name>
@@ -7320,7 +7420,7 @@
                 </option>
                 <option>
                     <name>CExtraOptions</name>
-                    <state>--jlink_script_file=$PROJ_DIR$/../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.jlinkscript</state>
+                    <state>--jlink_script_file=$PROJ_DIR$/../../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.jlinkscript</state>
                 </option>
                 <option>
                     <name>CFpuProcessor</name>
@@ -7348,7 +7448,7 @@
                 </option>
                 <option>
                     <name>OCLastSavedByProductVersion</name>
-                    <state>8.22.2.15993</state>
+                    <state>8.30.1.17146</state>
                 </option>
                 <option>
                     <name>UseFlashLoader</name>
@@ -7473,6 +7573,10 @@
                 <option>
                     <name>MassEraseBeforeFlashing</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>OCMulticoreNrOfCoresSlave</name>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -8357,7 +8461,7 @@
                 </option>
                 <option>
                     <name>CCSTLinkJtagSpeedList</name>
-                    <version>0</version>
+                    <version>1</version>
                     <state>0</state>
                 </option>
                 <option>
@@ -8474,7 +8578,7 @@
             <name>XDS100_ID</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>6</version>
+                <version>8</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -8636,6 +8740,18 @@
                     <name>CCXds100SWOPort</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>CCXDSTargetVccEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CCXDSTargetVoltage</name>
+                    <state>###Uninitialized###</state>
+                </option>
+                <option>
+                    <name>OCXDSDigitalStatesConfigFile</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <debuggerPlugins>
@@ -8657,6 +8773,10 @@
             </plugin>
             <plugin>
                 <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin.ENU.ewplugin</file>
+                <loadFlag>0</loadFlag>
+            </plugin>
+            <plugin>
+                <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin2.ENU.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
@@ -8723,7 +8843,7 @@
             <name>C-SPY</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>29</version>
+                <version>30</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -8748,7 +8868,7 @@
                 </option>
                 <option>
                     <name>MacFile</name>
-                    <state>$PROJ_DIR$/../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.mac</state>
+                    <state>$PROJ_DIR$/../../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.mac</state>
                 </option>
                 <option>
                     <name>MemOverride</name>
@@ -8772,7 +8892,7 @@
                 </option>
                 <option>
                     <name>CExtraOptions</name>
-                    <state>--jlink_script_file=$PROJ_DIR$/../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.jlinkscript</state>
+                    <state>--jlink_script_file=$PROJ_DIR$/../../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.jlinkscript</state>
                 </option>
                 <option>
                     <name>CFpuProcessor</name>
@@ -8800,7 +8920,7 @@
                 </option>
                 <option>
                     <name>OCLastSavedByProductVersion</name>
-                    <state>8.22.2.15993</state>
+                    <state>8.30.1.17146</state>
                 </option>
                 <option>
                     <name>UseFlashLoader</name>
@@ -8925,6 +9045,10 @@
                 <option>
                     <name>MassEraseBeforeFlashing</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>OCMulticoreNrOfCoresSlave</name>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -9809,7 +9933,7 @@
                 </option>
                 <option>
                     <name>CCSTLinkJtagSpeedList</name>
-                    <version>0</version>
+                    <version>1</version>
                     <state>0</state>
                 </option>
                 <option>
@@ -9926,7 +10050,7 @@
             <name>XDS100_ID</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>6</version>
+                <version>8</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -10088,6 +10212,18 @@
                     <name>CCXds100SWOPort</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>CCXDSTargetVccEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CCXDSTargetVoltage</name>
+                    <state>###Uninitialized###</state>
+                </option>
+                <option>
+                    <name>OCXDSDigitalStatesConfigFile</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <debuggerPlugins>
@@ -10109,6 +10245,10 @@
             </plugin>
             <plugin>
                 <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin.ENU.ewplugin</file>
+                <loadFlag>0</loadFlag>
+            </plugin>
+            <plugin>
+                <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin2.ENU.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
@@ -10175,7 +10315,7 @@
             <name>C-SPY</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>29</version>
+                <version>30</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -10200,7 +10340,7 @@
                 </option>
                 <option>
                     <name>MacFile</name>
-                    <state>$PROJ_DIR$/../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.mac</state>
+                    <state>$PROJ_DIR$/../../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.mac</state>
                 </option>
                 <option>
                     <name>MemOverride</name>
@@ -10224,7 +10364,7 @@
                 </option>
                 <option>
                     <name>CExtraOptions</name>
-                    <state>--jlink_script_file=$PROJ_DIR$/../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.jlinkscript</state>
+                    <state>--jlink_script_file=$PROJ_DIR$/../../../../../common/startup/MIMXRT1052/evkbimxrt1050_sdram_init.jlinkscript</state>
                 </option>
                 <option>
                     <name>CFpuProcessor</name>
@@ -10252,7 +10392,7 @@
                 </option>
                 <option>
                     <name>OCLastSavedByProductVersion</name>
-                    <state>8.22.2.15993</state>
+                    <state>8.30.1.17146</state>
                 </option>
                 <option>
                     <name>UseFlashLoader</name>
@@ -10377,6 +10517,10 @@
                 <option>
                     <name>MassEraseBeforeFlashing</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>OCMulticoreNrOfCoresSlave</name>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -11261,7 +11405,7 @@
                 </option>
                 <option>
                     <name>CCSTLinkJtagSpeedList</name>
-                    <version>0</version>
+                    <version>1</version>
                     <state>0</state>
                 </option>
                 <option>
@@ -11378,7 +11522,7 @@
             <name>XDS100_ID</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>6</version>
+                <version>8</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -11540,6 +11684,18 @@
                     <name>CCXds100SWOPort</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>CCXDSTargetVccEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>CCXDSTargetVoltage</name>
+                    <state>###Uninitialized###</state>
+                </option>
+                <option>
+                    <name>OCXDSDigitalStatesConfigFile</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <debuggerPlugins>
@@ -11561,6 +11717,10 @@
             </plugin>
             <plugin>
                 <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin.ENU.ewplugin</file>
+                <loadFlag>0</loadFlag>
+            </plugin>
+            <plugin>
+                <file>$TOOLKIT_DIR$\plugins\rtos\Mbed\MbedArmPlugin2.ENU.ewplugin</file>
                 <loadFlag>0</loadFlag>
             </plugin>
             <plugin>

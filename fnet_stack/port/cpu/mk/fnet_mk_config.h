@@ -107,6 +107,11 @@
     ******************************************************************************/
     #define FNET_CFG_CPU_VECTOR_PRIORITY_MAX                (15u) /* 4 bits */
 
+    /* MCUX SDK start up code does not support vector table in RAM */
+    #ifndef FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM
+        #define FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM     (0)
+    #endif
+
     /*****************************************************************************
     *  On-chip Flash memory start address.
     ******************************************************************************/
