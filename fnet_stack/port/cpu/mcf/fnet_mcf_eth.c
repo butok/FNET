@@ -186,7 +186,7 @@ static fnet_return_t fnet_mcf_eth_phy_init(fnet_netif_t *netif)
     FNET_MCF_EPHY_EPHYCTL0 = (fnet_uint8_t)(FNET_MCF_EPHY_EPHYCTL0_EPHYEN);
 
     /* Start-up Delay for Kirin2 = 350uS */
-    fnet_timer_delay(1); /* Delay for 1 timer tick (100ms) */
+    fnet_timer_delay(200); /* Delay for (200ms) */
 
     /* Disable ANE that causes problems with some routers.  Enable full-duplex and 100Mbps */
     _fnet_eth_phy_read(netif, FNET_ETH_MII_REG_CR, &reg_value);
@@ -197,7 +197,7 @@ static fnet_return_t fnet_mcf_eth_phy_init(fnet_netif_t *netif)
     fnet_uint8_t tmp_ptipar;
     fnet_uint8_t tmp_ptjpar;
 
-    fnet_timer_delay(3);
+    fnet_timer_delay(300);
     /* Workaround for PHY reset */
     tmp_ptipar = FNET_MCF5225X_GPIO_PTIPAR; /* Save current state */
     tmp_ptjpar = FNET_MCF5225X_GPIO_PTJPAR;
@@ -210,11 +210,11 @@ static fnet_return_t fnet_mcf_eth_phy_init(fnet_netif_t *netif)
 
     /* Reset PHY.*/
     _fnet_eth_phy_write(netif, FNET_ETH_MII_REG_CR, FNET_ETH_MII_REG_CR_RESET);
-    fnet_timer_delay(5);
+    fnet_timer_delay(500);
 
     /* RSTO signal.*/
     FNET_MCF_RCM_RCR |= FNET_MCF_RCM_RCR_FRCRSTOUT;     /* Assert RSTO.*/
-    fnet_timer_delay(5);
+    fnet_timer_delay(500);
     FNET_MCF_RCM_RCR &= ~(FNET_MCF_RCM_RCR_FRCRSTOUT);  /* Negate RSTO.*/
 
     FNET_MCF5225X_GPIO_PTIPAR = tmp_ptipar;		/* Restore Ethernet signals.*/

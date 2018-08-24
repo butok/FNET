@@ -63,7 +63,7 @@
  *        For example it can set to the @c ">%7s %-32s- %s" value , where the first string is
  *        the command name, second one is the brief description of the command
  *        and the third one is the syntax of the command.
- * @see fnet_shell_command, fnet_shell_help()
+ * @see fnet_shell_command_t, fnet_shell_help()
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_SHELL_HELP_FORMAT

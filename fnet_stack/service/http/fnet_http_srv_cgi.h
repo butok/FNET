@@ -56,7 +56,7 @@
  * @return This function must return:
  *   - @ref FNET_OK if no error occurs.
  *   - @ref FNET_ERR if an error occurs.
- * @see fnet_http_srv_cgi, fnet_http_srv_cgi_send_t
+ * @see fnet_http_srv_cgi_t, fnet_http_srv_cgi_send_t
  *
  * The CGI handler invokes this callback function when the server gets
  * CGI request and the requested CGI file name corresponds to the name
@@ -97,7 +97,7 @@ typedef fnet_return_t(*fnet_http_srv_cgi_handle_t)(fnet_http_srv_session_t sessi
  *         pointed to by @c buffer.@n
  *         The condition flag @c eof indicates if the CGI data-end condition has occurred.
  *
- * @see fnet_http_srv_cgi, fnet_http_srv_cgi_handle_t
+ * @see fnet_http_srv_cgi_t, fnet_http_srv_cgi_handle_t
  *
  * This function creates the CGI response content.@n
  * An application should use the @c buffer as output buffer for the dynamic content
@@ -118,16 +118,16 @@ typedef fnet_size_t (*fnet_http_srv_cgi_send_t)(fnet_uint8_t *buffer, fnet_size_
  * gateway programs to interface with HTTP servers. A CGI function is
  * executed in real-time, so that it can output dynamic information.
  *
- * @see fnet_http_srv_params
+ * @see fnet_http_srv_params_t
  ******************************************************************************/
-struct fnet_http_srv_cgi
+typedef struct
 {
     fnet_char_t                 *name;      /**< @brief CGI file name. */
     fnet_http_srv_cgi_handle_t  handle;     /**< @brief Pointer to the CGI query handler. It's optional. */
     fnet_http_srv_cgi_send_t    send;       /**< @brief Pointer to the CGI response function.
                                          * This function actually creates dynamic content of
                                          * the CGI response. It's optional. */
-};
+} fnet_http_srv_cgi_t;
 
 /*! @} */
 

@@ -382,7 +382,7 @@ fnet_return_t fnet_tls_socket_connect(fnet_tls_socket_t tls_sock)
         }
         else
         {
-#if !FNET_CFG_TIMER_POLL_AUTOMATIC
+#if FNET_CFG_TIMER_ALT
             fnet_timer_poll();      /* Poll FNET stack timer.*/
 #endif
         }

@@ -320,7 +320,7 @@ static  fnet_mdns_if_t fnet_mdns_if_list[FNET_CFG_MDNS];
 /************************************************************************
 * Initialize mDNS server/responder.
 ************************************************************************/
-fnet_mdns_desc_t fnet_mdns_init( struct fnet_mdns_params *params )
+fnet_mdns_desc_t fnet_mdns_init( fnet_mdns_params_t *params )
 {
     struct fnet_mdns_if     *mdns_if = FNET_NULL;
     fnet_index_t            i;

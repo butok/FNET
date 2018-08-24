@@ -47,11 +47,11 @@
  * @return This function must return:
  *   - @ref FNET_OK if no error occurs.
  *   - @ref FNET_ERR if an error occurs.
- * @see fnet_http_srv_post, fnet_http_srv_post_receive_t, fnet_http_srv_post_send_t
+ * @see fnet_http_srv_post_t, fnet_http_srv_post_receive_t, fnet_http_srv_post_send_t
  *
  * The HTTP server invokes this callback function when gets
  * POST-method request and the requested file name corresponds to the name
- * registered in the POST table defined @ref fnet_http_srv_post.@n
+ * registered in the POST table defined @ref fnet_http_srv_post_t.@n
  * If the query string does not have any data, the @c query will point to the
  * blank string.@n
  * If the HTTP server works according to HTTP/1.x  (@ref FNET_CFG_HTTP_SRV_VERSION_MAJOR is @c 1),
@@ -78,7 +78,7 @@ typedef fnet_return_t(*fnet_http_srv_post_handle_t)(fnet_http_srv_session_t sess
  * @return This function must return:
  *   - @ref FNET_OK if no error occurs.
  *   - @ref FNET_ERR if an error occurs.
- * @see fnet_http_srv_post, fnet_http_srv_post_handle_t, fnet_http_srv_post_send_t
+ * @see fnet_http_srv_post_t, fnet_http_srv_post_handle_t, fnet_http_srv_post_send_t
  *
  * This function is invoked by the HTTP server when there is any data
  * in the entity-body of the POST request.
@@ -119,7 +119,7 @@ typedef fnet_return_t(*fnet_http_srv_post_receive_t)(fnet_http_srv_session_t ses
  *         pointed to by @c buffer.@n
  *         The condition flag @c eof indicates if the POST-method end condition has occurred.
  *
- * @see fnet_http_srv_post, fnet_http_srv_post_handle_t, fnet_http_srv_post_receive_t
+ * @see fnet_http_srv_post_t, fnet_http_srv_post_handle_t, fnet_http_srv_post_receive_t
  *
  * This function creates the POST-method response content.@n
  * An application should use the @c buffer as output buffer for the dynamic content
@@ -139,9 +139,9 @@ typedef fnet_size_t (*fnet_http_srv_post_send_t)(fnet_uint8_t *buffer, fnet_size
  * The POST request method is used when the client needs to send data to the server
  * as part of the request, such as when uploading a file or submitting a completed form.
  *
- * @see fnet_http_srv_params
+ * @see fnet_http_srv_params_t
  ******************************************************************************/
-struct fnet_http_srv_post
+typedef struct
 {
     fnet_char_t *name;		                /**< @brief File name associated with the POST-request. */
     fnet_http_srv_post_handle_t post_handle;    /**< @brief Pointer to the POST query handler. It's optional. */
@@ -152,7 +152,7 @@ struct fnet_http_srv_post
                                             * This function actually creates dynamic content of
                                             * the POST response.  */
 
-};
+} fnet_http_srv_post_t;
 
 /*! @} */
 

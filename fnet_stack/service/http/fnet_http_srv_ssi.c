@@ -122,7 +122,7 @@ static fnet_size_t _fnet_http_srv_ssi_send (struct fnet_http_srv_if *http)
                     if(ssi_tail_index == sizeof(fnet_http_srv_ssi_tail))
                     {
                         /* Tail is found */
-                        const struct fnet_http_srv_ssi  *ssi_ptr = 0;
+                        const fnet_http_srv_ssi_t  *ssi_ptr = 0;
                         fnet_char_t                *ssi_name = (fnet_char_t *)&session->buffer[sizeof(fnet_http_srv_ssi_head)];
                         fnet_char_t                *ssi_param;
 

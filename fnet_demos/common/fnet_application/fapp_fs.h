@@ -47,7 +47,7 @@ void fapp_fs_unmount(void);
 #endif
 
 #if FAPP_CFG_EXP_CMD
-extern const struct fnet_shell fapp_fs_shell;
+extern const fnet_shell_t fapp_fs_shell;
 #endif
 
 #if defined(__cplusplus)

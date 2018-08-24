@@ -120,7 +120,7 @@ typedef struct
     void                    *handler_param;         /* Handler specific parameter. */
     fnet_uint16_t           server_port;            /* TFTP Server port number for data transfer. */
     fnet_uint16_t           block_number_ack;       /* Acknoladged block number. */
-    fnet_time_t             last_time;              /* Last receive time, used for timeout detection. */
+    fnet_time_t             last_time_ms;           /* Last receive time, used for timeout detection. */
     fnet_time_t             timeout;                /* Timeout in ms. */
     union
     {
@@ -140,7 +140,7 @@ static fnet_tftp_if_t fnet_tftp_if;
 /************************************************************************
 * DESCRIPTION: TFTP-client initialization.
 ************************************************************************/
-fnet_return_t fnet_tftp_cln_init( struct fnet_tftp_cln_params *params )
+fnet_return_t fnet_tftp_cln_init( fnet_tftp_cln_params_t *params )
 {
     struct fnet_sockaddr    addr_client;
     fnet_char_t             *data_ptr;
@@ -270,7 +270,7 @@ static void _fnet_tftp_cln_poll( void *fnet_tftp_cln_if_p )
             }
             else
             {
-                tftp_if->last_time = fnet_timer_get_ticks();
+                tftp_if->last_time_ms = fnet_timer_get_ms();
                 tftp_if->state = FNET_TFTP_CLN_STATE_HANDLE_REQUEST;
             }
             break;
@@ -312,7 +312,7 @@ static void _fnet_tftp_cln_poll( void *fnet_tftp_cln_if_p )
                                            (struct fnet_sockaddr *)&addr, sizeof(addr) );
 
                         /* Reset timeout. */
-                        tftp_if->last_time = fnet_timer_get_ticks();
+                        tftp_if->last_time_ms = fnet_timer_get_ms();
 
                         /* Message the application. */
                         if((tftp_if->block_number_ack + 1u) == fnet_htons(tftp_if->packet.packet_data.block_number))
@@ -376,7 +376,7 @@ static void _fnet_tftp_cln_poll( void *fnet_tftp_cln_if_p )
                         fnet_socket_sendto(tftp_if->socket_client, &tftp_if->packet.packet_data, (4u + (tftp_if->tx_data_size)), 0u,
                                            &addr, sizeof(addr) );
                         /* Reset timeout. */
-                        tftp_if->last_time = fnet_timer_get_ticks();
+                        tftp_if->last_time_ms = fnet_timer_get_ms();
                     }
 
                 }
@@ -390,7 +390,7 @@ static void _fnet_tftp_cln_poll( void *fnet_tftp_cln_if_p )
             {
                 /* Check error. Check timeout */
                 if((received == FNET_ERR) ||
-                   (fnet_timer_get_interval(tftp_if->last_time, fnet_timer_get_ticks()) > (fnet_tftp_if.timeout / FNET_TIMER_PERIOD_MS)))
+                   ((fnet_timer_get_ms() - tftp_if->last_time_ms) > fnet_tftp_if.timeout))
                 {
                     goto ERROR;
                 }

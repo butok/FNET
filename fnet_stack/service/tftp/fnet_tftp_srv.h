@@ -75,13 +75,13 @@
  *                          This parameter is used only when this callback function returns @ref FNET_ERR.
  * @param handler_param     User-application specific parameter. It's set during
  *                          the TFTP-server service initialization as part of
- *                          @ref fnet_tftp_srv_params.
+ *                          @ref fnet_tftp_srv_params_t.
  *
  * @return
  *   - @ref FNET_OK if the application accepts the receive request and there is no any other error.
  *   - @ref FNET_ERR if the application cancels the receive request or an error occurs.
  *
- * @see fnet_tftp_srv_init(), fnet_tftp_srv_params
+ * @see fnet_tftp_srv_init(), fnet_tftp_srv_params_t
  ******************************************************************************/
 typedef fnet_return_t(*fnet_tftp_srv_request_handler_t)(fnet_tftp_request_t request_type,
         const struct fnet_sockaddr *address,
@@ -127,7 +127,7 @@ typedef fnet_return_t(*fnet_tftp_srv_request_handler_t)(fnet_tftp_request_t requ
  *                          This parameter is used only when this callback function returns @ref FNET_ERR.
  * @param handler_param     User-application specific parameter. It's set during
  *                          the TFTP-server service initialization as part of
- *                          @ref fnet_tftp_srv_params.
+ *                          @ref fnet_tftp_srv_params_t.
  *
  * @return
  *   - If @c request_type equals to @ref FNET_TFTP_REQUEST_WRITE,@n
@@ -140,7 +140,7 @@ typedef fnet_return_t(*fnet_tftp_srv_request_handler_t)(fnet_tftp_request_t requ
  *     released automatically.
  *
  *
- * @see fnet_tftp_srv_init(), fnet_tftp_srv_params
+ * @see fnet_tftp_srv_init(), fnet_tftp_srv_params_t
  ******************************************************************************/
 typedef fnet_int32_t(*fnet_tftp_srv_data_handler_t)(fnet_tftp_request_t request,
         fnet_uint8_t *data,
@@ -159,9 +159,9 @@ typedef fnet_int32_t(*fnet_tftp_srv_data_handler_t)(fnet_tftp_request_t request,
  *                        - @ref FNET_ERR if file transfer was failed.
  * @param handler_param     User-application specific parameter. It's set during
  *                          the TFTP-server service initialization as part of
- *                          @ref fnet_tftp_srv_params.
+ *                          @ref fnet_tftp_srv_params_t.
  *
- * @see fnet_tftp_srv_init(), fnet_tftp_srv_params
+ * @see fnet_tftp_srv_init(), fnet_tftp_srv_params_t
  ******************************************************************************/
 typedef void(*fnet_tftp_srv_complete_handler_t)(fnet_tftp_request_t request,
         fnet_return_t status,
@@ -170,7 +170,7 @@ typedef void(*fnet_tftp_srv_complete_handler_t)(fnet_tftp_request_t request,
 /**************************************************************************/ /*!
  * @brief Input parameters for the @ref fnet_tftp_srv_init() function.
  ******************************************************************************/
-struct fnet_tftp_srv_params
+typedef struct
 {
     struct fnet_sockaddr address;   /**<  @brief Server socket address. @n
                                      * If server IP address is set to @c 0s, the server will listen to all current network interfaces. @n
@@ -206,7 +206,7 @@ struct fnet_tftp_srv_params
                                      * If it is set to @c 0 the default number of retransmissions will be
                                      * used, that is defined by the @ref FNET_CFG_TFTP_SRV_RETRANSMIT_MAX parameter.
                                      */
-};
+} fnet_tftp_srv_params_t;
 
 /**************************************************************************/ /*!
  * @brief TFTP server descriptor.
@@ -257,7 +257,7 @@ extern "C" {
  * function  @ref fnet_service_poll() periodically to run the TFTP server in background.
  *
  ******************************************************************************/
-fnet_tftp_srv_desc_t fnet_tftp_srv_init( struct fnet_tftp_srv_params *params );
+fnet_tftp_srv_desc_t fnet_tftp_srv_init( fnet_tftp_srv_params_t *params );
 
 /***************************************************************************/ /*!
  *

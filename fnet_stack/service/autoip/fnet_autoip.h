@@ -88,7 +88,7 @@ typedef void(*fnet_autoip_callback_t)(fnet_autoip_desc_t desc, fnet_netif_desc_t
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_autoip_init() function.
  ******************************************************************************/
-struct fnet_autoip_params
+typedef struct
 {
     fnet_netif_desc_t   netif_desc;    /**< @brief Network interface descriptor to be used by the Link-Local service.*/
     fnet_ip4_addr_t     ip_address;    /**< @brief Suggested IP address.@n
@@ -97,19 +97,19 @@ struct fnet_autoip_params
                                        * previously assigned Link-Local address.@n
                                        * It must be the Link-Local network address 169.254.0.0/16, otherwise it will be ignored. @n
                                        * This parameter is optional and can be set to @c 0.*/
-};
+} fnet_autoip_params_t;
 
 /***************************************************************************/ /*!
  *
  * @brief    Initializes the Auto-IP service.
  *
- * @param params     Initialization parameters defined by @ref fnet_autoip_params.
+ * @param params     Initialization parameters defined by @ref fnet_autoip_params_t.
  *
  * @return This function returns:
  *   - Auto-IP service descriptor if no error occurs.
  *   - @c 0 if an error occurs.
  *
- * @see fnet_autoip_release(), fnet_autoip_params
+ * @see fnet_autoip_release(), fnet_autoip_params_t
  *
  ******************************************************************************
  *
@@ -117,7 +117,7 @@ struct fnet_autoip_params
  * on @c netif interface.
  *
  ******************************************************************************/
-fnet_autoip_desc_t fnet_autoip_init( struct fnet_autoip_params *params );
+fnet_autoip_desc_t fnet_autoip_init( fnet_autoip_params_t *params );
 
 /***************************************************************************/ /*!
  *

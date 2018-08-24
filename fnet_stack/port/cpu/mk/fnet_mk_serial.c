@@ -198,13 +198,11 @@ fnet_return_t fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_
     fnet_uint16_t 			sbr;
     fnet_uint16_t 			brfa;
     fnet_uint8_t 		    temp;
-    fnet_return_t           result = FNET_ERR; /* TBD control UART number */
 
 #if FNET_CFG_CPU_SERIAL_IO_INIT
     /* Init GPIO.*/
     fnet_cpu_serial_gpio_init(port_number);
 #endif
-
 
     /* UART0 and UART1 are clocked from the core clock, but all other UARTs are
     * clocked from the peripheral clock. So we have to determine which clock
@@ -254,9 +252,7 @@ fnet_return_t fnet_cpu_serial_init(fnet_index_t port_number, fnet_uint32_t baud_
     /* Enable receiver and transmitter */
     FNET_MK_UART_C2_REG(uartch) |= (FNET_MK_UART_C2_TE_MASK | FNET_MK_UART_C2_RE_MASK );
 
-    result = FNET_OK;
-
-    return result;
+    return FNET_OK; /* TBD control UART number */
 }
 
 #endif /*FNET_MK*/

@@ -141,7 +141,7 @@ const fnet_char_t FAPP_COMMAND_RELEASE [] = "release";
 /************************************************************************
 *     The table of the main shell commands.
 *************************************************************************/
-const struct fnet_shell_command fapp_cmd_table [] =
+const fnet_shell_command_t fapp_cmd_table [] =
 {
     { .name = "?",       .min_args = 0u, .max_args = 0u,     .cmd_ptr = fapp_help_cmd,    .description = "Display this help message", .syntax = ""},
 #if FAPP_CFG_SETGET_CMD
@@ -271,7 +271,7 @@ static fnet_char_t fapp_cmd_line_buffer[FAPP_CFG_SHELL_MAX_LINE_LENGTH];
 /************************************************************************
 *     The main shell control data structure.
 *************************************************************************/
-static const struct fnet_shell fapp_shell =
+static const fnet_shell_t fapp_shell =
 {
     fapp_cmd_table,         /* cmd_table */
     FAPP_CFG_SHELL_PROMPT,  /* prompt_str */
@@ -283,7 +283,7 @@ static const struct fnet_shell fapp_shell =
 ************************************************************************/
 fnet_shell_desc_t fapp_shell_init(void)
 {
-    struct fnet_shell_params    shell_params;
+    fnet_shell_params_t    shell_params;
 
     /* Init main shell. */
     shell_params.shell = &fapp_shell;

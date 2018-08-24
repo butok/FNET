@@ -73,7 +73,7 @@ static fnet_uint8_t fapp_http_ssi_buffer[FAPP_HTTP_SSI_BUFFER_MAX];    /* Tempor
 static fnet_return_t fapp_http_ssi_echo_handle(fnet_char_t *query, fnet_uint32_t *cookie);
 
 /* SSI table */
-static const struct fnet_http_srv_ssi fapp_ssi_table[] =
+static const fnet_http_srv_ssi_t fapp_ssi_table[] =
 {
     { .name = FAPP_HTTP_SSI_COMMAND_ECHO, .handle = fapp_http_ssi_echo_handle, .send = fapp_http_string_buffer_respond},
     { .name = 0 } /* End of the table. */
@@ -97,7 +97,7 @@ static fnet_return_t fapp_http_cgi_graph_handle(fnet_http_srv_session_t session,
 static fnet_uint32_t fapp_http_cgi_rand(void);
 
 /* CGI table */
-static const struct fnet_http_srv_cgi fapp_cgi_table[] =
+static const fnet_http_srv_cgi_t fapp_cgi_table[] =
 {
     { .name = "stdata.cgi", .handle = fapp_http_cgi_stdata_handle, .send = fapp_http_string_buffer_respond},
     { .name = "graph.cgi", .handle = fapp_http_cgi_graph_handle, .send = fapp_http_string_buffer_respond},
@@ -114,7 +114,7 @@ static fnet_uint8_t fapp_http_cgi_buffer[CGI_MAX]; /* CGI Temporary buffer. */
 * Authentification definitions
 *************************************************************************/
 #if FNET_CFG_HTTP_SRV_AUTHENTICATION_BASIC && FNET_CFG_HTTP_SRV_VERSION_MAJOR
-static const struct fnet_http_srv_auth fapp_auth_table[] =
+static const fnet_http_srv_auth_t fapp_auth_table[] =
 {
     {.realm = "Please use User Name:fnet Password:fnet to login", .dir_name = "auth", .userid = "fnet", .password = "fnet", .scheme = FNET_HTTP_SRV_AUTH_SCHEME_BASIC},
     {.scheme = FNET_HTTP_SRV_AUTH_SCHEME_NONE}  /* End of the table. */
@@ -128,7 +128,7 @@ static const struct fnet_http_srv_auth fapp_auth_table[] =
 
 static fnet_return_t fapp_http_post_receive (fnet_http_srv_session_t session, fnet_uint8_t *buffer, fnet_size_t buffer_size, fnet_uint32_t *cookie);
 
-static const struct fnet_http_srv_post fapp_post_table[] =
+static const fnet_http_srv_post_t fapp_post_table[] =
 {
     {.name = "post.cgi", .post_handle = 0, .post_receive = fapp_http_post_receive, .post_send = 0},
     {.name = 0} /* End of the table. */
@@ -258,20 +258,20 @@ static fnet_return_t fapp_http_ssi_echo_handle(fnet_char_t *query, fnet_uint32_t
 *************************************************************************/
 static fnet_return_t fapp_http_cgi_stdata_handle(fnet_http_srv_session_t session, fnet_char_t *query, fnet_uint32_t *cookie)
 {
-    fnet_time_t                     cur_time;
+    fnet_time_t                     cur_time_ms;
     fnet_time_t                     t_hour;
     fnet_time_t                     t_min;
-    fnet_time_t                   t_sec;
+    fnet_time_t                     t_sec;
     struct fnet_netif_statistics    statistics;
 
     FNET_COMP_UNUSED_ARG(query);
     FNET_COMP_UNUSED_ARG(session);
 
     /* Get Time. */
-    cur_time = fnet_timer_get_ticks();
-    t_hour = cur_time / FNET_TIMER_TICKS_IN_HOUR;
-    t_min  = (cur_time % FNET_TIMER_TICKS_IN_HOUR) / FNET_TIMER_TICKS_IN_MIN;
-    t_sec  = (cur_time % FNET_TIMER_TICKS_IN_MIN) / FNET_TIMER_TICKS_IN_SEC;
+    cur_time_ms = fnet_timer_get_ms();
+    t_hour = cur_time_ms / FNET_TIMER_MS_IN_HOUR;
+    t_min  = (cur_time_ms % FNET_TIMER_MS_IN_HOUR) / FNET_TIMER_MS_IN_MIN;
+    t_sec  = (cur_time_ms % FNET_TIMER_MS_IN_MIN) / FNET_TIMER_MS_IN_SEC;
 
     /* Get statistics. */
     fnet_memset_zero( &statistics, sizeof(struct fnet_netif_statistics) );
@@ -383,12 +383,12 @@ void fapp_http_srv_release(void)
 *************************************************************************/
 void fapp_http_srv_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
-    struct fnet_http_srv_params params;
-    fnet_http_srv_desc_t        http_desc;
+    fnet_http_srv_params_t params;
+    fnet_http_srv_desc_t   http_desc;
 
     if(argc == 1u) /* By default is "init".*/
     {
-        fnet_memset_zero(&params, sizeof(struct fnet_http_srv_params));
+        fnet_memset_zero(&params, sizeof(fnet_http_srv_params_t));
 
         params.root_path = FAPP_HTTP_SRV_MOUNT_NAME;    /* Root directory path */
         params.index_path = FAPP_HTTP_SRV_INDEX_FILE;   /* Index file path, relative to the root_path */
@@ -458,9 +458,9 @@ void fapp_http_srv_tls_release(void)
 *************************************************************************/
 void fapp_http_srv_tls_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
-    struct fnet_http_srv_params         params;
-    fnet_http_srv_desc_t                http_tls_desc;
-    struct fnet_http_srv_tls_params     tls_params;
+    fnet_http_srv_params_t         params;
+    fnet_http_srv_desc_t           http_tls_desc;
+    fnet_http_srv_tls_params_t     tls_params;
 
     if(argc == 1u) /* By default is "init".*/
     {

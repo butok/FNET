@@ -143,8 +143,8 @@ struct fnet_http_srv_response
     fnet_int32_t                            content_length;             /* The total size of the data to send (is -1 if unknown).*/
 #endif
 #if FNET_CFG_HTTP_SRV_AUTHENTICATION_BASIC && FNET_CFG_HTTP_SRV_VERSION_MAJOR
-    const struct fnet_http_srv_auth         *auth_entry;
-    const struct fnet_http_srv_auth_scheme  *auth_scheme;
+    const fnet_http_srv_auth_t              *auth_entry;
+    const struct fnet_http_srv_auth_scheme_if  *auth_scheme;
 #endif
 };
 
@@ -176,17 +176,17 @@ struct fnet_http_srv_request
 *************************************************************************/
 struct fnet_http_srv_session_if
 {
-    fnet_http_srv_state_t           state;                              /* Current state.*/
-    fnet_time_t                 state_time;                         /* Start time used by the state machine for timeout calculation.*/
-    fnet_socket_t               socket_foreign;                     /* Foreign socket.*/
-    fnet_uint8_t                buffer[FNET_HTTP_SRV_BUF_SIZE + 1u];    /* Receive/Transmit buffer */
-    fnet_size_t                 buffer_actual_size;                 /* Size of the actual data in the buffer.*/
-    fnet_fs_file_t               file_desc;                         /* File to send */
-    const void                  *data_ptr;                          /* Data to send */
-    struct fnet_http_srv_response   response;                           /* Holds the accumulated data for the HTTP 1.0 response header. */
+    fnet_http_srv_state_t           state;                                  /* Current state.*/
+    fnet_time_t                     state_time_ms;                          /* Start time used by the state machine for timeout calculation.*/
+    fnet_socket_t                   socket_foreign;                         /* Foreign socket.*/
+    fnet_uint8_t                    buffer[FNET_HTTP_SRV_BUF_SIZE + 1u];    /* Receive/Transmit buffer */
+    fnet_size_t                     buffer_actual_size;                     /* Size of the actual data in the buffer.*/
+    fnet_fs_file_t                  file_desc;                              /* File to send */
+    const void                      *data_ptr;                              /* Data to send */
+    struct fnet_http_srv_response   response;                               /* Holds the accumulated data for the HTTP 1.0 response header. */
     struct fnet_http_srv_request    request;
 #if (FNET_CFG_HTTP_SRV_TLS && FNET_CFG_TLS)
-    fnet_tls_socket_t           tls_sock;                           /* TLS socket descriptor. */
+    fnet_tls_socket_t               tls_sock;                               /* TLS socket descriptor. */
 #endif
 };
 
@@ -210,16 +210,16 @@ struct fnet_http_srv_if
     struct fnet_http_srv_ssi_if                 ssi;
 #endif
 #if FNET_CFG_HTTP_SRV_CGI
-    const struct fnet_http_srv_cgi              *cgi_table;
+    const fnet_http_srv_cgi_t                   *cgi_table;
 #endif
 #if FNET_CFG_HTTP_SRV_AUTHENTICATION_BASIC && FNET_CFG_HTTP_SRV_VERSION_MAJOR
-    const struct fnet_http_srv_auth             *auth_table;
+    const fnet_http_srv_auth_t                  *auth_table;
 #endif
 #if FNET_CFG_HTTP_SRV_POST && FNET_CFG_HTTP_SRV_VERSION_MAJOR
-    const struct fnet_http_srv_post             *post_table;
+    const fnet_http_srv_post_t                  *post_table;
 #endif
 #if (FNET_CFG_HTTP_SRV_TLS && FNET_CFG_TLS)
-    fnet_tls_desc_t                         tls_desc;                   /* TLS descriptor. */
+    fnet_tls_desc_t                             tls_desc;                   /* TLS descriptor. */
 #endif
 };
 

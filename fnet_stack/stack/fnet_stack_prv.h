@@ -43,7 +43,6 @@ void _fnet_mutex_unlock(fnet_mutex_t *mutex);
 void _fnet_mutex_release(fnet_mutex_t *mutex);
 
 /* Stack mutex */
-extern  const fnet_mutex_api_t  *fnet_mutex_api;
 fnet_return_t _fnet_stack_mutex_init(void);
 void _fnet_stack_mutex_release(void);
 void _fnet_stack_mutex_lock(void);

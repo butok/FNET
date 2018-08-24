@@ -34,7 +34,7 @@
 /* Root FS */
 
 static fnet_return_t _fnet_fs_root_opendir( struct fnet_fs_desc *dir, const fnet_char_t *name);
-static fnet_return_t _fnet_fs_root_readdir(struct fnet_fs_desc *dir, struct fnet_fs_dirent *dirent);
+static fnet_return_t _fnet_fs_root_readdir(struct fnet_fs_desc *dir, fnet_fs_dirent_t *dirent);
 
 static const struct fnet_fs_dir_operations fnet_fs_root_dir_operations =
 {
@@ -104,7 +104,7 @@ static fnet_return_t _fnet_fs_root_opendir( struct fnet_fs_desc *dir, const fnet
 /************************************************************************
 * DESCRIPTION: Read DIR stream for the ROOT FS.
 *************************************************************************/
-static fnet_return_t _fnet_fs_root_readdir(struct fnet_fs_desc *dir, struct fnet_fs_dirent *dirent)
+static fnet_return_t _fnet_fs_root_readdir(struct fnet_fs_desc *dir, fnet_fs_dirent_t *dirent)
 {
     fnet_return_t               result = FNET_ERR;
     fnet_index_t                i;

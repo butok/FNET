@@ -34,16 +34,16 @@
 ************************************************************************/
 static void _fnet_http_srv_auth_decode_base64(fnet_char_t *src);
 static fnet_size_t _fnet_http_srv_auth_scheme_basic_generate(struct fnet_http_srv_if *http, fnet_uint8_t *buffer, fnet_size_t buffer_size);
-static fnet_return_t _fnet_http_srv_auth_scheme_basic_validate (const struct fnet_http_srv_auth *auth_entry, fnet_char_t *auth_param);
+static fnet_return_t _fnet_http_srv_auth_scheme_basic_validate (const fnet_http_srv_auth_t *auth_entry, fnet_char_t *auth_param);
 static fnet_uint8_t _fnet_http_srv_decode_base64_char(fnet_uint8_t c);
 
 /************************************************************************
 *     Authentication scheme table
 ************************************************************************/
 
-#define FNET_HTTP_SRV_AUTH_SCHEME_TABLE_SIZE (sizeof(fnet_http_srv_auth_scheme_table)/sizeof(struct fnet_http_srv_auth_scheme))
+#define FNET_HTTP_SRV_AUTH_SCHEME_TABLE_SIZE (sizeof(fnet_http_srv_auth_scheme_table)/sizeof(struct fnet_http_srv_auth_scheme_if))
 
-static const struct fnet_http_srv_auth_scheme  fnet_http_srv_auth_scheme_table[] =
+static const struct fnet_http_srv_auth_scheme_if  fnet_http_srv_auth_scheme_table[] =
 {
     {FNET_HTTP_SRV_AUTH_SCHEME_BASIC, "Basic", _fnet_http_srv_auth_scheme_basic_validate, _fnet_http_srv_auth_scheme_basic_generate},
     /* TBD FNET_HTTP_SRV_AUTH_SCHEME_DIGEST, "Digest" */
@@ -54,8 +54,8 @@ static const struct fnet_http_srv_auth_scheme  fnet_http_srv_auth_scheme_table[]
 ************************************************************************/
 void _fnet_http_srv_auth_validate_uri(struct fnet_http_srv_if *http)
 {
-    const struct fnet_http_srv_auth     *auth_entry = http->auth_table;
-    fnet_index_t                    i;
+    const fnet_http_srv_auth_t          *auth_entry = http->auth_table;
+    fnet_index_t                        i;
     struct fnet_http_srv_session_if     *session =  http->session_active;
 
     if(auth_entry) /* Check if the table is defined.*/
@@ -93,8 +93,8 @@ void _fnet_http_srv_auth_validate_uri(struct fnet_http_srv_if *http)
 fnet_return_t _fnet_http_srv_auth_validate_credentials(struct fnet_http_srv_if *http, fnet_char_t *credentials)
 {
     struct fnet_http_srv_session_if         *session =  http->session_active;
-    const struct fnet_http_srv_auth         *auth_entry = session->response.auth_entry;
-    const struct fnet_http_srv_auth_scheme  *scheme = session->response.auth_scheme;
+    const fnet_http_srv_auth_t              *auth_entry = session->response.auth_entry;
+    const struct fnet_http_srv_auth_scheme_if  *scheme = session->response.auth_scheme;
     fnet_return_t                           result = FNET_ERR;
 
     while (*credentials == ' ')
@@ -137,7 +137,7 @@ fnet_size_t _fnet_http_srv_auth_generate_challenge(struct fnet_http_srv_if *http
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-static fnet_return_t _fnet_http_srv_auth_scheme_basic_validate (const struct fnet_http_srv_auth *auth_entry, fnet_char_t *auth_param)
+static fnet_return_t _fnet_http_srv_auth_scheme_basic_validate (const fnet_http_srv_auth_t *auth_entry, fnet_char_t *auth_param)
 {
     fnet_return_t   result =  FNET_ERR;
     fnet_char_t    *password;

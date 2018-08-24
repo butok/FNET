@@ -187,7 +187,7 @@ static const fnet_eth_prot_if_t fnet_eth_prot_if_list[] =
     }while(0)
 
 #if 0  /* Done by _fnet_netif_is_connected()*/
-    #define FNET_ETH_TIMER_PERIOD (500U) /*ms*/
+    #define FNET_ETH_TIMER_PERIOD_MS (500U) /*ms*/
 #endif
 
 /******************************************************************************
@@ -372,7 +372,7 @@ fnet_return_t _fnet_eth_init( fnet_netif_t *netif)
             }
 #endif /* FNET_CFG_IP6 */
 #if 0  /* Done by _fnet_netif_is_connected()*/
-            eth_if->eth_timer = _fnet_timer_new((FNET_ETH_TIMER_PERIOD / FNET_TIMER_PERIOD_MS), _fnet_eth_timer, (fnet_uint32_t)netif);
+            eth_if->eth_timer = _fnet_timer_new(FNET_ETH_TIMER_PERIOD_MS, _fnet_eth_timer, (fnet_uint32_t)netif);
 #endif
 
             fnet_eth_number++;
@@ -560,7 +560,7 @@ void _fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_add
                 /* Creating a Neighbor Cache entry in the INCOMPLETE state. */
                 neighbor = _fnet_nd6_neighbor_cache_add(netif, dest_ip_addr, FNET_NULL, FNET_ND6_NEIGHBOR_STATE_INCOMPLETE);
 
-                neighbor->state_time = fnet_timer_get_ms();
+                neighbor->state_time_ms = fnet_timer_get_ms();
                 neighbor->solicitation_send_counter = 0u;
                 FNET_IP6_ADDR_COPY(src_ip_addr, &neighbor->solicitation_src_ip_addr); /* Save src address for later usage.*/
 
@@ -590,7 +590,7 @@ void _fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_add
            && (neighbor->ll_addr[3] == 0U) && (neighbor->ll_addr[4] == 0U) && (neighbor->ll_addr[5] == 0U) )
         {
             neighbor->state = FNET_ND6_NEIGHBOR_STATE_INCOMPLETE;
-            neighbor->state_time = fnet_timer_get_ms();
+            neighbor->state_time_ms = fnet_timer_get_ms();
             neighbor->solicitation_send_counter = 0u;
             FNET_IP6_ADDR_COPY(src_ip_addr, &neighbor->solicitation_src_ip_addr); /* Save src address for later usage.*/
             /* AR: Transmitting a Neighbor Solicitation message targeted at the neighbor.*/
@@ -612,7 +612,7 @@ void _fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_add
              */
         {
             neighbor->state = FNET_ND6_NEIGHBOR_STATE_DELAY;
-            neighbor->state_time = fnet_timer_get_ms();
+            neighbor->state_time_ms = fnet_timer_get_ms();
         }
 
         /* Get destination MAC/HW address.*/
@@ -853,7 +853,7 @@ void _fnet_eth_phy_discover_addr (fnet_netif_t *netif, fnet_uint8_t phy_addr_sta
 
     for (i = (fnet_uint8_t)phy_addr_start; i < 32U; i++)
     {
-        fnet_uint16_t id;
+        fnet_uint16_t id = 0;
 
         _fnet_eth_phy_set_addr(netif, i);
 
@@ -874,7 +874,7 @@ void _fnet_eth_phy_discover_addr (fnet_netif_t *netif, fnet_uint8_t phy_addr_sta
 fnet_return_t _fnet_eth_phy_init(fnet_netif_t *netif)
 {
     fnet_uint16_t       reg_value = 0;
-    fnet_uint32_t       counter = 1000;
+    fnet_uint32_t       counter;
     fnet_return_t       result;
     fnet_eth_if_t       *eth_if = (fnet_eth_if_t *)(netif->netif_prv);
 

@@ -1309,20 +1309,21 @@ typedef struct FNET_MK_PORT_MemMap
 /* NVIC - Peripheral register structure */
 typedef struct FNET_MK_NVIC_MemMap
 {
-    fnet_uint32_t ISER[4];                                /* Interrupt Set Enable Register n, array offset: 0x0, array step: 0x4 */
-    fnet_uint8_t RESERVED_0[112];
-    fnet_uint32_t ICER[4];                                /* Interrupt Clear Enable Register n, array offset: 0x80, array step: 0x4 */
-    fnet_uint8_t RESERVED_1[112];
-    fnet_uint32_t ISPR[4];                                /* Interrupt Set Pending Register n, array offset: 0x100, array step: 0x4 */
-    fnet_uint8_t RESERVED_2[112];
-    fnet_uint32_t ICPR[4];                                /* Interrupt Clear Pending Register n, array offset: 0x180, array step: 0x4 */
-    fnet_uint8_t RESERVED_3[112];
-    fnet_uint32_t IABR[4];                                /* Interrupt Active bit Register n, array offset: 0x200, array step: 0x4 */
-    fnet_uint8_t RESERVED_4[240];
-    fnet_uint8_t IP[104];                                 /* Interrupt Priority Register n, array offset: 0x300, array step: 0x1 */
-    fnet_uint8_t RESERVED_5[2712];
-    fnet_uint32_t STIR[1];                                /* Software Trigger Interrupt Register, array offset: 0xE00, array step: 0x4 */
+    fnet_vuint32_t ISER[8U];                /* Offset: 0x000 (R/W)  Interrupt Set Enable Register */
+    fnet_vuint32_t RESERVED0[24U];
+    fnet_vuint32_t ICER[8U];                /* Offset: 0x080 (R/W)  Interrupt Clear Enable Register */
+    fnet_vuint32_t RSERVED1[24U];
+    fnet_vuint32_t ISPR[8U];                /* Offset: 0x100 (R/W)  Interrupt Set Pending Register */
+    fnet_vuint32_t RESERVED2[24U];
+    fnet_vuint32_t ICPR[8U];                /* Offset: 0x180 (R/W)  Interrupt Clear Pending Register */
+    fnet_vuint32_t RESERVED3[24U];
+    fnet_vuint32_t IABR[8U];                /* Offset: 0x200 (R/W)  Interrupt Active bit Register */
+    fnet_vuint32_t RESERVED4[56U];
+    fnet_vuint8_t IP[240U];                 /* Offset: 0x300 (R/W)  Interrupt Priority Register (8Bit wide) */
+    fnet_uint32_t RESERVED5[644U];
+    fnet_uint32_t STIR;                     /* Offset: 0xE00 ( /W)  Software Trigger Interrupt Register */
 } volatile *FNET_MK_NVIC_MemMapPtr;
+
 
 /* ----------------------------------------------------------------------------
    -- NVIC - Register accessor macros

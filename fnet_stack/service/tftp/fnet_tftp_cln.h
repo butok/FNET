@@ -61,7 +61,7 @@
  *
  * @param request_type      Request type (read or write) defined by @ref fnet_tftp_request_t.
  *                          It's set during the TFTP-client service initialization as part of the
- *                          @ref fnet_tftp_cln_params.
+ *                          @ref fnet_tftp_cln_params_t.
  *
  * @param data              Pointer to the data buffer which content defined by @c request_type:
  *                          - If @c request_type equals to @ref FNET_TFTP_REQUEST_READ, @n
@@ -95,7 +95,7 @@
  *
  * @param handler_param     User-application specific parameter. It's set during
  *                          the TFTP-client service initialization as part of
- *                          @ref fnet_tftp_cln_params.
+ *                          @ref fnet_tftp_cln_params_t.
  *
  * @return
  *   - If @c request_type equals to @ref FNET_TFTP_REQUEST_READ,@n
@@ -108,7 +108,7 @@
  *   - This function should return @ref FNET_ERR if an error occurs. The TFTP-client service  will be
  *     released automatically.
  *
- * @see fnet_tftp_cln_params
+ * @see fnet_tftp_cln_params_t
  ******************************************************************************/
 typedef fnet_int32_t(*fnet_tftp_cln_handler_t)(fnet_tftp_request_t request_type, fnet_uint8_t *data, fnet_size_t data_size, fnet_return_t tftp_result, void *handler_param);
 
@@ -116,7 +116,7 @@ typedef fnet_int32_t(*fnet_tftp_cln_handler_t)(fnet_tftp_request_t request_type,
 /**************************************************************************/ /*!
  * @brief Input parameters for the @ref fnet_tftp_cln_init() function.
  ******************************************************************************/
-struct fnet_tftp_cln_params
+typedef struct
 {
     fnet_tftp_request_t     request_type;   /**< @brief Request type (read or write) defined by @ref fnet_tftp_request_t.
                                             */
@@ -143,7 +143,7 @@ struct fnet_tftp_cln_params
                                             * used that is defined by the
                                             * @ref FNET_CFG_TFTP_CLN_TIMEOUT parameter.
                                             */
-};
+} fnet_tftp_cln_params_t;
 
 /**************************************************************************/ /*!
  * @brief TFTP-client states.@n
@@ -190,7 +190,7 @@ extern "C" {
  * in the background.
  *
  ******************************************************************************/
-fnet_return_t fnet_tftp_cln_init( struct fnet_tftp_cln_params *params );
+fnet_return_t fnet_tftp_cln_init( fnet_tftp_cln_params_t *params );
 
 /***************************************************************************/ /*!
  *

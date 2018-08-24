@@ -86,7 +86,7 @@ static void fapp_ping_on_ctrlc(fnet_shell_desc_t desc, void *cookie)
 ************************************************************************/
 void fapp_ping_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
-    struct fnet_ping_params ping_params;
+    fnet_ping_params_t      ping_params;
     fnet_index_t            i;
     fnet_char_t             *p;
     fnet_uint32_t           value;

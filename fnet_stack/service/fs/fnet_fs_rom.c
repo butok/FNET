@@ -33,14 +33,14 @@
 #define FNET_FS_ROM_OPENMODE     (FNET_FS_MODE_READ|FNET_FS_MODE_OPEN_EXISTING)
 
 static fnet_return_t _fnet_fs_rom_opendir( struct fnet_fs_desc *dir, const fnet_char_t *name);
-static fnet_return_t _fnet_fs_rom_readdir(struct fnet_fs_desc *dir, struct fnet_fs_dirent *dirent);
+static fnet_return_t _fnet_fs_rom_readdir(struct fnet_fs_desc *dir, fnet_fs_dirent_t *dirent);
 static fnet_return_t _fnet_fs_rom_fopen( struct fnet_fs_desc *file, const fnet_char_t *name, fnet_uint8_t mode, struct fnet_fs_desc *re_dir);
 static fnet_size_t _fnet_fs_rom_fread (struct fnet_fs_desc *file, void *buf_p, fnet_size_t bytes);
 static fnet_return_t _fnet_fs_rom_mount( const void *arg );
 static fnet_return_t _fnet_fs_rom_fseek (struct fnet_fs_desc *file, fnet_int32_t offset, fnet_fs_seek_origin_t origin) ;
-static fnet_return_t _fnet_fs_rom_finfo (struct fnet_fs_desc *file, struct fnet_fs_dirent *dirent);
-static const struct fnet_fs_rom_node *_fnet_fs_rom_find(const struct fnet_fs_rom_node *file_table, const fnet_char_t *name);
-static void _fnet_fs_rom_fill_dirent(struct fnet_fs_rom_node *node, struct fnet_fs_dirent *dirent);
+static fnet_return_t _fnet_fs_rom_finfo (struct fnet_fs_desc *file, fnet_fs_dirent_t *dirent);
+static const fnet_fs_rom_node_t *_fnet_fs_rom_find(const fnet_fs_rom_node_t *file_table, const fnet_char_t *name);
+static void _fnet_fs_rom_fill_dirent(fnet_fs_rom_node_t *node, fnet_fs_dirent_t *dirent);
 
 /* FS  directory operations */
 static const struct fnet_fs_dir_operations fnet_fs_rom_dir_operations =
@@ -112,12 +112,12 @@ void fnet_fs_rom_unregister( void )
 static fnet_return_t _fnet_fs_rom_mount( const void *arg )
 {
     fnet_return_t                   result = FNET_ERR;
-    const struct fnet_fs_rom_image  *image;
+    const fnet_fs_rom_image_t       *image;
 
     if(arg)
     {
         /* Check if the image is ROM FS image and version number*/
-        image = ((const struct fnet_fs_rom_image * )arg);
+        image = ((const fnet_fs_rom_image_t * )arg);
         if( (fnet_strcmp( FNET_FS_ROM_NAME, image->name ) == 0)
             && (image->version == FNET_FS_ROM_VERSION))
         {
@@ -131,11 +131,11 @@ static fnet_return_t _fnet_fs_rom_mount( const void *arg )
 /************************************************************************
 * DESCRIPTION:
 *************************************************************************/
-static const struct fnet_fs_rom_node *_fnet_fs_rom_find(const struct fnet_fs_rom_node *file_table, const fnet_char_t *name)
+static const fnet_fs_rom_node_t *_fnet_fs_rom_find(const fnet_fs_rom_node_t *file_table, const fnet_char_t *name)
 {
-    const struct fnet_fs_rom_node *result = 0;
-    const struct fnet_fs_rom_node *parent = 0;
-    const struct fnet_fs_rom_node *current;
+    const fnet_fs_rom_node_t *result = 0;
+    const fnet_fs_rom_node_t *parent = 0;
+    const fnet_fs_rom_node_t *current;
 
     if (file_table && name)
     {
@@ -189,14 +189,14 @@ static const struct fnet_fs_rom_node *_fnet_fs_rom_find(const struct fnet_fs_rom
 *************************************************************************/
 static fnet_return_t _fnet_fs_rom_opendir( struct fnet_fs_desc *dir, const fnet_char_t *name)
 {
-    fnet_return_t                   result = FNET_ERR;
-    const struct fnet_fs_rom_node   *file_table;
-    const struct fnet_fs_rom_node   *node;
+    fnet_return_t              result = FNET_ERR;
+    const fnet_fs_rom_node_t   *file_table;
+    const fnet_fs_rom_node_t   *node;
 
     if(dir && name)
     {
         /* Find dir */
-        file_table = ((const struct fnet_fs_rom_image * )dir->mount->arg)->nodes;
+        file_table = ((const fnet_fs_rom_image_t * )dir->mount->arg)->nodes;
 
         node = _fnet_fs_rom_find(file_table, name);
 
@@ -214,7 +214,7 @@ static fnet_return_t _fnet_fs_rom_opendir( struct fnet_fs_desc *dir, const fnet_
 /************************************************************************
 * DESCRIPTION:
 *************************************************************************/
-static void _fnet_fs_rom_fill_dirent(struct fnet_fs_rom_node *node, struct fnet_fs_dirent *dirent)
+static void _fnet_fs_rom_fill_dirent(fnet_fs_rom_node_t *node, fnet_fs_dirent_t *dirent)
 {
     dirent->d_ino = (fnet_uint32_t) node; /* File serial number. */
     dirent->d_type = (node->data == 0) ? DT_DIR : DT_REG;
@@ -225,24 +225,24 @@ static void _fnet_fs_rom_fill_dirent(struct fnet_fs_rom_node *node, struct fnet_
 /************************************************************************
 * DESCRIPTION: Read DIR stream for the ROM FS.
 *************************************************************************/
-static fnet_return_t _fnet_fs_rom_readdir(struct fnet_fs_desc *dir, struct fnet_fs_dirent *dirent)
+static fnet_return_t _fnet_fs_rom_readdir(struct fnet_fs_desc *dir, fnet_fs_dirent_t *dirent)
 {
-    fnet_return_t           result = FNET_ERR;
-    struct fnet_fs_rom_node *current;
-    struct fnet_fs_rom_node *parent;
+    fnet_return_t      result = FNET_ERR;
+    fnet_fs_rom_node_t *current;
+    fnet_fs_rom_node_t *parent;
 
     if(dir && (dir->id) && (dir->pos != (fnet_uint32_t)FNET_FS_EOF) && dirent)
     {
         if(dir->pos == 0u)
         {
-            current = (struct fnet_fs_rom_node *)(dir->id) + 1;
+            current = (fnet_fs_rom_node_t *)(dir->id) + 1;
         }
         else
         {
-            current = (struct fnet_fs_rom_node *)dir->pos;
+            current = (fnet_fs_rom_node_t *)dir->pos;
         }
 
-        parent = (struct fnet_fs_rom_node *)(dir->id);
+        parent = (fnet_fs_rom_node_t *)(dir->id);
 
         while (current->name)
         {
@@ -273,19 +273,19 @@ static fnet_return_t _fnet_fs_rom_readdir(struct fnet_fs_desc *dir, struct fnet_
 static fnet_return_t _fnet_fs_rom_fopen( struct fnet_fs_desc *file, const fnet_char_t *name, fnet_uint8_t mode, struct fnet_fs_desc *re_dir )
 {
     fnet_return_t                   result = FNET_ERR;
-    const struct fnet_fs_rom_node   *file_table;
-    const struct fnet_fs_rom_node   *node;
+    const fnet_fs_rom_node_t        *file_table;
+    const fnet_fs_rom_node_t        *node;
 
     if(file && name && (mode == FNET_FS_ROM_OPENMODE))
     {
         /* Find dir */
         if(re_dir && (re_dir->id))
         {
-            file_table = (struct fnet_fs_rom_node *) re_dir->id;
+            file_table = (fnet_fs_rom_node_t *) re_dir->id;
         }
         else
         {
-            file_table = ((const struct fnet_fs_rom_image * )file->mount->arg)->nodes;
+            file_table = ((const fnet_fs_rom_image_t * )file->mount->arg)->nodes;
         }
 
         node = _fnet_fs_rom_find(file_table, name);
@@ -308,13 +308,13 @@ static fnet_size_t _fnet_fs_rom_fread (struct fnet_fs_desc *file, void *buf_p, f
 {
     fnet_uint8_t            *buf = (fnet_uint8_t *)buf_p;
     fnet_size_t             result = 0u;
-    struct fnet_fs_rom_node *current;
+    fnet_fs_rom_node_t      *current;
     fnet_size_t             size;
     fnet_uint32_t           pos;
 
     if(file && (file->id) && (file->pos != (fnet_uint32_t)FNET_FS_EOF) && buf)
     {
-        current = (struct fnet_fs_rom_node *)(file->id);
+        current = (fnet_fs_rom_node_t *)(file->id);
         if(current && (current->data_size) && (current->data))
         {
             size = current->data_size;
@@ -345,14 +345,14 @@ static fnet_size_t _fnet_fs_rom_fread (struct fnet_fs_desc *file, void *buf_p, f
 static fnet_return_t _fnet_fs_rom_fseek (struct fnet_fs_desc *file, fnet_int32_t offset, fnet_fs_seek_origin_t origin)
 {
     fnet_return_t           result = FNET_ERR;
-    struct fnet_fs_rom_node *current;
+    fnet_fs_rom_node_t      *current;
     fnet_size_t             size;
     fnet_uint32_t           pos;
     fnet_int32_t            new_pos;
 
     if(file && (file->id))
     {
-        current = (struct fnet_fs_rom_node *)(file->id);
+        current = (fnet_fs_rom_node_t *)(file->id);
         if(current && (current->data_size))
         {
             size = current->data_size;
@@ -388,12 +388,12 @@ static fnet_return_t _fnet_fs_rom_fseek (struct fnet_fs_desc *file, fnet_int32_t
 /************************************************************************
 * DESCRIPTION:
 *************************************************************************/
-static fnet_return_t _fnet_fs_rom_finfo (struct fnet_fs_desc *file, struct fnet_fs_dirent *dirent)
+static fnet_return_t _fnet_fs_rom_finfo (struct fnet_fs_desc *file, fnet_fs_dirent_t *dirent)
 {
     fnet_return_t result = FNET_ERR;
     if(file && (file->id) && dirent)
     {
-        _fnet_fs_rom_fill_dirent((struct fnet_fs_rom_node *)(file->id), dirent);
+        _fnet_fs_rom_fill_dirent((fnet_fs_rom_node_t *)(file->id), dirent);
         result = FNET_OK;
     }
 

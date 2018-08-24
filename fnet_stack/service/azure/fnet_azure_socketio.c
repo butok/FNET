@@ -91,7 +91,7 @@ typedef struct
 #if FNET_CFG_AZURE_OPEN_BLOCKED
     static fnet_ip4_addr_t _fnet_azure_hostbyname(const char *host_name);
 #endif
-static void _fnet_azure_dns_handler_resolved(const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, void *cookie);
+static void _fnet_azure_dns_handler_resolved(const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, void *cookie);
 
 static OPTIONHANDLER_HANDLE socketio_retrieveoptions(CONCRETE_IO_HANDLE socket_io);
 
@@ -679,7 +679,7 @@ const IO_INTERFACE_DESCRIPTION *socketio_get_interface_description(void)
 ************************************************************************/
 #if FNET_CFG_AZURE_OPEN_BLOCKED /* Blocked version of open */
 fnet_bool_t _fnet_azure_dns_is_resolved = FNET_FALSE;
-static void _fnet_azure_dns_handler_resolved(const struct fnet_dns_resolved_addr *addr_list,
+static void _fnet_azure_dns_handler_resolved(const fnet_dns_resolved_addr_t *addr_list,
         fnet_size_t addr_list_size,
         void *cookie)
 {
@@ -704,7 +704,7 @@ static void _fnet_azure_dns_handler_resolved(const struct fnet_dns_resolved_addr
     _fnet_azure_dns_is_resolved = FNET_TRUE;
 }
 #else
-static void _fnet_azure_dns_handler_resolved(const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, void *cookie)
+static void _fnet_azure_dns_handler_resolved(const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, void *cookie)
 {
 #if FNET_CFG_DEBUG_AZURE && FNET_CFG_DEBUG
     fnet_char_t             ip_str[FNET_IP_ADDR_STR_SIZE_MAX];

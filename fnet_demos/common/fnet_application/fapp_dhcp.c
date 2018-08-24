@@ -149,8 +149,8 @@ void fapp_dhcp_cln_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
     fnet_netif_desc_t               netif = fnet_netif_get_default(); /* By default is "default" netif*/
     fnet_bool_t                     init = FNET_TRUE; /* By default is "init".*/
     fnet_index_t                    i;
-    struct fnet_dhcp_cln_params     dhcp_params;
-    fnet_dhcp_cln_desc_t                dhcp_desc;
+    fnet_dhcp_cln_params_t          dhcp_params;
+    fnet_dhcp_cln_desc_t            dhcp_desc;
 
 #if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP
     fapp_dhcp_cln_autoip = FNET_FALSE;
@@ -192,7 +192,7 @@ void fapp_dhcp_cln_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
         fapp_dhcp_cln_discover_counter = FAPP_CFG_DHCPC_CMD_DISCOVER_MAX; /* reset counter.*/
 
         /* Init parameters.*/
-        fnet_memset_zero(&dhcp_params, sizeof(struct fnet_dhcp_cln_params));
+        fnet_memset_zero(&dhcp_params, sizeof(fnet_dhcp_cln_params_t));
         dhcp_params.netif = netif;
         dhcp_params.probe_addr = FNET_TRUE; /* Enable probing of the newly received address.*/
 
@@ -273,7 +273,7 @@ void fapp_dhcp_srv_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
     fnet_bool_t                     init = FNET_TRUE; /* By default is "init".*/
     fnet_bool_t                     pool = FNET_FALSE; /* By default is "init".*/
     fnet_index_t                    i;
-    struct fnet_dhcp_srv_params     dhcp_params;
+    fnet_dhcp_srv_params_t          dhcp_params;
     fnet_dhcp_srv_desc_t            dhcp_desc;
 
     /* "[-n <if name>] [release|autoip]" */

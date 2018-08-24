@@ -1,7 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2016 by Andrey Butok, Gordon Jahn and Gary Kerr.
-*                        NXP Semiconductor, Inc.
+* Copyright 2016 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 * This program is free software: you can redistribute it and/or modify
@@ -61,7 +60,7 @@
 #define FNET_CFG_CPU_FLASH_PAGE_SIZE    (2*1024)
 
 /* The platform does not have second Ethernet Module.*/
-#define FNET_CFG_CPU_ETH1        		(0)
+#define FNET_CFG_CPU_ETH1        (0)
 
 /* Defines the maximum number of incoming frames that may
  *           be buffered by the Ethernet module.*/

@@ -95,7 +95,7 @@ static void fapp_bench_srv_callback_session_end(fnet_bench_srv_desc_t desc, cons
 ************************************************************************/
 void fapp_bench_srv_cmd( fnet_shell_desc_t shell_desc, fnet_index_t argc, fnet_char_t **argv )
 {
-    struct fnet_bench_srv_params    bench_srv_params;
+    fnet_bench_srv_params_t         bench_srv_params;
     fnet_bool_t                     init = FNET_TRUE; /* By default is "init".*/
     fnet_index_t                    i;
     fnet_netif_desc_t               netif = 0;
@@ -233,7 +233,7 @@ void fapp_bench_srv_info(fnet_shell_desc_t desc)
 /************************************************************************
 * DESCRIPTION: Benchmark client "session end" event handler callback.
 ************************************************************************/
-static void fapp_bench_cln_callback_session_end(fnet_bench_cln_desc_t bench_cln_desc, const struct fnet_bench_cln_result *bench_cln_result, void *cookie)
+static void fapp_bench_cln_callback_session_end(fnet_bench_cln_desc_t bench_cln_desc, const fnet_bench_cln_result_t *bench_cln_result, void *cookie)
 {
     fnet_shell_desc_t   shell_desc = (fnet_shell_desc_t)cookie;
 
@@ -260,7 +260,7 @@ static void fapp_bench_cln_on_ctrlc(fnet_shell_desc_t shell_desc, void *cookie)
 ************************************************************************/
 void fapp_bench_cln_cmd(fnet_shell_desc_t shell_desc, fnet_index_t argc, fnet_char_t **argv )
 {
-    struct fnet_bench_cln_params    bench_cln_params;
+    fnet_bench_cln_params_t         bench_cln_params;
     fnet_netif_desc_t               netif = 0;
     fnet_bench_cln_desc_t           bench_cln_desc;
     fnet_char_t                     ip_str[FNET_IP_ADDR_STR_SIZE_MAX];

@@ -72,7 +72,7 @@ typedef struct fnet_bench_cln_if
     fnet_bench_cln_callback_session_end_t   callback;
     void                                    *cookie;
     fnet_time_t                             time_begin;
-    struct fnet_bench_cln_result            bench_cln_result;
+    fnet_bench_cln_result_t                 bench_cln_result;
 } fnet_bench_cln_if_t;
 
 /* Internal buffer */
@@ -89,7 +89,7 @@ static void _fnet_bench_cln_poll(void *fnet_bench_cln_if_p);
 /************************************************************************
 * DESCRIPTION: Initializes the Benchmark client service.
 ************************************************************************/
-fnet_bench_srv_desc_t fnet_bench_cln_init( struct fnet_bench_cln_params *params )
+fnet_bench_srv_desc_t fnet_bench_cln_init( fnet_bench_cln_params_t *params )
 {
     fnet_index_t                i;
     fnet_bench_cln_if_t         *bench_cln_if = FNET_NULL;

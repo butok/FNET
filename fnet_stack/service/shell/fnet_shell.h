@@ -41,7 +41,7 @@
 * // ************************************************************************
 * // *     The table of the main shell commands.
 * // *************************************************************************
-*  static const struct fnet_shell_command fapp_cmd_tab [] =
+*  static const fnet_shell_command_t fapp_cmd_tab [] =
 *  {
 *      { "?", 0, 0, fnet_shell_help_cmd,"Display this help message.", ""},
 *      { "set", 0, 2, fapp_set_cmd, "Set parameter.", "[<parameter> <value>]"},
@@ -54,7 +54,7 @@
 * // ************************************************************************
 * // *     The main shell control data structure.
 * // *************************************************************************
-* struct fnet_shell fapp_shell =
+* fnet_shell_t fapp_shell =
 * {
 *   fapp_cmd_tab,
 *   "PROMT> ",
@@ -65,7 +65,7 @@
 * ...
 * main()
 * {
-*   struct fnet_shell_params shell_params;
+*   fnet_shell_params_t shell_params;
 *   ...
 *   shell_params.shell = &fapp_shell;
 *   shell_params.cmd_line_buffer = fapp_cmd_line_buffer;
@@ -171,21 +171,20 @@ typedef void *fnet_shell_desc_t;
  ******************************************************************************/
 typedef void(*fnet_shell_cmd_function_t)( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
 
-struct fnet_shell_command;
 /**************************************************************************/ /*!
  * @brief Shell command control structure.
  *
  * This structure is used to define properties of a command that will be
  * supported by the shell.@n
  * An application should define the command table and pass it to the
- * @c fnet_shell structure. @n
+ * @c fnet_shell_t structure. @n
  * The last table element must have all fields
  * set to zero as the end-of-table mark.
- * The good example of @ref fnet_shell_command usage is in the FNET Shell application.
+ * The good example of @ref fnet_shell_command_t usage is in the FNET Shell application.
  *
- * @see fnet_shell
+ * @see fnet_shell_t
  ******************************************************************************/
-struct fnet_shell_command
+typedef struct
 {
     const fnet_char_t           *name;          /**< @brief Command name (null-terminated string). */
     fnet_index_t                min_args;       /**< @brief Minimum number of arguments the command accepts.*/
@@ -206,37 +205,34 @@ struct fnet_shell_command
                                                 * normal operations of command.
                                                 * - @c | = The vertical bar means a choice between
                                                 * parameter value is acceptable.*/
-};
+} fnet_shell_command_t;
 
 /**************************************************************************/ /*!
  * @brief Shell main control structure.
  *
  * This structure defines shell-specific parameters.@n
- * The good example of @ref fnet_shell usage is in the FNET Shell application.
+ * The good example of @ref fnet_shell_t usage is in the FNET Shell application.
  *
- * @see fnet_shell_params
+ * @see fnet_shell_params_t
  ******************************************************************************/
-struct fnet_shell
+typedef struct
 {
-    const struct fnet_shell_command *cmd_table; /**< @brief The pointer to the command table.@n
-                                                 * The last table element must have all fields
-                                                 * set to zero as the end-of-table mark.
-                                                 */
-    fnet_char_t *prompt_str;                    /**< @brief Shell prompt (null-terminated string).
-                                                 */
+    const fnet_shell_command_t      *cmd_table;     /**< @brief The pointer to the command table.@n
+                                                    * The last table element must have all fields
+                                                    * set to zero as the end-of-table mark.*/
+    fnet_char_t                     *prompt_str;    /**< @brief Shell prompt (null-terminated string).*/
     void (*shell_init)( fnet_shell_desc_t shell_desc );/**< @brief Routine called during the shell initialization.
-                                                 * It's called by the @ref fnet_shell_init() function.@n
-                                                 * This parameter is optional and can be set to @c 0.
-                                                 */
-};
+                                                    * It's called by the @ref fnet_shell_init() function.@n
+                                                    * This parameter is optional and can be set to @c 0.*/
+} fnet_shell_t;
 
 
 /**************************************************************************/ /*!
  * @brief Input parameters for @ref fnet_shell_init().
  ******************************************************************************/
-struct fnet_shell_params
+typedef struct
 {
-    const struct fnet_shell *shell;                 /**< @brief Shell control structure. */
+    const fnet_shell_t      *shell;                 /**< @brief Shell control structure. */
     fnet_char_t             *cmd_line_buffer;       /**< @brief Command-line buffer. */
     fnet_size_t             cmd_line_buffer_size;   /**< @brief Size of the command-line buffer.
                                                     * It defines the maximum length of the
@@ -249,7 +245,7 @@ struct fnet_shell_params
                                                     * When set to @c FNET_FALSE the echo is disabled,
                                                     * characters are transferred to the terminal
                                                     * without echoing them to the terminal display. */
-};
+} fnet_shell_params_t;
 
 #if defined(__cplusplus)
 extern "C" {
@@ -259,7 +255,7 @@ extern "C" {
  *
  * @brief    Initializes the Shell service.
  *
- * @param params     Initialization parameters defined by @ref fnet_shell_params.
+ * @param params     Initialization parameters defined by @ref fnet_shell_params_t.
  *
  * @return This function returns:
  *   - Shell service descriptor if no error occurs.
@@ -279,7 +275,7 @@ extern "C" {
  * if the parsing was successful.
  *
  ******************************************************************************/
-fnet_shell_desc_t fnet_shell_init( struct fnet_shell_params *params);
+fnet_shell_desc_t fnet_shell_init( fnet_shell_params_t *params);
 
 /***************************************************************************/ /*!
  *
@@ -314,7 +310,7 @@ void fnet_shell_release(fnet_shell_desc_t desc);
  * For example:
  * @code
  * ...
- *  static const struct fnet_shell_command fapp_cmd_table [] =
+ *  static const fnet_shell_command_t fapp_cmd_table [] =
  *  {
  *      { FNET_SHELL_CMD_TYPE_NORMAL, "?", 0, 0, fapp_help_cmd,"Display this help message.", ""},
  *      { FNET_SHELL_CMD_TYPE_NORMAL, "set", 0, 2, fapp_set_cmd,      "Set parameter.", "[<parameter> <value>]"},
@@ -595,7 +591,7 @@ fnet_int32_t fnet_shell_getchar(fnet_shell_desc_t desc);
  * If @c switch_shell is zero, it switches to original command line set.
  *
  ******************************************************************************/
-fnet_return_t fnet_shell_switch( fnet_shell_desc_t desc, const struct fnet_shell *switch_shell);
+fnet_return_t fnet_shell_switch( fnet_shell_desc_t desc, const fnet_shell_t *switch_shell);
 
 /***************************************************************************/ /*!
  *
@@ -613,6 +609,26 @@ fnet_return_t fnet_shell_switch( fnet_shell_desc_t desc, const struct fnet_shell
  *
  ******************************************************************************/
 fnet_bool_t fnet_shell_is_ctrlc (fnet_shell_desc_t desc);
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Looks for a shell command by its name.
+ *
+ * @param desc        Shell service descriptor.
+ * @param name        Command name (null-terminated string).
+ *
+ * @return This function returns:
+ *          - Pointer to the found shell command control structure.
+ *          - @ref FNET_NULL if there is no any command with specified @c name.
+ *
+ * @see fnet_shell_command_t
+ *
+ ******************************************************************************
+ *
+ * This function is looking for a shell command by its name.
+ *
+ ******************************************************************************/
+const fnet_shell_command_t *fnet_shell_get_command_by_name(fnet_shell_desc_t desc, const fnet_char_t *name);
 
 #if defined(__cplusplus)
 }

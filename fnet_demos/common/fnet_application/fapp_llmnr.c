@@ -58,7 +58,7 @@ void fapp_llmnr_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
     fnet_netif_desc_t           netif = fnet_netif_get_default(); /* By default is "default" netif*/
     fnet_bool_t                 init = FNET_TRUE; /* By default is "init".*/
     fnet_index_t                i;
-    struct fnet_llmnr_params    params;
+    fnet_llmnr_params_t         params;
 
     /* [-n <if name>] [release] */
     for(i = 1u; i < argc; i++)

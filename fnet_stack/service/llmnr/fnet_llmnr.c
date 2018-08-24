@@ -239,7 +239,7 @@ static fnet_bool_t _fnet_llmnr_hostname_cmp(const fnet_uint8_t *req_hostname, co
 * DESCRIPTION: Initializes Link-Local Multicast Name Resolution (LLMNR)
 *              server/responder service.
 ************************************************************************/
-fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params )
+fnet_llmnr_desc_t fnet_llmnr_init( fnet_llmnr_params_t *params )
 {
     struct fnet_llmnr_if    *llmnr_if = FNET_NULL;
     fnet_index_t            i;

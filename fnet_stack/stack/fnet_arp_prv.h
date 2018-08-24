@@ -45,7 +45,7 @@
 #define FNET_ARP_OP_REQUEST     (1U)         /* ARP request.*/
 #define FNET_ARP_OP_REPLY       (2U)         /* ARP reply.*/
 
-#define FNET_ARP_TIMER_PERIOD   ((FNET_CFG_ARP_EXPIRE_TIMEOUT*1000U)/4U)     /* in ms (20/4=5min).*/
+#define FNET_ARP_TIMER_PERIOD_MS   ((FNET_CFG_ARP_EXPIRE_TIMEOUT*1000U)/4U)     /* in ms (20/4=5min).*/
 
 /**************************************************************************/ /*!
  * @internal
@@ -74,9 +74,9 @@ typedef struct
 {
     fnet_mac_addr_t hard_addr;      /**< Hardware address.*/
     fnet_ip4_addr_t prot_addr;      /**< Protocol address.*/
-    fnet_time_t     cr_time;        /**< Time of entry creation.*/
+    fnet_time_t     cr_time_ms;     /**< Time of entry creation.*/
     fnet_netbuf_t   *hold;          /**< Last packet until resolved/timeout.*/
-    fnet_time_t     hold_time;      /**< Time of the last request.*/
+    fnet_time_t     hold_time_ms;   /**< Time of the last request.*/
 } fnet_arp_entry_t;
 
 typedef struct fnet_arp_if

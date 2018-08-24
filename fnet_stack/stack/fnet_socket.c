@@ -1267,7 +1267,7 @@ fnet_return_t fnet_socket_setopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
                             goto ERROR_SOCK;
                         }
 
-                        sock->options.linger_ticks = (fnet_time_t)(((const struct fnet_linger *)optval)->l_linger * (1000u / FNET_TIMER_PERIOD_MS));
+                        sock->options.linger_ms = (fnet_time_t)((const struct fnet_linger *)optval)->l_linger * 1000u;
                         sock->options.so_linger = (((const struct fnet_linger *)optval)->l_onoff) ? FNET_TRUE : FNET_FALSE;
                         break;
                     case SO_KEEPALIVE: /* Keep connections alive.*/
@@ -1386,10 +1386,8 @@ fnet_return_t fnet_socket_getopt( fnet_socket_t s, fnet_protocol_t level, fnet_s
 
                         *optvallen = sizeof(struct fnet_linger);
                         ((struct fnet_linger *)optval)->l_onoff = sock->options.so_linger;
-                        ((struct fnet_linger *)optval)->l_linger = (fnet_uint16_t)(((fnet_uint32_t)sock->options.linger_ticks * FNET_TIMER_PERIOD_MS) / 1000u);
-                        sock->options.linger_ticks = (fnet_time_t)(((struct fnet_linger *)optval)->l_linger);
+                        ((struct fnet_linger *)optval)->l_linger = (fnet_uint16_t)(sock->options.linger_ms / 1000u);
                         break;
-
                     case SO_KEEPALIVE: /* Keep connections alive.*/
                         if(*optvallen < sizeof(fnet_uint32_t))
                         {

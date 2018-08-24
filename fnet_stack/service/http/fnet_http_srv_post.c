@@ -50,8 +50,8 @@ const struct fnet_http_srv_method fnet_http_srv_method_post =
 static fnet_return_t _fnet_http_srv_post_handle(struct fnet_http_srv_if *http, struct fnet_http_srv_uri *uri)
 {
     struct fnet_http_srv_session_if *session =  http->session_active;
-    fnet_return_t                result = FNET_ERR;
-    const struct fnet_http_srv_post *post_ptr;
+    fnet_return_t                   result = FNET_ERR;
+    const fnet_http_srv_post_t      *post_ptr;
 
     if(http->post_table)
         /* POST table is initialized.*/
@@ -93,11 +93,11 @@ static fnet_return_t _fnet_http_srv_post_receive(struct fnet_http_srv_if *http)
 {
     struct fnet_http_srv_session_if *session =  http->session_active;
     fnet_return_t                result = FNET_ERR;
-    const struct fnet_http_srv_post *post_ptr;
+    const fnet_http_srv_post_t   *post_ptr;
 
     if(session->data_ptr)
     {
-        post_ptr = (const struct fnet_http_srv_post *)session->data_ptr;
+        post_ptr = (const fnet_http_srv_post_t *)session->data_ptr;
 
         if(post_ptr->post_receive)
         {
@@ -118,8 +118,8 @@ static fnet_return_t _fnet_http_srv_post_receive(struct fnet_http_srv_if *http)
 static fnet_return_t _fnet_http_srv_post_send(struct fnet_http_srv_if *http)
 {
     struct fnet_http_srv_session_if *session =  http->session_active;
-    fnet_return_t               result = FNET_ERR;
-    const struct fnet_http_srv_post *post_ptr = (const struct fnet_http_srv_post *) session->data_ptr;
+    fnet_return_t                   result = FNET_ERR;
+    const fnet_http_srv_post_t      *post_ptr = (const fnet_http_srv_post_t *) session->data_ptr;
 
     if(post_ptr && (post_ptr->post_send)
        && ((session->buffer_actual_size = post_ptr->post_send(session->buffer, sizeof(session->buffer), &session->response.send_eof, &session->response.cookie)) > 0u) )

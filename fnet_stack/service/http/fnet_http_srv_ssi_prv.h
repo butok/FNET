@@ -42,9 +42,9 @@ fnet_http_srv_ssi_state_t;
 /* SSI private control structure. */
 struct fnet_http_srv_ssi_if
 {
-    const struct fnet_http_srv_ssi *ssi_table; /* Pointer to the SSI table.*/
-    fnet_http_srv_ssi_send_t send;    /* Pointer to the respond callback.*/
-    fnet_http_srv_ssi_state_t state;        /* State. */
+    const fnet_http_srv_ssi_t  *ssi_table; /* Pointer to the SSI table.*/
+    fnet_http_srv_ssi_send_t   send;    /* Pointer to the respond callback.*/
+    fnet_http_srv_ssi_state_t  state;        /* State. */
 };
 
 extern const struct fnet_http_srv_file_handler fnet_http_srv_ssi_handler; /* SSI file handler. */

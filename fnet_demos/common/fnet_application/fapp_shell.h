@@ -44,7 +44,7 @@ extern const fnet_char_t FAPP_SHELL_INFO_FORMAT_H16[];
 extern const fnet_char_t FAPP_SHELL_CANCELED_CTRL_C[];
 extern const fnet_char_t *const fapp_is_enabled_str[];
 
-extern const struct fnet_shell_command fapp_cmd_table[];
+extern const fnet_shell_command_t fapp_cmd_table[];
 
 /************************************************************************
 *     Function Prototypes

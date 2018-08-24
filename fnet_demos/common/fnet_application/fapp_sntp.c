@@ -43,7 +43,7 @@ static void fapp_sntp_on_ctrlc(fnet_shell_desc_t desc, void *cookie);
 static void fapp_sntp_init(const struct fnet_sockaddr *server_addr, fnet_shell_desc_t shell_desc);
 
 static fnet_size_t _fapp_sntp_addr_list_size = 0;
-const struct fnet_dns_resolved_addr *_fapp_sntp_addr_list = 0;
+const fnet_dns_resolved_addr_t *_fapp_sntp_addr_list = 0;
 
 /************************************************************************
 * DESCRIPTION: Event handler callback on resolved time over SNTP.
@@ -116,7 +116,7 @@ static void fapp_sntp_on_ctrlc(fnet_shell_desc_t desc, void *cookie)
 #define FNET_DNS_RESOLUTION_FAILED  "Resolution is FAILED"
 #define FNET_DNS_UNKNOWN            "DNS server is unknown"
 
-static void fapp_sntp_dns_callback_resolved (const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, void *cookie)
+static void fapp_sntp_dns_callback_resolved (const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, void *cookie)
 {
     fnet_char_t         ip_str[FNET_IP_ADDR_STR_SIZE_MAX];
     fnet_shell_desc_t   desc = (fnet_shell_desc_t) cookie;
@@ -243,11 +243,11 @@ ERROR_PARAMETER:
 ************************************************************************/
 static void fapp_sntp_init(const struct fnet_sockaddr *server_addr, fnet_shell_desc_t shell_desc)
 {
-    struct fnet_sntp_params     sntp_params;
-    fnet_char_t                 ip_str[FNET_IP_ADDR_STR_SIZE];
+    fnet_sntp_params_t   sntp_params;
+    fnet_char_t          ip_str[FNET_IP_ADDR_STR_SIZE];
 
     /* Set SNTP client parameters.*/
-    fnet_memset_zero(&sntp_params, sizeof(struct fnet_sntp_params));
+    fnet_memset_zero(&sntp_params, sizeof(fnet_sntp_params_t));
 
     fnet_memcpy(&sntp_params.sntp_server_addr, server_addr, sizeof(sntp_params.sntp_server_addr));
     sntp_params.callback = fapp_sntp_callback_resolved; /* Callback function.*/

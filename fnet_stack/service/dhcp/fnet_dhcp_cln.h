@@ -45,7 +45,7 @@
 * @code
 * ...
 *    fnet_netif_desc_t netif;
-*    struct fnet_dhcp_cln_params dhcp_params;
+*    fnet_dhcp_cln_params_t dhcp_params;
 *
 *    // Get current net interface.
 *    if((netif = fnet_netif_get_default()) == 0)
@@ -106,7 +106,7 @@
  * The user application may use this structure to suggest a network address and/or
  * the lease time to the DHCP client service.@n
  ******************************************************************************/
-struct fnet_dhcp_cln_params
+typedef struct
 {
     fnet_netif_desc_t   netif;                  /**< @brief Network interface descriptor to be used by the DHCP client.*/
     struct fnet_in_addr requested_ip_address;   /**< @brief Suggested IPv4 address (in network byte order).@n
@@ -122,7 +122,7 @@ struct fnet_dhcp_cln_params
     fnet_bool_t         probe_addr;             /**< @brief  Probing of the newly received address with ARP:
                                                 *   - @c FNET_FALSE = is disabled.
                                                 *   - @c FNET_TRUE = is enabled.*/
-};
+} fnet_dhcp_cln_params_t;
 
 /**************************************************************************/ /*!
  * @brief DHCP options are retrieved from a DHCP server.
@@ -198,7 +198,7 @@ typedef void *fnet_dhcp_cln_desc_t;
  * in the background.
  *
  ******************************************************************************/
-fnet_dhcp_cln_desc_t fnet_dhcp_cln_init( struct fnet_dhcp_cln_params *params );
+fnet_dhcp_cln_desc_t fnet_dhcp_cln_init( fnet_dhcp_cln_params_t *params );
 
 /***************************************************************************/ /*!
  *

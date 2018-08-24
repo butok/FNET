@@ -54,14 +54,14 @@ typedef void *fnet_bench_srv_desc_t;
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_bench_srv_init() function.
  ******************************************************************************/
-struct fnet_bench_srv_params
+typedef struct
 {
     struct fnet_sockaddr    address;            /**< @brief Server socket address. @n
                                                 * If server IP address and Scope ID are set to @c 0s, the server will listen to all current network interfaces. @n
                                                 * If server address family is set to @c 0, it will be assigned to @ref AF_SUPPORTED. @n
                                                 * If server port number is set to @c 0, it will be assigned to the default port number defined by @ref FNET_CFG_BENCH_SRV_PORT.*/
     fnet_socket_type_t      type;               /**< @brief Protocol type. It can be @ref SOCK_STREAM (TCP) or @ref SOCK_DGRAM (UDP).*/
-};
+} fnet_bench_srv_params_t;
 
 /**************************************************************************/ /*!
  * @brief Benchmark server result passed to the "session end" event handler callback.
@@ -108,7 +108,7 @@ extern "C" {
  *
  * @brief    Initializes the Benchmark server service.
  *
- * @param params     Initialization parameters defined by @ref fnet_bench_srv_params.
+ * @param params     Initialization parameters defined by @ref fnet_bench_srv_params_t.
  *
  * @return This function returns:
  *   - Benchmark server descriptor if no error occurs.
@@ -125,7 +125,7 @@ extern "C" {
  * in the background.
  *
  ******************************************************************************/
-fnet_bench_srv_desc_t fnet_bench_srv_init( struct fnet_bench_srv_params *params );
+fnet_bench_srv_desc_t fnet_bench_srv_init( fnet_bench_srv_params_t *params );
 
 /***************************************************************************/ /*!
  *

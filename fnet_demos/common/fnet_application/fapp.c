@@ -173,7 +173,7 @@ static void fapp_boot(fnet_shell_desc_t desc)
                 break;
             }
 
-            fnet_timer_delay(FNET_TIMER_TICKS_IN_SEC); /* 1 sec. delay. */
+            fnet_timer_delay(FNET_TIMER_MS_IN_SEC); /* 1 sec. delay. */
             fnet_shell_printf(desc, "\b\b\b\b %3d", delay);
         }
 

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2017 by Andrey Butok. FNET Community.
+* Copyright 2017-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -48,7 +48,7 @@
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_dhcp_srv_init() function.
  ******************************************************************************/
-struct fnet_dhcp_srv_params
+typedef struct
 {
     fnet_netif_desc_t   netif;                  /**< @brief Network interface descriptor to be used by the DHCP server.*/
     fnet_ip4_addr_t     ip_addr_pool_start;     /**< @brief The first allocated IPv4 address in the DHCPv4 server pool. @n The address pool size is defined by @c ip_addr_pool_size.
@@ -65,7 +65,7 @@ struct fnet_dhcp_srv_params
     fnet_ip4_addr_t     dns;                    /**< @brief DNS server IPv4 address.@n
                                                     If it is set to @c INADDR_ANY, a DNS server address of the @c netif interface is used.*/
 #endif
-};
+} fnet_dhcp_srv_params_t;
 
 /**************************************************************************/ /*!
  * @brief Address pool information structure.
@@ -91,7 +91,7 @@ extern "C" {
  *
  * @brief    Initializes the DHCPv4 server service.
  *
- * @param params     Initialization parameters defined by @ref fnet_dhcp_srv_params.
+ * @param params     Initialization parameters defined by @ref fnet_dhcp_srv_params_t.
  *
  * @return This function returns:
  *   - DHCPv4 server descriptor if no error occurs.
@@ -108,7 +108,7 @@ extern "C" {
  * in the background.
  *
  ******************************************************************************/
-fnet_dhcp_srv_desc_t fnet_dhcp_srv_init( struct fnet_dhcp_srv_params *params );
+fnet_dhcp_srv_desc_t fnet_dhcp_srv_init( fnet_dhcp_srv_params_t *params );
 
 /***************************************************************************/ /*!
  *

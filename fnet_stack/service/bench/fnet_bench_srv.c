@@ -90,7 +90,7 @@ static void _fnet_bench_srv_close_session(fnet_bench_srv_if_t *bench_srv_if);
 /************************************************************************
 * DESCRIPTION: Initializes the Benchmark server service.
 ************************************************************************/
-fnet_bench_srv_desc_t fnet_bench_srv_init( struct fnet_bench_srv_params *params )
+fnet_bench_srv_desc_t fnet_bench_srv_init( fnet_bench_srv_params_t *params )
 {
     fnet_index_t                i;
     fnet_bench_srv_if_t         *bench_srv_if = FNET_NULL;

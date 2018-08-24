@@ -619,18 +619,17 @@
 #endif
 
 /**************************************************************************/ /*!
- * @def      FNET_CFG_TIMER_POLL_AUTOMATIC
- * @brief    Automatic timer polling:
- *               - @b @c 1 = is enabled (Default value).@n
- *                          It means that FNET automatically controls all internal protocol timeouts.
- *               - @b @c 0 = is disabled.@n
- *                          In this case a user application
- *                          must call fnet_timer_poll() periodically.
- * @see fnet_timer_poll()
- * @showinitializer
+ * @def      FNET_CFG_TIMER_ALT
+ * @brief    Alternative timer support:
+ *               - @c 1 = is enabled. User application must implement own Timer API defined by fnet_timer_api_t and provide it during FNET initialization. 
+ *                 Also, user application must call fnet_timer_poll() periodically with 100 ms period or less. @n
+ *                 It is mainly used by applications that want to use RTOS timer instead of FNET bare-metal one.
+ *               - @b @c 0 = is disabled (Default value).@n
+ *                 FNET uses own bare-metal timer and does automatic timer polling in interrupt.
+ * @see fnet_timer_api_t, fnet_timer_poll()
  ******************************************************************************/
-#ifndef FNET_CFG_TIMER_POLL_AUTOMATIC
-    #define FNET_CFG_TIMER_POLL_AUTOMATIC       (1)
+#ifndef FNET_CFG_TIMER_ALT
+    #define FNET_CFG_TIMER_ALT                  (0)
 #endif
 
 /**************************************************************************/ /*!
@@ -644,7 +643,7 @@
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_TIME
-    #define FNET_CFG_TIME                           (0)
+    #define FNET_CFG_TIME                       (0)
 #endif
 
 /**************************************************************************/ /*!

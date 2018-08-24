@@ -23,6 +23,7 @@
 ***************************************************************************/
 #include "fnet.h"
 
+#if !FNET_CFG_TIMER_ALT /* Use bare-metal timer */
 #if FNET_MPC
 #include "stack/fnet_timer_prv.h"
 #include "stack/fnet_isr.h"
@@ -114,3 +115,4 @@ void fnet_cpu_timer_release( void )
 }
 
 #endif /*FNET_MPC*/
+#endif /*!FNET_CFG_TIMER_ALT*/

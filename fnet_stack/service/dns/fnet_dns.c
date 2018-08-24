@@ -78,8 +78,8 @@ typedef struct
 }
 fnet_dns_if_resolved_ip6_t;
 
-#define FNET_DNS_RESOLVED_IP4_MAX       (FNET_DNS_MESSAGE_SIZE/(sizeof(fnet_dns_if_resolved_ip4_t)+ sizeof(struct fnet_dns_resolved_addr)))
-#define FNET_DNS_RESOLVED_IP6_MAX       (FNET_DNS_MESSAGE_SIZE/(sizeof(fnet_dns_if_resolved_ip6_t)+ sizeof(struct fnet_dns_resolved_addr)))
+#define FNET_DNS_RESOLVED_IP4_MAX       (FNET_DNS_MESSAGE_SIZE/(sizeof(fnet_dns_if_resolved_ip4_t)+ sizeof(fnet_dns_resolved_addr_t)))
+#define FNET_DNS_RESOLVED_IP6_MAX       (FNET_DNS_MESSAGE_SIZE/(sizeof(fnet_dns_if_resolved_ip6_t)+ sizeof(fnet_dns_resolved_addr_t)))
 
 /************************************************************************
 *    DNS-client interface structure.
@@ -91,7 +91,7 @@ typedef struct
     fnet_dns_state_t                state;                          /* Current state. */
     fnet_dns_callback_resolved_t    callback;                       /* Callback function. */
     void                            *callback_cookie;               /* Callback-handler specific parameter. */
-    fnet_time_t                     last_time;                      /* Last receive time, used for timeout detection. */
+    fnet_time_t                     last_time_ms;                   /* Last receive time, used for timeout detection. */
     fnet_index_t                    iteration;                      /* Current iteration number.*/
     /* Internal buffer used for Message buffer and Resolved addresses.*/
     union
@@ -100,12 +100,12 @@ typedef struct
         struct
         {
             fnet_dns_if_resolved_ip4_t      resolved_ip4_addr[FNET_DNS_RESOLVED_IP4_MAX]; /* Resolved IPv4 addresses.*/
-            struct fnet_dns_resolved_addr   resolved_ip4_addr_sock[FNET_DNS_RESOLVED_IP4_MAX]; /* Used as return buffer for application.*/
+            fnet_dns_resolved_addr_t        resolved_ip4_addr_sock[FNET_DNS_RESOLVED_IP4_MAX]; /* Used as return buffer for application.*/
         } ip4;
         struct
         {
             fnet_dns_if_resolved_ip6_t      resolved_ip6_addr[FNET_DNS_RESOLVED_IP6_MAX]; /* Resolved IPv6 addresses.*/
-            struct fnet_dns_resolved_addr   resolved_ip6_addr_sock[FNET_DNS_RESOLVED_IP6_MAX]; /* Used as return buffer for application.*/
+            fnet_dns_resolved_addr_t        resolved_ip6_addr_sock[FNET_DNS_RESOLVED_IP6_MAX]; /* Used as return buffer for application.*/
         } ip6;
     } buffer;
     fnet_index_t                addr_number;
@@ -448,7 +448,7 @@ static void _fnet_dns_poll( void *fnet_dns_if_p )
             }
             else
             {
-                dns_if->last_time = fnet_timer_get_ticks();
+                dns_if->last_time_ms = fnet_timer_get_ms();
                 dns_if->state = FNET_DNS_STATE_RX;
             }
             break;
@@ -521,7 +521,7 @@ static void _fnet_dns_poll( void *fnet_dns_if_p )
             }
             else /* No data or error. Check timeout */
             {
-                if(fnet_timer_get_interval(dns_if->last_time, fnet_timer_get_ticks()) > ((FNET_CFG_DNS_RETRANSMISSION_TIMEOUT * 1000U) / FNET_TIMER_PERIOD_MS))
+                if((fnet_timer_get_ms() - dns_if->last_time_ms) > (FNET_CFG_DNS_RETRANSMISSION_TIMEOUT * 1000U))
                 {
                     dns_if->iteration++;
 
@@ -541,11 +541,11 @@ static void _fnet_dns_poll( void *fnet_dns_if_p )
         /*---- RELEASE -------------------------------------------------*/
         case FNET_DNS_STATE_RELEASE:
         {
-            struct fnet_dns_resolved_addr   *addr_list = FNET_NULL;
+            fnet_dns_resolved_addr_t   *addr_list = FNET_NULL;
 
             fnet_dns_release(fnet_dns_if_p);
 
-            /* Fill fnet_dns_resolved_addr */
+            /* Fill fnet_dns_resolved_addr_t */
             if(dns_if->addr_number > 0u)
             {
                 if(dns_if->addr_family  == AF_INET)

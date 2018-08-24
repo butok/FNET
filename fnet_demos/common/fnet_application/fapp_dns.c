@@ -37,7 +37,7 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, void *cookie);
+static void fapp_dns_callback_resolved (const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, void *cookie);
 static void fapp_dns_on_ctrlc(fnet_shell_desc_t desc, void *cookie);
 
 static fnet_dns_desc_t fapp_dns_desc = 0; /* DNS service descriptor. */
@@ -45,7 +45,7 @@ static fnet_dns_desc_t fapp_dns_desc = 0; /* DNS service descriptor. */
 /************************************************************************
 * DESCRIPTION: Event handler callback on resolved IP address.
 ************************************************************************/
-static void fapp_dns_callback_resolved (const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, void *cookie)
+static void fapp_dns_callback_resolved (const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, void *cookie)
 {
     fnet_char_t         ip_str[FNET_IP_ADDR_STR_SIZE_MAX];
     fnet_shell_desc_t   desc = (fnet_shell_desc_t) cookie;

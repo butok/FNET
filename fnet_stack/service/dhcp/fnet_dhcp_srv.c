@@ -161,7 +161,7 @@ static fnet_int32_t _fnet_dhcp_srv_get_addr_pool_free(fnet_dhcp_srv_if_t *dhcp_s
 /************************************************************************
 * DESCRIPTION: Initializes DHCPv4 server.
 ************************************************************************/
-fnet_dhcp_srv_desc_t fnet_dhcp_srv_init(struct fnet_dhcp_srv_params *params)
+fnet_dhcp_srv_desc_t fnet_dhcp_srv_init(fnet_dhcp_srv_params_t *params)
 {
     struct fnet_dhcp_srv_if     *dhcp_srv_if = FNET_NULL;
     fnet_index_t                i;
@@ -396,7 +396,7 @@ static void _fnet_dhcp_srv_poll( void *fnet_dhcp_srv_if_p )
                 timeout = ip_addr_pool->lease_time;
             }
 
-            if(fnet_timer_get_interval(ip_addr_pool->state_timestamp, fnet_timer_get_seconds()) > timeout)
+            if((fnet_timer_get_seconds() - ip_addr_pool->state_timestamp) > timeout)
             {
                 /* Expired. */
                 ip_addr_pool->state = FNET_DHCP_SRV_ADDR_POOL_STATE_FREE;

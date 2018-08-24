@@ -193,7 +193,7 @@ static void _fnet_http_srv_poll( void *http_if_p )
                         session->response.version.minor = FNET_HTTP_SRV_VERSION_MINOR;
                         session->response.tx_data = _fnet_http_srv_tx_status_line;
 #endif
-                        session->state_time = fnet_timer_get_ticks();          /* Reset timeout. */
+                        session->state_time_ms = fnet_timer_get_ms();          /* Reset timeout. */
                         session->buffer_actual_size = 0u;
 
 #if (FNET_CFG_HTTP_SRV_TLS && FNET_CFG_TLS)
@@ -231,7 +231,7 @@ static void _fnet_http_srv_poll( void *http_if_p )
                         {
                             if(res > 0) /* Received a data.*/
                             {
-                                session->state_time = fnet_timer_get_ticks();  /* Reset timeout.*/
+                                session->state_time_ms = fnet_timer_get_ms();  /* Reset timeout.*/
 
                                 session->buffer_actual_size++;
 
@@ -463,8 +463,8 @@ static void _fnet_http_srv_poll( void *http_if_p )
                                 {}
                             }
                             /* No data.*/
-                            else if(fnet_timer_get_interval(session->state_time, fnet_timer_get_ticks()) /* Time out? */
-                                    > (FNET_HTTP_SRV_WAIT_RX_MS / FNET_TIMER_PERIOD_MS))
+                            else if((fnet_timer_get_ms() - session->state_time_ms) /* Time out? */
+                                    > FNET_HTTP_SRV_WAIT_RX_MS)
                             {
                                 session->state = FNET_HTTP_SRV_STATE_CLOSING; /*=> CLOSING */
                                 FNET_DEBUG_HTTP("HTTP: Timeout.");
@@ -493,7 +493,7 @@ static void _fnet_http_srv_poll( void *http_if_p )
                         if(res > 0)
                             /* Some Data.*/
                         {
-                            session->state_time = fnet_timer_get_ticks();  /* Reset timeout.*/
+                            session->state_time_ms = fnet_timer_get_ms();  /* Reset timeout.*/
                             res = session->request.method->receive(http);
                             if(res == FNET_ERR)
                             {
@@ -515,8 +515,7 @@ static void _fnet_http_srv_poll( void *http_if_p )
                         else
                             /* No Data.*/
                         {
-                            if(fnet_timer_get_interval(session->state_time, fnet_timer_get_ticks())
-                               > (FNET_HTTP_SRV_WAIT_RX_MS / FNET_TIMER_PERIOD_MS))
+                            if((fnet_timer_get_ms() - session->state_time_ms) > FNET_HTTP_SRV_WAIT_RX_MS)
                                 /* Time out.*/
                             {
                                 FNET_DEBUG_HTTP("HTTP: Time out.");
@@ -535,8 +534,7 @@ static void _fnet_http_srv_poll( void *http_if_p )
 #endif /* FNET_CFG_HTTP_SRV_POST.*/
                 /*---- TX --------------------------------------------------*/
                 case FNET_HTTP_SRV_STATE_TX: /* Send data. */
-                    if(fnet_timer_get_interval(session->state_time, fnet_timer_get_ticks())
-                       < (FNET_HTTP_SRV_WAIT_TX_MS / FNET_TIMER_PERIOD_MS)) /* Check timeout */
+                    if((fnet_timer_get_ms() - session->state_time_ms) < FNET_HTTP_SRV_WAIT_TX_MS) /* Check timeout */
                     {
                         fnet_size_t send_size;
 
@@ -562,7 +560,7 @@ static void _fnet_http_srv_poll( void *http_if_p )
                             {
                                 FNET_DEBUG_HTTP("HTTP: TX %d bytes.", res);
 
-                                session->state_time = fnet_timer_get_ticks();              /* reset timeout */
+                                session->state_time_ms = fnet_timer_get_ms();              /* reset timeout */
                                 session->response.buffer_sent += (fnet_size_t)res;
                             }
                             break; /* => SENDING */
@@ -603,7 +601,7 @@ static void _fnet_http_srv_poll( void *http_if_p )
 /************************************************************************
 * DESCRIPTION: Initialization of the HTTP server.
 *************************************************************************/
-fnet_http_srv_desc_t fnet_http_srv_init( struct fnet_http_srv_params *params )
+fnet_http_srv_desc_t fnet_http_srv_init( fnet_http_srv_params_t *params )
 {
     struct fnet_sockaddr        local_addr;
     struct fnet_http_srv_uri        uri;
@@ -1063,7 +1061,7 @@ fnet_return_t _fnet_http_srv_default_handle (struct fnet_http_srv_if *http, stru
     {
 #if FNET_CFG_HTTP_SRV_VERSION_MAJOR /* HTTP/1.x*/
         {
-            struct fnet_fs_dirent dirent;
+            fnet_fs_dirent_t dirent;
 
             fnet_fs_finfo(session->file_desc, &dirent);
             session->response.content_length = (fnet_int32_t)dirent.d_size;

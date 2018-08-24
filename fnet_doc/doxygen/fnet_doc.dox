@@ -66,6 +66,10 @@ preferred way to configure stack features). @n
 	- IAR: Embedded Workbench for ARM, version 8.22
 	- GCC: Kinetis Design Studio, version 3.2 
 - Bare-metal TCP/IP stack. No underlying RTOS is required, although it can be used with it. FreeRTOS example is provided.
+- Certified logos for:
+	- Golden IPv6 Ready.
+	- Microsoft Azure IoT.
+	- Apple Bonjour. 
 - Non-blocking Socket API (DGRAM, STREAM, RAW).
 - Core Protocols:
 	- @b TCP (Transmission Control Protocol).
@@ -2352,6 +2356,18 @@ Press any key to continue . . .
 
 FNET public releases:
 
+- Version 4.6.0
+	- Certified for Apple Bonjour logo. 
+	- Added bare-metal Azure client example.
+	- Used milliseconds instead of timer ticks.
+	- Added FNET_CFG_TIMER_ALT which enables/disables alternative timer support.
+	- Used FreeRTOS timer instead bare-metal one for FreeRTOS demo applications.
+	- Deprecated fnet_timer_get_ticks(), fnet_timer_ms2ticks().
+	- Deprecated FNET_CFG_TIMER_POLL_AUTOMATIC, covered by FNET_CFG_TIMER_ALT.
+	- Used typedef instead of struct type.
+	- Added fnet_shell_get_command_by_name() which looks for a shell command by its name.
+	- Fixed minor Coverity findings.
+	
 - Version 4.5.3
 	- Updated Azure IoT SDK to version 1.2.8
 	- Fixed possible first packet loss for the AirPort Wi-Fi router.

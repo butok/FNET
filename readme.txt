@@ -18,6 +18,10 @@ The stack provides following protocols and services:
 	- IAR: Embedded Workbench for ARM, version 8.22
 	- GCC: Kinetis Design Studio, version 3.2 
 - Bare-metal TCP/IP stack. No underlying RTOS is required, although it can be used with it. FreeRTOS example is provided.
+- Certified logos for:
+	- Golden IPv6 Ready.
+	- Microsoft Azure IoT.
+	- Apple Bonjour. 
 - Non-blocking Socket API (DGRAM, STREAM, RAW).
 - Core Protocols:
 	- TCP (Transmission Control Protocol).

@@ -89,21 +89,35 @@ typedef void *fnet_mutex_t;
 
 /**************************************************************************/ /*!
  * @brief Recursive mutex API.
- * It should be defined by application if @ref FNET_CFG_MULTITHREADING is enabled.
+ * It should be defined by application if @ref FNET_CFG_MULTITHREADING is set.
  * @see FNET_CFG_MULTITHREADING, fnet_init()
  ******************************************************************************/
 typedef struct
 {
     fnet_return_t (*mutex_init)( fnet_mutex_t * );  /**< @brief Create a new recursive mutex. Parameter is pointer to the mutex to create. */
-    void (*mutex_release)( fnet_mutex_t * );        /**< @brief  Delete a recursive mutex. Parameter is pointer to the mutex to delete. */
-    void (*mutex_lock)( fnet_mutex_t * );           /**< @brief  Lock a recursive mutex. Parameter is the mutex to lock. */
+    void (*mutex_release)( fnet_mutex_t * );        /**< @brief Delete a recursive mutex. Parameter is pointer to the mutex to delete. */
+    void (*mutex_lock)( fnet_mutex_t * );           /**< @brief Lock a recursive mutex. Parameter is the mutex to lock. */
     void (*mutex_unlock)( fnet_mutex_t * );         /**< @brief Unlock a recursive mutex. Parameter is the mutex to unlock.  */
 } fnet_mutex_api_t;
 #endif /* FNET_CFG_MULTITHREADING */
 
+#if FNET_CFG_TIMER_ALT || defined(__DOXYGEN__)
+
+/**************************************************************************/ /*!
+ * @brief Timer API.
+ * It must be defined by application if @ref FNET_CFG_TIMER_ALT is set.
+ * @see FNET_CFG_TIMER_ALT, fnet_init()
+ ******************************************************************************/
+typedef struct
+{
+    fnet_time_t (*timer_get_ms)(void);             /**< @brief Returns count of milliseconds since system start-up. */
+    void (*timer_delay)(fnet_time_t delay_ms);     /**< @brief Delay for a given number of milliseconds. It used by fnet_timer_dealy(). It is optional and may be set to 0. */
+} fnet_timer_api_t;
+#endif /* FNET_CFG_TIMER_ALT */
 
 /**************************************************************************/ /*!
  * @brief Input parameters structure for @ref fnet_init()
+ * @see FNET_CFG_MULTITHREADING, FNET_CFG_TIMER_ALT
  ******************************************************************************/
 struct fnet_init_params
 {
@@ -111,7 +125,6 @@ struct fnet_init_params
                                                 * @n
                                                 * The FNET uses this heap buffer for the internal
                                                 * dynamic data allocation as:
-                                                *  - Ethernet Tx/Rx frame buffers.
                                                 *  - Sockets Input/Output buffers.
                                                 *  - Protocol headers and service information.
                                                 *  - Various control structures.
@@ -121,7 +134,10 @@ struct fnet_init_params
                                                 * dynamically, or use a special memory region (for example SRAM).*/
     fnet_size_t                 netheap_size;   /**< @brief Size of the FNET heap buffer. */
 #if FNET_CFG_MULTITHREADING || defined(__DOXYGEN__)
-    const fnet_mutex_api_t      *mutex_api;    /**< @brief Recursive mutex API. It is optional and availble only when FNET_CFG_MULTITHREADING is set.*/
+    const fnet_mutex_api_t      *mutex_api;    /**< @brief Recursive mutex API. It is optional and availble only when FNET_CFG_MULTITHREADING is 1.*/
+#endif
+#if FNET_CFG_TIMER_ALT || defined(__DOXYGEN__)
+    const fnet_timer_api_t      *timer_api;    /**< @brief Timer API. It is availble and must be set only when FNET_CFG_TIMER_ALT is 1.*/
 #endif
 };
 
@@ -172,7 +188,7 @@ void fnet_release(void);
  * @see fnet_service_poll(), fnet_timer_poll()
  ******************************************************************************
  *
- * This function calls service and timer polling functions (if @ref FNET_CFG_TIMER_POLL_AUTOMATIC is 0).@n
+ * This function calls service polling function and timer polling function (if @ref FNET_CFG_TIMER_ALT is 1).@n
  * The user application should call this function periodically.
  *
  ******************************************************************************/

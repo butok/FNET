@@ -95,7 +95,7 @@
 *
 *    // Print directory content.
 *    {
-*       struct fnet_fs_dirent ep;
+*       fnet_fs_dirent_t ep;
 *       fnet_fs_dir_t dir;
 *       fnet_uint8_t name[FNET_CFG_FS_MOUNT_NAME_MAX+1];
 *
@@ -104,7 +104,7 @@
 *
 *       if (dir)
 *       {
-*           fnet_memset(&ep, 0, sizeof(struct fnet_fs_dirent) );
+*           fnet_memset(&ep, 0, sizeof(fnet_fs_dirent_t) );
 *           ep.d_name = name;
 *           ep.d_name_size = sizeof(name);
 *
@@ -175,7 +175,7 @@ fnet_fs_seek_origin_t;
 
 /**************************************************************************/ /*!
  * @brief Directory entry type.
- * @see fnet_fs_dirent
+ * @see fnet_fs_dirent_t
  ******************************************************************************/
 typedef enum
 {
@@ -191,7 +191,7 @@ typedef enum
  *          get information about directory entries (files or directories).
  * @see     fnet_fs_readdir(), fnet_fs_finfo()
  ******************************************************************************/
-struct fnet_fs_dirent
+typedef struct
 {
     fnet_uint32_t           d_ino;      /**< @brief Entry serial number. */
     fnet_fs_d_type_t        d_type;    /**< @brief Type of the entry defined by
@@ -200,7 +200,7 @@ struct fnet_fs_dirent
                                         *   string).*/
     fnet_size_t             d_size;     /**< @brief Size of the file entry. @n
                                         * If the entry is a directory this field is set to @c 0.*/
-};
+} fnet_fs_dirent_t;
 
 #if defined(__cplusplus)
 extern "C" {
@@ -253,7 +253,7 @@ void fnet_fs_release(void);
  *
  * @param arg           Pointer to the FS-specific mount argument.@n
  *                      For the FNET ROM FS this parameter is the pointer to
- *                      the @ref fnet_fs_rom_image structure.
+ *                      the @ref fnet_fs_rom_image_t structure.
  *
  *
  * @return This function returns:
@@ -354,7 +354,7 @@ fnet_return_t fnet_fs_closedir( fnet_fs_dir_t dir);
  * can be read by calling the @ref fnet_fs_readdir() function repeatedly.@n
  *
  ******************************************************************************/
-fnet_return_t fnet_fs_readdir(fnet_fs_dir_t dir, struct fnet_fs_dirent *dirent);
+fnet_return_t fnet_fs_readdir(fnet_fs_dir_t dir, fnet_fs_dirent_t *dirent);
 
 /***************************************************************************/ /*!
  *
@@ -650,10 +650,10 @@ fnet_int32_t fnet_fs_ftell (fnet_fs_file_t file);
  ******************************************************************************
  *
  * This function fills the @c dirent structure with information about the @c file.
- * The information is defined by the @ref fnet_fs_dirent structure.
+ * The information is defined by the @ref fnet_fs_dirent_t structure.
  *
  ******************************************************************************/
-fnet_return_t fnet_fs_finfo (fnet_fs_file_t file, struct fnet_fs_dirent *dirent);
+fnet_return_t fnet_fs_finfo (fnet_fs_file_t file, fnet_fs_dirent_t *dirent);
 
 #if defined(__cplusplus)
 }

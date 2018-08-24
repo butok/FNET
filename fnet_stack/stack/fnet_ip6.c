@@ -164,7 +164,7 @@ fnet_return_t _fnet_ip6_init( void )
 
     ip6_frag_list_head = 0;
 
-    ip6_timer_ptr = _fnet_timer_new((FNET_IP6_TIMER_PERIOD / FNET_TIMER_PERIOD_MS), _fnet_ip6_timer, 0u);
+    ip6_timer_ptr = _fnet_timer_new(FNET_IP6_TIMER_PERIOD, _fnet_ip6_timer, 0u);
 
     if(ip6_timer_ptr)
     {

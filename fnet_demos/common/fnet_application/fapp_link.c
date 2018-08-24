@@ -134,8 +134,8 @@ static void fapp_link_script_add_netif_name(fnet_char_t *script_out, fnet_size_t
 *************************************************************************/
 void fapp_link_init(fnet_shell_desc_t desc, fnet_netif_desc_t netif)
 {
-    struct fnet_link_params    params;
-    fnet_link_desc_t           link_desc;
+    fnet_link_params_t    params;
+    fnet_link_desc_t      link_desc;
 
     /* Init parameters.*/
     fnet_memset_zero(&params, sizeof(params));

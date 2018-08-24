@@ -32,13 +32,13 @@
 
 #include "fnet_http_srv_auth.h"
 
-typedef fnet_return_t(*fnet_http_srv_auth_scheme_validate_t)(const struct fnet_http_srv_auth *auth_entry, fnet_char_t *auth_param);
+typedef fnet_return_t(*fnet_http_srv_auth_scheme_validate_t)(const fnet_http_srv_auth_t *auth_entry, fnet_char_t *auth_param);
 typedef fnet_size_t(*fnet_http_srv_auth_scheme_generate_t)(struct fnet_http_srv_if *http, fnet_uint8_t *buffer, fnet_size_t buffer_size);
 
-struct fnet_http_srv_auth_scheme
+struct fnet_http_srv_auth_scheme_if
 {
     fnet_http_srv_auth_scheme_t             id;
-    fnet_char_t                                *name;
+    fnet_char_t                             *name;
     fnet_http_srv_auth_scheme_validate_t    validate; /* Validate credentials params.*/
     fnet_http_srv_auth_scheme_generate_t    generate; /* Generate challenge params.*/
 };

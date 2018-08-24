@@ -74,7 +74,7 @@ static fnet_char_t fapp_fs_current_path[FAPP_FS_DIR_PATH_MAX + 1U] = {FNET_FS_SP
 /************************************************************************
 *     The table of the File Explorer commands.
 *************************************************************************/
-static const struct fnet_shell_command fapp_fs_cmd_tab [] =
+static const fnet_shell_command_t fapp_fs_cmd_tab [] =
 {
     { "?", 0, 0, fapp_help_cmd,         "Display this help message.", ""},
     { "dir", 0, 0, fapp_fs_dir_cmd,     "Display a list of files & directories.", ""},
@@ -87,7 +87,7 @@ static const struct fnet_shell_command fapp_fs_cmd_tab [] =
 /************************************************************************
 *     The File Explorer control data structure.
 *************************************************************************/
-const struct fnet_shell fapp_fs_shell =
+const fnet_shell_t fapp_fs_shell =
 {
     fapp_fs_cmd_tab,                   /* cmd_table */
     FAPP_FS_PROMPT_STR,                /* prompt_str */
@@ -116,7 +116,7 @@ static void fapp_fs_init( fnet_shell_desc_t desc )
 *************************************************************************/
 static void fapp_fs_dir_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
-    struct fnet_fs_dirent   ep;
+    fnet_fs_dirent_t        ep;
     fnet_fs_dir_t           dir;
     FNET_COMP_UNUSED_ARG(argc);
     FNET_COMP_UNUSED_ARG(argv);
@@ -228,7 +228,7 @@ static void fapp_fs_view_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_ch
     fnet_size_t     size_path;
     fnet_char_t     splitter[] = {FNET_FS_SPLITTER, '\0'};
     fnet_uint8_t    data;
-    struct          fnet_fs_dirent dirent;
+    fnet_fs_dirent_t dirent;
 
     FNET_COMP_UNUSED_ARG(desc);
     FNET_COMP_UNUSED_ARG(argc);

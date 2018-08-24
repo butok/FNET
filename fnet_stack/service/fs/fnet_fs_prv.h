@@ -66,14 +66,14 @@ struct fnet_fs_file_operations
     fnet_return_t (*fopen)( struct fnet_fs_desc *file, const fnet_char_t *name, fnet_uint8_t mode, struct fnet_fs_desc *re_dir );
     fnet_size_t (*fread) (struct fnet_fs_desc *file, void *buf, fnet_size_t bytes);
     fnet_return_t (*fseek) (struct fnet_fs_desc *file, fnet_int32_t offset, fnet_fs_seek_origin_t origin);
-    fnet_return_t (*finfo) (struct fnet_fs_desc *file, struct fnet_fs_dirent *dirent);
+    fnet_return_t (*finfo) (struct fnet_fs_desc *file, fnet_fs_dirent_t *dirent);
 };
 
 /* Dir operations. */
 struct fnet_fs_dir_operations
 {
     fnet_return_t (*opendir)( struct fnet_fs_desc *dir, const fnet_char_t *name );
-    fnet_return_t (*readdir)( struct fnet_fs_desc *dir, struct fnet_fs_dirent *dirent );
+    fnet_return_t (*readdir)( struct fnet_fs_desc *dir, fnet_fs_dirent_t *dirent );
 };
 
 /* FS operations. */

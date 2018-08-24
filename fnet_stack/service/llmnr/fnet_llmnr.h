@@ -54,7 +54,7 @@
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_llmnr_init() function.
  ******************************************************************************/
-struct fnet_llmnr_params
+typedef struct
 {
     fnet_netif_desc_t           netif_desc;     /**< @brief Network interface descriptor to be used by the LLMNR server.*/
     const fnet_char_t           *host_name;     /**< @brief Link-local host name advertised by LLMNR server. */
@@ -62,7 +62,7 @@ struct fnet_llmnr_params
                                                  * Default value is defined by @ref FNET_CFG_LLMNR_HOSTNAME_TTL. */
     fnet_address_family_t       addr_family;    /**< @brief Address family (IPv6 or IPv4 or both) the server will listen for LLMNR query (it is optional).@n
                                                    Default value is defined by @ref AF_SUPPORTED.*/
-};
+} fnet_llmnr_params_t;
 
 /**************************************************************************/ /*!
  * @brief LLMNR server descriptor.
@@ -78,13 +78,13 @@ extern "C" {
  *
  * @brief    Initializes Link-Local Multicast Name Resolution (LLMNR) server/responder service.
  *
- * @param params     Initialization parameters defined by @ref fnet_llmnr_params.
+ * @param params     Initialization parameters defined by @ref fnet_llmnr_params_t.
  *
  * @return This function returns:
  *   - LLMNR server descriptor if no error occurs.
  *   - @c FNET_NULL if an error occurs.
  *
- * @see fnet_llmnr_release(), fnet_llmnr_params
+ * @see fnet_llmnr_release(), fnet_llmnr_params_t
  *
  ******************************************************************************
  *
@@ -96,7 +96,7 @@ extern "C" {
  * in the background.
  *
  ******************************************************************************/
-fnet_llmnr_desc_t fnet_llmnr_init( struct fnet_llmnr_params *params );
+fnet_llmnr_desc_t fnet_llmnr_init( fnet_llmnr_params_t *params );
 
 /***************************************************************************/ /*!
  *

@@ -116,7 +116,7 @@ struct fnet_telnet_session_if
     fnet_uint8_t                *rx_buffer_tail;    /* The RX circular buffer read pointer. */
     fnet_uint8_t                *rx_buffer_end;     /* Pointer to the end of the Rx circular buffer. */
     fnet_shell_desc_t           shell_descriptor;
-    struct fnet_shell_params    shell_params;
+    fnet_shell_params_t         shell_params;
     fnet_char_t                 cmd_line_buffer[FNET_CFG_TELNET_CMD_LINE_BUF_SIZE];
     struct fnet_serial_stream   stream;
 };
@@ -256,7 +256,7 @@ static void _fnet_telnet_send(struct fnet_telnet_session_if *session)
 {
     fnet_ssize_t    res;
     fnet_index_t    tx_buffer_tail_index = 0u;
-    fnet_time_t     timeout = fnet_timer_get_ticks();
+    fnet_time_t     timeout_ms = fnet_timer_get_ms();
 
     /* Send all data in the buffer.*/
     while((tx_buffer_tail_index != session->tx_buffer_head_index) && (session->state != FNET_TELNET_STATE_CLOSING))
@@ -269,10 +269,9 @@ static void _fnet_telnet_send(struct fnet_telnet_session_if *session)
                 tx_buffer_tail_index += (fnet_index_t)res;
 
                 /* Reset timeout. */
-                timeout = fnet_timer_get_ticks();
+                timeout_ms = fnet_timer_get_ms();
             }
-            else if( fnet_timer_get_interval(timeout, fnet_timer_get_ticks())
-                     > (FNET_TELNET_WAIT_SEND_MS / FNET_TIMER_PERIOD_MS) ) /* Check timeout */
+            else if( (fnet_timer_get_ms() - timeout_ms) > FNET_TELNET_WAIT_SEND_MS ) /* Check timeout */
             {
                 FNET_DEBUG_TELNET("TELNET:Send timeout.");
                 break; /* Time-out. */
@@ -507,7 +506,7 @@ static void _fnet_telnet_poll( void *telnet_if_p )
 /************************************************************************
 * DESCRIPTION: Initialization of the Telnet server.
 *************************************************************************/
-fnet_telnet_desc_t fnet_telnet_init( struct fnet_telnet_params *params )
+fnet_telnet_desc_t fnet_telnet_init( fnet_telnet_params_t *params )
 {
     struct fnet_sockaddr        local_addr;
     struct fnet_telnet_if       *telnet_if = 0;

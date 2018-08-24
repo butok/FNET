@@ -89,7 +89,7 @@ fnet_return_t _fnet_ip4_init( void )
 #if FNET_CFG_IP4_FRAGMENTATION
 
     ip_frag_list_head = 0;
-    ip_timer_ptr = _fnet_timer_new((FNET_IP4_TIMER_PERIOD / FNET_TIMER_PERIOD_MS), _fnet_ip4_timer, 0u);
+    ip_timer_ptr = _fnet_timer_new(FNET_IP4_TIMER_PERIOD, _fnet_ip4_timer, 0u);
 
     if(ip_timer_ptr)
     {

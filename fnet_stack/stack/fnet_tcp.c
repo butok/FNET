@@ -175,7 +175,7 @@ fnet_prot_if_t fnet_tcp_prot_if =
 static fnet_return_t _fnet_tcp_init( void )
 {
     /* Create the slow timer.*/
-    fnet_tcp_fasttimer = _fnet_timer_new(FNET_TCP_FASTTIMO / FNET_TIMER_PERIOD_MS, _fnet_tcp_fasttimo, 0u);
+    fnet_tcp_fasttimer = _fnet_timer_new(FNET_TCP_FAST_TIMER_PERIOD_MS, _fnet_tcp_fasttimo, 0u);
 
     if(!fnet_tcp_fasttimer)
     {
@@ -183,7 +183,7 @@ static fnet_return_t _fnet_tcp_init( void )
     }
 
     /* Create the fast timer.*/
-    fnet_tcp_slowtimer = _fnet_timer_new(FNET_TCP_SLOWTIMO / FNET_TIMER_PERIOD_MS, _fnet_tcp_slowtimo, 0u);
+    fnet_tcp_slowtimer = _fnet_timer_new(FNET_TCP_SLOW_TIMER_PERIOD_MS, _fnet_tcp_slowtimo, 0u);
 
     if(!fnet_tcp_slowtimer)
     {
@@ -458,7 +458,7 @@ static fnet_return_t _fnet_tcp_close( fnet_socket_if_t *sk )
     /* If SO_LINGER option is present.*/
     if(sk->options.so_linger == FNET_TRUE)
     {
-        if(sk->options.linger_ticks == 0u)
+        if(sk->options.linger_ms == 0u)
             /* Linger is 0 so close the socket immediately. */
         {
             /* Hard reset.*/
@@ -505,10 +505,9 @@ static fnet_return_t _fnet_tcp_close( fnet_socket_if_t *sk )
     {
         if(cb->tcpcb_connection_state != FNET_TCP_CS_TIME_WAIT)
         {
-            if((sk->options.so_linger == FNET_TRUE) && (sk->options.linger_ticks))
+            if((sk->options.so_linger == FNET_TRUE) && (sk->options.linger_ms))
             {
-                cb->tcpcb_timers.connection = ((sk->options.linger_ticks * FNET_TIMER_PERIOD_MS)
-                                               / FNET_TCP_SLOWTIMO);
+                cb->tcpcb_timers.connection = sk->options.linger_ms / FNET_TCP_SLOW_TIMER_PERIOD_MS;
             }
             else
             {
@@ -1082,7 +1081,7 @@ static fnet_return_t _fnet_tcp_setsockopt( fnet_socket_if_t *sk, fnet_protocol_t
                     goto ERROR;
                 }
 
-                sk->options.tcp_opt.keep_intvl = (*((const fnet_uint32_t *)(optval)) * (1000u / FNET_TCP_SLOWTIMO));
+                sk->options.tcp_opt.keep_intvl = (*((const fnet_uint32_t *)(optval)) * (1000u / FNET_TCP_SLOW_TIMER_PERIOD_MS));
                 break;
             /* Time between keepalive probes.*/
             case TCP_KEEPIDLE:
@@ -1092,7 +1091,7 @@ static fnet_return_t _fnet_tcp_setsockopt( fnet_socket_if_t *sk, fnet_protocol_t
                     goto ERROR;
                 }
 
-                sk->options.tcp_opt.keep_idle = (*((const fnet_uint32_t *)(optval)) * (1000u / FNET_TCP_SLOWTIMO));
+                sk->options.tcp_opt.keep_idle = (*((const fnet_uint32_t *)(optval)) * (1000u / FNET_TCP_SLOW_TIMER_PERIOD_MS));
                 break;
 #if FNET_CFG_TCP_URGENT
             /* BSD interpretation of the urgent pointer.*/
@@ -1155,10 +1154,10 @@ static fnet_return_t _fnet_tcp_getsockopt( fnet_socket_if_t *sk, fnet_protocol_t
                 *((fnet_uint32_t *)(optval)) = sk->options.tcp_opt.keep_cnt;
                 break;
             case TCP_KEEPINTVL:
-                *((fnet_uint32_t *)(optval)) = (sk->options.tcp_opt.keep_intvl / (1000u / FNET_TCP_SLOWTIMO));
+                *((fnet_uint32_t *)(optval)) = (sk->options.tcp_opt.keep_intvl / (1000u / FNET_TCP_SLOW_TIMER_PERIOD_MS));
                 break;
             case TCP_KEEPIDLE:
-                *((fnet_uint32_t *)(optval)) = (sk->options.tcp_opt.keep_idle / (1000u / FNET_TCP_SLOWTIMO));
+                *((fnet_uint32_t *)(optval)) = (sk->options.tcp_opt.keep_idle / (1000u / FNET_TCP_SLOW_TIMER_PERIOD_MS));
                 break;
 #if FNET_CFG_TCP_URGENT
             case TCP_BSD:

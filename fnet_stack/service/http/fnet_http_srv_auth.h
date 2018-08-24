@@ -33,7 +33,7 @@
 
 /**************************************************************************/ /*!
  * @brief Type of Authentication Scheme
- * @see fnet_http_srv_auth
+ * @see fnet_http_srv_auth_t
  ******************************************************************************/
 typedef enum
 {
@@ -59,9 +59,9 @@ typedef enum
 *   -# The client submits the user name and password to the server.
 *   -# The server validates the credentials and, if successful, returns the requested resource.
 *
-* @see fnet_http_srv_auth_scheme_t, fnet_http_srv_params
+* @see fnet_http_srv_auth_scheme_t, fnet_http_srv_params_t
 ******************************************************************************/
-struct fnet_http_srv_auth
+typedef struct
 {
     fnet_char_t *realm;	            /**< @brief Name of realm. A realm can be seen as an area for which the credentials are used.
                                          This is also the string that is shown when a WEB browser pops up the login window, for example: "Please enter your username and password for <realm>"
@@ -71,7 +71,7 @@ struct fnet_http_srv_auth
     fnet_char_t *password;          /**< @brief Required password to access this directory.*/
     fnet_http_srv_auth_scheme_t scheme; /**< @brief Used Authentication Scheme.*/
 
-};
+} fnet_http_srv_auth_t;
 
 /*! @} */
 

@@ -59,8 +59,8 @@
 *************************************************************************/
 struct fnet_shell_if
 {
-    const struct fnet_shell *shell;
-    const struct fnet_shell *top_shell;                             /* Pointer to the top shell. */
+    const fnet_shell_t *shell;
+    const fnet_shell_t *top_shell;                             /* Pointer to the top shell. */
     fnet_shell_state_t      state;                                  /* Current state.*/
     fnet_service_desc_t     service_descriptor;                     /* Descriptor of polling service.*/
     fnet_size_t             pos;
@@ -103,7 +103,7 @@ static void _fnet_shell_echo( struct fnet_shell_if *shell_if, fnet_char_t charac
 static void _fnet_shell_poll( void *shell_if_p )
 {
     struct fnet_shell_if    *shell_if = (struct fnet_shell_if *)shell_if_p;
-    const struct fnet_shell *shell = ((struct fnet_shell_if *)shell_if_p)->shell;
+    const fnet_shell_t      *shell = ((struct fnet_shell_if *)shell_if_p)->shell;
     fnet_int32_t            ch;
     fnet_index_t            argc;
     fnet_char_t             *argv[FNET_CFG_SHELL_ARGS_MAX + 1u] = {0}; /* One extra for 0 terminator.*/
@@ -200,41 +200,34 @@ static void _fnet_shell_poll( void *shell_if_p )
 
                 if(argc)
                 {
-                    const struct fnet_shell_command *cur_command = shell->cmd_table;
+                    const fnet_shell_command_t *cur_command = fnet_shell_get_command_by_name(shell_if, argv[0]);
 
-                    while(cur_command->name)
+                    if(cur_command)
                     {
-                        if(fnet_strcasecmp(cur_command->name, argv[0]) == 0) /* Command is found. */
+                        if(((argc - 1u) >= cur_command->min_args) && ((argc - 1u) <= cur_command->max_args))
                         {
-                            if(((argc - 1u) >= cur_command->min_args)
-                               && ((argc - 1u) <= cur_command->max_args))
+                            /* Shell command. */
                             {
-                                /* Shell command. */
+                                if(cur_command->cmd_ptr)
                                 {
-                                    if(cur_command->cmd_ptr)
-                                    {
-                                        ((void(*)(fnet_shell_desc_t desc, fnet_index_t cmd_ptr_argc, fnet_char_t **cmd_ptr_argv))(cur_command->cmd_ptr))((fnet_shell_desc_t)shell_if, argc, argv);
-                                    }
-
-                                    /* In case shell switch*/
-                                    shell = shell_if->shell; /* Update current shell pointer. */
-                                    cur_command = shell->cmd_table;/* => to avoid wrong command message. */
-
-                                    /* Check if the shell was released during command execution.*/
-                                    if(shell_if->state == FNET_SHELL_STATE_DISABLED)
-                                    {
-                                        return;
-                                    }
+                                    ((void(*)(fnet_shell_desc_t desc, fnet_index_t cmd_ptr_argc, fnet_char_t **cmd_ptr_argv))(cur_command->cmd_ptr))((fnet_shell_desc_t)shell_if, argc, argv);
+                                }
+                        
+                                /* In case shell switch*/
+                                shell = shell_if->shell; /* Update current shell pointer. */
+                                cur_command = shell->cmd_table;/* => to avoid wrong command message. */
+                        
+                                /* Check if the shell was released during command execution.*/
+                                if(shell_if->state == FNET_SHELL_STATE_DISABLED)
+                                {
+                                    return;
                                 }
                             }
-                            else /* Wrong command syntax. */
-                            {
-                                fnet_shell_println((fnet_shell_desc_t)shell_if_p, FNET_SHELL_ERR_SYNTAX, argv[0]);
-                            }
-
-                            break;
                         }
-                        cur_command++;
+                        else /* Wrong command syntax. */
+                        {
+                            fnet_shell_println((fnet_shell_desc_t)shell_if_p, FNET_SHELL_ERR_SYNTAX, argv[0]);
+                        }
                     }
 
                     if(cur_command->name == 0)
@@ -308,7 +301,7 @@ static void _fnet_shell_poll( void *shell_if_p )
 /************************************************************************
 * DESCRIPTION:
 ************************************************************************/
-fnet_shell_desc_t fnet_shell_init( struct fnet_shell_params *params)
+fnet_shell_desc_t fnet_shell_init( fnet_shell_params_t *params)
 {
     fnet_index_t i;
 
@@ -662,8 +655,8 @@ void fnet_shell_script_stop( fnet_shell_desc_t desc)
 ************************************************************************/
 void fnet_shell_help( fnet_shell_desc_t desc)
 {
-    const struct fnet_shell *shell = ((struct fnet_shell_if *)desc)->shell;
-    const struct fnet_shell_command *cur_command = shell->cmd_table;
+    const fnet_shell_t *shell = ((struct fnet_shell_if *)desc)->shell;
+    const fnet_shell_command_t *cur_command = shell->cmd_table;
 
     while(cur_command->name)
     {
@@ -755,7 +748,7 @@ void fnet_shell_unblock( fnet_shell_desc_t desc)
 /************************************************************************
 * DESCRIPTION: Switch to other command line set.
 ************************************************************************/
-fnet_return_t fnet_shell_switch( fnet_shell_desc_t desc, const struct fnet_shell *switch_shell)
+fnet_return_t fnet_shell_switch( fnet_shell_desc_t desc, const fnet_shell_t *switch_shell)
 {
     struct fnet_shell_if    *shell_if = (struct fnet_shell_if *) desc;
     fnet_return_t           res;
@@ -788,4 +781,29 @@ fnet_return_t fnet_shell_switch( fnet_shell_desc_t desc, const struct fnet_shell
     }
 
     return res;
+}
+
+/************************************************************************
+* Looks for a shell command by its name.
+************************************************************************/
+const fnet_shell_command_t *fnet_shell_get_command_by_name(fnet_shell_desc_t desc, const fnet_char_t *name)
+{
+    struct fnet_shell_if        *shell_if = (struct fnet_shell_if *)desc;
+    const fnet_shell_command_t  *result = FNET_NULL;
+
+    if(shell_if && shell_if->shell)
+    {
+        const fnet_shell_command_t *cur_command;
+
+        for(cur_command = shell_if->shell->cmd_table; cur_command->name; cur_command++)
+        {
+            if(fnet_strcasecmp(cur_command->name, name) == 0) /* Command is found. */
+            {
+                result = cur_command;
+                break;
+            }
+        }
+    }
+    
+    return result;
 }

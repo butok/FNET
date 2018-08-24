@@ -93,7 +93,7 @@ typedef struct
 
     fnet_error_t        error;          /**< Socket last error.*/
     fnet_error_t        local_error;    /**< Socket local error (ICMP, on timeout).*/
-    fnet_time_t         linger_ticks;   /**< Lingers on close if unsent data is present (in timer ticks).*/
+    fnet_time_t         linger_ms;      /**< Lingers on close if unsent data is present (in ms).*/
     fnet_bool_t         so_dontroute;
     fnet_bool_t         so_keepalive;
     fnet_bool_t         so_linger;

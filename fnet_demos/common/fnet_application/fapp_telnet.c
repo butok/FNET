@@ -38,7 +38,7 @@
 /************************************************************************
 *     The main shell control data structure.
 *************************************************************************/
-const struct fnet_shell fapp_telnet_shell =
+const fnet_shell_t fapp_telnet_shell =
 {
     fapp_cmd_table, /* You may replace by your own command table.*/
     FAPP_TELNET_PROMPT_STR,     /* prompt_str */
@@ -61,12 +61,12 @@ void fapp_telnet_release(void)
 *************************************************************************/
 void fapp_telnet_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
-    struct fnet_telnet_params   params;
-    fnet_telnet_desc_t          telnet_desc;
+    fnet_telnet_params_t   params;
+    fnet_telnet_desc_t     telnet_desc;
 
     if(argc == 1u) /* By default is "init".*/
     {
-        fnet_memset_zero(&params, sizeof(struct fnet_telnet_params));
+        fnet_memset_zero(&params, sizeof(fnet_telnet_params_t));
         params.shell = &fapp_telnet_shell;
 
         /* Init Telnet server */

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2017 by Andrey Butok. FNET Community.
+* Copyright 2017-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -94,16 +94,16 @@ typedef struct
  * @param timestamp         Pointer to the received timestamp or @ref FNET_NULL if the resolving is failed.
  * @param cookie            User-application specific parameter. It's set during
  *                          the SNTP-client service initialization as part of
- *                          @ref fnet_sntp_params.
+ *                          @ref fnet_sntp_params_t.
  *
- * @see fnet_sntp_init(), fnet_sntp_params
+ * @see fnet_sntp_init(), fnet_sntp_params_t
  ******************************************************************************/
 typedef void(*fnet_sntp_callback_resolved_t)(const fnet_sntp_timestamp_t *timestamp, void *cookie);
 
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_sntp_init() function.
  ******************************************************************************/
-struct fnet_sntp_params
+typedef struct
 {
     struct fnet_sockaddr            sntp_server_addr;   /**< @brief Socket address of the remote SNTP/NTP server to
                                                         * connect to. */
@@ -113,7 +113,7 @@ struct fnet_sntp_params
     void                            *cookie;            /**< @brief Optional application-specific parameter. @n
                                                         * It's passed to the @c callback
                                                         * function as input parameter. */
-};
+} fnet_sntp_params_t;
 
 #if defined(__cplusplus)
 extern "C" {
@@ -129,7 +129,7 @@ extern "C" {
  *   - @ref FNET_OK if no error occurs.
  *   - @ref FNET_ERR if an error occurs.
  *
- * @see fnet_sntp_params, fnet_sntp_callback_resolved_t, fnet_sntp_release()
+ * @see fnet_sntp_params_t, fnet_sntp_callback_resolved_t, fnet_sntp_release()
  *
  ******************************************************************************
  *
@@ -146,7 +146,7 @@ extern "C" {
  * FNET_CFG_SNTP_RETRANSMISSION_TIMEOUT * FNET_CFG_SNTP_RETRANSMISSION_MAX seconds.
  *
  ******************************************************************************/
-fnet_return_t fnet_sntp_init( struct fnet_sntp_params *params );
+fnet_return_t fnet_sntp_init( fnet_sntp_params_t *params );
 
 /***************************************************************************/ /*!
  *
@@ -181,8 +181,6 @@ void fnet_sntp_release(void);
  *
  ******************************************************************************/
 void fnet_sntp_timestamp2utc(const fnet_sntp_timestamp_t *timestamp, fnet_sntp_utc_t *utc);
-
-
 
 #if defined(__cplusplus)
 }

@@ -1085,8 +1085,8 @@ static void fapp_tftp_on_ctrlc(fnet_shell_desc_t desc, void *cookie)
 ************************************************************************/
 void fapp_tftp_cln_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
-    struct fnet_tftp_cln_params     tftp_params;
-    fnet_char_t                     ip_str[FNET_IP_ADDR_STR_SIZE];
+    fnet_tftp_cln_params_t     tftp_params;
+    fnet_char_t                ip_str[FNET_IP_ADDR_STR_SIZE];
 
     /* Set parameters of the TFTP-client service. */
 
@@ -1308,8 +1308,8 @@ void fapp_tftp_srv_release(void)
 *************************************************************************/
 void fapp_tftp_srv_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
 {
-    struct fnet_tftp_srv_params params;
-    fnet_tftp_srv_desc_t tftp_srv_desc;
+    fnet_tftp_srv_params_t  params;
+    fnet_tftp_srv_desc_t    tftp_srv_desc;
 
     if(argc == 1u) /* By default, the argument is "init".*/
     {

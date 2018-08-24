@@ -63,12 +63,12 @@ typedef void *fnet_bench_cln_desc_t;
  * @brief Benchmark client result passed to the "session end" event handler callback.
  * @see fnet_bench_cln_set_callback_session_end()
  ******************************************************************************/
-struct fnet_bench_cln_result
+typedef struct
 {
     fnet_size_t megabytes;              /**< @brief Number of transmitted megabytes during the benchmark session.*/
     fnet_size_t bytes;                  /**< @brief Number of transmitted bytes, in addition to megabytes, during the benchmark session.*/
     fnet_time_t time_ms;                /**< @brief Benchmark session lifetime in milliseconds.*/
-};
+} fnet_bench_cln_result_t;
 
 /**************************************************************************/ /*!
  * @brief Benchmark client event handler callback function prototype, that is
@@ -79,12 +79,12 @@ struct fnet_bench_cln_result
  * @param cookie                User-application specific parameter. It's set during
  *                              the @ref fnet_bench_cln_init.
  ******************************************************************************/
-typedef void(*fnet_bench_cln_callback_session_end_t)(fnet_bench_cln_desc_t bench_cln_desc, const struct fnet_bench_cln_result *bench_cln_result, void *cookie);
+typedef void(*fnet_bench_cln_callback_session_end_t)(fnet_bench_cln_desc_t bench_cln_desc, const fnet_bench_cln_result_t *bench_cln_result, void *cookie);
 
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_bench_cln_init() function.
  ******************************************************************************/
-struct fnet_bench_cln_params
+typedef struct
 {
     struct fnet_sockaddr                    address;            /**< @brief Socket address of the remote benchmark server to connect to.@n
                                                                  * If the address port number is set to @c 0, it will be assigned to the default port number defined by @ref FNET_CFG_BENCH_CLN_PORT.*/
@@ -97,7 +97,7 @@ struct fnet_bench_cln_params
     void                                    *cookie;            /**< @brief Optional application-specific parameter. @n
                                                                 * It's passed to the @c callback
                                                                 * function as input parameter. */
-};
+} fnet_bench_cln_params_t;
 
 #if defined(__cplusplus)
 extern "C" {
@@ -107,7 +107,7 @@ extern "C" {
  *
  * @brief    Initializes the Benchmark client service and starts the benchmark session.
  *
- * @param params     Initialization parameters defined by @ref fnet_bench_cln_params.
+ * @param params     Initialization parameters defined by @ref fnet_bench_cln_params_t.
  *
  * @return This function returns:
  *   - Benchmark client descriptor if no error occurs.
@@ -129,7 +129,7 @@ extern "C" {
  * session is finished.
  *
  ******************************************************************************/
-fnet_bench_cln_desc_t fnet_bench_cln_init( struct fnet_bench_cln_params *params );
+fnet_bench_cln_desc_t fnet_bench_cln_init( fnet_bench_cln_params_t *params );
 
 /***************************************************************************/ /*!
  *

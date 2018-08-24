@@ -37,8 +37,8 @@
 struct fnet_net_timer
 {
     struct fnet_net_timer *next;            /* Next timer in list.*/
-    fnet_time_t timer_cnt;                  /* Timer counter. */
-    fnet_time_t timer_rv;                   /* Timer reference value. */
+    fnet_time_t timer_start_ms;             /* Timer start time. */
+    fnet_time_t timer_timeout_ms;           /* Timer timeout. */
     void (*handler)(fnet_uint32_t cookie);  /* Timer handler. */
     fnet_uint32_t cookie;                   /* Handler Cookie. */
 };
@@ -47,12 +47,19 @@ struct fnet_net_timer
     static void _fnet_time_set(time_t sec);
 #endif
 
-static struct fnet_net_timer *_fnet_timer_head;
-static volatile fnet_time_t _fnet_timer_counter;
+static struct fnet_net_timer    *_fnet_timer_head;
+
+#if !FNET_CFG_TIMER_ALT  /* Bare-metal timer */
+static volatile fnet_time_t     _fnet_timer_counter_ms;
+#endif
 
 #if FNET_CFG_TIME
     static time_t       _fnet_time_start;
     static fnet_time_t  _fnet_timer_start;
+#endif
+
+#if FNET_CFG_TIMER_ALT
+    const fnet_timer_api_t  *_fnet_timer_api = FNET_NULL;
 #endif
 
 /************************************************************************
@@ -62,14 +69,24 @@ fnet_return_t _fnet_timer_init( fnet_time_t period_ms )
 {
     fnet_return_t result;
 
-    _fnet_timer_counter = 0u;                   /* Reset RTC counter. */
-
 #if FNET_CFG_TIME
     _fnet_time_start = 0;
     _fnet_timer_start = 0;
 #endif
 
+#if FNET_CFG_TIMER_ALT /* Application Timer API */
+    if((_fnet_timer_api == FNET_NULL) || (_fnet_timer_api->timer_get_ms == FNET_NULL))
+    {
+        result = FNET_ERR;
+    }
+    else
+    {
+        result = FNET_OK;
+    }
+#else /* Init FNET bare-metal driver */
+    _fnet_timer_counter_ms = 0u;                /* Reset RTC counter. */
     result = FNET_HW_TIMER_INIT(period_ms);     /* Start HW timer. */
+#endif
 
     return result;
 }
@@ -82,7 +99,9 @@ void _fnet_timer_release( void )
 {
     struct fnet_net_timer *tmp_tl;
 
+#if !FNET_CFG_TIMER_ALT
     FNET_HW_TIMER_RELEASE();
+#endif
 
     while(_fnet_timer_head != 0)
     {
@@ -95,19 +114,11 @@ void _fnet_timer_release( void )
 }
 
 /************************************************************************
-* DESCRIPTION: This function returns current value of the timer in ticks.
-*************************************************************************/
-fnet_time_t fnet_timer_get_ticks( void )
-{
-    return _fnet_timer_counter;
-}
-
-/************************************************************************
 * DESCRIPTION: This function returns current value of the timer in seconds.
 *************************************************************************/
 fnet_time_t fnet_timer_get_seconds( void )
 {
-    return (_fnet_timer_counter / FNET_TIMER_TICKS_IN_SEC);
+    return  (fnet_timer_get_ms()/FNET_TIMER_MS_IN_SEC);
 }
 
 /************************************************************************
@@ -116,29 +127,39 @@ fnet_time_t fnet_timer_get_seconds( void )
 *************************************************************************/
 fnet_time_t fnet_timer_get_ms( void )
 {
-    return (_fnet_timer_counter * FNET_TIMER_PERIOD_MS);
+    fnet_time_t result;
+
+#if FNET_CFG_TIMER_ALT /* Application Timer API */
+    result = _fnet_timer_api->timer_get_ms();
+#else /* Bare-metal timer */
+    result = _fnet_timer_counter_ms;
+#endif
+
+    return result;
 }
 
 /************************************************************************
 * DESCRIPTION: This function increments current value of the RTC counter.
 *************************************************************************/
+#if !FNET_CFG_TIMER_ALT  /* Bare-metal timer */
 void _fnet_timer_ticks_inc( void )
 {
-    _fnet_timer_counter++;
+    _fnet_timer_counter_ms += FNET_TIMER_PERIOD_MS;
 
 #if FNET_CFG_DEBUG_TIMER && FNET_CFG_DEBUG
     /* Print once per second */
-    if((_fnet_timer_counter % (1000 / FNET_TIMER_PERIOD_MS)) == 0)
+    if((_fnet_timer_counter_ms % 1000) == 0)
     {
         FNET_DEBUG_TIMER("!");
     }
 #endif
 }
+#endif
 
 /************************************************************************
 * DESCRIPTION: Handles timer interrupts
 *************************************************************************/
-#if FNET_CFG_TIMER_POLL_AUTOMATIC
+#if !FNET_CFG_TIMER_ALT
 void _fnet_timer_handler_bottom(void *cookie)
 {
     FNET_COMP_UNUSED_ARG(cookie);
@@ -166,9 +187,9 @@ void _fnet_timer_poll(void)
 
     while(timer)
     {
-        if(fnet_timer_get_interval(timer->timer_cnt, _fnet_timer_counter) >= timer->timer_rv)
+        if((fnet_timer_get_ms() - timer->timer_start_ms) >= timer->timer_timeout_ms)
         {
-            timer->timer_cnt = _fnet_timer_counter;
+            timer->timer_start_ms = fnet_timer_get_ms();
 
             if(timer->handler)
             {
@@ -185,11 +206,11 @@ void _fnet_timer_poll(void)
 /************************************************************************
 * DESCRIPTION: Creates new software timer with the period
 *************************************************************************/
-fnet_timer_desc_t _fnet_timer_new( fnet_time_t period_ticks, void (*handler)(fnet_uint32_t cookie), fnet_uint32_t cookie )
+fnet_timer_desc_t _fnet_timer_new( fnet_time_t period_ms, void (*handler)(fnet_uint32_t cookie), fnet_uint32_t cookie )
 {
     struct fnet_net_timer *timer = FNET_NULL;
 
-    if( period_ticks && handler )
+    if( period_ms && handler )
     {
         timer = (struct fnet_net_timer *)_fnet_malloc_zero(sizeof(struct fnet_net_timer));
 
@@ -199,7 +220,8 @@ fnet_timer_desc_t _fnet_timer_new( fnet_time_t period_ticks, void (*handler)(fne
 
             _fnet_timer_head = timer;
 
-            timer->timer_rv = period_ticks;
+            timer->timer_start_ms = fnet_timer_get_ms();
+            timer->timer_timeout_ms = period_ms;
             timer->handler = handler;
             timer->cookie = cookie;
         }
@@ -239,39 +261,29 @@ void _fnet_timer_free( fnet_timer_desc_t timer )
 }
 
 /************************************************************************
-* DESCRIPTION: Calaculates an interval between two moments of time
+* DESCRIPTION: Do delay for a given number of milliseconds.
 *************************************************************************/
-fnet_time_t fnet_timer_get_interval( fnet_time_t start, fnet_time_t end )
+void fnet_timer_delay( fnet_time_t delay_ms )
 {
-    if(start <= end)
+#if FNET_CFG_TIMER_ALT
+    if(_fnet_timer_api->timer_delay) /* Application specific delay */
     {
-        return (end - start);
+        _fnet_timer_api->timer_delay(delay_ms);
     }
     else
+#endif
     {
-        return (0xffffffffu - start + end + 1u);
+        fnet_time_t start_ms = fnet_timer_get_ms();
+        
+        if(delay_ms == 0) /* set minimum value */
+        {
+            delay_ms = 1;
+        }
+
+        while((fnet_timer_get_ms() - start_ms) < delay_ms)
+        {}
     }
 }
-
-/************************************************************************
-* DESCRIPTION: Do delay for a given number of timer ticks.
-*************************************************************************/
-void fnet_timer_delay( fnet_time_t delay_ticks )
-{
-    fnet_time_t start_ticks = _fnet_timer_counter;
-
-    while(fnet_timer_get_interval(start_ticks, fnet_timer_get_ticks()) < delay_ticks)
-    {}
-}
-
-/************************************************************************
-* DESCRIPTION: Convert milliseconds to timer ticks.
-*************************************************************************/
-fnet_time_t fnet_timer_ms2ticks( fnet_time_t time_ms )
-{
-    return time_ms / FNET_TIMER_PERIOD_MS;
-}
-
 
 #if FNET_CFG_TIME
 /************************************************************************

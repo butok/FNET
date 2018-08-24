@@ -120,8 +120,8 @@ static void fapp_autoip_callback_probe(fnet_autoip_desc_t autoip_desc, fnet_neti
 *************************************************************************/
 void fapp_autoip_init( fnet_shell_desc_t desc, fnet_netif_desc_t  netif )
 {
-    struct fnet_autoip_params   params;
-    fnet_autoip_desc_t          autoip_desc;
+    fnet_autoip_params_t   params;
+    fnet_autoip_desc_t     autoip_desc;
 
     if(desc && netif)
     {

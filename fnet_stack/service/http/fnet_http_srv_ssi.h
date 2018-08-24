@@ -56,7 +56,7 @@
  *   - @ref FNET_ERR if an error occurs. @n
  *     SSI directive will be eliminated from the result HTTP page.
  *
- * @see fnet_http_srv_ssi, fnet_http_srv_ssi_send_t
+ * @see fnet_http_srv_ssi_t, fnet_http_srv_ssi_send_t
  *
  * The SSI parser invokes this callback function, when it meets SSI directive
  * in the HTML file and the SSI command name corresponds to the name
@@ -93,7 +93,7 @@ typedef fnet_return_t(*fnet_http_srv_ssi_handle_t)(fnet_char_t *query, fnet_uint
  *         pointed to by @c buffer.@n
  *         The condition flag @c eof indicates, if the SSI end condition has occurred.
  *
- * @see fnet_http_srv_ssi, fnet_http_srv_ssi_handle_t
+ * @see fnet_http_srv_ssi_t, fnet_http_srv_ssi_handle_t
  *
  * This function creates SSI dynamic content.@n
  * An application should use the @c buffer as output buffer for the dynamic content
@@ -121,9 +121,9 @@ typedef fnet_size_t (*fnet_http_srv_ssi_send_t)(fnet_uint8_t *buffer, fnet_size_
  * the client unparsed, the HTML comment format means the directive's
  * coding will not be visible.
  *
- * @see fnet_http_srv_params
+ * @see fnet_http_srv_params_t
  ******************************************************************************/
-struct fnet_http_srv_ssi
+typedef struct
 {
     fnet_char_t             *name;	    /**< @brief SSI command name. */
     fnet_http_srv_ssi_handle_t  handle;     /**< @brief Pointer to the SSI parameters
@@ -131,7 +131,7 @@ struct fnet_http_srv_ssi
     fnet_http_srv_ssi_send_t    send;       /**< @brief Pointer to the SSI include function.
                                          * This function actually inserts dynamic content to
                                          * an existing HTML page. It's optional. */
-};
+} fnet_http_srv_ssi_t;
 /*! @} */
 
 #endif /* FNET_CFG_HTTP_SRV && FNET_CFG_HTTP_SRV_SSI */

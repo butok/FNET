@@ -80,8 +80,8 @@ typedef struct
     fnet_ping_callback_t    callback;                       /* Callback function. */
     void                    *callback_cookie;               /* Callback-handler specific parameter. */
     fnet_uint8_t            buffer[FNET_PING_BUFFER_SIZE];  /* Message buffer. */
-    fnet_time_t             timeout_clk;                    /* Timeout value in clocks, that ping request waits for reply.*/
-    fnet_time_t             send_time;                      /* Last send time, used for timeout detection. */
+    fnet_time_t             timeout_ms;                     /* Timeout value in ms, that ping request waits for reply.*/
+    fnet_time_t             send_time_ms;                   /* Last send time, used for timeout detection. */
     fnet_index_t            packet_count;                   /* Number of packets to be sent.*/
     fnet_size_t             packet_size;
     fnet_uint8_t            pattern;
@@ -97,7 +97,7 @@ static fnet_ping_if_t fnet_ping_if;
 /************************************************************************
 * DESCRIPTION: Initializes PING service.
 ************************************************************************/
-fnet_return_t fnet_ping_init( struct fnet_ping_params *params )
+fnet_return_t fnet_ping_init( fnet_ping_params_t *params )
 {
     const fnet_size_t bufsize_option = FNET_PING_BUFFER_SIZE;
 
@@ -120,10 +120,10 @@ fnet_return_t fnet_ping_init( struct fnet_ping_params *params )
     /* Save input parmeters.*/
     fnet_ping_if.callback = params->callback;
     fnet_ping_if.callback_cookie = params->cookie;
-    fnet_ping_if.timeout_clk = params->timeout / FNET_TIMER_PERIOD_MS;
-    if(fnet_ping_if.timeout_clk == 0u)
+    fnet_ping_if.timeout_ms = params->timeout;
+    if(fnet_ping_if.timeout_ms == 0u)
     {
-        fnet_ping_if.timeout_clk = 1u;
+        fnet_ping_if.timeout_ms = 1u;
     }
     fnet_ping_if.family = params->target_addr.sa_family;
     fnet_ping_if.packet_count = params->packet_count;
@@ -242,7 +242,7 @@ static void _fnet_ping_poll(void *fnet_ping_if_p)
             fnet_socket_sendto(fnet_ping_if.socket_foreign, &fnet_ping_if.buffer[0], (sizeof(*hdr) + ping_if->packet_size), 0u,  &ping_if->target_addr, sizeof(ping_if->target_addr));
             ping_if->packet_count--;
 
-            fnet_ping_if.send_time = fnet_timer_get_ticks();
+            fnet_ping_if.send_time_ms = fnet_timer_get_ms();
 
             ping_if->state = FNET_PING_STATE_WAITING_REPLY;
             break;
@@ -331,7 +331,7 @@ static void _fnet_ping_poll(void *fnet_ping_if_p)
             else /* No data. Check timeout */
             {
             NO_DATA:
-                if(fnet_timer_get_interval(fnet_ping_if.send_time, fnet_timer_get_ticks()) > fnet_ping_if.timeout_clk)
+                if((fnet_timer_get_ms() - fnet_ping_if.send_time_ms) > fnet_ping_if.timeout_ms)
                 {
                     /* Call handler callback.*/
                     if(ping_if->callback)
@@ -352,7 +352,7 @@ static void _fnet_ping_poll(void *fnet_ping_if_p)
             break;
         /*===================================*/
         case FNET_PING_STATE_WAITING_TIMEOUT:
-            if(fnet_timer_get_interval(fnet_ping_if.send_time, fnet_timer_get_ticks()) > fnet_ping_if.timeout_clk)
+            if((fnet_timer_get_ms() - fnet_ping_if.send_time_ms) > fnet_ping_if.timeout_ms)
             {
                 ping_if->state = FNET_PING_STATE_SENDING_REQUEST;
             }

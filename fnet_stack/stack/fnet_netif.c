@@ -37,9 +37,9 @@
 /************************************************************************
 *     Global Data Structures
 *************************************************************************/
-#define FNET_NETIF_PMTU_TIMEOUT          (10u*60u*1000u)   /* ms. RFC1981: The recommended setting for this
+#define FNET_NETIF_PMTU_TIMEOUT_MS       (10u*60u*1000u)   /* ms. RFC1981: The recommended setting for this
                                                            * timer is twice its minimum value (10 minutes).*/
-#define FNET_NETIF_PMTU_PERIOD           (FNET_NETIF_PMTU_TIMEOUT/10u)   /* ms. RFC1981: Once a minute.*/
+#define FNET_NETIF_PMTU_PERIOD_MS        (FNET_NETIF_PMTU_TIMEOUT_MS/10u)   /* ms. RFC1981: Once a minute.*/
 #define FNET_NETIF_IS_CONNECTED_PERIOD   (200)  /* ms. Period used to limit netif->netif_api->is_connected() call rate, cause of high amount of time used by PHY register read.*/
 
 fnet_netif_t *fnet_netif_list;          /* The list of network interfaces. */
@@ -247,7 +247,7 @@ void _fnet_netif_set_pmtu(fnet_netif_t *netif, fnet_size_t pmtu)
     /* Set Path MTU for the link. */
     netif->pmtu = pmtu;
 
-    netif->pmtu_timestamp = fnet_timer_get_ms();
+    netif->pmtu_timestamp_ms = fnet_timer_get_ms();
 }
 
 /************************************************************************
@@ -257,7 +257,7 @@ static void _fnet_netif_pmtu_timer( fnet_uint32_t cookie )
 {
     fnet_netif_t    *netif = (fnet_netif_t *)cookie;
 
-    if( fnet_timer_get_interval(netif->pmtu_timestamp, fnet_timer_get_ms()) > FNET_NETIF_PMTU_TIMEOUT)
+    if((fnet_timer_get_ms() - netif->pmtu_timestamp_ms) > FNET_NETIF_PMTU_TIMEOUT_MS)
     {
         _fnet_netif_set_pmtu(netif, netif->netif_mtu);
     }
@@ -272,7 +272,7 @@ void _fnet_netif_pmtu_init(fnet_netif_t *netif)
     _fnet_netif_set_pmtu(netif, netif->netif_mtu);
 
     /* Register timer, to detect increase of PMTU.*/
-    netif->pmtu_timer = _fnet_timer_new((FNET_NETIF_PMTU_PERIOD / FNET_TIMER_PERIOD_MS), _fnet_netif_pmtu_timer, (fnet_uint32_t)netif);
+    netif->pmtu_timer = _fnet_timer_new(FNET_NETIF_PMTU_PERIOD_MS, _fnet_netif_pmtu_timer, (fnet_uint32_t)netif);
 }
 
 /************************************************************************
@@ -1013,16 +1013,16 @@ fnet_bool_t _fnet_netif_is_connected(fnet_netif_t *netif)
 
     if(netif && (netif->netif_api->netif_is_connected))
     {
-        fnet_time_t current_time = fnet_timer_get_ticks();
+        fnet_time_t current_time_ms = fnet_timer_get_ms();
 
-        if(fnet_timer_get_interval(netif->is_connected_timestamp, current_time) > (FNET_NETIF_IS_CONNECTED_PERIOD / FNET_TIMER_PERIOD_MS))
+        if((current_time_ms - netif->is_connected_timestamp_ms) > FNET_NETIF_IS_CONNECTED_PERIOD )
         {
             fnet_bool_t     connection_flag = netif->is_connected;
 
             result = netif->netif_api->netif_is_connected(netif);
             /* Save last state.*/
             netif->is_connected = result;
-            netif->is_connected_timestamp = current_time;
+            netif->is_connected_timestamp_ms = current_time_ms;
 
             if(result != connection_flag) /* Is any change in connection. */
             {
@@ -1521,7 +1521,7 @@ fnet_return_t fnet_netif_bind_ip6_addr(fnet_netif_desc_t netif_desc, const fnet_
 }
 /* Private */
 fnet_return_t _fnet_netif_bind_ip6_addr(fnet_netif_t *netif, const fnet_ip6_addr_t *addr, fnet_netif_ip_addr_type_t addr_type,
-                                        fnet_time_t lifetime /*in seconds*/, fnet_size_t prefix_length /* bits */ )
+                                        fnet_time_t lifetime_sec /*in seconds*/, fnet_size_t prefix_length /* bits */ )
 {
     fnet_return_t           result = FNET_ERR;
     fnet_netif_ip6_addr_t   *if_addr_ptr = FNET_NULL;
@@ -1576,10 +1576,10 @@ fnet_return_t _fnet_netif_bind_ip6_addr(fnet_netif_t *netif, const fnet_ip6_addr
             }
 
             /* Save creation time, in seconds.*/
-            if_addr_ptr->creation_time = fnet_timer_get_seconds();
+            if_addr_ptr->creation_time_sec = fnet_timer_get_seconds();
 
             /* Set lifetime, in seconds.*/
-            if_addr_ptr->lifetime = lifetime;
+            if_addr_ptr->lifetime_sec = lifetime_sec;
 
             /* If supports ND6. */
             if(netif->nd6_if_ptr)
@@ -1675,8 +1675,8 @@ void _fnet_netif_ip6_addr_timer( fnet_netif_t *netif)
     {
         /* Check lifetime for address.*/
         if((netif->ip6_addr[i].state != FNET_NETIF_IP6_ADDR_STATE_NOT_USED)
-           && (netif->ip6_addr[i].lifetime != FNET_NETIF_IP6_ADDR_LIFETIME_INFINITE)
-           && (fnet_timer_get_interval(netif->ip6_addr[i].creation_time, fnet_timer_get_seconds()) > netif->ip6_addr[i].lifetime)
+           && (netif->ip6_addr[i].lifetime_sec != FNET_NETIF_IP6_ADDR_LIFETIME_INFINITE)
+           && ((fnet_timer_get_seconds() - netif->ip6_addr[i].creation_time_sec) > netif->ip6_addr[i].lifetime_sec)
           )
         {
             /* RFC4862 5.5.4: An address (and its association with an interface) becomes invalid

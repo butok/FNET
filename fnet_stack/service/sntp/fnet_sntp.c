@@ -144,7 +144,7 @@ typedef struct
     fnet_sntp_state_t               state;                          /* Current state. */
     fnet_sntp_callback_resolved_t   callback;                       /* Callback function. */
     void                            *callback_cookie;               /* Callback-handler specific parameter. */
-    fnet_time_t                     last_time;                      /* Last receive time, used for timeout detection. */
+    fnet_time_t                     last_time_ms;                   /* Last receive time, used for timeout detection. */
     fnet_index_t                    iteration;                      /* Current iteration number.*/
     fnet_sntp_header_t              message;                        /* TX/RX message buffer */
     fnet_sntp_timestamp_t           timestamp;                      /* Timestamp */
@@ -163,7 +163,7 @@ static void _fnet_sntp_poll(void *fnet_sntp_if_p);
 * DESCRIPTION: Initializes SNTP client service and starts the time
 *              resolving.
 ************************************************************************/
-fnet_return_t fnet_sntp_init( struct fnet_sntp_params *params )
+fnet_return_t fnet_sntp_init( fnet_sntp_params_t *params )
 {
     const fnet_uint32_t     bufsize_option = sizeof(fnet_sntp_header_t);
     struct fnet_sockaddr    remote_addr;
@@ -269,7 +269,7 @@ static void _fnet_sntp_poll( void *fnet_sntp_if_p )
             }
             else
             {
-                sntp_if->last_time = fnet_timer_get_ticks();
+                sntp_if->last_time_ms = fnet_timer_get_ms();
                 sntp_if->state = FNET_SNTP_STATE_RX;
             }
             break;
@@ -296,7 +296,7 @@ static void _fnet_sntp_poll( void *fnet_sntp_if_p )
             }
             else /* No data. Check timeout */
             {
-                if(fnet_timer_get_interval(sntp_if->last_time, fnet_timer_get_ticks()) > ((FNET_CFG_SNTP_RETRANSMISSION_TIMEOUT * 1000U) / FNET_TIMER_PERIOD_MS))
+                if((fnet_timer_get_ms() - sntp_if->last_time_ms) > (FNET_CFG_SNTP_RETRANSMISSION_TIMEOUT * 1000U))
                 {
                     sntp_if->iteration++;
 

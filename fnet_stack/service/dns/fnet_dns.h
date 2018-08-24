@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
+* Copyright 2011-2018 by Andrey Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -73,12 +73,12 @@
  * @brief Resolved address structure provided by @ref fnet_dns_callback_resolved_t
  * callback function.
  ******************************************************************************/
-struct fnet_dns_resolved_addr
+typedef struct
 {
     struct fnet_sockaddr        resolved_addr;      /**< @brief Socket address of the resolved host name.*/
     fnet_uint32_t               resolved_addr_ttl;  /**< @brief Specifies the time interval (in seconds) that the
                                                     * resolved address may be cached before it should be discarded.*/
-};
+} fnet_dns_resolved_addr_t;
 
 /**************************************************************************/ /*!
  * @brief DNS client descriptor.
@@ -100,7 +100,7 @@ typedef void *fnet_dns_desc_t;
  *
  * @see fnet_dns_resolve(), fnet_dns_params
  ******************************************************************************/
-typedef void(*fnet_dns_callback_resolved_t)(const struct fnet_dns_resolved_addr *addr_list, fnet_size_t addr_list_size, void *cookie);
+typedef void(*fnet_dns_callback_resolved_t)(const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, void *cookie);
 
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_dns_init() function.

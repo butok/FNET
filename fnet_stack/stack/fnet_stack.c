@@ -35,7 +35,7 @@
 *************************************************************************/
 fnet_bool_t _fnet_is_enabled = FNET_FALSE;   /* Flag that the stack is initialized. */
 #if FNET_CFG_MULTITHREADING
-    const fnet_mutex_api_t  *fnet_mutex_api = FNET_NULL;
+    static const fnet_mutex_api_t  *_fnet_mutex_api = FNET_NULL;
     static fnet_mutex_t fnet_stack_mutex = FNET_NULL;
 #endif
 
@@ -55,7 +55,10 @@ fnet_return_t fnet_init( struct fnet_init_params *init_params )
     if(init_params && init_params->netheap_size)
     {
 #if FNET_CFG_MULTITHREADING
-        fnet_mutex_api = init_params->mutex_api;
+        _fnet_mutex_api = init_params->mutex_api;
+#endif
+#if FNET_CFG_TIMER_ALT
+        _fnet_timer_api = init_params->timer_api;
 #endif
         if(_fnet_stack_mutex_init() == FNET_OK)
         {
@@ -101,7 +104,7 @@ void fnet_release(void)
     _fnet_stack_mutex_release();
 
 #if FNET_CFG_MULTITHREADING
-    fnet_mutex_api = NULL;
+    _fnet_mutex_api = NULL;
 #endif
 }
 
@@ -124,7 +127,7 @@ static fnet_return_t _fnet_stack_init( void )
 #if FNET_CFG_DEBUG_STARTUP_MS && FNET_CFG_DEBUG
     /* Add start-up */
     fnet_println("\n Waiting %d Seconds...", FNET_CFG_DEBUG_STARTUP_MS / 1000);
-    fnet_timer_delay(fnet_timer_ms2ticks(FNET_CFG_DEBUG_STARTUP_MS));
+    fnet_timer_delay(FNET_CFG_DEBUG_STARTUP_MS);
 #endif
 
     /* Initialize protocol layer */
@@ -170,7 +173,7 @@ static void _fnet_stack_release( void )
 ************************************************************************/
 void fnet_poll( void )
 {
-#if !FNET_CFG_TIMER_POLL_AUTOMATIC
+#if FNET_CFG_TIMER_ALT
     fnet_timer_poll();      /* Poll FNET stack timer.*/
 #endif
     fnet_service_poll();    /* Poll registered services.*/
@@ -182,11 +185,11 @@ void fnet_poll( void )
 fnet_return_t _fnet_mutex_init(fnet_mutex_t *mutex)
 {
     fnet_return_t result;
-    if(fnet_mutex_api) /* Check if multithreading is enabled.*/
+    if(_fnet_mutex_api) /* Check if multithreading is enabled.*/
     {
-        if(fnet_mutex_api->mutex_init && mutex)
+        if(_fnet_mutex_api->mutex_init && mutex)
         {
-            result = fnet_mutex_api->mutex_init(mutex);
+            result = _fnet_mutex_api->mutex_init(mutex);
         }
         else
         {
@@ -203,33 +206,33 @@ fnet_return_t _fnet_mutex_init(fnet_mutex_t *mutex)
 
 void _fnet_mutex_lock(fnet_mutex_t *mutex)
 {
-    if(fnet_mutex_api) /* Check if multithreading is enabled.*/
+    if(_fnet_mutex_api) /* Check if multithreading is enabled.*/
     {
-        if(fnet_mutex_api->mutex_lock && mutex && *mutex )
+        if(_fnet_mutex_api->mutex_lock && mutex && *mutex )
         {
-            fnet_mutex_api->mutex_lock(mutex);
+            _fnet_mutex_api->mutex_lock(mutex);
         }
     }
 }
 
 void _fnet_mutex_unlock(fnet_mutex_t *mutex)
 {
-    if(fnet_mutex_api) /* Check if multithreading is enabled.*/
+    if(_fnet_mutex_api) /* Check if multithreading is enabled.*/
     {
-        if(fnet_mutex_api->mutex_unlock && mutex && *mutex )
+        if(_fnet_mutex_api->mutex_unlock && mutex && *mutex )
         {
-            fnet_mutex_api->mutex_unlock(mutex);
+            _fnet_mutex_api->mutex_unlock(mutex);
         }
     }
 }
 
 void _fnet_mutex_release(fnet_mutex_t *mutex)
 {
-    if(fnet_mutex_api) /* Check if multithreading is enabled.*/
+    if(_fnet_mutex_api) /* Check if multithreading is enabled.*/
     {
-        if(fnet_mutex_api->mutex_release && mutex && *mutex )
+        if(_fnet_mutex_api->mutex_release && mutex && *mutex )
         {
-            fnet_mutex_api->mutex_release(mutex);
+            _fnet_mutex_api->mutex_release(mutex);
             *mutex = FNET_NULL;
         }
     }

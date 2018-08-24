@@ -81,15 +81,15 @@ typedef struct fnet_netif_ip6_addr
     fnet_netif_ip_addr_type_t   type;                       /* How the address was acquired.*/
     fnet_ip6_addr_t             solicited_multicast_addr;   /* Solicited-node multicast */
 
-    fnet_time_t                 creation_time;          /* Time of entry creation (in seconds).*/
-    fnet_time_t                 lifetime;               /* Address lifetime (in seconds). 0xFFFFFFFF = Infinite Lifetime
+    fnet_time_t                 creation_time_sec;      /* Time of entry creation (in seconds).*/
+    fnet_time_t                 lifetime_sec;           /* Address lifetime (in seconds). 0xFFFFFFFF = Infinite Lifetime
                                                          * RFC4862. A link-local address has an infinite preferred and valid lifetime; it
                                                          * is never timed out.*/
     fnet_size_t                 prefix_length;          /* Prefix length (in bits). The number of leading bits
                                                          * in the Prefix that are valid. */
     fnet_index_t                dad_transmit_counter;   /* Counter used by DAD. Equals to the number
                                                          * of NS transmits till DAD is finished.*/
-    fnet_time_t                 state_time;             /* Time of last state event.*/
+    fnet_time_t                 state_time_ms;          /* Time of last state event.*/
 } fnet_netif_ip6_addr_t;
 
 struct fnet_netif; /* Forward declaration.*/
@@ -156,7 +156,7 @@ typedef struct fnet_netif
     fnet_scope_id_t         scope_id;                           /* Scope zone index, defining network interface. Used by IPv6 sockets.*/
     fnet_uint32_t           features;                           /* Supported features. Bitwise of fnet_netif_feature_t.*/
     fnet_bool_t             is_connected;                       /* Connection state, updated by _fnet_netif_is_connected() call.*/
-    fnet_time_t             is_connected_timestamp;             /* The timestamp, in milliseconds, when is_connected updated last time.*/
+    fnet_time_t             is_connected_timestamp_ms;          /* The timestamp, in milliseconds, when is_connected updated last time.*/
 #if FNET_CFG_IP4
     fnet_netif_ip4_addr_t   ip4_addr;                           /* The interface IPv4 address structure. */
     fnet_bool_t             ip4_addr_conflict;                  /* Flag if the ip4_addr is duplicated.*/
@@ -173,7 +173,7 @@ typedef struct fnet_netif
 #endif
 #if FNET_CFG_IP6_PMTU_DISCOVERY
     fnet_size_t             pmtu;                               /* Path MTU, changed by Path MTU Discovery for IPv6. If 0 - is disabled.*/
-    fnet_time_t             pmtu_timestamp;                     /* The timestamp, in milliseconds, when PMTU was changed last time.*/
+    fnet_time_t             pmtu_timestamp_ms;                  /* The timestamp, in milliseconds, when PMTU was changed last time.*/
     fnet_timer_desc_t       pmtu_timer;                         /* PMTU timer,used to detect increases in PMTU.*/
 #endif
 #endif /* FNET_CFG_IP6 */
@@ -219,7 +219,7 @@ fnet_return_t _fnet_netif_set_hw_addr(fnet_netif_desc_t netif_desc, fnet_uint8_t
 #if FNET_CFG_IP6
 fnet_netif_ip6_addr_t *_fnet_netif_get_ip6_addr_info(fnet_netif_t *netif, const fnet_ip6_addr_t *ip_addr);
 fnet_return_t _fnet_netif_bind_ip6_addr(fnet_netif_t *netif, const fnet_ip6_addr_t *addr, fnet_netif_ip_addr_type_t addr_type,
-                                        fnet_time_t lifetime /*in seconds*/, fnet_size_t prefix_length /* bits */ );
+                                        fnet_time_t lifetime_sec, fnet_size_t prefix_length /* bits */ );
 fnet_return_t _fnet_netif_unbind_ip6_addr ( fnet_netif_t *netif, fnet_netif_ip6_addr_t *if_addr );
 fnet_bool_t _fnet_netif_is_my_ip6_addr(fnet_netif_t *netif, const fnet_ip6_addr_t *ip_addr);
 fnet_netif_t *_fnet_netif_get_by_ip6_addr(const fnet_ip6_addr_t *ip_addr );

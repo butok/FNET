@@ -119,15 +119,28 @@
 ******************************************************************************/
 #define FNET_CFG_LINK                       (1)
 
+
+
+
+/**************************** RTOS-specific **********************************/
+
 /*****************************************************************************
 * "Socket Rx" event
 ******************************************************************************/
 #define FNET_CFG_SOCKET_CALLBACK_ON_RX      (1)
 
 /*****************************************************************************
-* Multi-threading support (enable only if FNET API may be called from different tasks) 
-* Application must provide Mutex API during FNET initialization.
+* Multi-threading support (enable only if FNET API may be called from different
+* tasks) Application must provide Mutex API during FNET initialization.
 ******************************************************************************/
 #define FNET_CFG_MULTITHREADING             (1)
+
+/*****************************************************************************
+* Alternative timer support.
+* Application must provide Timer API during FNET initialization, and must 
+* call fnet_timer_poll() periodically with 100 ms period or less.
+* It is used RTOS timer instead of FNET bare-metal one.
+******************************************************************************/
+#define FNET_CFG_TIMER_ALT                  (1)
 
 #endif /* _FNET_USER_CONFIG_H_ */

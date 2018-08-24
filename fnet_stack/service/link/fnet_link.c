@@ -57,7 +57,7 @@ static struct fnet_link_if fnet_link_if_list[FNET_CFG_LINK];
 /******************************************************************************
  * DESCRIPTION: Initializes the Link-Detection service.
  ******************************************************************************/
-fnet_link_desc_t fnet_link_init( struct fnet_link_params *params )
+fnet_link_desc_t fnet_link_init( fnet_link_params_t *params )
 {
     fnet_link_if_t    *link_if = FNET_NULL;
     fnet_index_t      i;

@@ -27,9 +27,8 @@
 #define _FNET_TIMER_H
 
 /*! @addtogroup fnet_timer
-* An application can use the @ref fnet_timer_get_ticks() function to get a number of
-* ticks (periods, defined by the @ref FNET_TIMER_PERIOD_MS) since the
-* hardware timer startup.
+* An application can use the @ref fnet_timer_get_ms() function to get a number of
+* milliseconds since the timer startup.
 */
 
 /*! @{ */
@@ -40,19 +39,19 @@
 #define FNET_TIMER_PERIOD_MS        (10U) /* It may be 1-100ms */
 
 /**************************************************************************/ /*!
- * @brief Number of timer ticks in one hour.
+ * @brief Number of milliseconds in one second.
  ******************************************************************************/
-#define FNET_TIMER_TICKS_IN_HOUR    ((1000U*60U*60U)/FNET_TIMER_PERIOD_MS)
+#define FNET_TIMER_MS_IN_SEC        (1000U)
 
 /**************************************************************************/ /*!
- * @brief Number of timer ticks in one minute.
+ * @brief Number of milliseconds in one minute.
  ******************************************************************************/
-#define FNET_TIMER_TICKS_IN_MIN     ((1000U*60U)/FNET_TIMER_PERIOD_MS)
+#define FNET_TIMER_MS_IN_MIN        (FNET_TIMER_MS_IN_SEC*60U)
 
 /**************************************************************************/ /*!
- * @brief Number of timer ticks in one second.
+ * @brief Number of milliseconds in one hour.
  ******************************************************************************/
-#define FNET_TIMER_TICKS_IN_SEC     (1000U/FNET_TIMER_PERIOD_MS)
+#define FNET_TIMER_MS_IN_HOUR       (FNET_TIMER_MS_IN_MIN*60U)
 
 #if defined(__cplusplus)
 extern "C" {
@@ -60,45 +59,9 @@ extern "C" {
 
 /**************************************************************************/ /*!
  * @brief Unsigned integer type representing time uinits.
- * It can be ticks, seconds or milliseconds.
+ * It can be seconds or milliseconds.
  ******************************************************************************/
 typedef fnet_uint32_t fnet_time_t;
-
-/***************************************************************************/ /*!
- *
- * @brief    Get the timer counter value in ticks.
- *
- * @return   This function returns a current value of the timer counter in ticks.
- *
- * @see fnet_timer_get_seconds()
- *
- ******************************************************************************
- *
- * This function returns a current value of the timer counter that
- * contains a number of periods from the moment of the hardware
- * timer initialization (it's done in the FNET stack initialization).@n
- * The period of one timer tick is defined by the @ref FNET_TIMER_PERIOD_MS.
- *
- ******************************************************************************/
-fnet_time_t fnet_timer_get_ticks( void );
-
-/***************************************************************************/ /*!
- *
- * @brief    Get the timer counter value in seconds.
- *
- * @return   This function returns a current value of the timer counter
- *           in seconds.
- *
- * @see fnet_timer_get_ticks()
- *
- ******************************************************************************
- *
- * This function returns a current value of the timer counter in seconds,
- * from the moment of the hardware timer initialization
- * (it's done in the FNET stack initialization).
- *
- ******************************************************************************/
-fnet_time_t fnet_timer_get_seconds( void );
 
 /***************************************************************************/ /*!
  *
@@ -107,7 +70,7 @@ fnet_time_t fnet_timer_get_seconds( void );
  * @return   This function returns a current value of the timer counter
  *           in milliseconds.
  *
- * @see fnet_timer_get_ms()
+ * @see fnet_timer_get_seconds()
  *
  ******************************************************************************
  *
@@ -120,69 +83,50 @@ fnet_time_t fnet_timer_get_ms( void );
 
 /***************************************************************************/ /*!
  *
- * @brief    Convert milliseconds to timer ticks.
+ * @brief    Get the timer counter value in seconds.
  *
- * @param    time_ms Time value in milliseconds.
+ * @return   This function returns a current value of the timer counter
+ *           in seconds.
  *
- * @return   This function returns the time value in timer ticks.
+ * @see fnet_timer_get_ms()
  *
  ******************************************************************************
  *
- * This function converts the time value @c time_ms in milliseconds to the time
- * value in timer ticks.@n
- * The period of one timer tick is defined by the @ref FNET_TIMER_PERIOD_MS.
+ * This function returns a current value of the timer counter in seconds,
+ * from the moment of the hardware timer initialization
+ * (it's done in the FNET stack initialization).
  *
  ******************************************************************************/
-fnet_time_t fnet_timer_ms2ticks( fnet_time_t time_ms );
+fnet_time_t fnet_timer_get_seconds( void );
 
 /***************************************************************************/ /*!
  *
- * @brief    Calculate an interval between two moments in time.
+ * @brief    Perform a delay for the given number of milliseconds.
  *
- * @param    start Start time in ticks.
- *
- * @param    end   End time in ticks.
- *
- * @return   This function returns an interval value between two time moments
- *           (in timer ticks).
+ * @param    delay_ms Time value used for delay, in milliseconds.
  *
  ******************************************************************************
  *
- * This function calculates an interval between two moments in time, @c start
- * and @c end.
- * This function takes into account also a possible counter overrun @c (start>end).
+ * This function performs a delay for a given number of milliseconds.
+ * The function is blocked, till the @c delay_ms expires.
  *
  ******************************************************************************/
-fnet_time_t fnet_timer_get_interval( fnet_time_t start, fnet_time_t end );
-
-/***************************************************************************/ /*!
- *
- * @brief    Perform a delay for the given number of timer ticks.
- *
- * @param    delay_ticks Time value used for delay, in ticks.
- *
- ******************************************************************************
- *
- * This function performs a delay for a given number of timer ticks.
- * The function is blocked, till the @c delay_ticks expires.
- *
- ******************************************************************************/
-void fnet_timer_delay( fnet_time_t delay_ticks );
+void fnet_timer_delay( fnet_time_t delay_ms );
 
 /***************************************************************************/ /*!
  *
  * @brief    Poll SW timers.
  *
- * @see FNET_CFG_TIMER_POLL_AUTOMATIC
+ * @see FNET_CFG_TIMER_ALT
  *
  ******************************************************************************
  *
  * This function checks timeouts for TCP, ARP, IP and other stack activities.@n
  * The user application should call this function periodically,
- * after the FNET stack initialization, and only if @ref FNET_CFG_TIMER_POLL_AUTOMATIC is 0.@n
+ * after the FNET stack initialization, and only if @ref FNET_CFG_TIMER_ALT is 1.@n
  * Recommended polling period is 100ms or less.@n
- * If @ref FNET_CFG_TIMER_POLL_AUTOMATIC is 1, this function is called automatically
- * by FNET in HW interrupt.
+ * If @ref FNET_CFG_TIMER_ALT is 0, this function is called automatically
+ * by FNET in the timer HW interrupt.
  *
  ******************************************************************************/
 void fnet_timer_poll(void);
@@ -232,12 +176,16 @@ time_t fnet_time(time_t *sec);
 
 /*! @} */
 
+#if !FNET_CFG_TIMER_ALT  /* Use bare-metal timer */
+
 #ifndef  FNET_HW_TIMER_INIT
 #define FNET_HW_TIMER_INIT    fnet_cpu_timer_init
 #endif
 #ifndef  FNET_HW_TIMER_RELEASE
 #define FNET_HW_TIMER_RELEASE fnet_cpu_timer_release
 #endif
+
+#endif /* !FNET_CFG_TIMER_ALT */
 
 #if defined(__cplusplus)
 }

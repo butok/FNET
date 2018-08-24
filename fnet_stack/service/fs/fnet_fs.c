@@ -358,7 +358,7 @@ fnet_return_t fnet_fs_closedir( fnet_fs_dir_t dir)
 * DESCRIPTION: Returns a pointer to a structure representing the directory
 * entry.
 *************************************************************************/
-fnet_return_t fnet_fs_readdir(fnet_fs_dir_t dir, struct fnet_fs_dirent *dirent)
+fnet_return_t fnet_fs_readdir(fnet_fs_dir_t dir, fnet_fs_dirent_t *dirent)
 {
     fnet_return_t       result = FNET_ERR;
     struct fnet_fs_desc *dirp = (struct fnet_fs_desc *) dir;
@@ -640,7 +640,7 @@ fnet_int32_t fnet_fs_ftell (fnet_fs_file_t file)
 /************************************************************************
 * DESCRIPTION: Reads file info data.
 *************************************************************************/
-fnet_return_t fnet_fs_finfo (fnet_fs_file_t file, struct fnet_fs_dirent *dirent)
+fnet_return_t fnet_fs_finfo (fnet_fs_file_t file, fnet_fs_dirent_t *dirent)
 {
     fnet_return_t       result = FNET_ERR;
     struct fnet_fs_desc *filep = (struct fnet_fs_desc *) file;

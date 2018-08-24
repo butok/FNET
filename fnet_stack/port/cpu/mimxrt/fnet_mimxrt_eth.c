@@ -273,10 +273,10 @@ static fnet_return_t fnet_mimxrt_eth_phy_init(fnet_netif_t *netif)
     /* UM: For warm reset, the reset (RST#) pin should be asserted low for a minimum of 500 µs. The strap-in pin values are read
     and updated at the de-assertion of reset.*/
     GPIO_WritePinOutput(GPIO1, 9, 0);
-    fnet_timer_delay(1);
+    fnet_timer_delay(100);
     GPIO_WritePinOutput(GPIO1, 9, 1);
     /* UM: After the de-assertion of reset, wait a minimum of 100 µs before starting programming on the MIIM (MDC/MDIO) interface.*/
-    fnet_timer_delay(1);
+    fnet_timer_delay(100);
 
     /* KSZ8081RNB PHY Register 1Fh, Bit [7] is set to 1 to select 50 MHz clock mode.*/
     {

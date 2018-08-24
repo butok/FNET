@@ -47,6 +47,17 @@ static const fnet_mutex_api_t fapp_freertos_mutex_api =
 };
 #endif
 
+#if FNET_CFG_TIMER_ALT
+static fnet_time_t fapp_freertos_timer_get_ms(void);
+static void fapp_freertos_timer_delay(fnet_time_t delay_ms);
+static const fnet_timer_api_t fapp_freertos_timer_api =
+{
+    .timer_get_ms = fapp_freertos_timer_get_ms,
+    .timer_delay = fapp_freertos_timer_delay,
+};
+#endif /* FNET_CFG_TIMER_ALT */
+
+
 /* RX activity event. */
 #if FNET_CFG_SOCKET_CALLBACK_ON_RX
     #define FAPP_FREERTOS_EVENT_RX  (0x1)
@@ -158,6 +169,9 @@ void fapp_freertos_params_init(struct fnet_init_params  *init_params)
 #if FNET_CFG_MULTITHREADING
     init_params->mutex_api = &fapp_freertos_mutex_api;
 #endif
+#if FNET_CFG_TIMER_ALT
+    init_params->timer_api = &fapp_freertos_timer_api;
+#endif
 }
 
 #if FNET_CFG_MULTITHREADING
@@ -225,5 +239,32 @@ static void fapp_freertos_mutex_unlock( fnet_mutex_t *mutex )
     }
 }
 #endif /* FNET_CFG_MULTITHREADING */
+
+#if FNET_CFG_TIMER_ALT
+/************************************************************************
+*  Get time in milliseconds
+************************************************************************/
+static fnet_time_t fapp_freertos_timer_get_ms(void)
+{
+    fnet_time_t result;
+    result =  xTaskGetTickCountFromISR() * portTICK_PERIOD_MS;
+    return result;
+} 
+
+/************************************************************************
+* Delay
+************************************************************************/
+static void fapp_freertos_timer_delay(fnet_time_t delay_ms)
+{
+    TickType_t delay_ticks = delay_ms/portTICK_PERIOD_MS;
+    
+    if(delay_ticks == 0) /* Check minimum */
+    {
+        delay_ticks = 1;
+    }
+
+    vTaskDelay(delay_ticks);
+}
+#endif /* FNET_CFG_TIMER_ALT */
 
 #endif /* FAPP_CFG_FREERTOS */

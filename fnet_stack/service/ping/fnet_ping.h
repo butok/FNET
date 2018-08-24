@@ -66,16 +66,16 @@
  *                          - Target socket address, if correct reply is received during specified timeout.
  *                          - @ref FNET_NULL, if there is no correct response during specified timeout.
  * @param cookie        User-application specific parameter. It's set during
- *                      the PING service initialization as part of @ref fnet_ping_params.
+ *                      the PING service initialization as part of @ref fnet_ping_params_t.
  *
- * @see fnet_ping_init(), fnet_ping_params
+ * @see fnet_ping_init(), fnet_ping_params_t
  ******************************************************************************/
 typedef void(*fnet_ping_callback_t)(fnet_error_t result, fnet_size_t packet_count, struct fnet_sockaddr *target_addr, void *cookie);
 
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_ping_init() function.
  ******************************************************************************/
-struct fnet_ping_params
+typedef struct
 {
     struct fnet_sockaddr    target_addr;    /**< @brief Socket address of the destination to ping.*/
     fnet_size_t             packet_size;    /**< @brief The size of the echo request, in bytes (without ICMP header). @n
@@ -91,7 +91,7 @@ struct fnet_ping_params
                                             * correct echo response is receved or timeout is occured.*/
     void                    *cookie;        /**< @brief Optional application-specific parameter. @n
                                             * It's passed to the @c callback function as input parameter.*/
-};
+} fnet_ping_params_t;
 
 #if defined(__cplusplus)
 extern "C" {
@@ -107,7 +107,7 @@ extern "C" {
  *   - @ref FNET_OK if no error occurs.
  *   - @ref FNET_ERR if an error occurs.
  *
- * @see fnet_ping_params, fnet_ping_callback_t, fnet_ping_release()
+ * @see fnet_ping_params_t, fnet_ping_callback_t, fnet_ping_release()
  *
  ******************************************************************************
  *
@@ -124,7 +124,7 @@ extern "C" {
  * Call fnet_ping_release() if you need to terminate it earlier.
  *
  ******************************************************************************/
-fnet_return_t fnet_ping_init( struct fnet_ping_params *params );
+fnet_return_t fnet_ping_init( fnet_ping_params_t *params );
 
 /***************************************************************************/ /*!
  *

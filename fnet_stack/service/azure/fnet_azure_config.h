@@ -36,7 +36,7 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_AZURE
  * @brief    Azure-IOT support:
- *               - @c 1 = is enabled. FNET provides Azure IoT Hub TLS and Socket IO adapters.
+ *               - @c 1 = is enabled. FNET provides Azure IoT Hub client adapter.
  *               - @b @c 0 = is disabled (Default value).
  ******************************************************************************/
 #ifndef FNET_CFG_AZURE

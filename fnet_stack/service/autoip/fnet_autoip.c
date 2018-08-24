@@ -77,15 +77,15 @@ typedef struct fnet_autoip_if
     fnet_bool_t                     is_enabled;
     fnet_service_desc_t             service_descriptor;
     fnet_ip4_addr_t                 ipaddr;
-    fnet_time_t                     init_time;              /* Time when initialization started */
-    fnet_time_t                     probe_time;             /* Time when probing started */
-    fnet_time_t                     announce_time;          /* Time when the first announcement was sent */
-    fnet_time_t                     wait_time;              /* How to long to wait until the next step */
+    fnet_time_t                     init_time_ms;           /* Time when initialization started */
+    fnet_time_t                     probe_time_ms;          /* Time when probing started */
+    fnet_time_t                     announce_time_ms;          /* Time when the first announcement was sent */
+    fnet_time_t                     wait_time_ms;           /* How to long to wait until the next step */
     fnet_index_t                    probes;                 /* Number of probes sent */
     fnet_index_t                    announcements;          /* Number of announcements sent */
     fnet_index_t                    collisions;             /* Number of collisions detected */
 #if FNET_CFG_AUTOIP_DEFEND_INTERVAL
-    fnet_time_t                     collision_timestamp;
+    fnet_time_t                     collision_timestamp_ms;
 #endif
     fnet_bool_t                     reuse_addr;
     fnet_autoip_callback_t          callback_updated;        /* Optional pointer to the handler
@@ -137,12 +137,12 @@ static fnet_ip4_addr_t _fnet_autoip_generate_random_address(void)
 * DESCRIPTION: Generates a random wait time between min and max
 * (actually, it is not a time, but number of ticks)
 ************************************************************************/
-static unsigned long _fnet_autoip_get_random_wait_time(unsigned min, unsigned max)
+static unsigned long _fnet_autoip_get_random_wait_time(unsigned min_sec, unsigned max_sec)
 {
     unsigned long result;
     result = fnet_rand();
-    result %= (max - min) * FNET_TIMER_TICKS_IN_SEC;
-    result += min * FNET_TIMER_TICKS_IN_SEC;
+    result %= (max_sec - min_sec) * FNET_TIMER_MS_IN_SEC;
+    result += min_sec * FNET_TIMER_MS_IN_SEC;
     return result;
 }
 
@@ -162,8 +162,8 @@ static void _fnet_autoip_probe(fnet_autoip_if_t *llif)
      * Make sure that the IP address of the interface is still 0.0.0.0 (for
      * example, the DHCP client may have changed it in the meantime.
      */
-    llif->probe_time = fnet_timer_get_ticks();
-    llif->wait_time = _fnet_autoip_get_random_wait_time(FNET_AUTOIP_PROBE_MIN, FNET_AUTOIP_PROBE_MAX);
+    llif->probe_time_ms = fnet_timer_get_ms();
+    llif->wait_time_ms = _fnet_autoip_get_random_wait_time(FNET_AUTOIP_PROBE_MIN, FNET_AUTOIP_PROBE_MAX);
 
     /* RFC 3927 : the term "ARP Probe" is used to refer to an ARP
     * Request packet, broadcast on the local link, with an all-zero 'sender
@@ -192,7 +192,7 @@ static void _fnet_autoip_announce(fnet_autoip_if_t *llif)
 {
     /* TODO: Double check: is this gonna work?
      */
-    llif->announce_time = fnet_timer_get_ticks();
+    llif->announce_time_ms = fnet_timer_get_ms();
     fnet_arp_send_request(llif->netif, llif->ipaddr );
     llif->announcements++;
 }
@@ -245,17 +245,17 @@ static void _fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state
     switch (state)
     {
         case FNET_AUTOIP_STATE_INIT:
-            llif->init_time = fnet_timer_get_ticks();
+            llif->init_time_ms = fnet_timer_get_ms();
             /* TODO: Is it a good idea to reset the IP address here?
              * What if the interface already has an IP address?
              * If that's the case, probably, the best thing to do is to quit. */
             fnet_netif_set_ip4_addr(llif->netif, INADDR_ANY, INADDR_ANY); /* Set IP address to zero */
             break;
         case FNET_AUTOIP_STATE_WAIT:
-            llif->wait_time = _fnet_autoip_get_random_wait_time(0, FNET_AUTOIP_PROBE_WAIT);
+            llif->wait_time_ms = _fnet_autoip_get_random_wait_time(0, FNET_AUTOIP_PROBE_WAIT);
             if(llif->collisions >= FNET_AUTOIP_MAX_CONFLICTS)
             {
-                llif->wait_time += FNET_AUTOIP_RATE_LIMIT_INTERVAL * FNET_TIMER_TICKS_IN_SEC;
+                llif->wait_time_ms += FNET_AUTOIP_RATE_LIMIT_INTERVAL * FNET_TIMER_MS_IN_SEC;
             }
             break;
         case FNET_AUTOIP_STATE_PROBE:
@@ -272,7 +272,7 @@ static void _fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state
 #if FNET_CFG_AUTOIP_DEFEND_INTERVAL
         case FNET_AUTOIP_STATE_DEFEND:
             /* Record the time when the conflicting ARP packet was received. */
-            llif->collision_timestamp = fnet_timer_get_ticks();
+            llif->collision_timestamp_ms = fnet_timer_get_ms();
             /* Clear conflict flag and broadcast ARP announcement.*/
             fnet_netif_clear_ip4_addr_conflict(llif->netif);
             _fnet_autoip_announce(llif);
@@ -317,7 +317,7 @@ static void _fnet_autoip_poll( void *fnet_autoip_if_p )
             _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_WAIT);
             break;
         case FNET_AUTOIP_STATE_WAIT:
-            if (fnet_timer_get_interval(llif->init_time, fnet_timer_get_ticks()) > llif->wait_time)
+            if((fnet_timer_get_ms() - llif->init_time_ms) > llif->wait_time_ms)
             {
                 _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_PROBE);
             }
@@ -342,7 +342,7 @@ static void _fnet_autoip_poll( void *fnet_autoip_if_p )
                 else
                 {
                     /* There are still probes to be sent, after wait interval. */
-                    if (fnet_timer_get_interval(llif->probe_time, fnet_timer_get_ticks()) > llif->wait_time)
+                    if ((fnet_timer_get_ms() - llif->probe_time_ms) > llif->wait_time_ms)
                     {
                         _fnet_autoip_probe(llif);
                     }
@@ -360,8 +360,7 @@ static void _fnet_autoip_poll( void *fnet_autoip_if_p )
                 {
                     _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_INIT);
                 }
-                else if (fnet_timer_get_interval(llif->announce_time, fnet_timer_get_ticks())
-                         > FNET_AUTOIP_ANNOUNCE_INTERVAL * FNET_TIMER_TICKS_IN_SEC)
+                else if ((fnet_timer_get_ms() - llif->announce_time_ms) > (FNET_AUTOIP_ANNOUNCE_INTERVAL * FNET_TIMER_MS_IN_SEC))
                 {
                     _fnet_autoip_announce(llif);
                 }
@@ -411,7 +410,7 @@ static void _fnet_autoip_poll( void *fnet_autoip_if_p )
                  * loop with both hosts trying to defend the same address.*/
                 _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_INIT); /* Reset */
             }
-            else if(fnet_timer_get_interval(llif->collision_timestamp, fnet_timer_get_ticks()) > (FNET_AUTOIP_DEFEND_INTERVAL * FNET_TIMER_TICKS_IN_SEC))
+            else if((fnet_timer_get_ms() - llif->collision_timestamp_ms) > (FNET_AUTOIP_DEFEND_INTERVAL * FNET_TIMER_MS_IN_SEC))
             {
                 /* Return to bound state.*/
                 _fnet_autoip_change_state(llif, FNET_AUTOIP_STATE_BOUND);
@@ -427,7 +426,7 @@ static void _fnet_autoip_poll( void *fnet_autoip_if_p )
 /************************************************************************
 * DESCRIPTION: Auto-IP service initialization.
 ************************************************************************/
-fnet_autoip_desc_t fnet_autoip_init ( struct fnet_autoip_params *params)
+fnet_autoip_desc_t fnet_autoip_init ( fnet_autoip_params_t *params)
 {
     fnet_autoip_if_t    *autoip_if = FNET_NULL;
     fnet_index_t        i;

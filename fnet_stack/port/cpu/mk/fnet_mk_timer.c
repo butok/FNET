@@ -24,6 +24,7 @@
 
 #include "fnet.h"
 
+#if !FNET_CFG_TIMER_ALT /* Use bare-metal timer */
 #if FNET_MK
 #include "stack/fnet_timer_prv.h"
 
@@ -131,3 +132,4 @@ void PIT3_IRQHandler (void)
 #endif
 
 #endif /*FNET_MK*/
+#endif /*!FNET_CFG_TIMER_ALT*/

@@ -55,7 +55,7 @@
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_mdns_init() function.
  ******************************************************************************/
-struct fnet_mdns_params
+typedef struct 
 {
     fnet_netif_desc_t           netif_desc;     /**< @brief Network interface descriptor to be used by the mDNS server.*/
     fnet_address_family_t       addr_family;    /**< @brief Address family (IPv6 or IPv4 or both) the server will listen for MDNS query (it is optional).@n
@@ -63,16 +63,16 @@ struct fnet_mdns_params
     fnet_uint32_t               rr_ttl;         /**< @brief TTL value that indicates for how many seconds mDNS resource record is valid for mDNS querier, in seconds (it is optional).@n
                                                  * Default value is defined by @ref FNET_CFG_MDNS_RR_TTL. */
     const fnet_char_t           *name;          /**< @brief Name used as a host-name and service-names, advertised by the MDNS server. */
-};
+} fnet_mdns_params_t;
 
 /**************************************************************************/ /*!
  * @brief TXT key.
  *
  * This structure defines the TXT key table returned by fnet_mdns_service_t.service_get_txt() callback function.
  * The last table element must have all fields set to zero as the end-of-table mark.
- * @see fnet_mdns_service
+ * @see fnet_mdns_service_t
  ******************************************************************************/
-typedef struct fnet_mdns_txt_key
+typedef struct
 {
     fnet_char_t       *key_name;	  /**< @brief TXT key name string (null-terminated). */
     fnet_char_t       *key_value;     /**< @brief TXT key value string (null-terminated). */
@@ -83,7 +83,7 @@ typedef struct fnet_mdns_txt_key
  * service, advertised by the mDNS server.
  * @see fnet_mdns_service_register()
  ******************************************************************************/
-typedef struct fnet_mdns_service
+typedef struct
 {
     const char                  *service_type;             /**< @brief Service Type. Null-terminated string. Example "_http._tcp". */
     fnet_uint16_t               service_port;              /**< @brief Service Port number (in network byte order). */
@@ -113,13 +113,13 @@ extern "C" {
  *
  * @brief    Initialize Multicast DNS (mDNS) server/responder.
  *
- * @param params     Initialization parameters defined by @ref fnet_mdns_params.
+ * @param params     Initialization parameters defined by @ref fnet_mdns_params_t.
  *
  * @return This function returns:
  *   - mDNS server descriptor if no error occurs.
  *   - @c 0 if an error occurs.
  *
- * @see fnet_mdns_release(), fnet_mdns_params
+ * @see fnet_mdns_release(), fnet_mdns_params_t
  *
  ******************************************************************************
  *
@@ -130,7 +130,7 @@ extern "C" {
  * in the background.
  *
  ******************************************************************************/
-fnet_mdns_desc_t fnet_mdns_init( struct fnet_mdns_params *params );
+fnet_mdns_desc_t fnet_mdns_init( fnet_mdns_params_t *params );
 
 /***************************************************************************/ /*!
  *

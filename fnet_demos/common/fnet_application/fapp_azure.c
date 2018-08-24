@@ -46,7 +46,7 @@
 /* Device connection string containing Hostname, Device Id & Device Key in the format:
    "HostName=<host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>"                */
 #ifndef FAPP_CFG_AZURE_CMD_DEVICE_CONNECTION_STRING
-    #error FAPP_CFG_AZURE_CMD_DEVICE_CONNECTION_STRING device connection string is not defined. "HostName=<host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>"
+    #error FAPP_CFG_AZURE_CMD_DEVICE_CONNECTION_STRING device connection string is not defined. "HostName=<host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>". More info: http://fnet.sourceforge.net/manual/quick_start_azure.html
 #endif
 
 /************************************************************************

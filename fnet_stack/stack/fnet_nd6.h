@@ -66,9 +66,9 @@
  * Solicitation messages, each separated by at least
  * RTR_SOLICITATION_INTERVAL seconds.
  */
-#define FNET_ND6_MAX_RTR_SOLICITATIONS       (3U)        /* transmissions */
-#define FNET_ND6_MAX_RTR_SOLICITATION_DELAY  (1000U)     /* ms */
-#define FNET_ND6_RTR_SOLICITATION_INTERVAL   (4000U)     /* ms */
+#define FNET_ND6_MAX_RTR_SOLICITATIONS          (3U)        /* transmissions */
+#define FNET_ND6_MAX_RTR_SOLICITATION_DELAY_MS  (1000U)     /* ms */
+#define FNET_ND6_RTR_SOLICITATION_INTERVAL_MS   (4000U)     /* ms */
 
 /* If no Neighbor Advertisement is received after MAX_MULTICAST_SOLICIT
 * solicitations, address resolution has failed. The sender MUST return
@@ -84,7 +84,7 @@
  * reachability of a neighbor. Also used during Duplicate
  * Address Detection (RFC4862).
  */
-#define FNET_ND6_RETRANS_TIMER               (1000U)     /* ms */
+#define FNET_ND6_RETRANS_TIMER_MS            (1000U)     /* ms */
 
 /*
  * Default value of the time a neighbor is considered reachable after
@@ -98,7 +98,7 @@
  * Router Advertisements) or at least every few
  * hours even if
  */
-#define FNET_ND6_REACHABLE_TIME              (30000U)    /* ms */
+#define FNET_ND6_REACHABLE_TIME_MS           (30000U)    /* ms */
 
 /*
  * If no reachability confirmation is received
@@ -106,7 +106,7 @@
  * DELAY state, send a Neighbor Solicitation and change
  * the state to PROBE.
  */
-#define FNET_ND6_DELAY_FIRST_PROBE_TIME      (5000U)     /*ms*/
+#define FNET_ND6_DELAY_FIRST_PROBE_TIME_MS   (5000U)     /*ms*/
 
 /*
  * If no response is
@@ -119,7 +119,7 @@
 /*
  * ND6 general timer resolution.
  */
-#define FNET_ND6_TIMER_PERIOD                (100U)      /* ms */
+#define FNET_ND6_TIMER_PERIOD_MS             (100U)      /* ms */
 
 #define FNET_ND6_PREFIX_LENGTH_DEFAULT       (64U)            /* Default prefix length, in bits.*/
 #define FNET_ND6_PREFIX_LIFETIME_INFINITE    (0xFFFFFFFFU)    /* A lifetime value of all one bits (0xffffffff) represents infinity. */
@@ -146,14 +146,14 @@ typedef struct fnet_nd6_prefix_entry
     fnet_size_t             prefix_length;  /* Prefix length (in bits). The number of leading bits
                                              * in the Prefix that are valid. */
     fnet_nd6_prefix_state_t state;          /* Prefix state.*/
-    fnet_time_t             lifetime;       /* Valid Lifetime
+    fnet_time_t             lifetime_sec;   /* Valid Lifetime
                                              * 32-bit unsigned integer. The length of time in
                                              * seconds (relative to the time the packet is sent)
                                              * that the prefix is valid for the purpose of on-link
                                              * determination. A value of all one bits
                                              * (0xffffffff) represents infinity. The Valid
                                              * Lifetime is also used by [ADDRCONF].*/
-    fnet_time_t             creation_time;  /* Time of entry creation, in seconds.*/
+    fnet_time_t             creation_time_sec;  /* Time of entry creation, in seconds.*/
 } fnet_nd6_prefix_entry_t;
 
 /**************************************************************
@@ -189,7 +189,7 @@ typedef struct fnet_nd6_neighbor_entry
     fnet_ip6_addr_t             ip_addr;        /* Neighbor’s on-link unicast IP address. */
     fnet_netif_ll_addr_t        ll_addr;        /* Its link-layer address. Actual size is defiined by fnet_netif_api_t->netif_hw_addr_size. */
     fnet_nd6_neighbor_state_t   state;          /* Neighbor’s reachability state.*/
-    fnet_time_t                 state_time;     /* Time of last state event.*/
+    fnet_time_t                 state_time_ms;  /* Time of last state event.*/
     fnet_netbuf_t               *waiting_netbuf;/* Pointer to any queued packetwaiting for address resolution to complete.*/
     /* RFC 4861 7.2.2: While waiting for address resolution to complete, the sender MUST,
      * for each neighbor, retain a small queue of packets waiting for
@@ -198,17 +198,17 @@ typedef struct fnet_nd6_neighbor_entry
      * When a queue  overflows, the new arrival SHOULD replace the oldest entry.*/
     fnet_index_t                solicitation_send_counter;  /* Counter - how many soicitations where sent.*/
     fnet_ip6_addr_t             solicitation_src_ip_addr;   /* IP address used during AR solicitation messages. */
-    fnet_time_t                 creation_time;              /* Time of entry creation, in seconds.*/
+    fnet_time_t                 creation_time_sec;          /* Time of entry creation, in seconds.*/
     /* Default Router list entry info.*/
-    fnet_bool_t                 is_router;          /* A flag indicating whether the neighbor is a router or a host.*/
-    fnet_time_t                 router_lifetime;    /* The lifetime associated
-                                                    * with the default router in units of seconds. The
-                                                    * field can contain values up to 65535 and receivers
-                                                    * should handle any value, while the sending rules in
-                                                    * Section 6 limit the lifetime to 9000 seconds. A
-                                                    * Lifetime of 0 indicates that the router is not a
-                                                    * default router and SHOULD NOT appear on the default router list.
-                                                    * It is used only if "is_router" is 1.*/
+    fnet_bool_t                 is_router;              /* A flag indicating whether the neighbor is a router or a host.*/
+    fnet_time_t                 router_lifetime_sec;    /* The lifetime associated
+                                                        * with the default router in units of seconds. The
+                                                        * field can contain values up to 65535 and receivers
+                                                        * should handle any value, while the sending rules in
+                                                        * Section 6 limit the lifetime to 9000 seconds. A
+                                                        * Lifetime of 0 indicates that the router is not a
+                                                        * default router and SHOULD NOT appear on the default router list.
+                                                        * It is used only if "is_router" is 1.*/
 } fnet_nd6_neighbor_entry_t;
 
 /***********************************************************************
@@ -227,7 +227,7 @@ typedef struct fnet_nd6_redirect_entry
                                              * first-hop router and the Target Address MUST be the
                                              * router’s link-local address so that hosts can
                                              * uniquely identify routers. */
-    fnet_time_t         creation_time;      /* Time of entry creation.*/
+    fnet_time_t         creation_time_sec;  /* Time of entry creation.*/
 } fnet_nd6_redirect_entry_t;
 
 /***********************************************************************
@@ -238,8 +238,8 @@ typedef struct fnet_nd6_rdnss_entry
     fnet_ip6_addr_t             rdnss_addr;         /* IPv6 address of the Recursive
                                                     * DNS Server, which is available for recursive DNS resolution
                                                     * service in the network advertising the RDNSS option. */
-    fnet_time_t               creation_time;      /* Time of entry creation, in seconds.*/
-    fnet_time_t               lifetime;           /* The maximum time, in
+    fnet_time_t               creation_time_sec;    /* Time of entry creation, in seconds.*/
+    fnet_time_t               lifetime_sec;         /* The maximum time, in
                                                     * seconds (relative to the time the packet is sent),
                                                     * over which this DNSSL domain name MAY be used for
                                                     * name resolution.
@@ -421,37 +421,37 @@ FNET_COMP_PACKED_END
 FNET_COMP_PACKED_BEGIN
 typedef struct fnet_nd6_ra_header
 {
-    fnet_icmp6_header_t icmp6_header    FNET_COMP_PACKED;   /* ICMPv6 header.*/
-    fnet_uint8_t        cur_hop_limit   FNET_COMP_PACKED;   /* 8-bit unsigned integer. The default value that
-                                                             * should be placed in the Hop Count field of the IP
-                                                             * header for outgoing IP packets. A value of zero
-                                                             * means unspecified (by this router). */
-    fnet_uint8_t        flag            FNET_COMP_PACKED;   /* ND6_RS_FLAG_M and/or ND6_RS_FLAG_O flags.*/
-    fnet_uint16_t       router_lifetime FNET_COMP_PACKED;   /* 16-bit unsigned integer. The lifetime associated
-                                                             * with the default router in units of seconds. The
-                                                             * field can contain values up to 65535 and receivers
-                                                             * should handle any value, while the sending rules in
-                                                             * Section 6 limit the lifetime to 9000 seconds. A
-                                                             * Lifetime of 0 indicates that the router is not a
-                                                             * default router and SHOULD NOT appear on the default
-                                                             * router list. The Router Lifetime applies only to
-                                                             * the router’s usefulness as a default router; it
-                                                             * does not apply to information contained in other
-                                                             * message fields or options. Options that need time
-                                                             * limits for their information include their own
-                                                             * lifetime fields.*/
-    fnet_uint32_t       reachable_time  FNET_COMP_PACKED;   /* 32-bit unsigned integer. The time, in
-                                                             * milliseconds, that a node assumes a neighbor is
-                                                             * reachable after having received a reachability
-                                                             * confirmation. Used by the Neighbor Unreachability
-                                                             * Detection algorithm (see Section 7.3). A value of
-                                                             * zero means unspecified (by this router). */
-    fnet_uint32_t       retrans_timer   FNET_COMP_PACKED;   /* 32-bit unsigned integer. The time, in
-                                                             * milliseconds, between retransmitted Neighbor
-                                                             * Solicitation messages. Used by address resolution
-                                                             * and the Neighbor Unreachability Detection algorithm
-                                                             * (see Sections 7.2 and 7.3). A value of zero means
-                                                             * unspecified (by this router).*/
+    fnet_icmp6_header_t icmp6_header    FNET_COMP_PACKED;       /* ICMPv6 header.*/
+    fnet_uint8_t        cur_hop_limit   FNET_COMP_PACKED;       /* 8-bit unsigned integer. The default value that
+                                                                * should be placed in the Hop Count field of the IP
+                                                                * header for outgoing IP packets. A value of zero
+                                                                * means unspecified (by this router). */
+    fnet_uint8_t        flag            FNET_COMP_PACKED;       /* ND6_RS_FLAG_M and/or ND6_RS_FLAG_O flags.*/
+    fnet_uint16_t       router_lifetime_sec FNET_COMP_PACKED;   /* 16-bit unsigned integer. The lifetime associated
+                                                                * with the default router in units of seconds. The
+                                                                * field can contain values up to 65535 and receivers
+                                                                * should handle any value, while the sending rules in
+                                                                * Section 6 limit the lifetime to 9000 seconds. A
+                                                                * Lifetime of 0 indicates that the router is not a
+                                                                * default router and SHOULD NOT appear on the default
+                                                                * router list. The Router Lifetime applies only to
+                                                                * the router’s usefulness as a default router; it
+                                                                * does not apply to information contained in other
+                                                                * message fields or options. Options that need time
+                                                                * limits for their information include their own
+                                                                * lifetime fields.*/
+    fnet_uint32_t       reachable_time_ms  FNET_COMP_PACKED;    /* 32-bit unsigned integer. The time, in
+                                                                * milliseconds, that a node assumes a neighbor is
+                                                                * reachable after having received a reachability
+                                                                * confirmation. Used by the Neighbor Unreachability
+                                                                * Detection algorithm (see Section 7.3). A value of
+                                                                * zero means unspecified (by this router). */
+    fnet_uint32_t       retrans_timer_ms   FNET_COMP_PACKED;    /* 32-bit unsigned integer. The time, in
+                                                                * milliseconds, between retransmitted Neighbor
+                                                                * Solicitation messages. Used by address resolution
+                                                                * and the Neighbor Unreachability Detection algorithm
+                                                                * (see Sections 7.2 and 7.3). A value of zero means
+                                                                * unspecified (by this router).*/
 
 } fnet_nd6_ra_header_t;
 FNET_COMP_PACKED_END
@@ -562,7 +562,7 @@ typedef struct fnet_nd6_option_prefix_header
                                                                      * which there may be more restrictions on the prefix
                                                                      * length.*/
     fnet_uint8_t                flag            FNET_COMP_PACKED;   /* ND6_OPTION_FLAG_L and/or ND6_OPTION_FLAG_O flags.*/
-    fnet_uint32_t               valid_lifetime  FNET_COMP_PACKED;   /* The length of time in
+    fnet_uint32_t               valid_lifetime_sec  FNET_COMP_PACKED;/* The length of time in
                                                                      * seconds (relative to the time the packet is sent)
                                                                      * that the prefix is valid for the purpose of on-link
                                                                      * determination. A value of all one bits
@@ -621,7 +621,7 @@ typedef struct fnet_nd6_option_rdnss_header
 {
     fnet_nd6_option_header_t    option_header   FNET_COMP_PACKED;   /* Option general header.*/
     fnet_uint16_t               _reserved       FNET_COMP_PACKED;
-    fnet_uint32_t               lifetime        FNET_COMP_PACKED;   /* The maximum time, in
+    fnet_uint32_t               lifetime_sec    FNET_COMP_PACKED;   /* The maximum time, in
                                                                      * seconds (relative to the time the packet is sent),
                                                                      * over which this RDNSS address MAY be used for name
                                                                      * resolution.*/
@@ -668,7 +668,7 @@ typedef struct fnet_nd6_if
     /* Router Discovery variables.*/
     fnet_index_t                rd_transmit_counter;    /* Counter used by RD. Equals to the number
                                                          * of RS transmits till RD is finished.*/
-    fnet_time_t                 rd_time;                /* Time of last RS transmit.*/
+    fnet_time_t                 rd_time_ms;             /* Time of last RD transmit.*/
 
     /* Interface variables */
     fnet_size_t                 mtu;                    /* The recommended MTU for the link.
@@ -676,12 +676,12 @@ typedef struct fnet_nd6_if
     fnet_uint8_t                cur_hop_limit;          /* The default value that
                                                          * should be placed in the Hop Count field of the IP
                                                          * header for outgoing IP packets.*/
-    fnet_time_t                 reachable_time;         /* The time, in milliseconds,
+    fnet_time_t                 reachable_time_ms;      /* The time, in milliseconds,
                                                          * that a node assumes a neighbor is
                                                          * reachable after having received a reachability
                                                          * confirmation. Used by the Neighbor Unreachability
                                                          * Detection algorithm.*/
-    fnet_time_t                 retrans_timer;          /* The time, in milliseconds,
+    fnet_time_t                 retrans_timer_ms;       /* The time, in milliseconds,
                                                          * between retransmitted Neighbor
                                                          * Solicitation messages. Used by address resolution
                                                          * and the Neighbor Unreachability Detection algorithm

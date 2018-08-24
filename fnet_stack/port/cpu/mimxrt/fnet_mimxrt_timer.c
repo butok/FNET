@@ -24,6 +24,7 @@
 
 #include "fnet.h"
 
+#if !FNET_CFG_TIMER_ALT /* Use bare-metal timer */
 #if FNET_MIMXRT
 #include "stack/fnet_timer_prv.h"
 
@@ -238,5 +239,5 @@ void TMR4_IRQHandler (void)
 
 #endif /* FNET_CFG_MIMXRT_TIMER_QTMR */
 
-
 #endif /*FNET_MIMXRT*/
+#endif /*!FNET_CFG_TIMER_ALT*/

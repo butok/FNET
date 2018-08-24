@@ -43,10 +43,10 @@
 *
 *...
 *
-* const struct fnet_shell fapp_telnet_shell =
+* const fnet_shell_t fapp_telnet_shell =
 * {
 *    fapp_telnet_cmd_table,
-*    (sizeof(fapp_telnet_cmd_table) / sizeof(struct fnet_shell_command)),
+*    (sizeof(fapp_telnet_cmd_table) / sizeof(fnet_shell_command_t)),
 *    "TELNET>",
 *    fapp_shell_on_init,
 * };
@@ -55,7 +55,7 @@
 *
 * void main()
 * {
-*    struct fnet_telnet_params params;
+*    fnet_telnet_params_t params;
 *
 *    ...
 *
@@ -98,14 +98,14 @@
 /**************************************************************************/ /*!
  * @brief Input parameters for @ref fnet_telnet_init().
  ******************************************************************************/
-struct fnet_telnet_params
+typedef struct
 {
     struct fnet_sockaddr address;    /**<  @brief Server socket address. @n
                                     * If server IP address is set to @c 0s, the server will listen to all current network interfaces. @n
                                     * If server address family is set to @c 0, it will be assigned to @ref AF_SUPPORTED. @n
                                     * If server port number is set to @c 0, it will be assigned to the default port number defined by @ref FNET_CFG_TELNET_PORT.*/
-    const struct fnet_shell *shell;     /**< @brief Root-shell structure. */
-};
+    const fnet_shell_t *shell;     /**< @brief Root-shell structure. */
+} fnet_telnet_params_t;
 
 /**************************************************************************/ /*!
  * @brief Telnet server descriptor.
@@ -121,7 +121,7 @@ extern "C" {
  *
  * @brief    Initializes the Telnet Server service.
  *
- * @param params     Initialization parameters defined by @ref fnet_telnet_params.
+ * @param params     Initialization parameters defined by @ref fnet_telnet_params_t.
  *
  * @return This function returns:
  *   - Telnet server descriptor if no error occurs.
@@ -140,7 +140,7 @@ extern "C" {
  * if the parsing was successful.
  *
  ******************************************************************************/
-fnet_telnet_desc_t fnet_telnet_init( struct fnet_telnet_params *params);
+fnet_telnet_desc_t fnet_telnet_init( fnet_telnet_params_t *params);
 
 /***************************************************************************/ /*!
  *

@@ -73,15 +73,15 @@ extern struct fnet_prot_if fnet_tcp_prot_if;
 /************************************************************************
 *    Periods of timers
 *************************************************************************/
-#define FNET_TCP_SLOWTIMO       (500u)       /* Slow timer period (ms).*/
-#define FNET_TCP_FASTTIMO       (200u)       /* Fast timer period (ms).*/
+#define FNET_TCP_SLOW_TIMER_PERIOD_MS       (500u)       /* Slow timer period (ms).*/
+#define FNET_TCP_FAST_TIMER_PERIOD_MS       (200u)       /* Fast timer period (ms).*/
 
 /************************************************************************
 *    Keepalive timer parameters
 *************************************************************************/
-#define FNET_TCP_KEEPIDLE_DEFAULT   (14400u) /* x FNET_TCP_SLOWTIMO  
+#define FNET_TCP_KEEPIDLE_DEFAULT   (14400u) /* x FNET_TCP_SLOW_TIMER_PERIOD_MS  
                                              * Standart value for keepalive timer (2 hours).*/
-#define FNET_TCP_KEEPINTVL_DEFAULT  (150u)   /* x FNET_TCP_SLOWTIMO  
+#define FNET_TCP_KEEPINTVL_DEFAULT  (150u)   /* x FNET_TCP_SLOW_TIMER_PERIOD_MS  
                                              * Standart value for retransmission of the keepalive segment (75 sec).*/
 #define FNET_TCP_KEEPCNT_DEFAULT    (8u)     /* Number of keepalive segments in state of retransmission.*/
 
@@ -134,12 +134,12 @@ extern struct fnet_prot_if fnet_tcp_prot_if;
 /************************************************************************
 *    Abort interval for the data retransmission and the connection termination
 *************************************************************************/
-#define FNET_TCP_ABORT_INTERVAL     (240u/5u) /* 240 x FNET_TCP_SLOWTIMO = 2 minutes/5 */
+#define FNET_TCP_ABORT_INTERVAL     (240u/5u) /* 240 x FNET_TCP_SLOW_TIMER_PERIOD_MS = 2 minutes/5 */
 
 /************************************************************************
 *    Abort interval for the connection establishment
 *************************************************************************/
-#define FNET_TCP_ABORT_INTERVAL_CON (150u/5u) /* 150 x FNET_TCP_SLOWTIMO = 75 sec/5 */
+#define FNET_TCP_ABORT_INTERVAL_CON (150u/5u) /* 150 x FNET_TCP_SLOW_TIMER_PERIOD_MS = 75 sec/5 */
 
 /************************************************************************
 *    Number of repeated acknowledgments for the fast retransmission
@@ -149,7 +149,7 @@ extern struct fnet_prot_if fnet_tcp_prot_if;
 /************************************************************************
 *    Timewait delay
 *************************************************************************/
-#define FNET_TCP_TIME_WAIT              (240u/5u) /* 240 x FNET_TCP_SLOWTIMO  = 2 minutes/5 */
+#define FNET_TCP_TIME_WAIT              (240u/5u) /* 240 x FNET_TCP_SLOW_TIMER_PERIOD_MS  = 2 minutes/5 */
 
 /************************************************************************
 *    Receiving of a byte, word and double word

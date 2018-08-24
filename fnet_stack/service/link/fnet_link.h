@@ -63,24 +63,24 @@ typedef void(*fnet_link_callback_t)(fnet_netif_desc_t netif, fnet_bool_t connect
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_llmnr_init() function.
  ******************************************************************************/
-struct fnet_link_params
+typedef struct
 {
     fnet_netif_desc_t       netif_desc;         /**< @brief Network interface descriptor to be monitored by the Link-Detection service.*/
     fnet_link_callback_t    callback;           /**< @brief Pointer to the callback function defined by @ref fnet_link_callback_t. */
     void                    *callback_param;    /**< @brief Optional application-specific parameter. @n It's passed to the @c callback function as input parameter. */
-};
+} fnet_link_params_t;
 
 /***************************************************************************/ /*!
  *
  * @brief    Initializes the Link-Detection service.
  *
- * @param params     Initialization parameters defined by @ref fnet_llmnr_params.
+ * @param params     Initialization parameters defined by @ref fnet_llmnr_params_t.
  *
  * @return This function returns:
  *   - Link-Detection service descriptor if no error occurs.
  *   - @c 0 if an error occurs.
  *
- * @see fnet_link_release(), fnet_link_params
+ * @see fnet_link_release(), fnet_link_params_t
  *
  ******************************************************************************
  *
@@ -92,7 +92,7 @@ struct fnet_link_params
  * It is posible to run several services on the same networking interface.
  *
  ******************************************************************************/
-fnet_link_desc_t fnet_link_init( struct fnet_link_params *params );
+fnet_link_desc_t fnet_link_init( fnet_link_params_t *params );
 
 /***************************************************************************/ /*!
  *
