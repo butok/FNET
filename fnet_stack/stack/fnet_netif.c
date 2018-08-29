@@ -1576,7 +1576,7 @@ fnet_return_t _fnet_netif_bind_ip6_addr(fnet_netif_t *netif, const fnet_ip6_addr
             }
 
             /* Save creation time, in seconds.*/
-            if_addr_ptr->creation_time_sec = fnet_timer_get_seconds();
+            if_addr_ptr->creation_time_sec = fnet_timer_get_ms() / FNET_TIMER_MS_IN_SEC;
 
             /* Set lifetime, in seconds.*/
             if_addr_ptr->lifetime_sec = lifetime_sec;
@@ -1676,7 +1676,7 @@ void _fnet_netif_ip6_addr_timer( fnet_netif_t *netif)
         /* Check lifetime for address.*/
         if((netif->ip6_addr[i].state != FNET_NETIF_IP6_ADDR_STATE_NOT_USED)
            && (netif->ip6_addr[i].lifetime_sec != FNET_NETIF_IP6_ADDR_LIFETIME_INFINITE)
-           && ((fnet_timer_get_seconds() - netif->ip6_addr[i].creation_time_sec) > netif->ip6_addr[i].lifetime_sec)
+           && (((fnet_timer_get_ms() / FNET_TIMER_MS_IN_SEC) - netif->ip6_addr[i].creation_time_sec) > netif->ip6_addr[i].lifetime_sec)
           )
         {
             /* RFC4862 5.5.4: An address (and its association with an interface) becomes invalid

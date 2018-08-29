@@ -322,7 +322,7 @@ void _fnet_arp_resolve(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_netbuf_
         entry = &arpif->arp_table[i];
     }
 
-    if ((i == FNET_CFG_ARP_TABLE_SIZE) || ((entry->hold) && ((fnet_timer_get_ms() - entry->hold_time_ms) > 1000U)) || (!entry->hold)) 
+    if ((i == FNET_CFG_ARP_TABLE_SIZE) || ((entry->hold) && ((fnet_timer_get_ms() - entry->hold_time_ms) > 1000U)) || (!entry->hold))
     {
         to_send_request = FNET_TRUE;
     }

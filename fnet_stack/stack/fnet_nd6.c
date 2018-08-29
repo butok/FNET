@@ -253,7 +253,7 @@ fnet_nd6_neighbor_entry_t *_fnet_nd6_neighbor_cache_add(struct fnet_netif *netif
         {
             FNET_NETIF_LL_ADDR_COPY(ll_addr, entry->ll_addr, netif->netif_api->netif_hw_addr_size);
         }
-        entry->creation_time_sec = fnet_timer_get_seconds();
+        entry->creation_time_sec = fnet_timer_get_ms() / FNET_TIMER_MS_IN_SEC;
         entry->is_router = FNET_FALSE;
         entry->router_lifetime_sec = 0u;
         entry->state = state;
@@ -280,7 +280,7 @@ static void _fnet_nd6_neighbor_cache_timer(fnet_netif_t *netif)
         /* Check router expiration */
         if((neighbor_entry->state != FNET_ND6_NEIGHBOR_STATE_NOTUSED)
            && (neighbor_entry->is_router == FNET_TRUE)
-           && ((fnet_timer_get_seconds() - neighbor_entry->creation_time_sec) > neighbor_entry->router_lifetime_sec)
+           && (((fnet_timer_get_ms() / FNET_TIMER_MS_IN_SEC) - neighbor_entry->creation_time_sec) > neighbor_entry->router_lifetime_sec)
           )
         {
             if(neighbor_entry->router_lifetime_sec)
@@ -457,7 +457,7 @@ void _fnet_nd6_router_list_add( fnet_nd6_neighbor_entry_t *neighbor_entry, fnet_
         {
             neighbor_entry->is_router = FNET_TRUE;
             neighbor_entry->router_lifetime_sec = lifetime_sec;
-            neighbor_entry->creation_time_sec = fnet_timer_get_seconds();
+            neighbor_entry->creation_time_sec = fnet_timer_get_ms() / FNET_TIMER_MS_IN_SEC;
         }
         else
             /* If the address is already present in the host’s Default Router
@@ -650,7 +650,7 @@ fnet_nd6_prefix_entry_t *_fnet_nd6_prefix_list_add(struct fnet_netif *if_ptr, co
         FNET_IP6_ADDR_COPY(prefix, &entry->prefix);
         entry->prefix_length = prefix_length;
         entry->lifetime_sec = lifetime_sec;
-        entry->creation_time_sec = fnet_timer_get_seconds();
+        entry->creation_time_sec = fnet_timer_get_ms() / FNET_TIMER_MS_IN_SEC;
         entry->state = FNET_ND6_PREFIX_STATE_USED;
     }
 
@@ -670,7 +670,7 @@ static void _fnet_nd6_prefix_timer(fnet_netif_t *netif)
     {
         if((nd6_if->prefix_list[i].state != FNET_ND6_PREFIX_STATE_NOTUSED)
            && (nd6_if->prefix_list[i].lifetime_sec != FNET_ND6_PREFIX_LIFETIME_INFINITE)
-           && ((fnet_timer_get_seconds() - nd6_if->prefix_list[i].creation_time_sec) > nd6_if->prefix_list[i].lifetime_sec) )
+           && (((fnet_timer_get_ms() / FNET_TIMER_MS_IN_SEC) - nd6_if->prefix_list[i].creation_time_sec) > nd6_if->prefix_list[i].lifetime_sec) )
         {
             _fnet_nd6_prefix_list_del(&nd6_if->prefix_list[i]);
         }
@@ -734,7 +734,7 @@ static fnet_nd6_redirect_entry_t *_fnet_nd6_redirect_table_add(fnet_netif_t *if_
          */
         FNET_IP6_ADDR_COPY(destination_addr, &entry->destination_addr);
         FNET_IP6_ADDR_COPY(target_addr, &entry->target_addr);
-        entry->creation_time_sec = fnet_timer_get_seconds();
+        entry->creation_time_sec = fnet_timer_get_ms() / FNET_TIMER_MS_IN_SEC;
     }
 
     return entry;
@@ -1724,7 +1724,7 @@ void _fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_a
                             {
                                 /* Reset Timer. */
                                 prefix_entry->lifetime_sec = fnet_ntohl(nd_option_prefix[i]->valid_lifetime_sec);
-                                prefix_entry->creation_time_sec = fnet_timer_get_seconds();
+                                prefix_entry->creation_time_sec = fnet_timer_get_ms() / FNET_TIMER_MS_IN_SEC;
                             }
                             else
                             {
@@ -1772,7 +1772,7 @@ void _fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_a
                              * address. We call the remaining time "RemainingLifetime" in the
                              * following discussion:*/
                             if( (fnet_ntohl(nd_option_prefix[i]->valid_lifetime_sec) > (60u * 60u * 2u) /* 2 hours */)
-                                || ( fnet_ntohl(nd_option_prefix[i]->valid_lifetime_sec) >  ((addr_info->creation_time_sec + addr_info->lifetime_sec) - fnet_timer_get_seconds()) ) )
+                                || ( fnet_ntohl(nd_option_prefix[i]->valid_lifetime_sec) >  ((addr_info->creation_time_sec + addr_info->lifetime_sec) - (fnet_timer_get_ms() / FNET_TIMER_MS_IN_SEC)) ) )
                             {
                                 /* 1. If the received Valid Lifetime is greater than 2 hours or
                                  *    greater than RemainingLifetime, set the valid lifetime of the
@@ -1794,7 +1794,7 @@ void _fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_a
                                  *    address to 2 hours. */
                                 addr_info->lifetime_sec = (60u * 60u * 2u) /* 2 hours */;
                             }
-                            addr_info->creation_time_sec = fnet_timer_get_seconds();
+                            addr_info->creation_time_sec = fnet_timer_get_ms() / FNET_TIMER_MS_IN_SEC;
                         }
                         else
                         {
@@ -2161,8 +2161,8 @@ static void _fnet_nd6_rdnss_list_update(fnet_netif_t *if_ptr, const fnet_ip6_add
                 {
                     if( (entry->lifetime_sec == FNET_ND6_RDNSS_LIFETIME_INFINITE)
                         || ((nd6_if->rdnss_list[i].lifetime_sec != FNET_ND6_RDNSS_LIFETIME_INFINITE)
-                            && ((nd6_if->rdnss_list[i].lifetime_sec - (fnet_timer_get_seconds() - nd6_if->rdnss_list[i].creation_time_sec))
-                                < (entry->lifetime_sec - (fnet_timer_get_seconds() - entry->creation_time_sec))) )
+                            && ((nd6_if->rdnss_list[i].lifetime_sec - ((fnet_timer_get_ms() / FNET_TIMER_MS_IN_SEC) - nd6_if->rdnss_list[i].creation_time_sec))
+                                < (entry->lifetime_sec - ((fnet_timer_get_ms() / FNET_TIMER_MS_IN_SEC) - entry->creation_time_sec))) )
                       )
                     {
                         entry = &nd6_if->rdnss_list[i];
@@ -2176,7 +2176,7 @@ static void _fnet_nd6_rdnss_list_update(fnet_netif_t *if_ptr, const fnet_ip6_add
             /* Fill the entry parameters.*/
             FNET_IP6_ADDR_COPY(rdnss_addr, &entry->rdnss_addr);
             entry->lifetime_sec = lifetime_sec;
-            entry->creation_time_sec = fnet_timer_get_seconds();
+            entry->creation_time_sec = fnet_timer_get_ms() / FNET_TIMER_MS_IN_SEC;
         }
     }
 }
@@ -2238,7 +2238,7 @@ static void _fnet_nd6_rdnss_timer(fnet_netif_t *netif)
         * DNS Server List */
         if((nd6_if->rdnss_list[i].lifetime_sec != 0u)
            && (nd6_if->rdnss_list[i].lifetime_sec != FNET_ND6_RDNSS_LIFETIME_INFINITE)
-           && ((fnet_timer_get_seconds() - nd6_if->rdnss_list[i].creation_time_sec) > nd6_if->rdnss_list[i].lifetime_sec) )
+           && (((fnet_timer_get_ms() / FNET_TIMER_MS_IN_SEC) - nd6_if->rdnss_list[i].creation_time_sec) > nd6_if->rdnss_list[i].lifetime_sec) )
         {
             _fnet_nd6_rdnss_list_del(&nd6_if->rdnss_list[i]);
         }

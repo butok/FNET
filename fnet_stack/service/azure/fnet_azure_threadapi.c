@@ -35,26 +35,26 @@ void ThreadAPI_Sleep(unsigned int milliseconds)
 }
 
 /* ThreadAPI_Create returns THREADAPI_ERROR. ]*/
-THREADAPI_RESULT ThreadAPI_Create(THREAD_HANDLE* threadHandle, THREAD_START_FUNC func, void* arg)
+THREADAPI_RESULT ThreadAPI_Create(THREAD_HANDLE *threadHandle, THREAD_START_FUNC func, void *arg)
 {
-	(void)threadHandle;
-	(void)func;
-	(void)arg;
+    (void)threadHandle;
+    (void)func;
+    (void)arg;
     return THREADAPI_ERROR;
 }
 
 /* ThreadAPI_Join returns THREADAPI_ERROR. ]*/
-THREADAPI_RESULT ThreadAPI_Join(THREAD_HANDLE threadHandle, int* res)
+THREADAPI_RESULT ThreadAPI_Join(THREAD_HANDLE threadHandle, int *res)
 {
-	(void)threadHandle;
-	(void)res;
+    (void)threadHandle;
+    (void)res;
     return THREADAPI_ERROR;
 }
 
 /* ThreadAPI_Exit do nothing. */
 void ThreadAPI_Exit(int res)
 {
-	(void)res;
+    (void)res;
 }
 
 #endif /* FNET_CFG_AZURE */

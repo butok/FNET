@@ -48,7 +48,7 @@
 #define FNET_SNTP_DAYS_IN_LEAP_YEAR                         366
 #define FNET_SNTP_DAYS_IN_4_YEARS                           (FNET_SNTP_DAYS_IN_YEAR*3 + FNET_SNTP_DAYS_IN_LEAP_YEAR)
 #define FNET_SNTP_LEAP_YEAR                                 4
-#define FNET_SNTP_FRACTIONS_IN_MILLISECOND                  (4294967296/1000) /*2^32=socond/1000*/
+#define FNET_SNTP_FRACTIONS_IN_MILLISECOND                  (4294967296/FNET_TIMER_MS_IN_SEC) /*2^32=socond/1000*/
 
 
 

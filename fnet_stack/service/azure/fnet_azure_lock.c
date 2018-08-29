@@ -60,7 +60,7 @@ LOCK_RESULT Lock_Deinit(LOCK_HANDLE handle)
 
     return result;
 #else
-   return LOCK_OK;
+    return LOCK_OK;
 #endif
 }
 
@@ -80,7 +80,7 @@ LOCK_RESULT Lock(LOCK_HANDLE handle)
     }
     return result;
 #else
-   return LOCK_OK;
+    return LOCK_OK;
 #endif
 }
 
@@ -100,7 +100,7 @@ LOCK_RESULT Unlock(LOCK_HANDLE handle)
     }
     return result;
 #else
-   return LOCK_OK;
+    return LOCK_OK;
 #endif
 }
 

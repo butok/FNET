@@ -114,7 +114,4 @@
 ******************************************************************************/
 #define FNET_CFG_LINK                       (1)
 
-#define FNET_CFG_DEBUG_TIMER 1
-#define FNET_CFG_DEBUG 1
-
 #endif /* _FNET_USER_CONFIG_H_ */

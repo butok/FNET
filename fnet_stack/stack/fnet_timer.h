@@ -70,8 +70,6 @@ typedef fnet_uint32_t fnet_time_t;
  * @return   This function returns a current value of the timer counter
  *           in milliseconds.
  *
- * @see fnet_timer_get_seconds()
- *
  ******************************************************************************
  *
  * This function returns a current value of the timer counter in milliseconds,
@@ -80,24 +78,6 @@ typedef fnet_uint32_t fnet_time_t;
  *
  ******************************************************************************/
 fnet_time_t fnet_timer_get_ms( void );
-
-/***************************************************************************/ /*!
- *
- * @brief    Get the timer counter value in seconds.
- *
- * @return   This function returns a current value of the timer counter
- *           in seconds.
- *
- * @see fnet_timer_get_ms()
- *
- ******************************************************************************
- *
- * This function returns a current value of the timer counter in seconds,
- * from the moment of the hardware timer initialization
- * (it's done in the FNET stack initialization).
- *
- ******************************************************************************/
-fnet_time_t fnet_timer_get_seconds( void );
 
 /***************************************************************************/ /*!
  *

@@ -51,8 +51,8 @@
 #define FNET_MDNS_SERVICE_TYPE_ENUMERATION_NAME     "_services._dns-sd._udp"
 
 #define FNET_MDNS_WAIT                     250                     /* Wait 250ms to check domain name. */
-#define FNET_MDNS_PROBE_WAIT               (5*1000)                /* Wait 5 seconds before trying again. */
-#define FNET_MDNS_PROBE_DEFER_WAIT         (1*1000)                /* Defers to the winning host by waiting one second. */
+#define FNET_MDNS_PROBE_WAIT               (5*FNET_TIMER_MS_IN_SEC) /* Wait 5 seconds before trying again. */
+#define FNET_MDNS_PROBE_DEFER_WAIT         (1*FNET_TIMER_MS_IN_SEC) /* Defers to the winning host by waiting one second. */
 #define FNET_MDNS_PROBE_INIT_WAIT          (200)                   /* RFC6762: When ready to send its Multicast DNS probe packet(s) the host should
                                                                     first wait for a short random delay time, uniformly distributed in
                                                                     the range 0-250 ms. This random delay is to guard against the case
@@ -66,7 +66,7 @@
 #define FNET_MDNS_SHARED_RESPONSE_DELAY_MAX (120)                   /* Maximum delay for shared response 120 ms.*/
 
 #define FNET_MDNS_ANNOUNCE_COUNT           (2)                     /* The Multicast DNS responder MUST send at least two unsolicited responses. */
-#define FNET_MDNS_ANNOUNCE_INTERVAL        (1000)                  /* one second apart. */
+#define FNET_MDNS_ANNOUNCE_INTERVAL        (1*FNET_TIMER_MS_IN_SEC)                  /* one second apart. */
 
 #define FNET_MDNS_HEADER_CLASS_IN          0x01                    /* Internet */
 #define FNET_MDNS_HEADER_CACHE_FLUSH       0x8000                  /* Cache flush */

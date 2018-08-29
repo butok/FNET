@@ -212,11 +212,11 @@ static void _fnet_shell_poll( void *shell_if_p )
                                 {
                                     ((void(*)(fnet_shell_desc_t desc, fnet_index_t cmd_ptr_argc, fnet_char_t **cmd_ptr_argv))(cur_command->cmd_ptr))((fnet_shell_desc_t)shell_if, argc, argv);
                                 }
-                        
+
                                 /* In case shell switch*/
                                 shell = shell_if->shell; /* Update current shell pointer. */
                                 cur_command = shell->cmd_table;/* => to avoid wrong command message. */
-                        
+
                                 /* Check if the shell was released during command execution.*/
                                 if(shell_if->state == FNET_SHELL_STATE_DISABLED)
                                 {
@@ -804,6 +804,6 @@ const fnet_shell_command_t *fnet_shell_get_command_by_name(fnet_shell_desc_t des
             }
         }
     }
-    
+
     return result;
 }

@@ -2355,7 +2355,8 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
-
+- Version 4.6.1
+	- Minor fixes.
 - Version 4.6.0
 	- Certified for Apple Bonjour logo. 
 	- Added bare-metal Azure client example.

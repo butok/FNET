@@ -621,7 +621,7 @@
 /**************************************************************************/ /*!
  * @def      FNET_CFG_TIMER_ALT
  * @brief    Alternative timer support:
- *               - @c 1 = is enabled. User application must implement own Timer API defined by fnet_timer_api_t and provide it during FNET initialization. 
+ *               - @c 1 = is enabled. User application must implement own Timer API defined by fnet_timer_api_t and provide it during FNET initialization.
  *                 Also, user application must call fnet_timer_poll() periodically with 100 ms period or less. @n
  *                 It is mainly used by applications that want to use RTOS timer instead of FNET bare-metal one.
  *               - @b @c 0 = is disabled (Default value).@n

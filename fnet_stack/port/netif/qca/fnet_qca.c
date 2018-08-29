@@ -61,7 +61,7 @@
 #endif
 
 #if FNET_CFG_TIMER_ALT == 0
-    #error FNET_CFG_TIMER_ALT must be set to 1. Required by the QCA driver, otherwise it causes assert during TX.  
+    #error FNET_CFG_TIMER_ALT must be set to 1. Required by the QCA driver, otherwise it causes assert during TX.
 #endif
 
 #define FNET_QCA_DEVICE_ID     0 /* Device ID */

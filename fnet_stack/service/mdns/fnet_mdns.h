@@ -55,7 +55,7 @@
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_mdns_init() function.
  ******************************************************************************/
-typedef struct 
+typedef struct
 {
     fnet_netif_desc_t           netif_desc;     /**< @brief Network interface descriptor to be used by the mDNS server.*/
     fnet_address_family_t       addr_family;    /**< @brief Address family (IPv6 or IPv4 or both) the server will listen for MDNS query (it is optional).@n

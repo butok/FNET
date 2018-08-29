@@ -60,7 +60,7 @@ static void fapp_bench_print_results (fnet_shell_desc_t desc, fnet_size_t megaby
 
     /* Print benchmark results.*/
     fnet_shell_println(desc, "\r\n[BENCH]\t%u.%06u MBytes in %u.%02u Seconds = %u.%03u Mbit/sec\n", megabytes, bytes,
-                       (time_ms / 1000), ((time_ms % 1000) / 10),
+                       (time_ms / FNET_TIMER_MS_IN_SEC), ((time_ms % FNET_TIMER_MS_IN_SEC) / 10),
                        megabits_sec, kbits_sec);
 }
 #endif

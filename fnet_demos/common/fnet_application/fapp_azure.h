@@ -39,8 +39,8 @@
 
 /* Period between Azure messages.
     WARNING: The Azure free subscription supports only 8000 messages per day.*/
-#ifndef FAPP_CFG_AZURE_CMD_MESSAGE_PERIOD
-    #define FAPP_CFG_AZURE_CMD_MESSAGE_PERIOD   (16) /* sec */
+#ifndef FAPP_CFG_AZURE_CMD_MESSAGE_PERIOD_SEC
+    #define FAPP_CFG_AZURE_CMD_MESSAGE_PERIOD_SEC  (16) /* sec */
 #endif
 
 /* Azure log support */

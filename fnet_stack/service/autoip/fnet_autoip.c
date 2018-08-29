@@ -110,7 +110,7 @@ static fnet_bool_t _fnet_autoip_is_collision(fnet_autoip_if_t *llif);
 static void _fnet_autoip_announce(fnet_autoip_if_t *llif);
 static void _fnet_autoip_probe(fnet_autoip_if_t *llif);
 static fnet_ip4_addr_t _fnet_autoip_generate_random_address(void);
-static unsigned long _fnet_autoip_get_random_wait_time(unsigned min, unsigned max);
+static fnet_time_t _fnet_autoip_get_random_wait_time(unsigned min, unsigned max);
 static void _fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_t state );
 static void _fnet_autoip_poll( void *fnet_autoip_if_p );
 
@@ -134,16 +134,15 @@ static fnet_ip4_addr_t _fnet_autoip_generate_random_address(void)
 }
 
 /************************************************************************
-* DESCRIPTION: Generates a random wait time between min and max
-* (actually, it is not a time, but number of ticks)
+* DESCRIPTION: Generates a random wait time between min and max in ms
 ************************************************************************/
-static unsigned long _fnet_autoip_get_random_wait_time(unsigned min_sec, unsigned max_sec)
+static fnet_time_t _fnet_autoip_get_random_wait_time(unsigned min_sec, unsigned max_sec)
 {
-    unsigned long result;
-    result = fnet_rand();
-    result %= (max_sec - min_sec) * FNET_TIMER_MS_IN_SEC;
-    result += min_sec * FNET_TIMER_MS_IN_SEC;
-    return result;
+    unsigned long result_ms;
+    result_ms = fnet_rand();
+    result_ms %= (max_sec - min_sec) * FNET_TIMER_MS_IN_SEC;
+    result_ms += min_sec * FNET_TIMER_MS_IN_SEC;
+    return result_ms;
 }
 
 /************************************************************************

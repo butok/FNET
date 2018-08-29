@@ -50,12 +50,12 @@ struct fnet_net_timer
 static struct fnet_net_timer    *_fnet_timer_head;
 
 #if !FNET_CFG_TIMER_ALT  /* Bare-metal timer */
-static volatile fnet_time_t     _fnet_timer_counter_ms;
+    static volatile fnet_time_t     _fnet_timer_counter_ms;
 #endif
 
 #if FNET_CFG_TIME
     static time_t       _fnet_time_start;
-    static fnet_time_t  _fnet_timer_start;
+    static fnet_time_t  _fnet_timer_start_ms;
 #endif
 
 #if FNET_CFG_TIMER_ALT
@@ -71,7 +71,7 @@ fnet_return_t _fnet_timer_init( fnet_time_t period_ms )
 
 #if FNET_CFG_TIME
     _fnet_time_start = 0;
-    _fnet_timer_start = 0;
+    _fnet_timer_start_ms = 0;
 #endif
 
 #if FNET_CFG_TIMER_ALT /* Application Timer API */
@@ -114,14 +114,6 @@ void _fnet_timer_release( void )
 }
 
 /************************************************************************
-* DESCRIPTION: This function returns current value of the timer in seconds.
-*************************************************************************/
-fnet_time_t fnet_timer_get_seconds( void )
-{
-    return  (fnet_timer_get_ms()/FNET_TIMER_MS_IN_SEC);
-}
-
-/************************************************************************
 * DESCRIPTION: This function returns current value of the timer
 * in milliseconds.
 *************************************************************************/
@@ -148,7 +140,7 @@ void _fnet_timer_ticks_inc( void )
 
 #if FNET_CFG_DEBUG_TIMER && FNET_CFG_DEBUG
     /* Print once per second */
-    if((_fnet_timer_counter_ms % 1000) == 0)
+    if((_fnet_timer_counter_ms % FNET_TIMER_MS_IN_SEC) == 0)
     {
         FNET_DEBUG_TIMER("!");
     }
@@ -274,7 +266,7 @@ void fnet_timer_delay( fnet_time_t delay_ms )
 #endif
     {
         fnet_time_t start_ms = fnet_timer_get_ms();
-        
+
         if(delay_ms == 0) /* set minimum value */
         {
             delay_ms = 1;
@@ -298,7 +290,7 @@ void fnet_time_set(time_t sec)
 static void _fnet_time_set(time_t sec)
 {
     /* Get the timer counter value in seconds */
-    _fnet_timer_start = fnet_timer_get_seconds();
+    _fnet_timer_start_ms = fnet_timer_get_ms();
     _fnet_time_start = sec;
 }
 /************************************************************************
@@ -354,7 +346,7 @@ time_t fnet_time(time_t *sec)
         fnet_time_set(time_buld);
     }
 
-    result = _fnet_time_start + (fnet_timer_get_seconds() - _fnet_timer_start);
+    result = _fnet_time_start + ((fnet_timer_get_ms() - _fnet_timer_start_ms) / FNET_TIMER_MS_IN_SEC);
 
     if(sec)
     {

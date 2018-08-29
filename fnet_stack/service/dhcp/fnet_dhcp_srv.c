@@ -112,7 +112,7 @@ typedef enum
 typedef struct
 {
     fnet_dhcp_srv_addr_pool_state_t     state;                  /* Address state */
-    fnet_time_t                         state_timestamp;        /* The timestamp, in seconds.*/
+    fnet_time_t                         state_timestamp_ms;     /* The timestamp.*/
     fnet_time_t                         lease_time;             /* Lease time.*/
     fnet_mac_addr_t                     client_identifier;      /* Client-identifier. The combination of ’client identifier’ or ’chaddr’ and assigned network address constitute a unique identifier for the client’s lease*/
 } fnet_dhcp_srv_addr_pool_t;
@@ -347,7 +347,7 @@ fnet_bool_t fnet_dhcp_srv_get_addr_pool_info(fnet_dhcp_srv_desc_t desc, fnet_ind
                 {
                     FNET_MAC_ADDR_COPY(addr_pool->client_identifier, addr_info->client_mac_addr);  /* Client-identifier (MAC address)*/
                     addr_info->client_ip4_addr = fnet_htonl(fnet_ntohl(dhcp_srv_if->ip_addr_pool_start) + i); /* Client IPv4 address allocated by the DHCPv4 server.*/
-                    addr_info->lease_time = addr_pool->lease_time - (fnet_timer_get_seconds() - addr_pool->state_timestamp); /* Lease time (in seconds).*/
+                    addr_info->lease_time = addr_pool->lease_time - ((fnet_timer_get_ms() - addr_pool->state_timestamp_ms) / FNET_TIMER_MS_IN_SEC); /* Lease time (in seconds).*/
 
                     result = FNET_TRUE;
                     break;
@@ -386,17 +386,17 @@ static void _fnet_dhcp_srv_poll( void *fnet_dhcp_srv_if_p )
         ip_addr_pool = &dhcp_srv_if->ip_addr_pool[i];
         if(ip_addr_pool->state != FNET_DHCP_SRV_ADDR_POOL_STATE_FREE)
         {
-            fnet_time_t    timeout;
+            fnet_time_t    timeout_ms;
             if(ip_addr_pool->state == FNET_DHCP_SRV_ADDR_POOL_STATE_OFFERED)
             {
-                timeout = FNET_DHCP_SRV_ADDR_POOL_STATE_OFFERED_TIMEOUT;
+                timeout_ms = FNET_DHCP_SRV_ADDR_POOL_STATE_OFFERED_TIMEOUT * FNET_TIMER_MS_IN_SEC;
             }
             else
             {
-                timeout = ip_addr_pool->lease_time;
+                timeout_ms = ip_addr_pool->lease_time * FNET_TIMER_MS_IN_SEC;
             }
 
-            if((fnet_timer_get_seconds() - ip_addr_pool->state_timestamp) > timeout)
+            if((fnet_timer_get_ms() - ip_addr_pool->state_timestamp_ms) > timeout_ms)
             {
                 /* Expired. */
                 ip_addr_pool->state = FNET_DHCP_SRV_ADDR_POOL_STATE_FREE;
@@ -570,7 +570,7 @@ static void _fnet_dhcp_srv_poll( void *fnet_dhcp_srv_if_p )
                         /* Mark as not availble for lease time */
                         fnet_memset_zero(&ip_addr_pool->client_identifier, sizeof(ip_addr_pool->client_identifier));
                         ip_addr_pool->lease_time = dhcp_srv_if->lease_time;
-                        ip_addr_pool->state_timestamp = fnet_timer_get_seconds();
+                        ip_addr_pool->state_timestamp_ms = fnet_timer_get_ms();
                         ip_addr_pool->state = FNET_DHCP_SRV_ADDR_POOL_STATE_BOUND;
                     }
                 }
@@ -732,7 +732,7 @@ static void _fnet_dhcp_srv_send_message(fnet_dhcp_srv_if_t *dhcp_if, fnet_ip4_ad
     /* Add IP address lease time */
     if(add_lease_time == FNET_TRUE)
     {
-        fnet_uint32_t lease_time = fnet_htonl(dhcp_if->ip_addr_pool[addr_pool_index].lease_time - (fnet_timer_get_seconds() -  dhcp_if->ip_addr_pool[addr_pool_index].state_timestamp));
+        fnet_uint32_t lease_time = fnet_htonl(dhcp_if->ip_addr_pool[addr_pool_index].lease_time - ((fnet_timer_get_ms() -  (dhcp_if->ip_addr_pool[addr_pool_index].state_timestamp_ms) / FNET_TIMER_MS_IN_SEC)));
         option_position = _fnet_dhcp_srv_add_option(option_position, ((message->options + sizeof(message->options)) - option_position), FNET_DHCP_OPTION_LEASE, FNET_DHCP_OPTION_LEASE_LENGTH, &lease_time);
         if(option_position == FNET_NULL)
         {
@@ -1148,7 +1148,7 @@ static void _fnet_dhcp_srv_set_lease_time(fnet_dhcp_srv_if_t *dhcp_srv_if, fnet_
         network address, the server assigns a locally configured default
         lease time, ELSE */
         ip_addr_pool->lease_time = dhcp_srv_if->lease_time;
-        ip_addr_pool->state_timestamp = fnet_timer_get_seconds();
+        ip_addr_pool->state_timestamp_ms = fnet_timer_get_ms();
     }
     else
     {
@@ -1157,7 +1157,7 @@ static void _fnet_dhcp_srv_set_lease_time(fnet_dhcp_srv_if_t *dhcp_srv_if, fnet_
         address), the server may choose either to return the requested
         lease (if the lease is acceptable to local policy) or select
         another lease. */
-        ip_addr_pool->state_timestamp = fnet_timer_get_seconds();
+        ip_addr_pool->state_timestamp_ms = fnet_timer_get_ms();
         if(options->lease_time < dhcp_srv_if->lease_time)
         {
             ip_addr_pool->lease_time = options->lease_time;

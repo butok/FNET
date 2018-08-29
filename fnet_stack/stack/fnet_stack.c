@@ -126,7 +126,7 @@ static fnet_return_t _fnet_stack_init( void )
 
 #if FNET_CFG_DEBUG_STARTUP_MS && FNET_CFG_DEBUG
     /* Add start-up */
-    fnet_println("\n Waiting %d Seconds...", FNET_CFG_DEBUG_STARTUP_MS / 1000);
+    fnet_println("\n Waiting %d Seconds...", FNET_CFG_DEBUG_STARTUP_MS / FNET_TIMER_MS_IN_SEC);
     fnet_timer_delay(FNET_CFG_DEBUG_STARTUP_MS);
 #endif
 

@@ -249,15 +249,15 @@ static fnet_time_t fapp_freertos_timer_get_ms(void)
     fnet_time_t result;
     result =  xTaskGetTickCountFromISR() * portTICK_PERIOD_MS;
     return result;
-} 
+}
 
 /************************************************************************
 * Delay
 ************************************************************************/
 static void fapp_freertos_timer_delay(fnet_time_t delay_ms)
 {
-    TickType_t delay_ticks = delay_ms/portTICK_PERIOD_MS;
-    
+    TickType_t delay_ticks = delay_ms / portTICK_PERIOD_MS;
+
     if(delay_ticks == 0) /* Check minimum */
     {
         delay_ticks = 1;
