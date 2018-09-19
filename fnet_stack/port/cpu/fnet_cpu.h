@@ -57,7 +57,7 @@
     #if FNET_CFG_COMP_IAR
         #define FNET_AT_NONCACHEABLE_SECTION(var) var @FNET_CFG_CPU_NONCACHEABLE_SECTION
     #elif FNET_CFG_COMP_UV || FNET_CFG_COMP_GNUC || FNET_CFG_COMP_GHS
-        #define FNET_AT_NONCACHEABLE_SECTION(var) __attribute__((section(FNET_CFG_CPU_NONCACHEABLE_SECTION)) var
+        #define FNET_AT_NONCACHEABLE_SECTION(var) __attribute__((section(FNET_CFG_CPU_NONCACHEABLE_SECTION))) var
     #else
         #error Compiler is not supported
         #define FNET_AT_NONCACHEABLE_SECTION(var) var

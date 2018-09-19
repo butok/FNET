@@ -9,7 +9,9 @@ The stack provides following protocols and services:
 			- MK64FN1M (FRDM-K64F board)
 			- MK66FN2M (FRDM-K66F board)
 			- MK6DN512 (TWR-K60D100M board)
-		- i.MX-RT: MIMXRT1052 (IMXRT1050-EVKB board).
+		- i.MX-RT: 
+			- MIMXRT1052 (IMXRT1050-EVKB board).
+			- MIMXRT1062 (MIMXRT1060-EVK board).
 		- LPC: LPC54628 (OM13098: LPCXpresso54628 board)
 	- Qualcomm/Atheros Wi-Fi 202.11: 
 		- QCA4002 (GT202-GC3013-FRDM4-KIT board).

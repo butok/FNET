@@ -49,8 +49,6 @@
     #define FNET_CFG_FEC_INTERRUPT_ENABLE   1
 #endif
 
-#define FNET_FEC_ALIGN_DIV(div, x)     ((fnet_uint32_t)((fnet_uint8_t *)(x) + ((div)-1U)) & (~((div)-1U)))
-
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
@@ -191,8 +189,8 @@ static fnet_return_t _fnet_fec_init(fnet_netif_t *netif)
         fec_if->reg->EIR = 0xFFFFFFFFU;
 
         /* ======== Ethernet buffers initialisation ===============*/
-        fec_if->tx_buf_desc = (fnet_fec_buf_desc_t *)FNET_FEC_ALIGN_DIV(FNET_FEC_BUF_DESC_DIV, fec_if->buf->tx_buf_desc_buf);
-        fec_if->rx_buf_desc = (fnet_fec_buf_desc_t *)FNET_FEC_ALIGN_DIV(FNET_FEC_BUF_DESC_DIV, fec_if->buf->rx_buf_desc_buf);
+        fec_if->tx_buf_desc = (fnet_fec_buf_desc_t *)FNET_ALIGN_DIV(fec_if->buf->tx_buf_desc_buf, FNET_FEC_BUF_DESC_DIV);
+        fec_if->rx_buf_desc = (fnet_fec_buf_desc_t *)FNET_ALIGN_DIV(fec_if->buf->rx_buf_desc_buf, FNET_FEC_BUF_DESC_DIV);
 
         fec_if->tx_buf_desc_cur = fec_if->tx_buf_desc;
         fec_if->rx_buf_desc_cur = fec_if->rx_buf_desc;
@@ -203,7 +201,7 @@ static fnet_return_t _fnet_fec_init(fnet_netif_t *netif)
             fec_if->tx_buf_desc[i].status = FNET_HTONS(FNET_FEC_TX_BD_L | FNET_FEC_TX_BD_TC);
             fec_if->tx_buf_desc[i].length = FNET_HTONS(0U);
 
-            fec_if->tx_buf_desc[i].buf_ptr = (fnet_uint8_t *)fnet_htonl(FNET_FEC_ALIGN_DIV(FNET_FEC_TX_BUF_DIV, fec_if->buf->tx_buf[i]));
+            fec_if->tx_buf_desc[i].buf_ptr = (fnet_uint8_t *)fnet_htonl(FNET_ALIGN_DIV(fec_if->buf->tx_buf[i], FNET_FEC_TX_BUF_DIV));
         }
 
         fec_if->tx_buf_desc_num = FNET_FEC_TX_BUF_NUM;
@@ -214,7 +212,7 @@ static fnet_return_t _fnet_fec_init(fnet_netif_t *netif)
             fec_if->rx_buf_desc[i].status = FNET_HTONS(FNET_FEC_RX_BD_E);
             fec_if->rx_buf_desc[i].length = FNET_HTONS(0U);
 
-            fec_if->rx_buf_desc[i].buf_ptr = (fnet_uint8_t *)fnet_htonl(FNET_FEC_ALIGN_DIV(FNET_FEC_RX_BUF_DIV, fec_if->buf->rx_buf[i]));
+            fec_if->rx_buf_desc[i].buf_ptr = (fnet_uint8_t *)fnet_htonl(FNET_ALIGN_DIV(fec_if->buf->rx_buf[i], FNET_FEC_RX_BUF_DIV));
         }
 
         fec_if->rx_buf_desc_num = FNET_FEC_RX_BUF_NUM;
@@ -345,7 +343,7 @@ static fnet_return_t _fnet_fec_init(fnet_netif_t *netif)
 #elif FNET_CFG_CPU_S32R274
             //fec_if->reg_phy->MSCR = FNET_FEC_MSCR_MII_SPEED((FNET_FEC_CLOCK_KHZ/FNET_FEC_MII_CLOCK_KHZ) - 1U) & ~1U;
             fec_if->reg_phy->MSCR = 0x16; //TBD make it result of calculation
-#elif FNET_CFG_CPU_MIMXRT1052
+#elif FNET_CFG_CPU_MIMXRT1052 || FNET_CFG_CPU_MIMXRT1062
             /* User manual:    <MAC clock frequency> / ((<MSCR [MII_SPEED]> + 1) x 2) = <MDC frequency (2.5 MHz)> */
             fec_if->reg_phy->MSCR = FNET_FEC_MSCR_MII_SPEED((FNET_FEC_CLOCK_KHZ / (2 * FNET_ETH_MII_CLOCK_KHZ)) - 1U);
 #else  /* FNET_CFG_CPU_MPC5744P || FNET_CFG_CPU_MCF54418 || FNET_CFG_CPU_MK60N512 || FNET_CFG_CPU_MK60DN512 || FNET_CFG_CPU_MK64FN1 || FNET_CFG_CPU_MK66FN2 || FNET_CFG_CPU_MK70FN1 || FNET_CFG_CPU_MK60FN1 */

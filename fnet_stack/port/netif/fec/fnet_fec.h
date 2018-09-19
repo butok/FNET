@@ -191,7 +191,7 @@ typedef struct
     volatile fnet_uint8_t  reserved0[4100];    /*Reserved 4100 bytes (Base+0x0000-0x0103)*/
 #endif
 #endif
-#if FNET_CFG_CPU_MIMXRT1052
+#if FNET_CFG_CPU_MIMXRT1052 || FNET_CFG_CPU_MIMXRT1062
     volatile fnet_uint32_t reserved0;
 #endif
     volatile fnet_uint32_t EIR;                /* Interrupt even reg. */

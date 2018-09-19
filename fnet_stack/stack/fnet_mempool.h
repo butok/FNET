@@ -45,10 +45,10 @@ FNET_COMP_PACKED_END
 
 typedef enum
 {
-    FNET_MEMPOOL_ALIGN_8 = (0x7u),       /* Evenly divisible by 8.*/
-    FNET_MEMPOOL_ALIGN_16 = (0xFu),      /* Evenly divisible by 16.*/
-    FNET_MEMPOOL_ALIGN_32 = (0x1Fu),     /* Evenly divisible by 32.*/
-    FNET_MEMPOOL_ALIGN_64 = (0x3Fu)      /* Evenly divisible by 64.*/
+    FNET_MEMPOOL_ALIGN_8 = (8u),       /* Evenly divisible by 8.*/
+    FNET_MEMPOOL_ALIGN_16 = (16u),     /* Evenly divisible by 16.*/
+    FNET_MEMPOOL_ALIGN_32 = (32u),     /* Evenly divisible by 32.*/
+    FNET_MEMPOOL_ALIGN_64 = (64u)      /* Evenly divisible by 64.*/
 }
 fnet_mempool_align_t;
 

@@ -54,23 +54,25 @@ fnet_int32_t DEBUG_last_free_addr_num = 0;
 *************************************************************************/
 fnet_mempool_desc_t _fnet_mempool_init( void *pool_ptr, fnet_size_t pool_size, fnet_mempool_align_t alignment )
 {
-    struct fnet_mempool *mempool = 0;
+    struct fnet_mempool *mempool = FNET_NULL;
 
     if(alignment < FNET_MEMPOOL_ALIGN_8)
     {
         alignment = FNET_MEMPOOL_ALIGN_8; /* Set default alignment. */
     }
 
-    if(pool_ptr && (pool_size > (fnet_size_t)(alignment + sizeof(struct fnet_mempool))))
+    if(pool_ptr && (pool_size > (((fnet_size_t)alignment - 1) + (sizeof(struct fnet_mempool) + sizeof(fnet_uint32_t)))))
     {
         fnet_mempool_unit_header_t  *p;
-        fnet_uint8_t               *heap_ptr = (fnet_uint8_t *)(((fnet_uint32_t)(pool_ptr) + sizeof(struct fnet_mempool) + ((fnet_uint32_t)alignment + 1u))
-                                               & (0xffffffffu - alignment));
-        fnet_size_t                 heap_size = pool_size - ((fnet_uint32_t)heap_ptr - (fnet_uint32_t)pool_ptr);
+        fnet_uint8_t                *heap_ptr;
+        fnet_size_t                 heap_size;
 
-        mempool = (struct fnet_mempool *) pool_ptr;
+        mempool = (struct fnet_mempool *) FNET_ALIGN_DIV(pool_ptr, sizeof(fnet_uint32_t));
 
-        mempool->unit_size = (fnet_size_t)alignment + 1u;
+        heap_ptr = (fnet_uint8_t *)FNET_ALIGN_DIV((fnet_uint32_t)(mempool) + sizeof(struct fnet_mempool), (fnet_size_t)(alignment));
+        heap_size = pool_size - ((fnet_uint32_t)heap_ptr - (fnet_uint32_t)pool_ptr);
+
+        mempool->unit_size = (fnet_size_t)alignment;
 
 
         p = (fnet_mempool_unit_header_t *)heap_ptr;

@@ -92,6 +92,9 @@ typedef enum
     FNET_ERR = (-1) /**< There is error.*/
 } fnet_return_t;
 
+
+#define FNET_ALIGN_DIV(x, div)     ((fnet_uint32_t)((fnet_uint8_t *)(x) + ((div)-1U)) & (~((div)-1U)))
+
 #if defined(__cplusplus)
 extern "C" {
 #endif

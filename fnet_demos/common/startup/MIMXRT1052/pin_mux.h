@@ -83,6 +83,7 @@ void BOARD_InitPins(void);
  *
  */
 void BOARD_InitGT202Shield(void);
+void BOARD_InitSilex2401Shield(void);
 
 #if defined(__cplusplus)
 }

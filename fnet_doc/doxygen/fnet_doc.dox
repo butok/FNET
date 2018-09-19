@@ -53,7 +53,9 @@ preferred way to configure stack features). @n
 			- @b MK64FN1M (FRDM-K64F board)
 			- @b MK66FN2M (FRDM-K66F board)
 			- @b MK6DN512 (TWR-K60D100M board)
-		- i.MX-RT: @b MIMXRT1052 (IMXRT1050-EVKB board).
+		- i.MX-RT: 
+			- @b MIMXRT1052 (IMXRT1050-EVKB board).
+			- @b MIMXRT1062 (MIMXRT1060-EVK board)
 		- LPC: @b LPC54628 (OM13098: LPCXpresso54628 board)
 	- Qualcomm/Atheros Wi-Fi 202.11: 
 		- @b QCA4002 (GT202-GC3013-FRDM4-KIT board).
@@ -63,8 +65,9 @@ preferred way to configure stack features). @n
 		- PowerPC: MPC5668G, MPC5566, MPC564xBC, MPC5744P, S32R274.
 		- Kinetis: MK70FN1M, MK60FN1M.
 - Supported Compilers:
-	- IAR: Embedded Workbench for ARM, version 8.22
-	- GCC: Kinetis Design Studio, version 3.2 
+	- IAR: Embedded Workbench for ARM, v8.22
+	- GCC: Kinetis Design Studio, v3.2
+	- ARM: uVisin v5.24 
 - Bare-metal TCP/IP stack. No underlying RTOS is required, although it can be used with it. FreeRTOS example is provided.
 - Certified logos for:
 	- Golden IPv6 Ready.
@@ -186,7 +189,7 @@ fnet                        - FNET root directory.
 |         |    |-- mpc              - Power Architecture-specific source code.
 |         |-- netif            - Platform-specific network interface drivers.
 |              |-- enet          - ENET Ethernet module driver, used by LPC platform.
-|              |-- fec           - FEC/ENET Ethernet module driver, used by MCF,MPC and MK platforms.
+|              |-- fec           - FEC/ENET Ethernet module driver, used by MCF, MPC, i.MX-RT and MK platforms.
 |              |-- qca           - QCA4002/4 Wi-Fi module driver, adapter for "third_party/qca-x.x.x".
 |-- fnet_doc                  - FNET documentation.
 |-- fnet_demos                - FNET demo projects.
@@ -274,48 +277,48 @@ The following table summarizes the supported demo applications, platforms and co
  </tr>
 <tr>
  <td class="fnet_td_grey">MK64FN1M</td>
- <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td> 
- <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td> 
+ <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td> 
+ <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">MK66FN2M</td>
- <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
  <td ALIGN=CENTER>-</td>
- <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td> 
+ <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">MK60DN512</td>
- <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
  <td ALIGN=CENTER>-</td> 
  <td ALIGN=CENTER>-</td> 
  <td ALIGN=CENTER>-</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">LPC54628</td>
- <td ALIGN=CENTER>IAR8.30</td>
+ <td ALIGN=CENTER>IAR8.30.2</td>
  <td ALIGN=CENTER>-</td>
- <td ALIGN=CENTER>IAR8.30</td>
- <td ALIGN=CENTER>IAR8.30</td>
- <td ALIGN=CENTER>IAR8.30</td>
- <td ALIGN=CENTER>IAR8.30</td> 
+ <td ALIGN=CENTER>IAR8.30.2</td>
+ <td ALIGN=CENTER>IAR8.30.2</td>
+ <td ALIGN=CENTER>IAR8.30.2</td>
+ <td ALIGN=CENTER>IAR8.30.2</td> 
  </tr>
  <tr>
-  <td class="fnet_td_grey">MIMXRT1052</td>
- <td ALIGN=CENTER>IAR8.30</td>
+  <td class="fnet_td_grey">MIMXRT1052, MIMXRT1062</td>
+ <td ALIGN=CENTER>IAR8.30.2</td>
  <td ALIGN=CENTER>-</td>
- <td ALIGN=CENTER>IAR8.30</td>
- <td ALIGN=CENTER>IAR8.30</td>
- <td ALIGN=CENTER>IAR8.30</td> 
- <td ALIGN=CENTER>IAR8.30</td> 
+ <td ALIGN=CENTER>IAR8.30.2</td>
+ <td ALIGN=CENTER>IAR8.30.2</td>
+ <td ALIGN=CENTER>IAR8.30.2</td> 
+ <td ALIGN=CENTER>IAR8.30.2</td> 
  </tr>
 </table>
 
@@ -916,7 +919,8 @@ Tools used during this quick start:
 - GT202-GC3013-FRDM4-KIT board (http://www.chip1stop.com/web/USA/en/dispDetail.do?partId=ARRD-0000027) or SX-ULPAN-2401-SHIELD (http://www.silexamerica.com/products/connectivity-solutions/embedded-wireless/IoT-Modules/sx-ulpan-shield/)@n
   @note	- FNET was tested with QCA4002 (firmware version 3.0.8, 3.3.4, 3.3.5 and 3.3.6) and QCA4004 (firmware version 3.3.4). @n
 		- It does not work with frdmk64f rev B (rev D is OK).
-		- For IMXRT1050-EVKB Weld 0 resistor to R278,R279,R280 and R281.
+		- For IMXRT1050-EVKB weld 0 resistor to R278,R279,R280 and R281.
+		- For MIMXRT1060-EVK weld 0 resistor to R278,R279,R280 and R281.
 
 @section fnet_stepbystep_shell_wifi_qca Step by step
 
@@ -2355,6 +2359,10 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 4.6.2
+	- Added support for i.MX-RT, MIMXRT1062 platform (MIMXRT1060-EVK board).
+	- Added possibility to protect all directories, using HTTP authentication, by setting fnet_http_srv_auth_t->dir_name to "".
+	- Minor fixes.
 - Version 4.6.1
 	- Minor fixes.
 - Version 4.6.0

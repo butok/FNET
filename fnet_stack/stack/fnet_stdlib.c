@@ -683,33 +683,51 @@ fnet_int32_t fnet_strcmp_splitter( const fnet_char_t *in_str, const fnet_char_t 
     const fnet_char_t *s1p = in_str;
     const fnet_char_t *s2p = name;
 
-    while (*s1p == ' ')
+    while (*s2p == ' ')
     {
-        s1p++;	    /* Strip leading spaces */
+        s1p++;  /* Strip leading spaces */
     }
-    while (*s1p == splitter)
+    while (*s2p == splitter)
     {
         s1p++;	/* Strip heading slash */
     }
 
-    while((*s2p != '\0') && (*s1p == *s2p))
+    while (*s1p == ' ')
     {
-        ++s1p;
-        ++s2p;
-
-        if (*s1p == splitter)
-        {
-            break; /* next element */
-        }
+        s1p++;  /* Strip leading spaces */
     }
 
-    if(*s1p == splitter)
+    /* Special case for root folder.*/
+    if((*s2p == '\0') && (*s1p == splitter))
     {
         result = 0;
     }
     else
     {
-        result = (fnet_int32_t )(*s1p - *s2p);
+        while (*s1p == splitter)
+        {
+            s1p++;	/* Strip heading slash */
+        }
+
+        while((*s2p != '\0') && (*s1p == *s2p))
+        {
+            ++s1p;
+            ++s2p;
+
+            if (*s1p == splitter)
+            {
+                break; /* next element */
+            }
+        }
+
+        if(*s1p == splitter)
+        {
+            result = 0;
+        }
+        else
+        {
+            result = (fnet_int32_t )(*s1p - *s2p);
+        }
     }
 
     return result;

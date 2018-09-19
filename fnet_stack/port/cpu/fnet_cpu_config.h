@@ -55,6 +55,7 @@
  *            - @c FNET_CFG_CPU_S32R274 = Used platform is S32R274.
  *            - @c FNET_CFG_CPU_LPC54628 = Used platform is LPC54628.
  *            - @c FNET_CFG_CPU_MIMXRT1052 = Used platform is MIMXRT1052.
+ *            - @c FNET_CFG_CPU_MIMXRT1062 = Used platform is MIMXRT1062.
  *            @n @n
  *            Selected processor definition should be only one and must be defined as 1.
  *            All others may be defined but must have the 0 value.
@@ -121,6 +122,9 @@
 #endif
 #ifndef FNET_CFG_CPU_MIMXRT1052
     #define FNET_CFG_CPU_MIMXRT1052 (0)
+#endif
+#ifndef FNET_CFG_CPU_MIMXRT1062
+    #define FNET_CFG_CPU_MIMXRT1062 (0)
 #endif
 
 /*********** MFC ********************/
@@ -303,6 +307,15 @@
 
     #include "port/cpu/mimxrt/fnet_mimxrt1052_config.h"
     #define FNET_CPU_STR    "MIMXRT1052"
+#endif
+
+#if FNET_CFG_CPU_MIMXRT1062
+    #ifdef FNET_CPU_STR
+        #error "More than one CPU selected FNET_CFG_CPU_XXXX"
+    #endif
+
+    #include "port/cpu/mimxrt/fnet_mimxrt1062_config.h"
+    #define FNET_CPU_STR    "MIMXRT1062"
 #endif
 
 

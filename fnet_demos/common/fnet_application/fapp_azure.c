@@ -43,10 +43,10 @@
 #include "iothub_client_options.h"
 #include "azure_c_shared_utility/xlogging.h"
 
-/* Device connection string containing Hostname, Device Id & Device Key in the format:
-   "HostName=<host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>"                */
-#ifndef FAPP_CFG_AZURE_CMD_DEVICE_CONNECTION_STRING
-    #error Please define FAPP_CFG_AZURE_CMD_DEVICE_CONNECTION_STRING device connection string in fapp_user_config.h as "HostName=<host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>". More info: http://fnet.sourceforge.net/manual/quick_start_azure.html
+/* Azure application must define the device connection string containing Hostname, Device Id & Device Key in the format:
+   "HostName=<host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>" */
+#if FAPP_CFG_AZURE_CMD_DEVICE_CONNECTION_STRING == 0
+    #warning Please define FAPP_CFG_AZURE_CMD_DEVICE_CONNECTION_STRING device connection string in fapp_user_config.h as "HostName=<host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>". More info: http://fnet.sourceforge.net/manual/quick_start_azure.html
 #endif
 
 /************************************************************************

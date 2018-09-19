@@ -66,7 +66,7 @@ fnet_netif_t fnet_cpu_eth0_if =
 static fnet_return_t fnet_mimxrt_eth_init(fnet_netif_t *netif)
 {
 #if FNET_CFG_CPU_ETH_IO_INIT
-#if FNET_CFG_CPU_MIMXRT1052
+#if FNET_CFG_CPU_MIMXRT1052 || FNET_CFG_CPU_MIMXRT1062
     CLOCK_EnableClock(kCLOCK_Iomuxc);          /* iomuxc clock (iomuxc_clk_enable): 0x03u */
 
     IOMUXC_SetPinMux(
@@ -230,7 +230,7 @@ static fnet_return_t fnet_mimxrt_eth_init(fnet_netif_t *netif)
                                                 Pull Up / Down Config. Field: 100K Ohm Pull Up
                                                 Hyst. Enable Field: Hysteresis Disabled */
 
-#endif /* FNET_CFG_CPU_MIMXRT1052 */
+#endif /* FNET_CFG_CPU_MIMXRT1052 || FNET_CFG_CPU_MIMXRT1062 */
 #endif /*!FNET_CFG_CPU_ETH_IO_INIT*/
 
     /* KSZ8081RNB  PHY */
@@ -262,7 +262,7 @@ static fnet_return_t fnet_mimxrt_eth_init(fnet_netif_t *netif)
 *************************************************************************/
 static fnet_return_t fnet_mimxrt_eth_phy_init(fnet_netif_t *netif)
 {
-#if FNET_CFG_CPU_MIMXRT1052 /* & KSZ8081RNB PHY */
+#if FNET_CFG_CPU_MIMXRT1052 || FNET_CFG_CPU_MIMXRT1062/* & KSZ8081RNB PHY */
     gpio_pin_config_t gpio_config = {kGPIO_DigitalOutput, 0, kGPIO_NoIntmode};
 
     GPIO_PinInit(GPIO1, 9, &gpio_config); /* ENET_RST (active is low)*/
@@ -289,7 +289,7 @@ static fnet_return_t fnet_mimxrt_eth_phy_init(fnet_netif_t *netif)
 
         _fnet_eth_phy_write(netif, KSZ8081RNB_PHY_CONTROL2_REG, (reg_value | KSZ8081RNB_PHY_CONTROL2_REFCLK_SELECT_MASK));
     }
-#endif /* FNET_CFG_CPU_MIMXRT1052 & KSZ8081RNB PHY */
+#endif /* (FNET_CFG_CPU_MIMXRT1052 || FNET_CFG_CPU_MIMXRT1062) & KSZ8081RNB PHY */
 
     return FNET_OK;
 }

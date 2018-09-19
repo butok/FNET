@@ -116,7 +116,7 @@ static fnet_uint8_t fapp_http_cgi_buffer[CGI_MAX]; /* CGI Temporary buffer. */
 #if FNET_CFG_HTTP_SRV_AUTHENTICATION_BASIC && FNET_CFG_HTTP_SRV_VERSION_MAJOR
 static const fnet_http_srv_auth_t fapp_auth_table[] =
 {
-    {.realm = "Please use User Name:fnet Password:fnet to login", .dir_name = "auth", .userid = "fnet", .password = "fnet", .scheme = FNET_HTTP_SRV_AUTH_SCHEME_BASIC},
+    {.realm = "Please use User Name:fnet Password:fnet", .dir_name = "auth", .userid = "fnet", .password = "fnet", .scheme = FNET_HTTP_SRV_AUTH_SCHEME_BASIC},
     {.scheme = FNET_HTTP_SRV_AUTH_SCHEME_NONE}  /* End of the table. */
 };
 #endif

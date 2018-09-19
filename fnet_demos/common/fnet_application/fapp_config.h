@@ -300,6 +300,16 @@
     #define FAPP_CFG_AZURE_CMD          (0)
 #endif
 
+
+/************************************************************************
+* Azure client must set your own Azure Device connection string.
+* Device connection string containing Hostname, Device Id & Device Key:
+*  "HostName=<host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>"
+*************************************************************************/
+#ifndef FAPP_CFG_AZURE_CMD_DEVICE_CONNECTION_STRING
+    #define FAPP_CFG_AZURE_CMD_DEVICE_CONNECTION_STRING	0
+#endif
+
 /************************************************************************
 *    "stat" command.
 *************************************************************************/

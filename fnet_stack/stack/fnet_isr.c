@@ -56,7 +56,7 @@ static fnet_return_t fnet_isr_register(fnet_uint32_t vector_number,
 /************************************************************************
 *     Variables
 *************************************************************************/
-static fnet_uint32_t fnet_locked = 0u;
+static volatile fnet_uint32_t fnet_locked = 0u;
 static fnet_isr_entry_t *fnet_isr_table = 0;
 static fnet_event_desc_t fnet_event_desc_last = FNET_EVENT_VECTOR_NUMBER;
 
