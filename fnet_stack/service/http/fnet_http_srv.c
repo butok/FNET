@@ -942,7 +942,14 @@ static fnet_return_t _fnet_http_srv_tx_status_line (struct fnet_http_srv_if *htt
                 }
 #endif
 
-                session->response.tx_data = session->request.method->send;
+                if(session->request.method && session->request.method->send)
+                {
+                    session->response.tx_data = session->request.method->send;
+                }
+                else
+                {
+                    session->response.send_eof = FNET_TRUE; /* Only sataus (without data).*/
+                }
                 break;
             default:
                 break;

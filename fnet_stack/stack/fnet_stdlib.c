@@ -685,11 +685,11 @@ fnet_int32_t fnet_strcmp_splitter( const fnet_char_t *in_str, const fnet_char_t 
 
     while (*s2p == ' ')
     {
-        s1p++;  /* Strip leading spaces */
+        s2p++;  /* Strip leading spaces */
     }
     while (*s2p == splitter)
     {
-        s1p++;	/* Strip heading slash */
+        s2p++;	/* Strip heading slash */
     }
 
     while (*s1p == ' ')
