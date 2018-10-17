@@ -49,7 +49,7 @@
 
 /*  "dhcpc" command.*/
 #define FAPP_CFG_DHCPC_CMD              (1)
-#define FAPP_CFG_DHCPC_CMD_DISCOVER_MAX (3)
+#define FAPP_CFG_DHCPC_CMD_DISCOVER_MAX (5)
 
 /*  "dhcp" command.*/
 #define FAPP_CFG_DHCP_CMD               (1)

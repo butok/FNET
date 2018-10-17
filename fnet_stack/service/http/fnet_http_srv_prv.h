@@ -263,6 +263,7 @@ extern "C" {
 
 extern const struct fnet_http_srv_file_handler fnet_http_srv_cgi_handler;
 extern const struct fnet_http_srv_method fnet_http_srv_method_get;
+extern const struct fnet_http_srv_method fnet_http_srv_method_head;
 #if FNET_CFG_HTTP_SRV_POST && FNET_CFG_HTTP_SRV_VERSION_MAJOR
 extern const struct fnet_http_srv_method fnet_http_srv_method_post;
 #endif

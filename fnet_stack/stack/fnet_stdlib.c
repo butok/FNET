@@ -218,19 +218,25 @@ void fnet_memset_zero( void *dest, fnet_size_t n )
 *************************************************************************/
 fnet_int32_t fnet_memcmp(const void *src1, const void *src2, fnet_size_t count )
 {
-    const fnet_uint8_t *p1 = (const fnet_uint8_t *)src1;
-    const fnet_uint8_t *p2 = (const fnet_uint8_t *)src2;
+    const fnet_uint8_t  *p1 = (const fnet_uint8_t *)src1;
+    const fnet_uint8_t  *p2 = (const fnet_uint8_t *)src2;
+    fnet_int32_t        result;
 
     while(count)
     {
-        if(*p1++ != *p2++)
+        result = (fnet_int32_t)(*p1 - *p2);
+
+        if(result != 0)
         {
-            return 1;
+            break;
         }
+
         count--;
+        ++p1;
+        ++p2;
     }
 
-    return (0);
+    return result;
 }
 
 /************************************************************************

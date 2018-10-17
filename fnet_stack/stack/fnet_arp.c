@@ -279,7 +279,7 @@ fnet_mac_addr_t *_fnet_arp_lookup(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr)
     {
         if (ipaddr == arpif->arp_table[i].prot_addr)
         {
-            if (fnet_memcmp(arpif->arp_table[i].hard_addr, fnet_eth_null_addr, sizeof(fnet_mac_addr_t)))
+            if (fnet_memcmp(arpif->arp_table[i].hard_addr, fnet_eth_null_addr, sizeof(fnet_mac_addr_t)) != 0)
             {
                 result = &arpif->arp_table[i].hard_addr;
             }
@@ -373,8 +373,8 @@ void _fnet_arp_input(fnet_netif_t *netif, fnet_netbuf_t *nb)
             goto DROP;
         }
 
-        if (!((!fnet_memcmp(arp_hdr->sender_hard_addr, local_addr, sizeof(fnet_mac_addr_t)))             /* It's from me => ignore it.*/
-              || (!fnet_memcmp(arp_hdr->sender_hard_addr, fnet_eth_broadcast, sizeof(fnet_mac_addr_t)))) /* It's broadcast=> error. */
+        if (!((fnet_memcmp(arp_hdr->sender_hard_addr, local_addr, sizeof(fnet_mac_addr_t)) == 0)             /* It's from me => ignore it.*/
+              || (fnet_memcmp(arp_hdr->sender_hard_addr, fnet_eth_broadcast, sizeof(fnet_mac_addr_t)) == 0)) /* It's broadcast=> error. */
            )
         {
             fnet_ip4_addr_t sender_prot_addr = arp_hdr->sender_prot_addr;

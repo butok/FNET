@@ -370,8 +370,8 @@ static fnet_return_t _fnet_enet_set_hw_addr(fnet_netif_t *netif, fnet_uint8_t *h
        && (netif->netif_api->netif_type == FNET_NETIF_TYPE_ETHERNET)
        && ((enet_if = (fnet_enet_if_t *)((fnet_eth_if_t *)(netif->netif_prv))->eth_prv) != 0)
        && hw_addr
-       && (fnet_memcmp(hw_addr, fnet_eth_null_addr, sizeof(fnet_mac_addr_t)))
-       && (fnet_memcmp(hw_addr, fnet_eth_broadcast, sizeof(fnet_mac_addr_t)))
+       && (fnet_memcmp(hw_addr, fnet_eth_null_addr, sizeof(fnet_mac_addr_t)) != 0)
+       && (fnet_memcmp(hw_addr, fnet_eth_broadcast, sizeof(fnet_mac_addr_t)) != 0)
        && ((hw_addr[0] & 0x01U) == 0x00U)) /* Most significant nibble should be always even.*/
     {
         /* Set Macaddr */

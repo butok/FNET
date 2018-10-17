@@ -38,8 +38,20 @@ const struct fnet_http_srv_method fnet_http_srv_method_get =
 {
     .token = "GET",
     .handle = _fnet_http_srv_get_handle,
-    .receive = 0,
+    .receive = FNET_NULL,
     .send = _fnet_http_srv_get_send,
+    .close = _fnet_http_srv_get_close
+};
+
+/* The HEAD method.
+ It is identical to GET except that the server MUST NOT return a message-body in the response.
+ The metainformation contained in the HTTP headers in response to a HEAD request SHOULD be identical to the information sent in response to a GET request. */
+const struct fnet_http_srv_method fnet_http_srv_method_head =
+{
+    .token = "HEAD",
+    .handle = _fnet_http_srv_get_handle,
+    .receive = FNET_NULL,
+    .send = FNET_NULL,
     .close = _fnet_http_srv_get_close
 };
 

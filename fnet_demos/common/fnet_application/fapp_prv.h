@@ -53,6 +53,9 @@ const struct boot_mode *fapp_boot_mode_by_index (fapp_params_boot_mode_t index);
 #if FNET_CFG_IP4 &&((FAPP_CFG_DHCPC_CMD && FNET_CFG_DHCP_CLN) || FNET_CFG_AUTOIP)
 void fapp_addr_callback_updated(fnet_shell_desc_t desc, fnet_netif_desc_t netif);
 #endif
+#if FAPP_CFG_REINIT_CMD
+void fapp_reinit_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv );
+#endif
 
 #if defined(__cplusplus)
 }

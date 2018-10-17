@@ -599,9 +599,9 @@ static fnet_ssize_t _fnet_dhcp_cln_receive_message( fnet_dhcp_cln_if_t *dhcp, st
            || (dhcp_header->op !=  FNET_DHCP_OP_BOOTREPLY) /* BOOTREPLY is used in the 'op' field of each DHCP message sent from a server to a client.*/
            || (dhcp_header->xid != fnet_htonl(dhcp->xid))  /* Is message for us? */
            || (dhcp_header->hlen != sizeof(dhcp->macaddr))
-           || (fnet_memcmp(dhcp_header->chaddr, dhcp->macaddr, sizeof(dhcp->macaddr)))
+           || (fnet_memcmp(dhcp_header->chaddr, dhcp->macaddr, sizeof(dhcp->macaddr)) != 0)
            || (fnet_memcmp(&dhcp_header->magic_cookie[0], fnet_dhcp_magic_cookie,
-                           sizeof(fnet_dhcp_magic_cookie))) )
+                           sizeof(fnet_dhcp_magic_cookie)) != 0) )
         {
             size = 0; /* Ignore. */
         }

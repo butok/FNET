@@ -73,7 +73,7 @@
  *        string.
  * @showinitializer
  ******************************************************************************/
-#define FNET_VERSION            "4.6.2"
+#define FNET_VERSION            "4.6.3"
 
 /*! @} */
 

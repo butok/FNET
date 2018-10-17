@@ -457,21 +457,6 @@ void fapp_help_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
 }
 
 /************************************************************************
-* DESCRIPTION: Used to test FNET release/init only.
-************************************************************************/
-#if FAPP_CFG_REINIT_CMD
-void fapp_reinit_cmd ( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **argv )
-{
-    (void)argc;
-    (void)argv;
-
-    fapp_release(desc); /* FAPP release. */
-
-    fapp_init();        /* FAPP reinit.*/
-}
-#endif
-
-/************************************************************************
 * DESCRIPTION: Binds IPv6 address to the default interface.
 ************************************************************************/
 #if FAPP_CFG_BIND_CMD && FNET_CFG_IP6

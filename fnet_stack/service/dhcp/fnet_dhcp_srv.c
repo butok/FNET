@@ -411,9 +411,9 @@ static void _fnet_dhcp_srv_poll( void *fnet_dhcp_srv_if_p )
     if((size > (fnet_ssize_t)(sizeof(fnet_dhcp_header_t) - FNET_DHCP_OPTIONS_LENGTH)) /* Check minimum size */
        && (dhcp_header->op == FNET_DHCP_OP_BOOTREQUEST)        /* The 'op' field of each DHCP message sent from a client to a server contains BOOTREQUEST.*/
        && (dhcp_header->htype == FNET_DHCP_HTYPE_ETHERNET)     /* Ethernet type.*/
-       && (fnet_memcmp(dhcp_header->chaddr, fnet_eth_null_addr, sizeof(fnet_mac_addr_t))) /* Client HW address is not null */
+       && (fnet_memcmp(dhcp_header->chaddr, fnet_eth_null_addr, sizeof(fnet_mac_addr_t)) != 0) /* Client HW address is not null */
        && (dhcp_header->hlen == sizeof(fnet_mac_addr_t))       /* Supports MAC address only as HW address */
-       && !(fnet_memcmp(&dhcp_header->magic_cookie[0], fnet_dhcp_magic_cookie, sizeof(fnet_dhcp_magic_cookie))) /* Check magic cookie */
+       && (fnet_memcmp(&dhcp_header->magic_cookie[0], fnet_dhcp_magic_cookie, sizeof(fnet_dhcp_magic_cookie)) == 0) /* Check magic cookie */
       )
     {
         _fnet_dhcp_trace("RX DHCP Server", dhcp_header);
@@ -445,7 +445,7 @@ static void _fnet_dhcp_srv_poll( void *fnet_dhcp_srv_if_p )
         }
 
         /* If the client identifier is present (not null), use it */
-        if(fnet_memcmp(options_rx.client_identifier, fnet_eth_null_addr, sizeof(fnet_mac_addr_t)))
+        if(fnet_memcmp(options_rx.client_identifier, fnet_eth_null_addr, sizeof(fnet_mac_addr_t)) != 0)
         {
             client_identifier = &options_rx.client_identifier;
         }
@@ -1065,7 +1065,7 @@ static fnet_int32_t _fnet_dhcp_srv_get_addr_pool(fnet_dhcp_srv_if_t *dhcp_srv_if
     for(i = 0; i < dhcp_srv_if->ip_addr_pool_size; i++)
     {
         ip_addr_pool = &dhcp_srv_if->ip_addr_pool[i];
-        if(!fnet_memcmp(client_identifier, ip_addr_pool->client_identifier, sizeof(fnet_mac_addr_t)))
+        if(fnet_memcmp(client_identifier, ip_addr_pool->client_identifier, sizeof(fnet_mac_addr_t)) == 0)
         {
             result = i;
             break;

@@ -921,6 +921,7 @@ Tools used during this quick start:
 		- It does not work with frdmk64f rev B (rev D is OK).
 		- For IMXRT1050-EVKB weld 0 resistor to R278,R279,R280 and R281.
 		- For MIMXRT1060-EVK weld 0 resistor to R278,R279,R280 and R281.
+		- SX-ULPAN-2401 FiWi has pin conflict with ENET module on IMXRT1060/1050 board. So the Ethernet interface is disabled. GT202 does not have this type of issues.
 
 @section fnet_stepbystep_shell_wifi_qca Step by step
 
@@ -2359,12 +2360,21 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+- Version 4.6.3
+	- Added HEAD method support for the HTTP server.
+	- Fixed wrong behaviour when HTTP server gets not supported method.
+	- Fixed Auto-IP and MDNS services to pass new Bonjour Conformance Test v1.4.0.
+	- Fixed fnet_memcmp() to conform to standard memcmp() return values.
+	- Minor changes.
+	
 - Version 4.6.2
 	- Added support for i.MX-RT, MIMXRT1062 platform (MIMXRT1060-EVK board).
 	- Added possibility to protect all directories, using HTTP authentication, by setting fnet_http_srv_auth_t->dir_name to "".
 	- Minor fixes.
+	
 - Version 4.6.1
 	- Minor fixes.
+	
 - Version 4.6.0
 	- Certified for Apple Bonjour logo. 
 	- Added bare-metal Azure client example.

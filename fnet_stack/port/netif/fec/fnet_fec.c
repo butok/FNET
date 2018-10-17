@@ -675,8 +675,8 @@ static fnet_return_t _fnet_fec_set_hw_addr(fnet_netif_t *netif, fnet_uint8_t *hw
        && (netif->netif_api->netif_type == FNET_NETIF_TYPE_ETHERNET)
        && ((fec_if = (fnet_fec_if_t *)((fnet_eth_if_t *)(netif->netif_prv))->eth_prv) != 0)
        && hw_addr
-       && (fnet_memcmp(hw_addr, fnet_eth_null_addr, sizeof(fnet_mac_addr_t)))
-       && (fnet_memcmp(hw_addr, fnet_eth_broadcast, sizeof(fnet_mac_addr_t)))
+       && (fnet_memcmp(hw_addr, fnet_eth_null_addr, sizeof(fnet_mac_addr_t)) != 0)
+       && (fnet_memcmp(hw_addr, fnet_eth_broadcast, sizeof(fnet_mac_addr_t)) != 0)
        && ((hw_addr[0] & 0x01U) == 0x00U)) /* Most significant nibble should be always even.*/
     {
         fec_if->reg->PALR = (fnet_uint32_t)(((fnet_uint32_t)hw_addr[0] << 24U) | ((fnet_uint32_t)hw_addr[1] << 16U) | ((fnet_uint32_t)hw_addr[2] << 8U) | ((fnet_uint32_t)hw_addr[3] << 0U));

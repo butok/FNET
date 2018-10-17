@@ -159,7 +159,8 @@
 #define FNET_CFG_CPU_WIFI_FW_UPDATE         (1) 
 #endif
 
-#if 0 /* You may disable Ethernet interface.*/
+/* Disable Ethernet interface. SX-ULPAN-2401 FiWi has pin conflict with ENET module on IMXRT1060/1050 board. GT202 is OK */
+#if defined(WIFISHIELD_IS_SILEX2401) && (FNET_CFG_CPU_MIMXRT1052 || FNET_CFG_CPU_MIMXRT1062)  
 #define FNET_CFG_CPU_ETH0                   (0)
 #endif
 

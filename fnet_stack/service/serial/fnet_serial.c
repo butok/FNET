@@ -561,6 +561,8 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
 
                 if(sval)
                 {
+                    fnet_index_t i;
+
                     if(precision_is_present == FNET_TRUE)
                     {
                         vlen = fnet_strnlen(sval, precision_width);
@@ -575,7 +577,7 @@ fnet_size_t fnet_serial_vprintf(fnet_serial_stream_t stream, const fnet_char_t *
                         _fnet_serial_printk_pad(' ', stream, vlen, field_width, &count);
                     }
 
-                    for(fnet_index_t i = 0; i < vlen; i++) /* Print string */
+                    for(i = 0; i < vlen; i++) /* Print string */
                     {
                         count++;
                         fnet_serial_putchar(stream, (*sval++));

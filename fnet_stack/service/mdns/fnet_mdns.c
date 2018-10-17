@@ -291,7 +291,7 @@ static void _fnet_mdns_send_announcement(fnet_mdns_if_t *mdns_if, fnet_uint32_t 
 static fnet_bool_t _fnet_mdns_cmp_name(const char **rr_name_p, const char *name);
 static const fnet_uint8_t *_fnet_mdns_process_query(fnet_mdns_if_t *mdns_if, fnet_address_family_t address_family, const fnet_uint8_t *ptr, fnet_uint8_t *packet, fnet_uint32_t packet_size);
 static const fnet_uint8_t *_fnet_mdns_process_response(fnet_mdns_if_t *mdns_if, const fnet_uint8_t *ptr, fnet_uint8_t *packet, fnet_uint32_t packet_size);
-static fnet_int32_t _fnet_mdns_cmp_rr(fnet_uint8_t *our_rr, const fnet_uint8_t **rr, const fnet_uint8_t *packet);
+
 /******************************************************************************
  * Adds TXT record key.
  * buf      Buffer where the TXT record key to be added.
@@ -813,7 +813,7 @@ static void _fnet_mdns_poll( void *fnet_mdns_if_p )
                    250 ms after that, a third. */
                 if( (fnet_timer_get_ms() - mdns_if->send_timestamp) > FNET_MDNS_WAIT )
                 {
-                    /* Any response from this name => try three times */
+                    /* Any response from this name => try three times; Not send probe, when tiebreaker count is more then three */
                     if(mdns_if->probe_count < 3)
                     {
                         _fnet_mdns_send_probe(mdns_if);   /* Send next probe.*/
@@ -1099,26 +1099,26 @@ static fnet_mdns_query_type_t _fnet_mdns_get_query_type(fnet_uint16_t type)
 #if FNET_CFG_DEBUG_MDNS && FNET_CFG_DEBUG
 static void _fnet_mdns_print_qe_name(const fnet_char_t *prefix, const fnet_char_t *qe_name)
 {
-    fnet_size_t     qe_name_legth = hk_strlen(qe_name);
+    fnet_size_t     qe_name_legth = fnet_strlen(qe_name);
     fnet_uint8_t    name_length_index = 0;
     fnet_index_t    i;
 
-    fnet_print("%s", prefix); /* Print prefix*/
+    fnet_printf("%s", prefix); /* Print prefix*/
 
     for(i = 0; i < qe_name_legth; i++)
     {
         if(i == name_length_index)
         {
-            fnet_print("."); /* Instead of name length */
+            fnet_printf("."); /* Instead of name length */
             name_length_index += qe_name[i] + 1; /* Next name length byte */
         }
         else
         {
-            fnet_print("%c", qe_name[i]);
+            fnet_printf("%c", qe_name[i]);
         }
     }
 
-    fnet_prinln("");
+    fnet_println("");
 }
 #endif
 
@@ -1399,6 +1399,8 @@ static void _fnet_mdns_process_simultaneous_probe(fnet_mdns_if_t *mdns_if, const
 
     FNET_DEBUG_MDNS("MDNS: RX Simultaneous probe");
 
+    fnet_println("ns_count = %d", ns_count);
+
 #if FNET_CFG_IP4
     /* Prepare and Compare Our RR A record */
     if(_fnet_mdns_add_rr_a(mdns_if, our_rr,  sizeof(our_rr), mdns_if->rr_ttl, FNET_FALSE, FNET_FALSE) == NULL)
@@ -1431,6 +1433,7 @@ static void _fnet_mdns_process_simultaneous_probe(fnet_mdns_if_t *mdns_if, const
                     {
                         goto ERROR;
                     }
+
                     if(_fnet_mdns_is_rr_win(our_rr, ns_ptr, ns_count, packet) == FNET_TRUE)
                     {
                         is_win = FNET_TRUE;
@@ -1577,6 +1580,9 @@ ERROR:
 
 /************************************************************************
 * Compare RRs.
+* Return: 0 = Absoulutely same records
+*         1 = Win
+*         -1 = Loss
 ************************************************************************/
 static fnet_int32_t _fnet_mdns_cmp_rr(fnet_uint8_t *our_rr, const fnet_uint8_t **rr, const fnet_uint8_t *packet)
 {
@@ -1660,8 +1666,8 @@ static fnet_int32_t _fnet_mdns_cmp_rr(fnet_uint8_t *our_rr, const fnet_uint8_t *
                 then the rdata is compared.*/
                 else if(rr_data_length)
                 {
-                    int             cmp_res;
-                    fnet_uint16_t        cmp_length;
+                    fnet_int32_t  cmp_res;
+                    fnet_size_t   cmp_length;
 
                     cmp_length = (rr_data_length > our_rr_data_length) ? our_rr_data_length : rr_data_length; /* Get min length value */
 

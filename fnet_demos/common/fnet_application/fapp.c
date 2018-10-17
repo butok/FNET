@@ -37,10 +37,18 @@
     #include "fapp_freertos.h"
 #endif
 
+#include "fapp_mdns.h"
+#include "fapp_llmnr.h"
+#include "fapp_dhcp.h"
+#include "fapp_autoip.h"
+#include "fapp_telnet.h"
+#include "fapp_http.h"
+#include "fapp_bench.h"
+#include "fapp_fs.h"
+
 /************************************************************************
 *     Definitions.
 *************************************************************************/
-
 #define FAPP_NET_ERR            "Error: Network Interface is not configurated!"
 #define FAPP_BOOT_STR           "Press any key to stop (%s): %3d"
 #define FAPP_PARAMS_LOAD_STR    "[FAPP] Application parameters loaded from Flash."
@@ -49,7 +57,7 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fapp_init(void);
+static fnet_return_t fapp_init(void);
 
 #if FAPP_CFG_BOOTLOADER || FAPP_CFG_SETGET_CMD_BOOT
     static void fapp_boot_mode_go(fnet_shell_desc_t desc);
@@ -223,10 +231,11 @@ static void fapp_dup_ip_callback( fnet_netif_desc_t netif )
 /************************************************************************
 * DESCRIPTION: FNET Application initialization.
 ************************************************************************/
-static void fapp_init(void)
+static fnet_return_t fapp_init(void)
 {
     static fnet_uint8_t         stack_heap[FAPP_CFG_HEAP_SIZE];
     struct fnet_init_params     init_params;
+    fnet_return_t               result = FNET_ERR;
 
     /* Input parameters for FNET stack initialization */
     fnet_memset_zero(&init_params, sizeof(init_params));
@@ -273,6 +282,8 @@ static void fapp_init(void)
 
                 /* Start application */
                 fapp_boot(fapp_shell_desc);
+
+                result = FNET_OK;
             }
             else
             {
@@ -288,6 +299,8 @@ static void fapp_init(void)
     {
         fnet_println(FAPP_INIT_ERR, "FNET");
     }
+
+    return result;
 }
 
 /************************************************************************
@@ -366,12 +379,13 @@ void fapp_poll(void)
 void fapp_main(void)
 {
     /* Initilize FNET Demo application */
-    fapp_init();
-
-    while(1)
+    if(fapp_init() == FNET_OK)
     {
-        /* Application poll */
-        fapp_poll();
+        while(1)
+        {
+            /* Application poll */
+            fapp_poll();
+        }
     }
 }
 

@@ -191,14 +191,14 @@ void fnet_memset_zero(void *dest, fnet_size_t n );
  *
  * @param count     Number of bytes to compare.
  *
- * @return          This function returns zero if two buffers are identical,
- *                  otherwise returns @c 1.
+ * @return          - Zero if two buffers are identical.
+ *                  - Difference between the first differing bytes.
  *
  ******************************************************************************
  *
  * This function compares the first @c n bytes of the memory buffer pointed
  * by @c src1 to the first @c count bytes pointed by @c src2, returning zero if
- * they all match, otherwise returns @c 1.
+ * they all match, difference between the first differing bytes.
  *
  ******************************************************************************/
 fnet_int32_t fnet_memcmp(const void *src1, const void *src2, fnet_size_t count );

@@ -45,7 +45,7 @@
 #define FNET_AUTOIP_ANNOUNCE_NUM          (2)  /* (number of announcement packets) */
 #define FNET_AUTOIP_ANNOUNCE_INTERVAL     (2)  /* seconds (time between announcement packets) */
 #define FNET_AUTOIP_MAX_CONFLICTS         (10) /* (max conflicts before rate limiting) */
-#define FNET_AUTOIP_RATE_LIMIT_INTERVAL   (6)  /* seconds  (delay between successive attempts). RFC says 60 secons, we decided to minimise it. */
+#define FNET_AUTOIP_RATE_LIMIT_INTERVAL   (60) /* seconds  (delay between successive attempts). RFC says 60 secons. */
 #define FNET_AUTOIP_DEFEND_INTERVAL       (10) /* seconds  (minimum interval between defensive ARPs).*/
 
 /******************************************************************************

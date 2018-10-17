@@ -215,7 +215,7 @@ void _fnet_eth_input( fnet_netif_t *netif, fnet_uint8_t *frame, fnet_size_t fram
             goto DROP;
         }
         /* Just ignore our own "bounced" frames.*/
-        if(!fnet_memcmp(ethheader->source_addr, local_mac_addr, sizeof(local_mac_addr)))
+        if(fnet_memcmp(ethheader->source_addr, local_mac_addr, sizeof(local_mac_addr)) == 0)
         {
             goto DROP;
         }

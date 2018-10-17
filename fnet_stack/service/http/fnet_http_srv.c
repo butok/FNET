@@ -57,6 +57,7 @@
 static const struct fnet_http_srv_method *fnet_http_srv_method_list[] =
 {
     &fnet_http_srv_method_get,  /* GET method. */
+    &fnet_http_srv_method_head,  /* HEAD method. */
 #if FNET_CFG_HTTP_SRV_POST && FNET_CFG_HTTP_SRV_VERSION_MAJOR
     &fnet_http_srv_method_post, /* POST method. */
 #endif
@@ -544,7 +545,7 @@ static void _fnet_http_srv_poll( void *http_if_p )
                             session->buffer_actual_size = 0u;
                             session->response.buffer_sent = 0u;
 
-                            if((session->response.send_eof) || (session->response.tx_data(http) == FNET_ERR)) /* get data for sending */
+                            if((session->response.send_eof) || (session->response.tx_data == FNET_NULL) || (session->response.tx_data(http) == FNET_ERR)) /* get data for sending */
                             {
                                 FNET_DEBUG_HTTP("HTTP: TX EOF.");
                                 session->state = FNET_HTTP_SRV_STATE_CLOSING; /*=> CLOSING */
