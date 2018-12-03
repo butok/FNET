@@ -167,7 +167,7 @@ void fapp_sntp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
 {
     struct fnet_sockaddr        sntp_server_addr;
     fnet_index_t                error_param;
-    const fnet_char_t           *host_name = FNET_NULL;
+    const fnet_char_t           *host_name;
 
 
     FNET_COMP_UNUSED_ARG(argc);

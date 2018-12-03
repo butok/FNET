@@ -50,7 +50,6 @@
 
 #define FNET_DHCP_CLN_STATE_REQUESTING_SEND_TIMEOUT     (4U*1000U)          /*(ms) timeout for ACK => request retransmission.*/
 #define FNET_DHCP_CLN_STATE_REQUESTING_TIMEOUT          (4U*FNET_DHCP_CLN_STATE_REQUESTING_SEND_TIMEOUT) /*(ms) timeout to go to INIT state.*/
-#define FNET_DHCP_CLN_STATE_SELECTING_SEND_TIMEOUT      (FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT*1000U)     /*(ms) timeout for OFFER => INIT.*/
 #define FNET_DHCP_CLN_STATE_PROBING_TIMEOUT             (1U*1000U)          /*(ms) timeout to go to INIT state.*/
 
 /* Error strings.*/
@@ -102,7 +101,6 @@ struct fnet_dhcp_cln_options_prv
                                      * DHCP message.*/
 
 #if !FNET_CFG_DHCP_CLN_BOOTP
-
     fnet_uint8_t  overload;         /* Overload Option.
                                      * If this option is present, the DHCP client interprets
                                      * the specified additional fields after it concludes
@@ -143,7 +141,10 @@ typedef struct fnet_dhcp_cln_if
     fnet_time_t                 lease_obtained_time_ms;
 #endif
     fnet_time_t                 state_send_timeout_ms;      /* Current State send request timeout.*/
-    fnet_time_t                 send_request_time_ms;       /* Time at which the client sent the REQUEST message */
+    fnet_time_t                 state_send_timestamp_ms;    /* Timestamp at which the client sent the REQUEST message */
+
+    fnet_time_t                 response_timeout_ms;        /* Timeout for the response from the remote DHCP server, by default is set to FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT_MS */
+
     fnet_mac_addr_t             macaddr;
     fnet_uint32_t               xid;
     fnet_dhcp_cln_message_t     message;
@@ -199,7 +200,7 @@ static void _fnet_dhcp_cln_poll(void *fnet_dhcp_cln_if_p);
 
 #if FNET_CFG_DEBUG_DHCP_CLN && FNET_CFG_DEBUG/* Debug functions */
 /************************************************************************
-* DESCRIPTION: Print DHCP current state. For debug needs.
+* Print DHCP current state. For debug needs.
 ************************************************************************/
 static void _fnet_dhcp_cln_print_state( fnet_dhcp_cln_if_t *dhcp )
 {
@@ -242,7 +243,7 @@ static void _fnet_dhcp_cln_print_state( fnet_dhcp_cln_if_t *dhcp )
 }
 
 /************************************************************************
-* DESCRIPTION: Print DHCP options. For debug needs.
+* Print DHCP options. For debug needs.
 ************************************************************************/
 static void _fnet_dhcp_cln_print_options( struct fnet_dhcp_cln_options_in *options )
 {
@@ -283,7 +284,7 @@ static void _fnet_dhcp_cln_print_options( struct fnet_dhcp_cln_options_in *optio
 #endif /* FNET_CFG_DEBUG_DHCP_CLN && FNET_CFG_DEBUG */
 
 /************************************************************************
-* DESCRIPTION: Go to the next DHCP option.
+* Go to the next DHCP option.
 ************************************************************************/
 static fnet_uint8_t *_fnet_dhcp_cln_next_option( fnet_dhcp_cln_message_t *message )
 {
@@ -330,7 +331,7 @@ EXIT:
 }
 
 /************************************************************************
-* DESCRIPTION: Parse DHCP options from message.
+*  Parse DHCP options from message.
 ************************************************************************/
 static void _fnet_dhcp_cln_parse_options( fnet_dhcp_cln_message_t *message, struct fnet_dhcp_cln_options_in *options )
 {
@@ -419,7 +420,7 @@ static void _fnet_dhcp_cln_parse_options( fnet_dhcp_cln_message_t *message, stru
 }
 
 /************************************************************************
-* DESCRIPTION: Send DHCPv4 client message.
+*  Send DHCPv4 client message.
 ************************************************************************/
 static void _fnet_dhcp_cln_send_message( fnet_dhcp_cln_if_t *dhcp )
 {
@@ -514,7 +515,7 @@ static void _fnet_dhcp_cln_send_message( fnet_dhcp_cln_if_t *dhcp )
 #if FNET_CFG_DHCP_CLN_BOOTP
 
     /* Record time when client sent the DHCPREQUEST */
-    dhcp->send_request_time_ms = fnet_timer_get_ms();
+    dhcp->state_send_timestamp_ms = fnet_timer_get_ms();
 
 #else /* DHCP */
 
@@ -527,7 +528,7 @@ static void _fnet_dhcp_cln_send_message( fnet_dhcp_cln_if_t *dhcp )
     if((message_type == FNET_DHCP_OPTION_MSG_TYPE_REQUEST) || (message_type == FNET_DHCP_OPTION_MSG_TYPE_DISCOVER))
     {
         /* Record time when client sent the DHCPREQUEST */
-        dhcp->send_request_time_ms = fnet_timer_get_ms();
+        dhcp->state_send_timestamp_ms = fnet_timer_get_ms();
 
         /* Request a lease time for the IP address */
         if(dhcp->in_params.requested_lease_time)
@@ -582,7 +583,7 @@ EXIT:
 }
 
 /************************************************************************
-* DESCRIPTION: Receive DHCP message (non blocking).
+*  Receive DHCP message (non blocking).
 ************************************************************************/
 static fnet_ssize_t _fnet_dhcp_cln_receive_message( fnet_dhcp_cln_if_t *dhcp, struct fnet_dhcp_cln_options_in *options )
 {
@@ -593,7 +594,7 @@ static fnet_ssize_t _fnet_dhcp_cln_receive_message( fnet_dhcp_cln_if_t *dhcp, st
 
     size = fnet_socket_recvfrom(dhcp->socket_client, dhcp_header, sizeof(fnet_dhcp_header_t), 0U, &addr_from, &addr_len);
 
-    if((fnet_timer_get_ms() - dhcp->send_request_time_ms) < dhcp->state_send_timeout_ms)
+    if((fnet_timer_get_ms() - dhcp->state_send_timestamp_ms) < dhcp->state_send_timeout_ms)
     {
         if((size < (fnet_int32_t)(sizeof(fnet_dhcp_header_t) - FNET_DHCP_OPTIONS_LENGTH))
            || (dhcp_header->op !=  FNET_DHCP_OP_BOOTREPLY) /* BOOTREPLY is used in the 'op' field of each DHCP message sent from a server to a client.*/
@@ -621,14 +622,22 @@ static fnet_ssize_t _fnet_dhcp_cln_receive_message( fnet_dhcp_cln_if_t *dhcp, st
             if(options->private_options.overload)
             {
                 if(options->private_options.overload & FNET_DHCP_OPTION_OVERLOAD_SNAME)
+                {
                     dhcp->message.next_option_position = &dhcp_header->sname[0];
+                }
                 else
+                {
                     dhcp->message.next_option_position = &dhcp_header->file[0];
+                }
 
                 if(options->private_options.overload & FNET_DHCP_OPTION_OVERLOAD_FILE)
+                {
                     dhcp->message.end_position = &dhcp_header->file[128 - 1];
+                }
                 else
+                {
                     dhcp->message.end_position = &dhcp_header->sname[64 - 1];
+                }
 
                 _fnet_dhcp_cln_parse_options(&dhcp->message, options);
             }
@@ -644,7 +653,7 @@ static fnet_ssize_t _fnet_dhcp_cln_receive_message( fnet_dhcp_cln_if_t *dhcp, st
 }
 
 /************************************************************************
-* DESCRIPTION: Change state of DHCP client.
+*  Change state of DHCP client.
 ************************************************************************/
 static void _fnet_dhcp_cln_set_state( fnet_dhcp_cln_if_t *dhcp, fnet_dhcp_cln_state_t state )
 {
@@ -658,20 +667,24 @@ static void _fnet_dhcp_cln_set_state( fnet_dhcp_cln_if_t *dhcp, fnet_dhcp_cln_st
         case FNET_DHCP_CLN_STATE_INIT_REBOOT:
 #endif
         case FNET_DHCP_CLN_STATE_INIT:
-            fnet_netif_set_ip4_addr(dhcp->netif, INADDR_ANY, INADDR_ANY);   /* Set zero address. DHCP messages broadcast
-                                                                            * by a client prior to that client obtaining
-                                                                            * its IP address must have the source address
-                                                                            * field in IP header set to 0.*/
+
+            if(fnet_netif_get_ip4_addr_type(dhcp->netif) != FNET_NETIF_IP_ADDR_TYPE_AUTOCONFIGURABLE) /* Allow Auto-IP simultaneous run */
+            {
+                fnet_netif_set_ip4_addr(dhcp->netif, INADDR_ANY, INADDR_ANY);   /* Set zero address. DHCP messages broadcast
+                                                                                * by a client prior to that client obtaining
+                                                                                * its IP address must have the source address
+                                                                                * field in IP header set to 0.*/
+            }
             dhcp->xid++; /* Todo must be random.*/
             break;
         case FNET_DHCP_CLN_STATE_SELECTING:
-            _fnet_dhcp_cln_send_message(dhcp);                          /* Send DISCOVER */
-            dhcp->state_send_timeout_ms = FNET_DHCP_CLN_STATE_SELECTING_SEND_TIMEOUT; /* Wait OFFER */
+            _fnet_dhcp_cln_send_message(dhcp);                       /* Send DISCOVER */
+            dhcp->state_send_timeout_ms = dhcp->response_timeout_ms; /* Wait OFFER */
             break;
         case FNET_DHCP_CLN_STATE_BOUND:
 #if !FNET_CFG_DHCP_CLN_BOOTP
             dhcp->state_timeout_next_state = FNET_DHCP_CLN_STATE_RENEWING;
-            dhcp->lease_obtained_time_ms = dhcp->send_request_time_ms;
+            dhcp->lease_obtained_time_ms = dhcp->state_send_timestamp_ms;
 
             if(dhcp->current_options.public_options.t1 == FNET_HTONL(FNET_DHCP_CLN_LEASE_INFINITY))
             {
@@ -687,20 +700,20 @@ static void _fnet_dhcp_cln_set_state( fnet_dhcp_cln_if_t *dhcp, fnet_dhcp_cln_st
         case FNET_DHCP_CLN_STATE_REQUESTING:
             _fnet_dhcp_cln_send_message(dhcp); /* Send REQUEST.*/
             dhcp->state_timeout_next_state = FNET_DHCP_CLN_STATE_INIT;
-            dhcp->lease_obtained_time_ms = dhcp->send_request_time_ms;
+            dhcp->lease_obtained_time_ms = dhcp->state_send_timestamp_ms;
             dhcp->state_send_timeout_ms = FNET_DHCP_CLN_STATE_REQUESTING_SEND_TIMEOUT; /* Wait ACK */
             dhcp->state_timeout_ms = FNET_DHCP_CLN_STATE_REQUESTING_TIMEOUT;
             break;
         case FNET_DHCP_CLN_STATE_PROBING:
             fnet_arp_send_request(dhcp->netif, dhcp->current_options.public_options.ip_address.s_addr ); /* Send ARP probe.*/
             /* Record time when client sent the ARP brobe */
-            dhcp->send_request_time_ms = fnet_timer_get_ms();
+            dhcp->state_send_timestamp_ms = fnet_timer_get_ms();
             dhcp->state_timeout_ms = FNET_DHCP_CLN_STATE_PROBING_TIMEOUT;
             break;
         case FNET_DHCP_CLN_STATE_REBOOTING:
             _fnet_dhcp_cln_send_message(dhcp);               /* Send REQUEST.*/
             dhcp->state_timeout_next_state = FNET_DHCP_CLN_STATE_INIT;
-            dhcp->lease_obtained_time_ms = dhcp->send_request_time_ms; /* To follow state machine rules.*/
+            dhcp->lease_obtained_time_ms = dhcp->state_send_timestamp_ms; /* To follow state machine rules.*/
             dhcp->state_timeout_ms = FNET_DHCP_CLN_STATE_REBOOTING_TIMEOUT;
             dhcp->state_send_timeout_ms = FNET_DHCP_CLN_STATE_REBOOTING_SEND_TIMEOUT;
             break;
@@ -740,7 +753,7 @@ static void _fnet_dhcp_cln_set_state( fnet_dhcp_cln_if_t *dhcp, fnet_dhcp_cln_st
 }
 
 /************************************************************************
-* DESCRIPTION: Apply DHCP parameters to the interface.
+*  Apply DHCP parameters to the interface.
 ************************************************************************/
 static void _fnet_dhcp_cln_apply_params(fnet_dhcp_cln_if_t *dhcp)
 {
@@ -761,7 +774,7 @@ static void _fnet_dhcp_cln_apply_params(fnet_dhcp_cln_if_t *dhcp)
 }
 
 /************************************************************************
-* DESCRIPTION: DHCP client state machine.
+*  DHCP client state machine.
 ************************************************************************/
 /*
 State-transition diagram for DHCP clients [RFC 2131]:
@@ -832,7 +845,7 @@ static void _fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
         case FNET_DHCP_CLN_STATE_INIT:
             /* Todo: The client SHOULD wait a random time between one and ten seconds to
             * desynchronize the use of DHCP at startup. */
-            _fnet_dhcp_cln_set_state(dhcp, FNET_DHCP_CLN_STATE_SELECTING); /* => SELECTING */
+            _fnet_dhcp_cln_set_state(dhcp, FNET_DHCP_CLN_STATE_SELECTING); /* => SELECTING, send discover */
             if(dhcp->callback_discover)
             {
                 dhcp->callback_discover((fnet_dhcp_cln_desc_t)dhcp, dhcp->netif, dhcp->callback_discover_cookie);
@@ -874,7 +887,11 @@ static void _fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
 #if FNET_CFG_DHCP_CLN_BOOTP
             fnet_dhcp_cln_release(dhcp);
 #else /* DHCP */
-            if(fnet_netif_get_ip4_addr_type(dhcp->netif) == FNET_NETIF_IP_ADDR_TYPE_DHCP) /* If user did not change parameters manually.*/
+            if(fnet_netif_get_ip4_addr_type(dhcp->netif) == FNET_NETIF_IP_ADDR_TYPE_MANUAL) /* If user did not change parameters manually.*/
+            {
+                fnet_dhcp_cln_release((fnet_dhcp_cln_desc_t)dhcp); /* Address parameters changed outside => Disable DHCP*/
+            }
+            else
             {
                 struct fnet_sockaddr  addr_from;
                 fnet_size_t           addr_len = sizeof(addr_from);
@@ -888,10 +905,6 @@ static void _fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
                 {
                     _fnet_dhcp_cln_set_state(dhcp, dhcp->state_timeout_next_state); /* => INIT */
                 }
-            }
-            else
-            {
-                fnet_dhcp_cln_release((fnet_dhcp_cln_desc_t)dhcp); /* address parameters changed outside => Disable DHCP*/
             }
 #endif
             break;
@@ -910,7 +923,7 @@ static void _fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
         case FNET_DHCP_CLN_STATE_REQUESTING:    /*---- REQUESTING ----------------------------*/
             if((dhcp->state == FNET_DHCP_CLN_STATE_RENEWING) || (dhcp->state == FNET_DHCP_CLN_STATE_REBINDING))
             {
-                if(fnet_netif_get_ip4_addr_type(dhcp->netif) != FNET_NETIF_IP_ADDR_TYPE_DHCP) /* If user changed parameters manually. */
+                if(fnet_netif_get_ip4_addr_type(dhcp->netif) == FNET_NETIF_IP_ADDR_TYPE_MANUAL) /* If user changed parameters manually. */
                 {
                     fnet_dhcp_cln_release((fnet_dhcp_cln_desc_t)dhcp);      /* Disable DHCP if user has changed ip parameters. */
                     break;
@@ -938,7 +951,7 @@ static void _fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
                         * to ensure that the address is not already in use.*/
                         _fnet_dhcp_cln_print_options(&options);
 
-                        dhcp->lease_obtained_time_ms = dhcp->send_request_time_ms; /* save lease obtained time.*/
+                        dhcp->lease_obtained_time_ms = dhcp->state_send_timestamp_ms; /* save lease obtained time.*/
 
                         /* Check T1, T2 and lease time */
                         if(options.public_options.lease_time == FNET_HTONL(FNET_DHCP_CLN_LEASE_INFINITY))
@@ -998,7 +1011,7 @@ static void _fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
             break;
         /*---- REQUESTING -----------------------------------------------*/
         case FNET_DHCP_CLN_STATE_PROBING:
-            if((fnet_timer_get_ms() - dhcp->send_request_time_ms) < dhcp->state_timeout_ms)
+            if((fnet_timer_get_ms() - dhcp->state_send_timestamp_ms) < dhcp->state_timeout_ms)
             {
 #if 0 /* Emulate address conflict detection. */
                 static fnet_uint32_t conflict = 0u;
@@ -1030,7 +1043,7 @@ static void _fnet_dhcp_cln_poll( void *fnet_dhcp_cln_if_p )
 }
 
 /************************************************************************
-* DESCRIPTION: DHCP client initialization.
+*  DHCP client initialization.
 ************************************************************************/
 fnet_dhcp_cln_desc_t fnet_dhcp_cln_init(fnet_dhcp_cln_params_t *params )
 {
@@ -1116,6 +1129,7 @@ fnet_dhcp_cln_desc_t fnet_dhcp_cln_init(fnet_dhcp_cln_params_t *params )
     }
 
     dhcp_if->netif = netif;
+    dhcp_if->response_timeout_ms = FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT_MS;
 
     if(params)
     {
@@ -1155,7 +1169,7 @@ ERROR:
 }
 
 /************************************************************************
-* DESCRIPTION: DHCP client release.
+*  DHCP client release.
 ************************************************************************/
 void fnet_dhcp_cln_release(fnet_dhcp_cln_desc_t desc)
 {
@@ -1170,8 +1184,7 @@ void fnet_dhcp_cln_release(fnet_dhcp_cln_desc_t desc)
 }
 
 /************************************************************************
-* DESCRIPTION: This function returns FNET_TRUE if the DHCP client
-*              is enabled/initialised.
+*  Return FNET_TRUE if the DHCP client is enabled/initialised.
 ************************************************************************/
 fnet_bool_t fnet_dhcp_cln_is_enabled(fnet_dhcp_cln_desc_t desc)
 {
@@ -1191,7 +1204,7 @@ fnet_bool_t fnet_dhcp_cln_is_enabled(fnet_dhcp_cln_desc_t desc)
 }
 
 /************************************************************************
-* DESCRIPTION: Looks for a DHCP Client assigned to the specified network interface.
+* Look for a DHCP Client assigned to the specified network interface.
 ************************************************************************/
 fnet_dhcp_cln_desc_t fnet_dhcp_cln_get_by_netif(fnet_netif_desc_t netif)
 {
@@ -1221,8 +1234,7 @@ fnet_dhcp_cln_desc_t fnet_dhcp_cln_get_by_netif(fnet_netif_desc_t netif)
 }
 
 /************************************************************************
-* DESCRIPTION: This function copies current DHCP options to structure
-*              pointed by 'options'.
+* Copy current DHCP options to structure pointed by 'options'.
 ************************************************************************/
 void fnet_dhcp_cln_get_options(fnet_dhcp_cln_desc_t desc, struct fnet_dhcp_cln_options *options )
 {
@@ -1239,7 +1251,7 @@ void fnet_dhcp_cln_get_options(fnet_dhcp_cln_desc_t desc, struct fnet_dhcp_cln_o
 }
 
 /************************************************************************
-* DESCRIPTION: Registers the "IP parameters updated" DHCP event handler callback.
+* Register the "IP parameters updated" DHCP event handler callback.
 ************************************************************************/
 void fnet_dhcp_cln_set_callback_updated(fnet_dhcp_cln_desc_t desc, fnet_dhcp_cln_callback_t callback_updated, void *cookie)
 {
@@ -1255,7 +1267,7 @@ void fnet_dhcp_cln_set_callback_updated(fnet_dhcp_cln_desc_t desc, fnet_dhcp_cln
 }
 
 /************************************************************************
-* DESCRIPTION: Registers the "Discover message sent" DHCP event handler callback.
+*  Register the "Discover message sent" DHCP event handler callback.
 ************************************************************************/
 void fnet_dhcp_cln_set_callback_discover(fnet_dhcp_cln_desc_t desc, fnet_dhcp_cln_callback_t callback_discover, void *cookie)
 {
@@ -1267,6 +1279,26 @@ void fnet_dhcp_cln_set_callback_discover(fnet_dhcp_cln_desc_t desc, fnet_dhcp_cl
         dhcp_if->callback_discover = callback_discover;
         dhcp_if->callback_discover_cookie = cookie;
         fnet_service_mutex_unlock();
+    }
+}
+
+/************************************************************************
+* Change timeout for a DHCP server response.
+************************************************************************/
+void fnet_dhcp_cln_set_response_timeout(fnet_dhcp_cln_desc_t desc, fnet_time_t response_timout_ms)
+{
+    struct fnet_dhcp_cln_if   *dhcp_if = (struct fnet_dhcp_cln_if *) desc;
+
+    if(dhcp_if)
+    {
+        if(response_timout_ms)
+        {
+            dhcp_if->response_timeout_ms = response_timout_ms;
+        }
+        else /* Reset to the default value */
+        {
+            dhcp_if->response_timeout_ms = FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT_MS;
+        }
     }
 }
 

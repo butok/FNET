@@ -45,7 +45,7 @@
 #define FNET_AUTOIP_ANNOUNCE_NUM          (2)  /* (number of announcement packets) */
 #define FNET_AUTOIP_ANNOUNCE_INTERVAL     (2)  /* seconds (time between announcement packets) */
 #define FNET_AUTOIP_MAX_CONFLICTS         (10) /* (max conflicts before rate limiting) */
-#define FNET_AUTOIP_RATE_LIMIT_INTERVAL   (60) /* seconds  (delay between successive attempts). RFC says 60 secons. */
+#define FNET_AUTOIP_RATE_LIMIT_INTERVAL   (60) /* seconds  (delay between successive attempts). RFC says 60 seconds. */
 #define FNET_AUTOIP_DEFEND_INTERVAL       (10) /* seconds  (minimum interval between defensive ARPs).*/
 
 /******************************************************************************
@@ -110,7 +110,7 @@ static fnet_bool_t _fnet_autoip_is_collision(fnet_autoip_if_t *llif);
 static void _fnet_autoip_announce(fnet_autoip_if_t *llif);
 static void _fnet_autoip_probe(fnet_autoip_if_t *llif);
 static fnet_ip4_addr_t _fnet_autoip_generate_random_address(void);
-static fnet_time_t _fnet_autoip_get_random_wait_time(unsigned min, unsigned max);
+static fnet_time_t _fnet_autoip_get_random_wait_time(fnet_time_t min_sec, fnet_time_t max_sec);
 static void _fnet_autoip_change_state( fnet_autoip_if_t *llif, fnet_autoip_state_t state );
 static void _fnet_autoip_poll( void *fnet_autoip_if_p );
 
@@ -136,9 +136,9 @@ static fnet_ip4_addr_t _fnet_autoip_generate_random_address(void)
 /************************************************************************
 * DESCRIPTION: Generates a random wait time between min and max in ms
 ************************************************************************/
-static fnet_time_t _fnet_autoip_get_random_wait_time(unsigned min_sec, unsigned max_sec)
+static fnet_time_t _fnet_autoip_get_random_wait_time(fnet_time_t min_sec, fnet_time_t max_sec)
 {
-    unsigned long result_ms;
+    fnet_time_t result_ms;
     result_ms = fnet_rand();
     result_ms %= (max_sec - min_sec) * FNET_TIMER_MS_IN_SEC;
     result_ms += min_sec * FNET_TIMER_MS_IN_SEC;

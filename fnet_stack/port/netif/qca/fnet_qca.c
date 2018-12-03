@@ -79,7 +79,7 @@ static fnet_return_t _fnet_qca_wifi_connect(struct fnet_netif *netif, fnet_wifi_
 static fnet_return_t _fnet_qca_wifi_access_point(fnet_netif_t *netif, fnet_wifi_access_point_params_t *params);
 static fnet_return_t _fnet_qca_wifi_disconnect(struct fnet_netif *netif);
 static void _fnet_qca_on_connect(uint8_t event, uint8_t devId, char *bssid, uint8_t bssConn);
-static fnet_return_t _fnet_qca_get_ssid_info(const char *ssid, WLAN_AUTH_MODE *auth_mode, WLAN_CRYPT_TYPE *encrypt_mode);
+static fnet_return_t _fnet_qca_get_ssid_wpa(const char *ssid, WLAN_AUTH_MODE *auth_mode, WLAN_CRYPT_TYPE *encrypt_mode);
 static fnet_wifi_op_mode_t _fnet_qca_get_op_mode(struct fnet_netif *netif);
 static fnet_uint32_t _fnet_qca_fw_get_version(struct fnet_netif *netif);
 static void _fnet_qca_input(void *cookie);
@@ -430,7 +430,7 @@ static void fnet_qca_print_ssid_info(QCA_SCAN_INFO_PTR  scan_info)
 /************************************************************************
 * DESCRIPTION: Scans for SSID authentication parameters.
 *************************************************************************/
-static fnet_return_t _fnet_qca_get_ssid_info(const char *ssid, WLAN_AUTH_MODE *auth_mode, WLAN_CRYPT_TYPE *encrypt_mode)
+static fnet_return_t _fnet_qca_get_ssid_wpa(const char *ssid, WLAN_AUTH_MODE *auth_mode, WLAN_CRYPT_TYPE *encrypt_mode)
 {
     FNET_ASSERT(ssid != FNET_NULL);
     FNET_ASSERT(auth_mode != FNET_NULL);
@@ -440,6 +440,10 @@ static fnet_return_t _fnet_qca_get_ssid_info(const char *ssid, WLAN_AUTH_MODE *a
     QCA_SCAN_LIST       param = {0};
     int16_t             num_results = 0;
     fnet_index_t        i;
+    fnet_index_t        j;
+    WLAN_AUTH_MODE      result_auth_mode = WLAN_AUTH_NONE;
+    WLAN_CRYPT_TYPE     result_encrypt_mode = WLAN_CRYPT_NONE;
+    QCA_SCAN_INFO_PTR   scan_info;
 
     /* Set maximum power */
     if(qcom_power_set_mode(FNET_QCA_DEVICE_ID, MAX_PERF_POWER, USER) != A_OK)
@@ -453,7 +457,7 @@ static fnet_return_t _fnet_qca_get_ssid_info(const char *ssid, WLAN_AUTH_MODE *a
     }
     else
     {
-        for(i = 0; (num_results == 0) && (i < FNET_CFG_QCA_SCAN_MAX); i++)
+        for(i = 0; (i < FNET_CFG_QCA_SCAN_MAX) && (result_auth_mode == WLAN_AUTH_NONE); i++)
         {
             FNET_DEBUG_QCA("[QCA] Scanning for SSID \"%s\"...\r\n", ssid);
 
@@ -470,94 +474,101 @@ static fnet_return_t _fnet_qca_get_ssid_info(const char *ssid, WLAN_AUTH_MODE *a
                 FNET_DEBUG_QCA("[QCA] ERROR: qcom_get_scan() failed\r\n");
                 break;
             }
-        }
 
-        FNET_DEBUG_QCA("[QCA] Scan result count:%d\r\n", num_results);
+            for(j = 0; (j < num_results) && (result_auth_mode == WLAN_AUTH_NONE); j++ )
+            {
+                FNET_DEBUG_QCA("[QCA] Scan result count:%d\r\n", num_results);
 
-        if(num_results)
-        {
-            QCA_SCAN_INFO_PTR  scan_info = &param.scan_info_list[0]; /* Take first result */
+                scan_info = &param.scan_info_list[j];
 
-            /* Print result */
+                /* Print result */
 #if FNET_CFG_DEBUG_QCA && FNET_CFG_DEBUG
-            fnet_qca_print_ssid_info(scan_info);
+                fnet_qca_print_ssid_info(scan_info);
 #endif
 
-            /* Default values.*/
-            *auth_mode = WLAN_AUTH_NONE;
-            *encrypt_mode = WLAN_CRYPT_NONE;
-
-            if (scan_info->security_enabled)
-            {
-                /* AP security can support multiple options*/
-                if (scan_info->rsn_auth) /* WPA2 */
+                if (scan_info->security_enabled)
                 {
-                    if (scan_info->rsn_auth & SECURITY_AUTH_PSK)
+                    /* AP security can support multiple options*/
+                    if (scan_info->rsn_auth) /* WPA2 */
                     {
-                        if (scan_info->rsn_cipher & ATH_CIPHER_TYPE_CCMP)
+                        if (scan_info->rsn_auth & SECURITY_AUTH_PSK)
                         {
-                            *encrypt_mode = WLAN_CRYPT_AES_CRYPT;
-                        }
-                        else if(scan_info->rsn_cipher & ATH_CIPHER_TYPE_TKIP)
-                        {
-                            *encrypt_mode = WLAN_CRYPT_TKIP_CRYPT;
-                        }
+                            if (scan_info->rsn_cipher & ATH_CIPHER_TYPE_CCMP)
+                            {
+                                result_encrypt_mode = WLAN_CRYPT_AES_CRYPT;
+                            }
+                            else if(scan_info->rsn_cipher & ATH_CIPHER_TYPE_TKIP)
+                            {
+                                result_encrypt_mode = WLAN_CRYPT_TKIP_CRYPT;
+                            }
 
-                        if(*encrypt_mode)
-                        {
-                            *auth_mode = WLAN_AUTH_WPA2_PSK;
+                            if(result_encrypt_mode != WLAN_CRYPT_NONE )
+                            {
+                                result_auth_mode = WLAN_AUTH_WPA2_PSK;
+                            }
                         }
                     }
-                }
 
-                if((*auth_mode == WLAN_AUTH_NONE) && (scan_info->wpa_auth)) /*WPA*/
-                {
-                    if (scan_info->wpa_auth & SECURITY_AUTH_PSK)
+                    if((result_auth_mode == WLAN_AUTH_NONE) && (scan_info->wpa_auth)) /*WPA*/
                     {
-                        if (scan_info->wpa_cipher & ATH_CIPHER_TYPE_CCMP)
+                        if (scan_info->wpa_auth & SECURITY_AUTH_PSK)
                         {
-                            *encrypt_mode = WLAN_CRYPT_AES_CRYPT;
-                        }
-                        else if(scan_info->wpa_cipher & ATH_CIPHER_TYPE_TKIP)
-                        {
-                            *encrypt_mode = WLAN_CRYPT_TKIP_CRYPT;
-                        }
+                            if (scan_info->wpa_cipher & ATH_CIPHER_TYPE_CCMP)
+                            {
+                                result_encrypt_mode = WLAN_CRYPT_AES_CRYPT;
+                            }
+                            else if(scan_info->wpa_cipher & ATH_CIPHER_TYPE_TKIP)
+                            {
+                                result_encrypt_mode = WLAN_CRYPT_TKIP_CRYPT;
+                            }
 
-                        if(*encrypt_mode)
-                        {
-                            *auth_mode = WLAN_AUTH_WPA_PSK;
+                            if(result_encrypt_mode != WLAN_CRYPT_NONE)
+                            {
+                                result_auth_mode = WLAN_AUTH_WPA_PSK;
+                            }
                         }
                     }
-                }
 
-                /* WEP is identified by absent wpa and rsn ciphers */
-                if (scan_info->rsn_cipher == 0 && scan_info->wpa_cipher == 0)
+                    /* WEP is identified by absent wpa and rsn ciphers */
+#if 0 /* We do not want WEP */
+                    if (scan_info->rsn_cipher == 0 && scan_info->wpa_cipher == 0)
+                    {
+                        result_auth_mode = WLAN_AUTH_WEP;
+                        result_encrypt_mode = WLAN_CRYPT_WEP_CRYPT;
+                    }
+#endif
+                }
+#if 0 /* We do not want unsecure */
+                else
                 {
-                    *auth_mode = WLAN_AUTH_WEP;
-                    *encrypt_mode = WLAN_CRYPT_WEP_CRYPT;
+                    FNET_DEBUG_QCA("[QCA] SSID \"%s\" no security.\r\n", ssid);
+                    result_auth_mode = WLAN_AUTH_NONE;
+                    result_encrypt_mode = WLAN_CRYPT_NONE;
                 }
+#endif
             }
-            else
-            {
-                FNET_DEBUG_QCA("[QCA] SSID \"%s\" no security.\r\n", ssid);
-                *auth_mode = WLAN_AUTH_NONE;
-                *encrypt_mode = WLAN_CRYPT_NONE;
-            }
-
-            result = FNET_OK;
         }
-        else
+
+        /* Nothing is found - apply default parameters*/
+        if(result_auth_mode == WLAN_AUTH_NONE)
         {
             FNET_DEBUG_QCA("[QCA] SSID \"%s\" is not found. Applying default parameters.\r\n", ssid);
             /* By default use WPA2 - AES */
             *auth_mode = WLAN_AUTH_WPA2_PSK;
             *encrypt_mode = WLAN_CRYPT_AES_CRYPT;
-            result = FNET_OK;
         }
+        else
+        {
+            *auth_mode = result_auth_mode;
+            *encrypt_mode = result_encrypt_mode;
+        }
+
+        result = FNET_OK;
     }
 
     return result;
 }
+
 
 /************************************************************************
 * DESCRIPTION: Callback function for link status change.
@@ -662,12 +673,12 @@ static fnet_return_t _fnet_qca_wifi_connect(struct fnet_netif *netif, fnet_wifi_
             }
 #endif
 
-            if(params->wpa_passphrase && fnet_strlen(params->wpa_passphrase)) /* Security */
+            if(params->wpa_passphrase && fnet_strlen(params->wpa_passphrase)) /* Security = WPA*/
             {
-                /* Scan for security parameters.*/
-                if(_fnet_qca_get_ssid_info(params->ssid, &fnet_qca_auth_mode, &encrypt_mode) == FNET_ERR)
+                /* Scan for WPA parameters.*/
+                if(_fnet_qca_get_ssid_wpa(params->ssid, &fnet_qca_auth_mode, &encrypt_mode) == FNET_ERR)
                 {
-                    FNET_DEBUG_QCA("[QCA] ERROR: _fnet_qca_get_ssid_info failed\r\n");
+                    FNET_DEBUG_QCA("[QCA] ERROR: _fnet_qca_get_ssid_wpa failed\r\n");
                     goto EXIT;
                 }
             }

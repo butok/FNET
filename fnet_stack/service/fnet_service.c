@@ -41,7 +41,7 @@ typedef struct
 /* Polling interface structure */
 static struct
 {
-    volatile fnet_poll_list_entry_t list[FNET_CFG_SERVICE_MAX]; /* Polling list.*/
+    fnet_poll_list_entry_t list[FNET_CFG_SERVICE_MAX]; /* Polling list.*/
 } fnet_poll_if;
 
 
@@ -83,7 +83,7 @@ void fnet_service_poll( void )
 fnet_service_desc_t fnet_service_register( fnet_service_poll_t service, void *service_cookie )
 {
     fnet_index_t            i = 0u;
-    volatile fnet_poll_list_entry_t  *poll_entry = 0;
+    fnet_poll_list_entry_t  *poll_entry = 0;
 
     if(service)
     {

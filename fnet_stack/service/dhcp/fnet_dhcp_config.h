@@ -72,17 +72,17 @@
 #endif
 
 /**************************************************************************/ /*!
- * @def     FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT
- * @brief   Timeout for the response from the remote DHCP server (in seconds).@n
- *           @n
- *          The recommended value is from @c 1 till @c 10 seconds.@n
+ * @def     FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT_MS
+ * @brief   Timeout for the response from the remote DHCP server (in milliseconds).@n
+ *          The recommended value is from @c 1000 till @c 10000 ms.@n
  *          If the DHCP client does not receive any response from a DHCP server during this time,
- *          it sends new discover message. @n
- *          Default value is @b @c 4.
+ *          it sends new discover message.
+ *          During run time, it may be changed by @ref fnet_dhcp_cln_set_response_timeout().@n
+ *          Default value is @b @c 4000 ms. @n
  * @showinitializer
  ******************************************************************************/
-#ifndef FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT
-    #define FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT      (4U)
+#ifndef FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT_MS
+    #define FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT_MS   (4000U)
 #endif
 
 /**************************************************************************/ /*!

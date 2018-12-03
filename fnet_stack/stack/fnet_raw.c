@@ -35,7 +35,7 @@
 static fnet_return_t _fnet_raw_attach( fnet_socket_if_t *sk );
 static fnet_return_t _fnet_raw_detach( fnet_socket_if_t *sk );
 static fnet_return_t _fnet_raw_connect( fnet_socket_if_t *sk, struct fnet_sockaddr *foreign_addr);
-static fnet_int32_t _fnet_raw_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *addr);
+static fnet_int32_t _fnet_raw_snd( fnet_socket_if_t *sk, const fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *addr);
 static fnet_int32_t _fnet_raw_rcv(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct fnet_sockaddr *addr);
 static fnet_return_t _fnet_raw_shutdown( fnet_socket_if_t *sk, fnet_sd_flags_t how );
 static void _fnet_raw_release(void);
@@ -376,7 +376,7 @@ static fnet_return_t _fnet_raw_connect( fnet_socket_if_t *sk, struct fnet_sockad
 /************************************************************************
 * DESCRIPTION: RAW send function.
 *************************************************************************/
-static fnet_int32_t _fnet_raw_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *addr)
+static fnet_int32_t _fnet_raw_snd( fnet_socket_if_t *sk, const fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *addr)
 {
     fnet_netbuf_t               *nb;
     fnet_error_t                error = FNET_ERR_OK;

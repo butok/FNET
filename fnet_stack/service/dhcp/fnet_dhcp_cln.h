@@ -61,7 +61,7 @@
 *        if(fnet_dhcp_cln_init(&dhcp_params))
 *        {
 *            // Register DHCP event handler callbacks.
-*            fnet_dhcp_cln_set_callback_updated(fapp_dhcp_cln_callback_updated_unblock, shl);
+*            fnet_dhcp_cln_set_callback_updated(fapp_dhcp_cln_callback_updated_boottime, shl);
 *            fnet_dhcp_cln_set_callback_discover(fapp_dhcp_cln_callback_discover, shl);
 *        }
 *        else
@@ -77,7 +77,7 @@
 * - @ref FNET_CFG_DHCP_CLN_BOOTP
 * - @ref FNET_CFG_DHCP_CLN_PORT
 * - @ref FNET_CFG_DHCP_SRV_PORT
-* - @ref FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT
+* - @ref FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT_MS
 * - @ref FNET_CFG_DNS
 * - @ref FNET_CFG_DHCP_CLN_BROADCAST
 *
@@ -179,7 +179,7 @@ typedef void *fnet_dhcp_cln_desc_t;
 
 /***************************************************************************/ /*!
  *
- * @brief    Initializes the DHCPv4 client service.
+ * @brief    Initialize the DHCPv4 client service.
  *
  * @param params     Initialization parameters.
  *
@@ -202,7 +202,7 @@ fnet_dhcp_cln_desc_t fnet_dhcp_cln_init( fnet_dhcp_cln_params_t *params );
 
 /***************************************************************************/ /*!
  *
- * @brief    Releases the DHCPv4 client service.
+ * @brief    Release the DHCPv4 client service.
  *
  * @param desc     DHCP client descriptor to be released.
  *
@@ -218,7 +218,7 @@ void fnet_dhcp_cln_release(fnet_dhcp_cln_desc_t desc);
 
 /***************************************************************************/ /*!
  *
- * @brief    Retrieves the current DHCPv4 client options retrieved from a
+ * @brief    Retrieve the current DHCPv4 client options retrieved from a
  *           DHCP server.
  *
  * @param desc      DHCP client descriptor.
@@ -249,7 +249,7 @@ typedef void(*fnet_dhcp_cln_callback_t)(fnet_dhcp_cln_desc_t desc, fnet_netif_de
 
 /***************************************************************************/ /*!
  *
- * @brief    Registers the "IP parameters updated" DHCP event handler callback.
+ * @brief    Register the "IP parameters updated" DHCP event handler callback.
  *
  * @param desc          DHCP client descriptor.
  * @param callback_updated Pointer to the callback function defined by
@@ -270,7 +270,7 @@ void fnet_dhcp_cln_set_callback_updated (fnet_dhcp_cln_desc_t desc, fnet_dhcp_cl
 
 /***************************************************************************/ /*!
  *
- * @brief    Registers the "Discover message sent" DHCP event handler callback.
+ * @brief    Register the "Discover message sent" DHCP event handler callback.
  *
  * @param desc              DHCP client descriptor.
  * @param callback_discover  Pointer to the callback function defined by
@@ -279,7 +279,7 @@ void fnet_dhcp_cln_set_callback_updated (fnet_dhcp_cln_desc_t desc, fnet_dhcp_cl
  *                          It's passed to the @c callback_discover callback
  *                          function as input parameter.
  *
- * @see FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT
+ * @see FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT_MS
  *
  ******************************************************************************
  *
@@ -294,7 +294,29 @@ void fnet_dhcp_cln_set_callback_discover (fnet_dhcp_cln_desc_t desc, fnet_dhcp_c
 
 /***************************************************************************/ /*!
  *
- * @brief    Detects if the DHCP Client service is enabled or disabled.
+ * @brief    Change timeout for a DHCP server response.
+ *
+ * @param desc                  DHCP client descriptor.
+ *
+ * @param response_timout_ms    Response timeout (in milliseconds).
+ *
+ * @see FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT_MS
+ *
+ ******************************************************************************
+ *
+ * This function sets the timeout for a response from a remote DHCP server.
+ * If the DHCP client does not receive any response from a DHCP server during this time,
+ * the client sends new discover message.@n
+ * If the response_timout_ms is 0, the function reset the timeout to @ref FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT_MS. @n
+ * Using of this function is optional, the default timeout value is defined by
+ * @ref FNET_CFG_DHCP_CLN_RESPONSE_TIMEOUT_MS.
+ *
+ ******************************************************************************/
+void fnet_dhcp_cln_set_response_timeout(fnet_dhcp_cln_desc_t desc, fnet_time_t response_timout_ms);
+
+/***************************************************************************/ /*!
+ *
+ * @brief    Detect if the DHCP Client service is enabled or disabled.
  *
  * @param desc     DHCP Client descriptor
  *
@@ -311,7 +333,7 @@ fnet_bool_t fnet_dhcp_cln_is_enabled(fnet_dhcp_cln_desc_t desc);
 
 /***************************************************************************/ /*!
  *
- * @brief    Looks for a DHCP Client assigned to the specified network interface.
+ * @brief    Look for a DHCP Client assigned to the specified network interface.
  *
  * @param netif      Network interface descriptor.
  *

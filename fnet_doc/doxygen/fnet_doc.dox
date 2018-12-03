@@ -566,7 +566,7 @@ Ethernet Interface <default>:
 
 SHELL>
 @endverbatim
-@note You may start Auto-IP service automatically, if no DHCPv4 server was discovered, by adding the @c autoip parameter to the @c dhcpc command.
+@note You may start Auto-IP service automatically, if no DHCPv4 server was discovered, by adding the @c autoip parameter to the @c dhcpc command. DHCP client will continue its DHCP server discovering, while Auto-IP is active. The DHCP discovery period defined by FAPP_CFG_DHCPC_CMD_RESPONSE_TIMEOUT_AUTOIP_MS. 
 
 - You may enter the @c save command to save the all run-time parameters to non-volatile memory (it is located in the last erase page of the on-chip flash memory).
 @verbatim
@@ -2360,16 +2360,22 @@ Press any key to continue . . .
 * @page fnet_history FNET Change Log
 
 FNET public releases:
+
+- Version 4.6.4
+	- Allow DHCP client to continue DHCP server discovering, while Auto-IP is active.
+	- Add fnet_dhcp_cln_set_response_timeout() to change a DHCP server response time-out.
+	- Fixed possible unwanted QCA WiFi connection to an open network, even when WPA pass-phrase is provided.
+
 - Version 4.6.3
-	- Added HEAD method support for the HTTP server.
-	- Fixed wrong behaviour when HTTP server gets not supported method.
-	- Fixed Auto-IP and MDNS services to pass new Bonjour Conformance Test v1.4.0.
-	- Fixed fnet_memcmp() to conform to standard memcmp() return values.
+	- Add HEAD method support for the HTTP server.
+	- Fix wrong behaviour when HTTP server gets not supported method.
+	- Fix Auto-IP and MDNS services to pass new Bonjour Conformance Test v1.4.0.
+	- Fix fnet_memcmp() to conform to standard memcmp() return values.
 	- Minor changes.
 	
 - Version 4.6.2
-	- Added support for i.MX-RT, MIMXRT1062 platform (MIMXRT1060-EVK board).
-	- Added possibility to protect all directories, using HTTP authentication, by setting fnet_http_srv_auth_t->dir_name to "".
+	- Add support for i.MX-RT, MIMXRT1062 platform (MIMXRT1060-EVK board).
+	- Add possibility to protect all directories, using HTTP authentication, by setting fnet_http_srv_auth_t->dir_name to "".
 	- Minor fixes.
 	
 - Version 4.6.1
@@ -2377,492 +2383,487 @@ FNET public releases:
 	
 - Version 4.6.0
 	- Certified for Apple Bonjour logo. 
-	- Added bare-metal Azure client example.
-	- Used milliseconds instead of timer ticks.
-	- Added FNET_CFG_TIMER_ALT which enables/disables alternative timer support.
-	- Used FreeRTOS timer instead bare-metal one for FreeRTOS demo applications.
-	- Deprecated fnet_timer_get_ticks(), fnet_timer_ms2ticks().
-	- Deprecated FNET_CFG_TIMER_POLL_AUTOMATIC, covered by FNET_CFG_TIMER_ALT.
-	- Used typedef instead of struct type.
-	- Added fnet_shell_get_command_by_name() which looks for a shell command by its name.
-	- Fixed minor Coverity findings.
+	- Add bare-metal Azure client example.
+	- Use milliseconds instead of timer ticks.
+	- Add FNET_CFG_TIMER_ALT which enables/disables alternative timer support.
+	- Use FreeRTOS timer instead bare-metal one for FreeRTOS demo applications.
+	- Deprecate fnet_timer_get_ticks(), fnet_timer_ms2ticks().
+	- Deprecate FNET_CFG_TIMER_POLL_AUTOMATIC, covered by FNET_CFG_TIMER_ALT.
+	- Use typedef instead of struct type.
+	- Add fnet_shell_get_command_by_name() which looks for a shell command by its name.
+	- Fix minor Coverity findings.
 	
 - Version 4.5.3
-	- Updated Azure IoT SDK to version 1.2.8
-	- Fixed possible first packet loss for the AirPort Wi-Fi router.
+	- Update Azure IoT SDK to version 1.2.8
+	- Fix possible first packet loss for the AirPort Wi-Fi router.
 	- Minor fixes.
 	
 - Version 4.5.2
-	- Redesigned Azure client example as a service.
-	- Added frame buffering to QCA WiFi adapter to avoid possible frame dropping.
-	- Fixed fnet_service_poll() to avoid possible recursion.
+	- Redesign Azure client example as a service.
+	- Add frame buffering to QCA WiFi adapter to avoid possible frame dropping.
+	- Fix fnet_service_poll() to avoid possible recursion.
 	- Made fnet_shell_block/unblock() nested.
 
 - Version 4.5.1
 	- Certified for Microsoft Azure IoT.
-	- Updated Azure IoT SDK to version 1.2.5.
-	- Updated mbedTLS to version 2.12.0.
-	- Added fnet_mdns_probe() which restarts mDNS probing.
-	- Added "freertos" or "bm" sub-folders to the demo application directory fnet_demos/build/\<board_name\>/\<demo_name\>/[freertos|bm]
-	- Renamed demo applications:
+	- Update Azure IoT SDK to version 1.2.5.
+	- Update mbedTLS to version 2.12.0.
+	- Add fnet_mdns_probe() which restarts mDNS probing.
+	- Add "freertos" or "bm" sub-folders to the demo application directory fnet_demos/build/\<board_name\>/\<demo_name\>/[freertos|bm]
+	- Rename demo applications:
 		- azure to shell_azure.
 		- bench to shell_bench.
 		- boot to shell_boot.
 		- shell_boot to shell_boot_app.
 		- shell_mbedtls to shell_tls
 		- shell_freertos_wifi to shell_wifi 
-	- Fixed fnet_timer_poll() which caused infinite loop for the WiFi example.
+	- Fix fnet_timer_poll() which caused infinite loop for the WiFi example.
 
 - Version 4.5.0
-	- Added basic support of the Microsoft Azure IoT Hub, enabled by FNET_CFG_AZURE:
-		- Added Azure IoT Hub TLS and Socket IO adapters.
-		- Added Azure IoT Hub client example.
-	- Added FNET_CFG_TIME which enables/disables <time.h> support.
-		- Added time() implementation.
-		- Added UTC time information to the "info" shell command.
-		- Added UTC time update by SNTP client.
-	- Extended TLS interface:
-		- Added TLS client role.
-		- Added fnet_tls_socket_connect() to perform TLS handshake.
-		- Added fnet_tls_set_own_certificate() to set own certificate chain and private key.
-		- Added fnet_tls_set_ca_certificate() to assign Certificate Authority certificate.
-		- Added fnet_tls_socket_set_hostname() to set the host name to check against the received server certificate.
+	- Add basic support of the Microsoft Azure IoT Hub, enabled by FNET_CFG_AZURE:
+		- Add Azure IoT Hub TLS and Socket IO adapters.
+		- Add Azure IoT Hub client example.
+	- Add FNET_CFG_TIME which enables/disables <time.h> support.
+		- Add time() implementation.
+		- Add UTC time information to the "info" shell command.
+		- Add UTC time update by SNTP client.
+	- Extend TLS interface:
+		- Add TLS client role.
+		- Add fnet_tls_socket_connect() to perform TLS handshake.
+		- Add fnet_tls_set_own_certificate() to set own certificate chain and private key.
+		- Add fnet_tls_set_ca_certificate() to assign Certificate Authority certificate.
+		- Add fnet_tls_socket_set_hostname() to set the host name to check against the received server certificate.
 		- Other minor changes.
-	- Improved DNS resolver. DNS server address parameter is optional now.
-	- Added fnet_poll() general polling function, covering fnet_service_poll() and optional fnet_timer_poll().
-	- Changed the "sntp" shell command syntax to @c sntp @c [\<server name|ip\>]. Default server name defined by FAPP_CFG_SNTP_CMD_SERVER_NAME.
-	- Added fnet_vprintf().
-	- Added fnet_strnlen() which calculates the length of a fixed-size string.
-	- Added @c %[.precision]s format string support by fnet_printf().
-	- Fixed HTTP server basic authentication with more than one entries in the authentication table. Thanks to Joe. 
-	- Fixed possible garbage print by fnet_printf(), in specific case.
+	- Improve DNS resolver. DNS server address parameter is optional now.
+	- Add fnet_poll() general polling function, covering fnet_service_poll() and optional fnet_timer_poll().
+	- Change the "sntp" shell command syntax to @c sntp @c [\<server name|ip\>]. Default server name defined by FAPP_CFG_SNTP_CMD_SERVER_NAME.
+	- Add fnet_vprintf().
+	- Add fnet_strnlen() which calculates the length of a fixed-size string.
+	- Add @c %[.precision]s format string support by fnet_printf().
+	- Fix HTTP server basic authentication with more than one entries in the authentication table. Thanks to Joe. 
+	- Fix possible garbage print by fnet_printf(), in specific case.
 	- Other minor fixes.
 
 - Version 4.4.1
-	- Added fnet_wifi_get/set_country_code() to get/set country code used by a WiFi interface.
-	- Renamed HTTP server API from fnet_http_<name> to fnet_http_srv_<name>.
-	- Renamed fnet_strncpy() to fnet_strlcpy(), fnet_strncat() to fnet_strlcat().
-	- Added SS_CLOSING state to fnet_socket_state_t. Renamed SS_UNCONNECTED to SS_CLOSED.
-	- Fixed fnet_socket_poll() to return FNET_SOCKET_EVENT_ERR on a connection closing by a remote peer.
-	- Fixed possible skipping of WiFi-QCA disconnection.
+	- Add fnet_wifi_get/set_country_code() to get/set country code used by a WiFi interface.
+	- Rename HTTP server API from fnet_http_<name> to fnet_http_srv_<name>.
+	- Rename fnet_strncpy() to fnet_strlcpy(), fnet_strncat() to fnet_strlcat().
+	- Add SS_CLOSING state to fnet_socket_state_t. Renamed SS_UNCONNECTED to SS_CLOSED.
+	- Fix fnet_socket_poll() to return FNET_SOCKET_EVENT_ERR on a connection closing by a remote peer.
+	- Fix possible skipping of WiFi-QCA disconnection.
 	- Other minor fixes.
 	
 - Version 4.4.0
-	- Added basic support for i.MX-RT, MIMXRT1052 platform (IMXRT1050-EVKB board).
-	- Added ARM CMSIS-Core(M) files to "third_party/cmsis-x.x" directory.
-	- Added fnet_eth_phy_reg_read/write() to read/write an Ethernet PHY's MII register (before was private).
-	- Added fnet_eth_phy_get/set_addr() to get/set an Ethernet interface PHY address number (before was private).
-	- Deleted fnet_<cpu>_cache.h. So MPU platforms with enabled data-cache have to allocate FNET_CFG_CPU_NONCACHEABLE_SECTION section.
+	- Add basic support for i.MX-RT, MIMXRT1052 platform (IMXRT1050-EVKB board).
+	- Add ARM CMSIS-Core(M) files to "third_party/cmsis-x.x" directory.
+	- Add fnet_eth_phy_reg_read/write() to read/write an Ethernet PHY's MII register (before was private).
+	- Add fnet_eth_phy_get/set_addr() to get/set an Ethernet interface PHY address number (before was private).
+	- Delete fnet_<cpu>_cache.h. So MPU platforms with enabled data-cache have to allocate FNET_CFG_CPU_NONCACHEABLE_SECTION section.
 
 - Version 4.3.0
-	- Improved WiFi QCA scan and connect.
-	- Added underscore prefix to all private functions.
-	- Moved FreeRTOS-specific demo application source code to separate fapp_freertos.c/h.
-	- Enabled FNET_CFG_MULTITHREADING and added recursive-mutex for FreeRTOS demo examples.
-	- Added multi-thread mutex lock to all user API functions (FNET_CFG_MULTITHREADING is enabled).
+	- Improve WiFi QCA scan and connect.
+	- Add underscore prefix to all private functions.
+	- Move FreeRTOS-specific demo application source code to separate fapp_freertos.c/h.
+	- Enable FNET_CFG_MULTITHREADING and add recursive-mutex for FreeRTOS demo examples.
+	- Add multi-thread mutex lock to all user API functions (FNET_CFG_MULTITHREADING is enabled).
 
 - Version 4.2.0
-	- Added fnet_socket_poll() which used to check if one or more sockets become ready to perform input/output activity.
-	- New socket options (FreeBSD like):
+	- Add fnet_socket_poll() which used to check if one or more sockets become ready to perform input/output activity.
+	- Add new socket options (FreeBSD like):
 		- SO_LISTENQLIMIT to get backlog limit or the maximal number of queued connections, which is set by fnet_socket_listen().
 		- SO_LISTENQLEN to get unaccepted complete connection queue length.
-	- Added WiFi QCA4004 (Silex SX-ULPAN-2401-SHIELD board) support. 
-	- Added WiFi QCA4002 (GT202) firmware image update to v3.5.6.
-	- Updated mbedTLS to the latest version 2.8.0. 
+	- Add WiFi QCA4004 (Silex SX-ULPAN-2401-SHIELD board) support. 
+	- Add WiFi QCA4002 (GT202) firmware image update to v3.5.6.
+	- Update mbedTLS to the latest version 2.8.0. 
 		
 - Version 4.1.1
-	- LPC54628 support:
-		- Added bench, shell, shell_freertos, shell_freertos_wifi_qca, shell_mbedtls projects for lpcxpresso54628.
-		- Added Ethernet and WiFi interface.
-		- Is fully functional, but still under development. 
-	- Added fapp_hw_init() which contains a board-specific initialization.
-	- Upgraded projects to IAR v8.22.
-	- Moved projects to fnet/fnet_demos/build.
+	- Add LPC54628 support:
+		- Add bench, shell, shell_freertos, shell_freertos_wifi_qca, shell_mbedtls projects for lpcxpresso54628.
+		- Add Ethernet and WiFi interface.
+	- Add fapp_hw_init() which contains a board-specific initialization.
+	- Upgrade projects to IAR v8.22.
+	- Move projects to fnet/fnet_demos/build.
 	- Other minor fixes.
 	
 - Version 4.1.0
-	- QCA Wi-Fi:
-		- Fixed SSID scanning in the QCA Wi-Fi driver and following failed connection. 
-		- Fixed memory leak and corruption in the QCA Wi-Fi driver release.
-		- Fixed possible data corruption in FNET QCA Wi-Fi adapter.
-		- Added fnet_wifi_fw_get_version() which gets Wi-Fi module firmware version number.
-		- Added Wi-Fi module firmware version number information to the "info" shell command.
-	- Added Benchmark client and server, as services. It has replaced the shell benchmark application.
-	- Renamed the "help" shell command to "?".
-	- Updated FBENCH to v2.0.4.
+	- Add QCA Wi-Fi:
+		- Fix SSID scanning in the QCA Wi-Fi driver and following failed connection. 
+		- Fix memory leak and corruption in the QCA Wi-Fi driver release.
+		- Fix possible data corruption in FNET QCA Wi-Fi adapter.
+		- Add fnet_wifi_fw_get_version() which gets Wi-Fi module firmware version number.
+		- Add Wi-Fi module firmware version number information to the "info" shell command.
+	- Add Benchmark client and server, as services. It has replaced the shell benchmark application.
+	- Rename the "help" shell command to "?".
+	- Update FBENCH to v2.0.4.
 	- Other minor fixes.
 
 - Version 4.0.2
-	- Fixed Wi-Fi QCA interface release.
-	- Fixed possible wrong IPv4 address routing on multi-interface systems.
-	- Fixed UDP socket notification about a ICMPv4 reported error. Thanks to Christophe Graulle.
-	- Added Wi-Fi module firmware update:
-		- Enabled by FNET_CFG_CPU_WIFI_FW_UPATE.
-		- Added fnet_wifi_fw_update().
-		- Added shell command "fw" updating the QCA4002(GT202) firmware to the latest version 3.3.5 
-	- Updated shell "dns" command syntax to "dns [-n <if name>] [-s <server ip>] [4|6] <host name>"
+	- Fix Wi-Fi QCA interface release.
+	- Fix possible wrong IPv4 address routing on multi-interface systems.
+	- Fix UDP socket notification about a ICMPv4 reported error. Thanks to Christophe Graulle.
+	- Add Wi-Fi module firmware update:
+		- Enable by FNET_CFG_CPU_WIFI_FW_UPATE.
+		- Add fnet_wifi_fw_update().
+		- Add shell command "fw" updating the QCA4002(GT202) firmware to the latest version 3.3.5 
+	- Update shell "dns" command syntax to "dns [-n <if name>] [-s <server ip>] [4|6] <host name>"
 	
 - Version 4.0.1
-	- Fixed fnet_fec_checksum_clear(), when FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM is enabled.
-	- Fixed possible sending of duplicate TCP ACK.
+	- Fix fnet_fec_checksum_clear(), when FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM is enabled.
+	- Fix possible sending of duplicate TCP ACK.
 	- Other minor changes.
 
 - Version 4.0.0
-	- Added WiFi network interface support:
-		- Added Qualcomm/Atheros WiFi QCA4002 (GT202 board) support. Enabled by FNET_CFG_CPU_WIFI.
+	- Add WiFi network interface support:
+		- Add Qualcomm/Atheros WiFi QCA4002 (GT202 board) support. Enabled by FNET_CFG_CPU_WIFI.
 		  Core driver is in the third_party\qca-x.x.x directory. 
-		- Added shell_freertos_wifi_qca example for K64.
-		- Added fnet_wifi_connect(), fnet_wifi_access_point() and fnet_wifi_disconnect().
-	- Added DHCPv4 server. 
-	- Added basic support for the LPC54628 platform (Aruba).
-	- Added fnet_ prefix to the sockaddr, sockaddr_in, sockaddr_in6, in_addr, in6_addr, ip_mreq, ipv6_mreq and linger types.
-	- Added FNET_CFG_TIMER_POLL_AUTOMATIC enables/disables automatic timer polling inside FNET.
-	- Added fnet_timer_poll() timer polling function, for the case when FNET_CFG_TIMER_POLL_AUTOMATIC is disabled.
-	- Moved network interface drivers to "port\cpu\netif" directory (FEC/ENET and QCA).
-	- Added FNET_CPU_NETIF_NUMBER which defines number of supported network interfaces.
-	- Added "fnet_\<service_name\>_get_by_netif()" which looks for a \<service_name\> assigned to the specified network interface.
-	- Added fnet_mdns_service_get_by_type() which looks for a registered mDNS application service according to the specified type.
-	- Added "cookie" parameter to the fnet_shell_block() function.
-	- Renamed:
+		- Add shell_freertos_wifi_qca example for K64.
+		- Add fnet_wifi_connect(), fnet_wifi_access_point() and fnet_wifi_disconnect().
+	- Add DHCPv4 server. 
+	- Add basic support for the LPC54628 platform (Aruba).
+	- Add fnet_ prefix to the sockaddr, sockaddr_in, sockaddr_in6, in_addr, in6_addr, ip_mreq, ipv6_mreq and linger types.
+	- Add FNET_CFG_TIMER_POLL_AUTOMATIC enables/disables automatic timer polling inside FNET.
+	- Add fnet_timer_poll() timer polling function, for the case when FNET_CFG_TIMER_POLL_AUTOMATIC is disabled.
+	- Move network interface drivers to "port\cpu\netif" directory (FEC/ENET and QCA).
+	- Add FNET_CPU_NETIF_NUMBER which defines number of supported network interfaces.
+	- Add "fnet_\<service_name\>_get_by_netif()" which looks for a \<service_name\> assigned to the specified network interface.
+	- Add fnet_mdns_service_get_by_type() which looks for a registered mDNS application service according to the specified type.
+	- Add "cookie" parameter to the fnet_shell_block() function.
+	- Rename:
 		- DHCP Client files and definitions from "dhcp|DHCP" to "dhcp_cln|DHCP_CLN".
 		- "services" folder to "service".
 		- fnet_poll_desc_t to fnet_service_desc_t.
 		- fnet_poll_service() to fnet_service_poll().
 		- fnet_poll_service_[register|unregister]() to fnet_service_[register|unregister]()
-	- Merged fnet_poll.c/h to fnet_service.c/h.
-	- Added fnet_ssize_t, signed integer type representing the size in bytes.
-	- Added FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM which enables/disables RAM vector table support.
-	- Added FNET_CFG_CPU_[SERIAL|ETH|WIFI]_IO_INIT which enables/disables Input/Output pin initialization.
-	- Fixed nested calling of fnet_shell_script().
-	- Fixed possible sending of duplicate TCP ACK.
-	- Updated shell demo application:
-		- Added "dhcp [-n <if name>] [release|pool]" DHCPv4 server command.
-		- Added "connect", "disconnect" and "ap" Shell Wi-Fi commands.
-		- Added separate link script for Wi-Fi interface in access mode, defined by FAPP_CFG_LINK_(CONNECT|DISCONNECT)_WIFI_ACCESS_POINT_SCRIPT.
-		- Added optional [-n \<if name\>] parameter to all interface specific shell commands.
-		- Changed naming approach for client and server shell commands. Protocol client command name is \<protocol_name\>'c' and protocol server command name is \<protocol_name> (e.g. "dhcpc" and "dhcp").  
-		- Common application shell code moved from fapp.c to separate fapp_shell.c
-		- Deprecated FAPP_CFG_STARTUP_SCRIPT_ENABLED, covered by existing FAPP_CFG_STARTUP_SCRIPT.
-	- Fixed fnet_socket_bind(), ignored scope_id.
-	- Fixed fnet_netif_bind_ip6_addr().
-	- Switched to IANA ephemeral port range [49152 to 65535].
-	- Deprecated FNET_CFG_\<service_name\>_MAX, covered by already existing FNET_CFG_<service_name>.
-	- Deprecated FAPP_CFG_DEFAULT_IF, covered by existing FAPP_CFG_PARAMS_NETIF_NAME.
+	- Merge fnet_poll.c/h to fnet_service.c/h.
+	- Add fnet_ssize_t, signed integer type representing the size in bytes.
+	- Add FNET_CFG_CPU_VECTOR_TABLE_IS_IN_RAM which enables/disables RAM vector table support.
+	- Add FNET_CFG_CPU_[SERIAL|ETH|WIFI]_IO_INIT which enables/disables Input/Output pin initialization.
+	- Fix nested calling of fnet_shell_script().
+	- Fix possible sending of duplicate TCP ACK.
+	- Update shell demo application:
+		- Add "dhcp [-n <if name>] [release|pool]" DHCPv4 server command.
+		- Add "connect", "disconnect" and "ap" Shell Wi-Fi commands.
+		- Add separate link script for Wi-Fi interface in access mode, defined by FAPP_CFG_LINK_(CONNECT|DISCONNECT)_WIFI_ACCESS_POINT_SCRIPT.
+		- Add optional [-n \<if name\>] parameter to all interface specific shell commands.
+		- Change naming approach for client and server shell commands. Protocol client command name is \<protocol_name\>'c' and protocol server command name is \<protocol_name> (e.g. "dhcpc" and "dhcp").  
+		- Move common application shell code from fapp.c to separate fapp_shell.c
+		- Deprecate FAPP_CFG_STARTUP_SCRIPT_ENABLED, covered by existing FAPP_CFG_STARTUP_SCRIPT.
+	- Fix fnet_socket_bind(), ignored scope_id.
+	- Fix fnet_netif_bind_ip6_addr().
+	- Switche to IANA ephemeral port range [49152 to 65535].
+	- Deprecate FNET_CFG_\<service_name\>_MAX, covered by already existing FNET_CFG_<service_name>.
+	- Deprecate FAPP_CFG_DEFAULT_IF, covered by existing FAPP_CFG_PARAMS_NETIF_NAME.
 	- Many other changes and fixes.
 	
 - Version 3.9.4
-	- Added Shell example using FreeRTOS.
-	- Fixed minor issues, found by the Coverity tool.
+	- Add Shell example using FreeRTOS.
+	- Fix minor issues, found by the Coverity tool.
 	
 - Version 3.9.3
-	- Fixed all mDNS warnings in the Bonjour Conformance test.
-	- Improved SW event response, thanks to Michal Hanak.
-	- Reduced default timer period to 10ms, for better time precision.
+	- Fix all mDNS warnings in the Bonjour Conformance test.
+	- Improve SW event response, thanks to Michal Hanak.
+	- Reduce default timer period to 10ms, for better time precision.
 	- Other minor fixes.
 	
 - Version 3.9.2
-	- Fixed possible wrong sending of TCP ACK, thanks to Richard Green.
-	- Renamed IPv4-specific files and definitions from "ip|IP" to "ip4|IP4".
-	- Renamed ICMPv4-specific files and definitions from "icmp|ICMP" to "icmp4|ICMP4".
-	- Cleaned code style using "Auristic Style v3.0.1" 
+	- Fix possible wrong sending of TCP ACK, thanks to Richard Green.
+	- Rename IPv4-specific files and definitions from "ip|IP" to "ip4|IP4".
+	- Rename ICMPv4-specific files and definitions from "icmp|ICMP" to "icmp4|ICMP4".
+	- Cleane code style using "Auristic Style v3.0.1" 
 	
 - Version 3.9.1
-	- Fixed possible failure during reassembly of out of order IPv4 datagrams.
-	- Deprecated FNET_CFG_DNS_RESOLVER, which is covered by existing FNET_CFG_DNS.
-	- Added possibility to run several DNS clients/resolvers simultaneously, defined by FNET_CFG_DNS_MAX.  
+	- Fix possible failure during reassembly of out of order IPv4 datagrams.
+	- Deprecate FNET_CFG_DNS_RESOLVER, which is covered by existing FNET_CFG_DNS.
+	- Add possibility to run several DNS clients/resolvers simultaneously, defined by FNET_CFG_DNS_MAX.  
 	
 - Version 3.9.0
-	- Added SNTPv4 (Simple Network Time Protocol) client.
+	- Add SNTPv4 (Simple Network Time Protocol) client.
 	- Fix possible buffer overflow in the DNS client/resolver.
-	- Added S32R274 platform, thanks to Andrian Onea.
+	- Add S32R274 platform, thanks to Andrian Onea.
 	
 - Version 3.8.2
-	- Added RFC6763 Service Type Enumeration to the mDNS server, enabled by FNET_CFG_MDNS_SERVICE_TYPE_ENUMERATION.
-	- Simplified user API for adding of mDNS TXT record keys.
-	- Fixed possible infinite loop caused by a malformed mDNS packet.
-	- Fixed HTTP server release issue when there are open CGI sessions.
-	- Fixed minor issues detected by Coverity tool.
+	- Add RFC6763 Service Type Enumeration to the mDNS server, enabled by FNET_CFG_MDNS_SERVICE_TYPE_ENUMERATION.
+	- Simplifie user API for adding of mDNS TXT record keys.
+	- Fix possible infinite loop caused by a malformed mDNS packet.
+	- Fix HTTP server release issue when there are open CGI sessions.
+	- Fix minor issues detected by Coverity tool.
 
 - Version 3.8.1:
-	- Fixed MCF compilation issues. Thanks to Frank Lombardo.
+	- Fix MCF compilation issues. Thanks to Frank Lombardo.
 	- Other minor fixes.
 	
 - Version 3.8.0:
-	- Added TLS:
-		- Added TLS server API.
-		- Added mbedTLS library support, placed in third_party/mbedtls-2.4.0.
-		- Added HTTP server over TLS (HTTPS).
-		- Added shell_mbedtls example, with new "https" command and mbedTLS library.
-	- Changed the fnet_socket_t descriptor type from fnet_int32_t to void*.
+	- Add TLS:
+		- Add TLS server API.
+		- Add mbedTLS library support, placed in third_party/mbedtls-2.4.0.
+		- Add HTTP server over TLS (HTTPS).
+		- Add shell_mbedtls example, with new "https" command and mbedTLS library.
+	- Change the fnet_socket_t descriptor type from fnet_int32_t to void*.
 	  So now, fnet_socket_accept() and fnet_socket() return FNET_NULL instead of FNET_ERR.
-	- Fixed fnet_mempool_free(), thanks to Paul. 
-	- Fixed FNET_CFG_CPU_VECTOR_PRIORITY_MAX for Kinetis.
+	- Fix fnet_mempool_free(), thanks to Paul. 
+	- Fix FNET_CFG_CPU_VECTOR_PRIORITY_MAX for Kinetis.
 	
 - Version 3.7.0:
-	- Added Multicast DNS (mDNS) "Bonjour" Server/Responder. Thanks to NXP-Semiconductor for support.
+	- Add Multicast DNS (mDNS) "Bonjour" Server/Responder. Thanks to NXP-Semiconductor for support.
 	- Passed the Bonjour Conformance Test, Version 1.3.1. (https://developer.apple.com/softwarelicensing/agreements/bonjour.php)
 	  Bonjour Conformance Test includes "Link-Local Address Allocation", "Multicast DNS" and "Network Interoperability" test phases (48 tests).
-	- Removed all instances of recursion.
-	- Added FNET_CFG_ASSERT - enables/disables FNET_ASSERT().
-	- Fixed Mutex API, thanks to Paul.
+	- Remove all instances of recursion.
+	- Add FNET_CFG_ASSERT - enables/disables FNET_ASSERT().
+	- Fix Mutex API, thanks to Paul.
 	- Other minor changes.
 	
 - Version 3.6.1:
-	- Removed application reserved memory regions FAPP_CFG_MEM_REGION_RESERVED_LIST from the boot-loader application.
-	- Added multiple memory region support to TFTP .srec generator.
-	- Renamed FAPP_CFG_APPLICATION_SIZE to FAPP_CFG_BOOTLOADER_SIZE.
+	- Remove application reserved memory regions FAPP_CFG_MEM_REGION_RESERVED_LIST from the boot-loader application.
+	- Add multiple memory region support to TFTP .srec generator.
+	- Rename FAPP_CFG_APPLICATION_SIZE to FAPP_CFG_BOOTLOADER_SIZE.
 	- Minor cleanings and fixes.
 	
 - Version 3.6.0:
-	- Disabled automatic network-interface initialization during fnet_init() call:
+	- Disable automatic network-interface initialization during fnet_init() call:
 		- Only loop-back interface is initialized automatically, if enabled.
-		- Moved network interface initialization and IP address parameter settings to user application fapp_netif.c
-		- Added fnet_netif_init(), fnet_netif_release() and fnet_netif_is_initialized() to public API.	
-	- Merged fnet_netif_set_ip4_subnet_mask() to fnet_netif_set_ip4_addr().
-	- Obsoleted FNET_CFG_HEAP_SIZE, FNET_CFG_ETH0_IP4_ADDR, FNET_CFG_ETH0_IP4_MASK, FNET_CFG_ETH0_IP4_GW, FNET_CFG_ETH0_IP4_DNS, FNET_CFG_DEFAULT_IF.
+		- Move network interface initialization and IP address parameter settings to user application fapp_netif.c
+		- Add fnet_netif_init(), fnet_netif_release() and fnet_netif_is_initialized() to public API.	
+	- Merge fnet_netif_set_ip4_subnet_mask() to fnet_netif_set_ip4_addr().
+	- Obsolete FNET_CFG_HEAP_SIZE, FNET_CFG_ETH0_IP4_ADDR, FNET_CFG_ETH0_IP4_MASK, FNET_CFG_ETH0_IP4_GW, FNET_CFG_ETH0_IP4_DNS, FNET_CFG_DEFAULT_IF.
 	  They are replaced by FAPP_CFG_ user-application ones.
-	- Deleted obsolete FNET_CFG_CPU_SRAM_ADDRESS and FNET_CFG_CPU_SRAM_SIZE.
-	- Added experimental Write-Caching in Flash driver, enabled by FNET_CFG_FLASH_CACHE. Thanks to Patrice Cavin. 
-	- Started using C99 structure member initialization. Only members that are needed are defined.
-	- Increased reserved flash-memory size for the Boot-loader to 52 Kbytes.
+	- Delete obsolete FNET_CFG_CPU_SRAM_ADDRESS and FNET_CFG_CPU_SRAM_SIZE.
+	- Add experimental Write-Caching in Flash driver, enabled by FNET_CFG_FLASH_CACHE. Thanks to Patrice Cavin. 
+	- Start using C99 structure member initialization. Only members that are needed are defined.
+	- Increase reserved flash-memory size for the Boot-loader to 52 Kbytes.
 	- Other minor changes and fixes.
 	
 - Version 3.5.0:
-	- Improved Auto-IP service to follow RFC3927. 
+	- Improve Auto-IP service to follow RFC3927. 
 	  It has passed the "Phase 1, Link-Local Address Allocation" test cases of the Bonjour Conformance Test suite Version 1.3.1.
-	- Implemented Link-Detection service, enabled by FNET_CFG_LINK.
-	- Added Link-Detection to the Shell example application. 
+	- Add Link-Detection service, enabled by FNET_CFG_LINK.
+	- Add Link-Detection to the Shell example application. 
 	  Whenever the network interface indicates that it has been disconnected, application disables the bound/discover protocols (DHCP, AutoIP, LLMNR).
       And the application begins again the auto-configuration process (DHCP, AutoIP, LLMNR) whenever the interface has been connected.
-	- Added fnet_netif_clear_ip4_addr_conflict(), which clears IPv4 address conflict flag.	
-	- Allowed nested calling of shell scripts, using fnet_shell_script().
+	- Add fnet_netif_clear_ip4_addr_conflict(), which clears IPv4 address conflict flag.	
+	- Add nested calling of shell scripts, using fnet_shell_script().
 	- Other minor changes and fixes.
 
 - Version 3.4.0:
-	- Added fnet_socket_set_callback_on_rx(), which registers the "Socket RX" event handler callback. This event occurs when the socket layer receives any packet for any existing socket, which is enabled by FNET_CFG_SOCKET_CALLBACK_ON_RX.
-	- Added Multi-Threading Mutex API, defined by fnet_mutex_api_t. This optional functionality is enabled by FNET_CFG_MULTITHREADING. 
-	- Removed OS folder. Its functionality was replaced by fnet_mutex_api_t and fnet_socket_set_callback_on_rx().
-	- Removed redundant fnet_init_static().
-	- Improved compiler auto-detection.
-	- Fixed many potential issues found by source code static-analysis. 
-	- Added FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT that allows alternative Ethernet module pin initialization.
-	- Added MPC5744P Flash driver. Thanks to Patrice Cavin. 
+	- Add fnet_socket_set_callback_on_rx(), which registers the "Socket RX" event handler callback. This event occurs when the socket layer receives any packet for any existing socket, which is enabled by FNET_CFG_SOCKET_CALLBACK_ON_RX.
+	- Add Multi-Threading Mutex API, defined by fnet_mutex_api_t. This optional functionality is enabled by FNET_CFG_MULTITHREADING. 
+	- Remove OS folder. Its functionality was replaced by fnet_mutex_api_t and fnet_socket_set_callback_on_rx().
+	- Remove redundant fnet_init_static().
+	- Improve compiler auto-detection.
+	- Fix many potential issues found by source code static-analysis. 
+	- Add FNET_CFG_CPU_ETH_OVERLOAD_IO_INIT that allows alternative Ethernet module pin initialization.
+	- Add MPC5744P Flash driver. Thanks to Patrice Cavin. 
 
 - Version 3.3.0:
-	- Added basic Auto-IP service, according to RFC3927 "Dynamic Configuration of IPv4 Link-Local Addresses".
-	- Added optional "autoip" parameter to the "dhcp" shell command, which means to start the Auto-IP service automatically if a DHCP server is not found.
-	- Added fnet_netif_is_ip4_addr_conflict() to determine if there is IPv4 address conflict. Just one more possibility in addition to fnet_netif_set_callback_ip4_addr_conflict(). 
+	- Add basic Auto-IP service, according to RFC3927 "Dynamic Configuration of IPv4 Link-Local Addresses".
+	- Add optional "autoip" parameter to the "dhcp" shell command, which means to start the Auto-IP service automatically if a DHCP server is not found.
+	- Add fnet_netif_is_ip4_addr_conflict() to determine if there is IPv4 address conflict. Just one more possibility in addition to fnet_netif_set_callback_ip4_addr_conflict(). 
 	- Application protocol initialization functions return 0 (wrong zero descriptor) if an error occurs (instead of FNET_ERR, in previous versions).
-	- Updated Demo WEB pages.
-	- Fixed broken HTTP Authentication, that sent data even if the authentication was canceled.
-	- Renaming/cleaning in User-API.
+	- Update Demo WEB pages.
+	- Fix broken HTTP Authentication, that sent data even if the authentication was canceled.
 
 - Version 3.2.0:
-	- Added support of Kinetis K60DN512 (TWR-K60D100M board).
-	- Added support of Kinetis K66FN2M (FRDM-K66F board).
-	- Changed demo application structure:
+	- Add support of Kinetis K60DN512 (TWR-K60D100M board).
+	- Add support of Kinetis K66FN2M (FRDM-K66F board).
+	- Change demo application structure:
 		- Demo projects moved to "\fnet\fnet_demos\boards\<board_name>\<demo_name>"
 		- Port-specific configuration parameters, like a compiler support FNET_CFG_COMP_<name>, a processor type FNET_CFG_CPU_<name>, a default serial port number FNET_CFG_CPU_SERIAL_PORT_DEFAULT and others are defined in example project options. This approach allows to have the same fnet_user_config.h per one type of example for all platforms.
 		- Use platform linker files and start up code from Kinetis SDK 2.0, with additional changes required by FNET applications
-	- Fixed memory allocation, that could cause data corruption when the memory pool is full. Reported by Paul.
-	- Fixed TCP receive. Reported by Eclectice.
-	- Fixed ARP resolving, that could cause data corruption. Thanks to Michal Hanak.
-	- Fixed ENET register map for MPC5744P. Thanks to Patrice Cavin.
-	- Removed examples for old MPC5668G, MK70FN1M, MK60FN1M, MK60N512 and obsolete ColdFire (MCF) platform.
+	- Fix memory allocation, that could cause data corruption when the memory pool is full. Reported by Paul.
+	- Fix TCP receive. Reported by Eclectice.
+	- Fix ARP resolving, that could cause data corruption. Thanks to Michal Hanak.
+	- Fix ENET register map for MPC5744P. Thanks to Patrice Cavin.
+	- Remove examples for old MPC5668G, MK70FN1M, MK60FN1M, MK60N512 and obsolete ColdFire (MCF) platform.
 
 - Version 3.1.1:
-	- Improved Flash driver. Now it copies its execution code to RAM by itself, so no need to define an additional FNET_RAM section in linker file.
-	- Fixed IPv4 input function, to accept all broadcast Ethernet frames for an interface without a bound IPv4 address. It is used by DHCPv4 client. Reported by Sergej Ruzin.
-	- Added MPC5566(Viper) configuration. Thanks to NanoZera.
-	- The all source code files (*.c, *.h) were formatted by the Artistic Style 2.05 tool (http://astyle.sourceforge.net/).  
+	- Improve Flash driver. Now it copies its execution code to RAM by itself, so no need to define an additional FNET_RAM section in linker file.
+	- Fix IPv4 input function, to accept all broadcast Ethernet frames for an interface without a bound IPv4 address. It is used by DHCPv4 client. Reported by Sergej Ruzin.
+	- Add MPC5566(Viper) configuration. Thanks to NanoZera.
+	- Format by the Artistic Style 2.05 tool (http://astyle.sourceforge.net/).  
 	- Other minor changes.
 
 - Version 3.1.0:
-	- HTTP server improvements:
-		- Added fnet_http_set_response_status_code(), sets status code in HTTP-response status-line. Can be used by CGI and POST handlers.
-		- Added fnet_http_set_response_content_length(), sets content length in HTTP-response header. Can be used by CGI and POST handlers.
-		- Added fnet_http_set_response_no_header(), disables sending of HTTP-response status-code and header. Can be used by CGI and POST handlers.
-		- Fixed HTTP POST send-handler.
-    - Moved "cpu", "compiler" and "os" folders to "port" sub-folder, to combine all port-specific source code in one place.
-	- Added ARP User API, that can be used for address probation and conflict detection:
-		- Added fnet_arp_send_request(), that sends ARP request.
-		- Added fnet_arp_get_mac(), that gets MAC address of valid ARP cache entry.
-		- Added fnet_arp_get_entry(), that retrieves a ARP cache entry.
-	- Added ARP Cache display information to the "stat" shell command in the demo application.
-	- Added optional probing of the newly received address by the DHCPv4 client. Controlled by the fnet_dhcp_params->probe_addr flag.
-	- Renamed fnet_netif_ip6_addr_type_t to general fnet_netif_ip_addr_type_t, to be used for both IPv4 and IPv6.
-	- Added fnet_netif_[get|set]_ip4_addr_type(), replacing fnet_netif_[get|set]_ip4_addr_automatic().
-	- Changed the default value of the FNET_CFG_CPU_VECTOR_TABLE parameter, for Kinetis platform, to NVIC vector table register (VTOR). Before it was set to a symbol defined in a linker file. 
-	- Removed obsolete MCF uCOS port.
-	- Removed obsolete MCF CodeWarrior 7.2 support.
-	- Removed obsolete fnet_<cpu>_stdlib.c.
+	- Improve HTTP server:
+		- Add fnet_http_set_response_status_code(), sets status code in HTTP-response status-line. Can be used by CGI and POST handlers.
+		- Add fnet_http_set_response_content_length(), sets content length in HTTP-response header. Can be used by CGI and POST handlers.
+		- Add fnet_http_set_response_no_header(), disables sending of HTTP-response status-code and header. Can be used by CGI and POST handlers.
+		- Fix HTTP POST send-handler.
+    - Move "cpu", "compiler" and "os" folders to "port" sub-folder, to combine all port-specific source code in one place.
+	- Add ARP User API, that can be used for address probation and conflict detection:
+		- Add fnet_arp_send_request(), that sends ARP request.
+		- Add fnet_arp_get_mac(), that gets MAC address of valid ARP cache entry.
+		- Add fnet_arp_get_entry(), that retrieves a ARP cache entry.
+	- Add ARP Cache display information to the "stat" shell command in the demo application.
+	- Add optional probing of the newly received address by the DHCPv4 client. Controlled by the fnet_dhcp_params->probe_addr flag.
+	- Rename fnet_netif_ip6_addr_type_t to general fnet_netif_ip_addr_type_t, to be used for both IPv4 and IPv6.
+	- Add fnet_netif_[get|set]_ip4_addr_type(), replacing fnet_netif_[get|set]_ip4_addr_automatic().
+	- Change the default value of the FNET_CFG_CPU_VECTOR_TABLE parameter, for Kinetis platform, to NVIC vector table register (VTOR). Before it was set to a symbol defined in a linker file. 
+	- Remove obsolete MCF uCOS port.
+	- Remove obsolete MCF CodeWarrior 7.2 support.
+	- Remove obsolete fnet_<cpu>_stdlib.c.
 	- Other minor changes.
 
 - Version 3.0.0:
-	- Released under the Apache License Version 2.0 (https://en.wikipedia.org/wiki/Apache_License). This is more permissible license than previous one and compatible with GPL 3.0.
-	- Added possibility to run several instances of DHCP client for multi-interface systems, controlled by the FNET_CFG_DHCP_MAX parameter. 
-	- Added support of the Intel HEX file format by the TFTP Boot-loader (enabled by FAPP_CFG_TFTP_RX_HEX/FAPP_CFG_TFTP_TX_HEX). Thanks to Michal Hanak.
-	- Added support of IPv4 link-local (169.254/16 prefix) unicast and broadcast as destination address, according to RFC3927.
-	- Added scope_id to IPv4 socket address structure (same as for IPv6), to eliminate IPv4 address ambiguity in multi-home systems.
-	- Changed IPv4 multicast group ip_mreq.imr_interface from Interface IPv4 address to Interface Index (same as for IPv6).
-	- Added fnet_scope_id_t type.
-	- Added the default-interface parameter to the FNET application parameter get/set list.
-	- Added FNET_CFG_<interface>_NAME configuration parameter.
-	- Added fnet_rand() pseudo-random generator. Thanks to Catalin Petrescu.
-	- Moved port-clock enabling from Kinetis start-up to the driver initialization code.
-	- Added FNET_CFG_CPU_VECTOR_PRIORITY_MAX configuration parameter.
-	- Renamed FNET_FS_DIR, FNET_FS_FILE types to fnet_fs_dir_t, fnet_fs_file_t.
-	- Fixed potential spurious retransmission issue in TCP. Thanks to Vinay.
-	- Fixed loop-back interface.
-	- Fixed fnet_isr_vector_init().
-	- Fixed FBENCH tool stuck during UDP sending.
+	- Change license to Apache Version 2.0 (https://en.wikipedia.org/wiki/Apache_License). This is more permissible license than previous one and compatible with GPL 3.0.
+	- Add possibility to run several instances of DHCP client for multi-interface systems, controlled by the FNET_CFG_DHCP_MAX parameter. 
+	- Add support of the Intel HEX file format by the TFTP Boot-loader (enabled by FAPP_CFG_TFTP_RX_HEX/FAPP_CFG_TFTP_TX_HEX). Thanks to Michal Hanak.
+	- Add support of IPv4 link-local (169.254/16 prefix) unicast and broadcast as destination address, according to RFC3927.
+	- Add scope_id to IPv4 socket address structure (same as for IPv6), to eliminate IPv4 address ambiguity in multi-home systems.
+	- Change IPv4 multicast group ip_mreq.imr_interface from Interface IPv4 address to Interface Index (same as for IPv6).
+	- Add fnet_scope_id_t type.
+	- Add the default-interface parameter to the FNET application parameter get/set list.
+	- Add FNET_CFG_<interface>_NAME configuration parameter.
+	- Add fnet_rand() pseudo-random generator. Thanks to Catalin Petrescu.
+	- Move port-clock enabling from Kinetis start-up to the driver initialization code.
+	- Add FNET_CFG_CPU_VECTOR_PRIORITY_MAX configuration parameter.
+	- Rename FNET_FS_DIR, FNET_FS_FILE types to fnet_fs_dir_t, fnet_fs_file_t.
+	- Fix potential spurious retransmission issue in TCP. Thanks to Vinay.
+	- Fix loop-back interface.
+	- Fix fnet_isr_vector_init().
+	- Fix FBENCH tool stuck during UDP sending.
 	- Other minor changes.
 
 - Version 2.9.0:
-	- Added fnet_size_t, fnet_index_t, fnet_bool_t, fnet_time_t fnet_uint32_t, fnet_uint16_t and fnet_uint8_t and other types.
-	- Fixed "MISRA-C:2004 6.3 Typedefs that indicate size and signedness should be used in place of the basic types."
-	- Fixed "MISRA-C:2004 10.1 The value of an expression of integer type shall not be implicitly converted to a different underlying type ..."
-	- Fixed "MISRA-C:2004 11.1 Conversions shall not be performed between a pointer to a function and any type other than an integer type."
-	- Fixed "MISRA-C:2004 12.5 The operands of a logical && or || shall be primary-expressions."
-	- Fixed "MISRA-C:2004 12.7 Bitwise operators shall not be applied to operands whose underlying type is signed."
-	- Fixed "MISRA-C:2004 14.6 For any iteration statement there shall be at most one break statement used for loop termination."
-	- Fixed "MISRA-C:2004 14.9 An if (expression) construct shall be followed by a compound statement. The else keyword shall be followed by either a compound statement or another if statement."
-	- Fixed "MISRA-C:2004 19.6 #undef shall not be used"
-	- Added "extern C" to header files.
-    - Replaced SOCKET_ERROR and SOCKET_INVALID by FNET_ERR.
-	- Replaced SOCKET type by fnet_socket_t.
-	- New configuration parameter:
-		- @ref FNET_CFG_SOCKET_BSD_NAMES enables/disables BSD Socket API names.
-    - Reworked shell service:
-		- Added fnet_shell_switch().
-		- Removed fnet_shell_cmd_type_t.
-	- Removed support of obsolete MCF52235.
+	- Add fnet_size_t, fnet_index_t, fnet_bool_t, fnet_time_t fnet_uint32_t, fnet_uint16_t and fnet_uint8_t and other types.
+	- Fix "MISRA-C:2004 6.3 Typedefs that indicate size and signedness should be used in place of the basic types."
+	- Fix "MISRA-C:2004 10.1 The value of an expression of integer type shall not be implicitly converted to a different underlying type ..."
+	- Fix "MISRA-C:2004 11.1 Conversions shall not be performed between a pointer to a function and any type other than an integer type."
+	- Fix "MISRA-C:2004 12.5 The operands of a logical && or || shall be primary-expressions."
+	- Fix "MISRA-C:2004 12.7 Bitwise operators shall not be applied to operands whose underlying type is signed."
+	- Fix "MISRA-C:2004 14.6 For any iteration statement there shall be at most one break statement used for loop termination."
+	- Fix "MISRA-C:2004 14.9 An if (expression) construct shall be followed by a compound statement. The else keyword shall be followed by either a compound statement or another if statement."
+	- Fix "MISRA-C:2004 19.6 #undef shall not be used"
+	- Add "extern C" to header files.
+    - Replace SOCKET_ERROR and SOCKET_INVALID by FNET_ERR.
+	- Replace SOCKET type by fnet_socket_t.
+	- Add FNET_CFG_SOCKET_BSD_NAMES enables/disables BSD Socket API names.
+    - Rework shell service:
+		- Add fnet_shell_switch().
+		- Remove fnet_shell_cmd_type_t.
+	- Remove support of obsolete MCF52235.
 	- Other changes.
 
 - Version 2.8.1:
-	- Added KDS 3.0 support.
-	- Fixed "MISRA-C:2004 15.2 An unconditional break statement shall terminate every non-empty switch clause."
+	- Add KDS 3.0 support.
+	- Fix "MISRA-C:2004 15.2 An unconditional break statement shall terminate every non-empty switch clause."
 	- Redraw the FNET Top View diagram.
 	- Other minor changes.
 
 - Version 2.8.0:
-	- Added possibility to get a DNS resolved host-name TTL. Improved fnet_dns_handler_resolved_t.
-	- Fixed "MISRA-C:2004 10.5 if the bitwise operators ~ and << are applied to an operand of underlying type unsigned char or unsigned short, the result shall be immediately cast to the underlying type of the operand."
-	- Fixed "MISRA-C:2004 10.6 A U suffix shall be applied to all constants of unsigned type."
-	- Fixed "MISRA-C:2004 12.6 The operands of logical operators should be effectively Boolean."
-	- Fixed "MISRA-C:2004 12.9 The unary minus operator shall not be applied to an expression whose underlying type is unsigned."
-	- Fixed "MISRA-C:2004 12.10 The comma operator shall not be used."
-	- Fixed "MISRA-C:2004 13.1 Assignment operators shall not be used in expressions that yield a Boolean value."
-	- Fixed "MISRA-C:2004 13.5 The three expressions of a for statement shall be concerned only with loop control."
-	- Fixed "MISRA-C:2004 14.3 Before preprocessing, a null statement shall only occur on a line by itself."
-	- Fixed "MISRA-C:2004 14.8 The statement forming the body of a switch, while, do… while or for statement shall be a compound statement."
-	- Fixed "MISRA-C:2004 14.10 All if ... else if constructs shall be terminated with an else clause."
-	- Fixed "MISRA-C:2004 15.3 The final clause of a switch statement shall be the default clause."
-	- Fixed "MISRA-C:2004 16.3 Identifiers shall be given for all of the parameters in a function prototype declaration."
-	- Fixed "MISRA-C:2004 16.4 The identifiers used in the declaration and definition of a function shall be identical."
-	- Fixed "MISRA-C:2004 16.5 Functions with no parameters shall be declared and defined with the parameter list void."
-	- Fixed "MISRA-C:2004 19.11 All macro identifiers in preprocessor directives shall be defined before use."
-	- Fixed "MISRA-C:2004 19.15 Precautions shall be taken in order to prevent the contents of a header file being included twice."
-	- Fixed "MISRA-C:2004 20.2 The Names of Standard Library macros, objects and functions shall not be reused."
-	- Fixed MPC Green Hills compiler warning, thanks to Patrice Cavin.
+	- Add possibility to get a DNS resolved host-name TTL. Improved fnet_dns_handler_resolved_t.
+	- Fix "MISRA-C:2004 10.5 if the bitwise operators ~ and << are applied to an operand of underlying type unsigned char or unsigned short, the result shall be immediately cast to the underlying type of the operand."
+	- Fix "MISRA-C:2004 10.6 A U suffix shall be applied to all constants of unsigned type."
+	- Fix "MISRA-C:2004 12.6 The operands of logical operators should be effectively Boolean."
+	- Fix "MISRA-C:2004 12.9 The unary minus operator shall not be applied to an expression whose underlying type is unsigned."
+	- Fix "MISRA-C:2004 12.10 The comma operator shall not be used."
+	- Fix "MISRA-C:2004 13.1 Assignment operators shall not be used in expressions that yield a Boolean value."
+	- Fix "MISRA-C:2004 13.5 The three expressions of a for statement shall be concerned only with loop control."
+	- Fix "MISRA-C:2004 14.3 Before preprocessing, a null statement shall only occur on a line by itself."
+	- Fix "MISRA-C:2004 14.8 The statement forming the body of a switch, while, do… while or for statement shall be a compound statement."
+	- Fix "MISRA-C:2004 14.10 All if ... else if constructs shall be terminated with an else clause."
+	- Fix "MISRA-C:2004 15.3 The final clause of a switch statement shall be the default clause."
+	- Fix "MISRA-C:2004 16.3 Identifiers shall be given for all of the parameters in a function prototype declaration."
+	- Fix "MISRA-C:2004 16.4 The identifiers used in the declaration and definition of a function shall be identical."
+	- Fix "MISRA-C:2004 16.5 Functions with no parameters shall be declared and defined with the parameter list void."
+	- Fix "MISRA-C:2004 19.11 All macro identifiers in preprocessor directives shall be defined before use."
+	- Fix "MISRA-C:2004 19.15 Precautions shall be taken in order to prevent the contents of a header file being included twice."
+	- Fix "MISRA-C:2004 20.2 The Names of Standard Library macros, objects and functions shall not be reused."
+	- Fix MPC Green Hills compiler warning, thanks to Patrice Cavin.
 
 - Version 2.7.5:
-	- Fixed compilation error for Classical CW.
-	- Fixed compilation warnings for KDS 2.0.
-	- Fixed "MISRA-C:2004 2.2 Source code shall inly use ISO9899:1990 'C' style comments."
-	- Fixed "MISRA-C:2004 2.4 Sections of code should not be 'commented out'".
-	- Fixed "MISRA-C:2004 4.1 Only those escape sequences that are defined in the ISO C standard shall be used".
-	- Fixed "MISRA-C:2004 5.2 Identifiers in an inner scope shall not use the same name as an identifier in an outer scope, and therefore hide that identifier".
-	- Fixed "MISRA-C:2004 8.1 Functions shall have prototype declaration and the prototype shall be visible at both the function definition and call ".
-	- Fixed "MISRA-C:2004 8.3 For each function parameter the type given in the declaration and definition shall be identical, and the return types shall also be identical".
+	- Fix compilation error for Classical CW.
+	- Fix compilation warnings for KDS 2.0.
+	- Fix "MISRA-C:2004 2.2 Source code shall inly use ISO9899:1990 'C' style comments."
+	- Fix "MISRA-C:2004 2.4 Sections of code should not be 'commented out'".
+	- Fix "MISRA-C:2004 4.1 Only those escape sequences that are defined in the ISO C standard shall be used".
+	- Fix "MISRA-C:2004 5.2 Identifiers in an inner scope shall not use the same name as an identifier in an outer scope, and therefore hide that identifier".
+	- Fix "MISRA-C:2004 8.1 Functions shall have prototype declaration and the prototype shall be visible at both the function definition and call ".
+	- Fix "MISRA-C:2004 8.3 For each function parameter the type given in the declaration and definition shall be identical, and the return types shall also be identical".
 
 - Version 2.7.4:
-	- Fixed potential crash in checksum calculation, thanks to Patrice Cavin.
-	- Fixed compilation error of boot example in KDS 2.0, K64.
-	- Fixed issue of the erased memory check.
-	- Added FAPP_CFG_CHECK_FLASH_BEFORE_WRITE enable/disables checking of the flash memory if is erased before write.
-	- Added MPC5744P configuration, thanks to Patrice Cavin.
+	- Fix potential crash in checksum calculation, thanks to Patrice Cavin.
+	- Fix compilation error of boot example in KDS 2.0, K64.
+	- Fix issue of the erased memory check.
+	- Add FAPP_CFG_CHECK_FLASH_BEFORE_WRITE enable/disables checking of the flash memory if is erased before write.
+	- Add MPC5744P configuration, thanks to Patrice Cavin.
 
 - Version 2.7.3:
-	- Added handling of ICMPv6 errors by transport protocols.
-	- Fixed fnet_inet_ptos(), reported by Kiyoshi
-	- Fixed checksum calculation, reported by Abhilash.
-	- Fixed SRAM start address for K64, reported by Kiyoshi.
-	- Fixed possible flash write error for K60N.
-	- Fixed KDS 2.0 compilation issue of assembler code.
+	- Add handling of ICMPv6 errors by transport protocols.
+	- Fix fnet_inet_ptos(), reported by Kiyoshi
+	- Fix checksum calculation, reported by Abhilash.
+	- Fix SRAM start address for K64, reported by Kiyoshi.
+	- Fix possible flash write error for K60N.
+	- Fix KDS 2.0 compilation issue of assembler code.
 
 - Version 2.7.2:
-	- New configuration parameter:
-		- @ref FNET_CFG_ARP_EXPIRE_TIMEOUT sets period of time after which ARP cache entries are automatically expired.
-	- Fixed potential issue in fnet_netbuf_trim(), thanks to Johan Brouwer.
-	- Added additional check to the bootloader example if flash memory is erased before writing.
+	- Add FNET_CFG_ARP_EXPIRE_TIMEOUT which sets period of time after which ARP cache entries are automatically expired.
+	- Fix potential issue in fnet_netbuf_trim(), thanks to Johan Brouwer.
+	- Add additional check to the bootloader example if flash memory is erased before writing.
 	- Other minor changes and optimizations.
 
 - Version 2.7.1:
-	- Added support of Kinetis Design Studio (GCC compiler) for FRDM-K64F board.
-	- New configuration parameter:
-		- @ref FNET_CFG_ARP_TABLE_SIZE sets maximum number of entries in the ARP table, per interface.
+	- Add support of Kinetis Design Studio (GCC compiler) for FRDM-K64F board.
+	- Add FNET_CFG_ARP_TABLE_SIZE which sets maximum number of entries in the ARP table, per interface.
 
 - Version 2.7.0:
-	- Added Link-Local Multicast Name Resolution (LLMNR) Server/Responder.
-	- Added new "host" parameter to example applications, used as a host name for LLMNR. Its value is controlled by @c FAPP_CFG_PARAMS_HOST_NAME.
-	- Fixed "ICMP Destination unreachable" handling issue for listening TCP sockets, reported by Yasla.
-	- Fixed FRDM-K64F startup code, which caused wrong link status.
-	- Make public fnet_tolower().
+	- Add Link-Local Multicast Name Resolution (LLMNR) Server/Responder.
+	- Add new "host" parameter to example applications, used as a host name for LLMNR. Its value is controlled by @c FAPP_CFG_PARAMS_HOST_NAME.
+	- Fix "ICMP Destination unreachable" handling issue for listening TCP sockets, reported by Yasla.
+	- Fix FRDM-K64F startup code, which caused wrong link status.
+	- Add fnet_tolower().
 	- Other minor changes.
 
 - Version 2.6.5:
-	- Fixed DNS query that caused resolution issue with FritzBox DNS server, reported by Lenz.
-	- Fixed checksum calculation to follow RFC1624(3).
-	- Added fnet_netif_get_ip6_prefix() and fnet_netif_get_ip6_neighbor_cache().
-	- Added "stat" command, to the Shell Demo, showing interface statistics, IPv6 prefix list and neighbor cache.
+	- Fix DNS query that caused resolution issue with FritzBox DNS server, reported by Lenz.
+	- Fix checksum calculation to follow RFC1624(3).
+	- Add fnet_netif_get_ip6_prefix() and fnet_netif_get_ip6_neighbor_cache().
+	- Add "stat" command, to the Shell Demo, showing interface statistics, IPv6 prefix list and neighbor cache.
 	- Cleaned header includes. Now it is enough to add only the fnet_stack folder to Project Search Path without its subfolders.
 	- Other minor changes.
 
 - Version 2.6.4:
-	- Added support of Kinetis K64FN1M (FRDM-K64F board).
-	- Added fnet_netif_get_mtu()
-	- Fixed ARP response, which could cause issue with iOS nodes. Thanks to Markus Muller.
+	- Add support of Kinetis K64FN1M (FRDM-K64F board).
+	- Add fnet_netif_get_mtu()
+	- Fix ARP response, which could cause issue with iOS nodes. Thanks to Markus Muller.
 	- The assembler *.asm files renamed to *.s.
-	- Removed support of obsolete MCF51CN128 and MCF5282 platforms.
+	- Remove support of obsolete MCF51CN128 and MCF5282 platforms.
 
 - Version 2.6.3:
-	- Added support of Kinetis K60FN1M0 (TWR-K60F120M board).
-	- Fixed defect in IPv4 TCP segment send function, reported by Dian Nugraha.
-	- Fixed MCF assembler code to be valid for GCC compiler, thanks to Thomas Buergel.
+	- Add support of Kinetis K60FN1M0 (TWR-K60F120M board).
+	- Fix defect in IPv4 TCP segment send function, reported by Dian Nugraha.
+	- Fix MCF assembler code to be valid for GCC compiler, thanks to Thomas Buergel.
 
 - Version 2.6.2:
-	- Added IPv6 address support to DNS resolver.
-	- Added Recursive DNS Server Option (RFC6106) support via router advertisement. 
-	- Added basic MCF5235 support, contributed by Thomas Buergel.
-	- Fixed MLD-query receive-function that could send a wrong MLD report.
-	- New configuration parameters:
-       - @ref FNET_CFG_ND6_RDNSS enables/disables RDNSS support.
-       - @ref FNET_CFG_ND6_RDNSS_LIST_SIZE sets maximum number of entries in the RDNSS address list.
+	- Add IPv6 address support to DNS resolver.
+	- Add Recursive DNS Server Option (RFC6106) support via router advertisement. 
+	- Add basic MCF5235 support, contributed by Thomas Buergel.
+	- Fix MLD-query receive-function that could send a wrong MLD report.
+	- Add new configuration parameters:
+       - FNET_CFG_ND6_RDNSS enables/disables RDNSS support.
+       - FNET_CFG_ND6_RDNSS_LIST_SIZE sets maximum number of entries in the RDNSS address list.
 	- Other minor changes.
 
 - Version 2.6.1:
-	- Fixed timeout issue in the DHCP client, reported by Colin Bathe.
-	- Fixed race condition in UDP-send function that can cause data corruption, reported by Tomas.
-	- Fixed MLD multicast group leave function.
+	- Fix timeout issue in the DHCP client, reported by Colin Bathe.
+	- Fix race condition in UDP-send function that can cause data corruption, reported by Tomas.
+	- Fix MLD multicast group leave function.
 	- Many other minor changes and fixes.
 
 - Version 2.6.0:
-	- Added Multicast Listener Discovery Version 1 (MLDv1), enabled by @ref FNET_CFG_MLD.
-	- New IPv6 socket options:
-		- @ref IPV6_MULTICAST_HOPS changes the hop limit to use for outgoing multicast IPv6 packets.
-       	- @ref IPV6_JOIN_GROUP joins a multicast group on a specified local interface.
-		- @ref IPV6_LEAVE_GROUP leaves a multicast group on a specified interface.
+	- Add Multicast Listener Discovery Version 1 (MLDv1), enabled by @ref FNET_CFG_MLD.
+	- Add IPv6 socket options:
+		- IPV6_MULTICAST_HOPS changes the hop limit to use for outgoing multicast IPv6 packets.
+       	- IPV6_JOIN_GROUP joins a multicast group on a specified local interface.
+		- IPV6_LEAVE_GROUP leaves a multicast group on a specified interface.
 	- Other minor changes. 
 
 - Version 2.5.0:
-	- Added support of Kinetis K70FN1M0 (TWR-K70F120M board).
-	- Added support of Modelo MCF54418 (TWR-MCF5441x board).
-	- Added support of two Ethernet modules by FEC driver (for MCF54418).
-	- Added support of uCOS-III, thanks to Jon Elliott.
-	- Added "bind/unbind" IPv6 address commands to the Shell Demo.
-	- Added "cookie" parameter to interrupt handlers.
-	- New/renamed configuration parameters:
+	- Add support of Kinetis K70FN1M0 (TWR-K70F120M board).
+	- Add support of Modelo MCF54418 (TWR-MCF5441x board).
+	- Add support of two Ethernet modules by FEC driver (for MCF54418).
+	- Add support of uCOS-III, thanks to Jon Elliott.
+	- Add "bind/unbind" IPv6 address commands to the Shell Demo.
+	- Add "cookie" parameter to interrupt handlers.
+	- Add configuration parameters:
 		- FNET_CFG_CPU_ETH_RMII enables/disables RMII mode. 
 		- FNET_CFG_CPU_ETH_RMII_10T sets 10Mbps or 100Mbps in RMII mode.
 		- FNET_CFG_CPU_ETHx enables/disables Externet-x module.
@@ -2872,13 +2873,12 @@ FNET public releases:
 		- FNET_CFG_CPU_ETH_PHY_ADDR_DISCOVER enables/disables PHY addresses discover.
 		- FNET_CFG_DEFAULT_IF defines default interface.
 		- FNET_CFG_OS_TIMER enables/disables OS-specific timer initialization/release.
-		- Others.
 	- Other internal changes. 
 
 - Version 2.4.0:
-	- Added multiple-session support to the HTTP server.	
-	- Added HW Checksum Calculation support by ENET module (for K60).
-	- New configuration parameters:
+	- Add multiple-session support to the HTTP server.	
+	- Add HW Checksum Calculation support by ENET module (for K60).
+	- Add configuration parameters:
 		- FNET_CFG_HTTP_SESSION_MAX defines maximum number of simultaneous user-session that can be handled by the HTTP server.
 		- FNET_CFG_CPU_ETH_HW_TX_PROTOCOL_CHECKSUM enables/disables insertion of protocol checksum by Ethernet-module.
 		- FNET_CFG_CPU_ETH_HW_TX_IP_CHECKSUM enables/disables insertion of IPv4 header checksum by Ethernet-module.
@@ -2889,53 +2889,53 @@ FNET public releases:
 
 - Version 2.3.0:
 	- Passed the "IPv6 Ready Logo" Phase-2 IPv6 Core Protocols Conformance Tests, for host.
-	- Added the Path MTU Discovery for IPv6, which is disabled /enabled by FNET_CFG_IP6_PMTU_DISCOVERY.
+	- Add the Path MTU Discovery for IPv6, which is disabled /enabled by FNET_CFG_IP6_PMTU_DISCOVERY.
 	- Other minor changes.
 
 - Version 2.2.1:
-	- Fixed data corruption bug, that can occur using UDP services (e.g. DHCP) with enabled both IP4 and IPv6.
-	- Updated FreeRTOS specific code. Thanks to Christophe Graulle.
-	- Added basic BOOTP protocol support, as special mode of DHCP client service. Thanks to Peter Baertschi.
- 	- New configuration parameters:
+	- Fix data corruption bug, that can occur using UDP services (e.g. DHCP) with enabled both IP4 and IPv6.
+	- Update FreeRTOS specific code. Thanks to Christophe Graulle.
+	- Add basic BOOTP protocol support, as special mode of DHCP client service. Thanks to Peter Baertschi.
+ 	- Add new configuration parameters:
 		- FNET_CFG_DHCP_BOOTP defines DHCP or BOOTP protocol to be used.
 		- FNET_CFG_DHCP_PORT_CLIENT defines DHCP client port number.
 		- FNET_CFG_DHCP_PORT_SERVER defines DHCP server port number.
 
 - Version 2.2.0:
-	- Added support of the Qorivva Power Architecture:
-		- Added support of MPC5668G.
-		- Added support of CodeWarrior Development Studio for MPC55xx/MPC56xx Ver. 2.10.
-		- Added Shell and Benchmark demo-applications for MPC5668GKIT. Without on-chip flash driver.
+	- Add support of the Qorivva Power Architecture:
+		- Add support of MPC5668G.
+		- Add support of CodeWarrior Development Studio for MPC55xx/MPC56xx Ver. 2.10.
+		- Add Shell and Benchmark demo-applications for MPC5668GKIT. Without on-chip flash driver.
 	- Other minor changes.
 
 - Version 2.1.1:
-	- Improved IPv6 support. Passed 80% of the "IPv6 Ready Logo" Phase-2 (Golden) Tests. 
-	- Fixed wrong IPv4 group address mapping to Ethernet multicast address, for little-endian platform (Kinetis).
+	- Improve IPv6 support. Passed 80% of the "IPv6 Ready Logo" Phase-2 (Golden) Tests. 
+	- Fix wrong IPv4 group address mapping to Ethernet multicast address, for little-endian platform (Kinetis).
 
 - Version 2.1.0:
-	- Improved IPv6 support. Passed 65% of the "IPv6 Ready Logo" Phase-2 (Golden) Tests. 
-	- Added RAW socket support.
-	- Added PING service, using RAW sockets and supporting both IPv4 and IPv6.
-	- Added ping command to the FNET demo applications.
-	- Added basic FreeRTOS support, contributed by Christophe Graulle.
-	- Added the @ref IPV6_UNICAST_HOPS socket option.
-	- Added multiple-session support to the TELNET server.
-	- Added possibility to set the socket-listen backlog to zero value.
-	- Fixed some bugs.
-	- Added new configuration parameters:
+	- Improve IPv6 support. Passed 65% of the "IPv6 Ready Logo" Phase-2 (Golden) Tests. 
+	- Add RAW socket support.
+	- Add PING service, using RAW sockets and supporting both IPv4 and IPv6.
+	- Add ping command to the FNET demo applications.
+	- Add basic FreeRTOS support, contributed by Christophe Graulle.
+	- Add the @ref IPV6_UNICAST_HOPS socket option.
+	- Add multiple-session support to the TELNET server.
+	- Add possibility to set the socket-listen backlog to zero value.
+	- Fix some bugs.
+	- Add new configuration parameters:
 		- @ref FNET_CFG_RAW enables/disables RAW socket support.
 		- @ref FNET_CFG_PING enables/disables PING service.
 		- @ref FNET_CFG_TELNET_SESSION_MAX defines maximum number of simultaneous user-session that can be handled by the Telnet server.
 
 - Version 2.0.0:
-	- Added IPv6 support:
+	- Add IPv6 support:
 		- Passed the legacy "IPv6 Ready" Phase I (Silver) Tests.
-		- Added IPv6, ICMPv6, Stateless address autoconfiguration, Neighbor Discovery. 
-		- Added IPv6 address support to TCP, UDP, Sockets, TFTP, HTTP and Telnet.
+		- Add IPv6, ICMPv6, Stateless address autoconfiguration, Neighbor Discovery. 
+		- Add IPv6 address support to TCP, UDP, Sockets, TFTP, HTTP and Telnet.
 		- All Demo application is able to work with IPv6. Where it was possible, both IPv4 and IPv6 are enabled.
-	- Added support of uVision 4.5 Keil compiler for K60N512.
-	- Added events (rebranded SW interrupts).
-	- New configuration parameters:
+	- Add support of uVision 4.5 Keil compiler for K60N512.
+	- Add events (rebranded SW interrupts).
+	- Add configuration parameters:
 		- @ref FNET_CFG_CPU_ETH_ATONEGOTIATION_TIMEOUT defines Ethernet Autonegotiation Timeout.
 		- FNET_CFG_OS_ISR allows usage of an OS-specific ISR handler.
 		- FNET_CFG_OS_EVENT enables generation OS-specific event.
@@ -2948,7 +2948,7 @@ FNET public releases:
 		- @ref FNET_CFG_NETIF_IP6_ADDR_MAX defines the maximum number of IPv6 addresses per interface.
 		- @ref FNET_CFG_IP6_FRAGMENTATION enables/disables IPv6 fragmentation.
 		- others.
-	- New user API functions:
+	- Add functions:
 		- fnet_inet_ntop().
 		- fnet_inet_pton().
 		- fnet_netif_get_by_number().
@@ -2956,41 +2956,39 @@ FNET public releases:
 		- fnet_timer_ms().
 		- fnet_netif_get_ip6_addr().
 		- Many IPv6 specific functions and types.
-	- A lot of existing API functions and definitions renamed to differentiate IPv4 and IPv6 functionality.
-	- Added BRTOS support (http://code.google.com/p/brtos/).
-	- Removed support of IAR Compiler for ColdFire.
+	- Add BRTOS support (http://code.google.com/p/brtos/).
+	- Remove support of IAR Compiler for ColdFire.
 	- Many other internal changes.
 
 - Version 1.2.2:
-	- Fixed wrong behavior, using CodeWarrior 10.2 Final Release for Kinetis platform.
-	- Fixed value of MII speed register, which may be cause of wrong PHY-address detection and wrong connection status.
-	- Removed the remaining platform-independent Ethernet logic from the FEC driver.
-	- Deleted "useless" length and pad fields from the socket-address structure.
-	- The connect() function now returns @c FNET_OK instead of the @c FNET_ERR_AGAIN error. 
-	- Added "cookie" parameter to the timer-event handler.
+	- Fix wrong behavior, using CodeWarrior 10.2 Final Release for Kinetis platform.
+	- Fix value of MII speed register, which may be cause of wrong PHY-address detection and wrong connection status.
+	- Remove the remaining platform-independent Ethernet logic from the FEC driver.
+	- Delete "useless" length and pad fields from the socket-address structure.
+	- Change connect() function now returns @c FNET_OK instead of the @c FNET_ERR_AGAIN error. 
+	- Add "cookie" parameter to the timer-event handler.
 	- Other internal changes.
 
 - Version 1.2.1:
-	- Added new configuration parameters:
+	- Add configuration parameters:
 		- FNET_CFG_IP4_OPTIONS enables/disables processing of IP options.
 		- @ref FNET_CFG_TCP_URGENT enables/disables TCP urgent data processing.  
-	- Done different code-size optimizations.
-	- Enabled the multicast functionality for the Kinetis FEC driver.
-	- Moved the loopback logic from FEC driver to the Networking layer.
-	- Renamed @c fnet_ip_addr_t to @c fnet_ip4_addr_t.
-	- Added @c FNET_IP4_ADDR_STR_SIZE and @c FNET_MAC_ADDR_STR_SIZE that define maximum size of null-terminated ASCII string representing IPv4 and MAC address.
-	- Deleted not thread-safe fnet_strok() function. It is recommended to use fnet_strtok_r() instead of it.
-	- Added "FNET Demo Applications" and "Standard library API" chapters to the User Documentation.
+	- Enable the multicast functionality for the Kinetis FEC driver.
+	- Move the loopback logic from FEC driver to the Networking layer.
+	- Rename @c fnet_ip_addr_t to @c fnet_ip4_addr_t.
+	- Add @c FNET_IP4_ADDR_STR_SIZE and @c FNET_MAC_ADDR_STR_SIZE that define maximum size of null-terminated ASCII string representing IPv4 and MAC address.
+	- Delete not thread-safe fnet_strok() function. It is recommended to use fnet_strtok_r() instead of it.
+	- Add "FNET Demo Applications" and "Standard library API" chapters to the User Documentation.
 
 - Version 1.2.0:
-	- Added support of the CodeWarrior Development Studio v10.2 for TWR-K60N512 (Kinetis) and M52259EVB (Kirin3) projects.
-	- Added support of multicast-group joining & leaving to the socket interface.
-	- Added Internet Group Management Protocol (IGMP) version 1 and 2.
-	- Added new socket options:
+	- Add support of the CodeWarrior Development Studio v10.2 for TWR-K60N512 (Kinetis) and M52259EVB (Kirin3) projects.
+	- Add support of multicast-group joining & leaving to the socket interface.
+	- Add Internet Group Management Protocol (IGMP) version 1 and 2.
+	- Add socket options:
 		- @ref IP_MULTICAST_TTL changes IP "time to live" (TTL) value for outgoing multicast datagrams.
 		- @ref IP_ADD_MEMBERSHIP joins the socket to the supplied multicast group on the specified interface.
 		- @ref IP_DROP_MEMBERSHIP drops membership to the given multicast group and interface.
-	- Added new configuration parameters:
+	- Add configuration parameters:
 		- @ref FNET_CFG_CPU_ETH_PROMISCUOUS enables/disables the Ethernet interface promiscuous mode.
 		- @ref FNET_CFG_CPU_ETH_FULL_DUPLEX enables/disables the Ethernet interface full duplex mode.
 		- @ref FNET_CFG_MULTICAST enables/disables the multicast group support.
@@ -3001,215 +2999,204 @@ FNET public releases:
 		- @ref FNET_CFG_LOOPBACK_MULTICAST enables/disables the local loopback of multicast datagrams.
 		- @ref FNET_CFG_LOOPBACK_BROADCAST enables/disables the local loopback of broadcast datagrams.
 		- Old @c FNET_CFG_LOOP_xxx parameters renamed to @c FNET_CFG_LOOPBACK_xxx.
-	- Added possibility to choose default multicast interface for outgoing multicast packets, for hosts with several network interfaces, in FNET Throughput Benchmark tool.
-	- Fixed issues in Kinetis Flash and UART drivers.
+	- Add possibility to choose default multicast interface for outgoing multicast packets, for hosts with several network interfaces, in FNET Throughput Benchmark tool.
+	- Fix issues in Kinetis Flash and UART drivers.
 	- Many other minor changes/fixes.
 
 - Version 1.1.2:
-	- FNET Throughput Benchmark tool:
-		- Added "IP Don`t Fragment" option.
-		- Added "IP Time to Live" option.
-		- Added "Timeout" option (in seconds) for sending. Now user is able to choose to stop the sending after the number of sent messages or after the timeout.
-		- Added possibility of joining of a UDP Multicast group by the receiver.
-		- Added "refresh" button that updates "Local IP address" combo-box, in case a network interface enabled/disabled during work of application.
-		- It was added acknowledge packet, at the end of UDP data transfer session, which contains amount of received data. It helps to determine the amount of data was received and lost during UDP transfer.
+	- Improved FNET Throughput Benchmark tool:
+		- Add "IP Don`t Fragment" option.
+		- Add "IP Time to Live" option.
+		- Add "Timeout" option (in seconds) for sending. Now user is able to choose to stop the sending after the number of sent messages or after the timeout.
+		- Add possibility of joining of a UDP Multicast group by the receiver.
+		- Add "refresh" button that updates "Local IP address" combo-box, in case a network interface enabled/disabled during work of application.
+		- Add acknowledge packet, at the end of UDP data transfer session, which contains amount of received data. It helps to determine the amount of data was received and lost during UDP transfer.
         - Throughout value in Bytes/sec was replaced by Kbits/sec.
 		- Other minor improvements in user interface.
-	- Added the FNET_CPU_INSTRUCTION_ADDR()  macro that sets Thumb bit of an address for Kinetis entry point (and does nothing for ColdFire). It is used by the FNET boot-loader and fixes issue caused by SREC files generated by CodeWarrior for Kinetis.
-	- Fixed issue in MCF52235 initialization for UART number 2.
-	- Fixed potential issue in initialization of the DNS client application.
-	- Fixed potential issue in the fnet_str_to_mac() function.
-	- Fixed the "strict ANSI C" CW compiler errors.
-	- Fixed some GCC compiler errors and warnings (even if GCC is not supported).
+	- Add the FNET_CPU_INSTRUCTION_ADDR()  macro that sets Thumb bit of an address for Kinetis entry point (and does nothing for ColdFire). It is used by the FNET boot-loader and fixes issue caused by SREC files generated by CodeWarrior for Kinetis.
+	- Fix issue in MCF52235 initialization for UART number 2.
+	- Fix potential issue in initialization of the DNS client application.
+	- Fix potential issue in the fnet_str_to_mac() function.
+	- Fix the "strict ANSI C" CW compiler errors.
+	- Fix some GCC compiler errors and warnings (even if GCC is not supported).
 	- Other minor changes/fixes.
 
 - Version 1.1.0:
-	- Added the DNS client/resolver service.
-	- Added the DNS-server address support to the DHCP client service and to the network interface.
-	- Added the @c dns resolver command to the FNET Shell application.
+	- Add the DNS client/resolver service.
+	- Add the DNS-server address support to the DHCP client service and to the network interface.
+	- Add the @c dns resolver command to the FNET Shell application.
 	- Other minor changes/fixes.
 
-
 - Version 1.0.0:
-	- Added Kinetis (ARM Cortex-M4) - MK60N512 support.
-	- Added support of the IAR Embedded Workbench for ARM compiler, version 6.1.
-	- Added standard FNET demo applications for the TWR-K60N512 board, including the FNET on-chip Bootloader.
-	- Added support of little-endian platforms, defined by @ref FNET_CFG_CPU_LITTLE_ENDIAN.
-	- Added set of functions and macroses that convert values between host and network byte order
+	- Add Kinetis (ARM Cortex-M4) - MK60N512 support.
+	- Add support of the IAR Embedded Workbench for ARM compiler, version 6.1.
+	- Add standard FNET demo applications for the TWR-K60N512 board, including the FNET on-chip Bootloader.
+	- Add support of little-endian platforms, defined by @ref FNET_CFG_CPU_LITTLE_ENDIAN.
+	- Add set of functions and macroses that convert values between host and network byte order
  (like @ref fnet_ntohs(), @ref fnet_htonl() and etc. ).
-	- Added common on-chip Flash memory driver for Kinetis (FTFL) and ColdFire (CFM) modules.
-	- Added support of 16 bits and 24 bits addressing in the S-record file format for the FNET Bootloader.
-	- Added common FEC driver for Kinetis and ColdFire platform.
-	- Improved response of the Telnet server.
-	- Added the @ref fnet_telnet_close_session() function, which closes the currently active session of the Telnet Server.
-	- Added the fnet_println() function that prints formatted text to the stream and terminates it by line separator string.
-	- Added the @ref fnet_serial_flush() function that sends/flushes data from the internal stream buffer to the stream client, it has meaning only for buffered streams.
-	- Applied optimized version of the IP checksum calculation and the fnet_memcpy() function.
-	- A lot of the @c FNET_CFG_MCF_xxxx parameters, which are common to all platforms, were renamed to @c FNET_CFG_CPU_xxxx.
+	- Add common on-chip Flash memory driver for Kinetis (FTFL) and ColdFire (CFM) modules.
+	- Add support of 16 bits and 24 bits addressing in the S-record file format for the FNET Bootloader.
+	- Add common FEC driver for Kinetis and ColdFire platform.
+	- Improve response of the Telnet server.
+	- Add the @ref fnet_telnet_close_session() function, which closes the currently active session of the Telnet Server.
+	- Add the fnet_println() function that prints formatted text to the stream and terminates it by line separator string.
+	- Add the @ref fnet_serial_flush() function that sends/flushes data from the internal stream buffer to the stream client, it has meaning only for buffered streams.
 	- Many other changes and fixes.
 
 - Version 0.9.3:
-	- Fixed stuck issue that may occur during receiving of broadcast UDP datagrams.
-	- Fixed buffer corruption issue that may occur when the internal static heap buffer has relatively small size.
-	- Improved stability of nebuf. management.
+	- Fix stuck issue that may occur during receiving of broadcast UDP datagrams.
+	- Fix buffer corruption issue that may occur when the internal static heap buffer has relatively small size.
+	- Improve stability of nebuf. management.
 	- FEC Frame buffers and descriptors are allocated statically (before in internal heap). Existing applications should reduce value of the FNET_CFG_HEAP_SIZE in user-configuration file by the value that equals summary size of buffers statically allocated in Ethernet driver. Roughly [NEW_VALUE]=[OLD_VALUE]-(FNET_CFG_MCF_ETH_TX_BUFS_MAX+FNET_CFG_MCF_ETH_RX_BUFS_MAX)* FNET_CFG_ETH_MTU.
-	- Renamed FNET_CFG_MCF_SERIAL_PORT_DEFAULT to @ref FNET_CFG_CPU_SERIAL_PORT_DEFAULT.
-	- Added the @ref FNET_CFG_TELNET_SOCKET_BUF_SIZE user-configuration option that defines size of the socket RX & TX buffer used by the Telnet server.
-	- Added OS folder where it will be placed all OS-specific code.
-	- Added uCOS-II specific ISR handler.
-	- Added FNET_CFG_OS and FNET_CFG_OS_operation_system_type set of user-configuration options that define a currently used OS. For this moment there is FNET_CFG_OS_UCOSII only.
-	- Added "Free heap" information to the Shell-example "info" command.
+	- Rename FNET_CFG_MCF_SERIAL_PORT_DEFAULT to @ref FNET_CFG_CPU_SERIAL_PORT_DEFAULT.
+	- Add the @ref FNET_CFG_TELNET_SOCKET_BUF_SIZE user-configuration option that defines size of the socket RX & TX buffer used by the Telnet server.
+	- Add OS folder where it will be placed all OS-specific code.
+	- Add uCOS-II specific ISR handler.
+	- Add FNET_CFG_OS and FNET_CFG_OS_operation_system_type set of user-configuration options that define a currently used OS. For this moment there is FNET_CFG_OS_UCOSII only.
+	- Add "Free heap" information to the Shell-example "info" command.
 	- Other minor changes/fixes.
 
 - Version 0.9.1:
-	- Added the @ref FNET_CFG_TCP_DISCARD_OUT_OF_ORDER user-configuration option that enables or disables the discarding of TCP segments that are received out of order.
+	- Add the @ref FNET_CFG_TCP_DISCARD_OUT_OF_ORDER user-configuration option that enables or disables the discarding of TCP segments that are received out of order.
 
 - Version 0.9.0:
-	- Added support of the IAR Embedded Workbench for ColdFire Version 1.22.
-	- Added support of the IAR compiler to the demo applications for the M52259EVB board.
-	- Added the @ref FNET_CFG_COMP_compiler_type set of user-configuration options that define a currently used compiler.
-	- Added GPL linking exception to the FNET license (based on http://en.wikipedia.org/wiki/GPL_linking_exception), to allow static linking to proprietary applications.
-	- Fixed several issues in the Telnet server, which caused stuck situations.
-	- Fixed assembler version of the checksum calculation.
-	- Added the @c compiler directory where are placed compiler-specific files.
-	- All inline assembler functions were rewritten to separate ASM files, to make it more portable.
-	-  All @c standard_abi assembler functions were rewritten to follow @c register_abi.
-	- Increased general throughput performance, based on benchmark results.
-	- Fixed CFM driver initialization.
-	- Fixed MSS issue, it was set to the lowest value for all cases.
-	- Added the @ref FNET_CFG_SOCKET_TCP_MSS user-configuration option that defines the default value of the @ref TCP_MSS socket option. By default the selection of the MSS is automatic and is based on the MTU of the outgoing interface. It is done to assist in avoiding of IP fragmentation at the endpoints of the TCP connection.
-	- Added the @ref FNET_CFG_SHELL_HELP_FORMAT user-configuration option that defines the format of the command-shell @c help message, that is used by the @ref fnet_shell_help() function.
-	- Added the @ref FNET_CFG_TELNET_SHELL_ECHO user-configuration option that defines the Echo in the Telnet shell.
-	- Updated structure of the application parameters, used by the FNET demo applications.
-	- Updated the FNET ROM file-system image structure and the "FNET File System Generation Tool", to make the file-system image file more portable between different compilers.
-	- The "fnet.h" header file gives full access to the whole FNET user-API, including the service API.
+	- Add support of the IAR Embedded Workbench for ColdFire Version 1.22.
+	- Add support of the IAR compiler to the demo applications for the M52259EVB board.
+	- Add the @ref FNET_CFG_COMP_compiler_type set of user-configuration options that define a currently used compiler.
+	- Add GPL linking exception to the FNET license (based on http://en.wikipedia.org/wiki/GPL_linking_exception), to allow static linking to proprietary applications.
+	- Fix several issues in the Telnet server, which caused stuck situations.
+	- Fix assembler version of the checksum calculation.
+	- Add the @c compiler directory where are placed compiler-specific files.
+	- Increase general throughput performance, based on benchmark results.
+	- Fix CFM driver initialization.
+	- Fix MSS issue, it was set to the lowest value for all cases.
+	- Add the @ref FNET_CFG_SOCKET_TCP_MSS user-configuration option that defines the default value of the @ref TCP_MSS socket option. By default the selection of the MSS is automatic and is based on the MTU of the outgoing interface. It is done to assist in avoiding of IP fragmentation at the endpoints of the TCP connection.
+	- Add the @ref FNET_CFG_SHELL_HELP_FORMAT user-configuration option that defines the format of the command-shell @c help message, that is used by the @ref fnet_shell_help() function.
+	- Add the @ref FNET_CFG_TELNET_SHELL_ECHO user-configuration option that defines the Echo in the Telnet shell.
+	- Update structure of the application parameters, used by the FNET demo applications.
+	- Update the FNET ROM file-system image structure and the "FNET File System Generation Tool", to make the file-system image file more portable between different compilers.
 	- Other minor changes/fixes.
 
 - Version 0.8.1:
-	- Fixed bug in the parsing of the HTTP URI.
+	- Fix bug in the parsing of the HTTP URI.
 
 - Version 0.8.0:
-	- HTTP Server:
-		- Added support of the HTTP/1.0 response.
-		- Added support of the Basic Access Authentication according to RFC2617 (FNET_CFG_HTTP_AUTHENTICATION_BASIC).
-		- Added support of the HTTP POST method (FNET_CFG_HTTP_POST).
-		- Added the "cookie" parameter to the POST, SSI and CGI callback functions, which can be used to associate custom information with a connection instance.
-	- Added the HTTP POST and Access Authentication demos to the Shell demo application.
-	- Added @ref fnet_snprintf() function. The save version of @ref fnet_sprintf() that does not suffer from buffer overrun.
-	- Updated GUI File System generation tool:
-		- Added additional generation parameters (image name and \#if condition). 
-		- Fixed issue occurred during saving/loading of project files for images that have directories.
-	- Eliminated using of the CodeWarrior @c \#pragma @c overload.
-	- Used http://www.installjammer.com tool for creation of the FNET Installer and Uninstaller.
+	- Improve HTTP Server:
+		- Add support of the HTTP/1.0 response.
+		- Add support of the Basic Access Authentication according to RFC2617 (FNET_CFG_HTTP_AUTHENTICATION_BASIC).
+		- Add support of the HTTP POST method (FNET_CFG_HTTP_POST).
+		- Add the "cookie" parameter to the POST, SSI and CGI callback functions, which can be used to associate custom information with a connection instance.
+	- Add the HTTP POST and Access Authentication demos to the Shell demo application.
+	- Add @ref fnet_snprintf() function. The save version of @ref fnet_sprintf() that does not suffer from buffer overrun.
+	- Update GUI File System generation tool:
+		- Add additional generation parameters (image name and \#if condition). 
+		- Fix issue occurred during saving/loading of project files for images that have directories.
 	- Other minor changes/fixes.
 
 - Version 0.7.6:
-	- Improved the @ref how_to_generate_rom_fs "FNET File System Generation tool":
-		- Added project file support.
-		- Added command line support.
+	- Improve the @ref how_to_generate_rom_fs "FNET File System Generation tool":
+		- Add project file support.
+		- Add command line support.
 		- Other minor changes.
-	- Fixed PHY initialization issue during power switch on/off of the M52259EVB.
+	- Fix PHY initialization issue during power switch on/off of the M52259EVB.
 	
 - Version 0.7.5:
-	- Added GUI Throughput Benchmark tool.
-	- Added Throughput Benchmark application for MCF52259.
-	- Increased general performance of the stack.
-	- Fixed bug in the TCP receive function. In very rare cases, data that came within the latest FIN packet was lost.
-	- Eliminated support of the blocked sockets (actually not used). Now FNET supports only non-blocked sockets. 
-	- Updated send() function. Now it returns 0 instead of FNET_ERR (FNET_ERR_AGAIN and FNET_ERR_NOMEM), when the TX-socket buffer is full.
-	- Added fnet_fs_finfo() function.
-	- Increased default number of the RX-Ethernet buffers.
-	- Fixed AJAX demo web pages, to make it work even when IE cache is enabled. 
+	- Add GUI Throughput Benchmark tool.
+	- Add Throughput Benchmark application for MCF52259.
+	- Increase general performance of the stack.
+	- Fix bug in the TCP receive function. In very rare cases, data that came within the latest FIN packet was lost.
+	- Eliminate support of the blocked sockets (actually not used). Now FNET supports only non-blocked sockets. 
+	- Update send() function. Now it returns 0 instead of FNET_ERR (FNET_ERR_AGAIN and FNET_ERR_NOMEM), when the TX-socket buffer is full.
+	- Add fnet_fs_finfo() function.
+	- Increase default number of the RX-Ethernet buffers.
+	- Fix AJAX demo web pages, to make it work even when IE cache is enabled. 
 	- Many other minor changes and fixes.
 
 - Version 0.7.1:
-	- Added TWR-MCF52259 board support to the demo applications.
-	- Fixed PHY initialization for MCF52259 and MCF52235.
-	- Added serial-port initialization function.
+	- Add TWR-MCF52259 board support to the demo applications.
+	- Fix PHY initialization for MCF52259 and MCF52235.
+	- Add serial-port initialization function.
 	- Minor changes and fixes.
 
 - Version 0.7.0:
-	- Added TFTP-server service. Both read and write requests are supported.
-	- Added TFTP Firmware server to the FNET Bootloader. It allows to update or backup the firmware from a remote TFTP client running on host PC without the serial-console command line interface.
-	- Updated to the latest CodeWarrior compiler:
-		- Freescale CodeWarrior for ColdFire version 7.2.
-		- Freescale CodeWarrior for Microcontrollers Version 6.3.
+	- Add TFTP-server service. Both read and write requests are supported.
+	- Add TFTP Firmware server to the FNET Bootloader. It allows to update or backup the firmware from a remote TFTP client running on host PC without the serial-console command line interface.
+	- Update to the latest CodeWarrior compiler.
 	- Minor changes and fixes.
 
 - Version 0.6.4:
-	- Fixed compilation error in the @c shell_boot application.
+	- Fix compilation error in the @c shell_boot application.
 
 - Version 0.6.3:
-	- Added TFTP write request support to the TFTP client service.
-	- Added firmware-upload (through TFTP) command to the FNET Bootloader. It can be used for the firmware backup, for later system restore.
+	- Add TFTP write request support to the TFTP client service.
+	- Add firmware-upload (through TFTP) command to the FNET Bootloader. It can be used for the firmware backup, for later system restore.
 	- Minor fixes.
 
 - Version 0.6.0:
-	- Added GNU Lesser GPL v3 license.
-	- Added Telnet server service.	
-	- Added M52259DEMO board support.
-	- Added Shell service.
-	- Added Serial I/O library.
-	- Added TCP options to control TCP keep-alive parameters: TCP_KEEPCNT, TCP_KEEPINTVL, TCP_KEEPIDLE. 
-	- Added new socket error code FNET_ERR_CONNCLOSED (connection closed by peer) used by the TCP receive function. 
-	- Deleted obsolete Lite HTTP server.
-	- Fixed some issues in the TCP module.
-	- Fixed memory management.
+	- Add GNU Lesser GPL v3 license.
+	- Add Telnet server service.	
+	- Add M52259DEMO board support.
+	- Add Shell service.
+	- Add Serial I/O library.
+	- Add TCP options to control TCP keep-alive parameters: TCP_KEEPCNT, TCP_KEEPINTVL, TCP_KEEPIDLE. 
+	- Add new socket error code FNET_ERR_CONNCLOSED (connection closed by peer) used by the TCP receive function. 
+	- Delete obsolete Lite HTTP server.
+	- Fix some issues in the TCP module.
+	- Fix memory management.
 	- A lot of other changes and fixes.
 
 - Version 0.5.0:
-	- Added TFTP client service.	
-	- Added Coldfire Flash Module (CFM) driver.
-	- Added FNET TFTP Bootloader.
-	- Fixed critical bug in the DHCP client.
-	- Eliminated the MQX support to avoid license issues.
-	- Deleted the obsolete Events API.
-	- Updated Shell Demo application. Application parameters are saved in the flash.
-	- Improved Shell library. Added blocking-command and multi-word parameter features.   
+	- Add TFTP client service.	
+	- Add Coldfire Flash Module (CFM) driver.
+	- Add FNET TFTP Bootloader.
+	- Fix critical bug in the DHCP client.
+	- Eliminate the MQX support to avoid license issues.
+	- Delete the obsolete Events API.
+	- Update Shell Demo application. Application parameters are saved in the flash.
+	- Improve Shell library. Added blocking-command and multi-word parameter features.   
 	- A lot of other changes and fixes.
 
 - Version 0.4.1:
-	- Improved memory management. Memory pools added.	
-	- MQX demos updated for MQX v3.1.
-	- MQX demo added for Kirin2.
-	- Fixed bug in the netbuf adjust function.
-	- Fixed bug for TCP socket linger option.
+	- Improve memory management. Memory pools added.	
+	- Update MQX demos to MQX v3.1.
+	- Add MQX demo for Kirin2.
+	- Fix bug in the netbuf adjust function.
+	- Fix bug for TCP socket linger option.
 	- Minor internal changes and fixes. 
 
 - Version 0.4.0:
-	- The FNET project is published on the www.sourceforge.net.	
-	- Updated the FNET user documentation.
-	- Fixed the FEC module initialization for MCF51CN128 MTD Rev.A.
-	- Fixed the IP Reassembly bug (crashed during IP reassembling of the fragmented broadcast IP packets with the MTU less than 200).
-	- Added the FNET Shell library.
+	- Publish FNET project on the www.sourceforge.net.	
+	- Update the FNET user documentation.
+	- Fix the FEC module initialization for MCF51CN128 MTD Rev.A.
+	- Fix the IP Reassembly bug (crashed during IP reassembling of the fragmented broadcast IP packets with the MTU less than 200).
+	- Add the FNET Shell library.
 	- A lot of other fixes.
 
 - Version 0.3.6:
-	- Added MCF51CN128 support (beta version).
-	- Added HTTP Server. CGI and SSI support.
-	- Added File System Interface.
-	- Added FNET ROM File System.
-	- Added GUI File System Generation tool.
-	- Added File Explorer to the Shell demo.
-	- Added Demo Web pages. 
+	- Add MCF51CN128 support (beta version).
+	- Add HTTP Server. CGI and SSI support.
+	- Add File System Interface.
+	- Add FNET ROM File System.
+	- Add GUI File System Generation tool.
+	- Add File Explorer to the Shell demo.
+	- Add Demo Web pages. 
 	- A lot of internal changes and bug fixes.
 
 - Version 0.3.2:
-	- Fixed the FNET documentation.
+	- Fix the FNET documentation.
 	- Minor internal changes and fixes.
 
 - Version 0.3.1:
-	- Added the FNET documentation in Doxygen.
-	- Fixed all current compiler warnings.
-	- Added the PHY address discovery.
-	- Fixed access to the MII registers.
+	- Add the FNET documentation in Doxygen.
+	- Fix all current compiler warnings.
+	- Add the PHY address discovery.
+	- Fix access to the MII registers.
 	- A lot of other fixes.
 
 - Version 0.3.0:
-	- Improved memory-drain function for the TCP layer.
-	- During the TCP send a really available/free memory in the network heap is checked, so less data is put to the socket buffer. In the previous version the TCP returned just the NOMEM error code.
-	- Default TCP timeouts were decreased. So the stack is able to restore itself in seconds (not minutes as it was before).
-	- Added the statistics information (TX/RX packets) into the network interface.
+	- Improve memory-drain function for the TCP layer.
+	- Decrease TCP timeouts. So the stack is able to restore itself in seconds (not minutes as it was before).
+	- Add the statistics information (TX/RX packets) into the network interface.
 	- A lot of other fixes.
 */
 

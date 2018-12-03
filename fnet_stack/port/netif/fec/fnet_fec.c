@@ -159,7 +159,7 @@ static fnet_return_t _fnet_fec_init(fnet_netif_t *netif)
 {
     fnet_fec_if_t   *fec_if;
     fnet_index_t    i;
-    fnet_return_t   result = FNET_OK;;
+    fnet_return_t   result = FNET_OK;
     fnet_eth_if_t   *eth_if =  (fnet_eth_if_t *)(netif->netif_prv);
 
     fec_if = (fnet_fec_if_t *)(eth_if->eth_prv);
@@ -468,6 +468,9 @@ static void _fnet_fec_input(fnet_netif_t *netif)
         }
         else
         {
+            fnet_uint16_t  length;
+            fnet_uint32_t  buf_ptr;
+
             /* Error handling */
             if ((fec_if->rx_buf_desc_cur->status & FNET_HTONS(FNET_FEC_RX_BD_LG /* Frame too long.*/
                     | FNET_FEC_RX_BD_SH /* Frame too short.*/
@@ -481,7 +484,9 @@ static void _fnet_fec_input(fnet_netif_t *netif)
             }
 
             /* Ethernet input.*/
-            _fnet_eth_input( netif, (fnet_uint8_t *)fnet_ntohl((fnet_uint32_t)fec_if->rx_buf_desc_cur->buf_ptr), fnet_ntohs(fec_if->rx_buf_desc_cur->length));
+            length = fec_if->rx_buf_desc_cur->length;
+            buf_ptr = (fnet_uint32_t)fec_if->rx_buf_desc_cur->buf_ptr;
+            _fnet_eth_input( netif, (fnet_uint8_t *)fnet_ntohl(buf_ptr), fnet_ntohs(length));
 
         }
     NEXT_FRAME:

@@ -42,10 +42,10 @@ const fnet_mac_addr_t fnet_eth_broadcast = FNET_MAC_ADDR_INIT(0xff, 0xff, 0xff, 
 *************************************************************************/
 fnet_char_t *fnet_mac_to_str( const fnet_mac_addr_t addr, fnet_char_t *str_mac )
 {
-    fnet_uint8_t *p;
+    const fnet_uint8_t *p;
     if(str_mac)
     {
-        p = (fnet_uint8_t *)addr;
+        p = (const fnet_uint8_t *)addr;
         fnet_sprintf(str_mac, "%02X:%02X:%02X:%02X:%02X:%02X", p[0], p[1], p[2], p[3], p[4], p[5]);
     }
     return str_mac;

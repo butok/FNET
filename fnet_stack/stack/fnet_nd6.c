@@ -449,7 +449,7 @@ static void _fnet_nd6_neighbor_send_waiting_netbuf(struct fnet_netif *netif, fne
 /************************************************************************
 * DESCRIPTION: Adds entry into the Router List.
 *************************************************************************/
-void _fnet_nd6_router_list_add( fnet_nd6_neighbor_entry_t *neighbor_entry, fnet_time_t lifetime_sec )
+static void _fnet_nd6_router_list_add( fnet_nd6_neighbor_entry_t *neighbor_entry, fnet_time_t lifetime_sec )
 {
     if (neighbor_entry)
     {
@@ -473,7 +473,7 @@ void _fnet_nd6_router_list_add( fnet_nd6_neighbor_entry_t *neighbor_entry, fnet_
 /************************************************************************
 * DESCRIPTION: Deletes an entry from the Router List.
 *************************************************************************/
-void _fnet_nd6_router_list_del( fnet_nd6_neighbor_entry_t *neighbor_entry )
+static void _fnet_nd6_router_list_del( fnet_nd6_neighbor_entry_t *neighbor_entry )
 {
     if (neighbor_entry)
     {
@@ -573,7 +573,7 @@ static fnet_bool_t _fnet_nd6_is_firsthop_router(fnet_netif_t *netif, fnet_ip6_ad
 * DESCRIPTION: Get entry from Prefix List that corresponds to "prefix".
 * It returns NULL if no entry is found.
 *************************************************************************/
-fnet_nd6_prefix_entry_t *_fnet_nd6_prefix_list_get(struct fnet_netif *netif, fnet_ip6_addr_t *prefix)
+static fnet_nd6_prefix_entry_t *_fnet_nd6_prefix_list_get(struct fnet_netif *netif, fnet_ip6_addr_t *prefix)
 {
     fnet_nd6_if_t           *nd6_if = netif->nd6_if_ptr;
     fnet_index_t            i;
@@ -599,7 +599,7 @@ fnet_nd6_prefix_entry_t *_fnet_nd6_prefix_list_get(struct fnet_netif *netif, fne
 /************************************************************************
 * DESCRIPTION: Deletes an entry from the Prefix List.
 *************************************************************************/
-void _fnet_nd6_prefix_list_del(fnet_nd6_prefix_entry_t *prefix_entry)
+static void _fnet_nd6_prefix_list_del(fnet_nd6_prefix_entry_t *prefix_entry)
 {
     if (prefix_entry)
     {
@@ -610,7 +610,7 @@ void _fnet_nd6_prefix_list_del(fnet_nd6_prefix_entry_t *prefix_entry)
 /************************************************************************
 * DESCRIPTION: Adds (TBD update) entry into the Prefix List.
 *************************************************************************/
-fnet_nd6_prefix_entry_t *_fnet_nd6_prefix_list_add(struct fnet_netif *if_ptr, const fnet_ip6_addr_t *prefix, fnet_size_t prefix_length, fnet_time_t lifetime_sec)
+static fnet_nd6_prefix_entry_t *_fnet_nd6_prefix_list_add(struct fnet_netif *if_ptr, const fnet_ip6_addr_t *prefix, fnet_size_t prefix_length, fnet_time_t lifetime_sec)
 {
     struct fnet_nd6_if      *nd6_if = if_ptr->nd6_if_ptr;
     fnet_index_t            i;
@@ -2195,7 +2195,7 @@ static void _fnet_nd6_rdnss_list_del(fnet_nd6_rdnss_entry_t *rdnss_entry)
 /************************************************************************
 * DESCRIPTION: This function returns a RDNS Server address.
 *************************************************************************/
-fnet_bool_t _fnet_nd6_rdnss_get_addr(fnet_netif_t *netif, fnet_index_t n, fnet_ip6_addr_t *addr_dns )
+fnet_bool_t _fnet_nd6_rdnss_get_addr(struct fnet_netif *netif, fnet_index_t n, fnet_ip6_addr_t *addr_dns )
 {
     fnet_bool_t         result = FNET_FALSE;
     struct fnet_nd6_if  *nd6_if = netif->nd6_if_ptr;

@@ -104,7 +104,7 @@ static fnet_return_t _fnet_tcp_close( fnet_socket_if_t *sk );
 static fnet_return_t _fnet_tcp_connect( fnet_socket_if_t *sk, struct fnet_sockaddr *foreign_addr);
 static fnet_socket_if_t *_fnet_tcp_accept( fnet_socket_if_t *listensk );
 static fnet_ssize_t _fnet_tcp_rcv( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct fnet_sockaddr *foreign_addr);
-static fnet_ssize_t _fnet_tcp_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *foreign_addr);
+static fnet_ssize_t _fnet_tcp_snd( fnet_socket_if_t *sk, const fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *foreign_addr);
 static fnet_return_t _fnet_tcp_shutdown( fnet_socket_if_t *sk, fnet_sd_flags_t how );
 static fnet_return_t _fnet_tcp_setsockopt( fnet_socket_if_t *sk, fnet_protocol_t level, fnet_socket_options_t optname, const void *optval, fnet_size_t optlen );
 static fnet_return_t _fnet_tcp_getsockopt( fnet_socket_if_t *sk, fnet_protocol_t level, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen );
@@ -780,7 +780,7 @@ ERROR:
 *          of the data that is added to the output buffer.
 *          Otherwise, it returns FNET_ERR.
 *************************************************************************/
-static fnet_ssize_t _fnet_tcp_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *foreign_addr)
+static fnet_ssize_t _fnet_tcp_snd( fnet_socket_if_t *sk, const fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *foreign_addr)
 {
     fnet_tcp_control_t  *cb = (fnet_tcp_control_t *)sk->protocol_control;
     fnet_netbuf_t       *netbuf;

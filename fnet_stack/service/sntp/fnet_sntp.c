@@ -374,7 +374,7 @@ void fnet_sntp_timestamp2utc(const fnet_sntp_timestamp_t *timestamp, fnet_sntp_u
         2036, and UTC time is reckoned from 0h 0m 0s UTC on 1 January
         1900.  If bit 0 is not set, the time is in the range 2036-2104 and
         UTC time is reckoned from 6h 28m 16s UTC on 7 February 2036.*/
-        seconds = (fnet_uint64_t)timestamp->seconds  + ((timestamp->seconds & 0x80000000) ? 0x0 : 0xffffffff);
+        seconds = (fnet_uint64_t)timestamp->seconds  + ((timestamp->seconds & 0x80000000U) ? 0x0U : 0xffffffffU);
 
         utc->second = seconds % FNET_SNTP_SECONDS_IN_MINUTE;
 

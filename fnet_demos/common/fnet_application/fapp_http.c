@@ -543,12 +543,12 @@ void fapp_http_srv_info(fnet_shell_desc_t desc)
 #endif /* (FAPP_CFG_HTTP_CMD || FAPP_CFG_HTTP_TLS_CMD) && FNET_CFG_HTTP_SRV */
 
 
-/************************************************************************
-* ========================== HTTP Client ================================
-************************************************************************/
+/*******************************************************************************
+* ========================== HTTP Client =======================================
+*******************************************************************************/
 #if FAPP_CFG_HTTPC_CMD && FNET_CFG_HTTP_CLN
 
-static fnet_http_cln_desc_t fapp_http_cln_desc = 0;    /* HTTP server descriptor. */
+static fnet_http_cln_desc_t fapp_http_cln_desc = 0;    /* HTTP client descriptor. */
 
 /************************************************************************
 * DESCRIPTION: Ctr+C termination handler.
@@ -575,6 +575,7 @@ void fapp_http_cln_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
     /* Set HTTP client parameters.*/
     fnet_memset_zero(&http_cln_params, sizeof(http_cln_params));
 
+    http_cln_params.uri = "/"; /* Default uri */
 
     /* "[-n <if name>] -s <server ip> [-u <uri>]"*/
     for(i = 1u; i < argc /*avoid the last parameter.*/; i++)
@@ -639,6 +640,7 @@ void fapp_http_cln_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
         fnet_shell_println(desc, "HTTP client request");
         fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Server",
                            fnet_inet_ntop(http_cln_params.address.sa_family, http_cln_params.address.sa_data, ip_str, sizeof(ip_str)));
+        fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "URI", http_cln_params.uri);
         fnet_shell_println(desc, FAPP_TOCANCEL_STR);
         fnet_shell_println(desc, FAPP_DELIMITER_STR);
 

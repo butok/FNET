@@ -37,7 +37,7 @@
 static fnet_return_t _fnet_udp_attach( fnet_socket_if_t *sk );
 static fnet_return_t _fnet_udp_detach( fnet_socket_if_t *sk );
 static fnet_return_t _fnet_udp_connect( fnet_socket_if_t *sk, struct fnet_sockaddr *foreign_addr);
-static fnet_ssize_t _fnet_udp_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *addr);
+static fnet_ssize_t _fnet_udp_snd( fnet_socket_if_t *sk, const fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *addr);
 static fnet_ssize_t _fnet_udp_rcv(fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, struct fnet_sockaddr *addr);
 static void _fnet_udp_control_input(fnet_prot_notify_t command, struct fnet_sockaddr *src_addr, struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb);
 static fnet_return_t _fnet_udp_shutdown( fnet_socket_if_t *sk, fnet_sd_flags_t how );
@@ -495,7 +495,7 @@ static fnet_return_t _fnet_udp_connect( fnet_socket_if_t *sk, struct fnet_sockad
 /************************************************************************
 * DESCRIPTION: UDP send function.
 *************************************************************************/
-static fnet_ssize_t _fnet_udp_snd( fnet_socket_if_t *sk, fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *addr)
+static fnet_ssize_t _fnet_udp_snd( fnet_socket_if_t *sk, const fnet_uint8_t *buf, fnet_size_t len, fnet_flag_t flags, const struct fnet_sockaddr *addr)
 {
     fnet_netbuf_t               *nb;
     fnet_error_t                error = FNET_ERR_OK;

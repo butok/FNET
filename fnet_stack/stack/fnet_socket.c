@@ -1003,7 +1003,7 @@ fnet_ssize_t fnet_socket_sendto( fnet_socket_t s, const void *buf, fnet_size_t l
 
             if(sock->protocol_interface->socket_api->prot_snd)
             {
-                result = sock->protocol_interface->socket_api->prot_snd(sock, (fnet_uint8_t *)buf, len, flags, to);
+                result = sock->protocol_interface->socket_api->prot_snd(sock, (const fnet_uint8_t *)buf, len, flags, to);
             }
             else
             {

@@ -130,7 +130,7 @@
 #define FAPP_CFG_PARAMS_NETIF_NAME              FNET_CFG_CPU_WIFI_NAME
 /* Default parameters for "connect" command */
 #define FAPP_CFG_PARAMS_WIFI_SSID               "ssid"
-#define FAPP_CFG_PARAMS_WIFI_WPA_PASSPHRASE     "password"
+#define FAPP_CFG_PARAMS_WIFI_WPA_PASSPHRASE     ""
 
 /* Wi-Fi interface connect/disconnect scripts, in the access point operation mode.*/
 #define FAPP_CFG_LINK_CONNECT_WIFI_ACCESS_POINT_SCRIPT      "dhcp -n %s; mdns -n %s; llmnr -n %s;" /* "%s" will be replaced by the interface name.*/

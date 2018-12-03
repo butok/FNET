@@ -265,7 +265,7 @@ fnet_return_t fnet_flash_memcpy( FNET_COMP_PACKED_VAR void *flash_addr, FNET_COM
             }
 
             flash_addr =  ((fnet_uint8_t *)flash_addr + (FNET_CFG_CPU_FLASH_PROGRAM_SIZE * blocks));
-            src = ((fnet_uint8_t *)src + (FNET_CFG_CPU_FLASH_PROGRAM_SIZE * blocks));
+            src = ((const fnet_uint8_t *)src + (FNET_CFG_CPU_FLASH_PROGRAM_SIZE * blocks));
 
             if(bytes)
             {
@@ -274,7 +274,7 @@ fnet_return_t fnet_flash_memcpy( FNET_COMP_PACKED_VAR void *flash_addr, FNET_COM
                 for(i = 0U; i < bytes; i++)
                 {
                     data[i] = *((const fnet_uint8_t *)src);
-                    src = ((fnet_uint8_t *)src + 1U);
+                    src = ((const fnet_uint8_t *)src + 1U);
                 }
 
                 err = _fnet_flash_write_low((fnet_uint8_t *)flash_addr, data, 1U );

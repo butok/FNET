@@ -237,7 +237,7 @@ fnet_netbuf_t *_fnet_netbuf_copy( fnet_netbuf_t *nb, fnet_size_t offset, fnet_si
 * DESCRIPTION: Creates a new net_buf and fills it by a content of
 *              the external data buffer.
 *************************************************************************/
-fnet_netbuf_t *_fnet_netbuf_from_buf( void *data_ptr, fnet_size_t len, fnet_bool_t drain )
+fnet_netbuf_t *_fnet_netbuf_from_buf( const void *data_ptr, fnet_size_t len, fnet_bool_t drain )
 {
     fnet_netbuf_t *nb;
 

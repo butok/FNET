@@ -114,8 +114,7 @@ struct fnet_dns_params
     fnet_dns_callback_resolved_t    callback;            /**< @brief Pointer to the callback function defined by
                                                         * @ref fnet_dns_callback_resolved_t. It is called when the
                                                         * DNS-client resolving is finished or a timeout is occurred. */
-    void                            *cookie;            /**< @brief Optional application-specific parameter. @n
-                                                        * It's passed to the @c callback
+    void                            *cookie;            /**< @brief Optional application-specific parameter which is passed to the @c callback
                                                         * function as input parameter. */
 };
 

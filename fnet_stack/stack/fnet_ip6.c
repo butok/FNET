@@ -1139,7 +1139,7 @@ fnet_error_t _fnet_ip6_output(fnet_netif_t *netif /*optional*/, const fnet_ip6_a
     /* Pseudo checksum. */
     if(checksum)
     {
-        *checksum = _fnet_checksum_pseudo_netbuf_end( *checksum, (fnet_uint8_t *)src_ip, (const fnet_uint8_t *)dest_ip, sizeof(fnet_ip6_addr_t) );
+        *checksum = _fnet_checksum_pseudo_netbuf_end( *checksum, (const fnet_uint8_t *)src_ip, (const fnet_uint8_t *)dest_ip, sizeof(fnet_ip6_addr_t) );
     }
 
     /****** Construct IP header. ******/

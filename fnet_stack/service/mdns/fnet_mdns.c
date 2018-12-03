@@ -71,7 +71,7 @@
 #define FNET_MDNS_HEADER_CLASS_IN          0x01                    /* Internet */
 #define FNET_MDNS_HEADER_CACHE_FLUSH       0x8000                  /* Cache flush */
 
-#define FNET_MDNS_DOMAIN_NAME_COMPRESSION  0xC0                    /* Domain Name Compression flag */
+#define FNET_MDNS_DOMAIN_NAME_COMPRESSION  0xC0U                   /* Domain Name Compression flag */
 
 /* MDNS Header Flags.*/
 #define FNET_MDNS_HEADER_FLAGS_QR           0x8000
@@ -123,13 +123,13 @@ typedef enum
 /* Query RR record types (bitmap). */
 typedef enum
 {
-    FNET_MDNS_QUERY_NONE  = 0,          /* No record */
-    FNET_MDNS_QUERY_PTR   = 1 << 0,     /* PTR record */
-    FNET_MDNS_QUERY_TXT   = 1 << 1,     /* TXT record */
-    FNET_MDNS_QUERY_SRV   = 1 << 2,     /* SRV record */
-    FNET_MDNS_QUERY_A     = 1 << 3,     /* IPv4 record */
-    FNET_MDNS_QUERY_AAAA  = 1 << 4,     /* IPv6 record */
-    FNET_MDNS_QUERY_PTR_ENUM  = 1 << 5, /* Service Type Enumeration PTR record */
+    FNET_MDNS_QUERY_NONE  = 0U,          /* No record */
+    FNET_MDNS_QUERY_PTR   = 1U << 0U,     /* PTR record */
+    FNET_MDNS_QUERY_TXT   = 1U << 1U,     /* TXT record */
+    FNET_MDNS_QUERY_SRV   = 1U << 2U,     /* SRV record */
+    FNET_MDNS_QUERY_A     = 1U << 3U,     /* IPv4 record */
+    FNET_MDNS_QUERY_AAAA  = 1U << 4U,     /* IPv6 record */
+    FNET_MDNS_QUERY_PTR_ENUM  = 1U << 5U, /* Service Type Enumeration PTR record */
     FNET_MDNS_QUERY_ANY   = (FNET_MDNS_QUERY_PTR | FNET_MDNS_QUERY_TXT | FNET_MDNS_QUERY_SRV | FNET_MDNS_QUERY_A | FNET_MDNS_QUERY_AAAA)     /* ANY record  */
 } fnet_mdns_query_type_t;
 
@@ -286,7 +286,7 @@ static void _fnet_mdns_process_duplicate_answer(fnet_mdns_if_t *mdns_if, const f
 static fnet_bool_t _fnet_mdns_is_our_host_name(fnet_mdns_if_t *mdns_if, char *host_name);
 static fnet_bool_t _fnet_mdns_is_our_service_name(fnet_mdns_if_t *mdns_if, char *service_name);
 static fnet_mdns_service_if_t *_fnet_mdns_get_service_by_name(fnet_mdns_if_t *mdns_if, char *service_name);
-static fnet_mdns_service_if_t *_fnet_mdns_get_service_by_type(fnet_mdns_if_t *mdns_if, char *service_name);
+static fnet_mdns_service_if_t *_fnet_mdns_get_service_by_type(fnet_mdns_if_t *mdns_if, fnet_char_t *service_type);
 static void _fnet_mdns_send_announcement(fnet_mdns_if_t *mdns_if, fnet_uint32_t ttl);
 static fnet_bool_t _fnet_mdns_cmp_name(const char **rr_name_p, const char *name);
 static const fnet_uint8_t *_fnet_mdns_process_query(fnet_mdns_if_t *mdns_if, fnet_address_family_t address_family, const fnet_uint8_t *ptr, fnet_uint8_t *packet, fnet_uint32_t packet_size);
@@ -1133,7 +1133,7 @@ static const fnet_uint8_t *_fnet_mdns_process_query(fnet_mdns_if_t *mdns_if, fne
 
     fnet_char_t            qe_name[FNET_MDNS_RR_NAME_LEN_MAX];
     fnet_mdns_header_t     *mdns_header = (fnet_mdns_header_t *)packet;
-    fnet_mdns_qe_header_t  *qe_header;
+    const fnet_mdns_qe_header_t  *qe_header;
     fnet_mdns_service_if_t *service = NULL;
 
     if( packet_size > (sizeof(fnet_mdns_header_t) + sizeof(fnet_mdns_qe_header_t)) )
@@ -1143,7 +1143,7 @@ static const fnet_uint8_t *_fnet_mdns_process_query(fnet_mdns_if_t *mdns_if, fne
 
         if(ptr)
         {
-            qe_header = (fnet_mdns_qe_header_t *)ptr;
+            qe_header = (const fnet_mdns_qe_header_t *)ptr;
 
             /* Check query record */
             if( (qe_header->rr_class & (~FNET_HTONS(FNET_MDNS_HEADER_CACHE_FLUSH))) == FNET_HTONS(FNET_MDNS_HEADER_CLASS_IN)) /* Support only IN = Internet protocol. Ignore flush flag.*/
@@ -1260,23 +1260,23 @@ static void _fnet_mdns_process_duplicate_answer(fnet_mdns_if_t *mdns_if, const f
     FNET_ASSERT(an_ptr != FNET_NULL);
     FNET_ASSERT(packet != FNET_NULL);
 
-    fnet_uint8_t            our_rr[FNET_MDNS_RR_PROBE_LEN_MAX];
-    fnet_mdns_header_t      *mdns_header = (fnet_mdns_header_t *)packet;
-    fnet_uint16_t           an_count = fnet_htons(mdns_header->ancount);
-    const fnet_uint8_t      *ptr = an_ptr;
-    fnet_mdns_rr_header_t   *rr_header;
-    fnet_uint32_t           i;
-    fnet_mdns_query_type_t  rr_type;
-    fnet_bool_t             skip;
-    fnet_mdns_service_if_t  *service;
-    char                    rr_name[FNET_MDNS_RR_NAME_LEN_MAX];
+    fnet_uint8_t                our_rr[FNET_MDNS_RR_PROBE_LEN_MAX];
+    const fnet_mdns_header_t    *mdns_header = (const fnet_mdns_header_t *)packet;
+    fnet_uint16_t               an_count = fnet_htons(mdns_header->ancount);
+    const fnet_uint8_t          *ptr = an_ptr;
+    const fnet_mdns_rr_header_t *rr_header;
+    fnet_uint32_t               i;
+    fnet_mdns_query_type_t      rr_type;
+    fnet_bool_t                 skip;
+    fnet_mdns_service_if_t      *service;
+    fnet_char_t                 rr_name[FNET_MDNS_RR_NAME_LEN_MAX];
 
     /* Check all RRs in known answer records.*/
     for(i = 0; ptr && (i < an_count) && (ptr < (packet + packet_size)); i++ )
     {
         service = NULL;
 
-        rr_header = (fnet_mdns_rr_header_t *)_fnet_mdns_get_rr_name(rr_name, sizeof(rr_name), ptr, packet);
+        rr_header = (const fnet_mdns_rr_header_t *)_fnet_mdns_get_rr_name(rr_name, sizeof(rr_name), ptr, packet);
         if(rr_header == NULL)
         {
             goto ERROR;
@@ -1399,8 +1399,6 @@ static void _fnet_mdns_process_simultaneous_probe(fnet_mdns_if_t *mdns_if, const
 
     FNET_DEBUG_MDNS("MDNS: RX Simultaneous probe");
 
-    fnet_println("ns_count = %d", ns_count);
-
 #if FNET_CFG_IP4
     /* Prepare and Compare Our RR A record */
     if(_fnet_mdns_add_rr_a(mdns_if, our_rr,  sizeof(our_rr), mdns_if->rr_ttl, FNET_FALSE, FNET_FALSE) == NULL)
@@ -1468,12 +1466,12 @@ static const fnet_uint8_t *_fnet_mdns_get_an(const fnet_uint8_t *packet, fnet_ui
 {
     FNET_ASSERT(packet != FNET_NULL);
 
-    fnet_mdns_header_t      *mdns_header = (fnet_mdns_header_t *)packet;
-    fnet_uint16_t           qd_count; /* Question Count */
-    fnet_uint16_t           an_count; /* Answer Record Count */
-    const fnet_uint8_t      *result = NULL;
-    fnet_index_t            i;
-    const fnet_uint8_t      *ptr;
+    const fnet_mdns_header_t    *mdns_header = (const fnet_mdns_header_t *)packet;
+    fnet_uint16_t               qd_count; /* Question Count */
+    fnet_uint16_t               an_count; /* Answer Record Count */
+    const fnet_uint8_t          *result = NULL;
+    fnet_index_t                i;
+    const fnet_uint8_t          *ptr;
 
     if(packet_size > sizeof(fnet_mdns_header_t))
     {
@@ -1552,14 +1550,14 @@ static const fnet_uint8_t *_fnet_mdns_get_ns(fnet_uint8_t *packet, fnet_uint32_t
         /* Skip Answers.*/
         for(i = 0; (i < an_count) && (ptr < (packet + packet_size)); i++)
         {
-            fnet_mdns_rr_header_t *rr_header;
+            const fnet_mdns_rr_header_t *rr_header;
 
             /* Get RR name */
             ptr = _fnet_mdns_get_rr_name(NULL, 0, ptr, packet);
 
             if(ptr)
             {
-                rr_header = (fnet_mdns_rr_header_t *)ptr;
+                rr_header = (const fnet_mdns_rr_header_t *)ptr;
                 ptr += sizeof(fnet_mdns_rr_header_t) + fnet_htons(rr_header->data_length);
             }
             else
@@ -1590,19 +1588,19 @@ static fnet_int32_t _fnet_mdns_cmp_rr(fnet_uint8_t *our_rr, const fnet_uint8_t *
     FNET_ASSERT(rr != FNET_NULL);
     FNET_ASSERT(packet != FNET_NULL);
 
-    fnet_uint16_t           rr_type;        /* RR type */
-    fnet_uint16_t           rr_class;       /* RR class */
-    const fnet_uint8_t      *rr_data;
-    fnet_uint16_t           rr_data_length;
-    fnet_mdns_rr_header_t   *rr_header;
-    const fnet_uint8_t      *ptr = *rr;
-    fnet_char_t             rr_name[FNET_MDNS_RR_NAME_LEN_MAX] = {0};
-    fnet_uint16_t           our_rr_type;        /* RR type */
-    fnet_uint16_t           our_rr_class;       /* RR class */
-    const fnet_uint8_t      *our_rr_data;
-    fnet_uint16_t           our_rr_data_length;
-    fnet_mdns_rr_header_t   *our_rr_header;
-    fnet_int32_t            result;
+    fnet_uint16_t               rr_type;        /* RR type */
+    fnet_uint16_t               rr_class;       /* RR class */
+    const fnet_uint8_t          *rr_data;
+    fnet_uint16_t               rr_data_length;
+    const fnet_mdns_rr_header_t *rr_header;
+    const fnet_uint8_t          *ptr = *rr;
+    fnet_char_t                 rr_name[FNET_MDNS_RR_NAME_LEN_MAX] = {0};
+    fnet_uint16_t               our_rr_type;        /* RR type */
+    fnet_uint16_t               our_rr_class;       /* RR class */
+    const fnet_uint8_t          *our_rr_data;
+    fnet_uint16_t               our_rr_data_length;
+    fnet_mdns_rr_header_t       *our_rr_header;
+    fnet_int32_t                result;
 
     our_rr_header = (fnet_mdns_rr_header_t *)(our_rr + fnet_strlen((char *)our_rr) + 1);
     our_rr_class = fnet_htons(our_rr_header->rr_class);
@@ -1623,7 +1621,7 @@ static fnet_int32_t _fnet_mdns_cmp_rr(fnet_uint8_t *our_rr, const fnet_uint8_t *
     ptr = _fnet_mdns_get_rr_name(rr_name, sizeof(rr_name), ptr, packet);
     if(ptr)
     {
-        rr_header = (fnet_mdns_rr_header_t *)ptr;
+        rr_header = (const fnet_mdns_rr_header_t *)ptr;
         ptr += sizeof(fnet_mdns_rr_header_t);
 
         rr_data_length = fnet_htons(rr_header->data_length);
@@ -1787,7 +1785,7 @@ static const fnet_uint8_t *_fnet_mdns_process_response(fnet_mdns_if_t *mdns_if, 
     fnet_char_t    rr_name[FNET_MDNS_RR_NAME_LEN_MAX];
 
     /* Header follows the hostname and the terminating zero */
-    fnet_mdns_rr_header_t *rr_header;
+    const fnet_mdns_rr_header_t *rr_header;
 
     if( packet_size > (sizeof(fnet_mdns_header_t) + sizeof(fnet_mdns_rr_header_t)) ) /* TND make it universal*/
     {
@@ -1796,7 +1794,7 @@ static const fnet_uint8_t *_fnet_mdns_process_response(fnet_mdns_if_t *mdns_if, 
 
         if(ptr)
         {
-            rr_header = (fnet_mdns_rr_header_t *)ptr;
+            rr_header = (const fnet_mdns_rr_header_t *)ptr;
             ptr += sizeof(fnet_mdns_rr_header_t) + fnet_htons(rr_header->data_length);
 
             /* Compare received name with our names */
@@ -3041,7 +3039,7 @@ static fnet_mdns_service_if_t *_fnet_mdns_get_service_by_name(fnet_mdns_if_t *md
 /************************************************************************
 * Get service interfcase by type (type.domain).
 ************************************************************************/
-static fnet_mdns_service_if_t *_fnet_mdns_get_service_by_type(fnet_mdns_if_t *mdns_if, char *service_type)
+static fnet_mdns_service_if_t *_fnet_mdns_get_service_by_type(fnet_mdns_if_t *mdns_if, fnet_char_t *service_type)
 {
     FNET_ASSERT(mdns_if != FNET_NULL);
 

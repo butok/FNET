@@ -93,7 +93,7 @@ void _fnet_mem_release_netbuf( void );
 fnet_netbuf_t *_fnet_netbuf_new( fnet_size_t len, fnet_bool_t drain );
 fnet_netbuf_t *_fnet_netbuf_free( fnet_netbuf_t *nb );
 fnet_netbuf_t *_fnet_netbuf_copy( fnet_netbuf_t *nb, fnet_size_t offset, fnet_size_t len, fnet_bool_t drain );
-fnet_netbuf_t *_fnet_netbuf_from_buf( void *data_ptr, fnet_size_t len, fnet_bool_t drain );
+fnet_netbuf_t *_fnet_netbuf_from_buf( const void *data_ptr, fnet_size_t len, fnet_bool_t drain );
 fnet_netbuf_t *_fnet_netbuf_concat( fnet_netbuf_t *nb1, fnet_netbuf_t *nb2 );
 void _fnet_netbuf_to_buf( fnet_netbuf_t *nb, fnet_size_t offset, fnet_size_t len, void *data_ptr );
 fnet_return_t _fnet_netbuf_pullup( fnet_netbuf_t **nb_ptr, fnet_size_t len);

@@ -328,6 +328,13 @@
     #define FAPP_CFG_DHCPC_CMD_DISCOVER_MAX  (-1) /* -1 means infinite. */
 #endif
 
+/* Timeout for the response from the remote DHCP server when used Auto-IP.
+DHCP discover messages are transmitted every FAPP_CFG_DHCPC_CMD_AUTOIP_RESPONSE_TIMEOUT_MS ms,
+to get new address parameters once a DHCP server comes on line.*/
+#ifndef FAPP_CFG_DHCPC_CMD_RESPONSE_TIMEOUT_AUTOIP_MS
+    #define FAPP_CFG_DHCPC_CMD_RESPONSE_TIMEOUT_AUTOIP_MS (30*1000) /* ms */
+#endif
+
 
 /************************************************************************
 *    "dhcp" command.
@@ -508,7 +515,7 @@
 *    Default NTP server name.
 *************************************************************************/
 #ifndef FAPP_CFG_SNTP_CMD_SERVER_NAME
-    #define FAPP_CFG_SNTP_CMD_SERVER_NAME   "pool.ntp.org"; /* Good addresses   "89.221.210.188";
+    #define FAPP_CFG_SNTP_CMD_SERVER_NAME   "pool.ntp.org" /* Good addresses   "89.221.210.188";
     "37.187.104.44";
     "77.78.107.252";
     "147.251.48.140" */

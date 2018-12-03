@@ -50,8 +50,8 @@
 *************************************************************************/
 #if FAPP_CFG_DHCPC_CMD && FNET_CFG_DHCP_CLN
     static void fapp_dhcp_cln_on_ctrlc(fnet_shell_desc_t desc, void *cookie);
-    static void fapp_dhcp_cln_callback_updated(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
-    static void fapp_dhcp_cln_callback_updated_unblock(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
+    static void fapp_dhcp_cln_callback_updated_runtime(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
+    static void fapp_dhcp_cln_callback_updated_boottime(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
     static void fapp_dhcp_cln_callback_discover(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc);
 #endif
 
@@ -74,20 +74,22 @@ static void fapp_dhcp_cln_on_ctrlc(fnet_shell_desc_t desc, void *cookie)
 /************************************************************************
 * DESCRIPTION: Event handler callback on new IP from DHCP client.
 ************************************************************************/
-static void fapp_dhcp_cln_callback_updated(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc )
+static void fapp_dhcp_cln_callback_updated_runtime(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc )
 {
     fnet_shell_desc_t desc = (fnet_shell_desc_t) shl_desc;
+
+    fapp_dhcp_cln_discover_counter = FAPP_CFG_DHCPC_CMD_DISCOVER_MAX; /* Reset counter.*/
+    fnet_dhcp_cln_set_response_timeout(dhcp_desc, 0); /* Reset response timeout */
 
     fapp_addr_callback_updated(desc, netif);
 }
-static void fapp_dhcp_cln_callback_updated_unblock(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc )
+static void fapp_dhcp_cln_callback_updated_boottime(fnet_dhcp_cln_desc_t dhcp_desc, fnet_netif_desc_t netif, void *shl_desc )
 {
     fnet_shell_desc_t desc = (fnet_shell_desc_t) shl_desc;
 
-    fnet_dhcp_cln_set_callback_discover(dhcp_desc, FNET_NULL, FNET_NULL); /* Disable discovery callback */
-    fnet_dhcp_cln_set_callback_updated(dhcp_desc, fapp_dhcp_cln_callback_updated, shl_desc); /* Use shell non-blocking version */
+    fnet_dhcp_cln_set_callback_updated(dhcp_desc, fapp_dhcp_cln_callback_updated_runtime, shl_desc); /* Use shell non-blocking version */
 
-    fapp_dhcp_cln_callback_updated(dhcp_desc, netif, shl_desc);
+    fapp_dhcp_cln_callback_updated_runtime(dhcp_desc, netif, shl_desc);
 
     fnet_shell_unblock(desc); /* Unblock the shell. */
 }
@@ -104,15 +106,26 @@ static void fapp_dhcp_cln_callback_discover(fnet_dhcp_cln_desc_t dhcp_desc, fnet
     /* Counter is  0, so cancel DHCP */
     if(fapp_dhcp_cln_discover_counter == 0)
     {
-        fnet_shell_unblock(desc);
-        fapp_dhcp_cln_on_ctrlc(desc, netif); /* Cancel DHCP.*/
+
 #if FAPP_CFG_AUTOIP_CMD && FNET_CFG_AUTOIP
-        /* Satrt AutoIP */
+        /* If there is no DHCP reply, use AutoIP */
         if(fapp_dhcp_cln_autoip == FNET_TRUE)
         {
-            fapp_autoip_init(desc, netif);
+            if(fnet_autoip_get_by_netif(netif) == FNET_NULL)
+            {
+                fnet_shell_unblock(desc);
+
+                fapp_autoip_init(desc, netif);
+
+                /* Encrease DHCP response tiemout, while Auto-IP is active.*/
+                fnet_dhcp_cln_set_response_timeout(dhcp_desc, FAPP_CFG_DHCPC_CMD_RESPONSE_TIMEOUT_AUTOIP_MS);
+            }
         }
+#else
+        fnet_shell_unblock(desc);
+        fapp_dhcp_cln_on_ctrlc(desc, netif); /* Cancel DHCP.*/
 #endif
+
     }
     else
     {
@@ -209,7 +222,7 @@ void fapp_dhcp_cln_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t *
             fnet_netif_get_name(netif, netif_name, sizeof(netif_name));
 
             /* Register DHCP event handler callbacks. */
-            fnet_dhcp_cln_set_callback_updated(dhcp_desc, fapp_dhcp_cln_callback_updated_unblock, (void *)desc);
+            fnet_dhcp_cln_set_callback_updated(dhcp_desc, fapp_dhcp_cln_callback_updated_boottime, (void *)desc);
             fnet_dhcp_cln_set_callback_discover(dhcp_desc, fapp_dhcp_cln_callback_discover, (void *)desc);
 
             fnet_shell_println(desc, FAPP_DELIMITER_STR);

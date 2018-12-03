@@ -70,7 +70,7 @@ void fapp_autoip_release(void)
     fnet_autoip_desc_t  autoip;
 
     /* Release all Auto-IP services.*/
-    for(i = 0; (netif = fnet_netif_get_by_number(i)); i++)
+    for(i = 0u; (netif = fnet_netif_get_by_number(i)); i++)
     {
         autoip = fnet_autoip_get_by_netif(netif);
         if(autoip)

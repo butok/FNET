@@ -220,7 +220,7 @@ fnet_int32_t fnet_memcmp(const void *src1, const void *src2, fnet_size_t count )
 {
     const fnet_uint8_t  *p1 = (const fnet_uint8_t *)src1;
     const fnet_uint8_t  *p2 = (const fnet_uint8_t *)src2;
-    fnet_int32_t        result;
+    fnet_int32_t        result = 0;
 
     while(count)
     {

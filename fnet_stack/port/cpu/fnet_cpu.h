@@ -455,7 +455,7 @@ void fnet_cpu_isr(void);
  *
  ******************************************************************************/
 #ifndef FNET_CPU_DATA_MEMORY_BARRIER
-#define FNET_CPU_DATA_MEMORY_BARRIER
+#define FNET_CPU_DATA_MEMORY_BARRIER do{}while(0)
 #endif
 
 

@@ -95,8 +95,9 @@ typedef void *fnet_http_cln_desc_t;
 //    name:The name of the HTTP header to add. It is invalid for the name to include the ':' character or character codes outside the range 33-126.
 //    value: The value to be assigned to the header.
 //DM response_content: This is a buffer that is filled by the contents of the HTTP response body.
-typedef fnet_return_t(*fnet_http_cln_receive_t)(fnet_http_cln_desc_t http_cln_desc, fnet_uint8_t *buffer, fnet_size_t buffer_size, void *cookie);
+//typedef fnet_return_t(*fnet_http_cln_response_t)(fnet_http_cln_desc_t http_cln_desc, fnet_char_t *header, void *cookie);
 
+typedef fnet_return_t(*fnet_http_cln_connect_t)(fnet_http_cln_desc_t http_cln_desc, fnet_result_t result);
 
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_http_cln_init() function.
@@ -104,16 +105,15 @@ typedef fnet_return_t(*fnet_http_cln_receive_t)(fnet_http_cln_desc_t http_cln_de
 struct fnet_http_cln_params
 {
     struct fnet_sockaddr                    address;            /**< @brief Socket address of the remote HTTP server to connect to.@n
-                                                                 * If the address port number is set to @c 0, it will be assigned to the default port number defined by @ref FNET_CFG_HTTP_CLN_PORT.*/
-    //DM fnet_char_t                             *method;   Specifies which HTTP method is used (GET, POST, DELETE, PUT, PATCH).
-    fnet_char_t                             *uri;               /* Uniform Resource Identifier (URI). Specifies the relative path of the URL excluding the host name. */
-    //TBD
-    //header: Specifies a set of HTTP headers (name-value pairs) to be added to the HTTP request.
-    //body: Specifies a pointer to the request body. This value is optional and can be NULL.
-    //body_length: Specifies the request body size (this is typically added into the HTTP headers as the Content-Length header). This value is optional and can be 0.
-    void                                    *cookie;            /**< @brief Optional application-specific parameter. @n
-                                                                * It's passed to the @c callback
-                                                                * functions as input parameter. */
+                                                                * If the address port number is set to @c 0, it will be assigned to the default port number defined by @ref FNET_CFG_HTTP_CLN_PORT.*/
+    fnet_char_t                             *method;            /**< @brief HTTP method to be used. It may be "GET", "POST", "DELETE", "HEAD", "PUT" or "PATCH".*/
+    fnet_char_t                             *uri;               /**< @brief Uniform Resource Identifier (URI). It specifies the relative path of the URL excluding the host name. */
+    fnet_char_t                             *header;            /**< @brief Optional set of HTTP headers (name-value pairs) to be added to the HTTP request. */
+    //   fnet_uint8_t                            *body;              /**< @brief Pointer to the request body. This value is optional and can be FNET_NULL. */
+    //   fnet_size_t                             body_size;          /**< @brief Request body size. This value is optional and can be 0. */
+    //   fnet_http_cln_response_t                response_callback;  /**< @brief HTTP response callback.*/
+    fnet_http_cln_connect_t                 *callback;          /**< @brief Optional callback function which is called when the HTTP cleient connection is istablished or is failed. */
+    void                                    *cookie;            /**< @brief Optional application-specific parameter, which is passed to the @c callback functions as input parameter. */
 };
 
 #if defined(__cplusplus)
@@ -134,13 +134,11 @@ extern "C" {
  *
  ******************************************************************************
  *
- * This function initializes the HTTP client/transmitter service. It allocates all
+ * This function initializes the HTTP client service. It allocates all
  * resources needed and registers the HTTP client in the service polling list.@n
  * After the initialization, the user application should call the main polling
  * function @ref fnet_service_poll() periodically to run the HTTP client service
  * in the background.@n
- * The HTTP service is released automatically as soon as the
- * session is finished.
  ******************************************************************************/
 fnet_http_cln_desc_t fnet_http_cln_init( struct fnet_http_cln_params *params );
 
