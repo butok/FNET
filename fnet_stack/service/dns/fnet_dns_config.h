@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2017 by Andrey Butok. FNET Community.
+* Copyright 2011-2020 by Andrej Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -74,12 +74,22 @@
  *          @n
  *          The recommended value is @c 1 second.@n
  *          If the DNS client does not receive any response from a DNS server,
- *          it sends new request message.@n
+ *          it sends a new request message.@n
  *          Default value is @b @c 1.
  * @showinitializer
  ******************************************************************************/
 #ifndef FNET_CFG_DNS_RETRANSMISSION_TIMEOUT
     #define FNET_CFG_DNS_RETRANSMISSION_TIMEOUT     (1U)  /* seconds */
+#endif
+
+/**************************************************************************/ /*!
+ * @def     FNET_CFG_DNS_RESOLVED_ADDR_MAX
+ * @brief   Maximum number of addresses that can be resolved by the DNS-client 
+ *          per one request.
+ * @showinitializer
+ ******************************************************************************/
+#ifndef FNET_CFG_DNS_RESOLVED_ADDR_MAX
+    #define FNET_CFG_DNS_RESOLVED_ADDR_MAX          (4U)
 #endif
 
 /*! @} */

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2008-2018 by Andrey Butok. FNET Community.
+* Copyright 2008-2020 by Andrej Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -37,7 +37,7 @@
 /************************************************************************
 *     Function Prototypes
 *************************************************************************/
-static void fapp_dns_callback_resolved (const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, void *cookie);
+static void fapp_dns_callback_resolved (const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, const fnet_char_t *host_name, void *cookie);
 static void fapp_dns_on_ctrlc(fnet_shell_desc_t desc, void *cookie);
 
 static fnet_dns_desc_t fapp_dns_desc = 0; /* DNS service descriptor. */
@@ -45,13 +45,15 @@ static fnet_dns_desc_t fapp_dns_desc = 0; /* DNS service descriptor. */
 /************************************************************************
 * DESCRIPTION: Event handler callback on resolved IP address.
 ************************************************************************/
-static void fapp_dns_callback_resolved (const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, void *cookie)
+static void fapp_dns_callback_resolved (const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, const fnet_char_t *host_name, void *cookie)
 {
     fnet_char_t         ip_str[FNET_IP_ADDR_STR_SIZE_MAX];
     fnet_shell_desc_t   desc = (fnet_shell_desc_t) cookie;
     fnet_index_t        i;
 
     fnet_shell_unblock((fnet_shell_desc_t)cookie); /* Unblock the shell. */
+
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Name", host_name);
 
     if(addr_list && addr_list_size)
     {

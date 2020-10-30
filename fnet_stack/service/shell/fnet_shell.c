@@ -200,7 +200,7 @@ static void _fnet_shell_poll( void *shell_if_p )
 
                 if(argc)
                 {
-                    const fnet_shell_command_t *cur_command = fnet_shell_get_command_by_name(shell_if, argv[0]);
+                    const fnet_shell_command_t *cur_command = fnet_shell_get_command_by_name(shell_if, argv[0]); //TBD NULL if no command found //DM
 
                     if(cur_command)
                     {
@@ -228,13 +228,13 @@ static void _fnet_shell_poll( void *shell_if_p )
                         {
                             fnet_shell_println((fnet_shell_desc_t)shell_if_p, FNET_SHELL_ERR_SYNTAX, argv[0]);
                         }
-                    }
 
-                    if(cur_command->name == 0)
-                    {
-                        fnet_shell_println((fnet_shell_desc_t)shell_if_p, FNET_SHELL_ERR_CMD, argv[0]);
-                    }
+                        if(cur_command->name == 0) //TBD  if no commmand found //DM
+                        {
+                            fnet_shell_println((fnet_shell_desc_t)shell_if_p, FNET_SHELL_ERR_CMD, argv[0]);
+                        }
 
+                    }
                 }
 
                 if(shell_if->block_index)

@@ -1,7 +1,7 @@
 /**************************************************************************
 *
 * FNET documentation framework, for Doxygen.
-* Andrey Butok
+* Andrej Butok
 *
 ***************************************************************************/
 
@@ -65,7 +65,7 @@ preferred way to configure stack features). @n
 		- PowerPC: MPC5668G, MPC5566, MPC564xBC, MPC5744P, S32R274.
 		- Kinetis: MK70FN1M, MK60FN1M.
 - Supported Compilers:
-	- IAR: Embedded Workbench for ARM, v8.22
+	- IAR: Embedded Workbench for ARM, v8.50
 	- GCC: Kinetis Design Studio, v3.2
 	- ARM: uVisin v5.24 
 - Bare-metal TCP/IP stack. No underlying RTOS is required, although it can be used with it. FreeRTOS example is provided.
@@ -277,48 +277,48 @@ The following table summarizes the supported demo applications, platforms and co
  </tr>
 <tr>
  <td class="fnet_td_grey">MK64FN1M</td>
- <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td> 
- <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td> 
+ <td ALIGN=CENTER>IAR8.50<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.50<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.50<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.50<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.50<br/>KDS3.2</td> 
+ <td ALIGN=CENTER>IAR8.50<br/>KDS3.2</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">MK66FN2M</td>
- <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.50<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.50<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.50<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.50<br/>KDS3.2</td>
  <td ALIGN=CENTER>-</td>
- <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td> 
+ <td ALIGN=CENTER>IAR8.50<br/>KDS3.2</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">MK60DN512</td>
- <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
- <td ALIGN=CENTER>IAR8.30.2<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.50<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.50<br/>KDS3.2</td>
+ <td ALIGN=CENTER>IAR8.50<br/>KDS3.2</td>
  <td ALIGN=CENTER>-</td> 
  <td ALIGN=CENTER>-</td> 
  <td ALIGN=CENTER>-</td> 
  </tr>
 <tr>
  <td class="fnet_td_grey">LPC54628</td>
- <td ALIGN=CENTER>IAR8.30.2</td>
+ <td ALIGN=CENTER>IAR8.50</td>
  <td ALIGN=CENTER>-</td>
- <td ALIGN=CENTER>IAR8.30.2</td>
- <td ALIGN=CENTER>IAR8.30.2</td>
- <td ALIGN=CENTER>IAR8.30.2</td>
- <td ALIGN=CENTER>IAR8.30.2</td> 
+ <td ALIGN=CENTER>IAR8.50</td>
+ <td ALIGN=CENTER>IAR8.50</td>
+ <td ALIGN=CENTER>IAR8.50</td>
+ <td ALIGN=CENTER>IAR8.50</td> 
  </tr>
  <tr>
   <td class="fnet_td_grey">MIMXRT1052, MIMXRT1062</td>
- <td ALIGN=CENTER>IAR8.30.2</td>
+ <td ALIGN=CENTER>IAR8.50</td>
  <td ALIGN=CENTER>-</td>
- <td ALIGN=CENTER>IAR8.30.2</td>
- <td ALIGN=CENTER>IAR8.30.2</td>
- <td ALIGN=CENTER>IAR8.30.2</td> 
- <td ALIGN=CENTER>IAR8.30.2</td> 
+ <td ALIGN=CENTER>IAR8.50</td>
+ <td ALIGN=CENTER>IAR8.50</td>
+ <td ALIGN=CENTER>IAR8.50</td> 
+ <td ALIGN=CENTER>IAR8.50</td> 
  </tr>
 </table>
 
@@ -443,7 +443,7 @@ SHELL>
 @endverbatim
 - There is an additional possibility to start any other service (http, telnet etc.) automatically during power-up by setting the @c FAPP_CFG_STARTUP_SCRIPT parameter to a command line string.
 - You may start the mDNS server (if not started already during start-up), which allows the name resolution for hosts on the same local link. It is natively supported by Apple OSs and named "Bonjour".@n
-  If HTTP server is enabled, the application registers the "_http._tcp.local" service in mDNS server. So the HTTP server can be discoverable by in MacOS Safari browser using Bonjour.
+  If HTTP server is enabled, the application registers the "_http._tcp.local" service in mDNS server. So the HTTP server can be discoverable in MacOS Safari browser using Bonjour.
 @verbatim
 SHELL> mdns
 ************************************************
@@ -2361,10 +2361,21 @@ Press any key to continue . . .
 
 FNET public releases:
 
+- Version 4.7.0
+	- Fix possible out of bounds read on a received malformed LLMNR, mDNS or IPv6 packet.
+	- Add null termination check for the input-name parameter of the LLMNR, mDNS and DNS services.
+	- Fix possible IPv6 reassembly wrong behavior.
+	- Fix infinite loop, when a DNS request sent to a network interface without an assigned DNS server address.
+	- Add FNET_CFG_DNS_RESOLVED_ADDR_MAX which defines the maximum number of addresses that can be resolved by the DNS-client per one request.
+	- Add a resolved host name parameter to the DNS callback function.
+	- Randomize DNS query ID.
+	- Upgrade projects to IAR v8.50.
+	- Fix Azure IoT example compilation errors for IAR v8.
+
 - Version 4.6.4
 	- Allow DHCP client to continue DHCP server discovering, while Auto-IP is active.
 	- Add fnet_dhcp_cln_set_response_timeout() to change a DHCP server response time-out.
-	- Fixed possible unwanted QCA WiFi connection to an open network, even when WPA pass-phrase is provided.
+	- Fix possible unwanted QCA WiFi connection to an open network, even when WPA pass-phrase is provided.
 
 - Version 4.6.3
 	- Add HEAD method support for the HTTP server.

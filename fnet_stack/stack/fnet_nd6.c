@@ -164,7 +164,7 @@ static void _fnet_nd6_timer( fnet_uint32_t cookie )
 
 /************************************************************************
 * DESCRIPTION: Get entry from Neighbor cache that corresponds ip_addr.
-*               It returns NULL if no entry is found.
+*               It returns FNET_NULL if no entry is found.
 *************************************************************************/
 fnet_nd6_neighbor_entry_t *_fnet_nd6_neighbor_cache_get(struct fnet_netif *netif, const fnet_ip6_addr_t *ip_addr)
 {
@@ -318,7 +318,7 @@ static void _fnet_nd6_neighbor_cache_timer(fnet_netif_t *netif)
 
                         neighbor_entry->state_time_ms = fnet_timer_get_ms();
                         /* AR: Transmitting a Neighbor Solicitation message targeted at the neighbor.*/
-                        _fnet_nd6_neighbor_solicitation_send(netif, src_addr, FNET_NULL /* NULL for AR */, dest_addr);
+                        _fnet_nd6_neighbor_solicitation_send(netif, src_addr, FNET_NULL /* FNET_NULL for AR */, dest_addr);
                     }
                 }
                 break;
@@ -571,7 +571,7 @@ static fnet_bool_t _fnet_nd6_is_firsthop_router(fnet_netif_t *netif, fnet_ip6_ad
 
 /************************************************************************
 * DESCRIPTION: Get entry from Prefix List that corresponds to "prefix".
-* It returns NULL if no entry is found.
+* It returns FNET_NULL if no entry is found.
 *************************************************************************/
 static fnet_nd6_prefix_entry_t *_fnet_nd6_prefix_list_get(struct fnet_netif *netif, fnet_ip6_addr_t *prefix)
 {
@@ -815,7 +815,7 @@ fnet_bool_t _fnet_nd6_addr_is_onlink(struct fnet_netif *netif, const fnet_ip6_ad
 *   of a target node while also providing their own link-layer address to
 *   the target.
 *************************************************************************/
-void _fnet_nd6_neighbor_solicitation_send(struct fnet_netif *netif /*MUST*/, const fnet_ip6_addr_t *ipsrc /* NULL for, DAD */, const fnet_ip6_addr_t *ipdest /*set for NUD,  NULL for DAD & AR */, const fnet_ip6_addr_t *target_addr)
+void _fnet_nd6_neighbor_solicitation_send(struct fnet_netif *netif /*MUST*/, const fnet_ip6_addr_t *ipsrc /* FNET_NULL for, DAD */, const fnet_ip6_addr_t *ipdest /*set for NUD,  FNET_NULL for DAD & AR */, const fnet_ip6_addr_t *target_addr)
 {
     fnet_size_t                     ns_packet_size;
     fnet_netbuf_t                   *ns_nb;

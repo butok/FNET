@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2011-2018 by Andrey Butok. FNET Community.
+* Copyright 2011-2020 by Andrej Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -62,6 +62,7 @@
 * - @ref FNET_CFG_DNS_PORT
 * - @ref FNET_CFG_DNS_RETRANSMISSION_MAX
 * - @ref FNET_CFG_DNS_RETRANSMISSION_TIMEOUT
+* - @ref FNET_CFG_DNS_RESOLVED_ADDR_MAX
 * - @ref FNET_CFG_ND6_RDNSS
 * - @ref FNET_CFG_ND6_RDNSS_LIST_SIZE
 *
@@ -90,17 +91,18 @@ typedef void *fnet_dns_desc_t;
  * @brief Prototype of the DNS-client callback function that is
  * called when the DNS client has completed the resolving.
  *
- * @param addr_family       IP address family.@n
- *                          It determines the address pointed to by @c addr_list.
  * @param addr_list         Pointer to the list of addresses or @ref FNET_NULL if the resolving is failed.
- * @param addr_list_size    Number of resolved addresses in addr_list.
+ * @param addr_list_size    Number of resolved addresses in @c addr_list. Its maximu number is defined by @ref FNET_CFG_DNS_RESOLVED_ADDR_MAX.
+ * @param host_name         Pointer to the resolved host name. It's set during
+ *                          the DNS-client service initialization as part of
+ *                          @ref fnet_dns_params. 
  * @param cookie            User-application specific parameter. It's set during
  *                          the DNS-client service initialization as part of
  *                          @ref fnet_dns_params.
  *
  * @see fnet_dns_resolve(), fnet_dns_params
  ******************************************************************************/
-typedef void(*fnet_dns_callback_resolved_t)(const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, void *cookie);
+typedef void(*fnet_dns_callback_resolved_t)(const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, const fnet_char_t *host_name, void *cookie);
 
 /**************************************************************************/ /*!
  * @brief Initialization parameters for the @ref fnet_dns_init() function.

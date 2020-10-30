@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2018 by Andrey Butok. FNET Community.
+* Copyright 2020 by Andrej Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -81,7 +81,7 @@ typedef struct
 static CONCRETE_IO_HANDLE fnet_azure_tlsio_create(void *io_create_parameters);
 static void fnet_azure_tlsio_destroy(CONCRETE_IO_HANDLE tlsio);
 static int fnet_azure_tlsio_open(CONCRETE_IO_HANDLE tls_io, ON_IO_OPEN_COMPLETE on_io_open_complete, void *on_io_open_complete_context, ON_BYTES_RECEIVED on_bytes_received, void *on_bytes_received_context, ON_IO_ERROR on_io_error, void *on_io_error_context);
-static void _fnet_azure_dns_handler_resolved(const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, void *cookie);
+static void _fnet_azure_dns_handler_resolved(const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, const fnet_char_t *host_name, void *cookie);
 static void fnet_azure_tlsio_mbedtls_dowork(CONCRETE_IO_HANDLE tls_io);
 static int fnet_azure_tlsio_setoption(CONCRETE_IO_HANDLE tls_io, const char *optionName, const void *value);
 static OPTIONHANDLER_HANDLE fnet_azure_tlsio_retrieveoptions(CONCRETE_IO_HANDLE handle);
@@ -332,7 +332,7 @@ static int fnet_azure_tlsio_open(CONCRETE_IO_HANDLE tls_io, ON_IO_OPEN_COMPLETE 
 /************************************************************************
 *  DNS resolver callback
 ************************************************************************/
-static void _fnet_azure_dns_handler_resolved(const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, void *cookie)
+static void _fnet_azure_dns_handler_resolved(const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, const fnet_char_t *host_name, void *cookie)
 {
 #if FNET_CFG_DEBUG_AZURE && FNET_CFG_DEBUG
     fnet_char_t             ip_str[FNET_IP_ADDR_STR_SIZE_MAX];

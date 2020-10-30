@@ -63,12 +63,14 @@
 
 #if FNET_CFG_COMP_UV
 
+#if __CC_ARM /* Keil v5*/
     /* To use anonimous unions.*/
     #pragma anon_unions
+#endif
 
     /* To use _Pragma(), enable C99 Extensions. */
-    #define FNET_COMP_PACKED_BEGIN  _Pragma("pack(1)")
-    #define FNET_COMP_PACKED_END    _Pragma("pack(8)")
+    #define FNET_COMP_PACKED_BEGIN  _Pragma("pack(1)") //TBD ("pack(push, 1)")
+    #define FNET_COMP_PACKED_END    _Pragma("pack(8)") //TBD ("pack(pop)")
 
     #define FNET_COMP_PACKED_VAR    __packed
 
@@ -77,8 +79,8 @@
 #endif
 
 #if FNET_CFG_COMP_GNUC
-    #define FNET_COMP_PACKED_BEGIN  _Pragma("pack(1)")
-    #define FNET_COMP_PACKED_END    _Pragma("pack(8)")
+    #define FNET_COMP_PACKED_BEGIN  _Pragma("pack(push, 1)")
+    #define FNET_COMP_PACKED_END    _Pragma("pack(pop)")
 
     /* Inline assembler */
     #define FNET_COMP_ASM(x)        __asm(x)

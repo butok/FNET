@@ -565,7 +565,7 @@ void _fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_add
                 FNET_IP6_ADDR_COPY(src_ip_addr, &neighbor->solicitation_src_ip_addr); /* Save src address for later usage.*/
 
                 /* AR: Transmitting a Neighbor Solicitation message targeted at the neighbor.*/
-                _fnet_nd6_neighbor_solicitation_send(netif, src_ip_addr, FNET_NULL /* NULL for AR */, dest_ip_addr);
+                _fnet_nd6_neighbor_solicitation_send(netif, src_ip_addr, FNET_NULL /* FNET_NULL for AR */, dest_ip_addr);
             }
             /* Destination is OFF local-link.*/
             else
@@ -594,7 +594,7 @@ void _fnet_eth_output_ip6(fnet_netif_t *netif, const fnet_ip6_addr_t *src_ip_add
             neighbor->solicitation_send_counter = 0u;
             FNET_IP6_ADDR_COPY(src_ip_addr, &neighbor->solicitation_src_ip_addr); /* Save src address for later usage.*/
             /* AR: Transmitting a Neighbor Solicitation message targeted at the neighbor.*/
-            _fnet_nd6_neighbor_solicitation_send(netif, src_ip_addr, FNET_NULL /* NULL for AR */, dest_ip_addr);
+            _fnet_nd6_neighbor_solicitation_send(netif, src_ip_addr, FNET_NULL /* FNET_NULL for AR */, dest_ip_addr);
         }
 
         if(neighbor->state == FNET_ND6_NEIGHBOR_STATE_INCOMPLETE)

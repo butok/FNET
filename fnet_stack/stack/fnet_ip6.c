@@ -321,6 +321,14 @@ static fnet_ip6_ext_header_handler_result_t _fnet_ip6_ext_header_handler_options
 
     FNET_COMP_UNUSED_ARG(src_ip);
 
+    /* Check for a valid length. */
+    if(length > (nb->length - 2u))
+    {   /* Malformed option header */
+        _fnet_netbuf_free_chain(nb);
+        _fnet_netbuf_free_chain(ip6_nb);
+        return FNET_IP6_EXT_HEADER_HANDLER_RESULT_EXIT; 
+    }
+
     offset = 0u;
     while(offset < length)
     {
@@ -1644,7 +1652,7 @@ static fnet_netbuf_t *_fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **
         /* Trims or discards icoming fragments.*/
         if(frag_ptr != frag_list_ptr->frag_ptr)
         {
-            if((i = (fnet_size_t)(frag_ptr->prev->offset + frag_ptr->prev->total_length - cur_frag_ptr->prev->offset)) != 0u)
+            if((i = (fnet_size_t)(frag_ptr->prev->offset + frag_ptr->prev->total_length - cur_frag_ptr->offset)) != 0u)
             {
                 if(i > cur_frag_ptr->total_length)
                 {

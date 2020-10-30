@@ -369,8 +369,9 @@ static void _fnet_http_srv_poll( void *http_if_p )
                                                     session->response.status.code = FNET_HTTP_SRV_STATUS_CODE_UNAUTHORIZED;
                                                 }
                                                 else /* Send Data.*/
-                                                {
 #endif
+                                                {
+
                                                     if(session->response.status.code == FNET_HTTP_SRV_STATUS_CODE_NONE) /* If status code is not set.*/
                                                     {
                                                         session->response.status.code = FNET_HTTP_SRV_STATUS_CODE_OK;

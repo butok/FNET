@@ -137,7 +137,7 @@ void fnet_time_set(time_t sec);
  *
  * @brief    Get time since the Epoch (00:00:00 UTC, January 1, 1970).
  *
- * @param [out] sec     If the pointer is not NULL, it will get the time since the Epoch (00:00:00 UTC, January 1, 1970), in seconds.
+ * @param [out] sec     If the pointer is not FNET_NULL, it will get the time since the Epoch (00:00:00 UTC, January 1, 1970), in seconds.
  *
  * @return   This function returns time since the Epoch, in seconds.
  *

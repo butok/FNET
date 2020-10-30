@@ -11,7 +11,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>29</version>
+                <version>31</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -116,7 +116,7 @@
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>26</version>
+                    <version>28</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -133,7 +133,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>26</version>
+                    <version>28</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -156,7 +156,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>26</version>
+                    <version>28</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -200,13 +200,22 @@
                     <name>DSPExtension</name>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>TrustZone</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>TrustZoneModes</name>
+                    <version>0</version>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
             <name>ICCARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>34</version>
+                <version>36</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -454,6 +463,14 @@
                     <name>IccRTTI2</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>OICompilerExtraOption</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>CCStackProtection</name>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -674,7 +691,7 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>20</version>
+                <version>23</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -724,7 +741,7 @@
                 <option>
                     <name>IlinkConfigDefines</name>
                     <state/>
-                <state>__ram_vector_table__=1</state><state>__heap_size__=0xF000</state><state>__stack_size__=0x4000</state></option>
+                <state>__ram_vector_table__=1</state><state>__heap_size__=0xA000</state><state>__stack_size__=0x4000</state></option>
                 <option>
                     <name>IlinkMapFile</name>
                     <state>1</state>
@@ -986,6 +1003,30 @@
                     <name>IlinkLocaleSelect</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>IlinkTrustzoneImportLibraryOut</name>
+                    <state>###Unitialized###</state>
+                </option>
+                <option>
+                    <name>OILinkExtraOption</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkRawBinaryFile2</name>
+                    <state/>
+                </option>
+                <option>
+                    <name>IlinkRawBinarySymbol2</name>
+                    <state/>
+                </option>
+                <option>
+                    <name>IlinkRawBinarySegment2</name>
+                    <state/>
+                </option>
+                <option>
+                    <name>IlinkRawBinaryAlign2</name>
+                    <state/>
+                </option>
             </data>
         </settings>
         <settings>
@@ -1025,7 +1066,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>29</version>
+                <version>31</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -1080,7 +1121,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.20.1.14181</state>
+                    <state>8.50.4.26131</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -1130,7 +1171,7 @@
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>26</version>
+                    <version>28</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -1147,7 +1188,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>26</version>
+                    <version>28</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -1170,7 +1211,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>26</version>
+                    <version>28</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -1214,13 +1255,22 @@
                     <name>DSPExtension</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>TrustZone</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>TrustZoneModes</name>
+                    <version>0</version>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
             <name>ICCARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>34</version>
+                <version>36</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -1468,6 +1518,14 @@
                     <name>IccRTTI2</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>OICompilerExtraOption</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>CCStackProtection</name>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -1688,7 +1746,7 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>20</version>
+                <version>23</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -1738,7 +1796,7 @@
                 <option>
                     <name>IlinkConfigDefines</name>
                     <state/>
-                <state>__ram_vector_table__=1</state><state>__heap_size__=0xF000</state><state>__stack_size__=0x4000</state></option>
+                <state>__ram_vector_table__=1</state><state>__heap_size__=0xA000</state><state>__stack_size__=0x4000</state></option>
                 <option>
                     <name>IlinkMapFile</name>
                     <state>1</state>
@@ -1999,6 +2057,30 @@
                 <option>
                     <name>IlinkLocaleSelect</name>
                     <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkTrustzoneImportLibraryOut</name>
+                    <state>###Unitialized###</state>
+                </option>
+                <option>
+                    <name>OILinkExtraOption</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkRawBinaryFile2</name>
+                    <state/>
+                </option>
+                <option>
+                    <name>IlinkRawBinarySymbol2</name>
+                    <state/>
+                </option>
+                <option>
+                    <name>IlinkRawBinarySegment2</name>
+                    <state/>
+                </option>
+                <option>
+                    <name>IlinkRawBinaryAlign2</name>
+                    <state/>
                 </option>
             </data>
         </settings>

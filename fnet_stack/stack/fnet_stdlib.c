@@ -306,7 +306,6 @@ fnet_size_t fnet_strnlen (const fnet_char_t *str, fnet_size_t max_len)
     return len;
 }
 
-
 /************************************************************************
 * DESCRIPTION:
 *************************************************************************/
@@ -387,7 +386,7 @@ void fnet_strlcpy( fnet_char_t *dest, const fnet_char_t *src, fnet_size_t n )
 
 /************************************************************************
 * DESCRIPTION: The function fnet_strrchr() returns a pointer to the last
-* occurrence of chr in str, or NULL if no match is found.
+* occurrence of chr in str, or FNET_NULL if no match is found.
 *************************************************************************/
 fnet_char_t *fnet_strrchr(const fnet_char_t *str, fnet_char_t chr )
 {

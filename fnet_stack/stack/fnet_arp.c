@@ -330,7 +330,7 @@ void _fnet_arp_resolve(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_netbuf_
     if (entry->hold)
     {
         _fnet_netbuf_free_chain(entry->hold);
-        entry->hold = NULL;
+        entry->hold = FNET_NULL;
     }
     entry->hold = nb;
 

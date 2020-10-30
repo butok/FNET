@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2017-2018 by Andrey Butok. FNET Community.
+* Copyright 2017-2020 by Andrej Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -116,13 +116,15 @@ static void fapp_sntp_on_ctrlc(fnet_shell_desc_t desc, void *cookie)
 #define FNET_DNS_RESOLUTION_FAILED  "Resolution is FAILED"
 #define FNET_DNS_UNKNOWN            "DNS server is unknown"
 
-static void fapp_sntp_dns_callback_resolved (const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, void *cookie)
+static void fapp_sntp_dns_callback_resolved (const fnet_dns_resolved_addr_t *addr_list, fnet_size_t addr_list_size, const fnet_char_t *host_name, void *cookie)
 {
     fnet_char_t         ip_str[FNET_IP_ADDR_STR_SIZE_MAX];
     fnet_shell_desc_t   desc = (fnet_shell_desc_t) cookie;
     fnet_index_t        i;
 
     fnet_shell_unblock((fnet_shell_desc_t)cookie); /* Unblock the shell. */
+
+    fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Name", host_name);
 
     if(addr_list && addr_list_size)
     {
@@ -192,7 +194,6 @@ void fapp_sntp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
     {
         /* Resolve server name */
         struct fnet_dns_params      dns_params;
-        fnet_char_t                 ip_str[FNET_IP_ADDR_STR_SIZE_MAX];
         fnet_dns_desc_t             dns_desc;
 
         /* Set DNS client/resolver parameters.*/
@@ -209,8 +210,6 @@ void fapp_sntp_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **arg
         {
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
             fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "Resolving", dns_params.host_name);
-            fnet_shell_println(desc, FAPP_SHELL_INFO_FORMAT_S, "DNS Server",
-                               fnet_inet_ntop(dns_params.dns_server_addr.sa_family, dns_params.dns_server_addr.sa_data, ip_str, sizeof(ip_str)));
             fnet_shell_println(desc, FAPP_TOCANCEL_STR);
             fnet_shell_println(desc, FAPP_DELIMITER_STR);
 

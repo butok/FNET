@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright 2014-2017 by Andrey Butok. FNET Community.
+* Copyright 2014-2020 by Andrej Butok. FNET Community.
 *
 ***************************************************************************
 *
@@ -252,7 +252,7 @@ fnet_llmnr_desc_t fnet_llmnr_init( fnet_llmnr_params_t *params )
 
     /* Check input paramters. */
     if((params == 0) || (params->netif_desc == 0) || (params->host_name == 0)
-       || ((host_name_length = fnet_strlen(params->host_name)) == 0u) || (host_name_length >= FNET_DNS_MAME_SIZE))
+       || ((host_name_length = fnet_strnlen(params->host_name, (FNET_DNS_NAME_SIZE+1))) == 0u) || (host_name_length > FNET_DNS_NAME_SIZE))
     {
         FNET_DEBUG_LLMNR(FNET_LLMNR_ERR_PARAMS);
         goto ERROR_1;
@@ -444,10 +444,10 @@ static void _fnet_llmnr_poll( void *fnet_llmnr_if_p )
                 {
                     fnet_char_t         *req_hostname = (fnet_char_t *)&llmnr_if->message[sizeof(fnet_llmnr_header_t)];
                     fnet_dns_q_tail_t   *q_tail;
-                    fnet_size_t         req_hostname_len = fnet_strlen(req_hostname);
+                    fnet_size_t         req_hostname_len = fnet_strnlen(req_hostname, (FNET_DNS_NAME_SIZE + 1));
 
                     /* Check size */
-                    if(received >= (fnet_int32_t)(sizeof(fnet_llmnr_header_t) + sizeof(fnet_dns_q_tail_t) + req_hostname_len))
+                    if( (req_hostname_len <= FNET_DNS_NAME_SIZE) && (received >= (fnet_int32_t)(sizeof(fnet_llmnr_header_t) + sizeof(fnet_dns_q_tail_t) + req_hostname_len)))
                     {
                         FNET_DEBUG_LLMNR("LLMNR: Req name = %s", req_hostname);
 
@@ -460,7 +460,7 @@ static void _fnet_llmnr_poll( void *fnet_llmnr_if_p )
                             /* Check Question Class. */
                             if (q_tail->qclass == FNET_HTONS(FNET_DNS_HEADER_CLASS_IN) )
                             {
-                                fnet_dns_rr_header_t      *rr_header = (fnet_dns_rr_header_t *)(q_tail + 1);
+                                fnet_dns_rr_c_header_t      *rr_header = (fnet_dns_rr_c_header_t *)(q_tail + 1);
                                 fnet_size_t               send_size = (fnet_size_t)((fnet_char_t *)rr_header - (fnet_char_t *)llmnr_header);
 
                                 /* Prepare query response.*/
@@ -473,7 +473,7 @@ static void _fnet_llmnr_poll( void *fnet_llmnr_if_p )
                                     rr_header->rdlength = fnet_htons(sizeof(fnet_ip4_addr_t));
                                     rr_header->type = FNET_HTONS(FNET_DNS_TYPE_A);
 
-                                    send_size += sizeof(fnet_dns_rr_header_t);
+                                    send_size += sizeof(fnet_dns_rr_c_header_t);
                                 }
                                 else
 #endif
@@ -490,7 +490,7 @@ static void _fnet_llmnr_poll( void *fnet_llmnr_if_p )
                                             rr_header->rdlength = fnet_htons(sizeof(fnet_ip6_addr_t));
                                             rr_header->type = FNET_HTONS(FNET_DNS_TYPE_AAAA);
 
-                                            send_size += sizeof(fnet_dns_rr_header_t) - sizeof(fnet_uint32_t) + sizeof(fnet_ip6_addr_t);
+                                            send_size += sizeof(fnet_dns_rr_c_header_t) - sizeof(fnet_uint32_t) + sizeof(fnet_ip6_addr_t);
                                         }
                                         else
                                         {

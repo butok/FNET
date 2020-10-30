@@ -239,7 +239,7 @@ int sprintf_s(char* dst, size_t dstSizeInBytes, const char* format, ...)
         /*not Microsoft compiler... */
 #if defined (__STDC_VERSION__) || (__cplusplus)
 #if ( \
-        ((__STDC_VERSION__  == 199901L) || (__STDC_VERSION__ == 201000L) || (__STDC_VERSION__ == 201112L)) || \
+        ((__STDC_VERSION__  == 199901L) || (__STDC_VERSION__ == 201000L) || (__STDC_VERSION__ == 201112L) || (__STDC_VERSION__ == 201710L)) || \
         (defined __cplusplus) \
     )
         /*C99 compiler*/

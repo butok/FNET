@@ -35,7 +35,6 @@ typedef bool _Bool;
 #endif
 #endif // QUARKGALILEO
 
-#ifndef _WIN32_WCE
 #define HAS_STDBOOL
 #ifdef __cplusplus
 /*because C++ doesn't do anything about _Bool... */
@@ -43,32 +42,15 @@ typedef bool _Bool;
 #else // __cplusplus
 #include <stdbool.h>
 #endif // __cplusplus
-#else // _WIN32_WCE
-/* WINCE does not support bool as C datatype */
-#define __bool_true_false_are_defined	1
-
-#define HAS_STDBOOL
-
-#define _Bool bool
-
-#ifdef __cplusplus
-#define _CSTDBOOL_
-#else // __cplusplus
-typedef unsigned char bool;
-
-#define false   0
-#define true    1
-#endif // __cplusplus
-#endif // _WIN32_WCE
 
 #else //  _MSC_VER
 
 #if defined __STDC_VERSION__
-#if ((__STDC_VERSION__  == 199901L) || (__STDC_VERSION__ == 201000L) || (__STDC_VERSION__ == 201112L))
+#if ((__STDC_VERSION__  == 199901L) || (__STDC_VERSION__ == 201000L) || (__STDC_VERSION__ == 201112L)|| (__STDC_VERSION__ == 201710L))  
 /*C99 compiler or C11*/
 #define HAS_STDBOOL
 #include <stdbool.h>
-#endif //  ((__STDC_VERSION__  == 199901L) || (__STDC_VERSION__ == 201000L) || (__STDC_VERSION__ == 201112L))
+#endif //  ((__STDC_VERSION__  == 199901L) || (__STDC_VERSION__ == 201000L) || (__STDC_VERSION__ == 201112L)|| (__STDC_VERSION__ == 201710L))  
 #endif // __STDC_VERSION__
 #endif //  _MSC_VER
 
@@ -130,12 +112,12 @@ MOCKABLE_FUNCTION(, int, size_tToString, char*, destination, size_t, destination
 #define ISNAN _isnan
 #else // _MSC_VER
 #if defined __STDC_VERSION__
-#if ((__STDC_VERSION__  == 199901L) || (__STDC_VERSION__ == 201000L) || (__STDC_VERSION__ == 201112L))
+#if ((__STDC_VERSION__  == 199901L) || (__STDC_VERSION__ == 201000L) || (__STDC_VERSION__ == 201112L) || (__STDC_VERSION__ == 201710L))  
 /*C99 compiler or C11*/
 #define ISNAN isnan
-#else //  ((__STDC_VERSION__  == 199901L) || (__STDC_VERSION__ == 201000L) || (__STDC_VERSION__ == 201112L))
+#else //  ((__STDC_VERSION__  == 199901L) || (__STDC_VERSION__ == 201000L) || (__STDC_VERSION__ == 201112L) || (__STDC_VERSION__ == 201710L))  
 #error update this file to contain the latest C standard.
-#endif // ((__STDC_VERSION__  == 199901L) || (__STDC_VERSION__ == 201000L) || (__STDC_VERSION__ == 201112L))
+#endif // ((__STDC_VERSION__  == 199901L) || (__STDC_VERSION__ == 201000L) || (__STDC_VERSION__ == 201112L) || (__STDC_VERSION__ == 201710L))  
 #else // __STDC_VERSION__
 #ifdef __cplusplus
 /*C++ defines isnan... in C11*/

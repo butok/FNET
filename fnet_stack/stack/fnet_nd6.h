@@ -707,7 +707,7 @@ void _fnet_nd6_neighbor_cache_del(struct fnet_netif *netif, fnet_nd6_neighbor_en
 fnet_nd6_neighbor_entry_t *_fnet_nd6_neighbor_cache_add(struct fnet_netif *netif, const fnet_ip6_addr_t *ip_addr, fnet_netif_ll_addr_t ll_addr, fnet_nd6_neighbor_state_t state);
 void _fnet_nd6_neighbor_enqueue_waiting_netbuf(fnet_nd6_neighbor_entry_t *neighbor_entry, fnet_netbuf_t *waiting_netbuf);
 fnet_nd6_neighbor_entry_t *_fnet_nd6_default_router_get(struct fnet_netif *netif);
-void _fnet_nd6_neighbor_solicitation_send(struct fnet_netif *netif, const fnet_ip6_addr_t *ipsrc /* NULL for, DAD */, const fnet_ip6_addr_t *ipdest /*set for NUD,  NULL for DAD & AR */, const fnet_ip6_addr_t *target_addr);
+void _fnet_nd6_neighbor_solicitation_send(struct fnet_netif *netif, const fnet_ip6_addr_t *ipsrc /* FNET_NULL for, DAD */, const fnet_ip6_addr_t *ipdest /*set for NUD,  FNET_NULL for DAD & AR */, const fnet_ip6_addr_t *target_addr);
 void _fnet_nd6_neighbor_solicitation_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
 void _fnet_nd6_neighbor_advertisement_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);
 void _fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_ip, fnet_ip6_addr_t *dest_ip, fnet_netbuf_t *nb, fnet_netbuf_t *ip6_nb);

@@ -104,7 +104,7 @@ void fnet_release(void)
     _fnet_stack_mutex_release();
 
 #if FNET_CFG_MULTITHREADING
-    _fnet_mutex_api = NULL;
+    _fnet_mutex_api = FNET_NULL;
 #endif
 }
 

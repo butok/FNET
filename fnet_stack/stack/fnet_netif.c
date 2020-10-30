@@ -129,7 +129,7 @@ fnet_netif_desc_t fnet_netif_get_by_name( const fnet_char_t *name )
 /************************************************************************
 * DESCRIPTION: This function returns pointer to id-th interafce according
 *              its index (from zero).
-*              It returns NULL if id-th interface is not available.
+*              It returns FNET_NULL if id-th interface is not available.
 *************************************************************************/
 fnet_netif_desc_t fnet_netif_get_by_number( fnet_index_t n )
 {
@@ -541,6 +541,9 @@ void _fnet_netif_set_ip4_addr(fnet_netif_t *netif, fnet_ip4_addr_t ipaddr, fnet_
             netif->ip4_addr.subnet = netif->ip4_addr.address & netif->ip4_addr.subnetmask; /* network and subnet address*/
             netif->ip4_addr.subnetbroadcast = netif->ip4_addr.address | (~netif->ip4_addr.subnetmask);     /* subnet broadcast address*/
         }
+
+        /* Seed pseudo-random generator */
+        fnet_srand((fnet_uint32_t)ipaddr);
 
         if(netif->netif_api->netif_change_addr_notify)
         {

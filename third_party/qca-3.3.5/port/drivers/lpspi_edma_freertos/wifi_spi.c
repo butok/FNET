@@ -133,12 +133,12 @@ static A_STATUS WIFIDRVS_SPI_InitIRQMode(WIFIDRVS_SPI_config_t *config)
 static A_STATUS WIFIDRVS_SPI_InitDMAMode(WIFIDRVS_SPI_config_t *config)
 {
     DMAMUX_Init(config->dma_mode.dmamux_base);
-    if ((config->dma_mode.dma_rx_chnl >= 0) && (config->dma_mode.dmamux_rx_req >= 0))
+    if ((config->dma_mode.dma_rx_chnl >= 0) /*&& (config->dma_mode.dmamux_rx_req >= 0)*/) //AB
     {
         DMAMUX_SetSource(config->dma_mode.dmamux_base, config->dma_mode.dma_rx_chnl, config->dma_mode.dmamux_rx_req);
         DMAMUX_EnableChannel(config->dma_mode.dmamux_base, config->dma_mode.dma_rx_chnl);
     }
-    if ((config->dma_mode.dma_tx_chnl >= 0) && (config->dma_mode.dmamux_tx_req >= 0))
+    if ((config->dma_mode.dma_tx_chnl >= 0) /*&& (config->dma_mode.dmamux_tx_req >= 0)*/) //AB
     {
         DMAMUX_SetSource(config->dma_mode.dmamux_base, config->dma_mode.dma_tx_chnl, config->dma_mode.dmamux_tx_req);
         DMAMUX_EnableChannel(config->dma_mode.dmamux_base, config->dma_mode.dma_tx_chnl);
