@@ -475,7 +475,7 @@ static void _fnet_dhcp_cln_send_message( fnet_dhcp_cln_if_t *dhcp )
             message_type = FNET_DHCP_OPTION_MSG_TYPE_REQUEST;
             break;
         case FNET_DHCP_CLN_STATE_PROBING:
-            ip_address = dhcp->current_options.public_options.dhcp_server; /* Send REQUEST to leasing server*/
+            ip_address.s_addr = INADDR_BROADCAST; /* As the client does not have a valid network address, the client must broadcast the DHCPDECLINE message. */
             message->header.ciaddr = dhcp->current_options.public_options.ip_address.s_addr;
             message_type = FNET_DHCP_OPTION_MSG_TYPE_DECLINE; /* DHCPDECLINE - Client to server indicating network address is already in use.*/
             break;

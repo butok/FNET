@@ -110,6 +110,7 @@ static fnet_return_t _fnet_tcp_setsockopt( fnet_socket_if_t *sk, fnet_protocol_t
 static fnet_return_t _fnet_tcp_getsockopt( fnet_socket_if_t *sk, fnet_protocol_t level, fnet_socket_options_t optname, void *optval, fnet_size_t *optlen );
 static fnet_return_t _fnet_tcp_listen( fnet_socket_if_t *sk, fnet_size_t backlog );
 static void _fnet_tcp_drain( void );
+static void _fnet_tcp_initial_seq_number_update( void );
 
 #if FNET_CFG_DEBUG_TRACE_TCP && FNET_CFG_DEBUG_TRACE
     void _fnet_tcp_trace(fnet_uint8_t *str, fnet_tcp_header_t *tcp_hdr);
@@ -127,8 +128,8 @@ static void _fnet_tcp_drain( void );
 /* Initial Sequence Number
  * tcpcb_isntime is changed by STEPISN every 0.5 sec.
  * Additionaly, each time a connection is established,
- * tcpcb_isntime is also incremented by FNET_TCP_INITIAL_SEQ_NUMBER_STEP */
-static fnet_uint32_t _fnet_tcp_initial_seq_number = 1u;
+ * tcpcb_isntime is also incremented by FNET_TCP_INITIAL_SEQ_NUMBER_STEP + random value */
+static fnet_uint32_t _fnet_tcp_initial_seq_number;
 
 /* Timers.*/
 static fnet_timer_desc_t fnet_tcp_fasttimer;
@@ -174,7 +175,7 @@ fnet_prot_if_t fnet_tcp_prot_if =
 *************************************************************************/
 static fnet_return_t _fnet_tcp_init( void )
 {
-    /* Create the slow timer.*/
+    /* Create the fast timer.*/
     fnet_tcp_fasttimer = _fnet_timer_new(FNET_TCP_FAST_TIMER_PERIOD_MS, _fnet_tcp_fasttimo, 0u);
 
     if(!fnet_tcp_fasttimer)
@@ -182,7 +183,7 @@ static fnet_return_t _fnet_tcp_init( void )
         return FNET_ERR;
     }
 
-    /* Create the fast timer.*/
+    /* Create the slow timer.*/
     fnet_tcp_slowtimer = _fnet_timer_new(FNET_TCP_SLOW_TIMER_PERIOD_MS, _fnet_tcp_slowtimo, 0u);
 
     if(!fnet_tcp_slowtimer)
@@ -191,6 +192,9 @@ static fnet_return_t _fnet_tcp_init( void )
         fnet_tcp_fasttimer = 0;
         return FNET_ERR;
     }
+
+    /* Initialize ISN */
+    _fnet_tcp_initial_seq_number_update();
 
     return FNET_OK;
 }
@@ -438,6 +442,14 @@ static fnet_return_t _fnet_tcp_attach( fnet_socket_if_t *sk )
 }
 
 /************************************************************************
+* DESCRIPTION: This function updates TCP ISN.
+*************************************************************************/
+static void _fnet_tcp_initial_seq_number_update( void )
+{
+    /* Increase Initial Sequence Number. */
+    _fnet_tcp_initial_seq_number += FNET_TCP_INITIAL_SEQ_NUMBER_STEP + fnet_rand() & 0xFF;
+}
+/************************************************************************
 * DESCRIPTION: This function performs the connection termination.
 *
 * RETURNS: If no error occurs, this function returns FNET_OK. Otherwise
@@ -591,7 +603,7 @@ static fnet_return_t _fnet_tcp_connect( fnet_socket_if_t *sk, struct fnet_sockad
     sk->state = SS_CONNECTING;
 
     /* Increase Initial Sequence Number.*/
-    _fnet_tcp_initial_seq_number += FNET_TCP_INITIAL_SEQ_NUMBER_STEP;
+    _fnet_tcp_initial_seq_number_update();
 
     /* Initialize Abort Timer.*/
     cb->tcpcb_timers.retransmission = cb->tcpcb_rto;
@@ -1790,7 +1802,7 @@ static fnet_bool_t _fnet_tcp_inputsk( fnet_socket_if_t *sk, fnet_netbuf_t *inseg
             _fnet_tcp_send_headseg(psk, FNET_TCP_SGT_SYN | FNET_TCP_SGT_ACK, options, optionlen);
 
             /* Increase ISN (Initial Sequence Number).*/
-            _fnet_tcp_initial_seq_number += FNET_TCP_INITIAL_SEQ_NUMBER_STEP;
+           _fnet_tcp_initial_seq_number_update();
 
             /* Initialization the connection timer.*/
             pcb->tcpcb_timers.connection = FNET_TCP_ABORT_INTERVAL_CON;
@@ -2745,7 +2757,7 @@ static void _fnet_tcp_slowtimo(fnet_uint32_t cookie)
         sk = nextsk;
     }
 
-    _fnet_tcp_initial_seq_number += FNET_TCP_INITIAL_SEQ_NUMBER_STEP;
+    _fnet_tcp_initial_seq_number_update();
 
     fnet_isr_unlock();
 }

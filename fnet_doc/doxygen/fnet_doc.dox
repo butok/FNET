@@ -2361,6 +2361,10 @@ Press any key to continue . . .
 
 FNET public releases:
 
+- Version 4.7.1
+    - Broadcast a DHCP DECLINE message, instead of unicasting.
+    - Randomize TCP initial sequence number.
+
 - Version 4.7.0
 	- Fix possible out of bounds read on a received malformed LLMNR, mDNS or IPv6 packet.
 	- Add null termination check for the input-name parameter of the LLMNR, mDNS and DNS services.

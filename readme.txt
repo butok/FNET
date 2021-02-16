@@ -17,7 +17,7 @@ The stack provides following protocols and services:
 		- QCA4002 (GT202-GC3013-FRDM4-KIT board).
 		- QCA4004 (SX-ULPAN-2401-SHIELD board). 
 - Supported Compilers:
-	- IAR: Embedded Workbench for ARM, version 8.50
+	- IAR: Embedded Workbench for ARM, version 8.22
 	- GCC: Kinetis Design Studio, version 3.2 
 - Bare-metal TCP/IP stack. No underlying RTOS is required, although it can be used with it. FreeRTOS example is provided.
 - Certified logos for:
