@@ -496,14 +496,13 @@ void _fnet_netbuf_trim( fnet_netbuf_t **nb_ptr, fnet_int32_t len )
     fnet_netbuf_t   *nb;
     fnet_size_t     tot_len;
     fnet_size_t     total_rem;
-    fnet_netbuf_t   *tmp_nb;
+    fnet_flag_t     tmp_flags;
 
     if(len == 0)
     {
         return;
     }
 
-    tmp_nb = (fnet_netbuf_t *) *nb_ptr;
     nb = (fnet_netbuf_t *) *nb_ptr;
     head_nb = nb;
 
@@ -518,6 +517,9 @@ void _fnet_netbuf_trim( fnet_netbuf_t **nb_ptr, fnet_int32_t len )
 
     if(len > 0) /* Trim len bytes from the begin of the buffer.*/
     {
+        /* If we delete the head_nb, we want to carry forward the flags */
+        tmp_flags = nb->flags;
+
         while((nb != 0) && ((fnet_size_t)len >= tot_len))
         {
             *nb_ptr = nb->next;
@@ -534,7 +536,7 @@ void _fnet_netbuf_trim( fnet_netbuf_t **nb_ptr, fnet_int32_t len )
             nb->data_ptr = (fnet_uint8_t *)nb->data_ptr + /* Or change pointer. */
                            nb->length - (tot_len - (fnet_size_t)len);
             nb->length = tot_len - (fnet_size_t)len;
-            nb->flags = tmp_nb->flags;
+            nb->flags = tmp_flags;
         }
     }
     else /* Trim len bytes from the end of the buffer. */
