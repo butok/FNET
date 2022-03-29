@@ -127,7 +127,7 @@ fnet_netif_desc_t fnet_netif_get_by_name( const fnet_char_t *name )
 }
 
 /************************************************************************
-* DESCRIPTION: This function returns pointer to id-th interafce according
+* DESCRIPTION: This function returns pointer to id-th interface according
 *              its index (from zero).
 *              It returns FNET_NULL if id-th interface is not available.
 *************************************************************************/
@@ -1207,7 +1207,7 @@ fnet_size_t fnet_netif_get_mtu(fnet_netif_desc_t netif_desc)
 }
 
 /************************************************************************
-* DESCRIPTION: This function returns interafce decriptor according
+* DESCRIPTION: This function returns interface decriptor according
 *              its Scope ID.
 *              It returns FNET_NULL if the interface with passed Scope ID
 *              is not available.

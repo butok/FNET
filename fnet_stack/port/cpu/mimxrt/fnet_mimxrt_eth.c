@@ -18,7 +18,7 @@
 *
 ***************************************************************************
 *
-*  Ethernet driver interafce.
+*  Ethernet driver interface.
 *
 ***************************************************************************/
 
@@ -234,9 +234,9 @@ static fnet_return_t fnet_mimxrt_eth_init(fnet_netif_t *netif)
 #endif /*!FNET_CFG_CPU_ETH_IO_INIT*/
 
     /* KSZ8081RNB  PHY */
-    /*  RMII – 50 MHZ CLOCK MODE */
-    /*• An external 50 MHz clock source (oscillator) connected to XI (Pin 9).
-    • Register 1Fh, Bit [7] is set to 1 to select 50 MHz clock mode.*/
+    /*  RMII 50 MHZ CLOCK MODE */
+    /* An external 50 MHz clock source (oscillator) connected to XI (Pin 9).
+       Register 1Fh, Bit [7] is set to 1 to select 50 MHz clock mode.*/
     /* For 50 MHz clock mode, the KSZ8081RNB takes in the 50 MHz RMII REF_CLK from the MAC or system board at XI
     (Pin 9) and leaves the REF_CLK (Pin 19) as a no connect.*/
     {
@@ -270,12 +270,12 @@ static fnet_return_t fnet_mimxrt_eth_phy_init(fnet_netif_t *netif)
     /* Disable NAND tree mode. Pull up the ENET_INT/NAND_TREE# before RESET.
     At the de-assertion of reset, this pin value is latched by the chip*/
     GPIO_WritePinOutput(GPIO1, 10, 1);
-    /* UM: For warm reset, the reset (RST#) pin should be asserted low for a minimum of 500 µs. The strap-in pin values are read
+    /* UM: For warm reset, the reset (RST#) pin should be asserted low for a minimum of 500 us. The strap-in pin values are read
     and updated at the de-assertion of reset.*/
     GPIO_WritePinOutput(GPIO1, 9, 0);
     fnet_timer_delay(100);
     GPIO_WritePinOutput(GPIO1, 9, 1);
-    /* UM: After the de-assertion of reset, wait a minimum of 100 µs before starting programming on the MIIM (MDC/MDIO) interface.*/
+    /* UM: After the de-assertion of reset, wait a minimum of 100 us before starting programming on the MIIM (MDC/MDIO) interface.*/
     fnet_timer_delay(100);
 
     /* KSZ8081RNB PHY Register 1Fh, Bit [7] is set to 1 to select 50 MHz clock mode.*/

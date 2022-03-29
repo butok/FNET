@@ -925,7 +925,7 @@ EXIT:
 }
 
 /************************************************************************
-* DESCRIPTION: Turns off the Wi-Fi interafce radio.
+* DESCRIPTION: Turns off the Wi-Fi interface radio.
 *************************************************************************/
 static fnet_return_t _fnet_qca_wifi_disconnect(struct fnet_netif *netif)
 {

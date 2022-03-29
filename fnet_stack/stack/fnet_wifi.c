@@ -49,7 +49,7 @@ fnet_return_t fnet_wifi_connect(fnet_netif_desc_t netif_desc, fnet_wifi_connect_
 }
 
 /************************************************************************
-* DESCRIPTION: Disconnects Wi-Fi interface. It means to turn off the Wi-Fi interafce radio
+* DESCRIPTION: Disconnects Wi-Fi interface. It means to turn off the Wi-Fi interface radio
 *************************************************************************/
 fnet_return_t   fnet_wifi_disconnect(fnet_netif_desc_t netif_desc)
 {

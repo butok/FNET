@@ -70,7 +70,7 @@ typedef void *fnet_netif_desc_t;
 #define FNET_NETIF_LL_ADDR_MAX          (16)
 /**************************************************************************/ /*!
  * @brief Link-layer address.
- * For example, Ethernet interafce uses the address with size set to 6.
+ * For example, Ethernet interface uses the address with size set to 6.
  ******************************************************************************/
 typedef fnet_uint8_t fnet_netif_ll_addr_t[FNET_NETIF_LL_ADDR_MAX];
 
