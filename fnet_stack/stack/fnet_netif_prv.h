@@ -148,7 +148,7 @@ typedef struct fnet_netif
     fnet_char_t             netif_name[FNET_NETIF_NAMELEN];     /* Network interface name (e.g. "eth0", "loop"). */
     fnet_size_t             netif_mtu;                          /* Maximum transmission unit. */
     void                    *netif_prv;                         /* Points to interface specific control data structure (Optional). */
-    const fnet_netif_api_t  *netif_api;                         /* Pointer to Interafce API structure.*/
+    const fnet_netif_api_t  *netif_api;                         /* Pointer to Interface API structure.*/
 
     /* Privat structure fields.*/
     struct fnet_netif       *next;                              /* Pointer to the next net_if structure. */

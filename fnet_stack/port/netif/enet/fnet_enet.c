@@ -47,7 +47,7 @@ static fnet_return_t _fnet_enet_phy_write(fnet_netif_t *netif, fnet_uint32_t reg
 static fnet_return_t _fnet_enet_phy_read(fnet_netif_t *netif, fnet_uint32_t reg_addr, fnet_uint16_t *data);
 static void _fnet_enet_callback(ENET_Type *base, enet_handle_t *handle, enet_event_t event, uint8_t channel, void *param);
 
-/* ENET interrup handler. */
+/* ENET interrupt handler. */
 static void _fnet_enet_isr_handler_top(void *cookie);
 static void _fnet_enet_isr_handler_bottom(void *cookie);
 

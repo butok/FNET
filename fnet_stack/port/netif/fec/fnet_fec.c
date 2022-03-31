@@ -88,7 +88,7 @@ FNET_AT_NONCACHEABLE_SECTION(fnet_fec_buf_t fnet_fec0_buf);
 /* FEC/ENET Module control data structures.*/
 fnet_fec_if_t fnet_fec0_if =
 {
-    .reg = (volatile fnet_fec_reg_t *)FNET_FEC0_BASE_ADDR,  /* Set FEC module base refister pointer.*/
+    .reg = (volatile fnet_fec_reg_t *)FNET_FEC0_BASE_ADDR,  /* Set FEC module base register pointer.*/
     .reg_phy = (volatile fnet_fec_reg_t *)FNET_FEC0_BASE_ADDR,
     .vector_number = FNET_CFG_CPU_ETH0_VECTOR_NUMBER,       /* Set RX Frame interrupt number.*/
     .buf = &fnet_fec0_buf
@@ -102,7 +102,7 @@ FNET_AT_NONCACHEABLE_SECTION(fnet_fec_buf_t fnet_fec1_buf);
 /* FEC/ENET Module control data structures.*/
 fnet_fec_if_t fnet_fec1_if =
 {
-    .reg = (volatile fnet_fec_reg_t *)FNET_FEC1_BASE_ADDR,  /* Set FEC module base refister pointer.*/
+    .reg = (volatile fnet_fec_reg_t *)FNET_FEC1_BASE_ADDR,  /* Set FEC module base register pointer.*/
     .reg_phy = (volatile fnet_fec_reg_t *)FNET_FEC0_BASE_ADDR,
     .vector_number = FNET_CFG_CPU_ETH1_VECTOR_NUMBER,       /* Set RX Frame interrupt number.*/
     .buf = &fnet_fec1_buf
@@ -649,7 +649,7 @@ void fnet_fec_output(fnet_netif_t *netif, fnet_netbuf_t *nb)
 #ifdef FNET_FEC_TEST_RACE_CONDITION
         {
             fnet_index_t i;
-            for (i = 0u; i < 10000u; i++) {}   /* tempo 20µs */
+            for (i = 0u; i < 10000u; i++) {}   /* tempo 20us */
         }
 #endif
 

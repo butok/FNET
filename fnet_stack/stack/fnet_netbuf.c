@@ -28,7 +28,7 @@
 #include "fnet_stack_prv.h"
 
 
-#define FNET_HEAP_SPLIT     (0) /* If 1 the main heap will be splitted to two parts. 
+#define FNET_HEAP_SPLIT     (0) /* If 1 the main heap will be splitted to two parts.
                                  * (have issue so to be tested later).*/
 
 static fnet_mempool_desc_t fnet_mempool_main = 0; /* Main memory pool. */

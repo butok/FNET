@@ -60,4 +60,4 @@ fnet_uint32_t fnet_lpc_periph_clk_khz(void)
     return (0);
 }
 
-#endif /*FNET_MK*/
+#endif /*FNET_LPC*/
