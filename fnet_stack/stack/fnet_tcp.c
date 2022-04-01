@@ -1934,7 +1934,7 @@ static fnet_bool_t _fnet_tcp_dataprocess( fnet_socket_if_t *sk, fnet_netbuf_t *i
     /* Reinitialize delayed ACK timer.*/
     if((*ackparam & FNET_TCP_AP_SEND_WITH_DELAY) != 0u)
     {
-        cb->tcpcb_timers.delayed_ack = 1u; /* Delay 200 ms*/
+        cb->tcpcb_timers.delayed_ack = (200 / FNET_TCP_FAST_TIMER_PERIOD_MS); /* Delay 200 ms*/
     }
 
     /* Reset the abort timer.*/
@@ -2764,7 +2764,7 @@ static void _fnet_tcp_slowtimo(fnet_uint32_t cookie)
 
 /************************************************************************
 * DESCRIPTION: This function processes the timeouts
-*              (it is performed every 200 ms).
+*              (it is performed every FNET_TCP_FAST_TIMER_PERIOD_MS).
 *************************************************************************/
 static void _fnet_tcp_fasttimo( fnet_uint32_t cookie )
 {
@@ -2795,7 +2795,7 @@ static void _fnet_tcp_fasttimo( fnet_uint32_t cookie )
 
 /************************************************************************
 * DESCRIPTION: This function processes the timers of the socket
-*              (it is performed every 500 ms).
+*              (it is performed every FNET_TCP_SLOW_TIMER_PERIOD_MS).
 *************************************************************************/
 static void _fnet_tcp_slowtimosk( fnet_socket_if_t *sk )
 {
@@ -2902,7 +2902,7 @@ static void _fnet_tcp_slowtimosk( fnet_socket_if_t *sk )
 
 /************************************************************************
 * DESCRIPTION: This function processes the delayed acknowledgment timer
-*              of the socket (it is performed every 200 ms).
+*              of the socket (it is performed every FNET_TCP_FAST_TIMER_PERIOD_MS).
 *************************************************************************/
 static void _fnet_tcp_fasttimosk( fnet_socket_if_t *sk )
 {
