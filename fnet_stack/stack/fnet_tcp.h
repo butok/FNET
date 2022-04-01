@@ -80,9 +80,9 @@ extern struct fnet_prot_if fnet_tcp_prot_if;
 *    Keepalive timer parameters
 *************************************************************************/
 #define FNET_TCP_KEEPIDLE_DEFAULT   (14400u) /* x FNET_TCP_SLOW_TIMER_PERIOD_MS  
-                                             * Standart value for keepalive timer (2 hours).*/
+                                             * Standard value for keepalive timer (2 hours).*/
 #define FNET_TCP_KEEPINTVL_DEFAULT  (150u)   /* x FNET_TCP_SLOW_TIMER_PERIOD_MS  
-                                             * Standart value for retransmission of the keepalive segment (75 sec).*/
+                                             * Standard value for retransmission of the keepalive segment (75 sec).*/
 #define FNET_TCP_KEEPCNT_DEFAULT    (8u)     /* Number of keepalive segments in state of retransmission.*/
 
 /************************************************************************

@@ -1906,7 +1906,7 @@ static fnet_bool_t _fnet_tcp_inputsk( fnet_socket_if_t *sk, fnet_netbuf_t *inseg
 }
 
 /************************************************************************
-* DESCRIPTION: This function proceeds the processing of the input segemnt.
+* DESCRIPTION: This function proceeds the processing of the input segment.
 *
 * RETURNS: TRUE if the input segment must be deleted. Otherwise
 *          this function returns FALSE.
@@ -2144,8 +2144,8 @@ static fnet_bool_t _fnet_tcp_dataprocess( fnet_socket_if_t *sk, fnet_netbuf_t *i
     }
 
     /* If the acknowledgment is sent, return
-     * If the acnkowledgment must be sent immediatelly, send it
-     * If the acnkowledgment must be sent after delay, turn on the acknowledgment timer.*/
+     * If the acknowledgment must be sent immediatelly, send it
+     * If the acknowledgment must be sent after delay, turn on the acknowledgment timer.*/
     if(((*ackparam & FNET_TCP_AP_NO_SENDING) != 0u) || ((*ackparam & FNET_TCP_AP_FIN_ACK) != 0u))
     {
         return delflag;
@@ -2936,7 +2936,7 @@ static void _fnet_tcp_retransmission_timeo( fnet_socket_if_t *sk )
     switch(cb->tcpcb_connection_state)
     {
         case FNET_TCP_CS_SYN_RCVD:
-            /* Reinitialize of the sequnce number.*/
+            /* Reinitialize of the sequence number.*/
             cb->tcpcb_sndseq--;
             _fnet_tcp_set_synopt(sk, options, &optionlen);
 
@@ -2967,7 +2967,7 @@ static void _fnet_tcp_retransmission_timeo( fnet_socket_if_t *sk )
             /* Recalculate the sequence number.*/
             cb->tcpcb_sndseq = cb->tcpcb_rcvack;
 
-            /* Recalculate the congestion window and slow start threshold values (for case of  retransmission).*/
+            /* Recalculate the congestion window and slow start threshold values (for case of retransmission).*/
             if(cb->tcpcb_cwnd > cb->tcpcb_sndwnd)
             {
                 cb->tcpcb_ssthresh = cb->tcpcb_sndwnd >> 1;
