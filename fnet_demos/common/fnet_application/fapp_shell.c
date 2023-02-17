@@ -333,7 +333,7 @@ void fapp_debug_cmd( fnet_shell_desc_t desc, fnet_index_t argc, fnet_char_t **ar
     {
         fnet_index_t    i = 0;
         fnet_ip6_addr_t addr_dns;
-        fnet_uint8_t    ip_str[FNET_IP_ADDR_STR_SIZE] = {0};
+        fnet_char_t    ip_str[FNET_IP_ADDR_STR_SIZE] = {0};
 
         while(fnet_netif_get_ip6_dns(fnet_netif_get_default(), i, &addr_dns ) == FNET_TRUE)
         {

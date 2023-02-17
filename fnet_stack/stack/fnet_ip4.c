@@ -74,7 +74,7 @@ static fnet_bool_t _fnet_ip4_addr_is_onlink(fnet_netif_t *netif, fnet_ip4_addr_t
 #endif
 
 #if FNET_CFG_DEBUG_TRACE_IP4 && FNET_CFG_DEBUG_TRACE
-    static void _fnet_ip4_trace(fnet_uint8_t *str, fnet_ip4_header_t *ip_hdr);
+    static void _fnet_ip4_trace(const fnet_char_t *str, fnet_ip4_header_t *ip_hdr);
 #else
     #define _fnet_ip4_trace(str, ip_hdr)  do{}while(0)
 #endif
@@ -1387,9 +1387,9 @@ fnet_error_t _fnet_ip4_setsockopt(struct _fnet_socket_if_t  *sock, fnet_socket_o
 * DESCRIPTION: Prints an IP header. For debug needs only.
 *************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_IP4 && FNET_CFG_DEBUG_TRACE
-static void _fnet_ip4_trace(fnet_uint8_t *str, fnet_ip4_header_t *ip_hdr)
+static void _fnet_ip4_trace(const fnet_char_t *str, fnet_ip4_header_t *ip_hdr)
 {
-    fnet_uint8_t ip_str[FNET_IP4_ADDR_STR_SIZE];
+    fnet_char_t ip_str[FNET_IP4_ADDR_STR_SIZE];
 
     fnet_printf(FNET_SERIAL_ESC_FG_GREEN"%s", str); /* Print app-specific header.*/
     fnet_println("[IPv4 header]"FNET_SERIAL_ESC_ATTR_RESET);

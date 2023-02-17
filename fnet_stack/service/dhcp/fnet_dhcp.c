@@ -57,7 +57,7 @@ fnet_uint8_t *_fnet_dhcp_add_option(fnet_uint8_t *option_buffer, fnet_size_t opt
 * DESCRIPTION: Print DHCP header. For debug needs.
 ************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_DHCP_SRV && FNET_CFG_DEBUG_TRACE
-void _fnet_dhcp_trace(fnet_uint8_t *str, fnet_dhcp_header_t *header )
+void _fnet_dhcp_trace(const fnet_char_t *str, fnet_dhcp_header_t *header )
 {
     fnet_char_t     ip_str[FNET_IP4_ADDR_STR_SIZE];
     fnet_index_t    i;

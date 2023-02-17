@@ -1675,7 +1675,7 @@ void _fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_a
                 fnet_nd6_prefix_entry_t *prefix_entry;
 
 #if FNET_CFG_DEBUG_IP6 && FNET_CFG_DEBUG
-                fnet_uint8_t numaddr[FNET_IP6_ADDR_STR_SIZE] = {0};
+                fnet_char_t numaddr[FNET_IP6_ADDR_STR_SIZE] = {0};
                 fnet_inet_ntop(AF_INET6, (fnet_uint8_t *)&nd_option_prefix[i]->prefix, numaddr, sizeof(numaddr));
 
                 fnet_println("Prefix[%d]= %s \n", i, numaddr);
@@ -2055,7 +2055,7 @@ static void _fnet_nd6_dad_timer(fnet_netif_t *netif )
 
 #if FNET_CFG_DEBUG_IP6 && FNET_CFG_DEBUG
                     {
-                        fnet_uint8_t numaddr[FNET_IP6_ADDR_STR_SIZE] = {0};
+                        fnet_char_t numaddr[FNET_IP6_ADDR_STR_SIZE] = {0};
                         fnet_inet_ntop(AF_INET6, (fnet_uint8_t *)&addr_info->address, numaddr, sizeof(numaddr));
                         fnet_println("%s is PREFERED NOW\n", numaddr);
                     }
@@ -2081,7 +2081,7 @@ static void _fnet_nd6_dad_failed(fnet_netif_t *netif, fnet_netif_ip6_addr_t *add
 
 #if FNET_CFG_DEBUG_IP6 && FNET_CFG_DEBUG
     {
-        fnet_uint8_t numaddr[FNET_IP6_ADDR_STR_SIZE] = {0};
+        fnet_char_t numaddr[FNET_IP6_ADDR_STR_SIZE] = {0};
         fnet_inet_ntop(AF_INET6, (fnet_uint8_t *)&addr_info->address, numaddr, sizeof(numaddr));
         fnet_println("%s DAD is FAILED!!!!\n", numaddr);
     }

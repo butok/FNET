@@ -40,7 +40,7 @@ static void _fnet_icmp4_output( fnet_netif_t *netif, fnet_ip4_addr_t src_ip, fne
 static void _fnet_icmp4_notify_protocol(fnet_netif_t *netif, fnet_prot_notify_t prot_cmd, fnet_netbuf_t *nb );
 
 #if FNET_CFG_DEBUG_TRACE_ICMP4 && FNET_CFG_DEBUG_TRACE
-    void fnet_icmp4_trace(fnet_uint8_t *str, fnet_icmp4_header_t *icmpp_hdr);
+    void fnet_icmp4_trace(const fnet_char_t *str, fnet_icmp4_header_t *icmpp_hdr);
 #else
     #define fnet_icmp4_trace(str, icmp_hdr)  do{}while(0)
 #endif
@@ -419,7 +419,7 @@ void _fnet_icmp4_error( fnet_netif_t *netif, fnet_uint8_t type, fnet_uint8_t cod
 * DESCRIPTION: Prints an ICMP header. For debug needs only.
 *************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_ICMP4 && FNET_CFG_DEBUG_TRACE
-void fnet_icmp4_trace(fnet_uint8_t *str, fnet_icmp4_header_t *icmp_hdr)
+void fnet_icmp4_trace(const fnet_char_t *str, fnet_icmp4_header_t *icmp_hdr)
 {
     fnet_printf(FNET_SERIAL_ESC_FG_GREEN"%s", str); /* Print app-specific header.*/
     fnet_println("[ICMP4 header]"FNET_SERIAL_ESC_ATTR_RESET);

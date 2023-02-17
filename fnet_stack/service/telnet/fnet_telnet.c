@@ -335,7 +335,7 @@ static void _fnet_telnet_poll( void *telnet_if_p )
                     {
 #if FNET_CFG_DEBUG_TELNET && FNET_CFG_DEBUG
                         {
-                            fnet_uint8_t ip_str[FNET_IP_ADDR_STR_SIZE];
+                            fnet_char_t ip_str[FNET_IP_ADDR_STR_SIZE];
                             fnet_inet_ntop(foreign_addr.sa_family, foreign_addr.sa_data, ip_str, sizeof(ip_str));
                             FNET_DEBUG_TELNET("\nTELNET: New connection: %s; Port: %d.", ip_str, fnet_ntohs(foreign_addr.sa_port));
                         }

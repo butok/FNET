@@ -247,7 +247,7 @@ static void _fnet_dhcp_cln_print_state( fnet_dhcp_cln_if_t *dhcp )
 ************************************************************************/
 static void _fnet_dhcp_cln_print_options( struct fnet_dhcp_cln_options_in *options )
 {
-    fnet_uint8_t ip_str[FNET_IP4_ADDR_STR_SIZE];
+    fnet_char_t ip_str[FNET_IP4_ADDR_STR_SIZE];
 
     FNET_DEBUG_DHCP_CLN("DHCP: Options:");
     FNET_DEBUG_DHCP_CLN(" message_type \t\t %02X", options->private_options.message_type);

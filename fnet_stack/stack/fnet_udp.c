@@ -46,7 +46,7 @@ static void _fnet_udp_release(void);
 static fnet_error_t _fnet_udp_output(struct fnet_sockaddr *src_addr, const struct fnet_sockaddr *dest_addr, fnet_socket_option_t *sockoption, fnet_netbuf_t *nb );
 
 #if FNET_CFG_DEBUG_TRACE_UDP && FNET_CFG_DEBUG_TRACE
-    static void _fnet_udp_trace(fnet_uint8_t *str, fnet_udp_header_t *udp_hdr);
+    static void _fnet_udp_trace(const fnet_char_t *str, fnet_udp_header_t *udp_hdr);
 #else
     #define _fnet_udp_trace(str, udp_hdr)    do{}while(0)
 #endif
@@ -664,17 +664,17 @@ static void _fnet_udp_control_input(fnet_prot_notify_t command, struct fnet_sock
 * DESCRIPTION: Prints UDP header. For debugging purposes.
 *************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_UDP && FNET_CFG_DEBUG_TRACE
-static void _fnet_udp_trace(fnet_uint8_t *str, fnet_udp_header_t *udp_hdr)
+static void _fnet_udp_trace(const fnet_char_t *str, fnet_udp_header_t *udp_hdr)
 {
 
     fnet_printf(FNET_SERIAL_ESC_FG_GREEN"%s", str); /* Print app-specific header.*/
     fnet_println("[UDP header]"FNET_SERIAL_ESC_ATTR_RESET);
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
-    fnet_println("|(SrcPort)                  "FNET_SERIAL_ESC_FG_BLUE"%3u"FNET_SERIAL_ESC_ATTR_RESET" |(DestPort)                 "FNET_SERIAL_ESC_FG_BLUE"%3u"FNET_SERIAL_ESC_ATTR_RESET" |",
+    fnet_println("|(SrcPort)                "FNET_SERIAL_ESC_FG_BLUE"%5u"FNET_SERIAL_ESC_ATTR_RESET" |(DestPort)               "FNET_SERIAL_ESC_FG_BLUE"%5u"FNET_SERIAL_ESC_ATTR_RESET" |",
                  fnet_ntohs(udp_hdr->source_port),
                  fnet_ntohs(udp_hdr->destination_port));
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
-    fnet_println("|(Lenghth)                  "FNET_SERIAL_ESC_FG_BLUE"%3u"FNET_SERIAL_ESC_ATTR_RESET" |(Checksum)              0x%04X |",
+    fnet_println("|(Lenghth)                "FNET_SERIAL_ESC_FG_BLUE"%5u"FNET_SERIAL_ESC_ATTR_RESET" |(Checksum)              0x%04X |",
                  fnet_ntohs(udp_hdr->length),
                  fnet_ntohs(udp_hdr->checksum));
     fnet_println("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");

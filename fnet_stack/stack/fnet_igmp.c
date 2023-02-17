@@ -54,7 +54,7 @@
 static void _fnet_igmp_input(fnet_netif_t *netif, struct fnet_sockaddr *src_addr,  struct fnet_sockaddr *dest_addr, fnet_netbuf_t *nb, fnet_netbuf_t *ip4_nb);
 
 #if FNET_CFG_DEBUG_TRACE_IGMP && FNET_CFG_DEBUG_TRACE
-    static void _fnet_igmp_trace(fnet_uint8_t *str, fnet_igmp_header_t *icmpp_hdr);
+    static void _fnet_igmp_trace(const fnet_char_t *str, fnet_igmp_header_t *icmpp_hdr);
 #else
     #define _fnet_igmp_trace(str, icmp_hdr)  do {}while(0)
 #endif
@@ -232,9 +232,9 @@ void _fnet_igmp_leave( fnet_netif_t *netif, fnet_ip4_addr_t  group_addr )
 * DESCRIPTION: Prints an IGMP header. For debug needs only.
 *************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_IGMP && FNET_CFG_DEBUG_TRACE
-static void _fnet_igmp_trace(fnet_uint8_t *str, fnet_igmp_header_t *igmp_hdr)
+static void _fnet_igmp_trace(const fnet_char_t *str, fnet_igmp_header_t *igmp_hdr)
 {
-    fnet_uint8_t ip_str[FNET_IP4_ADDR_STR_SIZE];
+    fnet_char_t ip_str[FNET_IP4_ADDR_STR_SIZE];
 
     fnet_printf(FNET_SERIAL_ESC_FG_GREEN"%s", str); /* Print app-specific header.*/
     fnet_println("[IGMP header]"FNET_SERIAL_ESC_ATTR_RESET);
