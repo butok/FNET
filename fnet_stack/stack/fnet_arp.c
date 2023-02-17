@@ -52,7 +52,7 @@ static fnet_arp_entry_t *_fnet_arp_update_entry(fnet_netif_t *netif, fnet_ip4_ad
 static void _fnet_arp_ip4_addr_conflict(void *cookie);
 
 #if FNET_CFG_DEBUG_TRACE_ARP && FNET_CFG_DEBUG_TRACE
-static void fnet_arp_trace(fnet_uint8_t *str, fnet_arp_header_t *arp_hdr);
+static void fnet_arp_trace(const fnet_char_t *str, fnet_arp_header_t *arp_hdr);
 #else
 #define fnet_arp_trace(str, arp_hdr) \
     do                               \
@@ -582,10 +582,10 @@ fnet_bool_t fnet_arp_get_entry ( fnet_netif_desc_t netif_desc, fnet_index_t n, f
 * DESCRIPTION: Prints ARP header. For debugging purposes.
 *************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_ARP && FNET_CFG_DEBUG_TRACE
-static void fnet_arp_trace(fnet_uint8_t *str, fnet_arp_header_t *arp_hdr)
+static void fnet_arp_trace(const fnet_char_t *str, fnet_arp_header_t *arp_hdr)
 {
-    fnet_uint8_t mac_str[FNET_MAC_ADDR_STR_SIZE];
-    fnet_uint8_t ip_str[FNET_IP4_ADDR_STR_SIZE];
+    fnet_char_t mac_str[FNET_MAC_ADDR_STR_SIZE];
+    fnet_char_t ip_str[FNET_IP4_ADDR_STR_SIZE];
 
     fnet_printf(FNET_SERIAL_ESC_FG_GREEN "%s", str); /* Print app-specific header.*/
     fnet_println("[ARP header]" FNET_SERIAL_ESC_ATTR_RESET);

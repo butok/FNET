@@ -113,7 +113,7 @@ static void _fnet_tcp_drain( void );
 static void _fnet_tcp_initial_seq_number_update( void );
 
 #if FNET_CFG_DEBUG_TRACE_TCP && FNET_CFG_DEBUG_TRACE
-    void _fnet_tcp_trace(fnet_uint8_t *str, fnet_tcp_header_t *tcp_hdr);
+    void _fnet_tcp_trace(const fnet_char_t *str, fnet_tcp_header_t *tcp_hdr);
 #else
     #define _fnet_tcp_trace(str, tcp_hdr)    do{}while(0)
 #endif
@@ -4108,7 +4108,7 @@ static fnet_uint32_t _fnet_tcp_get_size( fnet_uint32_t pos1, fnet_uint32_t pos2 
 * DESCRIPTION: Prints TCP header. For debugging purposes.
 *************************************************************************/
 #if FNET_CFG_DEBUG_TRACE_TCP && FNET_CFG_DEBUG_TRACE
-void _fnet_tcp_trace(fnet_uint8_t *str, fnet_tcp_header_t *tcp_hdr)
+void _fnet_tcp_trace(const fnet_char_t *str, fnet_tcp_header_t *tcp_hdr)
 {
     fnet_printf(FNET_SERIAL_ESC_FG_GREEN"%s", str); /* Print app-specific header.*/
     fnet_println("[TCP header]"FNET_SERIAL_ESC_ATTR_RESET);
