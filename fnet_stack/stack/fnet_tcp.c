@@ -447,7 +447,7 @@ static fnet_return_t _fnet_tcp_attach( fnet_socket_if_t *sk )
 static void _fnet_tcp_initial_seq_number_update( void )
 {
     /* Increase Initial Sequence Number. */
-    _fnet_tcp_initial_seq_number += FNET_TCP_INITIAL_SEQ_NUMBER_STEP + fnet_rand() & 0xFF;
+    _fnet_tcp_initial_seq_number += (FNET_TCP_INITIAL_SEQ_NUMBER_STEP + fnet_rand()) & 0xFF;
 }
 /************************************************************************
 * DESCRIPTION: This function performs the connection termination.
@@ -993,8 +993,8 @@ ERROR:
 *************************************************************************/
 static fnet_return_t _fnet_tcp_shutdown( fnet_socket_if_t *sk, fnet_sd_flags_t how )
 {
-    /* If the socket is not connected, return.*/
-    if(sk->state != SS_CONNECTED)
+    /* If the socket is not connected or has already been closed, return error.*/
+    if(sk->state == SS_CLOSED)
     {
         _fnet_socket_set_error(sk, FNET_ERR_NOTCONN);
         return FNET_ERR;
