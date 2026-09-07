@@ -959,6 +959,13 @@ void _fnet_nd6_neighbor_solicitation_receive(struct fnet_netif *netif, fnet_ip6_
                 goto DROP;
             }
 
+            /* Ensure the full option body (length * 8 bytes) lies within the
+             * received packet before any option field is dereferenced. */
+            if((nd_option_offset + ((fnet_size_t)nd_option->length << 3)) > icmp6_packet_size)
+            {
+                goto DROP;
+            }
+
             /* Handle Source link-layer address option only.
              */
             if((nd_option->type == FNET_ND6_OPTION_SOURCE_LLA)
@@ -1274,6 +1281,13 @@ void _fnet_nd6_neighbor_advertisement_receive(struct fnet_netif *netif, fnet_ip6
                 goto DROP;
             }
 
+            /* Ensure the full option body (length * 8 bytes) lies within the
+             * received packet before any option field is dereferenced. */
+            if((nd_option_offset + ((fnet_size_t)nd_option->length << 3)) > icmp6_packet_size)
+            {
+                goto DROP;
+            }
+
             /* Handle Target Link-Layer Address option only.
              */
             if((nd_option->type == FNET_ND6_OPTION_TARGET_LLA)
@@ -1508,6 +1522,13 @@ void _fnet_nd6_router_advertisement_receive(struct fnet_netif *netif, fnet_ip6_a
             /* Validation RFC4861 (6.1.2). All included options have a length that is greater than zero.
              */
             if(nd_option->length == 0u)
+            {
+                goto DROP;
+            }
+
+            /* Ensure the full option body (length * 8 bytes) lies within the
+             * received packet before any option field is dereferenced. */
+            if((nd_option_offset + ((fnet_size_t)nd_option->length << 3)) > icmp6_packet_size)
             {
                 goto DROP;
             }
@@ -1882,6 +1903,13 @@ void _fnet_nd6_redirect_receive(struct fnet_netif *netif, fnet_ip6_addr_t *src_i
         /* Validation RFC4861 (8.1). All included options have a length that is greater than zero.
          */
         if(nd_option->length == 0u)
+        {
+            goto DROP;
+        }
+
+        /* Ensure the full option body (length * 8 bytes) lies within the
+         * received packet before any option field is dereferenced. */
+        if((nd_option_offset + ((fnet_size_t)nd_option->length << 3)) > icmp6_packet_size)
         {
             goto DROP;
         }
