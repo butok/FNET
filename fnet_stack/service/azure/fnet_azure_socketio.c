@@ -605,6 +605,13 @@ void socketio_dowork(CONCRETE_IO_HANDLE socket_io)
                         }
                         else
                         {
+                            if (send_result == 0)
+                            {
+                                /* No progress (TCP send buffer full / peer zero-window):
+                                 * stop draining so the RX path and fnet_poll() below run;
+                                 * retry this item on the next dowork(). */
+                                break;
+                            }
                             /* send something, wait for the rest */
                             (void)memmove(pending_socket_io->bytes, pending_socket_io->bytes + send_result, pending_socket_io->size - send_result);
                             pending_socket_io->size -= send_result;
