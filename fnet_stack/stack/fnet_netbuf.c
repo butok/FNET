@@ -407,14 +407,16 @@ fnet_return_t _fnet_netbuf_pullup( fnet_netbuf_t **nb_ptr, fnet_size_t len)
     }
 
     tmp_nb = nb;
+    tot_len = nb->length;
 
-    /* Search of the last buffer, from which the data have to be copied*/
-    do
+    /* Search of the last buffer, from which the data have to be copied.
+     * Stop at the last partial segment (not one past it) to avoid the
+     * unsigned (len - offset) underflow below. */
+    while((tot_len < len) && (tmp_nb->next != 0))
     {
-        tot_len += tmp_nb->length;
         tmp_nb = tmp_nb->next;
+        tot_len += tmp_nb->length;
     }
-    while((tot_len < len) && tmp_nb);
 
     new_buf = (struct net_buf_data *)_fnet_malloc_netbuf((fnet_size_t)len + sizeof(fnet_uint32_t)/* For reference_counter */);
 
