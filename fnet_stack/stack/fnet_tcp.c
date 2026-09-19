@@ -447,7 +447,7 @@ static fnet_return_t _fnet_tcp_attach( fnet_socket_if_t *sk )
 static void _fnet_tcp_initial_seq_number_update( void )
 {
     /* Increase Initial Sequence Number. */
-    _fnet_tcp_initial_seq_number += (FNET_TCP_INITIAL_SEQ_NUMBER_STEP + fnet_rand()) & 0xFF;
+    _fnet_tcp_initial_seq_number += FNET_TCP_INITIAL_SEQ_NUMBER_STEP + (fnet_rand() & 0xFFu);
 }
 /************************************************************************
 * DESCRIPTION: This function performs the connection termination.
