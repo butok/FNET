@@ -696,6 +696,15 @@ const fnet_uint8_t *_fnet_dns_get_rr_name(char *rr_name, fnet_uint32_t rr_name_s
 
         if( rr_name && rr_name_size ) /* Copy to rr_name buffer.*/
         {
+            /* Bound the SOURCE against the received message, not only the
+             * destination: a label body must not run past packet + packet_size.
+             * Without this, a label-length octet near the end of the message
+             * makes the copy below read past the received data (CWE-125). */
+            if((ptr + (fnet_size_t)length + 1u) > (packet + packet_size))
+            {
+                length = 1; /* mark malformed (as the rr_name_size branch does) */
+                break;
+            }
             if(length < rr_name_size) /* Check maximum rr_name_size */
             {
                 fnet_memcpy(rr_name, ptr, length + 1);
