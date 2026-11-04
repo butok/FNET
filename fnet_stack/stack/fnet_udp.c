@@ -224,6 +224,11 @@ static void _fnet_udp_input(fnet_netif_t *netif, struct fnet_sockaddr *foreign_a
 
         udp_length = fnet_ntohs(udp_header->length);
 
+        if(udp_length < sizeof(fnet_udp_header_t))
+        {
+            goto BAD;
+        }
+
         if(nb->total_length >= udp_length)  /* Check the amount of data.*/
         {
             if(nb->total_length > udp_length)
