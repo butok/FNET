@@ -274,6 +274,11 @@ static fnet_return_t _fnet_ip6_ext_header_process(fnet_netif_t *netif, fnet_uint
             {
                 return FNET_ERR;
             }
+            if(*nb_p == FNET_NULL)
+            {
+                _fnet_netbuf_free_chain(ip6_nb);
+                return FNET_ERR;
+            }
         }
         else
         {
@@ -321,8 +326,9 @@ static fnet_ip6_ext_header_handler_result_t _fnet_ip6_ext_header_handler_options
 
     FNET_COMP_UNUSED_ARG(src_ip);
 
-    /* Check for a valid length. */
-    if(length > (nb->length - 2u))
+    /* Check for a valid length. The comparison must not underflow when the
+     * remaining data is shorter than the two-byte header prefix. */
+    if((nb->length < 2u) || (length > (nb->length - 2u)))
     {   /* Malformed option header */
         _fnet_netbuf_free_chain(nb);
         _fnet_netbuf_free_chain(ip6_nb);
@@ -424,6 +430,14 @@ static fnet_ip6_ext_header_handler_result_t _fnet_ip6_ext_header_handler_routing
     FNET_COMP_UNUSED_ARG(dest_ip);
 
     routing_h = (fnet_ip6_routing_header_t *)nb->data_ptr;
+
+    if((nb->total_length < sizeof(fnet_ip6_routing_header_t)) ||
+       ((((fnet_uint32_t)routing_h->hdr_ext_length + 1u) << 3u) > nb->total_length))
+    {
+        _fnet_netbuf_free_chain(nb);
+        _fnet_netbuf_free_chain(ip6_nb);
+        return FNET_IP6_EXT_HEADER_HANDLER_RESULT_EXIT;
+    }
 
     /* RFC 2460 4.4: If, while processing a received packet, a node encounters a Routing
     * header with an unrecognized Routing Type value, the required behavior
@@ -593,6 +607,12 @@ static void _fnet_ip6_input_low(void *cookie)
 #endif
 
             _fnet_netbuf_trim(&nb, (fnet_int32_t)sizeof(fnet_ip6_header_t));
+
+            if(nb == FNET_NULL)
+            {
+                _fnet_netbuf_free_chain(ip6_nb);
+                continue;
+            }
 
             /********************************************
              * Extension headers processing.
@@ -1568,11 +1588,25 @@ static fnet_netbuf_t *_fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **
     ip6_fragment_header = (fnet_ip6_fragment_header_t *)nb->data_ptr;
     next_header = ip6_fragment_header->next_header;
     id = ip6_fragment_header->id;
+
+    /* The Fragment header applies to the whole datagram, so the fragmentable
+     * part must not begin with another Fragment header. After reassembly the
+     * extension-header loop would otherwise re-enter the fragment handler
+     * with that payload and spin forever. */
+    if(next_header == FNET_IP6_TYPE_FRAGMENT_HEADER)
+    {
+        goto DROP_FRAG_1;
+    }
     offset = (fnet_uint16_t)FNET_IP6_FRAGMENT_OFFSET(ip6_fragment_header->offset_more);
     mf = (fnet_uint8_t)FNET_IP6_FRAGMENT_MF(ip6_fragment_header->offset_more);
 
     _fnet_netbuf_trim(nb_p, (fnet_int32_t)sizeof(fnet_ip6_fragment_header_t));
     nb = *nb_p;
+
+    if(nb == FNET_NULL)
+    {
+        goto DROP_FRAG_1;
+    }
 
     total_length = (fnet_uint16_t)nb->length;
 
@@ -1654,7 +1688,7 @@ static fnet_netbuf_t *_fnet_ip6_reassembly(fnet_netif_t *netif, fnet_netbuf_t **
         {
             if((i = (fnet_size_t)(frag_ptr->prev->offset + frag_ptr->prev->total_length - cur_frag_ptr->offset)) != 0u)
             {
-                if(i > cur_frag_ptr->total_length)
+                if(i >= cur_frag_ptr->total_length)
                 {
                     goto DROP_FRAG_2;
                 }

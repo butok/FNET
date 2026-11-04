@@ -616,16 +616,23 @@ static void _fnet_ip4_input_low(void *cookie)
                 continue;
             }
 
+            /* Save header fields before a trim can release the data. */
+            _fnet_ip4_set_socket_addr(netif, hdr, &src_addr, &dest_addr);
+            protocol = _fnet_prot_find(AF_INET, SOCK_UNSPEC, (fnet_uint32_t)hdr->protocol);
+
             ip4_nb = _fnet_netbuf_copy(nb, 0u, (header_length + 8u), FNET_FALSE);
 
             _fnet_netbuf_trim(&nb, (fnet_int32_t)header_length);
 
+            if(nb == FNET_NULL)
+            {
+                _fnet_netbuf_free_chain(ip4_nb);
+                continue;
+            }
+
             /**************************************
              *  Send to upper layers.
              **************************************/
-
-            /* Prepare addreses for upper protocol.*/
-            _fnet_ip4_set_socket_addr(netif, hdr, &src_addr,  &dest_addr );
 
 #if FNET_CFG_RAW
             /* RAW Sockets inpput.*/
@@ -633,7 +640,7 @@ static void _fnet_ip4_input_low(void *cookie)
 #endif
 
             /* Find transport protocol.*/
-            if((protocol = _fnet_prot_find(AF_INET, SOCK_UNSPEC, (fnet_uint32_t)hdr->protocol)) != FNET_NULL)
+            if(protocol != FNET_NULL)
             {
                 protocol->prot_input(netif, &src_addr,  &dest_addr, nb, ip4_nb);
                 /* After that nb may point to wrong place. Do not use it.*/
@@ -693,6 +700,10 @@ static void _fnet_ip4_reassembly( fnet_netbuf_t **nb_ptr )
 
     /* Exclude the standard IP header and options.*/
     hdr_length = (fnet_size_t)FNET_IP_HEADER_GET_HEADER_LENGTH(iphdr) << 2;
+    if(hdr_length >= nb->total_length)
+    {
+        goto DROP_FRAG;
+    }
     _fnet_netbuf_trim(&nb, (fnet_int32_t)hdr_length);
     cur_frag_ptr->total_length = (fnet_uint16_t)(fnet_ntohs(cur_frag_ptr->total_length) - hdr_length); /* Host endian.*/
 
